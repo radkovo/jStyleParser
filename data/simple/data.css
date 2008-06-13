@@ -1,0 +1,25 @@
+BODY {
+  background-color: #EEE;
+  color: red;
+}
+
+H1.prvni+P {
+  color: #00A;
+}
+
+H1 {
+  font-size: 20px;
+  color: #000;
+}
+
+H1.prvni {
+  color: #00A;
+}
+
+.AA {
+  font-weight: bold;
+}
+
+.BB {
+  color: #0F0;
+}

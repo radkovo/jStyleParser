@@ -1,0 +1,480 @@
+/* Copyright 1997-2006 W3C (MIT, ERCIM, Keio). All Rights Reserved.
+   The following software licensing rules apply:
+   http://www.w3.org/Consortium/Legal/copyright-software */
+
+/* $Id: home-import.css,v 2.32 2006/12/19 14:47:05 ijacobs Exp $ */
+
+/* ******************  columns  *************** */
+
+.navBlock {
+   background: #eec;
+   color: #000;
+   float: left;
+   width: 26%;
+   border: none;
+}
+
+p.small + div.navBlock {
+   border-top: 1px solid #000;
+   border-left: 1px solid #000;
+}
+
+div.newsBlock + div.navBlock {
+   border-top: 1px solid #000;
+   border-right: 1px solid #000;
+}
+
+.newsBlock {
+   background: #fff;
+   color: #000;
+   float: left;
+   width: 46%;
+   margin-bottom: 0;
+   border-left: 1px solid #000;
+   border-right: 1px solid #000;
+   border-bottom: 1px solid #000;
+}
+
+/* ******************  news  ************** */
+
+h2.newsHeading {
+   background: #005a9c;
+   color: #fff;
+   border: none;
+   border-top: 1px solid #000;
+   width: 100%;
+   font-weight: bold;
+   font-size: medium;
+   text-align: center;
+   margin-top: 0;
+   padding: 0.1em;
+}
+
+div.item h3 {
+   font-size: 150%;
+   margin-bottom: -0.3em;
+}
+
+div.item, .pastNews {
+   clear: both;
+   padding: 0 0.7em 0 1em;
+}
+
+.headline {
+   background: #fff;
+   color: #900;
+   margin-top: 0.4em;
+}
+
+img.newsImage, img.newsImageNoBorder {
+   float: left;
+   margin-right: 0.5em;
+   background: #fff;
+   color: #000;
+}
+
+img.newsImage {
+   border: 1px solid #000;
+}
+
+a:link img.newsImage, a:visited img.newsImage {
+   border: 1px solid #000;
+}
+
+/*
+div.item ul li {
+   margin-left: 12px;
+}
+*/
+
+/* ******************  banner  ************** */
+
+div.banner {
+   text-align: center;
+   font-weight: bold;
+   font-size: 120%;
+}
+
+div.banner a:link {
+   background: #fff;
+   color: #048;
+}
+
+div.banner a:visited {
+   background: #fff;
+   color: #636;
+}
+
+div.banner a:active {
+   background: #ffc;
+   color: #048;
+   text-decoration: none;
+}
+
+div.banner a:hover {
+   background: #ffc;
+   color: #900;
+   text-decoration: none;
+}
+
+/* ******************  navigation bars  ************** */
+
+.navBlock {
+   padding-bottom: 0.5em;
+   border-bottom: 1px solid #000;
+}
+
+.navBlock h2.navhead {
+   background: #aa7;
+   color: #fff;
+   border: none;
+   width: 100%;
+   font-weight: bold;
+   font-size: medium;
+   text-indent: 0.5em;
+   margin-top: 0;
+   padding: 0.1em 0;
+}
+
+.navBlock h2, .navBlock div, .navBlock p, .navBlock ul, .navBlock span.navText {
+   background: #eec;
+   color: #000;
+}
+
+.navBlock div, .navBlock p, .navBlock ul {
+   margin-top: 0.2em;
+}
+
+.navBlock li {
+   margin-left: 0;
+   background: #eec;
+   color: #aa7;
+}
+
+.navBlock p, .navBlock div {
+   text-indent: 0.3em;
+}
+
+.navBlock p.navPara {
+   font-size: small;
+   margin: 0 0.2em 0.5em 0.75em;
+   text-indent: 0;
+}
+
+.navBlock form {
+   margin-top: 0;
+   padding-left: 0.2em;
+}
+
+a.navlink img { color: #eec; }
+@media all {
+  a.navlink img {
+   color: inherit;
+   border: none;
+   }
+}
+
+/* next three rules for acronyms in Mac IE 4.01 and 4.5 */
+
+.navBlock a:link {
+   background: #eec;
+   color: #037;
+}
+
+.navBlock a:visited {
+   background: #eec;
+   color: #636;
+}
+
+.navBlock a:active {
+   background: #ffc;
+   color: #900;
+   text-decoration: none;
+}
+
+/* next three rules for most browsers */
+
+a.navlink:link {
+   background: #eec;
+   color: #037;
+}
+
+a.navlink:visited {
+   background: #eec;
+   color: #636;
+}
+
+a.navlink:active {
+   background: #ffc;
+   color: #900;
+   text-decoration: none;
+}
+
+/* ******************  testimonials  ************** */
+
+div.hpmt, div.hpmt-name, p.hpmt-testimonial, div.hpmt-logo {
+   background: #fff;
+   color: #000;
+}
+
+div.hpmt a:link {
+   background: #fff;
+   color: #037;
+}
+
+div.hpmt a:visited {
+   background: #fff;
+   color: #636;
+}
+
+div.hpmt a:active {
+   background: #ffc;
+   color: #900;
+   text-decoration: none;
+}
+
+div.hpmt {
+   text-indent: 0;
+   padding: 0.3em 0 0 0;
+   margin: -6px 4px 0.5em 4px; 
+   border: 1px solid #885;
+}
+
+div.hpmt-name {
+   font-weight: bold;
+}
+
+div.hpmt-name, div.hpmt-logo {
+   padding: 0.1em 0.5em 0.1em 0.75em;
+   text-indent: 0;
+}
+
+p.hpmt-testimonial {
+   text-indent: 0;
+   margin: 0 0.3em 1em 0.75em;
+   padding: 0;
+}
+
+p.hpmt-testimonial, .hpmt-more {
+   font-family: Times New Roman, Times, serif;
+   font-size: x-small;
+   voice-family: "\"}\"";
+   voice-family: inherit;
+   font-size: small;
+}
+
+/* ******************  highlight  ************** */
+
+h2.spot-head {
+   background: #4d8cba;
+   color: #fff;
+   border: none;
+   width: 100%;
+   font-weight: bold;
+   font-size: medium;
+   text-indent: 0.5em;
+   margin-top: 0;
+   padding: 0.1em 0;
+}
+
+h2.spot-subhead {
+   clear: both;
+   margin: 0 6px;
+   padding: 0.2em 0 0 0.2em;
+   font-variant: small-caps;
+   font-size: x-small;
+   voice-family: "\"}\"";
+   voice-family: inherit;
+   font-size: small;
+   font-weight: bold;
+   border-bottom: 1px solid #778;
+}
+
+h2.spot-subhead, div.spot, p.spot-block, p.spot-more,
+div.spot-image, ul.spot-block, ul.spot-block li {
+   background: #fff;
+   color: #000;
+}
+
+div.spot-image img {
+   float: left;
+   border-left: 3px solid #fff;
+   border-right: 6px solid #fff;
+}
+
+div.spot a:link {
+   background: #fff;
+   color: #037;
+}
+
+div.spot a:visited {
+   background: #fff;
+   color: #636;
+}
+
+div.spot a:active {
+   background: #ffc;
+   color: #900;
+   text-decoration: none;
+}
+
+div.spot {
+   padding: 0.2em 0.2em 0.4em 0.75em;
+   margin: -6px 4px 0.5em 4px; 
+   border: 1px solid #885;
+}
+
+p.spot-block {
+   padding: 0;
+   margin: 0;
+}
+
+.spot-block + .spot-block,
+.spot-block + h2.spot-subhead {
+   margin-top: 0.5em;
+}
+
+ul.spot-block {
+   margin-bottom: 0;
+}
+
+div.spot, p.spot-block, ul.spot-block, ul.spot-block li, .spot-more {
+   text-indent: 0;
+   font-family: Times New Roman, Times, serif;
+   font-size: x-small;
+   voice-family: "\"}\"";
+   voice-family: inherit;
+   font-size: small;
+}
+
+/* ******************  print  ************** */
+
+@media print {
+   h1, h2, h3,
+   h4, h5, h6    { page-break-after: avoid; page-break-inside: avoid }
+   blockquote,
+   pre           { page-break-inside: avoid }
+   ul, ol, dl    { page-break-before: avoid }
+   .navbar       { background-color: #fff; color: #000; border-color: #000; 
+border-width: 1px; }
+   a.navlink, a.bannerLink     { font-weight: normal }
+}
+
+/* ******************  speech  ************** */
+
+@media aural {
+   h1, h2, h3,
+   h4, h5, h6    { voice-family: paul, male; stress: 20; richness: 90 }
+   h1            { pitch: x-low; pitch-range: 90 }
+   h2            { pitch: x-low; pitch-range: 80 }
+   h3            { pitch: low; pitch-range: 70 }
+   h4            { pitch: medium; pitch-range: 60 }
+   h5            { pitch: medium; pitch-range: 50 }
+   h6            { pitch: medium; pitch-range: 40 }
+   li, dt, dd    { pitch: medium; richness: 60 }
+   dt            { stress: 80 }
+   pre, code, tt { pitch: medium; pitch-range: 0; stress: 0; richness: 80 }
+   em            { pitch: medium; pitch-range: 60; stress: 60; richness: 50 }
+   strong        { pitch: medium; pitch-range: 60; stress: 90; richness: 90 }
+   dfn           { pitch: high; pitch-range: 60; stress: 60 }
+   s, strike     { richness: 0 }
+   i             { pitch: medium; pitch-range: 60; stress: 60; richness: 50 }
+   b             { pitch: medium; pitch-range: 60; stress: 90; richness: 90 }
+   u             { richness: 0 }
+   a:link        { voice-family: harry, male }
+   a:visited     { voice-family: betty, female }
+   a:active      { voice-family: betty, female; pitch-range: 80; pitch: x-high }
+}
+
+
+/* Copyright 1997-2005 W3C (MIT, ERCIM, Keio). All Rights Reserved.
+   The following software licensing rules apply:
+   http://www.w3.org/Consortium/Legal/copyright-software */
+
+/* $Id: home.css,v 2.22 2005/05/16 15:59:14 slesch Exp $ */
+
+/* ******************  body  *************** */
+
+html, body {
+   background: #fff;
+   color: #000;
+}
+
+html, body, h2, h3, h4, div, p, ul, li, input {
+   font-family: Arial, Helvetica, sans-serif;
+}
+
+#logo, #slogan {
+   text-align: center;
+   margin: 0;
+   padding: 0;
+   margin-bottom: 0.3em;
+}
+
+#slogan {
+   background: #fff;
+   color: #4d8cba;
+   font-family: Times, "Times New Roman", serif;
+   font-style: italic;
+   font-weight: bold;
+   margin-top: -6px;
+}
+
+.date {
+   padding-right: 0.3em;
+}
+
+.small, .archive, .copyright {
+   font-size: small;
+}
+
+.invisible, .invisible a {
+   display: none;
+   background: #fff;
+   color: #fff;
+}
+
+.copyright {
+   margin-top: 0;
+   margin-bottom: 0;
+}
+
+.hide {
+   visibility: hidden;
+   background: #fff;
+   color: #fff;
+   clear: both;
+   margin: 0;
+}
+
+.whiteout {
+   background: #fff;
+   color: #fff;
+}
+
+a:link {
+   background: #fff;
+   color: #037;
+}
+
+a:visited {
+   background: #fff;
+   color: #636;
+}
+
+a:active {
+   background: #ffc;
+   color: #900;
+   text-decoration: none;
+}
+
+a img { color: #fff; }         /* hide the border in Netscape 4 */
+@media all {                   /* hide from Netscape 4 */
+   a img { color: inherit;     /* undo the rule above */
+   border: none;               /* hide from Netscape 4 */
+   }
+}
+
+div.spot-image img {
+      margin-bottom: 20px;
+   }
