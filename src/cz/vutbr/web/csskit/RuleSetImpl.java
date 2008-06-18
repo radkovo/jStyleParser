@@ -11,6 +11,7 @@ import java.util.ArrayList;
 /**
  * RuleSet
  * @author Jan Svercl, VUT Brno, 2008
+ * TODO subject of next revision
  */
 public class RuleSetImpl implements RuleSet {
 
@@ -25,7 +26,7 @@ public class RuleSetImpl implements RuleSet {
         return declarationsList;
     }
     
-    protected RuleSetImpl(SimpleNode n) {
+    public RuleSetImpl(SimpleNode n) {
         for(int i = 0; i < n.jjtGetNumChildren(); i++) {
             SimpleNode cNode = (SimpleNode)n.jjtGetChild(i);
             

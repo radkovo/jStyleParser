@@ -24,7 +24,7 @@ public interface CssParserConstants {
   int url = 18;
   int ss = 19;
   int w = 20;
-  int nl = 21;
+  int NL = 21;
   int A = 22;
   int C = 23;
   int D = 24;
@@ -106,7 +106,7 @@ public interface CssParserConstants {
     "<url>",
     "<ss>",
     "<w>",
-    "<nl>",
+    "<NL>",
     "<A>",
     "<C>",
     "<D>",

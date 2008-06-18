@@ -28,7 +28,7 @@ public class RulePageImpl implements RulePage {
         return declarationsList;
     }
     
-    protected RulePageImpl(SimpleNode n) {
+    public RulePageImpl(SimpleNode n) {
         for(int i = 0; i < n.jjtGetNumChildren(); i++) {
             SimpleNode cNode = (SimpleNode)n.jjtGetChild(i);
             

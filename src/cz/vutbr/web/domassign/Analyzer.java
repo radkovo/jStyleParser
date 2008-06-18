@@ -34,7 +34,7 @@ public class Analyzer {
         //Pravidla získávají při vkládání do kolekce pořadové číslo, aby bylo možné zachovat jejich výchozí pořadí i při 
         //rozdělení do map
         int orderNum = 0;
-        for(Rule rule : styleSheet.getRulesList()) {
+        for(Rule rule : styleSheet.getRules()) {
             if(rule instanceof RuleSet) {
                 rules.add(new OrderedRule((RuleSet)rule, orderNum++));
             }

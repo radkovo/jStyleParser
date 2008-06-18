@@ -12,20 +12,77 @@ PARSER_BEGIN(CssParser)
 
 package cz.vutbr.web.csskit.parser;
 
+import org.apache.log4j.Logger;
+
+import java.io.StringReader;
+import java.util.List;
+import java.util.ArrayList;
+
+import cz.vutbr.web.css.Rule;
+import cz.vutbr.web.css.ImportURI;
+import cz.vutbr.web.css.StyleSheet;
+import cz.vutbr.web.csskit.StyleSheetImpl;
+import cz.vutbr.web.csskit.RuleSetImpl;
+import cz.vutbr.web.csskit.RuleMediaImpl;
+import cz.vutbr.web.csskit.RulePageImpl;
+import cz.vutbr.web.csskit.ImportURIImpl;
+
+/**
+ * Parser of CSS passed as InputStream, Reader or directly as String.
+ * Successful parsing creates StyleSheet  	
+ */
 @SuppressWarnings("all")
 public class CssParser {
+	
+	private static Logger log = Logger.getLogger(CssParser.class);
+
+
+	/** Charset of given css */
+	private String charset;
+	
+	/** Rules gathered from input */
+	private List<Rule> rules = new ArrayList<Rule>();
+	
+	/** Files to be imported into stylesheet */
+	private List<ImportURI> imports = new ArrayList<ImportURI>();
+
+	/** 
+	 * Creates CssParser.
+	 * Uses string as input
+	 * @param css Input string to be parsed
+	 */ 
+	public CssParser(String css) {
+		this(new StringReader(css));
+	}
+	
+	/**
+	 * Error recovery.
+	 * Skip to given token in case of error
+	 */
+	private void errorSkipTo(int kind) {
+	
+		if(log.isDebugEnabled()) {
+			ParseException e = generateParseException();	
+			log.debug(e);
+		}
+	
+		Token t;
+		do {
+			t = getNextToken();
+		}while(t.kind!=kind && t.kind!=EOF);
+		
+	}
 
 }
-
 PARSER_END(CssParser)
 
-/* Skip comments */
+// Skip comments
 SKIP :
 {
   <SLASH_STAR_COMMENT: "/*" (~["*"])* ("*")+ (~["/","*"] (~["*"])* ("*")+)* "/" >
 }
 
-/* Tokens of exical analyzer */
+// Tokens of lexical analyzer 
 TOKEN : 
 {
   <#h : ["0"-"9", "a"-"f"]> |
@@ -34,10 +91,10 @@ TOKEN :
   <#escape : <unicode> | "\\" ~["\r", "\n", "\f", "0"-"9", "a"-"f"]> |
   <#nmstart : ["_", "a"-"z"] | <nonascii> | <escape>> |
   <#nmchar : ["_", "a"-"z", "0"-"9", "-"] | <nonascii> | <escape>> |
-  <#string1 : "\"" (~["\n", "\r", "\f", "\""] | "\\" <nl> | <escape>)* "\""> |
-  <#string2 : "'" (~["\n", "\r", "\f", "'"] | "\\" <nl> | <escape>)* "'"> |
-  <#invalid1 : "\""(~["\n", "\r", "\f", "\""] | "\\" <nl> | <escape>)* > |
-  <#invalid2	: "'"(~["\n", "\r", "\f", "'"] | "\\" <nl> | <escape>)* > |
+  <#string1 : "\"" (~["\n", "\r", "\f", "\""] | "\\" <NL> | <escape>)* "\""> |
+  <#string2 : "'" (~["\n", "\r", "\f", "'"] | "\\" <NL> | <escape>)* "'"> |
+  <#invalid1 : "\""(~["\n", "\r", "\f", "\""] | "\\" <NL> | <escape>)* > |
+  <#invalid2	: "'"(~["\n", "\r", "\f", "'"] | "\\" <NL> | <escape>)* > |
 
   <#comment : "/*" (~["*"])* ("*")+ (~["/","*"] (~["*"])* ("*")+)* "/" > |
   <#ident : ("-")? <nmstart> (<nmchar>)* > |
@@ -49,7 +106,7 @@ TOKEN :
   <#ss : ([" ", "\t", "\r", "\n", "\f"])+ > |
   <#w : (<ss>)? > |
 
-  <#nl : "\n" | "\r\n" | "\r" | "\f"> |
+  <#NL : "\n" | "\r\n" | "\r" | "\f"> |
 
   <#A : "a" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("41" | "61")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? > |
   <#C : "c" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("43" | "63")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? > |
@@ -91,7 +148,7 @@ TOKEN :
   <IMPORT_SYM : "@" <I> <M> <P> <O> <R> <T> > |
   <PAGE_SYM : "@" <P> <A> <G> <E> > |
   <MEDIA_SYM : "@" <M> <E> <D> <I> <A> > |
-  <CHARSET_SYM : "@" <C> <H> <A> <R> <S> <E> <T> > |
+  <CHARSET_SYM : "@" <C> <H> <A> <R> <S> <E> <T> " "> |
 
   <IMPORTANT_SYM : "!" (<w>|<comment>)* <I> <M> <P> <O> <R> <T> <A> <N> <T> > |
 
@@ -120,12 +177,22 @@ TOKEN :
 }
 
 
-/* Overwriting rules  */
-SimpleNode start() :
-{}
+/**
+ * Parses input and returns gathered information as StyleSheet.
+ * @return StyleSheet which contains rules gathered.
+ * @see StyleSheet
+ */
+StyleSheet start() :
+{StyleSheet stylesheet = new StyleSheetImpl();}
 {
   stylesheet() <EOF>
-  { return (SimpleNode) jjtree.rootNode().jjtGetChild(0); }
+  { 
+  stylesheet.setCharset(charset);
+  stylesheet.setImports(imports);
+  stylesheet.setRules(rules);
+  
+  return stylesheet; 
+  }
 }
 
 void stylesheet() :
@@ -143,12 +210,16 @@ void import_a() :
 { 
   <IMPORT_SYM> (<BLANK>)*
   [string() | uri()] (<BLANK>)* ( medium() (<COMMA> (<BLANK>)* medium())* )? ";" (<BLANK>)*
+  
+  { imports.add(new ImportURIImpl(jjtThis)); }
 }
 
 void media() :
 {}
 {
   <MEDIA_SYM> (<BLANK>)* medium() ( <COMMA> (<BLANK>)* medium() )* <LBRACE> (<BLANK>)* (ruleset())* "}" (<BLANK>)*
+  
+  { rules.add(new RuleMediaImpl(jjtThis)); }
 }
 
 void medium() :
@@ -162,6 +233,8 @@ void page() :
 {
   <PAGE_SYM> (<BLANK>)* (pseudo_page())? (<BLANK>)*
     <LBRACE> (<BLANK>)* declaration() ( ";" (<BLANK>)* declaration() )* "}" (<BLANK>)*
+    
+  { rules.add(new RulePageImpl(jjtThis)); }
 }
 
 void pseudo_page() :
@@ -194,11 +267,17 @@ void property() :
   ident() (<BLANK>)*
 }
 
+/**
+ * Inserts rule into stylesheet
+ * TODO change to be more error-prone
+ */
 void ruleset() :
 {}
 {
   selector() ( <COMMA> (<BLANK>)* selector() )*
   <LBRACE> (<BLANK>)* declaration() ( ";" (<BLANK>)* declaration() )* "}" (<BLANK>)*
+  
+  { rules.add(new RuleSetImpl(jjtThis));}
 }
 
 void selector() :
@@ -285,10 +364,25 @@ void hexcolor() :
   hash() (<BLANK>)*
 }
 
+/**
+ * Internally sets charset of document
+ */
 void charset() :
-{}
+{String currentCharset = null;}
 {
-  <CHARSET_SYM> string() ";"
+	try {
+  		<CHARSET_SYM> currentCharset = string() ";"
+  	}
+  	catch (ParseException e) {
+  		currentCharset = null;
+  		errorSkipTo(NL);
+  	}
+  	// do not overwrite charset if already set and 
+  	// current rule failed to retrieve value
+  	finally {
+  		if(currentCharset!=null)
+  			charset = currentCharset; 
+  	}
 }
 
 void equal() :      
@@ -324,7 +418,7 @@ void slash() :
 /* Tokens with specified tokens */
 void hash() :       { Token t; } { t=<HASH>        { jjtThis.setImage(t.image); } }
 void ident() :      { Token t; } { t=<IDENT>       { jjtThis.setImage(t.image); } }
-void string() :     { Token t; } { t=<STRING>      { jjtThis.setImage(t.image); } }
+String string() :   { Token t; } { t=<STRING>      { jjtThis.setImage(t.image); return t.image;} }
 void uri() :        { Token t; } { t=<URI>         { jjtThis.setImage(t.image); } }
 void number() :     { Token t; } { t=<NUMBER>      { jjtThis.setImage(t.image); } }
 void percentage() : { Token t; } { t=<PERCENTAGE>  { jjtThis.setImage(t.image); } }

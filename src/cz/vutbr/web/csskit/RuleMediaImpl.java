@@ -25,7 +25,7 @@ public class RuleMediaImpl implements RuleMedia {
         return rulesList;
     }
     
-    protected RuleMediaImpl(SimpleNode n) {
+    public RuleMediaImpl(SimpleNode n) {
         for(int ii = 0; ii < n.jjtGetNumChildren(); ii++) {
             SimpleNode cNode = (SimpleNode)n.jjtGetChild(ii);
             if(cNode.getType().equals("medium")) {

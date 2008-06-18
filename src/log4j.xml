@@ -11,7 +11,7 @@
         <param name="MaxBackupIndex" value="3"/>
         <param name="Encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d [%t] - %m %n"/>
+            <param name="ConversionPattern" value="%d{HH:mm:ss,SSS} [%t] %c - %m %n"/>
         </layout>
     </appender>   
 
@@ -24,6 +24,12 @@
         <level value="debug" />
         <appender-ref ref="cssbox" />
     </logger>
+    
+    <logger name="cz.vutbr.web.csskit.parser" additivity="false">
+        <level value="debug" />
+        <appender-ref ref="cssbox" />
+    </logger>    
+    
 
     <root>
         <priority value="warn"/>

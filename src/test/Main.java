@@ -2,8 +2,7 @@ package test;
 
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StylesheetNotValidException;
-import cz.vutbr.web.csskit.Engine;
-import cz.vutbr.web.csskit.StyleSheetImpl;
+import cz.vutbr.web.csskit.parser.CssParser;
 import cz.vutbr.web.csskit.parser.ParseException;
 import cz.vutbr.web.domassign.Controller;
 import cz.vutbr.web.domassign.NodeData;
@@ -60,7 +59,8 @@ public class Main {
             if(s.equalsIgnoreCase("validate")) {
                 if(args.length-1 == index && !stylesheetKeyWord && !htmlKeyWord && !outKeyWord && stylesheet != null && html == null && out == null) {
                     try {
-                        StyleSheet ss = Engine.parse(new File(stylesheet));
+                        CssParser parser = new CssParser(new FileInputStream(stylesheet));
+                        parser.start();
                         System.out.println("Syntax OK.");
                         return;
                     }
@@ -97,7 +97,7 @@ public class Main {
                     HashMap<Element, NodeData> nodeData = null;
                     
                     try {
-                        ss = Engine.parse(new File(stylesheet));
+                        ss = (new CssParser(new FileInputStream(stylesheet))).start();
                     }
                     catch (FileNotFoundException e) {
                         System.out.println("Input file with CSS stylesheet not found!");

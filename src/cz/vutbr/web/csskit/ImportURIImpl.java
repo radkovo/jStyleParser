@@ -32,7 +32,7 @@ public class ImportURIImpl implements ImportURI {
         return mediaList;
     }
     
-    protected ImportURIImpl(SimpleNode n) {
+    public ImportURIImpl(SimpleNode n) {
         SimpleNode cNodeURI = (SimpleNode)n.jjtGetChild(0);
         if(cNodeURI.getType().equals("uri")) {
             String uriStr = cNodeURI.getImage();
