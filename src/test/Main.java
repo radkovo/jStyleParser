@@ -1,12 +1,13 @@
 package test;
 
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.cssKit.Engine;
 import cz.vutbr.web.css.StylesheetNotValidException;
-import cz.vutbr.web.cssKit.StyleSheetImpl;
-import cz.vutbr.web.cssKit.parser.ParseException;
-import cz.vutbr.web.domAssign.Controller;
-import cz.vutbr.web.domAssign.NodeData;
+import cz.vutbr.web.csskit.Engine;
+import cz.vutbr.web.csskit.StyleSheetImpl;
+import cz.vutbr.web.csskit.parser.ParseException;
+import cz.vutbr.web.domassign.Controller;
+import cz.vutbr.web.domassign.NodeData;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.tidy.Tidy;
+
 
 public class Main {
     

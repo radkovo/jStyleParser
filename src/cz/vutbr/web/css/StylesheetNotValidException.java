@@ -4,6 +4,7 @@ package cz.vutbr.web.css;
  * StyleSheetNotValidException
  * @author Jan Svercl, VUT Brno, 2008
  */
+@SuppressWarnings("serial")
 public class StylesheetNotValidException extends Exception {
     
     private String path;
