@@ -5,12 +5,16 @@ package cz.vutbr.web.css;
  * @author Jan Svercl, VUT Brno, 2008
  */
 @SuppressWarnings("serial")
-public class StylesheetNotValidException extends Exception {
+public final class StyleSheetNotValidException extends Exception {
     
     private String path;
-    String message;
+    private String message;
 
-    public StylesheetNotValidException(String message, String path) {
+    public StyleSheetNotValidException(String message) {
+    	this.message = message;
+    }
+    
+    public StyleSheetNotValidException(String message, String path) {
         this.path = path;
         this.message = message;
     }

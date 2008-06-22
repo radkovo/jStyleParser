@@ -1,20 +1,32 @@
 package test;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import cz.vutbr.web.css.StyleSheet;
+import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.csskit.parser.CssParser;
-import cz.vutbr.web.csskit.parser.ParseException;
-
-import static org.junit.Assert.*;
 
 public class GrammarTest1 {
 
 	private static final Logger log = Logger.getLogger(GrammarTest1.class);
 	
 	public static final String TEST_STRING1 = 
-		"BODY { color: blue;}";
+		"BODY { display: block;}";
+	
+	public static final String TEST_SELECTOR1 =
+		"H1, DIV { display: block;}";
+	
+	public static final String TEST_SELECTOR2 =
+		"H1 P { display: inline;}";
+	
+	public static final String TEST_SELECTOR3 =
+		"DIV+P { color: blue;}"; 
+	
+	public static final String TEST_SELECTOR4 = 
+		"DIV>P, SPAN, A, FORM+DIV { color: white;}";
 	
 	public static final String TEST_CHARSET_STRING1 = 
 		"@charset \"UTF-8\";";
@@ -52,32 +64,58 @@ public class GrammarTest1 {
 		"\n";
 	
 	@Test
-	public void testCharsets() throws ParseException {
+	public void testCharsets() throws StyleSheetNotValidException {
 		
 		StyleSheet ss;
 		
-		ss = (new CssParser(TEST_CHARSET_STRING1)).start();
+		ss = (new CssParser(TEST_CHARSET_STRING1)).parse();
 		assertEquals("This should be UTF-8", "UTF-8", ss.getCharset());
 
-		log.debug(ss);
+		//log.debug(ss);
 		
-		ss = (new CssParser(TEST_CHARSET_STRING2)).start();
+		ss = (new CssParser(TEST_CHARSET_STRING2)).parse();
 		assertEquals("This should be ISO-8859-1", "ISO-8859-1", ss.getCharset());
 		
-		log.debug(ss);
+		//log.debug(ss);
 	}
 	
 	
 	@Test 
-	public void testString1() throws ParseException {
+	public void testString1() throws StyleSheetNotValidException {
 		
-		StyleSheet ss;
+		StyleSheet ss = (new CssParser(TEST_STRING1)).parse();
+     	//log.debug(ss);
 		
-		ss = (new CssParser(TEST_STRING1)).start();
-     	log.debug(ss);
-		
-     	
-		
-	}	
+	}
+	
+	@Test
+	public void testSelector1() throws StyleSheetNotValidException {
+		StyleSheet ss = (new CssParser(TEST_SELECTOR1)).parse();
+		//log.debug(ss);
+	}
+	
+	@Test
+	public void testSelector2() throws StyleSheetNotValidException {
+		StyleSheet ss = (new CssParser(TEST_SELECTOR2)).parse();
+		//log.debug(ss);
+	}
+	
+	@Test
+	public void testSelector3() throws StyleSheetNotValidException {
+		StyleSheet ss = (new CssParser(TEST_SELECTOR3)).parse();
+		//log.debug(ss);
+	}
+	
+	@Test
+	public void testSelector4() throws StyleSheetNotValidException {
+		StyleSheet ss = (new CssParser(TEST_SELECTOR4)).parse();
+		log.debug(ss);
+	}
+	
+	//@Test
+	public void testString2() throws StyleSheetNotValidException {
+		StyleSheet ss = (new CssParser(TEST_STRING2)).parse();
+		//log.debug(ss);
+	}
 	
 }

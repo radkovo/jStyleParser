@@ -1,11 +1,11 @@
 package cz.vutbr.web.csskit;
 
+import java.util.Collections;
+import java.util.List;
+
 import cz.vutbr.web.css.SSItem;
 import cz.vutbr.web.css.SSType;
 import cz.vutbr.web.css.SimpleSelector;
-import cz.vutbr.web.csskit.parser.SimpleNode;
-
-import java.util.ArrayList;
 
 /**
  * SimpleSelector
@@ -13,32 +13,23 @@ import java.util.ArrayList;
  */
 public class SimpleSelectorImpl implements SimpleSelector {
 
-    private SSType firstItem = null;
-    private ArrayList<SSItem> itemsList = new ArrayList<SSItem>();
-    private EnumCombinator combinator = null;
+	protected SSType firstItem;
+	protected List<SSItem> items;
+	
+    protected Combinator combinator;
 
-    public SSType getFirstItem() {
-        return firstItem;
-    }
-
-    public void setFirstItem(SSType firstItem) {
-        this.firstItem = firstItem;
-    }
-
-    public ArrayList<SSItem> getItemsList() {
-        return itemsList;
+    
+    public SimpleSelectorImpl() {
+    	this.firstItem = null;
+    	this.combinator = null;
+    	this.items = Collections.emptyList();
     }
     
-    public EnumCombinator getCombinator() {
-        return combinator;
-    }
     
-    public void setCombinator(EnumCombinator combinator) {
-        this.combinator = combinator;
-    }
     
+    /*
     protected SimpleSelectorImpl(SimpleNode n, SimpleNode cmb) {
-        /* combinator is optional, it's present only in 2nd and next SimpleSelectors */
+        // combinator is optional, it's present only in 2nd and next SimpleSelectors 
         if(cmb != null) {
             if(cmb.jjtGetNumChildren() == 0) {
                 combinator = EnumCombinator.space;
@@ -73,26 +64,72 @@ public class SimpleSelectorImpl implements SimpleSelector {
             }
         }
     }
-    
-    @Override
+	*/
+
+    /**
+	 * @return the firstItem
+	 */
+	public SSType getFirstItem() {
+		return firstItem;
+	}
+
+
+
+	/**
+	 * @param firstItem the firstItem to set
+	 */
+	public void setFirstItem(SSType firstItem) {
+		this.firstItem = firstItem;
+	}
+
+
+
+	/**
+	 * @return the items
+	 */
+	public List<SSItem> getItems() {
+		return items;
+	}
+
+
+
+	/**
+	 * @param items the items to set
+	 */
+	public void setItems(List<SSItem> items) {
+		this.items = items;
+	}
+
+
+
+	/**
+	 * @return the combinator
+	 */
+	public Combinator getCombinator() {
+		return combinator;
+	}
+
+
+
+	/**
+	 * @param combinator the combinator to set
+	 */
+	public void setCombinator(Combinator combinator) {
+		this.combinator = combinator;
+	}
+
+
+
+	@Override
     public String toString() {
-        String out = "";
-        if(combinator == EnumCombinator.space) {
-            out += " ";
-        }
-        else if(combinator == EnumCombinator.plus) {
-            out += "+";
-        }
-        else if(combinator == EnumCombinator.greater) {
-            out += ">";
-        }
-        if(firstItem != null) {
-            out += firstItem.toString();
-        }
-        for(SSItem item : itemsList) {
-            out += item.toString();
-        }
-        return out;
+    	
+    	StringBuilder sb = new StringBuilder();
+    	
+    	if(combinator!=null) sb.append(combinator.value());
+    	if(firstItem!=null) sb.append(firstItem);
+    	sb = OutputUtil.appendList(sb, items, OutputUtil.EMPTY_DELIM);
+    	
+    	return sb.toString();
     }
     
     /**
@@ -100,7 +137,7 @@ public class SimpleSelectorImpl implements SimpleSelector {
      */
     public String getClassName() {
         String className = null;
-        for(SSItem ss : itemsList) {
+        for(SSItem ss : items) {
             if(ss instanceof SSItemClassImpl) {
                 className = ((SSItemClassImpl)ss).getValue();
             }
@@ -113,10 +150,9 @@ public class SimpleSelectorImpl implements SimpleSelector {
      */
     public String getIDName() {
         String idName = null;
-        for(SSItem ss : itemsList) {
-            if(ss instanceof SSItemIDImpl) {
+        for(SSItem ss : items) {
+            if(ss instanceof SSItemIDImpl)
                 idName = ((SSItemIDImpl)ss).getValue();
-            }
         }
         return idName;
     }
@@ -125,11 +161,9 @@ public class SimpleSelectorImpl implements SimpleSelector {
      * Returns name of element in SimpleSelector. If no element name defined, NULL returned.
      */
     public String getElementName() {
-        if(firstItem == null) {
+        if(firstItem == null) 
             return null;
-        }
-        else {
+        else 
             return firstItem.getValue();
-        }
     }
 }

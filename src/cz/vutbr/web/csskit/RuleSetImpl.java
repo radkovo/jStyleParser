@@ -1,31 +1,34 @@
 package cz.vutbr.web.csskit;
 
+import java.util.Collections;
+import java.util.List;
+
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.StylesheetNotValidException;
-import cz.vutbr.web.csskit.parser.SimpleNode;
-
-import java.util.ArrayList;
+import cz.vutbr.web.css.StyleSheetNotValidException;
 
 /**
  * RuleSet
  * @author Jan Svercl, VUT Brno, 2008
- * TODO subject of next revision
+ * 			modified by Karel Piwko, 2008
+ * @version 1.0 * Changed according to changed interface
+ * 				 * Rewritten toString() method	
+ * 				 * Construction moved to parser
  */
 public class RuleSetImpl implements RuleSet {
 
-    private ArrayList<Selector> selectorsList = new ArrayList<Selector>();
-    private ArrayList<Declaration> declarationsList = new ArrayList<Declaration>();
-
-    public ArrayList<Selector> getSelectorsList() {
-        return selectorsList;
-    }
-
-    public ArrayList<Declaration> getDeclarationsList() {
-        return declarationsList;
-    }
-    
+	protected List<Selector> selectors;
+	protected List<Declaration> declarations;
+	
+	public RuleSetImpl() {
+		this.selectors = Collections.emptyList();
+		this.selectors = Collections.emptyList();
+	}
+	
+	
+	
+	/*
     public RuleSetImpl(SimpleNode n) {
         for(int i = 0; i < n.jjtGetNumChildren(); i++) {
             SimpleNode cNode = (SimpleNode)n.jjtGetChild(i);
@@ -39,46 +42,78 @@ public class RuleSetImpl implements RuleSet {
             }
         }
     }
+    */
     
-    public String toString(int depth) {
-        String out = "";
-        for(int i = 0; i < depth; i++) {
-            out += "\t";
-        }
-        
-        boolean first = true;
-        for(Selector selector : selectorsList) {
-            if(!first) {
-                out += ", ";
-            }
-            else {
-                first = false;
-            }
-            out += selector.toString();
-        }
-        out += " {\n";
-        
-        for(Declaration declaration : declarationsList) {
-            out += declaration.toString(depth + 1);
-        }
-        
-        for(int i = 0; i < depth; i++) {
-            out += "\t";
-        }
-        out += "}\n";
-        return out;
+    /**
+	 * @return the selectors
+	 */
+	public List<Selector> getSelectors() {
+		return selectors;
+	}
+
+
+
+	/**
+	 * @param selectors the selectors to set
+	 */
+	public void setSelectors(List<Selector> selectors) {
+		this.selectors = selectors;
+	}
+
+
+
+	/**
+	 * @return the declarations
+	 */
+	public List<Declaration> getDeclarations() {
+		return declarations;
+	}
+
+
+
+	/**
+	 * @param declarations the declarations to set
+	 */
+	public void setDeclarations(List<Declaration> declarations) {
+		this.declarations = declarations;
+	}
+
+
+
+	@Override
+    public String toString() {
+    	return this.toString(0);
     }
     
-    public void check(String path) throws StylesheetNotValidException {
-        if(selectorsList.isEmpty()) {
-            throw new StylesheetNotValidException("Selector is missing in rule", path);
+    
+    public String toString(int depth) {
+    	
+    	StringBuilder sb = new StringBuilder();
+    	
+    	// append selectors
+    	sb = OutputUtil.appendTimes(sb, OutputUtil.DEPTH_DELIM, depth);
+    	sb = OutputUtil.appendList(sb, selectors, OutputUtil.SELECTOR_DELIM);
+
+    	// append rules (declarations)
+    	sb.append(OutputUtil.RULE_OPENING);
+    	sb = OutputUtil.appendList(sb, declarations, OutputUtil.EMPTY_DELIM, depth + 1); 
+    	sb = OutputUtil.appendTimes(sb, OutputUtil.DEPTH_DELIM, depth);
+        sb.append(OutputUtil.RULE_CLOSING);
+        
+        return sb.toString();
+    }
+    
+    public void check(String path) throws StyleSheetNotValidException {
+        
+    	if(selectors.isEmpty()) {
+            throw new StyleSheetNotValidException("Selector is missing in rule", path);
         }
-        for(Selector selector : selectorsList) {
+        for(Selector selector : selectors) {
             selector.check(path);
         }
         String pathNew = path + " -> rule(";
         boolean first = true;
-        for(Selector selector : selectorsList) {
+        for(Selector selector : selectors) {
             if(!first) {
                 pathNew += ", ";
             }
@@ -88,7 +123,7 @@ public class RuleSetImpl implements RuleSet {
             pathNew += selector.toString();
         }
         pathNew += ")";
-        for(Declaration declaration : declarationsList) {
+        for(Declaration declaration : declarations) {
             declaration.check(pathNew);
         }
     }

@@ -5,10 +5,14 @@ import java.util.List;
 /**
  * Selector
  * @author Jan Svercl, VUT Brno, 2008
+ * 			modified by Karel Piwko, 2008
+ * @version 1.0 * Extends Rule interface
+ * 				 * Added setters
  */
-public interface Selector {
+public interface Selector extends Rule {
   
-    public List<SimpleSelector> getSimpleSelectorsList();
+    public List<SimpleSelector> getSimpleSelectors();
     
-    public void check(String path) throws StylesheetNotValidException;
+    public void setSimpleSelectors(List<SimpleSelector> selectors);
+    
 }

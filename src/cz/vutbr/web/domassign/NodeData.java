@@ -364,9 +364,9 @@ public class NodeData implements Cloneable {
     private Boolean processBackgroundAttachment(Declaration d) {
         //Zpracování vlastnosti background-attachment. Přípustné hodnoty jsou pouze 
         //scroll, fixed a inherit. Výchozí hodnota je scroll
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("scroll")) {
                     backgroundAttachmentType = EnumBackgroundAttachment.scroll;
                     return new Boolean(true);
@@ -387,16 +387,16 @@ public class NodeData implements Cloneable {
     private Boolean processBackgroundColor(Declaration d) {
         //Zpracování vlastnosti background-color. Přípustné hodnoty jsou pouze 
         //<barva>, transparent a inherit. Výchozí hodnota je transparent
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermColor) {
-                TermColor color = (TermColor)d.getTermsList().get(0);
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermColor) {
+                TermColor color = (TermColor)d.getTerms().get(0);
                 backgroundColorValue = color;
                 backgroundColorType = EnumColorTransparent.color;
                 return new Boolean(true);
                 
             }
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("transparent")) {
                     backgroundColorType = EnumColorTransparent.transparent;
                     backgroundColorValue = null;
@@ -415,16 +415,16 @@ public class NodeData implements Cloneable {
     private Boolean processBackgroundImage(Declaration d) {
         //Zpracování vlastnosti background-image. Přípustné hodnoty jsou pouze 
         //<uri>, none a inherit. Výchozí hodnota je none
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermUri) {
-                TermUri uri = (TermUri)d.getTermsList().get(0);
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermUri) {
+                TermUri uri = (TermUri)d.getTerms().get(0);
                 backgroundImageValue = uri;
                 backgroundImageType = EnumBackgroundImage.uri;
                 return new Boolean(true);
                 
             }
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("none")) {
                     backgroundImageType = EnumBackgroundImage.none;
                     return new Boolean(true);
@@ -441,9 +441,9 @@ public class NodeData implements Cloneable {
     private Boolean processBackgroundRepeat(Declaration d) {
         //Zpracování vlastnosti background-repeat. Přípustné hodnoty jsou pouze 
         //repeat, repeat-x, repeat-y a inherit. Výchozí hodnota je repeat
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("repeat")) {
                     backgroundRepeatType = EnumBackgroundRepeat.repeat;
                     return new Boolean(true);
@@ -473,12 +473,12 @@ public class NodeData implements Cloneable {
         //Zpracování vlastnosti background-position.
         Term t1 = null;
         Term t2 = null;
-        if(d.getTermsList().size() == 1) {
+        if(d.getTerms().size() == 1) {
             //Pokud je v deklaraci pouze jeden term, znamená to, že buď je tento term inherit,
             //nebo je třeba druhou hodnotu doplnit jako identifikátor center
             //Popis dle W3C: If only one value is specified, the second value is assumed to be 'center'.
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("inherit")) {
                     backgroundPositionType = EnumBackgroundPosition.inherit;
                     backgroundPositionHorNumberValue = null;
@@ -490,16 +490,16 @@ public class NodeData implements Cloneable {
                     return new Boolean(true);
                 }
             }
-            t1 = d.getTermsList().get(0);
+            t1 = d.getTerms().get(0);
             t2 = new DataTermIdent("center");
         }
-        if(d.getTermsList().size() == 2) {
-            t1 = d.getTermsList().get(0);
-            t2 = d.getTermsList().get(1);
+        if(d.getTerms().size() == 2) {
+            t1 = d.getTerms().get(0);
+            t2 = d.getTerms().get(1);
         }
         
         //V tomto bodě jsou definovány termy t1 a t2
-        if(d.getTermsList().size() <= 2) {
+        if(d.getTerms().size() <= 2) {
             //Pořadí termů Vertical - Horizontal je pouze v případě že druhý je left nebo right
             //nebo první je top nebo bottom
             //Pokud ano, přehodím je.
@@ -615,11 +615,11 @@ public class NodeData implements Cloneable {
         int firstTermIndex = 0;
         
         int index = 0;
-        for(Term t : d.getTermsList()) {
+        for(Term t : d.getTerms()) {
             //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
             //Pokud by se inherit objevilo až například jako třetí term, dojde k ignorování celé deklarace
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     backgroundAttachmentType = EnumBackgroundAttachment.inherit;
                     backgroundColorType = EnumColorTransparent.inherit;
                     backgroundImageType = EnumBackgroundImage.inherit;
@@ -638,7 +638,7 @@ public class NodeData implements Cloneable {
             //Vytvořím pomocnou deklaraci, která obsahuje jeden jediný term (ten aktuální)
             //a v jednotlivých blocích se pokouším tuto deklaraci zpracovat. 
             Declaration tmpDeclaration = new DataDeclaration("background");
-            tmpDeclaration.getTermsList().add(t);
+            tmpDeclaration.getTerms().add(t);
             
             //Vyzkouším, jestli se jedná o barvu
             tmpDeclaration.setProperty("background-color");
@@ -713,9 +713,9 @@ public class NodeData implements Cloneable {
         //backround-position. Pokud se to nepodaří, deklarace je ignorována
         if(probablyFirstPositionTerm != null) {
             Declaration tmpDeclaration = new DataDeclaration("background-position");
-            tmpDeclaration.getTermsList().add(probablyFirstPositionTerm);
+            tmpDeclaration.getTerms().add(probablyFirstPositionTerm);
             if(probablySecondPositionTerm != null) {
-                tmpDeclaration.getTermsList().add(probablySecondPositionTerm);
+                tmpDeclaration.getTerms().add(probablySecondPositionTerm);
             }
             if(!processBackgroundPosition(tmpDeclaration)) {
                 rollbackTransaction(trans);
@@ -726,9 +726,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processBorderCollapse(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("collapse")) {
                     borderCollapseType = EnumBorderCollapse.collapse;
                     return new Boolean(true);
@@ -748,15 +748,15 @@ public class NodeData implements Cloneable {
     
     private Boolean processBorderColor(Declaration d) {
         NodeData trans = beginTransaction();
-        if(d.getTermsList().size() == 1) {
+        if(d.getTerms().size() == 1) {
             Declaration tmpDeclarationTop = new DataDeclaration("border-top-color");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("border-right-color");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationBottom = new DataDeclaration("border-bottom-color");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationLeft = new DataDeclaration("border-left-color");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(0));
             
             if(processBorderTopColor(tmpDeclarationTop) && processBorderRightColor(tmpDeclarationRight) &&
                processBorderBottomColor(tmpDeclarationBottom) && processBorderLeftColor(tmpDeclarationLeft)) {
@@ -767,15 +767,15 @@ public class NodeData implements Cloneable {
                 return false;
             }
         }
-        else if(d.getTermsList().size() == 2) {
+        else if(d.getTerms().size() == 2) {
             Declaration tmpDeclarationTop = new DataDeclaration("border-top-color");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("border-right-color");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(1));
             Declaration tmpDeclarationBottom = new DataDeclaration("border-bottom-color");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationLeft = new DataDeclaration("border-left-color");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(1));
             
             if(processBorderTopColor(tmpDeclarationTop) && processBorderRightColor(tmpDeclarationRight) &&
                processBorderBottomColor(tmpDeclarationBottom) && processBorderLeftColor(tmpDeclarationLeft)) {
@@ -786,15 +786,15 @@ public class NodeData implements Cloneable {
                 return false;
             }
         }
-        else if(d.getTermsList().size() == 3) {
+        else if(d.getTerms().size() == 3) {
             Declaration tmpDeclarationTop = new DataDeclaration("border-top-color");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("border-right-color");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(1));
             Declaration tmpDeclarationBottom = new DataDeclaration("border-bottom-color");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(2));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(2));
             Declaration tmpDeclarationLeft = new DataDeclaration("border-left-color");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(1));
             
             if(processBorderTopColor(tmpDeclarationTop) && processBorderRightColor(tmpDeclarationRight) &&
                processBorderBottomColor(tmpDeclarationBottom) && processBorderLeftColor(tmpDeclarationLeft)) {
@@ -805,15 +805,15 @@ public class NodeData implements Cloneable {
                 return false;
             }
         }
-        else if(d.getTermsList().size() == 4) {
+        else if(d.getTerms().size() == 4) {
             Declaration tmpDeclarationTop = new DataDeclaration("border-top-color");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("border-right-color");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(1));
             Declaration tmpDeclarationBottom = new DataDeclaration("border-bottom-color");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(2));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(2));
             Declaration tmpDeclarationLeft = new DataDeclaration("border-left-color");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(3));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(3));
             
             if(processBorderTopColor(tmpDeclarationTop) && processBorderRightColor(tmpDeclarationRight) &&
                processBorderBottomColor(tmpDeclarationBottom) && processBorderLeftColor(tmpDeclarationLeft)) {
@@ -828,16 +828,16 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processBorderTopColor(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermColor) {
-                TermColor color = (TermColor)d.getTermsList().get(0);
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermColor) {
+                TermColor color = (TermColor)d.getTerms().get(0);
                 borderColorTopValue = color;
                 borderColorTopType = EnumColorTransparent.color;
                 return new Boolean(true);
                 
             }
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("transparent")) {
                     borderColorTopType = EnumColorTransparent.transparent;
                     borderColorTopValue = null;
@@ -854,16 +854,16 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processBorderRightColor(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermColor) {
-                TermColor color = (TermColor)d.getTermsList().get(0);
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermColor) {
+                TermColor color = (TermColor)d.getTerms().get(0);
                 borderColorRightValue = color;
                 borderColorRightType = EnumColorTransparent.color;
                 return new Boolean(true);
                 
             }
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("transparent")) {
                     borderColorRightType = EnumColorTransparent.transparent;
                     borderColorRightValue = null;
@@ -880,16 +880,16 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processBorderBottomColor(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermColor) {
-                TermColor color = (TermColor)d.getTermsList().get(0);
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermColor) {
+                TermColor color = (TermColor)d.getTerms().get(0);
                 borderColorBottomValue = color;
                 borderColorBottomType = EnumColorTransparent.color;
                 return new Boolean(true);
                 
             }
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("transparent")) {
                     borderColorBottomType = EnumColorTransparent.transparent;
                     borderColorBottomValue = null;
@@ -906,16 +906,16 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processBorderLeftColor(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermColor) {
-                TermColor color = (TermColor)d.getTermsList().get(0);
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermColor) {
+                TermColor color = (TermColor)d.getTerms().get(0);
                 borderColorLeftValue = color;
                 borderColorLeftType = EnumColorTransparent.color;
                 return new Boolean(true);
                 
             }
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("transparent")) {
                     borderColorLeftType = EnumColorTransparent.transparent;
                     borderColorLeftValue = null;
@@ -932,9 +932,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processBorderSpacing(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("inherit")) {
                     borderSpacingType = EnumBorderSpacing.inherit;
                     borderSpacingHorValue = null;
@@ -942,8 +942,8 @@ public class NodeData implements Cloneable {
                     return new Boolean(true);
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     if(num.getValue().floatValue() < 0) {
                         num.setValue(new Float(0));
@@ -955,10 +955,10 @@ public class NodeData implements Cloneable {
                 }
             }
         }
-        if(d.getTermsList().size() == 2) {
-            if(d.getTermsList().get(0) instanceof TermNumber && d.getTermsList().get(1) instanceof TermNumber) {
-                TermNumber num1 = (TermNumber)d.getTermsList().get(0);
-                TermNumber num2 = (TermNumber)d.getTermsList().get(1);
+        if(d.getTerms().size() == 2) {
+            if(d.getTerms().get(0) instanceof TermNumber && d.getTerms().get(1) instanceof TermNumber) {
+                TermNumber num1 = (TermNumber)d.getTerms().get(0);
+                TermNumber num2 = (TermNumber)d.getTerms().get(1);
                 if(num1.isLength() && num2.isLength()) {
                     if(num1.getValue().floatValue() < 0) {
                         num1.setValue(new Float(0));
@@ -977,9 +977,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processBorderTopStyle(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("none")) {
                     borderStyleTopType = EnumBorderStyle.none;
                     return new Boolean(true);
@@ -1030,9 +1030,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processBorderRightStyle(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("none")) {
                     borderStyleRightType = EnumBorderStyle.none;
                     return new Boolean(true);
@@ -1083,9 +1083,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processBorderBottomStyle(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("none")) {
                     borderStyleBottomType = EnumBorderStyle.none;
                     return new Boolean(true);
@@ -1136,9 +1136,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processBorderLeftStyle(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("none")) {
                     borderStyleLeftType = EnumBorderStyle.none;
                     return new Boolean(true);
@@ -1190,15 +1190,15 @@ public class NodeData implements Cloneable {
     
     private Boolean processBorderStyle(Declaration d) {
         NodeData trans = beginTransaction();
-        if(d.getTermsList().size() == 1) {
+        if(d.getTerms().size() == 1) {
             Declaration tmpDeclarationTop = new DataDeclaration("border-top-style");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("border-right-style");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationBottom = new DataDeclaration("border-bottom-style");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationLeft = new DataDeclaration("border-left-style");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(0));
             
             if(processBorderTopStyle(tmpDeclarationTop) && processBorderRightStyle(tmpDeclarationRight) &&
                processBorderBottomStyle(tmpDeclarationBottom) && processBorderLeftStyle(tmpDeclarationLeft)) {
@@ -1209,15 +1209,15 @@ public class NodeData implements Cloneable {
                 return false;
             }
         }
-        else if(d.getTermsList().size() == 2) {
+        else if(d.getTerms().size() == 2) {
             Declaration tmpDeclarationTop = new DataDeclaration("border-top-style");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("border-right-style");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(1));
             Declaration tmpDeclarationBottom = new DataDeclaration("border-bottom-style");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationLeft = new DataDeclaration("border-left-style");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(1));
             
             if(processBorderTopStyle(tmpDeclarationTop) && processBorderRightStyle(tmpDeclarationRight) &&
                processBorderBottomStyle(tmpDeclarationBottom) && processBorderLeftStyle(tmpDeclarationLeft)) {
@@ -1228,15 +1228,15 @@ public class NodeData implements Cloneable {
                 return false;
             }
         }
-        else if(d.getTermsList().size() == 3) {
+        else if(d.getTerms().size() == 3) {
             Declaration tmpDeclarationTop = new DataDeclaration("border-top-style");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("border-right-style");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(1));
             Declaration tmpDeclarationBottom = new DataDeclaration("border-bottom-style");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(2));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(2));
             Declaration tmpDeclarationLeft = new DataDeclaration("border-left-style");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(1));
             
             if(processBorderTopStyle(tmpDeclarationTop) && processBorderRightStyle(tmpDeclarationRight) &&
                processBorderBottomStyle(tmpDeclarationBottom) && processBorderLeftStyle(tmpDeclarationLeft)) {
@@ -1247,15 +1247,15 @@ public class NodeData implements Cloneable {
                 return false;
             }
         }
-        else if(d.getTermsList().size() == 4) {
+        else if(d.getTerms().size() == 4) {
             Declaration tmpDeclarationTop = new DataDeclaration("border-top-style");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("border-right-style");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(1));
             Declaration tmpDeclarationBottom = new DataDeclaration("border-bottom-style");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(2));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(2));
             Declaration tmpDeclarationLeft = new DataDeclaration("border-left-style");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(3));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(3));
             
             if(processBorderTopStyle(tmpDeclarationTop) && processBorderRightStyle(tmpDeclarationRight) &&
                processBorderBottomStyle(tmpDeclarationBottom) && processBorderLeftStyle(tmpDeclarationLeft)) {
@@ -1270,17 +1270,17 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processBorderTopWidth(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     borderWidthTopValue = num;
                     borderWidthTopType = EnumBorderWidth.length;
                     return new Boolean(true);
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("thin")) {
                     borderWidthTopType = EnumBorderWidth.thin;
                     borderWidthTopValue = null;
@@ -1307,17 +1307,17 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processBorderRightWidth(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     borderWidthRightValue = num;
                     borderWidthRightType = EnumBorderWidth.length;
                     return new Boolean(true);
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("thin")) {
                     borderWidthRightType = EnumBorderWidth.thin;
                     borderWidthRightValue = null;
@@ -1344,17 +1344,17 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processBorderBottomWidth(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     borderWidthBottomValue = num;
                     borderWidthBottomType = EnumBorderWidth.length;
                     return new Boolean(true);
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("thin")) {
                     borderWidthBottomType = EnumBorderWidth.thin;
                     borderWidthBottomValue = null;
@@ -1381,17 +1381,17 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processBorderLeftWidth(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     borderWidthLeftValue = num;
                     borderWidthLeftType = EnumBorderWidth.length;
                     return new Boolean(true);
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("thin")) {
                     borderWidthLeftType = EnumBorderWidth.thin;
                     borderWidthLeftValue = null;
@@ -1419,15 +1419,15 @@ public class NodeData implements Cloneable {
     
     private Boolean processBorderWidth(Declaration d) {
         NodeData trans = beginTransaction();
-        if(d.getTermsList().size() == 1) {
+        if(d.getTerms().size() == 1) {
             Declaration tmpDeclarationTop = new DataDeclaration("border-top-width");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("border-right-width");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationBottom = new DataDeclaration("border-bottom-width");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationLeft = new DataDeclaration("border-left-width");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(0));
             
             if(processBorderTopWidth(tmpDeclarationTop) && processBorderRightWidth(tmpDeclarationRight) &&
                processBorderBottomWidth(tmpDeclarationBottom) && processBorderLeftWidth(tmpDeclarationLeft)) {
@@ -1438,15 +1438,15 @@ public class NodeData implements Cloneable {
                 return false;
             }
         }
-        else if(d.getTermsList().size() == 2) {
+        else if(d.getTerms().size() == 2) {
             Declaration tmpDeclarationTop = new DataDeclaration("border-top-width");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("border-right-width");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(1));
             Declaration tmpDeclarationBottom = new DataDeclaration("border-bottom-width");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationLeft = new DataDeclaration("border-left-width");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(1));
             
             if(processBorderTopWidth(tmpDeclarationTop) && processBorderRightWidth(tmpDeclarationRight) &&
                processBorderBottomWidth(tmpDeclarationBottom) && processBorderLeftWidth(tmpDeclarationLeft)) {
@@ -1457,15 +1457,15 @@ public class NodeData implements Cloneable {
                 return false;
             }
         }
-        else if(d.getTermsList().size() == 3) {
+        else if(d.getTerms().size() == 3) {
             Declaration tmpDeclarationTop = new DataDeclaration("border-top-width");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("border-right-width");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(1));
             Declaration tmpDeclarationBottom = new DataDeclaration("border-bottom-width");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(2));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(2));
             Declaration tmpDeclarationLeft = new DataDeclaration("border-left-width");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(1));
             
             if(processBorderTopWidth(tmpDeclarationTop) && processBorderRightWidth(tmpDeclarationRight) &&
                processBorderBottomWidth(tmpDeclarationBottom) && processBorderLeftWidth(tmpDeclarationLeft)) {
@@ -1476,15 +1476,15 @@ public class NodeData implements Cloneable {
                 return false;
             }
         }
-        else if(d.getTermsList().size() == 4) {
+        else if(d.getTerms().size() == 4) {
             Declaration tmpDeclarationTop = new DataDeclaration("border-top-width");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("border-right-width");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(1));
             Declaration tmpDeclarationBottom = new DataDeclaration("border-bottom-width");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(2));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(2));
             Declaration tmpDeclarationLeft = new DataDeclaration("border-left-width");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(3));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(3));
             
             if(processBorderTopWidth(tmpDeclarationTop) && processBorderRightWidth(tmpDeclarationRight) &&
                processBorderBottomWidth(tmpDeclarationBottom) && processBorderLeftWidth(tmpDeclarationLeft)) {
@@ -1513,11 +1513,11 @@ public class NodeData implements Cloneable {
         boolean processedStyle = false;
         boolean processedWidth = false;
         
-        for(Term t : d.getTermsList()) {
+        for(Term t : d.getTerms()) {
             //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
             //Pokud by se inherit objevilo až například jako třetí term, dojde k ignorování celé deklarace
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     borderColorTopType = EnumColorTransparent.inherit;
                     borderColorTopValue = null;
                     borderStyleTopType = EnumBorderStyle.inherit;
@@ -1534,7 +1534,7 @@ public class NodeData implements Cloneable {
             //Vytvořím pomocnou deklaraci, která obsahuje jeden jediný term (ten aktuální)
             //a v jednotlivých blocích se pokouším tuto deklaraci zpracovat. 
             Declaration tmpDeclaration = new DataDeclaration("border-top");
-            tmpDeclaration.getTermsList().add(t);
+            tmpDeclaration.getTerms().add(t);
             
             //Vyzkouším, jestli se jedná o barvu
             tmpDeclaration.setProperty("border-top-color");
@@ -1596,11 +1596,11 @@ public class NodeData implements Cloneable {
         boolean processedStyle = false;
         boolean processedWidth = false;
         
-        for(Term t : d.getTermsList()) {
+        for(Term t : d.getTerms()) {
             //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
             //Pokud by se inherit objevilo až například jako třetí term, dojde k ignorování celé deklarace
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     borderColorRightType = EnumColorTransparent.inherit;
                     borderColorRightValue = null;
                     borderStyleRightType = EnumBorderStyle.inherit;
@@ -1617,7 +1617,7 @@ public class NodeData implements Cloneable {
             //Vytvořím pomocnou deklaraci, která obsahuje jeden jediný term (ten aktuální)
             //a v jednotlivých blocích se pokouším tuto deklaraci zpracovat. 
             Declaration tmpDeclaration = new DataDeclaration("border-right");
-            tmpDeclaration.getTermsList().add(t);
+            tmpDeclaration.getTerms().add(t);
             
             //Vyzkouším, jestli se jedná o barvu
             tmpDeclaration.setProperty("border-right-color");
@@ -1679,11 +1679,11 @@ public class NodeData implements Cloneable {
         boolean processedStyle = false;
         boolean processedWidth = false;
         
-        for(Term t : d.getTermsList()) {
+        for(Term t : d.getTerms()) {
             //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
             //Pokud by se inherit objevilo až například jako třetí term, dojde k ignorování celé deklarace
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     borderColorBottomType = EnumColorTransparent.inherit;
                     borderColorBottomValue = null;
                     borderStyleBottomType = EnumBorderStyle.inherit;
@@ -1700,7 +1700,7 @@ public class NodeData implements Cloneable {
             //Vytvořím pomocnou deklaraci, která obsahuje jeden jediný term (ten aktuální)
             //a v jednotlivých blocích se pokouším tuto deklaraci zpracovat. 
             Declaration tmpDeclaration = new DataDeclaration("border-bottom");
-            tmpDeclaration.getTermsList().add(t);
+            tmpDeclaration.getTerms().add(t);
             
             //Vyzkouším, jestli se jedná o barvu
             tmpDeclaration.setProperty("border-bottom-color");
@@ -1762,11 +1762,11 @@ public class NodeData implements Cloneable {
         boolean processedStyle = false;
         boolean processedWidth = false;
         
-        for(Term t : d.getTermsList()) {
+        for(Term t : d.getTerms()) {
             //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
             //Pokud by se inherit objevilo až například jako třetí term, dojde k ignorování celé deklarace
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     borderColorLeftType = EnumColorTransparent.inherit;
                     borderColorLeftValue = null;
                     borderStyleLeftType = EnumBorderStyle.inherit;
@@ -1783,7 +1783,7 @@ public class NodeData implements Cloneable {
             //Vytvořím pomocnou deklaraci, která obsahuje jeden jediný term (ten aktuální)
             //a v jednotlivých blocích se pokouším tuto deklaraci zpracovat. 
             Declaration tmpDeclaration = new DataDeclaration("border-left");
-            tmpDeclaration.getTermsList().add(t);
+            tmpDeclaration.getTerms().add(t);
             
             //Vyzkouším, jestli se jedná o barvu
             tmpDeclaration.setProperty("border-left-color");
@@ -1860,11 +1860,11 @@ public class NodeData implements Cloneable {
         boolean processedStyle = false;
         boolean processedWidth = false;
         
-        for(Term t : d.getTermsList()) {
+        for(Term t : d.getTerms()) {
             //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
             //Pokud by se inherit objevilo až například jako třetí term, dojde k ignorování celé deklarace
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     borderColorTopType = EnumColorTransparent.inherit;
                     borderColorRightType = EnumColorTransparent.inherit;
                     borderColorBottomType = EnumColorTransparent.inherit;
@@ -1896,7 +1896,7 @@ public class NodeData implements Cloneable {
             //Vytvořím pomocnou deklaraci, která obsahuje jeden jediný term (ten aktuální)
             //a v jednotlivých blocích se pokouším tuto deklaraci zpracovat. 
             Declaration tmpDeclaration = new DataDeclaration("border");
-            tmpDeclaration.getTermsList().add(t);
+            tmpDeclaration.getTerms().add(t);
             
             //Vyzkouším, jestli se jedná o barvu
             tmpDeclaration.setProperty("border-color");
@@ -1946,9 +1946,9 @@ public class NodeData implements Cloneable {
     private Boolean processFontFamily(Declaration d) {
         NodeData trans = beginTransaction();
         ArrayList<String>input = new ArrayList<String>();
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("inherit")) {
                     fontFamilyType = EnumFontFamily.inherit;
                     fontFamilyValues.clear();
@@ -1957,11 +1957,11 @@ public class NodeData implements Cloneable {
             }
         }
         
-        for(Term t : d.getTermsList()) {
+        for(Term t : d.getTerms()) {
             if(t instanceof TermIdent) {
                 String ident = ((TermIdent)t).getValue();
                 fontFamilyType = EnumFontFamily.font;
-                if(t.getOperator() == Term.EnumOperator.space && !input.isEmpty()) {
+                if(t.getOperator() == Term.Operator.SPACE && !input.isEmpty()) {
                     String tmp = input.get(input.size()-1);
                     tmp = tmp + " " + ident;
                     input.remove(input.size()-1);
@@ -1987,9 +1987,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processFontSize(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("xx-small")) {
                     fontSizeType = EnumFontSize.xx_small;
                     fontSizeNumberValue = null;
@@ -2051,8 +2051,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     if(num.getValue().floatValue() < 0) {
                         num.setValue(new Float(0));
@@ -2063,8 +2063,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 if(percentage.getValue().floatValue() < 0) {
                     percentage.setValue(new Float(0));
                 }
@@ -2078,9 +2078,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processFontStyle(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("normal")) {
                     fontStyleType = EnumFontStyle.normal;
                     return new Boolean(true);
@@ -2103,9 +2103,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processFontVariant(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("normal")) {
                     fontVariantType = EnumFontVariant.normal;
                     return true;
@@ -2124,9 +2124,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processFontWeight(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("normal")) {
                     fontWeightType = EnumFontWeight.normal;
                     return true;
@@ -2148,8 +2148,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.getUnit() == null) {
                     if(num.getValue() == 100.0) {
                         fontWeightType = EnumFontWeight.prefix_100;
@@ -2220,11 +2220,11 @@ public class NodeData implements Cloneable {
         //Sem se budou kládat všechny hodnoty na konci (pravděpodobně se bude jednat o hodnoty font-family)
         Declaration fontFamilyDeclaration = new DataDeclaration("font-family");
         
-        for(Term t : d.getTermsList()) {
+        for(Term t : d.getTerms()) {
             //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
             //Pokud by se inherit objevilo až například jako třetí term, dojde k ignorování celé deklarace
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     fontStyleType = EnumFontStyle.inherit;
                     fontFamilyType = EnumFontFamily.inherit;
                     fontFamilyValues.clear();
@@ -2244,7 +2244,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("caption")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     //neimplementováno 
                     return true;
                 }
@@ -2254,7 +2254,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("icon")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     //neimplementováno 
                     return true;
                 }
@@ -2264,7 +2264,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("menu")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     //neimplementováno 
                     return true;
                 }
@@ -2274,7 +2274,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("message-box")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     //neimplementováno 
                     return true;
                 }
@@ -2284,7 +2284,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("small-caption")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     //neimplementováno 
                     return true;
                 }
@@ -2294,7 +2294,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("status-bar")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     //neimplementováno 
                     return true;
                 }
@@ -2307,7 +2307,7 @@ public class NodeData implements Cloneable {
             //Vytvořím pomocnou deklaraci, která obsahuje jeden jediný term (ten aktuální)
             //a v jednotlivých blocích se pokouším tuto deklaraci zpracovat. 
             Declaration tmpDeclaration = new DataDeclaration("font");
-            tmpDeclaration.getTermsList().add(t);
+            tmpDeclaration.getTerms().add(t);
             
             if(!processedFontSize && count < 3) {
                 if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("normal")) {
@@ -2371,7 +2371,7 @@ public class NodeData implements Cloneable {
                 }
             }
             
-            if(!processedLineHeight && t.getOperator() == Term.EnumOperator.slash) {
+            if(!processedLineHeight && t.getOperator() == Term.Operator.SLASH) {
                 tmpDeclaration.setProperty("line-height");
                 if(processLineHeight(tmpDeclaration)) {
                     processedLineHeight = true;
@@ -2384,11 +2384,11 @@ public class NodeData implements Cloneable {
             }
             
             //Vše co neprojde předchozím
-            fontFamilyDeclaration.getTermsList().add(t);
+            fontFamilyDeclaration.getTerms().add(t);
         }
         
         //Font family musí být zadáno
-        if(fontFamilyDeclaration.getTermsList().isEmpty()) {
+        if(fontFamilyDeclaration.getTerms().isEmpty()) {
             rollbackTransaction(trans);
             return false;
         }
@@ -2403,9 +2403,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processLineHeight(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("normal")) {
                     lineHeightType = EnumLineHeight.normal;
                     lineHeightNumberValue = null;
@@ -2419,8 +2419,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     if(num.getValue().floatValue() < 0) {
                         num.setValue(new Float(0));
@@ -2440,8 +2440,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 if(percentage.getValue().floatValue() < 0) {
                     percentage.setValue(new Float(0));
                 }
@@ -2455,9 +2455,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processTop(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("auto")) {
                     topType = EnumSize.auto;
                     topNumberValue = null;
@@ -2471,8 +2471,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     topType = EnumSize.length;
                     topNumberValue = num;
@@ -2480,8 +2480,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 topType = EnumSize.percentage;
                 topNumberValue = null;
                 topPercentValue = percentage;
@@ -2492,9 +2492,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processRight(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("auto")) {
                     rightType = EnumSize.auto;
                     rightNumberValue = null;
@@ -2508,8 +2508,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     rightType = EnumSize.length;
                     rightNumberValue = num;
@@ -2517,8 +2517,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 rightType = EnumSize.percentage;
                 rightNumberValue = null;
                 rightPercentValue = percentage;
@@ -2529,9 +2529,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processBottom(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("auto")) {
                     bottomType = EnumSize.auto;
                     bottomNumberValue = null;
@@ -2545,8 +2545,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     bottomType = EnumSize.length;
                     bottomNumberValue = num;
@@ -2554,8 +2554,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 bottomType = EnumSize.percentage;
                 bottomNumberValue = null;
                 bottomPercentValue = percentage;
@@ -2566,9 +2566,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processLeft(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("auto")) {
                     leftType = EnumSize.auto;
                     leftNumberValue = null;
@@ -2582,8 +2582,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     leftType = EnumSize.length;
                     leftNumberValue = num;
@@ -2591,8 +2591,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 leftType = EnumSize.percentage;
                 leftNumberValue = null;
                 leftPercentValue = percentage;
@@ -2603,9 +2603,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processWidth(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("auto")) {
                     widthType = EnumSize.auto;
                     widthNumberValue = null;
@@ -2619,8 +2619,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     widthType = EnumSize.length;
                     widthNumberValue = num;
@@ -2628,8 +2628,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 widthType = EnumSize.percentage;
                 widthNumberValue = null;
                 widthPercentValue = percentage;
@@ -2640,9 +2640,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processHeight(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("auto")) {
                     heightType = EnumSize.auto;
                     heightNumberValue = null;
@@ -2656,8 +2656,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     heightType = EnumSize.length;
                     heightNumberValue = num;
@@ -2665,8 +2665,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 heightType = EnumSize.percentage;
                 heightNumberValue = null;
                 heightPercentValue = percentage;
@@ -2677,9 +2677,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processCaptionSide(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("top")) {
                     captionSideType = EnumCaptionSide.top;
                     return true;
@@ -2698,9 +2698,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processClear(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("none")) {
                     clearType = EnumClear.none;
                     return true;
@@ -2727,9 +2727,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processClip(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("auto")) {
                     clipTopType = EnumClip.auto;
                     clipRightType = EnumClip.auto;
@@ -2753,8 +2753,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermFunction) {
-                TermFunction f = (TermFunction)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermFunction) {
+                TermFunction f = (TermFunction)d.getTerms().get(0);
                 if(f.getFunctionName().equalsIgnoreCase("rect") && f.getTermsList().size() == 4) {
                     NodeData trans = beginTransaction();
                     int index = 0;
@@ -2821,16 +2821,16 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processColor(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermColor) {
-                TermColor color = (TermColor)d.getTermsList().get(0);
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermColor) {
+                TermColor color = (TermColor)d.getTerms().get(0);
                 colorValue = color;
                 colorType = EnumColor.color;
                 return true;
                 
             }
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("inherit")) {
                     colorType = EnumColor.inherit;
                     colorValue = null;
@@ -2845,11 +2845,11 @@ public class NodeData implements Cloneable {
         HashMap<String, Integer> out = new HashMap<String, Integer>();
         String lastIdent = null;
         
-        for(Term t : d.getTermsList()) {
+        for(Term t : d.getTerms()) {
             //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
             //Pokud by se inherit objevilo až například jako třetí term, dojde k ignorování celé deklarace
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     counterIncrementType = EnumCounter.inherit;
                     counterIncrementValues.clear();
                     return true;
@@ -2859,7 +2859,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("none")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     counterIncrementType = EnumCounter.none;
                     counterIncrementValues.clear();
                     return true;
@@ -2900,11 +2900,11 @@ public class NodeData implements Cloneable {
         HashMap<String, Integer> out = new HashMap<String, Integer>();
         String lastIdent = null;
         
-        for(Term t : d.getTermsList()) {
+        for(Term t : d.getTerms()) {
             //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
             //Pokud by se inherit objevilo až například jako třetí term, dojde k ignorování celé deklarace
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     counterResetType = EnumCounter.inherit;
                     counterResetValues.clear();
                     return true;
@@ -2914,7 +2914,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("none")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     counterResetType = EnumCounter.none;
                     counterResetValues.clear();
                     return true;
@@ -2956,11 +2956,11 @@ public class NodeData implements Cloneable {
         ArrayList<TermUri> out = new ArrayList<TermUri>();
         
         int index = 0;
-        for(Term t : d.getTermsList()) {
+        for(Term t : d.getTerms()) {
             //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
             //Pokud by se inherit objevilo až například jako třetí term, dojde k ignorování celé deklarace
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     cursorType = EnumCursor.inherit;
                     cursorUri.clear();
                     return true;
@@ -2970,7 +2970,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("auto")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.auto;
                     processedGeneric = true;
                     continue;
@@ -2980,7 +2980,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("crosshair")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.crosshair;
                     processedGeneric = true;
                     continue;
@@ -2990,7 +2990,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("default")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.prefix_default;
                     processedGeneric = true;
                     continue;
@@ -3000,7 +3000,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("pointer")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.pointer;
                     processedGeneric = true;
                     continue;
@@ -3010,7 +3010,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("move")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.move;
                     processedGeneric = true;
                     continue;
@@ -3020,7 +3020,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("e-resize")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.e_resize;
                     processedGeneric = true;
                     continue;
@@ -3030,7 +3030,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("ne-resize")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.ne_resize;
                     processedGeneric = true;
                     continue;
@@ -3040,7 +3040,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("nw-resize")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.nw_resize;
                     processedGeneric = true;
                     continue;
@@ -3050,7 +3050,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("n-resize")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.n_resize;
                     processedGeneric = true;
                     continue;
@@ -3060,7 +3060,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("se-resize")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.se_resize;
                     processedGeneric = true;
                     continue;
@@ -3070,7 +3070,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("sw-resize")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.sw_resize;
                     processedGeneric = true;
                     continue;
@@ -3080,7 +3080,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("s-resize")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.s_resize;
                     processedGeneric = true;
                     continue;
@@ -3090,7 +3090,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("w-resize")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.w_resize;
                     processedGeneric = true;
                     continue;
@@ -3100,7 +3100,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("text")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.text;
                     processedGeneric = true;
                     continue;
@@ -3110,7 +3110,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("wait")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.wait;
                     processedGeneric = true;
                     continue;
@@ -3120,7 +3120,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("help")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.help;
                     processedGeneric = true;
                     continue;
@@ -3130,7 +3130,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("progress")) {
-                if(d.getTermsList().size()-1 == index) { //Poslední hodnota
+                if(d.getTerms().size()-1 == index) { //Poslední hodnota
                     cursorType = EnumCursor.progress;
                     processedGeneric = true;
                     continue;
@@ -3159,9 +3159,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processDirection(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("ltr")) {
                     directionType = EnumDirection.ltr;
                     return true;
@@ -3180,9 +3180,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processDisplay(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("inline")) {
                     displayType = EnumDisplay.inline;
                     return true;
@@ -3257,9 +3257,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processEmptyCells(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("show")) {
                     emptyCellsType = EnumEmptyCells.show;
                     return true;
@@ -3278,9 +3278,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processFloat(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("none")) {
                     floatType = EnumFloat.none;
                     return true;
@@ -3303,9 +3303,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processListStyleImage(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("none")) {
                     listStyleImageType = EnumListStyleImage.none;
                     listStyleImageValue = null;
@@ -3317,8 +3317,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermUri) {
-                TermUri uri = (TermUri)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermUri) {
+                TermUri uri = (TermUri)d.getTerms().get(0);
                 listStyleImageType = EnumListStyleImage.uri;
                 listStyleImageValue = uri;
                 return true;
@@ -3328,9 +3328,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processListStylePosition(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("inside")) {
                     listStylePositionType = EnumListStylePosition.inside;
                     return true;
@@ -3349,9 +3349,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processListStyleType(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("disc")) {
                     listStyleTypeType = EnumListStyleType.disc;
                     return true;
@@ -3435,11 +3435,11 @@ public class NodeData implements Cloneable {
         boolean processedPosition = false;
         boolean processedType = false;
         
-        for(Term t : d.getTermsList()) {
+        for(Term t : d.getTerms()) {
             //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
             //Pokud by se inherit objevilo až například jako třetí term, dojde k ignorování celé deklarace
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     listStyleImageType = EnumListStyleImage.inherit;
                     listStyleImageValue = null;  
                     listStylePositionType = EnumListStylePosition.inherit;
@@ -3455,7 +3455,7 @@ public class NodeData implements Cloneable {
             //Vytvořím pomocnou deklaraci, která obsahuje jeden jediný term (ten aktuální)
             //a v jednotlivých blocích se pokouším tuto deklaraci zpracovat. 
             Declaration tmpDeclaration = new DataDeclaration("list-style");
-            tmpDeclaration.getTermsList().add(t);
+            tmpDeclaration.getTerms().add(t);
             
             //Vyzkouším, jestli se jedná o barvu
             tmpDeclaration.setProperty("list-style-image");
@@ -3503,9 +3503,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processMarginTop(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("auto")) {
                     marginTopType = EnumSize.auto;
                     marginTopNumberValue = null;
@@ -3519,8 +3519,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     marginTopType = EnumSize.length;
                     marginTopNumberValue = num;
@@ -3528,8 +3528,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 marginTopType = EnumSize.percentage;
                 marginTopNumberValue = null;
                 marginTopPercentValue = percentage;
@@ -3540,9 +3540,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processMarginRight(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("auto")) {
                     marginRightType = EnumSize.auto;
                     marginRightNumberValue = null;
@@ -3556,8 +3556,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     marginRightType = EnumSize.length;
                     marginRightNumberValue = num;
@@ -3565,8 +3565,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 marginRightType = EnumSize.percentage;
                 marginRightNumberValue = null;
                 marginRightPercentValue = percentage;
@@ -3577,9 +3577,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processMarginBottom(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("auto")) {
                     marginBottomType = EnumSize.auto;
                     marginBottomNumberValue = null;
@@ -3593,8 +3593,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     marginBottomType = EnumSize.length;
                     marginBottomNumberValue = num;
@@ -3602,8 +3602,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 marginBottomType = EnumSize.percentage;
                 marginBottomNumberValue = null;
                 marginBottomPercentValue = percentage;
@@ -3614,9 +3614,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processMarginLeft(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("auto")) {
                     marginLeftType = EnumSize.auto;
                     marginLeftNumberValue = null;
@@ -3630,8 +3630,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     marginLeftType = EnumSize.length;
                     marginLeftNumberValue = num;
@@ -3639,8 +3639,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 marginLeftType = EnumSize.percentage;
                 marginLeftNumberValue = null;
                 marginLeftPercentValue = percentage;
@@ -3652,15 +3652,15 @@ public class NodeData implements Cloneable {
     
     private Boolean processMargin(Declaration d) {
         NodeData trans = beginTransaction();
-        if(d.getTermsList().size() == 1) {
+        if(d.getTerms().size() == 1) {
             Declaration tmpDeclarationTop = new DataDeclaration("margin-top");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("margin-right");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationBottom = new DataDeclaration("margin-bottom");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationLeft = new DataDeclaration("margin-left");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(0));
             
             if(processMarginTop(tmpDeclarationTop) && processMarginRight(tmpDeclarationRight) &&
                processMarginBottom(tmpDeclarationBottom) && processMarginLeft(tmpDeclarationLeft)) {
@@ -3671,15 +3671,15 @@ public class NodeData implements Cloneable {
                 return false;
             }
         }
-        else if(d.getTermsList().size() == 2) {
+        else if(d.getTerms().size() == 2) {
             Declaration tmpDeclarationTop = new DataDeclaration("margin-top");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("margin-right");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(1));
             Declaration tmpDeclarationBottom = new DataDeclaration("margin-bottom");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationLeft = new DataDeclaration("margin-left");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(1));
             
             if(processMarginTop(tmpDeclarationTop) && processMarginRight(tmpDeclarationRight) &&
                processMarginBottom(tmpDeclarationBottom) && processMarginLeft(tmpDeclarationLeft)) {
@@ -3690,15 +3690,15 @@ public class NodeData implements Cloneable {
                 return false;
             }
         }
-        else if(d.getTermsList().size() == 3) {
+        else if(d.getTerms().size() == 3) {
             Declaration tmpDeclarationTop = new DataDeclaration("margin-top");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("margin-right");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(1));
             Declaration tmpDeclarationBottom = new DataDeclaration("margin-bottom");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(2));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(2));
             Declaration tmpDeclarationLeft = new DataDeclaration("margin-left");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(1));
             
             if(processMarginTop(tmpDeclarationTop) && processMarginRight(tmpDeclarationRight) &&
                processMarginBottom(tmpDeclarationBottom) && processMarginLeft(tmpDeclarationLeft)) {
@@ -3709,15 +3709,15 @@ public class NodeData implements Cloneable {
                 return false;
             }
         }
-        else if(d.getTermsList().size() == 4) {
+        else if(d.getTerms().size() == 4) {
             Declaration tmpDeclarationTop = new DataDeclaration("margin-top");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("margin-right");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(1));
             Declaration tmpDeclarationBottom = new DataDeclaration("margin-bottom");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(2));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(2));
             Declaration tmpDeclarationLeft = new DataDeclaration("margin-left");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(3));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(3));
             
             if(processMarginTop(tmpDeclarationTop) && processMarginRight(tmpDeclarationRight) &&
                processMarginBottom(tmpDeclarationBottom) && processMarginLeft(tmpDeclarationLeft)) {
@@ -3732,9 +3732,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processMaxHeight(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("none")) {
                     maxHeightType = EnumMinMaxSize.none;
                     maxHeightNumberValue = null;
@@ -3748,8 +3748,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     if(num.getValue().floatValue() < 0) {
                         num.setValue(new Float(0));
@@ -3760,8 +3760,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 if(percentage.getValue().floatValue() < 0) {
                     percentage.setValue(new Float(0));
                 }
@@ -3775,9 +3775,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processMaxWidth(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("none")) {
                     maxWidthType = EnumMinMaxSize.none;
                     maxWidthNumberValue = null;
@@ -3791,8 +3791,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     if(num.getValue().floatValue() < 0) {
                         num.setValue(new Float(0));
@@ -3803,8 +3803,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 if(percentage.getValue().floatValue() < 0) {
                     percentage.setValue(new Float(0));
                 }
@@ -3818,9 +3818,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processMinHeight(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("none")) {
                     minHeightType = EnumMinMaxSize.none;
                     minHeightNumberValue = null;
@@ -3834,8 +3834,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     if(num.getValue().floatValue() < 0) {
                         num.setValue(new Float(0));
@@ -3846,8 +3846,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 if(percentage.getValue().floatValue() < 0) {
                     percentage.setValue(new Float(0));
                 }
@@ -3861,9 +3861,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processMinWidth(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("none")) {
                     minWidthType = EnumMinMaxSize.none;
                     minWidthNumberValue = null;
@@ -3877,8 +3877,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     if(num.getValue().floatValue() < 0) {
                         num.setValue(new Float(0));
@@ -3889,8 +3889,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 if(percentage.getValue().floatValue() < 0) {
                     percentage.setValue(new Float(0));
                 }
@@ -3904,17 +3904,17 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processOrphans(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("inherit")) {
                     orphansType = EnumOrphans.inherit;
                     orphansIntegerValue = null;
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isInteger()) {
                     orphansType = EnumOrphans.integer;
                     orphansIntegerValue = num;
@@ -3926,16 +3926,16 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processOutlineColor(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermColor) {
-                TermColor color = (TermColor)d.getTermsList().get(0);
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermColor) {
+                TermColor color = (TermColor)d.getTerms().get(0);
                 outlineColorValue = color;
                 outlineColorType = EnumColorInvert.color;
                 return true;
                 
             }
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("invert")) {
                     outlineColorType = EnumColorInvert.invert;
                     outlineColorValue = null;
@@ -3952,9 +3952,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processOutlineStyle(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("none")) {
                     outlineStyleType = EnumBorderStyle.none;
                     return new Boolean(true);
@@ -4005,17 +4005,17 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processOutlineWidth(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     outlineWidthValue = num;
                     outlineWidthType = EnumBorderWidth.length;
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("thin")) {
                     outlineWidthType = EnumBorderWidth.thin;
                     outlineWidthValue = null;
@@ -4056,11 +4056,11 @@ public class NodeData implements Cloneable {
         boolean processedStyle = false;
         boolean processedWidth = false;
         
-        for(Term t : d.getTermsList()) {
+        for(Term t : d.getTerms()) {
             //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
             //Pokud by se inherit objevilo až například jako třetí term, dojde k ignorování celé deklarace
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     outlineColorType = EnumColorInvert.inherit;
                     outlineColorValue = null;
                     outlineStyleType = EnumBorderStyle.inherit;
@@ -4077,7 +4077,7 @@ public class NodeData implements Cloneable {
             //Vytvořím pomocnou deklaraci, která obsahuje jeden jediný term (ten aktuální)
             //a v jednotlivých blocích se pokouším tuto deklaraci zpracovat. 
             Declaration tmpDeclaration = new DataDeclaration("outline");
-            tmpDeclaration.getTermsList().add(t);
+            tmpDeclaration.getTerms().add(t);
             
             //Vyzkouším, jestli se jedná o barvu
             tmpDeclaration.setProperty("outline-color");
@@ -4125,9 +4125,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processOverflow(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("visible")) {
                     overflowType = EnumOverflow.visible;
                     return true;
@@ -4154,9 +4154,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processPaddingTop(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("inherit")) {
                     paddingTopType = EnumPaddingWidth.inherit;
                     paddingTopNumberValue = null;
@@ -4164,8 +4164,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     if(num.getValue().floatValue() < 0) {
                         num.setValue(new Float(0));
@@ -4176,8 +4176,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 if(percentage.getValue().floatValue() < 0) {
                     percentage.setValue(new Float(0));
                 }
@@ -4191,9 +4191,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processPaddingRight(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("inherit")) {
                     paddingRightType = EnumPaddingWidth.inherit;
                     paddingRightNumberValue = null;
@@ -4201,8 +4201,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     if(num.getValue().floatValue() < 0) {
                         num.setValue(new Float(0));
@@ -4213,8 +4213,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 if(percentage.getValue().floatValue() < 0) {
                     percentage.setValue(new Float(0));
                 }
@@ -4228,9 +4228,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processPaddingBottom(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("inherit")) {
                     paddingBottomType = EnumPaddingWidth.inherit;
                     paddingBottomNumberValue = null;
@@ -4238,8 +4238,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     if(num.getValue().floatValue() < 0) {
                         num.setValue(new Float(0));
@@ -4250,8 +4250,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 if(percentage.getValue().floatValue() < 0) {
                     percentage.setValue(new Float(0));
                 }
@@ -4265,9 +4265,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processPaddingLeft(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("inherit")) {
                     paddingLeftType = EnumPaddingWidth.inherit;
                     paddingLeftNumberValue = null;
@@ -4275,8 +4275,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     if(num.getValue().floatValue() < 0) {
                         num.setValue(new Float(0));
@@ -4287,8 +4287,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 if(percentage.getValue().floatValue() < 0) {
                     percentage.setValue(new Float(0));
                 }
@@ -4303,15 +4303,15 @@ public class NodeData implements Cloneable {
     
     private Boolean processPadding(Declaration d) {
         NodeData trans = beginTransaction();
-        if(d.getTermsList().size() == 1) {
+        if(d.getTerms().size() == 1) {
             Declaration tmpDeclarationTop = new DataDeclaration("padding-top");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("padding-right");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationBottom = new DataDeclaration("padding-bottom");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationLeft = new DataDeclaration("padding-left");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(0));
             
             if(processPaddingTop(tmpDeclarationTop) && processPaddingRight(tmpDeclarationRight) &&
                processPaddingBottom(tmpDeclarationBottom) && processPaddingLeft(tmpDeclarationLeft)) {
@@ -4322,15 +4322,15 @@ public class NodeData implements Cloneable {
                 return false;
             }
         }
-        else if(d.getTermsList().size() == 2) {
+        else if(d.getTerms().size() == 2) {
             Declaration tmpDeclarationTop = new DataDeclaration("padding-top");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("padding-right");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(1));
             Declaration tmpDeclarationBottom = new DataDeclaration("padding-bottom");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationLeft = new DataDeclaration("padding-left");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(1));
             
             if(processPaddingTop(tmpDeclarationTop) && processPaddingRight(tmpDeclarationRight) &&
                processPaddingBottom(tmpDeclarationBottom) && processPaddingLeft(tmpDeclarationLeft)) {
@@ -4341,15 +4341,15 @@ public class NodeData implements Cloneable {
                 return false;
             }
         }
-        else if(d.getTermsList().size() == 3) {
+        else if(d.getTerms().size() == 3) {
             Declaration tmpDeclarationTop = new DataDeclaration("padding-top");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("padding-right");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(1));
             Declaration tmpDeclarationBottom = new DataDeclaration("padding-bottom");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(2));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(2));
             Declaration tmpDeclarationLeft = new DataDeclaration("padding-left");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(1));
             
             if(processPaddingTop(tmpDeclarationTop) && processPaddingRight(tmpDeclarationRight) &&
                processPaddingBottom(tmpDeclarationBottom) && processPaddingLeft(tmpDeclarationLeft)) {
@@ -4360,15 +4360,15 @@ public class NodeData implements Cloneable {
                 return false;
             }
         }
-        else if(d.getTermsList().size() == 4) {
+        else if(d.getTerms().size() == 4) {
             Declaration tmpDeclarationTop = new DataDeclaration("padding-top");
-            tmpDeclarationTop.getTermsList().add(d.getTermsList().get(0));
+            tmpDeclarationTop.getTerms().add(d.getTerms().get(0));
             Declaration tmpDeclarationRight = new DataDeclaration("padding-right");
-            tmpDeclarationRight.getTermsList().add(d.getTermsList().get(1));
+            tmpDeclarationRight.getTerms().add(d.getTerms().get(1));
             Declaration tmpDeclarationBottom = new DataDeclaration("padding-bottom");
-            tmpDeclarationBottom.getTermsList().add(d.getTermsList().get(2));
+            tmpDeclarationBottom.getTerms().add(d.getTerms().get(2));
             Declaration tmpDeclarationLeft = new DataDeclaration("padding-left");
-            tmpDeclarationLeft.getTermsList().add(d.getTermsList().get(3));
+            tmpDeclarationLeft.getTerms().add(d.getTerms().get(3));
             
             if(processPaddingTop(tmpDeclarationTop) && processPaddingRight(tmpDeclarationRight) &&
                processPaddingBottom(tmpDeclarationBottom) && processPaddingLeft(tmpDeclarationLeft)) {
@@ -4383,9 +4383,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processPageBreakAfter(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("auto")) {
                     pageBreakAfterType = EnumPageBreak.auto;
                     return true;
@@ -4416,9 +4416,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processPageBreakBefore(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("auto")) {
                     pageBreakBeforeType = EnumPageBreak.auto;
                     return true;
@@ -4449,9 +4449,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processPageBreakInside(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("auto")) {
                     pageBreakInsideType = EnumPageBreakInside.auto;
                     return true;
@@ -4470,9 +4470,9 @@ public class NodeData implements Cloneable {
     }
    
     private Boolean processPosition(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("static")) {
                     positionType = EnumPosition.prefix_static;
                     return true;
@@ -4500,11 +4500,11 @@ public class NodeData implements Cloneable {
     
     private Boolean processQuotes(Declaration d) {
         ArrayList<String> out = new ArrayList<String>();
-        for(Term t : d.getTermsList()) {
+        for(Term t : d.getTerms()) {
             //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
             //Pokud by se inherit objevilo až například jako třetí term, dojde k ignorování celé deklarace
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     quotesType = EnumQuotes.inherit;
                     quotesValues.clear();
                     return true;
@@ -4514,7 +4514,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("none")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     quotesType = EnumQuotes.none;
                     quotesValues.clear();
                     return true;
@@ -4542,9 +4542,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processTableLayout(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("auto")) {
                     tableLayoutType = EnumTableLayout.auto;
                     return true;
@@ -4563,9 +4563,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processTextAlign(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("left")) {
                     textAlignType = EnumTextAlign.left;
                     return true;
@@ -4600,11 +4600,11 @@ public class NodeData implements Cloneable {
         textDecorationLineThrough = null;
         textDecorationBlink = null;
         
-        for(Term t : d.getTermsList()) {
+        for(Term t : d.getTerms()) {
             //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
             //Pokud by se inherit objevilo až například jako třetí term, dojde k ignorování celé deklarace
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     textDecorationType = EnumTextDecoration.inherit;
                     textDecorationUnderline = null;
                     textDecorationOverline = null;
@@ -4618,7 +4618,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("none")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     textDecorationType = EnumTextDecoration.set;
                     textDecorationUnderline = false;
                     textDecorationOverline = false;
@@ -4701,9 +4701,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processTextIndent(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("inherit")) {
                     textIndentType = EnumTextIndent.inherit;
                     textIndentNumberValue = null;
@@ -4711,8 +4711,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     textIndentType = EnumTextIndent.length;
                     textIndentNumberValue = num;
@@ -4720,8 +4720,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 textIndentType = EnumTextIndent.percentage;
                 textIndentNumberValue = null;
                 textIndentPercentValue = percentage;
@@ -4732,9 +4732,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processTextTransform(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("capitalize")) {
                     textTransformType = EnumTextTransform.capitalize;
                     return true;
@@ -4761,9 +4761,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processUnicodeBidi(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("normal")) {
                     unicodeBidiType = EnumUnicodeBidi.normal;
                     return true;
@@ -4786,9 +4786,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processVerticalAlign(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("inherit")) {
                     verticalAlignType = EnumVerticalAlign.inherit;
                     verticalAlignNumberValue = null;
@@ -4844,8 +4844,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isLength()) {
                     verticalAlignType = EnumVerticalAlign.length;
                     verticalAlignNumberValue = num;
@@ -4853,8 +4853,8 @@ public class NodeData implements Cloneable {
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermPercent) {
+                TermPercent percentage = (TermPercent)d.getTerms().get(0);
                 verticalAlignType = EnumVerticalAlign.percentage;
                 verticalAlignNumberValue = null;
                 verticalAlignPercentValue = percentage;
@@ -4865,9 +4865,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processVisibility(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("visible")) {
                     visibilityType = EnumVisibility.visible;
                     return true;
@@ -4890,9 +4890,9 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processWhiteSpace(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("normal")) {
                     whiteSpaceType = EnumWhiteSpace.normal;
                     return true;
@@ -4923,17 +4923,17 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processWidows(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("inherit")) {
                     widowsType = EnumWidows.inherit;
                     widowsIntegerValue = null;
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isInteger()) {
                     widowsType = EnumWidows.integer;
                     widowsIntegerValue = num;
@@ -4945,17 +4945,17 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processWordSpacing(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("inherit")) {
                     wordSpacingType = EnumWordSpacing.inherit;
                     wordSpacingNumberValue = null;
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isNumber()) {
                     wordSpacingType = EnumWordSpacing.length;
                     wordSpacingNumberValue = num;
@@ -4967,25 +4967,25 @@ public class NodeData implements Cloneable {
     }
     
     private Boolean processZIndex(Declaration d) {
-        if(d.getTermsList().size() == 1) {
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+        if(d.getTerms().size() == 1) {
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("inherit")) {
                     zIndexType = EnumZIndex.inherit;
                     zIndexIntegerValue = null;
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTermsList().get(0)).getValue();
+            if(d.getTerms().get(0) instanceof TermIdent) {
+                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
                 if(ident.equalsIgnoreCase("auto")) {
                     zIndexType = EnumZIndex.auto;
                     zIndexIntegerValue = null;
                     return true;
                 }
             }
-            if(d.getTermsList().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTermsList().get(0);
+            if(d.getTerms().get(0) instanceof TermNumber) {
+                TermNumber num = (TermNumber)d.getTerms().get(0);
                 if(num.isInteger()) {
                     zIndexType = EnumZIndex.integer;
                     zIndexIntegerValue = num;
@@ -5000,11 +5000,11 @@ public class NodeData implements Cloneable {
 
         ArrayList<Term> out = new ArrayList<Term>();
         
-        for(Term t : d.getTermsList()) {
+        for(Term t : d.getTerms()) {
             //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
             //Pokud by se inherit objevilo až například jako třetí term, dojde k ignorování celé deklarace
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     contentType = EnumContent.inherit;
                     contentValues.clear();
                     return true;
@@ -5014,7 +5014,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("normal")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     contentType = EnumContent.normal;
                     contentValues.clear();
                     return true;
@@ -5024,7 +5024,7 @@ public class NodeData implements Cloneable {
                 }
             }
             if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("none")) {
-                if(d.getTermsList().size() == 1) {
+                if(d.getTerms().size() == 1) {
                     contentType = EnumContent.none;
                     contentValues.clear();
                     return true;

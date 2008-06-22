@@ -6,74 +6,73 @@ public interface CssParserTreeConstants
 {
   public int JJTSTART = 0;
   public int JJTSTYLESHEET = 1;
-  public int JJTIMPORT_A = 2;
-  public int JJTMEDIA = 3;
-  public int JJTMEDIUM = 4;
-  public int JJTPAGE = 5;
-  public int JJTPSEUDO_PAGE = 6;
-  public int JJTOPERATOR = 7;
-  public int JJTCOMBINATOR = 8;
-  public int JJTUNARY_OPERATOR = 9;
+  public int JJTCHARSET = 2;
+  public int JJTIMPORT_A = 3;
+  public int JJTMEDIA = 4;
+  public int JJTMEDIUM = 5;
+  public int JJTRULESET = 6;
+  public int JJTPAGE = 7;
+  public int JJTPSEUDO_PAGE = 8;
+  public int JJTDECLARATION = 9;
   public int JJTPROPERTY = 10;
-  public int JJTRULESET = 11;
-  public int JJTSELECTOR = 12;
-  public int JJTSIMPLE_SELECTOR = 13;
-  public int JJTCLASS_A = 14;
-  public int JJTELEMENT_NAME = 15;
-  public int JJTATTRIB = 16;
-  public int JJTPSEUDO = 17;
-  public int JJTPFUNCTION = 18;
-  public int JJTDECLARATION = 19;
-  public int JJTPRIO = 20;
-  public int JJTEXPR = 21;
-  public int JJTTERM = 22;
-  public int JJTFUNCTION = 23;
-  public int JJTHEXCOLOR = 24;
-  public int JJTCHARSET = 25;
-  public int JJTEQUAL = 26;
-  public int JJTINCLUDES = 27;
-  public int JJTDASHMATCH = 28;
-  public int JJTCOMMA = 29;
-  public int JJTSLASH = 30;
-  public int JJTHASH = 31;
-  public int JJTIDENT = 32;
-  public int JJTSTRING = 33;
-  public int JJTURI = 34;
-  public int JJTNUMBER = 35;
-  public int JJTPERCENTAGE = 36;
-  public int JJTLENGTHPX = 37;
-  public int JJTLENGTHCM = 38;
-  public int JJTLENGTHMM = 39;
-  public int JJTLENGTHPT = 40;
-  public int JJTLENGTHPC = 41;
-  public int JJTEMS = 42;
-  public int JJTEXS = 43;
-  public int JJTANGLEDEG = 44;
-  public int JJTANGLERAD = 45;
-  public int JJTANGLEGRAD = 46;
-  public int JJTTIMEMS = 47;
-  public int JJTTIMES = 48;
-  public int JJTFREQHZ = 49;
-  public int JJTFREQKHZ = 50;
-  public int JJTPLUS = 51;
-  public int JJTMINUS = 52;
-  public int JJTGREATER = 53;
-  public int JJTFUNCTION_BEGIN = 54;
+  public int JJTSELECTOR = 11;
+  public int JJTSIMPLE_SELECTOR = 12;
+  public int JJTCLASS_A = 13;
+  public int JJTELEMENT_NAME = 14;
+  public int JJTATTRIB = 15;
+  public int JJTPSEUDO = 16;
+  public int JJTPFUNCTION = 17;
+  public int JJTOPERATOR = 18;
+  public int JJTCOMBINATOR = 19;
+  public int JJTUNARY_OPERATOR = 20;
+  public int JJTPRIO = 21;
+  public int JJTEXPR = 22;
+  public int JJTTERM = 23;
+  public int JJTFUNCTION = 24;
+  public int JJTMINUS = 25;
+  public int JJTFUNCTION_BEGIN = 26;
+  public int JJTEQUAL = 27;
+  public int JJTINCLUDES = 28;
+  public int JJTDASHMATCH = 29;
+  public int JJTCOMMA = 30;
+  public int JJTSLASH = 31;
+  public int JJTHEXCOLOR = 32;
+  public int JJTIDENT = 33;
+  public int JJTSTRING = 34;
+  public int JJTURI = 35;
+  public int JJTNUMBER = 36;
+  public int JJTPERCENTAGE = 37;
+  public int JJTLENGTHPX = 38;
+  public int JJTLENGTHCM = 39;
+  public int JJTLENGTHMM = 40;
+  public int JJTLENGTHPT = 41;
+  public int JJTLENGTHPC = 42;
+  public int JJTEMS = 43;
+  public int JJTEXS = 44;
+  public int JJTANGLEDEG = 45;
+  public int JJTANGLERAD = 46;
+  public int JJTANGLEGRAD = 47;
+  public int JJTTIMEMS = 48;
+  public int JJTTIMES = 49;
+  public int JJTFREQHZ = 50;
+  public int JJTFREQKHZ = 51;
+  public int JJTHASH = 52;
+  public int JJTPLUS = 53;
+  public int JJTGREATER = 54;
 
 
   public String[] jjtNodeName = {
     "start",
     "stylesheet",
+    "charset",
     "import_a",
     "media",
     "medium",
+    "ruleset",
     "page",
     "pseudo_page",
-    "operator",
-    "combinator",
-    "unary_operator",
+    "declaration",
     "property",
-    "ruleset",
     "selector",
     "simple_selector",
     "class_a",
@@ -81,19 +80,21 @@ public interface CssParserTreeConstants
     "attrib",
     "pseudo",
     "pfunction",
-    "declaration",
+    "operator",
+    "combinator",
+    "unary_operator",
     "prio",
     "expr",
     "term",
     "function",
-    "hexcolor",
-    "charset",
+    "minus",
+    "function_begin",
     "equal",
     "includes",
     "dashmatch",
     "comma",
     "slash",
-    "hash",
+    "hexcolor",
     "ident",
     "string",
     "uri",
@@ -113,9 +114,8 @@ public interface CssParserTreeConstants
     "times",
     "freqhz",
     "freqkhz",
+    "hash",
     "plus",
-    "minus",
     "greater",
-    "function_begin",
   };
 }

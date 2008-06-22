@@ -22,65 +22,53 @@ public interface CssParserConstants {
   int string = 16;
   int invalid = 17;
   int url = 18;
-  int ss = 19;
-  int w = 20;
-  int NL = 21;
-  int A = 22;
-  int C = 23;
-  int D = 24;
-  int E = 25;
-  int G = 26;
-  int H = 27;
-  int I = 28;
-  int K = 29;
-  int M = 30;
-  int N = 31;
-  int O = 32;
-  int P = 33;
-  int R = 34;
-  int S = 35;
-  int T = 36;
-  int X = 37;
-  int Z = 38;
-  int BLANK = 39;
-  int CDO = 40;
-  int CDC = 41;
-  int EQUAL = 42;
-  int INCLUDES = 43;
-  int DASHMATCH = 44;
-  int LBRACE = 45;
-  int PLUS = 46;
-  int MINUS = 47;
-  int GREATER = 48;
-  int COMMA = 49;
-  int STRING = 50;
-  int INVALID = 51;
-  int IDENT = 52;
-  int HASH = 53;
-  int IMPORT_SYM = 54;
-  int PAGE_SYM = 55;
-  int MEDIA_SYM = 56;
-  int CHARSET_SYM = 57;
-  int IMPORTANT_SYM = 58;
-  int EMS = 59;
-  int EXS = 60;
-  int LENGTHPX = 61;
-  int LENGTHCM = 62;
-  int LENGTHMM = 63;
-  int LENGTHPT = 64;
-  int LENGTHPC = 65;
-  int ANGLEDEG = 66;
-  int ANGLERAD = 67;
-  int ANGLEGRAD = 68;
-  int TIMEMS = 69;
-  int TIMES = 70;
-  int FREQHZ = 71;
-  int FREQKHZ = 72;
-  int DIMENSION = 73;
-  int PERCENTAGE = 74;
-  int NUMBER = 75;
-  int URI = 76;
-  int FUNCTION = 77;
+  int SPACE = 19;
+  int WHITECHAR = 20;
+  int LBRACE_CHAR = 21;
+  int RBRACE_CHAR = 22;
+  int SEMICOLON_CHAR = 23;
+  int NL = 24;
+  int BLANK = 25;
+  int CDO = 26;
+  int CDC = 27;
+  int EQUAL = 28;
+  int INCLUDES = 29;
+  int DASHMATCH = 30;
+  int LBRACE = 31;
+  int RBRACE = 32;
+  int SEMICOLON = 33;
+  int PLUS = 34;
+  int MINUS = 35;
+  int GREATER = 36;
+  int COMMA = 37;
+  int STRING = 38;
+  int INVALID = 39;
+  int IDENT = 40;
+  int HASH = 41;
+  int IMPORT_SYM = 42;
+  int PAGE_SYM = 43;
+  int MEDIA_SYM = 44;
+  int CHARSET_SYM = 45;
+  int IMPORTANT_SYM = 46;
+  int EMS = 47;
+  int EXS = 48;
+  int LENGTHPX = 49;
+  int LENGTHCM = 50;
+  int LENGTHMM = 51;
+  int LENGTHPT = 52;
+  int LENGTHPC = 53;
+  int ANGLEDEG = 54;
+  int ANGLERAD = 55;
+  int ANGLEGRAD = 56;
+  int TIMEMS = 57;
+  int TIMES = 58;
+  int FREQHZ = 59;
+  int FREQKHZ = 60;
+  int DIMENSION = 61;
+  int PERCENTAGE = 62;
+  int NUMBER = 63;
+  int URI = 64;
+  int FUNCTION = 65;
 
   int DEFAULT = 0;
 
@@ -104,26 +92,12 @@ public interface CssParserConstants {
     "<string>",
     "<invalid>",
     "<url>",
-    "<ss>",
-    "<w>",
+    "<SPACE>",
+    "<WHITECHAR>",
+    "\"{\"",
+    "\"}\"",
+    "\";\"",
     "<NL>",
-    "<A>",
-    "<C>",
-    "<D>",
-    "<E>",
-    "<G>",
-    "<H>",
-    "<I>",
-    "<K>",
-    "<M>",
-    "<N>",
-    "<O>",
-    "<P>",
-    "<R>",
-    "<S>",
-    "<T>",
-    "<X>",
-    "<Z>",
     "<BLANK>",
     "\"<!--\"",
     "\"-->\"",
@@ -131,6 +105,8 @@ public interface CssParserConstants {
     "\"~=\"",
     "\"|=\"",
     "<LBRACE>",
+    "<RBRACE>",
+    "<SEMICOLON>",
     "<PLUS>",
     "<MINUS>",
     "<GREATER>",
@@ -139,10 +115,10 @@ public interface CssParserConstants {
     "<INVALID>",
     "<IDENT>",
     "<HASH>",
-    "<IMPORT_SYM>",
-    "<PAGE_SYM>",
-    "<MEDIA_SYM>",
-    "<CHARSET_SYM>",
+    "\"@import\"",
+    "\"@page\"",
+    "\"@media\"",
+    "\"@charset \"",
     "<IMPORTANT_SYM>",
     "<EMS>",
     "<EXS>",
@@ -163,8 +139,6 @@ public interface CssParserConstants {
     "<NUMBER>",
     "<URI>",
     "<FUNCTION>",
-    "\";\"",
-    "\"}\"",
     "\":\"",
     "\".\"",
     "\"*\"",

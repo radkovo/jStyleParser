@@ -1,18 +1,11 @@
 package cz.vutbr.web.csskit;
 
-import cz.vutbr.web.css.Declaration;
-import cz.vutbr.web.css.StylesheetNotValidException;
-import cz.vutbr.web.css.Term;
-import cz.vutbr.web.css.TermColor;
-import cz.vutbr.web.css.TermFunction;
-import cz.vutbr.web.css.TermIdent;
-import cz.vutbr.web.css.TermNumber;
-import cz.vutbr.web.css.TermPercent;
-import cz.vutbr.web.css.TermString;
-import cz.vutbr.web.css.TermUri;
-import cz.vutbr.web.csskit.parser.SimpleNode;
+import java.util.Collections;
+import java.util.List;
 
-import java.util.ArrayList;
+import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.StyleSheetNotValidException;
+import cz.vutbr.web.css.Term;
 
 /**
  * Declaration
@@ -20,45 +13,20 @@ import java.util.ArrayList;
  */
 public class DeclarationImpl implements Declaration {
 
-    private String property;
-    private ArrayList<Term> termsList = new ArrayList<Term>();
-    private boolean important = false;
-    private String toString = null;
 
-    public boolean isImportant() {
-        return important;
-    }
+	protected String property;
+	protected List<Term> terms;
+	protected boolean important;
 
-    public void setImportant(boolean important) {
-        this.important = important;
-        toString = null;
-    }
-
-    public ArrayList<Term> getTermsList() {
-        return termsList;
-    }
-
-    public String getProperty() {
-        return property;
-    }
-
-    public void setProperty(String property) {
-        if (property == null) {
-            throw new NullPointerException();
-        } else {
-            this.property = property;
-            toString = null;
-        }
-    }
-
-    public DeclarationImpl(String property) {
-        if (property == null) {
-            throw new NullPointerException();
-        } else {
-            this.property = property;
-        }
-    }
-
+	public DeclarationImpl() {
+		this.property = "";
+		this.terms = Collections.emptyList();
+		this.important = false;
+	}
+	
+	
+	
+	/*
     protected DeclarationImpl(SimpleNode n) {
         property = ((SimpleNode) n.jjtGetChild(0).jjtGetChild(0)).getImage();
 
@@ -71,15 +39,7 @@ public class DeclarationImpl implements Declaration {
         Term.EnumOperator tmpOperator = null;
         for (int i = 0; i < n.jjtGetChild(1).jjtGetNumChildren(); i++) {
             SimpleNode cNode = (SimpleNode) n.jjtGetChild(1).jjtGetChild(i);
-
-            if (cNode.getType().equals("operator")) {
-                if (cNode.jjtGetNumChildren() == 0) {
-                    tmpOperator = Term.EnumOperator.space;
-                } else if (((SimpleNode) cNode.jjtGetChild(0)).getType().equals("slash")) {
-                    tmpOperator = Term.EnumOperator.slash;
-                } else if (((SimpleNode) cNode.jjtGetChild(0)).getType().equals("comma")) {
-                    tmpOperator = Term.EnumOperator.comma;
-                }
+            
 
             } else {
                 TermColor color = TermColorImpl.getColorByNode(cNode);
@@ -88,36 +48,8 @@ public class DeclarationImpl implements Declaration {
                     termsList.add(color);
                     continue;
                 }
-                TermNumber number = TermNumberImpl.getNumberByNode(cNode);
-                if (number != null) {
-                    number.setOperator(tmpOperator);
-                    termsList.add(number);
-                    continue;
-                }
-                TermPercent percent = TermPercentImpl.getPercentByNode(cNode);
-                if (percent != null) {
-                    percent.setOperator(tmpOperator);
-                    termsList.add(percent);
-                    continue;
-                }
-                TermUri uri = TermUriImpl.getUriByNode(cNode);
-                if (uri != null) {
-                    uri.setOperator(tmpOperator);
-                    termsList.add(uri);
-                    continue;
-                }
-                TermString value = TermStringImpl.getStringByNode(cNode);
-                if (value != null) {
-                    value.setOperator(tmpOperator);
-                    termsList.add(value);
-                    continue;
-                }
-                TermIdent ident = TermIdentImpl.getIdentByNode(cNode);
-                if (ident != null) {
-                    ident.setOperator(tmpOperator);
-                    termsList.add(ident);
-                    continue;
-                }
+                
+
                 TermFunction function = TermFunctionImpl.getFunctionByNode(cNode);
                 if (function != null) {
                     function.setOperator(tmpOperator);
@@ -127,39 +59,141 @@ public class DeclarationImpl implements Declaration {
             }
         }
     }
+	*/
 
-    public String toString(int depth) {
-        if (toString != null) {
-            return toString;
-        }
-        String out = "";
-        for (int i = 0; i < (depth); i++) {
-            out += "\t";
-        }
-        out += property + ": ";
-        for (Term term : termsList) {
-            out += term.toString();
-        }
-        out += ";\n";
-        toString = out;
-        return out;
+    /**
+	 * @return the property
+	 */
+	public String getProperty() {
+		return property;
+	}
+
+
+
+	/**
+	 * @param property the property to set
+	 */
+	public void setProperty(String property) {
+		this.property = property;
+	}
+
+
+
+	/**
+	 * @return the terms
+	 */
+	public List<Term> getTerms() {
+		return terms;
+	}
+
+
+
+	/**
+	 * @param terms the terms to set
+	 */
+	public void setTerms(List<Term> terms) {
+		this.terms = terms;
+	}
+
+
+
+	/**
+	 * @return the important
+	 */
+	public boolean isImportant() {
+		return important;
+	}
+
+
+
+	/**
+	 * @param important the important to set
+	 */
+	public void setImportant(boolean important) {
+		this.important = important;
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (important ? 1231 : 1237);
+		result = prime * result
+				+ ((property == null) ? 0 : property.hashCode());
+		result = prime * result + ((terms == null) ? 0 : terms.hashCode());
+		return result;
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof DeclarationImpl))
+			return false;
+		final DeclarationImpl other = (DeclarationImpl) obj;
+		if (important != other.important)
+			return false;
+		if (property == null) {
+			if (other.property != null)
+				return false;
+		} else if (!property.equals(other.property))
+			return false;
+		if (terms == null) {
+			if (other.terms != null)
+				return false;
+		} else if (!terms.equals(other.terms))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return this.toString(0);
+	}
+	
+
+	public String toString(int depth) {
+		
+		StringBuilder sb = new StringBuilder();
+		
+		// add property
+		sb = OutputUtil.appendTimes(sb, OutputUtil.DEPTH_DELIM, depth);
+		sb.append(property).append(OutputUtil.PROPERTY_OPENING);
+		
+		// add terms
+		sb = OutputUtil.appendList(sb, terms, OutputUtil.EMPTY_DELIM)
+				.append(OutputUtil.PROPERTY_CLOSING);
+		
+        return sb.toString();
     }
 
-    public void check(String path) throws StylesheetNotValidException {
+    public void check(String path) throws StyleSheetNotValidException {
         if (property.trim().equals("")) {
-            throw new StylesheetNotValidException("Empty string as property name", path);
+            throw new StyleSheetNotValidException("Empty string as property name", path);
         }
         String pathNew = path + " -> Declaration(" + property + ")";
-        if (termsList.isEmpty()) {
-            throw new StylesheetNotValidException("Declaration without values", pathNew);
+        if (terms.isEmpty()) {
+            throw new StyleSheetNotValidException("Declaration without values", pathNew);
         }
-        for (int i = 0; i < termsList.size(); i++) {
-            Term term = termsList.get(i);
+        for (int i = 0; i < terms.size(); i++) {
+            Term term = terms.get(i);
             if (i == 0 && term.getOperator() != null) {
                 term.setOperator(null); //Fix error
             }
             if (i != 0 && term.getOperator() == null) {
-                throw new StylesheetNotValidException("Value without operator!", pathNew);
+                throw new StyleSheetNotValidException("Value without operator!", pathNew);
             }
         }
     }

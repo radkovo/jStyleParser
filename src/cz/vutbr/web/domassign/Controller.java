@@ -1,7 +1,7 @@
 package cz.vutbr.web.domassign;
 
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.StylesheetNotValidException;
+import cz.vutbr.web.css.StyleSheetNotValidException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -21,9 +21,9 @@ public class Controller {
      * @param media medium pro které se ohodnocení provádí
      * @param thread počet vláken pro zpracování
      * @return mapa obsahující pro každý element stromu objekt třídy NodeData
-     * @throws cz.vutbr.web.css.StylesheetNotValidException
+     * @throws cz.vutbr.web.css.StyleSheetNotValidException
      */
-    public static HashMap<Element, NodeData> process(Document doc, StyleSheet styleSheet, String media) throws StylesheetNotValidException {
+    public static HashMap<Element, NodeData> process(Document doc, StyleSheet styleSheet, String media) throws StyleSheetNotValidException {
         //Analyzer vyhledá všechny deklarace odpovídajícím elementům a seřadí je
         HashMap<Element, ArrayList<AssignedDeclaration>> assignedDeclarations = Analyzer.analyze(doc, styleSheet, media);
        

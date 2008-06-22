@@ -5,20 +5,21 @@ import java.util.List;
 /**
  * Declaration
  * @author Jan Svercl, VUT Brno, 2008
+ * 			modified by Karel Piwko, 2008
+ * @version 1.0 * Modified to implement Rule interface
  */
-public interface Declaration {
+public interface Declaration extends Rule {
 
     public boolean isImportant();
     
     public void setImportant(boolean important);
     
-    public List<Term> getTermsList();
+    public List<Term> getTerms();
 
+    public void setTerms(List<Term> terms);
+    
     public String getProperty();
 
     public void setProperty(String property);
     
-    public String toString(int depth);
-    
-    public void check(String path) throws StylesheetNotValidException;
 }

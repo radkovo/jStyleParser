@@ -8,28 +8,13 @@ import cz.vutbr.web.css.Term;
  */
 public abstract class TermImpl implements Term {
 
-    private EnumOperator operator = null;
+    protected Operator operator = null;
     
-    public EnumOperator getOperator() {
+    public Operator getOperator() {
         return operator;
     }
 
-    public void setOperator(EnumOperator operator) {
+    public void setOperator(Operator operator) {
         this.operator = operator;
-    }
-    
-    public String operator(String term) {
-        String out = "";
-        if(operator == EnumOperator.space) {
-            out += " ";
-        }
-        else if(operator == EnumOperator.slash) {
-            out += "/";
-        }
-        else if(operator == EnumOperator.comma) {
-            out += ", ";
-        }
-        out += term;
-        return out;
-    }
+    }    
 }

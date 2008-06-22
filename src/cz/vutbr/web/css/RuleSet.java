@@ -3,16 +3,36 @@ package cz.vutbr.web.css;
 import java.util.List;
 
 /**
- * RuleSet
+ * Holds set of CSS selectors and CSS declaration rules.
  * @author Jan Svercl, VUT Brno, 2008
+ * 			modified by Karel Piwko
+ * @version 1.0 * Added setter methods
+ * 				 * Renamed methods to reach naming consistency
  */
 public interface RuleSet extends Rule {
 
-    public List<Selector> getSelectorsList();
-
-    public List<Declaration> getDeclarationsList();
+	/**
+	 * Gets selectors of given declaration
+	 * @return Selectors for this rule
+	 */
+    public List<Selector> getSelectors();
     
-    public String toString(int depth);
+    /**
+     * Gets declarations of this rule
+     * @return Declarations included in this rule
+     */
+    public List<Declaration> getDeclarations();
     
-    public void check(String path) throws StylesheetNotValidException;
+    /**
+     * Sets selectors of this rule
+     * @param selectors Selectors to be set
+     */
+    public void setSelectors(List<Selector> selectors);
+    
+    /**
+     * Set declarations of this rule
+     * @param declarations Declarations to be set
+     */
+    public void setDeclarations(List<Declaration> declarations);
+    
 }

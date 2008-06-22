@@ -17,21 +17,42 @@ import org.apache.log4j.Logger;
 import java.io.StringReader;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.ImportURI;
 import cz.vutbr.web.css.StyleSheet;
+import cz.vutbr.web.css.RuleMedia;
+import cz.vutbr.web.css.RuleSet;
+import cz.vutbr.web.css.RulePage;
+import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.Selector;
+import cz.vutbr.web.css.SimpleSelector;
+import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.TermIdent;
+import cz.vutbr.web.css.TermNumber;
+import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.csskit.StyleSheetImpl;
 import cz.vutbr.web.csskit.RuleSetImpl;
 import cz.vutbr.web.csskit.RuleMediaImpl;
 import cz.vutbr.web.csskit.RulePageImpl;
+import cz.vutbr.web.csskit.DeclarationImpl;
+import cz.vutbr.web.csskit.SelectorImpl;
+import cz.vutbr.web.csskit.SimpleSelectorImpl;
 import cz.vutbr.web.csskit.ImportURIImpl;
+import cz.vutbr.web.csskit.TermStringImpl;
+import cz.vutbr.web.csskit.TermIdentImpl;
+import cz.vutbr.web.csskit.TermUriImpl;
+import cz.vutbr.web.csskit.TermNumberImpl;
+import cz.vutbr.web.csskit.TermPercentImpl;
+import cz.vutbr.web.csskit.TermColorImpl;
+import cz.vutbr.web.csskit.SSTypeImpl;
 
 /**
  * Parser of CSS passed as InputStream, Reader or directly as String.
  * Successful parsing creates StyleSheet  	
  */
-@SuppressWarnings("all")
+//@SuppressWarnings("all")
 public class CssParser {
 	
 	private static Logger log = Logger.getLogger(CssParser.class);
@@ -56,20 +77,53 @@ public class CssParser {
 	}
 	
 	/**
-	 * Error recovery.
-	 * Skip to given token in case of error
+	 * Returns StyleSheet from input set by constructor.
+	 *   
+	 * @return StyleSheet according to the input
+	 * @throws StyleSheetNotValidException in case of error
 	 */
-	private void errorSkipTo(int kind) {
+	public StyleSheet parse() throws StyleSheetNotValidException {
+		try {
+			return this.start();
+		}
+		catch (ParseException e) {
+			log.error("Parse exception at top level, this should not happen!\n"
+				+ e);
+			throw new StyleSheetNotValidException("Not a valid stylesheet!"); 
+		}
+	}
+		
+	/**
+	 * Error recovery.
+	 * Skip to given token in case of error.
+	 * End of File (EOF) token is added automatically.
+	 * @param message message to be logged
+	 * @param kinds Type(s) of token where to continue  
+	 */
+	private void errorSkipTo(final String message, final int...kinds) {
 	
+		if(log.isInfoEnabled()) {
+			log.info(message);
+		}
+		
 		if(log.isDebugEnabled()) {
 			ParseException e = generateParseException();	
 			log.debug(e);
 		}
 	
+	    // use auto boxing and unboxing, not very pretty 
+		// construct stop tokens
+		// array list should be faster for this situation
+		List<Integer>  stopTokens = new ArrayList<Integer>(kinds.length + 1);
+		for(int i = 0; i < kinds.length; i++)
+			stopTokens.add(new Integer(kinds[i]));
+			
+		stopTokens.add(EOF); 
+	
 		Token t;
 		do {
 			t = getNextToken();
-		}while(t.kind!=kind && t.kind!=EOF);
+		}while(!stopTokens.contains(t.kind));
 		
 	}
 
@@ -103,30 +157,17 @@ TOKEN :
   <#string : <string1>|<string2> > |
   <#invalid : <invalid1>|<invalid2> > |
   <#url : ([";", "!", "#", "$", "%", "&", "*", "-", "~", ".", "/", ":", ",", "=", "?"] | <nmchar> )* > | 
-  <#ss : ([" ", "\t", "\r", "\n", "\f"])+ > |
-  <#w : (<ss>)? > |
+  
+  <#SPACE : ([" ", "\t", "\r", "\n", "\f"])+ > |
+  <#WHITECHAR : (<SPACE>)? > |
 
+  <#LBRACE_CHAR : "{" > |	
+  <#RBRACE_CHAR : "}" > |
+  <#SEMICOLON_CHAR : ";" > |
+  
   <#NL : "\n" | "\r\n" | "\r" | "\f"> |
 
-  <#A : "a" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("41" | "61")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? > |
-  <#C : "c" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("43" | "63")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? > |
-  <#D : "d" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("44" | "64")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? > |
-  <#E : "e" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("45" | "65")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? > |
-  <#G : "g" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("47" | "67")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? | "\\g"> |
-  <#H : "h" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("48" | "68")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? | "\\h"> |
-  <#I : "i" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("49" | "69")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? | "\\i"> |
-  <#K : "k" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("4b" | "6b")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? | "\\k"> |
-  <#M : "m" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("4d" | "6d")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? | "\\m"> |
-  <#N : "n" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("4e" | "6e")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? | "\\n"> |
-  <#O : "o" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("51" | "71")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? | "\\o"> |
-  <#P : "p" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("50" | "70")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? | "\\p"> |
-  <#R : "r" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("52" | "72")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? | "\\r"> |
-  <#S : "s" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("53" | "73")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? | "\\s"> |
-  <#T : "t" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("54" | "74")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? | "\\t"> |
-  <#X : "x" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("58" | "78")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? | "\\x"> |
-  <#Z : "z" | ("\\0")? ("\\0")? ("\\0")? ("\\0")? ("5a" | "7a")  ("\r\n" | [" ", "\t", "\r", "\n", "\f"]) ? | "\\z"> |
-
-  <BLANK : <ss> > |
+  <BLANK : <SPACE> > |
 
   <CDO : "<!--" > |
   <CDC : "-->" > |
@@ -134,23 +175,25 @@ TOKEN :
   <INCLUDES : "~=" > |
   <DASHMATCH : "|=" > |
 
-  <LBRACE : <w> "{" > |
-  <PLUS : <w> "+" > |
-  <MINUS : <w> "-" > |
-  <GREATER : <w> ">" > |
-  <COMMA : <w> "," > |
+  <LBRACE : <WHITECHAR> <LBRACE_CHAR> > |
+  <RBRACE : <WHITECHAR> <RBRACE_CHAR> > |
+  <SEMICOLON: <SEMICOLON_CHAR> > |
+  <PLUS : <WHITECHAR> "+" > |
+  <MINUS : <WHITECHAR> "-" > |
+  <GREATER : <WHITECHAR> ">" > |
+  <COMMA : <WHITECHAR> "," > |
   <STRING : <string> > |
   <INVALID : <invalid> > |
   <IDENT : <ident> > |
 
   <HASH : "#" <name> > |
 
-  <IMPORT_SYM : "@" <I> <M> <P> <O> <R> <T> > |
-  <PAGE_SYM : "@" <P> <A> <G> <E> > |
-  <MEDIA_SYM : "@" <M> <E> <D> <I> <A> > |
-  <CHARSET_SYM : "@" <C> <H> <A> <R> <S> <E> <T> " "> |
+  <IMPORT_SYM : "@import" > |
+  <PAGE_SYM : "@page" > |
+  <MEDIA_SYM : "@media" > |
+  <CHARSET_SYM : "@charset " > |
 
-  <IMPORTANT_SYM : "!" (<w>|<comment>)* <I> <M> <P> <O> <R> <T> <A> <N> <T> > |
+  <IMPORTANT_SYM : "!" (<WHITECHAR>|<comment>)* "important" > |
 
   <EMS : <num> "em" > |
   <EXS : <num> "ex" > |
@@ -172,7 +215,7 @@ TOKEN :
   <PERCENTAGE : <num> "%" > |
   <NUMBER : <num> > |
 
-  <URI : ("url(" <w> <string> <w> ")") | ("url("<w> <url> <w> ")") > |
+  <URI : ("url(" <WHITECHAR> <string> <WHITECHAR> ")") | ("url("<WHITECHAR> <url> <WHITECHAR> ")") > |
   <FUNCTION : <ident> "(" >
 }
 
@@ -183,114 +226,370 @@ TOKEN :
  * @see StyleSheet
  */
 StyleSheet start() :
-{StyleSheet stylesheet = new StyleSheetImpl();}
 {
-  stylesheet() <EOF>
-  { 
-  stylesheet.setCharset(charset);
-  stylesheet.setImports(imports);
-  stylesheet.setRules(rules);
+	StyleSheet stylesheet = new StyleSheetImpl();
+}
+{
+	stylesheet() <EOF>
+  	{ 
+  		stylesheet.setCharset(charset);
+  		stylesheet.setImports(imports);
+  		stylesheet.setRules(rules);
   
-  return stylesheet; 
-  }
+  		return stylesheet; 
+  	}
 }
 
 void stylesheet() :
 {}
 {
-  ( charset() )?
-  (<BLANK> | <CDO> | <CDC>)* ( import_a() (<BLANK> | <CDO> | <CDC> )* )*
-  ( ( ruleset() | media() | page() ) (<BLANK> | <CDO> | <CDC>)* )*
-  /* Reseni bez Lookahead, bohuzel pomalejsi */
-  /*( ( ruleset() | media() | page() ) [<CDO> (<BLANK> | <CDO> | <CDC>)* | <CDC> (<BLANK> | <CDO> | <CDC>)*] )*  */
-}
-
-void import_a() :
-{}
-{ 
-  <IMPORT_SYM> (<BLANK>)*
-  [string() | uri()] (<BLANK>)* ( medium() (<COMMA> (<BLANK>)* medium())* )? ";" (<BLANK>)*
-  
-  { imports.add(new ImportURIImpl(jjtThis)); }
-}
-
-void media() :
-{}
-{
-  <MEDIA_SYM> (<BLANK>)* medium() ( <COMMA> (<BLANK>)* medium() )* <LBRACE> (<BLANK>)* (ruleset())* "}" (<BLANK>)*
-  
-  { rules.add(new RuleMediaImpl(jjtThis)); }
-}
-
-void medium() :
-{}
-{
-  ident() (<BLANK>)*
-}
-
-void page() :
-{}
-{
-  <PAGE_SYM> (<BLANK>)* (pseudo_page())? (<BLANK>)*
-    <LBRACE> (<BLANK>)* declaration() ( ";" (<BLANK>)* declaration() )* "}" (<BLANK>)*
-    
-  { rules.add(new RulePageImpl(jjtThis)); }
-}
-
-void pseudo_page() :
-{}
-{
-  ":" ident()
-}
-
-void operator() :
-{}
-{
-  ( slash() (<BLANK>)* | comma() (<BLANK>)* )?
-}
-
-void combinator() :
-{}
-{
-  plus() (<BLANK>)* | greater() (<BLANK>)* | <BLANK>
-}
-
-void unary_operator() :
-{}
-{
-  minus() | plus()
-}
-
-void property() :
-{}
-{
-  ident() (<BLANK>)*
+	try {
+  		( charset() )?
+  		(<BLANK> | <CDO> | <CDC>)* 
+  		( import_a() (<BLANK> | <CDO> | <CDC> )* )*
+  		( 
+  			( 	ruleset(this.rules) | 
+  				media() | 
+  				page() 
+  			) 
+  			(<BLANK> | <CDO> | <CDC>)* 
+  		)*
+  	}
+  	catch (ParseException e) {
+  		throw e;
+  	}
 }
 
 /**
- * Inserts rule into stylesheet
- * TODO change to be more error-prone
+ * Internally sets charset of document. 
  */
-void ruleset() :
-{}
+void charset() :
+{String currentCharset = null;}
 {
-  selector() ( <COMMA> (<BLANK>)* selector() )*
-  <LBRACE> (<BLANK>)* declaration() ( ";" (<BLANK>)* declaration() )* "}" (<BLANK>)*
-  
-  { rules.add(new RuleSetImpl(jjtThis));}
+	try {
+  		<CHARSET_SYM> currentCharset = string() <SEMICOLON>
+  		{
+  			charset = currentCharset;
+  		}
+  	}
+  	catch (ParseException e) {
+  		errorSkipTo("Failed to retrive charset", NL, SEMICOLON);
+  	}
 }
 
-void selector() :
-{}
+
+/**
+ * Creates and add new import rule to stylesheet 
+ */
+void import_a() :
 {
-  simple_selector() ( combinator() simple_selector() )*
+	String currentUri = null;
+	ImportURI uri = new ImportURIImpl();
+	List<String> medias = new ArrayList<String>();
+}
+{ 
+	try {
+  		<IMPORT_SYM> (<BLANK>)*
+  		[currentUri=string() | currentUri = uri()] (<BLANK>)* ( medium(medias) (<COMMA> (<BLANK>)* medium(medias))* )? <SEMICOLON> (<BLANK>)*
+  		{	
+  			if(currentUri!=null || !"".equals(currentUri))
+  				uri.setUri(currentUri);
+  			uri.setMedias(medias);
+  			this.imports.add(uri);	
+  		}
+  	}
+  	catch (ParseException e) {
+  		errorSkipTo("Failed parsing importing rule import_a()", NL);
+  	}
 }
 
-void simple_selector() :
-{}
+/**
+ * Creates and sets new media rule to stylesheet
+ */
+void media() :
 {
-  element_name() ( hash() | class_a() | attrib() | pseudo() )*
-  | ( hash() | class_a() | attrib() | pseudo() )+
+	RuleMedia media = new RuleMediaImpl();
+	List<String> medias = new ArrayList<String>();
+	List<? extends Rule> rules = new ArrayList<RuleSet>();
+}
+{
+	try {
+  		<MEDIA_SYM> (<BLANK>)* medium(medias) ( <COMMA> (<BLANK>)* medium(medias) )* <LBRACE> (<BLANK>)* (ruleset( (List<Rule>) rules))* <RBRACE> (<BLANK>)*
+  		{
+  			media.setMedias(medias);
+  			media.setRules( (List<RuleSet>) rules);
+  			this.rules.add(media);
+  		}
+  	}
+  	catch (ParseException e) {
+  		errorSkipTo("Failed parsing media rule media()", RBRACE_CHAR);
+  	}
+}
+
+/**
+ * Adds media to list.
+ * @param medias Current list of associated medias
+ */
+void medium(List<String> medias) :
+{
+	String currentMedia = null;
+}
+{
+	try {
+  		currentMedia = ident() (<BLANK>)*
+  		{
+  			medias.add(currentMedia);
+  		}
+  	}
+  	catch (ParseException e) {
+  		errorSkipTo("Failed to retrieve medium()", SPACE, NL);
+  	}
+  	// trying to add the same element more times
+  	catch (IllegalArgumentException e) {
+		log.warn("Multiple definition of media :" + currentMedia); 
+  	}
+}
+
+/**
+ * Inserts ruleset's rule into rule set
+ * @param rules List of rules where new ruleset will be added
+ */
+void ruleset(List<Rule> rules) :
+{
+	RuleSet rule = new RuleSetImpl();
+	List<Selector> selectors = new ArrayList<Selector>();
+	List<Declaration> declarations = new ArrayList<Declaration>();
+	
+	Selector sel = null;
+	Declaration dec = null;
+}
+{
+	try {
+  		sel = selector() 
+  		{
+  			if(sel!=null) selectors.add(sel);
+  		}
+  		( <COMMA> (<BLANK>)* sel = selector()
+  			{
+  				if(sel!=null) selectors.add(sel);
+  			} 
+  		)*
+  		<LBRACE> 
+  		(<BLANK>)* dec = declaration()
+  			{
+  				// store declaration
+  				if(dec != null) declarations.add(dec);
+  			} 
+  			( <SEMICOLON> (<BLANK>)* dec = declaration()
+  				{
+  					// store another declaration
+  					if(dec != null) declarations.add(dec);
+  				} 
+  			)* 
+  			<RBRACE> (<BLANK>
+  		)*
+  	}
+  	catch (ParseException e) {
+  		errorSkipTo("Failed to retrieve ruleset()", RBRACE_CHAR);
+  	}
+  	// be error graceful to unknown selectors and declarations
+  	finally {
+  		if(selectors.size() > 0 && declarations.size() > 0) {
+  			rule.setSelectors(selectors);
+  			rule.setDeclarations(declarations);
+  			rules.add(rule);
+  		}
+  	}
+}
+
+/**
+ * Inserts page rule as stylesheet rule 
+ */
+void page() :
+{
+	RulePage page = new RulePageImpl();
+	List<Declaration> declarations = new ArrayList<Declaration>();
+	Declaration dec = null;
+	String pseudo = null;
+}
+{
+	try {
+  		<PAGE_SYM> (<BLANK>)* ( pseudo = pseudo_page())? (<BLANK>)*
+    	<LBRACE> 
+    	(<BLANK>)* dec = declaration()
+    		{
+    			// add declaration
+    			if(dec != null) declarations.add(dec);
+    		} 
+    		( <SEMICOLON> (<BLANK>)* dec = declaration()
+    			{
+    				// add declaration
+    				if(dec != null) declarations.add(dec);
+    			} 
+    		)* 
+    	<RBRACE> 
+    	(<BLANK>
+    	)*
+    }
+    catch (ParseException e) {
+		errorSkipTo("Failed to retrieve page()", RBRACE_CHAR);    
+    }
+    // be error graceful to unknown declarations
+  	finally {
+  		if(declarations.size() > 0) {
+  			page.setPseudo(pseudo);
+    		page.setDeclarations(declarations);
+    		this.rules.add(page);
+  		}
+  	}
+}
+
+/**
+ * Retrieve pseudo for page
+ * @return Pseudo of current page
+ */
+String pseudo_page() :
+{
+	String pseudo = null;
+}
+{
+  ":" pseudo = ident() 
+  { 
+  	return pseudo;
+  }
+}
+
+/**
+ * Returns new declaration
+ * @return declaration
+ */
+Declaration declaration() :
+{
+	Declaration declaration = new DeclarationImpl();
+	List<Term> terms = null;
+	String property = null;
+	boolean important = false;
+}
+{
+	try {
+  		( property = property() ":" (<BLANK>)* terms = expr() ( important = prio())? )?
+  	}
+  	catch (ParseException e) {
+  		errorSkipTo("Failed to read declaration", NL, SEMICOLON, RBRACE_CHAR);
+  	}
+  	finally {
+  		if(terms==null && property==null)
+  		 	return null;
+  	
+  		declaration.setImportant(important);
+		declaration.setProperty(property);
+		declaration.setTerms(terms);
+  			
+		if(log.isDebugEnabled()) {
+			log.debug("Having declaration of property: " + property +
+  				", and " + declaration.getTerms().size() + " terms " + terms);
+  		}
+  		return declaration;
+  	}
+}
+
+
+/**
+ * Returns name of property
+ * @return Name of property
+ */
+String property() :
+{
+	String currentProperty = null;
+}
+{
+  	currentProperty = ident() (<BLANK>)* { return currentProperty;}
+}
+
+/**
+ * Returns selector for given rules
+ * @return Selector 
+ */
+Selector selector() :
+{
+	Selector s = new SelectorImpl();
+	List<SimpleSelector> ss = new ArrayList<SimpleSelector>();
+	SimpleSelector selector = null;
+	SimpleSelector.Combinator c = null;
+}
+{
+	try {
+  		selector=simple_selector()
+  			{
+  				if(selector!=null) ss.add(selector); 
+  			} 
+  		( 
+  			c = combinator() {
+  				if(log.isTraceEnabled()) {
+  					log.trace("Combinator: " + c);
+  				}
+  			}
+  			selector = simple_selector()
+  				{
+  					if(selector!=null) {
+  						selector.setCombinator(c);
+  						ss.add(selector);
+  					}
+  				} 
+  		)*
+  	}
+  	catch(ParseException e) {
+  		errorSkipTo("Unable to get selector", SPACE, LBRACE_CHAR);
+  	}
+  	finally {
+  		if(log.isDebugEnabled()) {
+  			log.debug("Having selectors(" + ss.size() + "): " + ss);
+  		}
+  		s.setSimpleSelectors(ss);
+  		return s;
+  	}
+}
+
+/**
+ * Returns simple selector
+ * @return Simple selector as a part of Selector
+ * TODO other
+ */
+SimpleSelector simple_selector() :
+{
+	SimpleSelector s = new SimpleSelectorImpl();
+	String value = null;
+}
+{
+	try {
+  		value = element_name()
+  			{
+  				if(log.isTraceEnabled())
+  					log.trace("ElementName: " + value);
+  				s.setFirstItem(new SSTypeImpl(value));
+  			} 
+  		( 
+  			hash() {log.trace("1hash");}| 
+  			class_a() {log.trace("1class");}| 
+  			attrib() {log.trace("1attrib");}| 
+  			pseudo()  {log.trace("1pseudo");}
+  		)*| 
+  		( 
+  			hash() {log.trace("2hash");}| 
+  			class_a() {log.trace("2class");}| 
+  			attrib() {log.trace("2attrib");}| 
+  			pseudo() {log.trace("2pseudo");}
+  		)+
+  	}
+  	catch(ParseException e) {
+  		errorSkipTo("Unable to get simple selector", SPACE, LBRACE_CHAR);
+  	}
+  	finally {
+  		if(log.isTraceEnabled()) {
+  			log.trace("SimpleSelector: " + s);
+  		}
+  		return s;
+  	}
 }
 
 void class_a() :
@@ -299,10 +598,16 @@ void class_a() :
   "." ident()
 }
 
-void element_name() :
-{}
+/**
+ * Returns name of element for selector.
+ * @return Name of element or asterisk
+ */
+String element_name() :
 {
-  ident() | "*"
+	String element = null;
+}
+{
+  	element=ident() { return element;} | "*" {return "*";}
 }
 
 void attrib() :
@@ -324,32 +629,221 @@ void pfunction() :
   function_begin() (<BLANK>)* [ident()] (<BLANK>)* ")"
 }
 
-void declaration() :
-{}
+/**
+ * Returns operator between terms
+ */
+Term.Operator operator() :
 {
-  (property() ":" (<BLANK>)* expr() (prio())?)?
+	Term.Operator op = Term.Operator.SPACE;
+}
+{
+	try {
+  		( 
+  			op = slash() (<BLANK>)* { return op;} | 
+  			op = comma() (<BLANK>)* { return op;} 
+  		)?
+  		{ return op;}
+  	}
+  	catch (ParseException e) {
+  		errorSkipTo("Failed to get operator", RBRACE_CHAR, NL, SEMICOLON, SPACE);
+  		return Term.Operator.SPACE;
+  	}
+  {
+  	return op;
+  }
 }
 
-void prio() :
-{}
+/**
+ * Returns combinator between selectors
+ */
+SimpleSelector.Combinator combinator() :
 {
-  <IMPORTANT_SYM> (<BLANK>)*
+	SimpleSelector.Combinator c = SimpleSelector.Combinator.SPACE;
+}
+{
+	try {
+  		c=plus() (<BLANK>)* { return c;} | 
+  		c=greater() (<BLANK>)* {return c;} | 
+  		<BLANK> {return c;}
+  	}
+  	catch (ParseException e) {
+  		errorSkipTo("Failed to get combinator", LBRACE_CHAR, SPACE, COMMA);
+  		return SimpleSelector.Combinator.SPACE;
+  	}
 }
 
-void expr() :
+/**
+ * If unary operator is found, returns value
+ * which is used to multiply current numeric value
+ * @return <code>-1</code> for <code>minus</code>
+ * and <code>1</code> for <code>plus</code>
+ */
+int unary_operator() :
 {}
 {
-  term() ( operator() term() )*
+  	minus() { return -1; } | plus() { return 1; }
 }
 
-void term() :
+/**
+ * Return true if priority !important found
+ * @return <code>true</code> if node found
+ */
+boolean prio() :
 {}
 {
-  [ unary_operator() ]
-    ( number() (<BLANK>)* | percentage() (<BLANK>)* | lengthpx() (<BLANK>)* | lengthcm() (<BLANK>)* | lengthmm() (<BLANK>)* | 
-      lengthpt() (<BLANK>)* | lengthpc() (<BLANK>)* | ems() (<BLANK>)* | exs() (<BLANK>)* | angledeg() (<BLANK>)* | anglerad() (<BLANK>)* | anglegrad() (<BLANK>)* |
-      timems() (<BLANK>)* | times() (<BLANK>)* | freqhz() (<BLANK>)* | freqkhz() (<BLANK>)* )
-    | string() (<BLANK>)* | ident() (<BLANK>)* | uri() (<BLANK>)* | hexcolor() | function()
+  <IMPORTANT_SYM> (<BLANK>)* { return true;}
+}
+
+/**
+ * Returns list of terms
+ * @return List of terms
+ */
+List<Term> expr() :
+{
+	List<Term> terms = new ArrayList<Term>();
+	Term.Operator op = null;
+	Term term = null;
+}
+{
+	try {
+  		term = term() 
+  		{
+  			if(term!=null) {
+  				term.setOperator(op);
+  				terms.add(term);
+  			}	
+  		}
+  		( op = operator() term = term() 
+  			{
+  				if(term!=null) {
+					term.setOperator(op);
+					terms.add(term);
+				}  				
+  			}
+  		)*
+  	}
+  	// even in case of error return currently parsed terms
+  	catch (ParseException e) {
+  		errorSkipTo("Failed to retrieve term", SEMICOLON, NL);
+  	}
+  	finally {
+  		// return all parsed terms
+  		if(log.isTraceEnabled()) {
+  			log.trace("Total terms returned for expression: " + terms.size());
+  		}
+  		return terms;
+  	}
+}
+
+Term term() :
+{
+	
+	Term term = null;
+	int unary = 1;
+	String value = null;
+}
+{
+	try {
+		[ unary = unary_operator() ]
+		(	value = number() (<BLANK>)* 
+				{
+					term = new TermNumberImpl(value, null, unary);	
+				} | 
+			value = percentage() (<BLANK>)* 
+				{
+					term = new TermPercentImpl(value, unary);
+				} | 
+   			value = lengthpx() (<BLANK>)* 
+   				{ 
+   					term = new TermNumberImpl(value, TermNumber.Unit.px, unary); 
+   				} | 
+   			value = lengthcm() (<BLANK>)* 
+   				{
+   					term = new TermNumberImpl(value, TermNumber.Unit.cm, unary);
+   				} |  
+   			value = lengthmm() (<BLANK>)*
+   				{
+   					term = new TermNumberImpl(value, TermNumber.Unit.mm, unary);
+   				} | 
+	    	value = lengthpt() (<BLANK>)* 
+	    		{
+	    			term = new TermNumberImpl(value, TermNumber.Unit.pt, unary);
+	    		} | 
+    		value = lengthpc() (<BLANK>)* 
+    			{
+    				term = new TermNumberImpl(value, TermNumber.Unit.pc, unary);
+    			} | 
+    		value = ems() (<BLANK>)* 
+    			{
+    				term = new TermNumberImpl(value, TermNumber.Unit.em, unary);
+    			} | 
+    		value = exs() (<BLANK>)* 
+    			{
+    				term = new TermNumberImpl(value, TermNumber.Unit.ex, unary);
+    			} | 
+    		value = angledeg() (<BLANK>)* 
+    			{
+    				term = new TermNumberImpl(value, TermNumber.Unit.deg, unary);
+    			} |
+    		value = anglerad() (<BLANK>)* 
+    			{
+    				term = new TermNumberImpl(value, TermNumber.Unit.rad, unary);
+    			} | 
+	    	value = anglegrad() (<BLANK>)* 
+	    		{
+	    			term = new TermNumberImpl(value, TermNumber.Unit.grad, unary);
+	    		} |
+    		value = timems() (<BLANK>)* 
+    			{
+    				term = new TermNumberImpl(value, TermNumber.Unit.ms, unary);
+    			} |
+    		value = times() (<BLANK>)* 
+    			{
+    				term = new TermNumberImpl(value, TermNumber.Unit.s, unary);
+    			} | 
+    		value = freqhz() (<BLANK>)* 
+    			{
+    				term = new TermNumberImpl(value, TermNumber.Unit.hz, unary);
+    			} | 
+    		value = freqkhz() (<BLANK>)* 
+    			{
+    				term = new TermNumberImpl(value, TermNumber.Unit.khz, unary);
+    			}
+   		) | 
+   		value = string() (<BLANK>)*	{ term = new TermStringImpl(value);	} | 
+   		value = ident() (<BLANK>)* { term = new TermIdentImpl(value); } | 
+   		value = uri() (<BLANK>)* { term = new TermUriImpl(value);} | 
+   		value = hexcolor() | 
+   		function() { return null; }
+   		
+   	}
+   	catch(ParseException e) {
+   		errorSkipTo("Failed getting term", SEMICOLON, NL);
+   		return null;
+   	}
+   	catch(IllegalArgumentException e) {
+   		if(log.isInfoEnabled()) 
+   			log.info("Failed to set term: " + e);  
+   		return null;
+   	}
+   	finally {
+   	
+   		// check color and replace
+   		Term colorTerm = null;
+   		if(term instanceof TermIdent) {
+   			colorTerm = TermColorImpl.getColorByIdent((TermIdent)term);
+   			if (colorTerm != null)
+   				term = colorTerm;
+   		}
+   	
+   		if(log.isTraceEnabled()) {
+   			log.trace("Having term: " 
+   				+ term + ", value: " 
+   				+ "(" + unary 
+   				+ ")"+ value);
+   		}
+   		return term;
+   	}
 }
 
 void function() :
@@ -358,32 +852,12 @@ void function() :
   function_begin() (<BLANK>)* expr() ")" (<BLANK>)*
 }
 
-void hexcolor() :
-{}
-{
-  hash() (<BLANK>)*
-}
+void minus() :
+      { Token t; } { t=<MINUS>       { jjtThis.setImage(t.image); } }
 
-/**
- * Internally sets charset of document
- */
-void charset() :
-{String currentCharset = null;}
-{
-	try {
-  		<CHARSET_SYM> currentCharset = string() ";"
-  	}
-  	catch (ParseException e) {
-  		currentCharset = null;
-  		errorSkipTo(NL);
-  	}
-  	// do not overwrite charset if already set and 
-  	// current rule failed to retrieve value
-  	finally {
-  		if(currentCharset!=null)
-  			charset = currentCharset; 
-  	}
-}
+
+
+void function_begin() :  { Token t; } { t=<FUNCTION>       { jjtThis.setImage(t.image); } }
 
 void equal() :      
 {} 
@@ -403,41 +877,162 @@ void dashmatch() :
     <DASHMATCH>
 }
 
-void comma() :  
-{} 
+/**
+ * Operator comma for terms
+ */
+Term.Operator comma() :  
+{} { <COMMA> { return Term.Operator.COMMA; } }
+
+/**
+ * Operator slash for terms
+ */
+Term.Operator slash() :
+{} { "/" { return Term.Operator.SLASH; } }
+
+
+/**
+ * Returns text represenatation of hex color
+ */
+String hexcolor() :
 {
-    <COMMA>
+	String hex = null;
+}
+{
+  hex = hash() (<BLANK>)* { return hex; }
 }
 
-void slash() :
-{}
-{
-    "/"
-}
 
-/* Tokens with specified tokens */
-void hash() :       { Token t; } { t=<HASH>        { jjtThis.setImage(t.image); } }
-void ident() :      { Token t; } { t=<IDENT>       { jjtThis.setImage(t.image); } }
-String string() :   { Token t; } { t=<STRING>      { jjtThis.setImage(t.image); return t.image;} }
-void uri() :        { Token t; } { t=<URI>         { jjtThis.setImage(t.image); } }
-void number() :     { Token t; } { t=<NUMBER>      { jjtThis.setImage(t.image); } }
-void percentage() : { Token t; } { t=<PERCENTAGE>  { jjtThis.setImage(t.image); } }
-void lengthpx() :   { Token t; } { t=<LENGTHPX>    { jjtThis.setImage(t.image); } }
-void lengthcm() :   { Token t; } { t=<LENGTHCM>    { jjtThis.setImage(t.image); } }
-void lengthmm() :   { Token t; } { t=<LENGTHMM>    { jjtThis.setImage(t.image); } }
-void lengthpt() :   { Token t; } { t=<LENGTHPT>    { jjtThis.setImage(t.image); } }
-void lengthpc() :   { Token t; } { t=<LENGTHPC>    { jjtThis.setImage(t.image); } }
-void ems() :        { Token t; } { t=<EMS>         { jjtThis.setImage(t.image); } }
-void exs() :        { Token t; } { t=<EXS>         { jjtThis.setImage(t.image); } }
-void angledeg() :   { Token t; } { t=<ANGLEDEG>    { jjtThis.setImage(t.image); } }
-void anglerad() :   { Token t; } { t=<ANGLERAD>    { jjtThis.setImage(t.image); } }
-void anglegrad() :  { Token t; } { t=<ANGLEGRAD>   { jjtThis.setImage(t.image); } }
-void timems() :     { Token t; } { t=<TIMEMS>      { jjtThis.setImage(t.image); } }
-void times() :      { Token t; } { t=<TIMES>       { jjtThis.setImage(t.image); } }
-void freqhz() :     { Token t; } { t=<FREQHZ>      { jjtThis.setImage(t.image); } }
-void freqkhz() :    { Token t; } { t=<FREQKHZ>     { jjtThis.setImage(t.image); } }
-void plus() :       { Token t; } { t=<PLUS>        { jjtThis.setImage(t.image); } }
-void minus() :      { Token t; } { t=<MINUS>       { jjtThis.setImage(t.image); } }
-void greater():     { Token t; } { t=<GREATER>     { jjtThis.setImage(t.image); } }
-void function_begin() :  { Token t; } { t=<FUNCTION>       { jjtThis.setImage(t.image); } }
+/**
+ * Identificator
+ * @return Text name of identificator
+ */
+String ident() : 
+{ Token t; } {	t = <IDENT>	{ return t.image; } }
 
+
+/**
+ * String value
+ */
+String string() :   
+{ Token t; } { t=<STRING>	{ return t.image; } }
+
+/**
+ * URI value
+ */
+String uri() :      
+{ Token t; } { t=<URI>		{ return t.image; } }
+
+/**
+ * Numerical value
+ */
+String number() :     
+{ Token t; } { t=<NUMBER>	{ return t.image; } }
+
+/**
+ * Percentage value
+ */
+String percentage() : 
+{ Token t; } { t=<PERCENTAGE>	{ return t.image; } } 
+
+/**
+ * Lenght in pixels
+ */
+String lengthpx() :   
+{ Token t; } { t=<LENGTHPX>	{ return t.image; } }
+
+/**
+ * Lenght in centimeters
+ */
+String lengthcm() :   
+{ Token t; } { t=<LENGTHCM>	{ return t.image; } }
+
+/**
+ * Lenght in milimeters
+ */
+String lengthmm() :   
+{ Token t; } { t=<LENGTHMM>	{ return t.image; } }
+
+/**
+ * Length in point size
+ */
+String lengthpt() :   
+{ Token t; } { t=<LENGTHPT>	{ return t.image; } }
+
+/**
+ * Lenght in pc
+ */ 
+String lengthpc() :   
+{ Token t; } { t=<LENGTHPC>	{ return t.image; } }
+
+/**
+ * Length in ems
+ */
+String ems() :
+{ Token t; } { t=<EMS>		{ return t.image; } }
+
+/**
+ * Lenght in exs
+ */
+String exs() :
+{ Token t; } { t=<EXS>		{ return t.image; } }
+
+/**
+ * Length in deg	
+ */
+String angledeg() :   
+{ Token t; } { t=<ANGLEDEG>	{ return t.image; } }
+
+/**
+ * Length in rad
+ */
+String anglerad() :
+{ Token t; } { t=<ANGLERAD> { return t.image; } }
+
+/**
+ * Length in grad
+ */
+String anglegrad() :  
+{ Token t; } { t=<ANGLEGRAD>	{ return t.image; } }
+
+/**
+ * Time in milliseconds
+ */
+String timems() : 
+{ Token t; } { t=<TIMEMS>	{ return t.image; } }
+
+/**
+ * Time in seconds
+ */
+String times() :      
+{ Token t; } { t=<TIMES>	{ return t.image; } }
+
+/**
+ * Frequency in Hz
+ */	
+String freqhz() :     
+{ Token t; } { t=<FREQHZ>	{ return t.image; } }
+
+/**
+ * Frequency in kHz
+ */
+String freqkhz() :    
+{ Token t; } { t=<FREQKHZ> 	{ return t.image; } }
+
+/**
+ * Hash-prefixed value
+ */
+String hash() :       
+{ Token t; } { t=<HASH>		{ return t.image; } }
+
+
+/**
+ * Returns plus combinator
+ */
+SimpleSelector.Combinator plus() : 
+{}	{ <PLUS>  { return SimpleSelector.Combinator.PLUS;} }
+
+/**
+ * Returns greater combinator
+ */
+SimpleSelector.Combinator greater():
+{} { <GREATER>	{ return SimpleSelector.Combinator.GREATER;} }

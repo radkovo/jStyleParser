@@ -1,7 +1,7 @@
 package test;
 
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.StylesheetNotValidException;
+import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.csskit.parser.CssParser;
 import cz.vutbr.web.csskit.parser.ParseException;
 import cz.vutbr.web.domassign.Controller;
@@ -124,7 +124,7 @@ public class Main {
                     try {
                         nodeData = Controller.process(d, ss, "screen");
                     }
-                    catch (StylesheetNotValidException e) {
+                    catch (StyleSheetNotValidException e) {
                         e.printStackTrace();
                         return;
                     }

@@ -1,11 +1,11 @@
 package cz.vutbr.web.csskit;
 
 import cz.vutbr.web.css.TermIdent;
-import cz.vutbr.web.csskit.parser.SimpleNode;
 
 /**
  * TermIdent
  * @author Jan Svercl, VUT Brno, 2008
+ * 			modified by Karel Piwko, 2008
  */
 public class TermIdentImpl extends TermImpl implements TermIdent {
 
@@ -16,12 +16,10 @@ public class TermIdentImpl extends TermImpl implements TermIdent {
     }
 
     public void setValue(String value) {
-        if(value == null) {
-            throw new NullPointerException();
-        }    
-        else {
-            this.value = value;
-        }
+        if(value == null) 
+            throw new IllegalArgumentException("Invalid value for TermIndent(null)");
+        
+        this.value = value;
     }
     
     public TermIdentImpl(String value) {
@@ -30,21 +28,11 @@ public class TermIdentImpl extends TermImpl implements TermIdent {
     
     @Override
     public String toString() {
-        return operator(value);
-    }
+        StringBuilder sb = new StringBuilder();
+        if(operator!=null) sb.append(operator.value());
+        sb.append(value);
+        
+        return sb.toString();
+    }    
     
-    protected static TermIdentImpl getIdentByNode(SimpleNode term) {
-        if(term != null) {
-            if((term.jjtGetNumChildren() == 1)) {
-                if(((SimpleNode)term.jjtGetChild(0)).getType().equals("ident")) {
-                    String ident = ((SimpleNode)term.jjtGetChild(0)).getImage();
-                    if(ident != null) {
-                        TermIdentImpl termIdent = new TermIdentImpl(ident);
-                        return termIdent;
-                    }
-                }
-            }
-        }
-        return null;
-    }
 }

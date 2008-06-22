@@ -1,57 +1,82 @@
 package cz.vutbr.web.csskit;
 
-import cz.vutbr.web.css.Term;
-import cz.vutbr.web.css.TermColor;
-import cz.vutbr.web.css.TermFunction;
-import cz.vutbr.web.css.TermIdent;
-import cz.vutbr.web.css.TermNumber;
-import cz.vutbr.web.css.TermPercent;
-import cz.vutbr.web.css.TermString;
-import cz.vutbr.web.css.TermUri;
-import cz.vutbr.web.csskit.parser.SimpleNode;
+import java.util.Collections;
+import java.util.List;
 
-import java.util.ArrayList;
+import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.TermFunction;
 
 /**
  * TermFunction
  * @author Jan Svercl, VUT Brno, 2008
+ * 			modified by Karel Piwko
  */
 public class TermFunctionImpl extends TermImpl implements TermFunction {
 
-    private String functionName;
-    private ArrayList<Term> termsList = new ArrayList<Term>();
-
-    public String getFunctionName() {
-        return functionName;
-    }
-
-    public void setFunctionName(String functionName) {
-        if(functionName == null) {
-            throw new NullPointerException();
-        }    
-        else {
-            this.functionName = functionName;
-        }
-    }
-
-    public ArrayList<Term> getTermsList() {
-        return termsList;
-    }
-    
+	protected String functionName;
+	protected List<Term> terms;
+	
     public TermFunctionImpl(String functionName) {
+    	this.terms = Collections.emptyList();
         setFunctionName(functionName);
     }
     
-    @Override
-    public String toString() {
-        String out = functionName + "(";
-        for(Term t: termsList) {
-            out += t.toString();
-        }
-        out += ")";
-        return operator(out);
-    }
     
+    /**
+	 * @return the functionName
+	 */
+	public String getFunctionName() {
+		return functionName;
+	}
+
+
+
+	/**
+	 * @param functionName the functionName to set
+	 */
+	public void setFunctionName(String functionName) {
+		if(functionName==null)
+			throw new IllegalArgumentException("Invalid functionName in function (null)");
+		
+		functionName = functionName.replaceAll("\\($", "");
+		this.functionName = functionName;
+	}
+
+
+
+	/**
+	 * @return the terms
+	 */
+	public List<Term> getTerms() {
+		return terms;
+	}
+
+
+
+	/**
+	 * @param terms the terms to set
+	 */
+	public void setTerms(List<Term> terms) {
+		this.terms = terms;
+	}
+
+
+
+	@Override
+    public String toString() {
+		
+		StringBuilder sb = new StringBuilder();
+		
+		// append operator
+		if(operator!=null) sb.append(operator.value());
+		
+		sb.append(functionName).append(OutputUtil.FUNCTION_OPENING);
+		sb = OutputUtil.appendList(sb, terms, OutputUtil.EMPTY_DELIM)
+			.append(OutputUtil.FUNCTION_CLOSING);
+		
+		return sb.toString();
+    }
+    /*
     protected static TermFunction getFunctionByNode(SimpleNode term) {
         if(term != null) {
             if((term.jjtGetNumChildren() == 1)) {
@@ -63,19 +88,19 @@ public class TermFunctionImpl extends TermImpl implements TermFunction {
                         
                         termFunction = new TermFunctionImpl(functionName);
                         SimpleNode exprNode = ((SimpleNode)term.jjtGetChild(0).jjtGetChild(1));
-                        Term.EnumOperator tmpOperator = null;
+                        Operator tmpOperator = null;
                         for(int i = 0; i < exprNode.jjtGetNumChildren(); i++) {
                             SimpleNode cNode = (SimpleNode)exprNode.jjtGetChild(i);
 
                             if(cNode.getType().equals("operator")) {
                                 if(cNode.jjtGetNumChildren() == 0) {
-                                    tmpOperator = Term.EnumOperator.space;
+                                    tmpOperator = Operator.SPACE;
                                 }
                                 else if(((SimpleNode)cNode.jjtGetChild(0)).getType().equals("slash")) {
-                                    tmpOperator = Term.EnumOperator.slash;
+                                    tmpOperator = Operator.SLASH;
                                 }
                                 else if(((SimpleNode)cNode.jjtGetChild(0)).getType().equals("comma")) {
-                                    tmpOperator = Term.EnumOperator.comma;
+                                    tmpOperator = Operator.COMMA;
                                 }
 
                             }
@@ -131,4 +156,5 @@ public class TermFunctionImpl extends TermImpl implements TermFunction {
         }
         return null;
     }
+    */
 }

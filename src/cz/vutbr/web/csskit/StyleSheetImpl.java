@@ -6,7 +6,7 @@ import java.util.List;
 import cz.vutbr.web.css.ImportURI;
 import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.StylesheetNotValidException;
+import cz.vutbr.web.css.StyleSheetNotValidException;
 
 /**
  * StyleSheet
@@ -115,20 +115,22 @@ public class StyleSheetImpl implements StyleSheet {
     	
     	// append character set @charset
     	if(charset != null && !"".equals(charset))
-    		sb.append("@charset \"").append(charset).append("\";\n\n");
+    		sb.append(OutputUtil.CHARSET_KEYWORD)
+    		  .append(OutputUtil.CHARSET_OPENING)
+    		  .append(charset)
+    		  .append(OutputUtil.CHARSET_CLOSING);
     	
     	// append @import rules
-    	for(ImportURI uri: imports)
-    		sb.append(uri.toString()).append("\n");
-    	
-    	// append other rules
-    	for(Rule rule: rules)
-    		sb.append(rule.toString(0)).append("\n");
+    	// and other rules
+    	sb = OutputUtil.appendList(sb, imports, OutputUtil.EMPTY_DELIM)
+    		.append(OutputUtil.NEW_LINE);
+    	sb = OutputUtil.appendList(sb, rules, OutputUtil.NEW_LINE)
+    		.append(OutputUtil.NEW_LINE);		
     	    	
     	return sb.toString();
     }
     
-    public void check() throws StylesheetNotValidException {
+    public void check() throws StyleSheetNotValidException {
     	
         for(ImportURI importUri : imports) {
             importUri.check("Stylesheet");

@@ -22,5 +22,5 @@ public interface StyleSheet {
     
     public void setImports(List<ImportURI> imports);
     
-    public void check() throws StylesheetNotValidException;
+    public void check() throws StyleSheetNotValidException;
 }

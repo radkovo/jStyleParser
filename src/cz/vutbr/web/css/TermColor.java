@@ -8,6 +8,6 @@ import java.awt.Color;
  */
 public interface TermColor extends Term {
     
-    public Color getValue();
+    public Color getValue();   
     
 }

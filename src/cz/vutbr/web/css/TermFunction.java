@@ -5,6 +5,7 @@ import java.util.List;
 /**
  * TermFunction
  * @author Jan Svercl, VUT Brno, 2008
+ * 			modified by Karel Piwko 2008
  */
 public interface TermFunction extends Term {
 
@@ -12,6 +13,8 @@ public interface TermFunction extends Term {
     
     public void setFunctionName(String functionName);
 
-    public List<Term> getTermsList();
+    public List<Term> getTerms();
+    
+    public void setTerms(List<Term> terms);
     
 }

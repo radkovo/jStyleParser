@@ -1,17 +1,18 @@
 package cz.vutbr.web.csskit;
 
-import cz.vutbr.web.css.TermColor;
-import cz.vutbr.web.csskit.parser.SimpleNode;
-
 import java.awt.Color;
+
+import cz.vutbr.web.css.TermColor;
+import cz.vutbr.web.css.TermIdent;
 
 /**
  * TermColor
  * @author Jan Svercl, VUT Brno, 2008
+ * 			modified by Karel Piwko, 2008
  */
 public class TermColorImpl extends TermImpl implements TermColor {
     
-    Color color;
+    protected Color color;
     
     public TermColorImpl(int r, int g, int b) {
         color = new Color(r, g, b);
@@ -23,92 +24,54 @@ public class TermColorImpl extends TermImpl implements TermColor {
     
     @Override
     public String toString() {
+    	
+    	StringBuilder sb = new StringBuilder();
+    	
+    	if(operator!=null) sb.append(operator.value());
+    	
         String s = Integer.toHexString(color.getRGB() & 0xffffff );
         if ( s.length() < 6 ) { 
             s = "000000".substring(0, 6 - s.length()) + s;
         }
-        return operator('#' + s);
+        
+        sb.append(OutputUtil.HASH_SIGN).append(s);
+    
+        return sb.toString();
     }
     
-    protected static TermColorImpl getColorByNode(SimpleNode term) {
-        if(term != null) {
-            if((term.jjtGetNumChildren() == 1)) {
-                if(((SimpleNode)term.jjtGetChild(0)).getType().equals("ident")) {
-                    String ident = ((SimpleNode)term.jjtGetChild(0)).getImage().toLowerCase();
+    /**
+     * Checks indent value against color card.
+     * If its value matches, new TermColor is returned which is 
+     * subject of replace of TermIndent afterwards
+     * @param ident Identifier possibly holding color's name
+     * @return <code>TermColor</code> if color matches, <code>null</code> elsewhere
+     */
+    public static TermColor getColorByIdent(TermIdent ident) {
+    	return ColorCard.getTermColor(ident.getValue());
+    }
+    
+    public static TermColor getColorByHash(String hash) {
 
-                    if(ident.equals("maroon")) {
-                        return new TermColorImpl(0x80, 0, 0);
-                    }
-                    else if(ident.equals("red")) {
-                        return new TermColorImpl(0xff, 0, 0);
-                    }
-                    else if(ident.equals("orange")) {
-                        return new TermColorImpl(0xff, 0xa5, 0);
-                    }
-                    else if(ident.equals("yellow")) {
-                        return new TermColorImpl(0xff, 0xff, 0);
-                    }
-                    else if(ident.equals("orange")) {
-                        return new TermColorImpl(0xff, 0xffa500, 0);
-                    }
-                    else if(ident.equals("olive")) {
-                        return new TermColorImpl(0x80, 0x80, 0);
-                    }
-                    else if(ident.equals("purple")) {
-                        return new TermColorImpl(0x80, 0, 0x80);
-                    }
-                    else if(ident.equals("fuchsia")) {
-                        return new TermColorImpl(0xff, 0, 0xff);
-                    }
-                    else if(ident.equals("white")) {
-                        return new TermColorImpl(0xff, 0xff, 0xff);
-                    }
-                    else if(ident.equals("lime")) {
-                        return new TermColorImpl(0, 0xff, 0);
-                    }
-                    else if(ident.equals("green")) {
-                        return new TermColorImpl(0, 0x80, 0);
-                    }
-                    else if(ident.equals("navy")) {
-                        return new TermColorImpl(0, 0, 0x80);
-                    }
-                    else if(ident.equals("blue")) {
-                        return new TermColorImpl(0, 0, 0xff);
-                    }
-                    else if(ident.equals("aqua")) {
-                        return new TermColorImpl(0, 0xff, 0xff);
-                    }
-                    else if(ident.equals("teal")) {
-                        return new TermColorImpl(0, 0x80, 0x80);
-                    }
-                    else if(ident.equals("black")) {
-                        return new TermColorImpl(0, 0, 0);
-                    }
-                    else if(ident.equals("silver")) {
-                        return new TermColorImpl(0xc0, 0xc0, 0xc0);
-                    }
-                    else if(ident.equals("gray")) {
-                        return new TermColorImpl(0x80, 0x80, 0x80);
-                    }
-                }
-                else if(((SimpleNode)term.jjtGetChild(0)).getType().equals("hexcolor") && term.jjtGetChild(0).jjtGetNumChildren() == 1 ) {
-                    if(((SimpleNode)term.jjtGetChild(0).jjtGetChild(0)).getType().equals("hash")) {
-                        String hash = ((SimpleNode)term.jjtGetChild(0).jjtGetChild(0)).getImage().toLowerCase();
-                        if(hash.matches("^#[0-9a-f]{3}$")) {
-                            String r = hash.substring(1, 2);
-                            String g = hash.substring(2, 3);
-                            String b = hash.substring(3, 4);
-                            return new TermColorImpl(Integer.parseInt(r+r, 16), Integer.parseInt(g+g, 16), Integer.parseInt(b+b, 16));
-                        }
-                        else if(hash.matches("^#[0-9a-f]{6}$")) {
-                            String r = hash.substring(1, 3);
-                            String g = hash.substring(3, 5);
-                            String b = hash.substring(5, 7);
-                            return new TermColorImpl(Integer.parseInt(r, 16), Integer.parseInt(g, 16), Integer.parseInt(b, 16));
-                        }
-                    }
-                }
-                else if(((SimpleNode)term.jjtGetChild(0)).getType().equals("function") && term.jjtGetChild(0).jjtGetNumChildren() == 2 ) {
+    	// color written in #ABC format
+        if(hash.matches("^#[0-9a-f]{3}$")) {
+            String r = hash.substring(1, 2);
+            String g = hash.substring(2, 3);
+            String b = hash.substring(3, 4);
+            return new TermColorImpl(Integer.parseInt(r+r, 16), Integer.parseInt(g+g, 16), Integer.parseInt(b+b, 16));
+        }
+        // color written in #AABBCC format
+        else if(hash.matches("^#[0-9a-f]{6}$")) {
+            String r = hash.substring(1, 3);
+            String g = hash.substring(3, 5);
+            String b = hash.substring(5, 7);
+            return new TermColorImpl(Integer.parseInt(r, 16), Integer.parseInt(g, 16), Integer.parseInt(b, 16));
+        }
+        
+        return null;
+    }
+    /*
+    public static TermColor getColorByFunction(TermFunction func) {
+    	                if(((SimpleNode)term.jjtGetChild(0)).getType().equals("function") && term.jjtGetChild(0).jjtGetNumChildren() == 2 ) {
                     if(((SimpleNode)term.jjtGetChild(0).jjtGetChild(0)).getImage().equals("rgb(") && ((SimpleNode)term.jjtGetChild(0).jjtGetChild(1)).getType().equals("expr") && term.jjtGetChild(0).jjtGetChild(1).jjtGetNumChildren() == 5) {
                         SimpleNode expr = (SimpleNode)term.jjtGetChild(0).jjtGetChild(1);
                         Integer[] rgbValues = new Integer[3];
@@ -153,4 +116,5 @@ public class TermColorImpl extends TermImpl implements TermColor {
         }
         return null;
     }
+    */
 }

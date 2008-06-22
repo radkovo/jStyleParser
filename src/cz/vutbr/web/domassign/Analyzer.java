@@ -12,7 +12,7 @@ import cz.vutbr.web.css.SSItemPseudo;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.SimpleSelector;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.StylesheetNotValidException;
+import cz.vutbr.web.css.StyleSheetNotValidException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import org.w3c.dom.Node;
 
 public class Analyzer {
     
-    protected static HashMap<Element, ArrayList<AssignedDeclaration>> analyze(Document doc, StyleSheet styleSheet, String media) throws StylesheetNotValidException  {
+    protected static HashMap<Element, ArrayList<AssignedDeclaration>> analyze(Document doc, StyleSheet styleSheet, String media) throws StyleSheetNotValidException  {
         styleSheet.check();
         HashMap<Element, ArrayList<AssignedDeclaration>> assignedDeclarations = new HashMap<Element, ArrayList<AssignedDeclaration>>();
         
@@ -40,14 +40,14 @@ public class Analyzer {
             }
             else if(rule instanceof RuleMedia) {
                 boolean ruleAccepted = false;
-                for(String ruleMedia : ((RuleMedia)rule).getMediaList()) {
+                for(String ruleMedia : ((RuleMedia)rule).getMedias()) {
                     if(ruleMedia.equalsIgnoreCase(media) || ruleMedia.equalsIgnoreCase("all")) {
                         ruleAccepted = true;
                         break;
                     }
                 }
                 if(ruleAccepted) {
-                    for(RuleSet mediaRule : ((RuleMedia)rule).getRulesList()) {
+                    for(RuleSet mediaRule : ((RuleMedia)rule).getRules()) {
                         rules.add(new OrderedRule((RuleSet)mediaRule, orderNum++));
                     }
                 }
@@ -67,7 +67,7 @@ public class Analyzer {
         ArrayList<OrderedRule> ar = new ArrayList<OrderedRule>();
         for(OrderedRule or : rules) {
             RuleSet r = or.getRuleSet();
-            for(Selector s : r.getSelectorsList()) {
+            for(Selector s : r.getSelectors()) {
                 addToOthers = true;
                 lastSimpleSelector = s.getSimpleSelectorsList().get(s.getSimpleSelectorsList().size()-1);
                 //Zpracování jména elementu
@@ -170,11 +170,11 @@ public class Analyzer {
         Collections.sort(candidatesList);
         
         for(OrderedRule candidateRule : candidatesList) {
-            for(Selector s : candidateRule.getRuleSet().getSelectorsList()) {
+            for(Selector s : candidateRule.getRuleSet().getSelectors()) {
                 if(matchElementBySelector(el, s)) {
                     //Daný selektor odpovídá elementu - přidám tedy do seznamu všechny deklarace
                     //pravidla. 
-                    for(Declaration d : candidateRule.getRuleSet().getDeclarationsList()) {
+                    for(Declaration d : candidateRule.getRuleSet().getDeclarations()) {
                         elementAssignedDeclarations.add(new AssignedDeclaration(d, s));
                     }
                 }
