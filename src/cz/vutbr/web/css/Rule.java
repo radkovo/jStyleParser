@@ -6,7 +6,7 @@ package cz.vutbr.web.css;
  * 			modified by Karel Piwko, 2008
  * @version 1.0 * Added comments
  */
-public interface Rule { 
+public interface Rule  { 
 	
 	/**
 	 * Pretty output of CSS definition using indentation
@@ -22,4 +22,6 @@ public interface Rule {
      * @throws StyleSheetNotValidException
      */
     public void check(String path) throws StyleSheetNotValidException;
+    
+    
 }

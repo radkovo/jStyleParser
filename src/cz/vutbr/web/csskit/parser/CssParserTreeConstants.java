@@ -40,25 +40,26 @@ public interface CssParserTreeConstants
   public int JJTIDENT = 33;
   public int JJTSTRING = 34;
   public int JJTURI = 35;
-  public int JJTNUMBER = 36;
-  public int JJTPERCENTAGE = 37;
-  public int JJTLENGTHPX = 38;
-  public int JJTLENGTHCM = 39;
-  public int JJTLENGTHMM = 40;
-  public int JJTLENGTHPT = 41;
-  public int JJTLENGTHPC = 42;
-  public int JJTEMS = 43;
-  public int JJTEXS = 44;
-  public int JJTANGLEDEG = 45;
-  public int JJTANGLERAD = 46;
-  public int JJTANGLEGRAD = 47;
-  public int JJTTIMEMS = 48;
-  public int JJTTIMES = 49;
-  public int JJTFREQHZ = 50;
-  public int JJTFREQKHZ = 51;
-  public int JJTHASH = 52;
-  public int JJTPLUS = 53;
-  public int JJTGREATER = 54;
+  public int JJTSTRING_OR_URI = 36;
+  public int JJTNUMBER = 37;
+  public int JJTPERCENTAGE = 38;
+  public int JJTLENGTHPX = 39;
+  public int JJTLENGTHCM = 40;
+  public int JJTLENGTHMM = 41;
+  public int JJTLENGTHPT = 42;
+  public int JJTLENGTHPC = 43;
+  public int JJTEMS = 44;
+  public int JJTEXS = 45;
+  public int JJTANGLEDEG = 46;
+  public int JJTANGLERAD = 47;
+  public int JJTANGLEGRAD = 48;
+  public int JJTTIMEMS = 49;
+  public int JJTTIMES = 50;
+  public int JJTFREQHZ = 51;
+  public int JJTFREQKHZ = 52;
+  public int JJTHASH = 53;
+  public int JJTPLUS = 54;
+  public int JJTGREATER = 55;
 
 
   public String[] jjtNodeName = {
@@ -98,6 +99,7 @@ public interface CssParserTreeConstants
     "ident",
     "string",
     "uri",
+    "string_or_uri",
     "number",
     "percentage",
     "lengthpx",

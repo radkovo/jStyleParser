@@ -151,6 +151,30 @@ public class SimpleSelectorImpl implements SimpleSelector {
 			this.value = value;
 		}
 
+		public boolean isPseudoClass() {
+			return false;
+		}
+		
+		public boolean isID() {
+			return false;
+		}
+		
+		public boolean isAttribute() {
+			return false;
+		}
+		
+		public boolean isElement() {
+			return !"*".equals(value);
+		}
+		
+		public boolean isPseudoElement() {
+			return false;
+		}
+		
+		public boolean isClass() {
+			return false;
+		}
+		
 		/* (non-Javadoc)
 		 * @see java.lang.Object#hashCode()
 		 */
@@ -196,6 +220,16 @@ public class SimpleSelectorImpl implements SimpleSelector {
     	}
     	
     	@Override
+    	public boolean isElement() {
+    		return false;
+    	}
+    	
+    	@Override
+    	public boolean isClass() {
+    		return true;
+    	}
+    	
+    	@Override
     	public String toString() {
     		return "." + value;
     	}
@@ -207,6 +241,12 @@ public class SimpleSelectorImpl implements SimpleSelector {
      *
      */
     public static class ItemPseudoImpl extends ItemImpl implements ItemPseudo {
+    	
+    	protected static final String PSEUDO_CLASSES = 
+    		"active|focus|hover|link|visited|first-child|lang";
+    	
+    	protected static final String PSEUDO_ELEMENTS =
+    		"first-letter|first-line|before|after";
     	
     	protected String functionName;
     	
@@ -242,6 +282,24 @@ public class SimpleSelectorImpl implements SimpleSelector {
 		public void setValue(String value) {
 			this.value = value;
 		}
+		
+		@Override
+		public boolean isElement() {
+			return false;
+		}
+		
+		@Override
+		public boolean isPseudoClass() {
+			return (value!=null && value.matches(PSEUDO_CLASSES)) ||
+					(functionName!=null && functionName.matches(PSEUDO_CLASSES));
+		}
+		
+		@Override
+		public boolean isPseudoElement() {
+			return (value!=null && value.matches(PSEUDO_ELEMENTS)) ||
+				(functionName!=null && functionName.matches(PSEUDO_ELEMENTS));
+		}
+		
     	
 		@Override
 		public String toString() {
@@ -324,6 +382,17 @@ public class SimpleSelectorImpl implements SimpleSelector {
     	}
     	
     	@Override
+    	public boolean isElement() {
+    		return false;
+    	}
+    	
+    	
+    	@Override
+    	public boolean isID() {
+    		return true;
+    	}
+    	
+    	@Override
     	public String toString() {
     		return "#" + value;
     	}
@@ -402,7 +471,15 @@ public class SimpleSelectorImpl implements SimpleSelector {
 			this.attribute = attribute;
 		}
 
-
+		@Override
+		public boolean isElement() {
+			return false;
+		}
+		
+		@Override
+		public boolean isAttribute() {
+			return true;
+		}
 
 		@Override
     	public String toString() {

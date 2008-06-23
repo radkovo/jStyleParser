@@ -30,6 +30,10 @@
         <appender-ref ref="cssbox" />
     </logger>    
     
+    <logger name="cz.vutbr.web.domassign" additivity="false">
+    	<level value="trace" />
+        <appender-ref ref="cssbox" />
+    </logger>
 
     <root>
         <priority value="warn"/>

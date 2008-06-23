@@ -8,6 +8,7 @@ import javax.naming.OperationNotSupportedException;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.SimpleSelector;
 import cz.vutbr.web.css.StyleSheetNotValidException;
+import cz.vutbr.web.css.Selector.Specificity.Level;
 
 /**
  * Selector
@@ -49,6 +50,33 @@ public class SelectorImpl implements Selector {
 	public void setSimpleSelectors(List<SimpleSelector> simpleSelectors) {
 		this.simpleSelectors = simpleSelectors;
 	}
+	
+	/**
+	 * Computes specificity of selector
+	 */
+	public Specificity computeSpecificity() {
+		
+		Specificity spec = new SpecificityImpl();
+		
+		for(SimpleSelector s: simpleSelectors) {
+			
+			if(s.getFirstItem()!=null && s.getFirstItem().isElement())
+				spec.add(Level.D);
+			
+			for(SimpleSelector.Item item: s.getItems()) {
+				if(item.isElement()) spec.add(Level.D);
+				else if(item.isAttribute()) spec.add(Level.C);
+				else if(item.isPseudoElement()) spec.add(Level.D);
+				else if(item.isPseudoClass()) spec.add(Level.C);
+				else if(item.isClass()) spec.add(Level.C);
+				else if(item.isID()) spec.add(Level.B);
+			}
+			
+		}
+		
+		return spec;
+	}
+	
 
 	public String toString(int depth) {
 
@@ -110,4 +138,49 @@ public class SelectorImpl implements Selector {
             }
         }
     }
+	
+	public static class SpecificityImpl implements Specificity {
+			
+		protected int[] spec = new int[Level.values().length];
+		
+		public int compareTo(Specificity o) {
+			
+			if(get(Level.A) > o.get(Level.A)) return 1;
+			else if(get(Level.A) < o.get(Level.A)) return -1;
+			
+			if(get(Level.B) > o.get(Level.B)) return 1;
+			else if(get(Level.B) < o.get(Level.B)) return -1;
+			
+			if(get(Level.C) > o.get(Level.C)) return 1;
+			else if(get(Level.C) < o.get(Level.C)) return -1;
+			
+			if(get(Level.D) > o.get(Level.D)) return 1;
+			else if(get(Level.D) < o.get(Level.D)) return -1;
+			
+			return 0;
+			
+		}
+		
+		public int get(Level level) {
+			
+			switch(level) {
+			case A: return spec[0];
+			case B: return spec[1];
+			case C: return spec[2];
+			case D: return spec[3];
+			default: return 0;
+			}
+		}
+		
+		public void add(Level level) {
+			
+			switch(level) {
+			case A: spec[0]++;
+			case B: spec[1]++;
+			case C: spec[2]++;
+			case D: spec[3]++;
+			}
+		}
+	}
+	
 }

@@ -72,6 +72,8 @@ public class CssParser/*@bgen(jjtree)*/implements CssParserTreeConstants/*@egen*
 	/** Files to be imported into stylesheet */
 	private List<ImportURI> imports = new ArrayList<ImportURI>();
 
+	private int rulesetNum;
+
 	/** 
 	 * Creates CssParser.
 	 * Uses string as input
@@ -89,6 +91,7 @@ public class CssParser/*@bgen(jjtree)*/implements CssParserTreeConstants/*@egen*
 	 */
 	public StyleSheet parse() throws StyleSheetNotValidException {
 		try {
+			this.rulesetNum = 0;
 			return this.start();
 		}
 		catch (ParseException e) {
@@ -125,8 +128,8 @@ public class CssParser/*@bgen(jjtree)*/implements CssParserTreeConstants/*@egen*
 			
 		stopTokens.add(EOF); 
 	
-		if(log.isDebugEnabled()) {
-			log.debug("Stopped on token: " +
+		if(log.isTraceEnabled()) {
+			log.trace("Stopped on token: " +
 					CssParserConstants.tokenImage[getToken(0).kind] +
 					" with value: " + getToken(0).image); 
 		}
@@ -134,8 +137,8 @@ public class CssParser/*@bgen(jjtree)*/implements CssParserTreeConstants/*@egen*
 		Token t = getToken(0);
 		while(!stopTokens.contains(t.kind)) {
 			t = getNextToken();
-			if(log.isDebugEnabled())
-				log.debug("Next token:" + CssParserConstants.tokenImage[t.kind] + ", " + t.image );
+			if(log.isTraceEnabled())
+				log.trace("Skipping to token:" + CssParserConstants.tokenImage[t.kind] + ", " + t.image );
 		}
 		
 	}
@@ -172,14 +175,7 @@ TOKEN :
   <#url : ([";", "!", "#", "$", "%", "&", "*", "-", "~", ".", "/", ":", ",", "=", "?"] | <nmchar> )* > | 
   
   <#SPACE : ([" ", "\t", "\r", "\n", "\f"])+ > |
-  <#WHITECHAR : (<SPACE>)? > |
-
-  <#RPAREN_CHAR : ")" > |
-  <#LCURLY_CHAR : "{" > |	
-  <#RCURLY_CHAR : "}" > |
-  <#LBRACE_CHAR : "[" > |
-  <#RBRACE_CHAR : "]" > |
-  <#SEMICOLON_CHAR : ";" > |
+  <#WHITECHAR : (<SPACE>)? > |  
   
   <#NL : "\n" | "\r\n" | "\r" | "\f"> |
 
@@ -191,12 +187,12 @@ TOKEN :
   <INCLUDES : "~=" > |
   <DASHMATCH : "|=" > |
 
-  <LCURLY : <WHITECHAR> <LCURLY_CHAR> > |
-  <RCURLY : <WHITECHAR> <RCURLY_CHAR> > |
-  <RPAREN : <RPAREN_CHAR> > |
-  <LBRACE : <LBRACE_CHAR> > |
-  <RBRACE : <RBRACE_CHAR> > |
-  <SEMICOLON: <SEMICOLON_CHAR> > |
+  <LCURLY : <WHITECHAR> "{" > |
+  <RCURLY : <WHITECHAR> "}" > |
+  <RPAREN : ")" > |
+  <LBRACE : "[" > |
+  <RBRACE : "]" > |
+  <SEMICOLON: ";" > |
   <PLUS : <WHITECHAR> "+" > |
   <MINUS : <WHITECHAR> "-" > |
   <GREATER : <WHITECHAR> ">" > |
@@ -234,7 +230,7 @@ TOKEN :
   <PERCENTAGE : <num> "%" > |
   <NUMBER : <num> > |
 
-  <URI : ("url(" <WHITECHAR> <string> <WHITECHAR> <RPAREN_CHAR>) | ("url("<WHITECHAR> <url> <WHITECHAR> <RPAREN_CHAR>) > |
+  <URI : ("url(" <WHITECHAR> <string> <WHITECHAR> <RPAREN>) | ("url("<WHITECHAR> <url> <WHITECHAR> <RPAREN> ) > |
   <FUNCTION : <ident> "(" >
 }
 
@@ -360,9 +356,9 @@ void charset() :
   		}
   	}
   	catch (ParseException e) {
-  		// continue with next available element
-  		errorSkipTo("Failed to retrive charset", 
-  			BLANK, CDO, CDC, SEMICOLON );
+  		// according to CSS UA
+  		// ignore until next block is found
+  		errorSkipTo("Failed to retrive charset", RCURLY);
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -405,12 +401,22 @@ void import_a() :
 /*@egen*/ 
 	try {
   		<IMPORT_SYM> (<BLANK>)*
-  		[currentUri=string() | currentUri = uri()] (<BLANK>)* ( medium(medias) (<COMMA> (<BLANK>)* medium(medias))* )? <SEMICOLON> (<BLANK>)*/*@bgen(jjtree)*/
+  		[currentUri=string_or_uri() (<BLANK>)*]	
+  		( 
+  			medium(medias) 
+  			(
+  				<COMMA> 
+  				(
+  					<BLANK>)* 
+  					medium(medias)
+  				)* 
+  			)? 
+  			<SEMICOLON>/*@bgen(jjtree)*/
                 {
                   jjtree.closeNodeScope(jjtn000, true);
                   jjtc000 = false;
                 }
-/*@egen*/
+/*@egen*/ 
   		{	
   			if(currentUri!=null || !"".equals(currentUri))
   				uri.setUri(currentUri);
@@ -461,12 +467,23 @@ void media() :
         try {
 /*@egen*/
 	try {
-  		<MEDIA_SYM> (<BLANK>)* medium(medias) ( <COMMA> (<BLANK>)* medium(medias) )* <LCURLY> (<BLANK>)* (ruleset( (List<Rule>) rules))* <RCURLY> (<BLANK>)*/*@bgen(jjtree)*/
+  		<MEDIA_SYM> 
+  		(<BLANK>)* 
+  		medium(medias) 
+  		( 
+  			<COMMA> 
+  			(<BLANK>)* 
+  			medium(medias) 
+  		)* 
+  		<LCURLY> 
+  		(<BLANK>)* 
+  		(ruleset( (List<Rule>) rules))* 
+  		<RCURLY>/*@bgen(jjtree)*/
                 {
                   jjtree.closeNodeScope(jjtn000, true);
                   jjtc000 = false;
                 }
-/*@egen*/
+/*@egen*/ 
   		{
   			media.setMedias(medias);
   			media.setRules( (List<RuleSet>) rules);
@@ -474,7 +491,7 @@ void media() :
   		}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed parsing media rule media()", RCURLY_CHAR);
+  		errorSkipTo("Failed parsing media rule media()", RCURLY);
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -525,7 +542,7 @@ void medium(List<String> medias) :
   		}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to retrieve medium()", SPACE, NL);
+  		errorSkipTo("Failed to retrieve medium()", BLANK);
   	}
   	// trying to add the same element more times
   	catch (IllegalArgumentException e) {
@@ -563,7 +580,7 @@ void ruleset(List<Rule> rules) :
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
 /*@egen*/
-	RuleSet rule = new RuleSetImpl();
+	RuleSetImpl rule = new RuleSetImpl();
 	List<Selector> selectors = new ArrayList<Selector>();
 	List<Declaration> declarations = new ArrayList<Declaration>();
 	
@@ -595,17 +612,17 @@ void ruleset(List<Rule> rules) :
   					if(dec != null) declarations.add(dec);
   				} 
   			)* 
-  			<RCURLY> (<BLANK>
-  		)*
+  		<RCURLY>
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to retrieve ruleset()", RCURLY_CHAR);
+  		errorSkipTo("Failed to retrieve ruleset()", RCURLY);
   	}
   	// be error graceful to unknown selectors and declarations
   	finally {
   		if(selectors.size() > 0 && declarations.size() > 0) {
   			rule.setSelectors(selectors);
   			rule.setDeclarations(declarations);
+  			rule.setOrder(++rulesetNum);
   			rules.add(rule);
   		}
   	}/*@bgen(jjtree)*/
@@ -649,7 +666,7 @@ void page() :
         try {
 /*@egen*/
 	try {
-  		<PAGE_SYM> (<BLANK>)* ( pseudo = pseudo_page())? (<BLANK>)*
+  		<PAGE_SYM> (<BLANK>)* [ pseudo = pseudo_page() (<BLANK>)*]
     	<LCURLY> 
     	(<BLANK>)* dec = declaration()
     		{
@@ -663,11 +680,9 @@ void page() :
     			} 
     		)* 
     	<RCURLY> 
-    	(<BLANK>
-    	)*
     }
     catch (ParseException e) {
-		errorSkipTo("Failed to retrieve page()", RCURLY_CHAR);    
+		errorSkipTo("Failed to retrieve page()", RCURLY);    
     }
     // be error graceful to unknown declarations
   	finally {
@@ -767,7 +782,7 @@ Declaration declaration() :
   		( property = property() ":" (<BLANK>)* terms = expr() ( important = prio())? )?
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to read declaration", NL, SEMICOLON, RCURLY_CHAR);
+  		errorSkipTo("Failed to read declaration", NL, SEMICOLON, RCURLY);
   	}
   	finally {
   		if(terms==null && property==null)
@@ -888,7 +903,7 @@ Selector selector() :
   		)*
   	}
   	catch(ParseException e) {
-  		errorSkipTo("Unable to get selector", SPACE, LCURLY_CHAR);
+  		errorSkipTo("Unable to get selector", BLANK, LCURLY);
   	}
   	finally {
   		if(log.isDebugEnabled()) {
@@ -992,7 +1007,7 @@ SimpleSelector simple_selector() :
   		)+
   	}
   	catch(ParseException e) {
-  		errorSkipTo("Unable to get simple selector", SPACE, LCURLY_CHAR);
+  		errorSkipTo("Unable to get simple selector", BLANK, LCURLY);
   	}
   	finally {
   	
@@ -1151,7 +1166,7 @@ SimpleSelector.Item attrib() :
     	<RBRACE>
     }
     catch (ParseException ex) {
-    	errorSkipTo("Unable to get selectors attribute", NL, COMMA, LBRACE_CHAR, RBRACE_CHAR);
+    	errorSkipTo("Unable to get selectors attribute", NL, COMMA, LBRACE, RBRACE);
     	return null;
     }
     finally {
@@ -1205,7 +1220,7 @@ SimpleSelector.Item pseudo() :
   		)
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Unable to get :pseudo in simpleselector", SPACE, LBRACE_CHAR, COMMA, NL); 
+  		errorSkipTo("Unable to get :pseudo in simpleselector", BLANK, LBRACE, COMMA); 
   	}
   	finally {
   		// matched first branch
@@ -1254,12 +1269,11 @@ SimpleSelector.Item pfunction() :
 	try {
   		functionName = function_begin() 
   		(<BLANK>)* 
-  		[ value = ident()] 
-  		(<BLANK>)* 
+  		[ value = ident() (<BLANK>)* ] 
   		<RPAREN>
   	}
   	catch (ParseException ex) {
-  		errorSkipTo("Unable to get :pseudo()", RPAREN_CHAR, NL, COMMA, LBRACE_CHAR);
+  		errorSkipTo("Unable to get :pseudo()", RPAREN, NL, COMMA, LBRACE);
   		functionName = null;
   	}
   	finally {
@@ -1312,7 +1326,7 @@ Term.Operator operator() :
   		{ return op;}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to get operator", RCURLY_CHAR, NL, SEMICOLON, SPACE);
+  		errorSkipTo("Failed to get operator", RCURLY, SEMICOLON, BLANK);
   		return Term.Operator.SPACE;
   	}/*@bgen(jjtree)*/
   {
@@ -1380,7 +1394,7 @@ SimpleSelector.Combinator combinator() :
 /*@egen*/ {return c;}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to get combinator", LCURLY_CHAR, SPACE, COMMA);
+  		errorSkipTo("Failed to get combinator", LCURLY, BLANK, COMMA);
   		return SimpleSelector.Combinator.DESCENDANT;
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
@@ -1823,7 +1837,7 @@ TermFunction function() :
   		(<BLANK>)*
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Unable to get function", NL, SPACE, SEMICOLON, RPAREN_CHAR);
+  		errorSkipTo("Unable to get function", BLANK, SEMICOLON, RPAREN);
   	}
   	finally {
   	
@@ -2131,6 +2145,53 @@ String uri() :
                  }
                }
 /*@egen*/ }
+
+/**
+ * String or URI value
+ */
+String string_or_uri():
+{/*@bgen(jjtree) string_or_uri */
+        SimpleNode jjtn000 = new SimpleNode(JJTSTRING_OR_URI);
+        boolean jjtc000 = true;
+        jjtree.openNodeScope(jjtn000);
+/*@egen*/
+	String value = null;
+}
+{/*@bgen(jjtree) string_or_uri */
+        try {
+/*@egen*/
+	value = string()/*@bgen(jjtree)*/
+                         {
+                           jjtree.closeNodeScope(jjtn000, true);
+                           jjtc000 = false;
+                         }
+/*@egen*/ { return value;} | value = uri()/*@bgen(jjtree)*/
+                                                          {
+                                                            jjtree.closeNodeScope(jjtn000, true);
+                                                            jjtc000 = false;
+                                                          }
+/*@egen*/ { return value; }/*@bgen(jjtree)*/
+        } catch (Throwable jjte000) {
+          if (jjtc000) {
+            jjtree.clearNodeScope(jjtn000);
+            jjtc000 = false;
+          } else {
+            jjtree.popNode();
+          }
+          if (jjte000 instanceof RuntimeException) {
+            throw (RuntimeException)jjte000;
+          }
+          if (jjte000 instanceof ParseException) {
+            throw (ParseException)jjte000;
+          }
+          throw (Error)jjte000;
+        } finally {
+          if (jjtc000) {
+            jjtree.closeNodeScope(jjtn000, true);
+          }
+        }
+/*@egen*/
+}
 
 /**
  * Numerical value

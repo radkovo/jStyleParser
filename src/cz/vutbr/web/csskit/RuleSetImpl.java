@@ -18,6 +18,8 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
  */
 public class RuleSetImpl implements RuleSet {
 
+	private int order;
+	
 	protected List<Selector> selectors;
 	protected List<Declaration> declarations;
 	
@@ -26,24 +28,16 @@ public class RuleSetImpl implements RuleSet {
 		this.selectors = Collections.emptyList();
 	}
 	
+	/**
+	 * Shallow copy constructor
+	 * @param rs RuleSet to share selectors and declarations with 
+	 */
+	public RuleSetImpl(RuleSet rs) {
+		this.selectors = rs.getSelectors();
+		this.declarations = rs.getDeclarations();
+	}
 	
 	
-	/*
-    public RuleSetImpl(SimpleNode n) {
-        for(int i = 0; i < n.jjtGetNumChildren(); i++) {
-            SimpleNode cNode = (SimpleNode)n.jjtGetChild(i);
-            
-            if(cNode.getType().equals("selector")) {
-                selectorsList.add(new SelectorImpl(cNode));
-            }
-            
-            if(cNode.getType().equals("declaration") && cNode.jjtGetNumChildren() > 0) {
-                declarationsList.add(new DeclarationImpl(cNode));
-            }
-        }
-    }
-    */
-    
     /**
 	 * @return the selectors
 	 */
@@ -78,6 +72,19 @@ public class RuleSetImpl implements RuleSet {
 		this.declarations = declarations;
 	}
 
+	public int compareTo(RuleSet o) {
+		
+		if(o.getClass()!=RuleSetImpl.class)
+			throw new IllegalArgumentException("Allowed to compare RuleSetImpl only");
+		
+		final RuleSetImpl other = (RuleSetImpl) o;
+		
+		if (order < other.order)	return -1;
+		else if (order > other.order)	return 1;
+		
+		return 0;
+		
+	}
 
 
 	@Override
@@ -127,4 +134,21 @@ public class RuleSetImpl implements RuleSet {
             declaration.check(pathNew);
         }
     }
+
+	/**
+	 * @return the order
+	 */
+	public int getOrder() {
+		return order;
+	}
+
+	/**
+	 * @param order the order to set
+	 */
+	public void setOrder(int order) {
+		this.order = order;
+	}
+    
+    
+    
 }

@@ -27,6 +27,16 @@ public class DeclarationImpl implements Declaration {
 		this.important = false;
 	}
 	
+	/**
+	 * Shallow copy constructor
+	 * @param clone Declaration to share term values with
+	 */
+	public DeclarationImpl(Declaration clone) {
+		this.property = clone.getProperty();
+		this.terms = clone.getTerms();
+		this.important = clone.isImportant();
+	}
+	
     /**
 	 * @return the property
 	 */

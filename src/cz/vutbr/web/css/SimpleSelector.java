@@ -59,6 +59,13 @@ public interface SimpleSelector {
     	public void setValue(String value);
     	public int hashCode();
     	public boolean equals(Object obj);
+    	
+    	public boolean isAttribute();
+    	public boolean isElement();
+    	public boolean isClass();
+    	public boolean isPseudoClass();
+    	public boolean isPseudoElement();
+    	public boolean isID();
     }
     
     /**

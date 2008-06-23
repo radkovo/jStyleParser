@@ -8,8 +8,9 @@ import java.util.List;
  * 			modified by Karel Piwko
  * @version 1.0 * Added setter methods
  * 				 * Renamed methods to reach naming consistency
+ * 				 * Implements Comparable
  */
-public interface RuleSet extends Rule {
+public interface RuleSet extends Rule, Comparable<RuleSet> {
 
 	/**
 	 * Gets selectors of given declaration

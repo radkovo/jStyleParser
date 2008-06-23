@@ -22,6 +22,11 @@ public class GrammarRecovery1 {
 		"@charset \"UTF-8\"\n" +
 		"BODY { color: blue;}";
 	
+	public static final String TEST_CHARSET_WITHOUT_SEMICOLON3 = 
+		"@charset \"UTF-8\"\n" +
+		"BODY { color: blue;}\n" +
+		"BODY { color: red; }";
+	
 	@Test	
 	public void charsetCharsetWithoutSemicolon() throws StyleSheetNotValidException {
 		
@@ -37,18 +42,25 @@ public class GrammarRecovery1 {
 		StyleSheet ss = (new CssParser(TEST_CHARSET_WITHOUT_SEMICOLON2)).parse();
 		assertEquals("Charset should not be set", null, ss.getCharset());
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
+		assertEquals("No rules are set", 0, ss.getRules().size());
 		
-		final RuleSet rule = (RuleSet) rules.get(0);				
+	}
+	
+	@Test
+	public void charsetWithoutSemicolonAndDoubleDAfter() throws StyleSheetNotValidException {
+		
+		StyleSheet ss = (new CssParser(TEST_CHARSET_WITHOUT_SEMICOLON3)).parse();
+		assertEquals("Charset should not be set", null, ss.getCharset());
+		
+		final RuleSet rule = (RuleSet) ss.getRules().get(0);				
 		
 		assertEquals("Rule contains one selector BODY ", 
 				SelectorsUtil.createSelectors("BODY"), 
 				rule.getSelectors());
 		
-		assertEquals("Rule contains one declaration { color: blue;}",
+		assertEquals("Rule contains one declaration { color: red;}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
-						new TermColorImpl(0,0,255)),
+						new TermColorImpl(255,0,0)),
 				rule.getDeclarations());
 		
 	}
