@@ -7,18 +7,19 @@ import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFunction;
 
 /**
- * TermFunction
+ * TermFunction, holds function
  * @author Jan Svercl, VUT Brno, 2008
  * 			modified by Karel Piwko
+ * @version 1.0 * Construction moved to parser
+ * 				 * Implementation changed according to new interface
  */
 public class TermFunctionImpl extends TermImpl implements TermFunction {
 
 	protected String functionName;
 	protected List<Term> terms;
-	
-    public TermFunctionImpl(String functionName) {
+
+    public TermFunctionImpl() {
     	this.terms = Collections.emptyList();
-        setFunctionName(functionName);
     }
     
     
@@ -76,85 +77,51 @@ public class TermFunctionImpl extends TermImpl implements TermFunction {
 		
 		return sb.toString();
     }
-    /*
-    protected static TermFunction getFunctionByNode(SimpleNode term) {
-        if(term != null) {
-            if((term.jjtGetNumChildren() == 1)) {
-                if(((SimpleNode)term.jjtGetChild(0)).getType().equals("function") && term.jjtGetChild(0).jjtGetNumChildren() == 2) {
-                    String functionName = ((SimpleNode)term.jjtGetChild(0).jjtGetChild(0)).getImage();
-                    if(functionName != null) {
-                        functionName = functionName.replaceAll("\\($", "");
-                        TermFunction termFunction;
-                        
-                        termFunction = new TermFunctionImpl(functionName);
-                        SimpleNode exprNode = ((SimpleNode)term.jjtGetChild(0).jjtGetChild(1));
-                        Operator tmpOperator = null;
-                        for(int i = 0; i < exprNode.jjtGetNumChildren(); i++) {
-                            SimpleNode cNode = (SimpleNode)exprNode.jjtGetChild(i);
 
-                            if(cNode.getType().equals("operator")) {
-                                if(cNode.jjtGetNumChildren() == 0) {
-                                    tmpOperator = Operator.SPACE;
-                                }
-                                else if(((SimpleNode)cNode.jjtGetChild(0)).getType().equals("slash")) {
-                                    tmpOperator = Operator.SLASH;
-                                }
-                                else if(((SimpleNode)cNode.jjtGetChild(0)).getType().equals("comma")) {
-                                    tmpOperator = Operator.COMMA;
-                                }
 
-                            }
-                            else {
-                                TermColor color = TermColorImpl.getColorByNode(cNode);
-                                if(color != null) {
-                                    color.setOperator(tmpOperator);
-                                    termFunction.getTermsList().add(color);
-                                    continue;
-                                }
-                                TermNumber number = TermNumberImpl.getNumberByNode(cNode);
-                                if(number != null) {
-                                    number.setOperator(tmpOperator);
-                                    termFunction.getTermsList().add(number);
-                                    continue;
-                                }
-                                TermPercent percent = TermPercentImpl.getPercentByNode(cNode);
-                                if(percent != null) {
-                                    percent.setOperator(tmpOperator);
-                                    termFunction.getTermsList().add(percent);
-                                    continue;
-                                }
-                                TermUri uri = TermUriImpl.getUriByNode(cNode);
-                                if(uri != null) {
-                                    uri.setOperator(tmpOperator);
-                                    termFunction.getTermsList().add(uri);
-                                    continue;
-                                }
-                                TermString value = TermStringImpl.getStringByNode(cNode);
-                                if(value != null) {
-                                    value.setOperator(tmpOperator);
-                                    termFunction.getTermsList().add(value);
-                                    continue;
-                                }
-                                TermIdent ident = TermIdentImpl.getIdentByNode(cNode);
-                                if(ident != null) {
-                                    ident.setOperator(tmpOperator);
-                                    termFunction.getTermsList().add(ident);
-                                    continue;
-                                }
-                                TermFunction function = TermFunctionImpl.getFunctionByNode(cNode);
-                                if(function != null) {
-                                    function.setOperator(tmpOperator);
-                                    termFunction.getTermsList().add(function);
-                                    continue;
-                                }
-                            }
-                        }
-                        return termFunction;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-    */
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((functionName == null) ? 0 : functionName.hashCode());
+		result = prime * result
+				+ ((operator == null) ? 0 : operator.hashCode());
+		result = prime * result + ((terms == null) ? 0 : terms.hashCode());
+		return result;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof TermFunctionImpl))
+			return false;
+		final TermFunctionImpl other = (TermFunctionImpl) obj;
+		if (functionName == null) {
+			if (other.functionName != null)
+				return false;
+		} else if (!functionName.equals(other.functionName))
+			return false;
+		if (operator == null) {
+			if (other.operator != null)
+				return false;
+		} else if (!operator.equals(other.operator))
+			return false;
+		if (terms == null) {
+			if (other.terms != null)
+				return false;
+		} else if (!terms.equals(other.terms))
+			return false;
+		return true;
+	}	
 }

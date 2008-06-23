@@ -37,6 +37,8 @@ public class OutputUtil {
 	public static final String FUNCTION_CLOSING = ")";
 	public static final String STRING_OPENING = "'";
 	public static final String STRING_CLOSING = "'";
+	public static final String ATTRIBUTE_OPENING = "[";
+	public static final String ATTRIBUTE_CLOSING = "]";
 	public static final String PERCENT_SIGN = "%";
 	public static final String HASH_SIGN = "#";
 	

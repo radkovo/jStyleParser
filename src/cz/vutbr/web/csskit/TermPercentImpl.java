@@ -12,7 +12,8 @@ import cz.vutbr.web.css.TermPercent;
 public class TermPercentImpl extends TermImpl implements TermPercent {
 
     protected Float value;
-
+ 
+    
     public TermPercentImpl(Float value) {
     	setValue(value);
     }
@@ -60,6 +61,44 @@ public class TermPercentImpl extends TermImpl implements TermPercent {
 		sb.append(value).append(OutputUtil.PERCENT_SIGN);
 
 		return sb.toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((operator == null) ? 0 : operator.hashCode());
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof TermPercentImpl))
+			return false;
+		final TermPercentImpl other = (TermPercentImpl) obj;
+		if (operator == null) {
+			if (other.operator != null)
+				return false;
+		} else if (!operator.equals(other.operator))
+			return false;
+		if (value == null) {
+			if (other.value != null)
+				return false;
+		} else if (!value.equals(other.value))
+			return false;
+		return true;
 	}    
     
 }

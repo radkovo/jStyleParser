@@ -24,51 +24,57 @@ public interface CssParserConstants {
   int url = 18;
   int SPACE = 19;
   int WHITECHAR = 20;
-  int LBRACE_CHAR = 21;
-  int RBRACE_CHAR = 22;
-  int SEMICOLON_CHAR = 23;
-  int NL = 24;
-  int BLANK = 25;
-  int CDO = 26;
-  int CDC = 27;
-  int EQUAL = 28;
-  int INCLUDES = 29;
-  int DASHMATCH = 30;
-  int LBRACE = 31;
-  int RBRACE = 32;
-  int SEMICOLON = 33;
-  int PLUS = 34;
-  int MINUS = 35;
-  int GREATER = 36;
-  int COMMA = 37;
-  int STRING = 38;
-  int INVALID = 39;
-  int IDENT = 40;
-  int HASH = 41;
-  int IMPORT_SYM = 42;
-  int PAGE_SYM = 43;
-  int MEDIA_SYM = 44;
-  int CHARSET_SYM = 45;
-  int IMPORTANT_SYM = 46;
-  int EMS = 47;
-  int EXS = 48;
-  int LENGTHPX = 49;
-  int LENGTHCM = 50;
-  int LENGTHMM = 51;
-  int LENGTHPT = 52;
-  int LENGTHPC = 53;
-  int ANGLEDEG = 54;
-  int ANGLERAD = 55;
-  int ANGLEGRAD = 56;
-  int TIMEMS = 57;
-  int TIMES = 58;
-  int FREQHZ = 59;
-  int FREQKHZ = 60;
-  int DIMENSION = 61;
-  int PERCENTAGE = 62;
-  int NUMBER = 63;
-  int URI = 64;
-  int FUNCTION = 65;
+  int RPAREN_CHAR = 21;
+  int LCURLY_CHAR = 22;
+  int RCURLY_CHAR = 23;
+  int LBRACE_CHAR = 24;
+  int RBRACE_CHAR = 25;
+  int SEMICOLON_CHAR = 26;
+  int NL = 27;
+  int BLANK = 28;
+  int CDO = 29;
+  int CDC = 30;
+  int EQUAL = 31;
+  int INCLUDES = 32;
+  int DASHMATCH = 33;
+  int LCURLY = 34;
+  int RCURLY = 35;
+  int RPAREN = 36;
+  int LBRACE = 37;
+  int RBRACE = 38;
+  int SEMICOLON = 39;
+  int PLUS = 40;
+  int MINUS = 41;
+  int GREATER = 42;
+  int COMMA = 43;
+  int STRING = 44;
+  int INVALID = 45;
+  int IDENT = 46;
+  int HASH = 47;
+  int IMPORT_SYM = 48;
+  int PAGE_SYM = 49;
+  int MEDIA_SYM = 50;
+  int CHARSET_SYM = 51;
+  int IMPORTANT_SYM = 52;
+  int EMS = 53;
+  int EXS = 54;
+  int LENGTHPX = 55;
+  int LENGTHCM = 56;
+  int LENGTHMM = 57;
+  int LENGTHPT = 58;
+  int LENGTHPC = 59;
+  int ANGLEDEG = 60;
+  int ANGLERAD = 61;
+  int ANGLEGRAD = 62;
+  int TIMEMS = 63;
+  int TIMES = 64;
+  int FREQHZ = 65;
+  int FREQKHZ = 66;
+  int DIMENSION = 67;
+  int PERCENTAGE = 68;
+  int NUMBER = 69;
+  int URI = 70;
+  int FUNCTION = 71;
 
   int DEFAULT = 0;
 
@@ -94,8 +100,11 @@ public interface CssParserConstants {
     "<url>",
     "<SPACE>",
     "<WHITECHAR>",
+    "\")\"",
     "\"{\"",
     "\"}\"",
+    "\"[\"",
+    "\"]\"",
     "\";\"",
     "<NL>",
     "<BLANK>",
@@ -104,6 +113,9 @@ public interface CssParserConstants {
     "\"=\"",
     "\"~=\"",
     "\"|=\"",
+    "<LCURLY>",
+    "<RCURLY>",
+    "<RPAREN>",
     "<LBRACE>",
     "<RBRACE>",
     "<SEMICOLON>",
@@ -142,9 +154,6 @@ public interface CssParserConstants {
     "\":\"",
     "\".\"",
     "\"*\"",
-    "\"[\"",
-    "\"]\"",
-    "\")\"",
     "\"/\"",
   };
 

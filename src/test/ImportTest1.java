@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import cz.vutbr.web.css.ImportURI;
@@ -15,8 +14,6 @@ import cz.vutbr.web.csskit.ImportURIImpl;
 import cz.vutbr.web.csskit.parser.CssParser;
 
 public class ImportTest1 {
-
-	private static Logger log = Logger.getLogger(ImportTest1.class);
 
 	public static final String SIMPLE_IMPORT = "@import 'bla.css';\n";
 
@@ -83,8 +80,6 @@ public class ImportTest1 {
 
 		List<ImportURI> imports = ss.getImports();
 
-		log.debug(ss);
-
 		assertEquals("There should be two imports", 2, imports.size());
 
 		assertEquals("First import should be 'file1.css'", "file1.css", imports
@@ -123,7 +118,6 @@ public class ImportTest1 {
 				"Media rule 2 should be equal to @media 'test-print.css' print, screen;",
 				rule2, imports.get(1));
 		
-		log.debug(ss);
 	}
 
 }

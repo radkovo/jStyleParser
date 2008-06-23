@@ -3,6 +3,8 @@ package cz.vutbr.web.csskit;
 import java.util.Collections;
 import java.util.List;
 
+import javax.naming.OperationNotSupportedException;
+
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.SimpleSelector;
 import cz.vutbr.web.css.StyleSheetNotValidException;
@@ -21,28 +23,18 @@ public class SelectorImpl implements Selector {
 	
 	public SelectorImpl() {
 		this.simpleSelectors = Collections.emptyList();
+	}	
+	
+	public SimpleSelector getLastSimpleSelector()
+			throws OperationNotSupportedException {
+	
+		if(simpleSelectors.size()==0)
+			throw new OperationNotSupportedException("There is no \"last\" simple selector");
+		
+		return simpleSelectors.get(simpleSelectors.size()-1);
 	}
 	
 	
-	
-    /* input: SimpleSelector (Combinator SimpleSelector)* */
-    /*
-    public SelectorImpl(SimpleNode n) {
-        SimpleNode combinator = null;
-        for(int i = 0; i < n.jjtGetNumChildren(); i++) {
-            SimpleNode cNode = (SimpleNode)n.jjtGetChild(i);
-            
-            if(cNode.getType().equals("combinator")) {
-                combinator = cNode;
-            }
-            
-            if(cNode.getType().equals("simple_selector")) {
-                simpleSelectorsList.add(new SimpleSelectorImpl(cNode, combinator));
-            }
-        }
-    }
-    */
-    
 	/**
 	 * @return the simpleSelectors
 	 */
@@ -51,15 +43,12 @@ public class SelectorImpl implements Selector {
 	}
 
 
-
 	/**
 	 * @param simpleSelectors the simpleSelectors to set
 	 */
 	public void setSimpleSelectors(List<SimpleSelector> simpleSelectors) {
 		this.simpleSelectors = simpleSelectors;
 	}
-
-
 
 	public String toString(int depth) {
 
@@ -72,10 +61,42 @@ public class SelectorImpl implements Selector {
     @Override
     public String toString() {
     	return this.toString(0);
-    }
-
+    }       
     
-    public void check(String path) throws StyleSheetNotValidException {
+    
+    /* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((simpleSelectors == null) ? 0 : simpleSelectors.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof SelectorImpl))
+			return false;
+		final SelectorImpl other = (SelectorImpl) obj;
+		if (simpleSelectors == null) {
+			if (other.simpleSelectors != null)
+				return false;
+		} else if (!simpleSelectors.equals(other.simpleSelectors))
+			return false;
+		return true;
+	}
+
+	public void check(String path) throws StyleSheetNotValidException {
         if(simpleSelectors.isEmpty()) {
             throw new StyleSheetNotValidException("Selector without SimpleSelector", path);
         }

@@ -30,6 +30,7 @@ import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.SimpleSelector;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermIdent;
+import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.csskit.StyleSheetImpl;
@@ -46,7 +47,7 @@ import cz.vutbr.web.csskit.TermUriImpl;
 import cz.vutbr.web.csskit.TermNumberImpl;
 import cz.vutbr.web.csskit.TermPercentImpl;
 import cz.vutbr.web.csskit.TermColorImpl;
-import cz.vutbr.web.csskit.SSTypeImpl;
+import cz.vutbr.web.csskit.TermFunctionImpl;
 
 /**
  * Parser of CSS passed as InputStream, Reader or directly as String.
@@ -120,10 +121,18 @@ public class CssParser {
 			
 		stopTokens.add(EOF); 
 	
-		Token t;
-		do {
+		if(log.isTraceEnabled()) {
+			log.trace("Stopped on token: " +
+					CssParserConstants.tokenImage[getToken(0).kind] +
+					" with value: " + getToken(0).image); 
+		}
+		
+		Token t = getToken(0);
+		while(!stopTokens.contains(t.kind)) {
 			t = getNextToken();
-		}while(!stopTokens.contains(t.kind));
+			if(log.isTraceEnabled())
+				log.trace("Skipping to token:" + CssParserConstants.tokenImage[t.kind] + ", " + t.image );
+		}
 		
 	}
 
@@ -161,8 +170,11 @@ TOKEN :
   <#SPACE : ([" ", "\t", "\r", "\n", "\f"])+ > |
   <#WHITECHAR : (<SPACE>)? > |
 
-  <#LBRACE_CHAR : "{" > |	
-  <#RBRACE_CHAR : "}" > |
+  <#RPAREN_CHAR : ")" > |
+  <#LCURLY_CHAR : "{" > |	
+  <#RCURLY_CHAR : "}" > |
+  <#LBRACE_CHAR : "[" > |
+  <#RBRACE_CHAR : "]" > |
   <#SEMICOLON_CHAR : ";" > |
   
   <#NL : "\n" | "\r\n" | "\r" | "\f"> |
@@ -175,8 +187,11 @@ TOKEN :
   <INCLUDES : "~=" > |
   <DASHMATCH : "|=" > |
 
-  <LBRACE : <WHITECHAR> <LBRACE_CHAR> > |
-  <RBRACE : <WHITECHAR> <RBRACE_CHAR> > |
+  <LCURLY : <WHITECHAR> <LCURLY_CHAR> > |
+  <RCURLY : <WHITECHAR> <RCURLY_CHAR> > |
+  <RPAREN : <RPAREN_CHAR> > |
+  <LBRACE : <LBRACE_CHAR> > |
+  <RBRACE : <RBRACE_CHAR> > |
   <SEMICOLON: <SEMICOLON_CHAR> > |
   <PLUS : <WHITECHAR> "+" > |
   <MINUS : <WHITECHAR> "-" > |
@@ -215,7 +230,7 @@ TOKEN :
   <PERCENTAGE : <num> "%" > |
   <NUMBER : <num> > |
 
-  <URI : ("url(" <WHITECHAR> <string> <WHITECHAR> ")") | ("url("<WHITECHAR> <url> <WHITECHAR> ")") > |
+  <URI : ("url(" <WHITECHAR> <string> <WHITECHAR> <RPAREN_CHAR>) | ("url("<WHITECHAR> <url> <WHITECHAR> <RPAREN_CHAR>) > |
   <FUNCTION : <ident> "(" >
 }
 
@@ -273,7 +288,9 @@ void charset() :
   		}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to retrive charset", NL, SEMICOLON);
+  		// continue with next available element
+  		errorSkipTo("Failed to retrive charset", 
+  			BLANK, CDO, CDC, SEMICOLON );
   	}
 }
 
@@ -299,13 +316,14 @@ void import_a() :
   		}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed parsing importing rule import_a()", NL);
+  		errorSkipTo("Failed parsing importing rule import_a()", BLANK);
   	}
 }
 
 /**
  * Creates and sets new media rule to stylesheet
  */
+//@SuppressWarnings("unchecked") 
 void media() :
 {
 	RuleMedia media = new RuleMediaImpl();
@@ -314,7 +332,7 @@ void media() :
 }
 {
 	try {
-  		<MEDIA_SYM> (<BLANK>)* medium(medias) ( <COMMA> (<BLANK>)* medium(medias) )* <LBRACE> (<BLANK>)* (ruleset( (List<Rule>) rules))* <RBRACE> (<BLANK>)*
+  		<MEDIA_SYM> (<BLANK>)* medium(medias) ( <COMMA> (<BLANK>)* medium(medias) )* <LCURLY> (<BLANK>)* (ruleset( (List<Rule>) rules))* <RCURLY> (<BLANK>)*
   		{
   			media.setMedias(medias);
   			media.setRules( (List<RuleSet>) rules);
@@ -322,7 +340,7 @@ void media() :
   		}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed parsing media rule media()", RBRACE_CHAR);
+  		errorSkipTo("Failed parsing media rule media()", RCURLY_CHAR);
   	}
 }
 
@@ -374,7 +392,7 @@ void ruleset(List<Rule> rules) :
   				if(sel!=null) selectors.add(sel);
   			} 
   		)*
-  		<LBRACE> 
+  		<LCURLY> 
   		(<BLANK>)* dec = declaration()
   			{
   				// store declaration
@@ -386,11 +404,11 @@ void ruleset(List<Rule> rules) :
   					if(dec != null) declarations.add(dec);
   				} 
   			)* 
-  			<RBRACE> (<BLANK>
+  			<RCURLY> (<BLANK>
   		)*
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to retrieve ruleset()", RBRACE_CHAR);
+  		errorSkipTo("Failed to retrieve ruleset()", RCURLY_CHAR);
   	}
   	// be error graceful to unknown selectors and declarations
   	finally {
@@ -415,7 +433,7 @@ void page() :
 {
 	try {
   		<PAGE_SYM> (<BLANK>)* ( pseudo = pseudo_page())? (<BLANK>)*
-    	<LBRACE> 
+    	<LCURLY> 
     	(<BLANK>)* dec = declaration()
     		{
     			// add declaration
@@ -427,12 +445,12 @@ void page() :
     				if(dec != null) declarations.add(dec);
     			} 
     		)* 
-    	<RBRACE> 
+    	<RCURLY> 
     	(<BLANK>
     	)*
     }
     catch (ParseException e) {
-		errorSkipTo("Failed to retrieve page()", RBRACE_CHAR);    
+		errorSkipTo("Failed to retrieve page()", RCURLY_CHAR);    
     }
     // be error graceful to unknown declarations
   	finally {
@@ -475,7 +493,7 @@ Declaration declaration() :
   		( property = property() ":" (<BLANK>)* terms = expr() ( important = prio())? )?
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to read declaration", NL, SEMICOLON, RBRACE_CHAR);
+  		errorSkipTo("Failed to read declaration", NL, SEMICOLON, RCURLY_CHAR);
   	}
   	finally {
   		if(terms==null && property==null)
@@ -539,7 +557,7 @@ Selector selector() :
   		)*
   	}
   	catch(ParseException e) {
-  		errorSkipTo("Unable to get selector", SPACE, LBRACE_CHAR);
+  		errorSkipTo("Unable to get selector", SPACE, LCURLY_CHAR);
   	}
   	finally {
   		if(log.isDebugEnabled()) {
@@ -553,49 +571,96 @@ Selector selector() :
 /**
  * Returns simple selector
  * @return Simple selector as a part of Selector
- * TODO other
  */
 SimpleSelector simple_selector() :
 {
 	SimpleSelector s = new SimpleSelectorImpl();
 	String value = null;
+	SimpleSelector.Item item = null;
+	List<SimpleSelector.Item> items = new ArrayList<SimpleSelector.Item>();
 }
 {
 	try {
   		value = element_name()
   			{
-  				if(log.isTraceEnabled())
-  					log.trace("ElementName: " + value);
-  				s.setFirstItem(new SSTypeImpl(value));
+  				if(log.isTraceEnabled()) log.trace("elementName: " + value);
+  				s.setFirstItem(new SimpleSelectorImpl.ItemImpl(value));
+  				
   			} 
   		( 
-  			hash() {log.trace("1hash");}| 
-  			class_a() {log.trace("1class");}| 
-  			attrib() {log.trace("1attrib");}| 
-  			pseudo()  {log.trace("1pseudo");}
+  			value = hash() 
+  				{
+  					if(log.isTraceEnabled()) log.trace("ID: " + value);
+  					item = new SimpleSelectorImpl.ItemIDImpl(value);
+  					if(item != null) items.add(item);
+  			 	} |
+  			item = class_a() 
+  				{
+  					if(log.isTraceEnabled()) log.trace(".class: " + item);
+  					if(item!=null) items.add(item);
+  				} |	 
+  			item = attrib() 
+  				{
+  					if(log.isTraceEnabled()) log.trace("[attrib]: " + item);
+  					if(item!=null) items.add(item);
+  				} | 
+  			item = pseudo()  
+  				{
+  					if(log.isTraceEnabled()) log.trace(":pseudo: " + item);
+  					if(item!=null) items.add(item);
+  				}
   		)*| 
   		( 
-  			hash() {log.trace("2hash");}| 
-  			class_a() {log.trace("2class");}| 
-  			attrib() {log.trace("2attrib");}| 
-  			pseudo() {log.trace("2pseudo");}
+  			value = hash()
+  			 	{
+  			 		if(log.isTraceEnabled()) log.trace("ID: " + value);
+  					item = new SimpleSelectorImpl.ItemIDImpl(value);
+  					if(item != null) items.add(item);
+  			 	} |
+  			item = class_a() 
+  				{
+  					if(log.isTraceEnabled()) log.trace(".class: " + item);
+  					if(item!=null) items.add(item);
+  				} |	 
+  			item = attrib() 
+  				{
+  					if(log.isTraceEnabled()) log.trace("[attrib]: " + item);
+  					if(item!=null) items.add(item);
+  				} |	
+  			item = pseudo() 
+  				{
+  					if(log.isTraceEnabled()) log.trace(":pseudo: " + item);
+  					if(item!=null) items.add(item);
+  				}
   		)+
   	}
   	catch(ParseException e) {
-  		errorSkipTo("Unable to get simple selector", SPACE, LBRACE_CHAR);
+  		errorSkipTo("Unable to get simple selector", SPACE, LCURLY_CHAR);
   	}
   	finally {
+  	
+  		s.setItems(items);
+  	
   		if(log.isTraceEnabled()) {
   			log.trace("SimpleSelector: " + s);
   		}
+  		
   		return s;
   	}
 }
 
-void class_a() :
-{}
+/**
+ * Returns .class simple selector
+ */
+SimpleSelector.Item class_a() :
 {
-  "." ident()
+	String value = null;
+}
+{
+  "." value = ident() 
+  	{ 
+  		return new SimpleSelectorImpl.ItemClassImpl(value);
+  	}
 }
 
 /**
@@ -610,23 +675,97 @@ String element_name() :
   	element=ident() { return element;} | "*" {return "*";}
 }
 
-void attrib() :
-{}
+/**
+ * Returns [attribute] simple selector
+ */
+SimpleSelector.Item attrib() :
 {
-  "[" (<BLANK>)* ident() (<BLANK>)* [ (equal() | includes() | dashmatch() ) (<BLANK>)*
-    ( ident() | string() ) (<BLANK>)* ] "]"
+	String attribute = null;
+	String value = null;
+	boolean isValueIdent = false;
+	SimpleSelector.Operator op = null;
+}
+{
+	try {
+  		<LBRACE> 
+  		(
+  			<BLANK>)* attribute = ident() (<BLANK>
+  		)* 
+  		[ 
+  			(op = equal() | op = includes() | op = dashmatch() ) (<BLANK>)*
+    		( 	
+    			value = ident()	{ isValueIdent = true; } | 
+    			value = string() { isValueIdent = false; }
+    		) (<BLANK>)* 
+    	] 
+    	<RBRACE>
+    }
+    catch (ParseException ex) {
+    	errorSkipTo("Unable to get selectors attribute", NL, COMMA, LBRACE_CHAR, RBRACE_CHAR);
+    	return null;
+    }
+    finally {
+    	if(value!=null && op != null && attribute!=null)
+    		return new SimpleSelectorImpl.ItemAttributeImpl(value, isValueIdent, op, attribute);
+    	
+    	return null;
+    }
 }
 
-void pseudo() :
-{}
+/**
+ * Returns :pseudo simple selector
+ */
+SimpleSelector.Item pseudo() :
 {
-  ":" ( ident() | pfunction() )
+	String pseudo = null;
+	SimpleSelector.Item function = null;
+}
+{
+	try {
+  		":" 
+  		( 
+  			pseudo = ident() | 
+  			function = pfunction() 
+  		)
+  	}
+  	catch (ParseException e) {
+  		errorSkipTo("Unable to get :pseudo in simpleselector", SPACE, LBRACE_CHAR, COMMA, NL); 
+  	}
+  	finally {
+  		// matched first branch
+  		if(pseudo!=null) 
+  			return new SimpleSelectorImpl.ItemPseudoImpl(pseudo, null);
+  		
+  		return function;
+  	}
 }
 
-void pfunction() :
-{}
+/**
+ * Returns :pseudo-function() simple selector 
+ */
+SimpleSelector.Item pfunction() :
 {
-  function_begin() (<BLANK>)* [ident()] (<BLANK>)* ")"
+	String functionName = null;
+	String value = null;
+}
+{
+	try {
+  		functionName = function_begin() 
+  		(<BLANK>)* 
+  		[ value = ident()] 
+  		(<BLANK>)* 
+  		<RPAREN>
+  	}
+  	catch (ParseException ex) {
+  		errorSkipTo("Unable to get :pseudo()", RPAREN_CHAR, NL, COMMA, LBRACE_CHAR);
+  		functionName = null;
+  	}
+  	finally {
+  		if(functionName!=null) {
+  			return new SimpleSelectorImpl.ItemPseudoImpl(value, functionName);
+  		}
+  		return null;
+  	}
 }
 
 /**
@@ -645,7 +784,7 @@ Term.Operator operator() :
   		{ return op;}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to get operator", RBRACE_CHAR, NL, SEMICOLON, SPACE);
+  		errorSkipTo("Failed to get operator", RCURLY_CHAR, NL, SEMICOLON, SPACE);
   		return Term.Operator.SPACE;
   	}
   {
@@ -658,7 +797,7 @@ Term.Operator operator() :
  */
 SimpleSelector.Combinator combinator() :
 {
-	SimpleSelector.Combinator c = SimpleSelector.Combinator.SPACE;
+	SimpleSelector.Combinator c = SimpleSelector.Combinator.DESCENDANT;
 }
 {
 	try {
@@ -667,8 +806,8 @@ SimpleSelector.Combinator combinator() :
   		<BLANK> {return c;}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to get combinator", LBRACE_CHAR, SPACE, COMMA);
-  		return SimpleSelector.Combinator.SPACE;
+  		errorSkipTo("Failed to get combinator", LCURLY_CHAR, SPACE, COMMA);
+  		return SimpleSelector.Combinator.DESCENDANT;
   	}
 }
 
@@ -735,6 +874,9 @@ List<Term> expr() :
   	}
 }
 
+/**
+ * Returns term (function, color, number, percent, string, identificator)
+ */
 Term term() :
 {
 	
@@ -813,8 +955,8 @@ Term term() :
    		value = string() (<BLANK>)*	{ term = new TermStringImpl(value);	} | 
    		value = ident() (<BLANK>)* { term = new TermIdentImpl(value); } | 
    		value = uri() (<BLANK>)* { term = new TermUriImpl(value);} | 
-   		value = hexcolor() | 
-   		function() { return null; }
+   		value = hexcolor() { term = TermColorImpl.getColorByHash(value); } | 
+   		term = function() 
    		
    	}
    	catch(ParseException e) {
@@ -835,6 +977,11 @@ Term term() :
    			if (colorTerm != null)
    				term = colorTerm;
    		}
+   		else if(term instanceof TermFunction) {
+   			colorTerm = TermColorImpl.getColorByFunction((TermFunction)term);
+   			if(colorTerm != null)
+   				term = colorTerm;
+   		}
    	
    		if(log.isTraceEnabled()) {
    			log.trace("Having term: " 
@@ -846,36 +993,73 @@ Term term() :
    	}
 }
 
-void function() :
-{}
+/**
+ * Returns function
+ */
+TermFunction function() :
 {
-  function_begin() (<BLANK>)* expr() ")" (<BLANK>)*
+	String functionName = null;
+	List<Term> terms = null;
+	TermFunction function = new TermFunctionImpl();
 }
-
-void minus() :
-      { Token t; } { t=<MINUS>       { jjtThis.setImage(t.image); } }
-
-
-
-void function_begin() :  { Token t; } { t=<FUNCTION>       { jjtThis.setImage(t.image); } }
-
-void equal() :      
-{} 
-{ 
-    <EQUAL>
-}
-
-void includes() :   
-{} 
 {
-    <INCLUDES>
+	try {
+  		functionName = function_begin() 
+  			{
+  				if(functionName!=null)
+  					function.setFunctionName(functionName);
+  			}
+  		(<BLANK>)* 
+  		terms=expr() 
+  			{
+  				function.setTerms(terms);
+  			} 
+  		<RPAREN> 
+  		(<BLANK>)*
+  	}
+  	catch (ParseException e) {
+  		errorSkipTo("Unable to get function", NL, SPACE, SEMICOLON, RPAREN_CHAR);
+  	}
+  	finally {
+  	
+  		if(log.isDebugEnabled()) {
+  			log.debug("Matched function: " + function);
+  		}
+  	
+  		return function; 
+  	}
 }
 
-void dashmatch() :  
-{} 
-{
-    <DASHMATCH>
-}
+/**
+ * Unary minus
+ */
+String minus() :
+{ Token t; } { t=<MINUS>		{ return t.image; } }
+
+
+/**
+ * Name of function
+ */
+String function_begin() :  
+{ Token t; } { t=<FUNCTION>		{ return t.image; } }
+
+/**
+ * SimpleSelector operator
+ */
+SimpleSelector.Operator equal() :      
+{} {	<EQUAL> 	{ return SimpleSelector.Operator.EQUALS; } }
+
+/**
+ * SimpleSelector operator
+ */
+SimpleSelector.Operator includes() :   
+{} {	<INCLUDES> 	{ return SimpleSelector.Operator.INCLUDES; } }
+
+/**
+ * SimpleSelector operator
+ */
+SimpleSelector.Operator dashmatch() :  
+{} {	<DASHMATCH> { return SimpleSelector.Operator.DASHMATCH; } }
 
 /**
  * Operator comma for terms
@@ -1029,10 +1213,10 @@ String hash() :
  * Returns plus combinator
  */
 SimpleSelector.Combinator plus() : 
-{}	{ <PLUS>  { return SimpleSelector.Combinator.PLUS;} }
+{}	{ <PLUS>  { return SimpleSelector.Combinator.ADJACENT;} }
 
 /**
  * Returns greater combinator
  */
 SimpleSelector.Combinator greater():
-{} { <GREATER>	{ return SimpleSelector.Combinator.GREATER;} }
+{} { <GREATER>	{ return SimpleSelector.Combinator.CHILD;} }

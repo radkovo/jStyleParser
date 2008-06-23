@@ -67,46 +67,7 @@ public class StyleSheetImpl implements StyleSheet {
     	this.charset = null;
     	this.imports = Collections.emptyList();
     	this.rules = Collections.emptyList();
-    }
-    /*
-    public StyleSheetImpl(SimpleNode n) {   
-    	
-        for(int i = 0; i < n.jjtGetNumChildren(); i++) {
-            SimpleNode cNode = (SimpleNode)n.jjtGetChild(i);
-            
-            //
-            if(cNode.getType().equals("charset")) {
-                String s = ((SimpleNode)cNode.jjtGetChild(0)).getImage();
-                s = s.replaceAll("^'", "");
-                s = s.replaceAll("^\"", "");
-                s = s.replaceAll("'$", "");
-                s = s.replaceAll("\"$", "");
-                setCharset(s);
-            }
-            
-            // @media rule 
-            if(cNode.getType().equals("media")) {
-                rulesList.add(new RuleMediaImpl(cNode));
-            }
-            
-            // Generic rule 
-            if(cNode.getType().equals("ruleset")) {
-                rulesList.add(new RuleSetImpl(cNode));
-            }
-            
-            // @page rule 
-            if(cNode.getType().equals("page")) {
-                rulesList.add(new RulePageImpl(cNode));
-            }
-            
-            // @import rule 
-            if(cNode.getType().equals("import_a")) {
-                importList.add(new ImportURIImpl(cNode));
-            }
-        }
-    	
-    }
-    */
+    }    
 	
     @Override
     public String toString() {

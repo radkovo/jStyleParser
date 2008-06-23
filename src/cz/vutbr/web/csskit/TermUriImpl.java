@@ -11,6 +11,7 @@ public class TermUriImpl extends TermImpl implements TermUri {
 
     protected String uri;
 
+    
     public TermUriImpl(String uri) {
         setUri(uri);
     }
@@ -43,5 +44,43 @@ public class TermUriImpl extends TermImpl implements TermUri {
     	sb.append(OutputUtil.URL_OPENING).append(uri).append(OutputUtil.URL_CLOSING);
     	
     	return sb.toString();
-    } 
+    }
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((operator == null) ? 0 : operator.hashCode());
+		result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof TermUriImpl))
+			return false;
+		final TermUriImpl other = (TermUriImpl) obj;
+		if (operator == null) {
+			if (other.operator != null)
+				return false;
+		} else if (!operator.equals(other.operator))
+			return false;
+		if (uri == null) {
+			if (other.uri != null)
+				return false;
+		} else if (!uri.equals(other.uri))
+			return false;
+		return true;
+	} 
 }

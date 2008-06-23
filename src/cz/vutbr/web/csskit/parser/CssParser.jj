@@ -31,6 +31,7 @@ import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.SimpleSelector;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermIdent;
+import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.csskit.StyleSheetImpl;
@@ -47,7 +48,7 @@ import cz.vutbr.web.csskit.TermUriImpl;
 import cz.vutbr.web.csskit.TermNumberImpl;
 import cz.vutbr.web.csskit.TermPercentImpl;
 import cz.vutbr.web.csskit.TermColorImpl;
-import cz.vutbr.web.csskit.SSTypeImpl;
+import cz.vutbr.web.csskit.TermFunctionImpl;
 
 /**
  * Parser of CSS passed as InputStream, Reader or directly as String.
@@ -124,10 +125,18 @@ public class CssParser/*@bgen(jjtree)*/implements CssParserTreeConstants/*@egen*
 			
 		stopTokens.add(EOF); 
 	
-		Token t;
-		do {
+		if(log.isDebugEnabled()) {
+			log.debug("Stopped on token: " +
+					CssParserConstants.tokenImage[getToken(0).kind] +
+					" with value: " + getToken(0).image); 
+		}
+		
+		Token t = getToken(0);
+		while(!stopTokens.contains(t.kind)) {
 			t = getNextToken();
-		}while(!stopTokens.contains(t.kind));
+			if(log.isDebugEnabled())
+				log.debug("Next token:" + CssParserConstants.tokenImage[t.kind] + ", " + t.image );
+		}
 		
 	}
 
@@ -165,8 +174,11 @@ TOKEN :
   <#SPACE : ([" ", "\t", "\r", "\n", "\f"])+ > |
   <#WHITECHAR : (<SPACE>)? > |
 
-  <#LBRACE_CHAR : "{" > |	
-  <#RBRACE_CHAR : "}" > |
+  <#RPAREN_CHAR : ")" > |
+  <#LCURLY_CHAR : "{" > |	
+  <#RCURLY_CHAR : "}" > |
+  <#LBRACE_CHAR : "[" > |
+  <#RBRACE_CHAR : "]" > |
   <#SEMICOLON_CHAR : ";" > |
   
   <#NL : "\n" | "\r\n" | "\r" | "\f"> |
@@ -179,8 +191,11 @@ TOKEN :
   <INCLUDES : "~=" > |
   <DASHMATCH : "|=" > |
 
-  <LBRACE : <WHITECHAR> <LBRACE_CHAR> > |
-  <RBRACE : <WHITECHAR> <RBRACE_CHAR> > |
+  <LCURLY : <WHITECHAR> <LCURLY_CHAR> > |
+  <RCURLY : <WHITECHAR> <RCURLY_CHAR> > |
+  <RPAREN : <RPAREN_CHAR> > |
+  <LBRACE : <LBRACE_CHAR> > |
+  <RBRACE : <RBRACE_CHAR> > |
   <SEMICOLON: <SEMICOLON_CHAR> > |
   <PLUS : <WHITECHAR> "+" > |
   <MINUS : <WHITECHAR> "-" > |
@@ -219,7 +234,7 @@ TOKEN :
   <PERCENTAGE : <num> "%" > |
   <NUMBER : <num> > |
 
-  <URI : ("url(" <WHITECHAR> <string> <WHITECHAR> ")") | ("url("<WHITECHAR> <url> <WHITECHAR> ")") > |
+  <URI : ("url(" <WHITECHAR> <string> <WHITECHAR> <RPAREN_CHAR>) | ("url("<WHITECHAR> <url> <WHITECHAR> <RPAREN_CHAR>) > |
   <FUNCTION : <ident> "(" >
 }
 
@@ -345,7 +360,9 @@ void charset() :
   		}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to retrive charset", NL, SEMICOLON);
+  		// continue with next available element
+  		errorSkipTo("Failed to retrive charset", 
+  			BLANK, CDO, CDC, SEMICOLON );
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -402,7 +419,7 @@ void import_a() :
   		}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed parsing importing rule import_a()", NL);
+  		errorSkipTo("Failed parsing importing rule import_a()", BLANK);
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -429,6 +446,7 @@ void import_a() :
 /**
  * Creates and sets new media rule to stylesheet
  */
+//@SuppressWarnings("unchecked") 
 void media() :
 {/*@bgen(jjtree) media */
         SimpleNode jjtn000 = new SimpleNode(JJTMEDIA);
@@ -443,7 +461,7 @@ void media() :
         try {
 /*@egen*/
 	try {
-  		<MEDIA_SYM> (<BLANK>)* medium(medias) ( <COMMA> (<BLANK>)* medium(medias) )* <LBRACE> (<BLANK>)* (ruleset( (List<Rule>) rules))* <RBRACE> (<BLANK>)*/*@bgen(jjtree)*/
+  		<MEDIA_SYM> (<BLANK>)* medium(medias) ( <COMMA> (<BLANK>)* medium(medias) )* <LCURLY> (<BLANK>)* (ruleset( (List<Rule>) rules))* <RCURLY> (<BLANK>)*/*@bgen(jjtree)*/
                 {
                   jjtree.closeNodeScope(jjtn000, true);
                   jjtc000 = false;
@@ -456,7 +474,7 @@ void media() :
   		}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed parsing media rule media()", RBRACE_CHAR);
+  		errorSkipTo("Failed parsing media rule media()", RCURLY_CHAR);
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -538,7 +556,6 @@ void medium(List<String> medias) :
 /**
  * Inserts ruleset's rule into rule set
  * @param rules List of rules where new ruleset will be added
- * TODO Selectors
  */
 void ruleset(List<Rule> rules) :
 {/*@bgen(jjtree) ruleset */
@@ -566,7 +583,7 @@ void ruleset(List<Rule> rules) :
   				if(sel!=null) selectors.add(sel);
   			} 
   		)*
-  		<LBRACE> 
+  		<LCURLY> 
   		(<BLANK>)* dec = declaration()
   			{
   				// store declaration
@@ -578,11 +595,11 @@ void ruleset(List<Rule> rules) :
   					if(dec != null) declarations.add(dec);
   				} 
   			)* 
-  			<RBRACE> (<BLANK>
+  			<RCURLY> (<BLANK>
   		)*
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to retrieve ruleset()", RBRACE_CHAR);
+  		errorSkipTo("Failed to retrieve ruleset()", RCURLY_CHAR);
   	}
   	// be error graceful to unknown selectors and declarations
   	finally {
@@ -633,7 +650,7 @@ void page() :
 /*@egen*/
 	try {
   		<PAGE_SYM> (<BLANK>)* ( pseudo = pseudo_page())? (<BLANK>)*
-    	<LBRACE> 
+    	<LCURLY> 
     	(<BLANK>)* dec = declaration()
     		{
     			// add declaration
@@ -645,12 +662,12 @@ void page() :
     				if(dec != null) declarations.add(dec);
     			} 
     		)* 
-    	<RBRACE> 
+    	<RCURLY> 
     	(<BLANK>
     	)*
     }
     catch (ParseException e) {
-		errorSkipTo("Failed to retrieve page()", RBRACE_CHAR);    
+		errorSkipTo("Failed to retrieve page()", RCURLY_CHAR);    
     }
     // be error graceful to unknown declarations
   	finally {
@@ -750,7 +767,7 @@ Declaration declaration() :
   		( property = property() ":" (<BLANK>)* terms = expr() ( important = prio())? )?
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to read declaration", NL, SEMICOLON, RBRACE_CHAR);
+  		errorSkipTo("Failed to read declaration", NL, SEMICOLON, RCURLY_CHAR);
   	}
   	finally {
   		if(terms==null && property==null)
@@ -871,7 +888,7 @@ Selector selector() :
   		)*
   	}
   	catch(ParseException e) {
-  		errorSkipTo("Unable to get selector", SPACE, LBRACE_CHAR);
+  		errorSkipTo("Unable to get selector", SPACE, LCURLY_CHAR);
   	}
   	finally {
   		if(log.isDebugEnabled()) {
@@ -905,7 +922,6 @@ Selector selector() :
 /**
  * Returns simple selector
  * @return Simple selector as a part of Selector
- * TODO other
  */
 SimpleSelector simple_selector() :
 {/*@bgen(jjtree) simple_selector */
@@ -915,6 +931,8 @@ SimpleSelector simple_selector() :
 /*@egen*/
 	SimpleSelector s = new SimpleSelectorImpl();
 	String value = null;
+	SimpleSelector.Item item = null;
+	List<SimpleSelector.Item> items = new ArrayList<SimpleSelector.Item>();
 }
 {/*@bgen(jjtree) simple_selector */
         try {
@@ -922,30 +940,68 @@ SimpleSelector simple_selector() :
 	try {
   		value = element_name()
   			{
-  				if(log.isTraceEnabled())
-  					log.trace("ElementName: " + value);
-  				s.setFirstItem(new SSTypeImpl(value));
+  				if(log.isTraceEnabled()) log.trace("elementName: " + value);
+  				s.setFirstItem(new SimpleSelectorImpl.ItemImpl(value));
+  				
   			} 
   		( 
-  			hash() {log.trace("1hash");}| 
-  			class_a() {log.trace("1class");}| 
-  			attrib() {log.trace("1attrib");}| 
-  			pseudo()  {log.trace("1pseudo");}
+  			value = hash() 
+  				{
+  					if(log.isTraceEnabled()) log.trace("ID: " + value);
+  					item = new SimpleSelectorImpl.ItemIDImpl(value);
+  					if(item != null) items.add(item);
+  			 	} |
+  			item = class_a() 
+  				{
+  					if(log.isTraceEnabled()) log.trace(".class: " + item);
+  					if(item!=null) items.add(item);
+  				} |	 
+  			item = attrib() 
+  				{
+  					if(log.isTraceEnabled()) log.trace("[attrib]: " + item);
+  					if(item!=null) items.add(item);
+  				} | 
+  			item = pseudo()  
+  				{
+  					if(log.isTraceEnabled()) log.trace(":pseudo: " + item);
+  					if(item!=null) items.add(item);
+  				}
   		)*| 
   		( 
-  			hash() {log.trace("2hash");}| 
-  			class_a() {log.trace("2class");}| 
-  			attrib() {log.trace("2attrib");}| 
-  			pseudo() {log.trace("2pseudo");}
+  			value = hash()
+  			 	{
+  			 		if(log.isTraceEnabled()) log.trace("ID: " + value);
+  					item = new SimpleSelectorImpl.ItemIDImpl(value);
+  					if(item != null) items.add(item);
+  			 	} |
+  			item = class_a() 
+  				{
+  					if(log.isTraceEnabled()) log.trace(".class: " + item);
+  					if(item!=null) items.add(item);
+  				} |	 
+  			item = attrib() 
+  				{
+  					if(log.isTraceEnabled()) log.trace("[attrib]: " + item);
+  					if(item!=null) items.add(item);
+  				} |	
+  			item = pseudo() 
+  				{
+  					if(log.isTraceEnabled()) log.trace(":pseudo: " + item);
+  					if(item!=null) items.add(item);
+  				}
   		)+
   	}
   	catch(ParseException e) {
-  		errorSkipTo("Unable to get simple selector", SPACE, LBRACE_CHAR);
+  		errorSkipTo("Unable to get simple selector", SPACE, LCURLY_CHAR);
   	}
   	finally {
+  	
+  		s.setItems(items);
+  	
   		if(log.isTraceEnabled()) {
   			log.trace("SimpleSelector: " + s);
   		}
+  		
   		return s;
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
@@ -970,16 +1026,29 @@ SimpleSelector simple_selector() :
 /*@egen*/
 }
 
-void class_a() :
+/**
+ * Returns .class simple selector
+ */
+SimpleSelector.Item class_a() :
 {/*@bgen(jjtree) class_a */
-  SimpleNode jjtn000 = new SimpleNode(JJTCLASS_A);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
+        SimpleNode jjtn000 = new SimpleNode(JJTCLASS_A);
+        boolean jjtc000 = true;
+        jjtree.openNodeScope(jjtn000);
+/*@egen*/
+	String value = null;
+}
 {/*@bgen(jjtree) class_a */
   try {
 /*@egen*/
-  "." ident()/*@bgen(jjtree)*/
+  "." value = ident()/*@bgen(jjtree)*/
+        {
+          jjtree.closeNodeScope(jjtn000, true);
+          jjtc000 = false;
+        }
+/*@egen*/ 
+  	{ 
+  		return new SimpleSelectorImpl.ItemClassImpl(value);
+  	}/*@bgen(jjtree)*/
   } catch (Throwable jjte000) {
     if (jjtc000) {
       jjtree.clearNodeScope(jjtn000);
@@ -1050,100 +1119,174 @@ String element_name() :
 /*@egen*/
 }
 
-void attrib() :
+/**
+ * Returns [attribute] simple selector
+ */
+SimpleSelector.Item attrib() :
 {/*@bgen(jjtree) attrib */
-  SimpleNode jjtn000 = new SimpleNode(JJTATTRIB);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
-{/*@bgen(jjtree) attrib */
-  try {
+        SimpleNode jjtn000 = new SimpleNode(JJTATTRIB);
+        boolean jjtc000 = true;
+        jjtree.openNodeScope(jjtn000);
 /*@egen*/
-  "[" (<BLANK>)* ident() (<BLANK>)* [ (equal() | includes() | dashmatch() ) (<BLANK>)*
-    ( ident() | string() ) (<BLANK>)* ] "]"/*@bgen(jjtree)*/
-  } catch (Throwable jjte000) {
-    if (jjtc000) {
-      jjtree.clearNodeScope(jjtn000);
-      jjtc000 = false;
-    } else {
-      jjtree.popNode();
+	String attribute = null;
+	String value = null;
+	boolean isValueIdent = false;
+	SimpleSelector.Operator op = null;
+}
+{/*@bgen(jjtree) attrib */
+        try {
+/*@egen*/
+	try {
+  		<LBRACE> 
+  		(
+  			<BLANK>)* attribute = ident() (<BLANK>
+  		)* 
+  		[ 
+  			(op = equal() | op = includes() | op = dashmatch() ) (<BLANK>)*
+    		( 	
+    			value = ident()	{ isValueIdent = true; } | 
+    			value = string() { isValueIdent = false; }
+    		) (<BLANK>)* 
+    	] 
+    	<RBRACE>
     }
-    if (jjte000 instanceof RuntimeException) {
-      throw (RuntimeException)jjte000;
+    catch (ParseException ex) {
+    	errorSkipTo("Unable to get selectors attribute", NL, COMMA, LBRACE_CHAR, RBRACE_CHAR);
+    	return null;
     }
-    if (jjte000 instanceof ParseException) {
-      throw (ParseException)jjte000;
-    }
-    throw (Error)jjte000;
-  } finally {
-    if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
-    }
-  }
+    finally {
+    	if(value!=null && op != null && attribute!=null)
+    		return new SimpleSelectorImpl.ItemAttributeImpl(value, isValueIdent, op, attribute);
+    	
+    	return null;
+    }/*@bgen(jjtree)*/
+        } catch (Throwable jjte000) {
+          if (jjtc000) {
+            jjtree.clearNodeScope(jjtn000);
+            jjtc000 = false;
+          } else {
+            jjtree.popNode();
+          }
+          if (jjte000 instanceof RuntimeException) {
+            throw (RuntimeException)jjte000;
+          }
+          if (jjte000 instanceof ParseException) {
+            throw (ParseException)jjte000;
+          }
+          throw (Error)jjte000;
+        } finally {
+          if (jjtc000) {
+            jjtree.closeNodeScope(jjtn000, true);
+          }
+        }
 /*@egen*/
 }
 
-void pseudo() :
+/**
+ * Returns :pseudo simple selector
+ */
+SimpleSelector.Item pseudo() :
 {/*@bgen(jjtree) pseudo */
-  SimpleNode jjtn000 = new SimpleNode(JJTPSEUDO);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
-{/*@bgen(jjtree) pseudo */
-  try {
+        SimpleNode jjtn000 = new SimpleNode(JJTPSEUDO);
+        boolean jjtc000 = true;
+        jjtree.openNodeScope(jjtn000);
 /*@egen*/
-  ":" ( ident() | pfunction() )/*@bgen(jjtree)*/
-  } catch (Throwable jjte000) {
-    if (jjtc000) {
-      jjtree.clearNodeScope(jjtn000);
-      jjtc000 = false;
-    } else {
-      jjtree.popNode();
-    }
-    if (jjte000 instanceof RuntimeException) {
-      throw (RuntimeException)jjte000;
-    }
-    if (jjte000 instanceof ParseException) {
-      throw (ParseException)jjte000;
-    }
-    throw (Error)jjte000;
-  } finally {
-    if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
-    }
-  }
+	String pseudo = null;
+	SimpleSelector.Item function = null;
+}
+{/*@bgen(jjtree) pseudo */
+        try {
+/*@egen*/
+	try {
+  		":" 
+  		( 
+  			pseudo = ident() | 
+  			function = pfunction() 
+  		)
+  	}
+  	catch (ParseException e) {
+  		errorSkipTo("Unable to get :pseudo in simpleselector", SPACE, LBRACE_CHAR, COMMA, NL); 
+  	}
+  	finally {
+  		// matched first branch
+  		if(pseudo!=null) 
+  			return new SimpleSelectorImpl.ItemPseudoImpl(pseudo, null);
+  		
+  		return function;
+  	}/*@bgen(jjtree)*/
+        } catch (Throwable jjte000) {
+          if (jjtc000) {
+            jjtree.clearNodeScope(jjtn000);
+            jjtc000 = false;
+          } else {
+            jjtree.popNode();
+          }
+          if (jjte000 instanceof RuntimeException) {
+            throw (RuntimeException)jjte000;
+          }
+          if (jjte000 instanceof ParseException) {
+            throw (ParseException)jjte000;
+          }
+          throw (Error)jjte000;
+        } finally {
+          if (jjtc000) {
+            jjtree.closeNodeScope(jjtn000, true);
+          }
+        }
 /*@egen*/
 }
 
-void pfunction() :
+/**
+ * Returns :pseudo-function() simple selector 
+ */
+SimpleSelector.Item pfunction() :
 {/*@bgen(jjtree) pfunction */
-  SimpleNode jjtn000 = new SimpleNode(JJTPFUNCTION);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
-{/*@bgen(jjtree) pfunction */
-  try {
+        SimpleNode jjtn000 = new SimpleNode(JJTPFUNCTION);
+        boolean jjtc000 = true;
+        jjtree.openNodeScope(jjtn000);
 /*@egen*/
-  function_begin() (<BLANK>)* [ident()] (<BLANK>)* ")"/*@bgen(jjtree)*/
-  } catch (Throwable jjte000) {
-    if (jjtc000) {
-      jjtree.clearNodeScope(jjtn000);
-      jjtc000 = false;
-    } else {
-      jjtree.popNode();
-    }
-    if (jjte000 instanceof RuntimeException) {
-      throw (RuntimeException)jjte000;
-    }
-    if (jjte000 instanceof ParseException) {
-      throw (ParseException)jjte000;
-    }
-    throw (Error)jjte000;
-  } finally {
-    if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
-    }
-  }
+	String functionName = null;
+	String value = null;
+}
+{/*@bgen(jjtree) pfunction */
+        try {
+/*@egen*/
+	try {
+  		functionName = function_begin() 
+  		(<BLANK>)* 
+  		[ value = ident()] 
+  		(<BLANK>)* 
+  		<RPAREN>
+  	}
+  	catch (ParseException ex) {
+  		errorSkipTo("Unable to get :pseudo()", RPAREN_CHAR, NL, COMMA, LBRACE_CHAR);
+  		functionName = null;
+  	}
+  	finally {
+  		if(functionName!=null) {
+  			return new SimpleSelectorImpl.ItemPseudoImpl(value, functionName);
+  		}
+  		return null;
+  	}/*@bgen(jjtree)*/
+        } catch (Throwable jjte000) {
+          if (jjtc000) {
+            jjtree.clearNodeScope(jjtn000);
+            jjtc000 = false;
+          } else {
+            jjtree.popNode();
+          }
+          if (jjte000 instanceof RuntimeException) {
+            throw (RuntimeException)jjte000;
+          }
+          if (jjte000 instanceof ParseException) {
+            throw (ParseException)jjte000;
+          }
+          throw (Error)jjte000;
+        } finally {
+          if (jjtc000) {
+            jjtree.closeNodeScope(jjtn000, true);
+          }
+        }
 /*@egen*/
 }
 
@@ -1169,7 +1312,7 @@ Term.Operator operator() :
   		{ return op;}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to get operator", RBRACE_CHAR, NL, SEMICOLON, SPACE);
+  		errorSkipTo("Failed to get operator", RCURLY_CHAR, NL, SEMICOLON, SPACE);
   		return Term.Operator.SPACE;
   	}/*@bgen(jjtree)*/
   {
@@ -1211,7 +1354,7 @@ SimpleSelector.Combinator combinator() :
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
 /*@egen*/
-	SimpleSelector.Combinator c = SimpleSelector.Combinator.SPACE;
+	SimpleSelector.Combinator c = SimpleSelector.Combinator.DESCENDANT;
 }
 {/*@bgen(jjtree) combinator */
         try {
@@ -1237,8 +1380,8 @@ SimpleSelector.Combinator combinator() :
 /*@egen*/ {return c;}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to get combinator", LBRACE_CHAR, SPACE, COMMA);
-  		return SimpleSelector.Combinator.SPACE;
+  		errorSkipTo("Failed to get combinator", LCURLY_CHAR, SPACE, COMMA);
+  		return SimpleSelector.Combinator.DESCENDANT;
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -1404,6 +1547,9 @@ List<Term> expr() :
 /*@egen*/
 }
 
+/**
+ * Returns term (function, color, number, percent, string, identificator)
+ */
 Term term() :
 {/*@bgen(jjtree) term */
         SimpleNode jjtn000 = new SimpleNode(JJTTERM);
@@ -1583,13 +1729,13 @@ Term term() :
                                            jjtc000 = false;
                                          }
 /*@egen*/ { term = new TermUriImpl(value);} | 
-   		value = hexcolor() | 
-   		function()/*@bgen(jjtree)*/
-                           {
-                             jjtree.closeNodeScope(jjtn000, true);
-                             jjtc000 = false;
-                           }
-/*@egen*/ { return null; }
+   		value = hexcolor()/*@bgen(jjtree)*/
+                                   {
+                                     jjtree.closeNodeScope(jjtn000, true);
+                                     jjtc000 = false;
+                                   }
+/*@egen*/ { term = TermColorImpl.getColorByHash(value); } | 
+   		term = function() 
    		
    	}
    	catch(ParseException e) {
@@ -1608,6 +1754,11 @@ Term term() :
    		if(term instanceof TermIdent) {
    			colorTerm = TermColorImpl.getColorByIdent((TermIdent)term);
    			if (colorTerm != null)
+   				term = colorTerm;
+   		}
+   		else if(term instanceof TermFunction) {
+   			colorTerm = TermColorImpl.getColorByFunction((TermFunction)term);
+   			if(colorTerm != null)
    				term = colorTerm;
    		}
    	
@@ -1641,132 +1792,184 @@ Term term() :
 /*@egen*/
 }
 
-void function() :
+/**
+ * Returns function
+ */
+TermFunction function() :
 {/*@bgen(jjtree) function */
-  SimpleNode jjtn000 = new SimpleNode(JJTFUNCTION);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
-{/*@bgen(jjtree) function */
-  try {
+        SimpleNode jjtn000 = new SimpleNode(JJTFUNCTION);
+        boolean jjtc000 = true;
+        jjtree.openNodeScope(jjtn000);
 /*@egen*/
-  function_begin() (<BLANK>)* expr() ")" (<BLANK>)*/*@bgen(jjtree)*/
-  } catch (Throwable jjte000) {
-    if (jjtc000) {
-      jjtree.clearNodeScope(jjtn000);
-      jjtc000 = false;
-    } else {
-      jjtree.popNode();
-    }
-    if (jjte000 instanceof RuntimeException) {
-      throw (RuntimeException)jjte000;
-    }
-    if (jjte000 instanceof ParseException) {
-      throw (ParseException)jjte000;
-    }
-    throw (Error)jjte000;
-  } finally {
-    if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
-    }
-  }
+	String functionName = null;
+	List<Term> terms = null;
+	TermFunction function = new TermFunctionImpl();
+}
+{/*@bgen(jjtree) function */
+        try {
+/*@egen*/
+	try {
+  		functionName = function_begin() 
+  			{
+  				if(functionName!=null)
+  					function.setFunctionName(functionName);
+  			}
+  		(<BLANK>)* 
+  		terms=expr() 
+  			{
+  				function.setTerms(terms);
+  			} 
+  		<RPAREN> 
+  		(<BLANK>)*
+  	}
+  	catch (ParseException e) {
+  		errorSkipTo("Unable to get function", NL, SPACE, SEMICOLON, RPAREN_CHAR);
+  	}
+  	finally {
+  	
+  		if(log.isDebugEnabled()) {
+  			log.debug("Matched function: " + function);
+  		}
+  	
+  		return function; 
+  	}/*@bgen(jjtree)*/
+        } catch (Throwable jjte000) {
+          if (jjtc000) {
+            jjtree.clearNodeScope(jjtn000);
+            jjtc000 = false;
+          } else {
+            jjtree.popNode();
+          }
+          if (jjte000 instanceof RuntimeException) {
+            throw (RuntimeException)jjte000;
+          }
+          if (jjte000 instanceof ParseException) {
+            throw (ParseException)jjte000;
+          }
+          throw (Error)jjte000;
+        } finally {
+          if (jjtc000) {
+            jjtree.closeNodeScope(jjtn000, true);
+          }
+        }
 /*@egen*/
 }
 
-void minus() :
-      {/*@bgen(jjtree) minus */
-        SimpleNode jjtn000 = new SimpleNode(JJTMINUS);
-        boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);
+/**
+ * Unary minus
+ */
+String minus() :
+{/*@bgen(jjtree) minus */
+  SimpleNode jjtn000 = new SimpleNode(JJTMINUS);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
 /*@egen*/ Token t; } {/*@bgen(jjtree) minus */
-                     try {
+               try {
 /*@egen*/ t=<MINUS>/*@bgen(jjtree)*/
-                                     {
-                                       jjtree.closeNodeScope(jjtn000, true);
-                                       jjtc000 = false;
-                                     }
-/*@egen*/       { jjtn000.setImage(t.image); }/*@bgen(jjtree)*/
-                     } finally {
-                       if (jjtc000) {
-                         jjtree.closeNodeScope(jjtn000, true);
-                       }
-                     }
-/*@egen*/ }
-
-
-
-void function_begin() :  {/*@bgen(jjtree) function_begin */
-                           SimpleNode jjtn000 = new SimpleNode(JJTFUNCTION_BEGIN);
-                           boolean jjtc000 = true;
-                           jjtree.openNodeScope(jjtn000);
-/*@egen*/ Token t; } {/*@bgen(jjtree) function_begin */
-                                        try {
-/*@egen*/ t=<FUNCTION>/*@bgen(jjtree)*/
-                                                           {
-                                                             jjtree.closeNodeScope(jjtn000, true);
-                                                             jjtc000 = false;
-                                                           }
-/*@egen*/       { jjtn000.setImage(t.image); }/*@bgen(jjtree)*/
-                                        } finally {
-                                          if (jjtc000) {
-                                            jjtree.closeNodeScope(jjtn000, true);
-                                          }
+                                        {
+                                          jjtree.closeNodeScope(jjtn000, true);
+                                          jjtc000 = false;
                                         }
+/*@egen*/		{ return t.image; }/*@bgen(jjtree)*/
+               } finally {
+                 if (jjtc000) {
+                   jjtree.closeNodeScope(jjtn000, true);
+                 }
+               }
 /*@egen*/ }
 
-void equal() :      
+
+/**
+ * Name of function
+ */
+String function_begin() :  
+{/*@bgen(jjtree) function_begin */
+  SimpleNode jjtn000 = new SimpleNode(JJTFUNCTION_BEGIN);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+/*@egen*/ Token t; } {/*@bgen(jjtree) function_begin */
+               try {
+/*@egen*/ t=<FUNCTION>/*@bgen(jjtree)*/
+                                        {
+                                          jjtree.closeNodeScope(jjtn000, true);
+                                          jjtc000 = false;
+                                        }
+/*@egen*/		{ return t.image; }/*@bgen(jjtree)*/
+               } finally {
+                 if (jjtc000) {
+                   jjtree.closeNodeScope(jjtn000, true);
+                 }
+               }
+/*@egen*/ }
+
+/**
+ * SimpleSelector operator
+ */
+SimpleSelector.Operator equal() :      
 {/*@bgen(jjtree) equal */
   SimpleNode jjtn000 = new SimpleNode(JJTEQUAL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
-/*@egen*/} 
-{/*@bgen(jjtree) equal */
-    try {
-/*@egen*/ 
-    <EQUAL>/*@bgen(jjtree)*/
-    } finally {
-      if (jjtc000) {
-        jjtree.closeNodeScope(jjtn000, true);
-      }
-    }
-/*@egen*/
-}
+/*@egen*/} {/*@bgen(jjtree) equal */
+        try {
+/*@egen*/	<EQUAL>/*@bgen(jjtree)*/
+                        {
+                          jjtree.closeNodeScope(jjtn000, true);
+                          jjtc000 = false;
+                        }
+/*@egen*/ 	{ return SimpleSelector.Operator.EQUALS; }/*@bgen(jjtree)*/
+        } finally {
+          if (jjtc000) {
+            jjtree.closeNodeScope(jjtn000, true);
+          }
+        }
+/*@egen*/ }
 
-void includes() :   
+/**
+ * SimpleSelector operator
+ */
+SimpleSelector.Operator includes() :   
 {/*@bgen(jjtree) includes */
   SimpleNode jjtn000 = new SimpleNode(JJTINCLUDES);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
-/*@egen*/} 
-{/*@bgen(jjtree) includes */
-    try {
-/*@egen*/
-    <INCLUDES>/*@bgen(jjtree)*/
-    } finally {
-      if (jjtc000) {
-        jjtree.closeNodeScope(jjtn000, true);
-      }
-    }
-/*@egen*/
-}
+/*@egen*/} {/*@bgen(jjtree) includes */
+        try {
+/*@egen*/	<INCLUDES>/*@bgen(jjtree)*/
+                        {
+                          jjtree.closeNodeScope(jjtn000, true);
+                          jjtc000 = false;
+                        }
+/*@egen*/ 	{ return SimpleSelector.Operator.INCLUDES; }/*@bgen(jjtree)*/
+        } finally {
+          if (jjtc000) {
+            jjtree.closeNodeScope(jjtn000, true);
+          }
+        }
+/*@egen*/ }
 
-void dashmatch() :  
+/**
+ * SimpleSelector operator
+ */
+SimpleSelector.Operator dashmatch() :  
 {/*@bgen(jjtree) dashmatch */
   SimpleNode jjtn000 = new SimpleNode(JJTDASHMATCH);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
-/*@egen*/} 
-{/*@bgen(jjtree) dashmatch */
-    try {
-/*@egen*/
-    <DASHMATCH>/*@bgen(jjtree)*/
-    } finally {
-      if (jjtc000) {
-        jjtree.closeNodeScope(jjtn000, true);
-      }
-    }
-/*@egen*/
-}
+/*@egen*/} {/*@bgen(jjtree) dashmatch */
+        try {
+/*@egen*/	<DASHMATCH>/*@bgen(jjtree)*/
+                    {
+                      jjtree.closeNodeScope(jjtn000, true);
+                      jjtc000 = false;
+                    }
+/*@egen*/ { return SimpleSelector.Operator.DASHMATCH; }/*@bgen(jjtree)*/
+        } finally {
+          if (jjtc000) {
+            jjtree.closeNodeScope(jjtn000, true);
+          }
+        }
+/*@egen*/ }
 
 /**
  * Operator comma for terms
@@ -2336,7 +2539,7 @@ SimpleSelector.Combinator plus() :
                     jjtree.closeNodeScope(jjtn000, true);
                     jjtc000 = false;
                   }
-/*@egen*/  { return SimpleSelector.Combinator.PLUS;}/*@bgen(jjtree)*/
+/*@egen*/  { return SimpleSelector.Combinator.ADJACENT;}/*@bgen(jjtree)*/
           } finally {
             if (jjtc000) {
               jjtree.closeNodeScope(jjtn000, true);
@@ -2359,7 +2562,7 @@ SimpleSelector.Combinator greater():
                   jjtree.closeNodeScope(jjtn000, true);
                   jjtc000 = false;
                 }
-/*@egen*/	{ return SimpleSelector.Combinator.GREATER;}/*@bgen(jjtree)*/
+/*@egen*/	{ return SimpleSelector.Combinator.CHILD;}/*@bgen(jjtree)*/
      } finally {
        if (jjtc000) {
          jjtree.closeNodeScope(jjtn000, true);

@@ -10,6 +10,9 @@ import cz.vutbr.web.css.Term;
 /**
  * Declaration
  * @author Jan Svercl, VUT Brno, 2008
+ * 			modifed by Karel Piwko, 2008
+ * @version 1.0 * Rewritten according to interface
+ * 				 * Construction moved to parser
  */
 public class DeclarationImpl implements Declaration {
 
@@ -24,43 +27,6 @@ public class DeclarationImpl implements Declaration {
 		this.important = false;
 	}
 	
-	
-	
-	/*
-    protected DeclarationImpl(SimpleNode n) {
-        property = ((SimpleNode) n.jjtGetChild(0).jjtGetChild(0)).getImage();
-
-        if (n.jjtGetNumChildren() > 2) { // !IMPORTANT
-            if (((SimpleNode) n.jjtGetChild(2)).getType().equals("prio")) {
-                important = true;
-            }
-        }
-
-        Term.EnumOperator tmpOperator = null;
-        for (int i = 0; i < n.jjtGetChild(1).jjtGetNumChildren(); i++) {
-            SimpleNode cNode = (SimpleNode) n.jjtGetChild(1).jjtGetChild(i);
-            
-
-            } else {
-                TermColor color = TermColorImpl.getColorByNode(cNode);
-                if (color != null) {
-                    color.setOperator(tmpOperator);
-                    termsList.add(color);
-                    continue;
-                }
-                
-
-                TermFunction function = TermFunctionImpl.getFunctionByNode(cNode);
-                if (function != null) {
-                    function.setOperator(tmpOperator);
-                    termsList.add(function);
-                    continue;
-                }
-            }
-        }
-    }
-	*/
-
     /**
 	 * @return the property
 	 */

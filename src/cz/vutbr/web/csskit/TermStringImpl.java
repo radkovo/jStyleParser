@@ -11,7 +11,7 @@ import cz.vutbr.web.css.TermString;
 public class TermStringImpl extends TermImpl implements TermString {
 
 	protected String value;
-
+	   
 	public TermStringImpl(String value) {
 		setValue(value);
 	}
@@ -40,6 +40,46 @@ public class TermStringImpl extends TermImpl implements TermString {
 		sb.append(OutputUtil.STRING_OPENING).append(value).append(OutputUtil.STRING_CLOSING);
 		
 		return sb.toString();
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((operator == null) ? 0 : operator.hashCode());
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		return result;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof TermStringImpl))
+			return false;
+		final TermStringImpl other = (TermStringImpl) obj;
+		if (operator == null) {
+			if (other.operator != null)
+				return false;
+		} else if (!operator.equals(other.operator))
+			return false;
+		if (value == null) {
+			if (other.value != null)
+				return false;
+		} else if (!value.equals(other.value))
+			return false;
+		return true;
 	}
 	
 }
