@@ -45,7 +45,11 @@ public interface Selector extends Rule {
 		 * @param level
 		 */
 		public void add(Level level);
+		
+		public int hashCode();
+		public boolean equals(Object obj);
 	}
+	
 	
     public List<SimpleSelector> getSimpleSelectors();
     

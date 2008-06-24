@@ -718,6 +718,7 @@ public class NodeData implements Cloneable {
                 tmpDeclaration.getTerms().add(probablySecondPositionTerm);
             }
             if(!processBackgroundPosition(tmpDeclaration)) {
+            	// FIXME not valid CSS behaviour
                 rollbackTransaction(trans);
                 return false;
             }

@@ -1,13 +1,12 @@
 package cz.vutbr.web.domassign;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -15,6 +14,8 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.traversal.NodeFilter;
+import org.w3c.dom.traversal.TreeWalker;
 
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.Rule;
@@ -23,14 +24,18 @@ import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.SimpleSelector;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.StyleSheetNotValidException;
 
+/**
+ * During initialization divides rules of stylesheet into maps accoring
+ * to medias and their type. Afterwards it is able to return CSS declaration
+ * for DOM tree and media. Allow to use or not to use inheritance.
+ * @author Karel Piwko 2008,
+ *
+ */
 public class Analyzer {
 
 	private static final Logger log = Logger.getLogger(Analyzer.class);
 	
-	protected Map<Element, List<AssignedDeclaration>> declarations;
-
 	/**
 	 * For all medias holds maps of declared rules classified into groups
 	 * of HolderItem (ID, CLASS, ELEMENT, OTHER). Media's type is key
@@ -42,10 +47,194 @@ public class Analyzer {
 				.synchronizedMap(new HashMap<String, Holder>());
 		classifyRules(sheet);
 	}
+	
+	public Map<Element,List<AssignedDeclaration>> assingDeclarationsToDOM(Document doc, String media,
+			boolean inherit) { 
+		
+		TreeWalker walker = new TidyTreeWalker(doc.getDocumentElement(),
+				NodeFilter.SHOW_ELEMENT);
+		Holder holder = rules.get(media); 
+		
+		// list traversal will be enough
+		if(!inherit)
+			return listTraversal(walker, holder);
+		
+		// we will do level traversal to economize blind returning 
+		// in tree
+		Map<Element, List<AssignedDeclaration>> declarations =
+			new HashMap<Element, List<AssignedDeclaration>>();
+		levelTraversal(declarations, walker, holder, 0);
+		return declarations;
+	}
+	
+	/**
+	 * Uses walker to flat traversal of DOM tree
+	 * @param walker Tree walker
+	 * @param holder Holder of rules for given media
+	 * @return Map, where each DOM element has CSS declarations assigned
+	 */
+	private Map<Element,List<AssignedDeclaration>> listTraversal(
+			TreeWalker walker, Holder holder) {
+		
+		Map<Element, List<AssignedDeclaration>> declarations = new
+			HashMap<Element, List<AssignedDeclaration>>();
+		
+		// tree traversal as nodes are found in
+		Node current, checkpoint = null;
+	    current = walker.nextNode();
+	    while (current != null) {
+	    
+	    	// this method can change position in walker	
+	    	checkpoint = walker.getCurrentNode();    	
+	    	assignDeclarationsToElement(declarations, walker, (Element) current, holder, 0);
+	    	walker.setCurrentNode(checkpoint);
+	       
+	    	current = walker.nextNode();
+	    }
+	    return declarations;
+	}
+	
+	/**
+	 * Uses walker to traverse DOM tree in level order. This means, that
+	 * declarations of each predecessors are defined before Element itself
+	 * is processed.
+	 * @param declarations Map where to store declarations
+	 * @param walker Tree walker
+	 * @param holder Holder of rules for given media
+	 * @param level Current nesting level
+	 */
+	private void levelTraversal(Map<Element, List<AssignedDeclaration>> declarations, 
+			TreeWalker walker, Holder holder, int level) {
+
+		// this method can change position in walker
+	    Node current, checkpoint = null;
+	    current = checkpoint = walker.getCurrentNode();
+	    assignDeclarationsToElement(declarations, walker, (Element) current, holder, level);
+	    walker.setCurrentNode(checkpoint);
+	    
+	    // traverse children:
+	    for (Node n = walker.firstChild(); n != null; n = walker.nextSibling()) {
+	      levelTraversal(declarations, walker, holder, level + 1);
+	    }
+
+	    // return position to the current (level up):
+	    walker.setCurrentNode(checkpoint);
+		
+	}
+	
+	/**
+	 * Assigns declarations to one element
+	 * @param declarations Declarations of all processed elements
+	 * @param walker Tree walker
+	 * @param e DOM Element
+	 * @param holder Holder
+	 * @param level Current level of walker, if 0, no inheritance is allowed
+	 */
+	private void assignDeclarationsToElement(
+			Map<Element, List<AssignedDeclaration>> declarations, 
+			TreeWalker walker, Element e, Holder holder, int level) {
+		
+		if(log.isDebugEnabled()) {
+			log.debug("Traversal(level " + level+ ") " + e.getNodeName()+":"
+                + e.getNodeValue());
+		}
+
+		// candidates
+		Set<RuleSet> candidates = new HashSet<RuleSet>();
+		
+		// match element classes
+		for(String cname: ElementUtil.elementClasses(e)) {
+			// holder contains rule with given class
+			final List<RuleSet> rules = holder.items.get(HolderItem.CLASS.type()).get(cname);
+			if(rules!=null)
+				candidates.addAll(rules);
+		}
+		
+		if(log.isTraceEnabled()) {
+			log.trace("After CLASSes total candidates: " + candidates.size());
+		}
+		
+		// match ids
+		final String id = ElementUtil.elementID(e);
+		if(id!=null) {
+			final List<RuleSet> rules = holder.items.get(HolderItem.ID.type()).get(id);
+			if(rules!= null)
+				candidates.addAll(rules);
+		}
+		
+		if(log.isTraceEnabled()) {
+			log.trace("After IDes total candidates: " + candidates.size());
+		}
+		
+		// match elements
+		final String name = ElementUtil.elementName(e);
+		if(name!=null) {
+			final List<RuleSet> rules = holder.items.get(HolderItem.ELEMENT.type()).get(name);
+			if(rules!=null)
+				candidates.addAll(rules);
+		}
+		
+		if(log.isTraceEnabled()) {
+			log.trace("After ELEMENTs total candidates: " + candidates.size());
+		}
+		
+		// others
+		candidates.addAll(holder.others);
+		
+		// transform to list to speed up traversal
+		// and sort rules as they were found in CSS definition
+		List<RuleSet> clist = new ArrayList<RuleSet>(candidates);
+		Collections.sort(clist);
+		
+		if(log.isDebugEnabled()) {
+			log.debug("Total canditates (including OTHERs: " + clist.size());
+			if(log.isTraceEnabled()) {
+				log.trace("Condidates: " + clist);
+			}
+		}
+		
+		// resulting list of declaration for this element
+		List<AssignedDeclaration> eldecl = new ArrayList<AssignedDeclaration>();
+		
+		// for all canditates
+		for(RuleSet rule: clist) {
+			// for all selectors inside
+			for(Selector s: rule.getSelectors()) {
+				//if match, add to declarations				
+				Selector.Specificity spec = s.computeSpecificity();				
+				for(Declaration d: rule.getDeclarations())
+					eldecl.add(new AssignedDeclaration(d, spec, level));
+				
+			}
+		}
+		
+		// inheritance
+		if(level > 0) {
+			Node checkpoint = walker.getCurrentNode();
+			for(int i = level; i>level-1; i--) {
+				eldecl.addAll(
+						declarations.get((Element)walker.parentNode()));
+			}
+			walker.setCurrentNode(checkpoint);
+		}
+	
+		// sort declarations
+		Collections.sort(eldecl);
+		
+		if(log.isDebugEnabled()) {
+			log.debug("Assorted " + eldecl.size() + "declarations");
+			if(log.isTraceEnabled()) {
+				log.trace(eldecl);
+			}
+		}
+		
+		declarations.put(e, eldecl);	
+	}
+	
 
 	private void classifyRules(StyleSheet sheet) {
 
-		// create holder for media of type all
+		// create holder for medium of type all
 		Holder all = new Holder();
 		rules.put("all", all);
 		
@@ -54,11 +243,10 @@ public class Analyzer {
 			if(rule instanceof RuleSet) {
 				final RuleSet ruleset = (RuleSet) rule;
 				for(Selector s: ruleset.getSelectors()) {
-					HolderSelector hs = classifySelector(s);
-					all.insert(hs.item, hs.key, ruleset);
+					insertClassified(all, classifySelector(s), ruleset);
 				}
 			}
-			// this rule conforms to different medias
+			// this rule conforms to different media
 			if(rule instanceof RuleMedia) {
 				final RuleMedia rulemedia = (RuleMedia) rule;
 				
@@ -67,7 +255,7 @@ public class Analyzer {
 					// for all selectors in there
 					for(Selector s: ruleset.getSelectors()) {
 						
-						HolderSelector hs = classifySelector(s);
+						List<HolderSelector> hs = classifySelector(s);
 						// insert into all medias
 						for(String media: rulemedia.getMedias()) {
 							Holder h = rules.get(media);
@@ -75,13 +263,14 @@ public class Analyzer {
 								h = new Holder();
 								rules.put(media, h);
 							}
-							h.insert(hs.item, hs.key, ruleset);
+							insertClassified(h, hs, ruleset);
 						}
 					}
 				}
 			}
 		}
 		
+		// logging
 		if(log.isDebugEnabled()) {
 			log.debug("Rules contains rules for " + rules.size() + " different medias:");
 			for(String media: rules.keySet()) {
@@ -107,7 +296,9 @@ public class Analyzer {
 	/**
 	 * Classify rule for to be of specified item
 	 */
-	private HolderSelector classifySelector(Selector selector) {
+	private List<HolderSelector> classifySelector(Selector selector) {
+
+		List<HolderSelector> hs = new ArrayList<HolderSelector>();
 		
 		try {
 			// last simple selector decided about all selector
@@ -115,33 +306,44 @@ public class Analyzer {
 
 			// is element or other (wildcard)
 			String element = last.getElementName();
-			if(element != null) {
+			if(element!=null) {
 				// wildcard
-				if("*".equals(element))
-					return new HolderSelector(HolderItem.OTHER, null);
+				if("*".equals(element)) 
+					// TODO check this behaviour
+					hs.add(new HolderSelector(HolderItem.OTHER, null));
 				// element
 				else
-					return new HolderSelector(HolderItem.ELEMENT,element.toLowerCase());
+					hs.add(new HolderSelector(HolderItem.ELEMENT,element.toLowerCase()));
 			}
 
 			// is class name
 			String className = last.getClassName();
 			if(className!=null)
-				return new HolderSelector(HolderItem.CLASS, className.toLowerCase());
+				hs.add(new HolderSelector(HolderItem.CLASS, className.toLowerCase()));
 
 			// is id
 			String id = last.getIDName();
 			if(id!=null)
-				return new HolderSelector(HolderItem.CLASS, id.toLowerCase());
+				hs.add(new HolderSelector(HolderItem.CLASS, id.toLowerCase()));
 
 			// is in others
-			return new HolderSelector(HolderItem.OTHER, null);
+			if(hs.size()==0)
+				hs.add(new HolderSelector(HolderItem.OTHER, null));
+			
+			return hs;
+			
 		}
 		catch(OperationNotSupportedException e) {
 			log.warn("Selector does not include any simple selector, this should not happen!");
-			return new HolderSelector(HolderItem.OTHER, null);
+			return Collections.emptyList();
 		}
 	}	
+	
+	
+	private void insertClassified(Holder holder, List<HolderSelector> hs, RuleSet value) {
+		for(HolderSelector h: hs)
+			holder.insert(h.item, h.key, value);
+	}
 	
 	/**
 	 * Decides about holder item
@@ -188,8 +390,10 @@ public class Analyzer {
 	 */
 	private class Holder {
 
+		/** HolderItem.* except OTHER are stored there */
 		public List<Map<String, List<RuleSet>>> items;
 
+		/** OTHER rules are stored there */
 		public List<RuleSet> others;
 
 		public Holder() {
@@ -207,6 +411,13 @@ public class Analyzer {
 			}
 		}
 
+		/**
+		 * Inserts Ruleset into group identified by HolderType,
+		 * and optionally by key value
+		 * @param item Identifier of holder's group
+		 * @param key Key, used in case other than OTHER 
+		 * @param value Value to be store inside
+		 */
 		public void insert(HolderItem item, String key, RuleSet value) {
 
 			// check others and if so, insert item
@@ -225,206 +436,9 @@ public class Analyzer {
 
 			list.add(value);
 
-		}
-
+		}		
 	}
-
 	
-	/*
-	protected static HashMap<Element, ArrayList<AssignedDeclaration>> analyze(
-			Document doc, StyleSheet styleSheet, String media)
-			throws StyleSheetNotValidException {
-		styleSheet.check();
-		HashMap<Element, ArrayList<AssignedDeclaration>> assignedDeclarations = new HashMap<Element, ArrayList<AssignedDeclaration>>();
-
-		ArrayList<OrderedRule> rules = new ArrayList<OrderedRule>();
-
-		// Zpracování pravidel - odfiltrování pravidel určených pro jiný typ
-		// média, vložení všech do jednoho seznamu (ArrayList rules)
-		// Pravidla získávají při vkládání do kolekce pořadové číslo, aby bylo
-		// možné zachovat jejich výchozí pořadí i při
-		// rozdělení do map
-		int orderNum = 0;
-		for (Rule rule : styleSheet.getRules()) {
-			if (rule instanceof RuleSet) {
-				rules.add(new OrderedRule((RuleSet) rule, orderNum++));
-			} else if (rule instanceof RuleMedia) {
-				boolean ruleAccepted = false;
-				for (String ruleMedia : ((RuleMedia) rule).getMedias()) {
-					if (ruleMedia.equalsIgnoreCase(media)
-							|| ruleMedia.equalsIgnoreCase("all")) {
-						ruleAccepted = true;
-						break;
-					}
-				}
-				if (ruleAccepted) {
-					for (RuleSet mediaRule : ((RuleMedia) rule).getRules()) {
-						rules.add(new OrderedRule((RuleSet) mediaRule,
-								orderNum++));
-					}
-				}
-			}
-		}
-
-		// Mapy pro indexování pravidel
-		HashMap<String, ArrayList<OrderedRule>> mapElement = new HashMap<String, ArrayList<OrderedRule>>();
-		HashMap<String, ArrayList<OrderedRule>> mapClass = new HashMap<String, ArrayList<OrderedRule>>();
-		HashMap<String, ArrayList<OrderedRule>> mapID = new HashMap<String, ArrayList<OrderedRule>>();
-		ArrayList<OrderedRule> others = new ArrayList<OrderedRule>();
-
-		// Rozdělení pravidel do map pro rychlejší vyhledání pravidel.
-		boolean addToOthers;
-		String value;
-		SimpleSelector lastSimpleSelector;
-		ArrayList<OrderedRule> ar = new ArrayList<OrderedRule>();
-		for (OrderedRule or : rules) {
-			RuleSet r = or.getRuleSet();
-			for (Selector s : r.getSelectors()) {
-				addToOthers = true;
-				lastSimpleSelector = s.getSimpleSelectorsList().get(
-						s.getSimpleSelectorsList().size() - 1);
-				// Zpracování jména elementu
-				value = lastSimpleSelector.getElementName();
-				if (value != null) {
-					if (value.equals("*")) {
-						others.add(or);
-						continue;
-					} else {
-						value = value.toLowerCase();
-						ar = mapElement.get(value);
-						if (ar == null) {
-							ar = new ArrayList<OrderedRule>();
-							mapElement.put(value, ar);
-						}
-						ar.add(or);
-						addToOthers = false;
-					}
-				}
-				// Zpracování jména(jmen) třídy
-				value = lastSimpleSelector.getClassName();
-				if (value != null) {
-					value = value.toLowerCase();
-					ar = mapClass.get(value);
-					if (ar == null) {
-						ar = new ArrayList<OrderedRule>();
-						mapClass.put(value, ar);
-					}
-					ar.add(or);
-					addToOthers = false;
-				}
-				// Zpracování ID
-				value = lastSimpleSelector.getIDName();
-				if (value != null) {
-					value = value.toLowerCase();
-					ar = mapID.get(value);
-					if (ar == null) {
-						ar = new ArrayList<OrderedRule>();
-						mapID.put(value, ar);
-					}
-					ar.add(or);
-					addToOthers = false;
-				}
-
-				// Pokud není v některém z předchozích, uložím do Others
-				if (addToOthers) {
-					others.add(or);
-				}
-			}
-		}
-		
-		
-		
-		Element root = doc.getDocumentElement();
-		processElement(root, assignedDeclarations, mapElement, mapClass, mapID,
-				others);
-		return assignedDeclarations;
-	}
-	*/
-	/**
-	 * Zpracuje jeden element a přiřadí k němu všechny deklarace. Deklarace se
-	 * ukládají do mapy assignedDeclarations, která na konci procesu obsahuje
-	 * pro každý element seznam (ArrayList) s příslušnými deklaracemi. U každé
-	 * deklarace je vypočítána specificita, deklarace umožňují seřazení
-	 * (implementují rozhraní comparable)
-	 */
-	/*
-	private static void processElement(
-			Element el,
-			HashMap<Element, ArrayList<AssignedDeclaration>> assignedDeclarations,
-			HashMap<String, ArrayList<OrderedRule>> mapElement,
-			HashMap<String, ArrayList<OrderedRule>> mapClass,
-			HashMap<String, ArrayList<OrderedRule>> mapID,
-			ArrayList<OrderedRule> others) {
-		ArrayList<AssignedDeclaration> elementAssignedDeclarations = new ArrayList<AssignedDeclaration>();
-		assignedDeclarations.put(el, elementAssignedDeclarations); // Přidám do
-																	// mapy
-																	// seznam s
-																	// přiřazenými
-																	// deklaracemi
-
-		// Set pro ukládání kandidátních pravidel. Pravidla získaná z map nemusí
-		// svým selectorem odpovídat -> je potřeba
-		// následně selector ověřit!
-		// Duplicity jsou řešeny implicitně díky kolekci typu Set
-		HashSet<OrderedRule> candidates = new HashSet<OrderedRule>();
-		// Název třídy
-		String classNames = el.getAttribute("class").toLowerCase();
-		if (classNames != null) {
-			for (String className : classNames.split(" ")) {
-				if (className.trim().length() > 0) {
-					if (mapClass.get(className) != null) {
-						candidates.addAll(mapClass.get(className));
-					}
-				}
-			}
-		}
-		// ID
-		String idName = el.getAttribute("id").toLowerCase();
-		if (idName != null) {
-			if (mapID.get(idName) != null) {
-				candidates.addAll(mapID.get(idName));
-			}
-		}
-		// Název Elementu
-		String elementName = el.getNodeName().toLowerCase();
-		if (elementName != null) {
-			if (mapElement.get(elementName) != null) {
-				candidates.addAll(mapElement.get(elementName));
-			}
-		}
-		// Ostatní
-		candidates.addAll(others);
-		ArrayList<OrderedRule> candidatesList = new ArrayList(candidates);
-		Collections.sort(candidatesList);
-
-		for (OrderedRule candidateRule : candidatesList) {
-			for (Selector s : candidateRule.getRuleSet().getSelectors()) {
-				if (matchElementBySelector(el, s)) {
-					// Daný selektor odpovídá elementu - přidám tedy do seznamu
-					// všechny deklarace
-					// pravidla.
-					for (Declaration d : candidateRule.getRuleSet()
-							.getDeclarations()) {
-						elementAssignedDeclarations
-								.add(new AssignedDeclaration(d, s));
-					}
-				}
-			}
-		}
-		// Seřazení deklarací podle pravidla !IMPORTANT a specificity (řadící
-		// metoda je stabilní)
-		Collections.sort(elementAssignedDeclarations);
-
-		// zpracování pod-elementů
-		for (int i = 0; i < el.getChildNodes().getLength(); i++) {
-			Node n = el.getChildNodes().item(i);
-			if (n instanceof Element) {
-				processElement((Element) n, assignedDeclarations, mapElement,
-						mapClass, mapID, others);
-			}
-		}
-	}
-*/
 	/**
 	 * Kontroluje jeden Selector proti danému elementu. Pokud Selector obsahuje
 	 * více SimpleSelectorů, ohybuje se po stromové struktuře v závislosti na
