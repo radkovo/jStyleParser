@@ -10,7 +10,7 @@ import java.util.List;
  * 				 * Renamed methods to reach naming consistency
  * 				 * Implements Comparable
  */
-public interface RuleSet extends Rule, Comparable<RuleSet> {
+public interface RuleSet extends Rule, Comparable<RuleSet>, PrettyOutput {
 
 	/**
 	 * Gets selectors of given declaration

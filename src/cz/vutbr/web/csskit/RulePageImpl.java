@@ -5,7 +5,6 @@ import java.util.List;
 
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RulePage;
-import cz.vutbr.web.css.StyleSheetNotValidException;
 
 /**
  * RulePage
@@ -89,15 +88,5 @@ public class RulePageImpl implements RulePage {
     
     	return sb.toString();
     }
-    
-    public void check(String path) throws StyleSheetNotValidException {
-        String pathNew = path + " -> page(";
-        if(pseudo != null) {
-            pathNew += pseudo;
-        }
-        pathNew += ")";
-        for(Declaration declaration : declarations) {
-            declaration.check(pathNew);
-        }
-    }
+   
 }

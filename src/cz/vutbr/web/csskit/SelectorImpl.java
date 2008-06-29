@@ -9,7 +9,6 @@ import javax.naming.OperationNotSupportedException;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.SimpleSelector;
 import cz.vutbr.web.css.StyleSheetNotValidException;
-import cz.vutbr.web.css.Selector.Specificity.Level;
 
 /**
  * Selector
@@ -18,6 +17,7 @@ import cz.vutbr.web.css.Selector.Specificity.Level;
  * @version 1.0 * Changed according to new interface
  * 				 * Construction moved to parser
  * 				 * Rewritten toString() method 
+ * 				 * Added method to compute specificity
  */
 public class SelectorImpl implements Selector {
   
@@ -59,23 +59,11 @@ public class SelectorImpl implements Selector {
 		
 		Specificity spec = new SpecificityImpl();
 		
-		for(SimpleSelector s: simpleSelectors) {
+		for(SimpleSelector s: simpleSelectors) 
+			s.computeSpecificity(spec);
 			
-			if(s.getFirstItem()!=null && s.getFirstItem().isElement())
-				spec.add(Level.D);
-			
-			for(SimpleSelector.Item item: s.getItems()) {
-				if(item.isElement()) spec.add(Level.D);
-				else if(item.isAttribute()) spec.add(Level.C);
-				else if(item.isPseudoElement()) spec.add(Level.D);
-				else if(item.isPseudoClass()) spec.add(Level.C);
-				else if(item.isClass()) spec.add(Level.C);
-				else if(item.isID()) spec.add(Level.B);
-			}
-			
-		}
-		
 		return spec;
+		
 	}
 	
 

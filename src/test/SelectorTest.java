@@ -365,6 +365,36 @@ public class SelectorTest {
 				((RuleSet)rules.get(0)).getDeclarations());
 	}
 	
-	
+	@Test
+	public void testElementName() throws StyleSheetNotValidException {
+		
+		StyleSheet ss = (new CssParser(TEST_MULTIPLE)).parse();
+		
+		List<Rule> rules = ss.getRules();
+		assertEquals("One rule is set", 1, rules.size());
+		
+		final RuleSet rule = (RuleSet) rules.get(0);				
+		
+		List<Selector> selectors = rule.getSelectors();
+		
+		assertEquals("Rule rule contains two selectors", 2, selectors.size());
+		
+		// H1
+		Selector s = selectors.get(0);
+		List<SimpleSelector> list = s.getSimpleSelectors();
+		
+		assertEquals("Selector 1 contains one simple selector", 1, list.size());
+		
+		assertEquals("Selector contains element name", "H1", list.get(0).getElementName());
+		
+		
+		// DIV
+		s = selectors.get(1);
+		list = s.getSimpleSelectors();
+		
+		assertEquals("Selector 2 contains one simple selector", 1, list.size());
+		
+		assertEquals("Selector contains element name", "DIV", list.get(0).getElementName());
+	}
 	
 }

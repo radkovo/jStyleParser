@@ -6,9 +6,9 @@ import java.util.List;
  * Declaration
  * @author Jan Svercl, VUT Brno, 2008
  * 			modified by Karel Piwko, 2008
- * @version 1.0 * Modified to implement Rule interface
+ * @version 1.0 * Rewritten to allow inheritance
  */
-public interface Declaration extends Rule {
+public interface Declaration extends PrettyOutput, Comparable<Declaration> {
 
     public boolean isImportant();
     
@@ -21,5 +21,9 @@ public interface Declaration extends Rule {
     public String getProperty();
 
     public void setProperty(String property);
+    
+    public boolean isInherited(int level);
+    
+    public int getInheritanceLevel();
     
 }

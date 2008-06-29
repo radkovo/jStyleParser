@@ -2,12 +2,15 @@ package cz.vutbr.web.css;
 
 import java.util.List;
 
+import org.w3c.dom.Element;
+
 /**
  * SimpleSelector
  * @author Jan Svercl, VUT Brno, 2008
  * 			modified by Karel Piwko 2008
  * @version 1.0 * Rewritten enum Combinator,
  * 				 * moved SimpleSelector* interfaces inside
+ * 				 * Added methods computing specificity and element match
  */
 public interface SimpleSelector {
 
@@ -55,17 +58,16 @@ public interface SimpleSelector {
      *
      */
     public interface Item {
+    	
+    	public static final String WILDCARD = "*";
+    	
     	public String getValue();
     	public void setValue(String value);
     	public int hashCode();
     	public boolean equals(Object obj);
     	
-    	public boolean isAttribute();
-    	public boolean isElement();
-    	public boolean isClass();
-    	public boolean isPseudoClass();
-    	public boolean isPseudoElement();
-    	public boolean isID();
+    	public boolean matches(Element e);
+    	public void computeSpecificity(Selector.Specificity spec);
     }
     
     /**
@@ -74,6 +76,10 @@ public interface SimpleSelector {
      *
      */
     public interface ItemAttribute extends Item {
+    	
+    	public String getName();
+    	public void setName(String name);
+    	
     	public Operator getOperator();
     	public void setOperator(Operator operator);
     }
@@ -159,4 +165,17 @@ public interface SimpleSelector {
      * @return Name of HTML element
      */
     public String getElementName();
+    
+    /**
+     * Modifies specificity according to CSS standard
+     * @param spec Specificity to be modified
+     */
+    public void computeSpecificity(Selector.Specificity spec);
+    
+    /**
+     * Matches simple selector against DOM element
+     * @param e Element
+     * @return <code>true</true> in case of match
+     */
+    public boolean matches(Element e);
 }

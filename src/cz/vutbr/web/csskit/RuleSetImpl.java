@@ -6,7 +6,6 @@ import java.util.List;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.StyleSheetNotValidException;
 
 /**
  * RuleSet
@@ -108,32 +107,7 @@ public class RuleSetImpl implements RuleSet {
         sb.append(OutputUtil.RULE_CLOSING);
         
         return sb.toString();
-    }
-    
-    public void check(String path) throws StyleSheetNotValidException {
-        
-    	if(selectors.isEmpty()) {
-            throw new StyleSheetNotValidException("Selector is missing in rule", path);
-        }
-        for(Selector selector : selectors) {
-            selector.check(path);
-        }
-        String pathNew = path + " -> rule(";
-        boolean first = true;
-        for(Selector selector : selectors) {
-            if(!first) {
-                pathNew += ", ";
-            }
-            else {
-                first = false;
-            }
-            pathNew += selector.toString();
-        }
-        pathNew += ")";
-        for(Declaration declaration : declarations) {
-            declaration.check(pathNew);
-        }
-    }
+    }    
 
 	/**
 	 * @return the order

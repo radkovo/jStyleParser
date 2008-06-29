@@ -3,11 +3,21 @@ package cz.vutbr.web.csskit;
 import java.util.Collections;
 import java.util.List;
 
+import org.w3c.dom.Element;
+
+import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.SimpleSelector;
+import cz.vutbr.web.css.Selector.Specificity;
+import cz.vutbr.web.css.Selector.Specificity.Level;
 
 /**
- * SimpleSelector
- * @author Jan Svercl, VUT Brno, 2008
+ * Encapsulates one selector for CSS declaration.
+ * Selector can contain classes, attributes, ids, pseudoatrributes,
+ * and element name, together with combinator according to next placed selectors
+ * @author Jan Svercl, VUT Brno, 2008   	    
+ * @author Karel Piwko, 2008
+ * @version 1.0	* Completely rewritten according to new interface
+ * 					* Inner classes 
  */
 public class SimpleSelectorImpl implements SimpleSelector {
 
@@ -113,7 +123,35 @@ public class SimpleSelectorImpl implements SimpleSelector {
         return firstItem.getValue();
     }
     
+    public boolean matches(Element e) {
+    	
+		final String elementName = getElementName();
+		if(elementName!=null && ! ElementUtil.matchesName(e, elementName))
+			return false;
+		
+		// check other items of simple selector
+		for(SimpleSelector.Item item : getItems()) {
+			if(!item.matches(e))
+				return false;
+		}
+		
+		// we passed checking
+		return true;
+    }
     
+    /**
+     * Computes specificity of this selector
+     */
+    public void computeSpecificity(Selector.Specificity spec) {
+    	
+    	if(getFirstItem()!=null)
+    		getFirstItem().computeSpecificity(spec);
+			spec.add(Level.D);
+		
+		for(SimpleSelector.Item item: items) {
+			item.computeSpecificity(spec);
+		}
+    }
     
     
     // ============================================================
@@ -122,8 +160,8 @@ public class SimpleSelectorImpl implements SimpleSelector {
     /**
      * Item of CSS selector
      */
-    public static class ItemImpl implements Item {
-    	
+    public static class ItemImpl implements Item {    	 
+		    	
     	/** Value */
     	protected String value;
 
@@ -151,28 +189,16 @@ public class SimpleSelectorImpl implements SimpleSelector {
 			this.value = value;
 		}
 
-		public boolean isPseudoClass() {
-			return false;
+		public void computeSpecificity(Selector.Specificity spec) {
+			if(!WILDCARD.equals(value))
+				spec.add(Level.D);
 		}
 		
-		public boolean isID() {
-			return false;
-		}
-		
-		public boolean isAttribute() {
-			return false;
-		}
-		
-		public boolean isElement() {
-			return !"*".equals(value);
-		}
-		
-		public boolean isPseudoElement() {
-			return false;
-		}
-		
-		public boolean isClass() {
-			return false;
+		public boolean matches(Element e) {
+			
+			if(value!=null && WILDCARD.equals(value)) return true;
+			
+			return ElementUtil.matchesName(e, value);
 		}
 		
 		/* (non-Javadoc)
@@ -220,13 +246,13 @@ public class SimpleSelectorImpl implements SimpleSelector {
     	}
     	
     	@Override
-    	public boolean isElement() {
-    		return false;
+    	public void computeSpecificity(Specificity spec) {
+    		spec.add(Level.C);
     	}
     	
     	@Override
-    	public boolean isClass() {
-    		return true;
+    	public boolean matches(Element e) {
+    		return ElementUtil.	matchesClass(e, value);
     	}
     	
     	@Override
@@ -284,20 +310,23 @@ public class SimpleSelectorImpl implements SimpleSelector {
 		}
 		
 		@Override
-		public boolean isElement() {
+		public void computeSpecificity(Specificity spec) {
+
+			// pseudo-class
+			if((value!=null && value.matches(PSEUDO_CLASSES)) ||
+					(functionName!=null && functionName.matches(PSEUDO_CLASSES)))
+				spec.add(Level.C);
+			
+			// pseudo element
+			else if((value!=null && value.matches(PSEUDO_ELEMENTS)) ||
+				(functionName!=null && functionName.matches(PSEUDO_ELEMENTS)))
+				spec.add(Level.D);
+
+		}		
+		
+		@Override
+		public boolean matches(Element e) {
 			return false;
-		}
-		
-		@Override
-		public boolean isPseudoClass() {
-			return (value!=null && value.matches(PSEUDO_CLASSES)) ||
-					(functionName!=null && functionName.matches(PSEUDO_CLASSES));
-		}
-		
-		@Override
-		public boolean isPseudoElement() {
-			return (value!=null && value.matches(PSEUDO_ELEMENTS)) ||
-				(functionName!=null && functionName.matches(PSEUDO_ELEMENTS));
 		}
 		
     	
@@ -354,10 +383,6 @@ public class SimpleSelectorImpl implements SimpleSelector {
 				return false;
 			return true;
 		}
-
-		
-    	
-		
 		
     }
     
@@ -382,16 +407,15 @@ public class SimpleSelectorImpl implements SimpleSelector {
     	}
     	
     	@Override
-    	public boolean isElement() {
-    		return false;
-    	}
-    	
+    	public void computeSpecificity(Specificity spec) {
+    		spec.add(Level.B);
+		}    	
     	
     	@Override
-    	public boolean isID() {
-    		return true;
+    	public boolean matches(Element e) {
+    		return ElementUtil.matchesID(e, value);
     	}
-    	
+    	    	
     	@Override
     	public String toString() {
     		return "#" + value;
@@ -458,7 +482,7 @@ public class SimpleSelectorImpl implements SimpleSelector {
 		/**
 		 * @return the attribute
 		 */
-		public String getAttribute() {
+		public String getName() {
 			return attribute;
 		}
 
@@ -467,20 +491,20 @@ public class SimpleSelectorImpl implements SimpleSelector {
 		/**
 		 * @param attribute the attribute to set
 		 */
-		public void setAttribute(String attribute) {
-			this.attribute = attribute;
-		}
-
-		@Override
-		public boolean isElement() {
-			return false;
+		public void setName(String name) {
+			this.attribute = name;
 		}
 		
 		@Override
-		public boolean isAttribute() {
-			return true;
+		public void computeSpecificity(Specificity spec) {
+			spec.add(Level.C);
 		}
-
+		
+		@Override
+		public boolean matches(Element e) {
+			return ElementUtil.matchesAttribute(e, attribute, value, operator);
+		}
+		
 		@Override
     	public String toString() {
     		StringBuilder sb = new StringBuilder();

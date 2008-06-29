@@ -2,7 +2,7 @@ package cz.vutbr.web.csskit;
 
 import java.util.List;
 
-import cz.vutbr.web.css.Rule;
+import cz.vutbr.web.css.PrettyOutput;
 
 /**
  * Helper class for generation output for given CSS rules
@@ -96,7 +96,7 @@ public class OutputUtil {
 	 * @return Modified <code>sb</code> to allow chaining
 	 * @see Rule
 	 */
-	public static <T extends Rule> StringBuilder appendList(
+	public static <T extends PrettyOutput> StringBuilder appendList(
 			StringBuilder sb, List<T> list, 
 			String delimiter, int depth) {
 		

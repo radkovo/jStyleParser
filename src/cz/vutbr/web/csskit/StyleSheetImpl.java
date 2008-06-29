@@ -6,7 +6,6 @@ import java.util.List;
 import cz.vutbr.web.css.ImportURI;
 import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.StyleSheetNotValidException;
 
 /**
  * StyleSheet
@@ -89,15 +88,6 @@ public class StyleSheetImpl implements StyleSheet {
     		.append(OutputUtil.NEW_LINE);		
     	    	
     	return sb.toString();
-    }
+    }   
     
-    public void check() throws StyleSheetNotValidException {
-    	
-        for(ImportURI importUri : imports) {
-            importUri.check("Stylesheet");
-        }
-        for(Rule rule : rules) {
-            rule.check("Stylesheet");
-        }
-    }
 }

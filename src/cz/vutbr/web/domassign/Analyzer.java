@@ -18,12 +18,14 @@ import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.TreeWalker;
 
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.SimpleSelector;
 import cz.vutbr.web.css.StyleSheet;
+import cz.vutbr.web.csskit.ElementUtil;
 
 /**
  * During initialization divides rules of stylesheet into maps accoring
@@ -48,7 +50,14 @@ public class Analyzer {
 		classifyRules(sheet);
 	}
 	
-	public Map<Element,List<AssignedDeclaration>> assingDeclarationsToDOM(Document doc, String media,
+	/**
+	 * Creates map of declarations assigned to each element of a DOM tree
+	 * @param doc DOM document
+	 * @param media Media type to be used for declarations
+	 * @param inherit Inheritance (cascade propagation of values)
+	 * @return Map of elements as keys and their declarations
+	 */
+	public Map<Element,List<Declaration>> assingDeclarationsToDOM(Document doc, String media,
 			boolean inherit) { 
 		
 		TreeWalker walker = new TidyTreeWalker(doc.getDocumentElement(),
@@ -61,10 +70,40 @@ public class Analyzer {
 		
 		// we will do level traversal to economize blind returning 
 		// in tree
-		Map<Element, List<AssignedDeclaration>> declarations =
-			new HashMap<Element, List<AssignedDeclaration>>();
+		Map<Element, List<Declaration>> declarations =
+			new HashMap<Element, List<Declaration>>();
 		levelTraversal(declarations, walker, holder, 0);
 		return declarations;
+	}
+	
+	/**
+	 * Evaluates CSS properties of DOM tree
+	 * @param doc Document tree
+	 * @param media Media
+	 * @param inherit Use inheritance
+	 * @return Map where each element contains its CSS properties
+	 */
+	public Map<Element, NodeData> evaluateDOM(Document doc, String media, boolean inherit) {
+		
+		Map<Element, List<Declaration>> declarations =
+			assingDeclarationsToDOM(doc, media, inherit);
+		
+		Map<Element, NodeData> nodes = new HashMap<Element, NodeData>(declarations.size(), 1.0f);
+		
+		for(Element e: declarations.keySet()) {
+			NodeData data = new NodeDataImpl();
+						
+			// get inheritance level
+			// this should never rise NullPointerException
+			List<Declaration> decl = declarations.get(e);
+			int level = decl.get(decl.size()-1).getInheritanceLevel();
+			
+			for(Declaration d: decl)
+				data.push(d, level, inherit);		
+			
+			nodes.put(e, data);
+		}
+		return nodes;	
 	}
 	
 	/**
@@ -73,11 +112,11 @@ public class Analyzer {
 	 * @param holder Holder of rules for given media
 	 * @return Map, where each DOM element has CSS declarations assigned
 	 */
-	private Map<Element,List<AssignedDeclaration>> listTraversal(
+	private Map<Element,List<Declaration>> listTraversal(
 			TreeWalker walker, Holder holder) {
 		
-		Map<Element, List<AssignedDeclaration>> declarations = new
-			HashMap<Element, List<AssignedDeclaration>>();
+		Map<Element, List<Declaration>> declarations = new
+			HashMap<Element, List<Declaration>>();
 		
 		// tree traversal as nodes are found in
 		Node current, checkpoint = null;
@@ -103,7 +142,7 @@ public class Analyzer {
 	 * @param holder Holder of rules for given media
 	 * @param level Current nesting level
 	 */
-	private void levelTraversal(Map<Element, List<AssignedDeclaration>> declarations, 
+	private void levelTraversal(Map<Element, List<Declaration>> declarations, 
 			TreeWalker walker, Holder holder, int level) {
 
 		// this method can change position in walker
@@ -131,7 +170,7 @@ public class Analyzer {
 	 * @param level Current level of walker, if 0, no inheritance is allowed
 	 */
 	private void assignDeclarationsToElement(
-			Map<Element, List<AssignedDeclaration>> declarations, 
+			Map<Element, List<Declaration>> declarations, 
 			TreeWalker walker, Element e, Holder holder, int level) {
 		
 		if(log.isDebugEnabled()) {
@@ -139,13 +178,14 @@ public class Analyzer {
                 + e.getNodeValue());
 		}
 
-		// candidates
+		// create set of possible candidates applicable to given element
+		// set is automatically filtered to not contain duplicates
 		Set<RuleSet> candidates = new HashSet<RuleSet>();
 		
 		// match element classes
 		for(String cname: ElementUtil.elementClasses(e)) {
 			// holder contains rule with given class
-			final List<RuleSet> rules = holder.items.get(HolderItem.CLASS.type()).get(cname);
+			final List<RuleSet> rules = holder.get(HolderItem.CLASS,cname);
 			if(rules!=null)
 				candidates.addAll(rules);
 		}
@@ -154,22 +194,22 @@ public class Analyzer {
 			log.trace("After CLASSes total candidates: " + candidates.size());
 		}
 		
-		// match ids
+		// match IDs
 		final String id = ElementUtil.elementID(e);
 		if(id!=null) {
-			final List<RuleSet> rules = holder.items.get(HolderItem.ID.type()).get(id);
+			final List<RuleSet> rules = holder.get(HolderItem.ID,id);
 			if(rules!= null)
 				candidates.addAll(rules);
 		}
 		
 		if(log.isTraceEnabled()) {
-			log.trace("After IDes total candidates: " + candidates.size());
+			log.trace("After IDs total candidates: " + candidates.size());
 		}
 		
 		// match elements
 		final String name = ElementUtil.elementName(e);
 		if(name!=null) {
-			final List<RuleSet> rules = holder.items.get(HolderItem.ELEMENT.type()).get(name);
+			final List<RuleSet> rules = holder.get(HolderItem.ELEMENT, name);
 			if(rules!=null)
 				candidates.addAll(rules);
 		}
@@ -179,27 +219,33 @@ public class Analyzer {
 		}
 		
 		// others
-		candidates.addAll(holder.others);
+		candidates.addAll(holder.get(HolderItem.OTHER, null));
 		
 		// transform to list to speed up traversal
-		// and sort rules as they were found in CSS definition
+		// and sort rules in order as they were found in CSS definition
 		List<RuleSet> clist = new ArrayList<RuleSet>(candidates);
 		Collections.sort(clist);
 		
 		if(log.isDebugEnabled()) {
-			log.debug("Total canditates (including OTHERs: " + clist.size());
+			log.debug("Total canditates (including OTHERs): " + clist.size());
 			if(log.isTraceEnabled()) {
 				log.trace("Condidates: " + clist);
 			}
 		}
 		
 		// resulting list of declaration for this element
-		List<AssignedDeclaration> eldecl = new ArrayList<AssignedDeclaration>();
+		List<Declaration> eldecl = new ArrayList<Declaration>();
 		
-		// for all canditates
+		// for all candidates
 		for(RuleSet rule: clist) {
 			// for all selectors inside
 			for(Selector s: rule.getSelectors()) {
+				// this method does automatic rewind of walker 
+				if(!matchSelector(s, e, walker))
+					continue;
+				
+				log.trace("Selector matched, adding declarations");
+				
 				//if match, add to declarations				
 				Selector.Specificity spec = s.computeSpecificity();				
 				for(Declaration d: rule.getDeclarations())
@@ -208,7 +254,9 @@ public class Analyzer {
 			}
 		}
 		
-		// inheritance
+		// inheritance, level is always 0 when not in inheritance mode
+		// TODO: parent node could be searched only once per child, because
+		// it should be known by level traversal
 		if(level > 0) {
 			Node checkpoint = walker.getCurrentNode();
 			for(int i = level; i>level-1; i--) {
@@ -231,7 +279,66 @@ public class Analyzer {
 		declarations.put(e, eldecl);	
 	}
 	
-
+	private boolean matchSelector(Selector sel, Element e, TreeWalker w) {
+		
+		// store current walker position
+		Node current = w.getCurrentNode();
+		
+		boolean retval = false;
+		SimpleSelector.Combinator combinator = null;
+		// traverse simple selector backwards
+		for(int i= sel.getSimpleSelectors().size()-1; i>=0; i--) {
+			// last simple selector
+			final SimpleSelector s = sel.getSimpleSelectors().get(i);
+			
+			if(log.isTraceEnabled()) {
+				log.trace("Iterating loop with sel: " + s +
+						" combinator " + combinator );
+			}
+			
+			// decide according to combinator anti-pattern
+			if(combinator==null) {
+				retval = s.matches(e);
+			}
+			else if(combinator==SimpleSelector.Combinator.ADJACENT) {
+				final Element adjacent = (Element) w.previousSibling();
+				retval = false;
+				if(adjacent!=null) retval = s.matches(adjacent);
+			}
+			else if(combinator==SimpleSelector.Combinator.DESCENDANT) {
+				final Element parent = (Element) w.parentNode();
+				retval = false;
+				if(parent!=null) retval = s.matches(parent);
+			}
+			else if(combinator==SimpleSelector.Combinator.CHILD) {
+				Element ancestor;
+				retval = false;
+				while((ancestor=(Element)w.parentNode())!=null && retval==false) {
+					retval = s.matches(ancestor);
+				}
+			}
+			
+			// set combinator for next loop
+			combinator = s.getCombinator();
+			
+			// set walker for next loop
+			w.setCurrentNode(current);	
+			
+			// leave loop if not matched
+			if(retval==false)
+				break;
+		}
+		
+		// restore walker position
+		w.setCurrentNode(current);
+		return retval;
+	}	
+	
+	/**
+	 * Divides rules in sheet into different categories
+	 * to be easily and more quickly parsed afterward
+	 * @param sheet
+	 */
 	private void classifyRules(StyleSheet sheet) {
 
 		// create holder for medium of type all
@@ -255,7 +362,7 @@ public class Analyzer {
 					// for all selectors in there
 					for(Selector s: ruleset.getSelectors()) {
 						
-						List<HolderSelector> hs = classifySelector(s);
+						final List<HolderSelector> hs = classifySelector(s);
 						// insert into all medias
 						for(String media: rulemedia.getMedias()) {
 							Holder h = rules.get(media);
@@ -294,7 +401,9 @@ public class Analyzer {
 	}
 
 	/**
-	 * Classify rule for to be of specified item
+	 * Classify CSS rule according its selector for to be of specified item(s)
+	 * @param Selector Selector of rules
+	 * @return List of HolderSelectors to which selectors conforms
 	 */
 	private List<HolderSelector> classifySelector(Selector selector) {
 
@@ -305,11 +414,10 @@ public class Analyzer {
 			SimpleSelector last = selector.getLastSimpleSelector();
 
 			// is element or other (wildcard)
-			String element = last.getElementName();
+			final String element = last.getElementName();
 			if(element!=null) {
 				// wildcard
-				if("*".equals(element)) 
-					// TODO check this behaviour
+				if(SimpleSelector.Item.WILDCARD.equals(element)) 
 					hs.add(new HolderSelector(HolderItem.OTHER, null));
 				// element
 				else
@@ -317,12 +425,12 @@ public class Analyzer {
 			}
 
 			// is class name
-			String className = last.getClassName();
+			final String className = last.getClassName();
 			if(className!=null)
 				hs.add(new HolderSelector(HolderItem.CLASS, className.toLowerCase()));
 
 			// is id
-			String id = last.getIDName();
+			final String id = last.getIDName();
 			if(id!=null)
 				hs.add(new HolderSelector(HolderItem.CLASS, id.toLowerCase()));
 
@@ -334,12 +442,17 @@ public class Analyzer {
 			
 		}
 		catch(OperationNotSupportedException e) {
-			log.warn("Selector does not include any simple selector, this should not happen!");
+			log.error("Selector does not include any simple selector, this should not happen!");
 			return Collections.emptyList();
 		}
 	}	
 	
-	
+	/**
+	 * Inserts rules into holder
+	 * @param holder Holder to be inserted
+	 * @param hs Holder's selector and key
+	 * @param value Value to be inserted
+	 */
 	private void insertClassified(Holder holder, List<HolderSelector> hs, RuleSet value) {
 		for(HolderSelector h: hs)
 			holder.insert(h.item, h.key, value);
@@ -351,7 +464,8 @@ public class Analyzer {
 	 * @author kapy
 	 */
 	private enum HolderItem {
-		ELEMENT(0), ID(1), CLASS(2), OTHER(3);
+		ELEMENT(0), ID(1), CLASS(2), 
+		OTHER(3);
 
 		private int type;
 
@@ -391,10 +505,10 @@ public class Analyzer {
 	private class Holder {
 
 		/** HolderItem.* except OTHER are stored there */
-		public List<Map<String, List<RuleSet>>> items;
+		private List<Map<String, List<RuleSet>>> items;
 
 		/** OTHER rules are stored there */
-		public List<RuleSet> others;
+		private List<RuleSet> others;
 
 		public Holder() {
 			// create list of items
@@ -437,178 +551,21 @@ public class Analyzer {
 			list.add(value);
 
 		}		
-	}
-	
-	/**
-	 * Kontroluje jeden Selector proti danému elementu. Pokud Selector obsahuje
-	 * více SimpleSelectorů, ohybuje se po stromové struktuře v závislosti na
-	 * kombinátorech
-	 */
-	/*
-	private static boolean matchElementBySelector(Element el, Selector s) {
-		boolean match = true;
-		Element actualPos = el;
-		SimpleSelector.EnumCombinator combinator = null;
-		// Procházím všechny SimpleSelectory v opačném pořadí
-		for (int i = s.getSimpleSelectorsList().size() - 1; i >= 0; i--) {
-			SimpleSelector ss = s.getSimpleSelectorsList().get(i);
-
-			// Kontroluje se vždy v prvním kole na element který vstupuje do
-			// funkce
-			if (combinator == null) {
-				if (!(matchElementBySimpleSelector(actualPos, ss))) {
-					match = false;
-					break;
-				}
-			}
-
-			// kombinátor mezery, hledám výše v hierarchii výše odpovídající
-			// SimpleSelecor
-			else if (combinator == SimpleSelector.EnumCombinator.space) {
-				match = false;
-				if (actualPos != null) {
-					actualPos = (actualPos.getParentNode() instanceof Element ? (Element) actualPos
-							.getParentNode()
-							: null);
-					while (actualPos != null && !match) {
-						match = matchElementBySimpleSelector(actualPos, ss);
-						if (!match) {
-							actualPos = (actualPos.getParentNode() instanceof Element ? (Element) actualPos
-									.getParentNode()
-									: null);
-						}
-					}
-				}
-			}
-
-			// kombinátor "větší než" - stejné jako předchozí (space), jen musí
-			// být hledaný element
-			// v hierarchii právě o jeden stupeň výše
-			else if (combinator == SimpleSelector.EnumCombinator.greater) {
-				match = false;
-				if (actualPos != null) {
-					actualPos = (Element) actualPos.getParentNode();
-					match = matchElementBySimpleSelector(actualPos, ss);
-				}
-			}
-
-			// kombinátor plus - elementy musí ležet hned vedle sebe
-			else if (combinator == SimpleSelector.EnumCombinator.plus) {
-				match = false;
-				Element parent = (actualPos.getParentNode() instanceof Element ? (Element) actualPos
-						.getParentNode()
-						: null);
-				if (parent != null) {
-					// Nejdříve najdu svého přímého předchůdce
-					Element pre = null;
-					for (int ii = 0; ii < parent.getChildNodes().getLength(); ii++) {
-						Node n = parent.getChildNodes().item(ii);
-						if (n == actualPos) {
-							break;
-						} else if (n instanceof Element) {
-							pre = (Element) n;
-						}
-					}
-					// Pokud byl předchůdce nalezen, ověřím ho (pokud ne, match
-					// zůstává na false)
-					if (pre != null) {
-						match = matchElementBySimpleSelector(pre, ss);
-						actualPos = pre;
-					}
-				}
-			}
-			combinator = ss.getCombinator();
-
-			// Pokud Selector něčím neodpovídá, nemá cenu zkoušet další - vrátím
-			// false
-			if (!match) {
-				return match;
-			}
+		
+		/**
+		 * Returns list of rules (ruleset) for given holder and key
+		 * @param item Type of item to be returned
+		 * @param key Key or <code>null</code> in case of HolderItem.OTHER
+		 * @return List of rules or <code>null</code> if not found under given 
+		 * combination of key and item
+		 */
+		public List<RuleSet> get(HolderItem item, String key) {
+			
+			// check others
+			if(item == HolderItem.OTHER)
+				return others;
+			
+			return items.get(item.type()).get(key);
 		}
-		return match;
 	}
-*/
-	/**
-	 * Zkontroluje jeden SimpleSelector - porovnávání probíhá na jednom elementu
-	 * (není třeba kontrolovat kontext)
-	 */
-	/*
-	private static boolean matchElementBySimpleSelector(Element el,
-			SimpleSelector s) {
-		// Je-li zadán typ elementu, zkontroluje se
-		if (s.getFirstItem() != null) {
-			if (!(el.getNodeName()
-					.equalsIgnoreCase(s.getFirstItem().getValue()) || s
-					.getFirstItem().getValue().equals("*"))) {
-				return false;
-			}
-		}
-
-		// Kontrola ostatních položek SimpleSelectoru. Položky pseudo nelze
-		// porovnávat, protože pseudoelementy vznikají až
-		// při rasterizaci dokumentu (například "první řádek" nebo :hover - "nad
-		// objektem je myš")
-		for (SSItem item : s.getItemsList()) {
-
-			if (item instanceof SSItemID) {
-				String id = el.getAttribute("id");
-				if (!(id.equalsIgnoreCase(((SSItemID) item).getValue()))) {
-					return false;
-				}
-				continue;
-			}
-
-			if (item instanceof SSItemClass) {
-				String classNames = el.getAttribute("class");
-				boolean found = false;
-				if (classNames != null) {
-					for (String className : classNames.split(" ")) {
-						if (className.trim().length() > 0) {
-							if ((className
-									.equalsIgnoreCase(((SSItemClass) item)
-											.getValue()))) {
-								found = true;
-							}
-						}
-					}
-				}
-				if (!found) {
-					return false;
-				}
-				continue;
-			}
-
-			if (item instanceof SSItemAttrib) {
-				SSItemAttrib ssa = (SSItemAttrib) item;
-				String attrib = el.getAttribute((ssa).getAttrib());
-				if (ssa.getOperator() == null) {
-					if (attrib.length() == 0) {
-						return false;
-					}
-				} else if (ssa.getOperator() == SSItemAttrib.EnumOperator.equals) {
-					if (!attrib.equalsIgnoreCase(ssa.getValue())) {
-						return false;
-					}
-				} else if (ssa.getOperator() == SSItemAttrib.EnumOperator.includes) {
-					attrib = " " + attrib + " ";
-					if (!attrib.toLowerCase().matches(
-							".* " + ssa.getValue() + " .*")) {
-						return false;
-					}
-				} else if (ssa.getOperator() == SSItemAttrib.EnumOperator.dashmatch) {
-					if (!attrib.toLowerCase().matches(
-							"^" + ssa.getValue() + "(\\|.*)*")) {
-						return false;
-					}
-				}
-			}
-
-			if (item instanceof SSItemPseudo) {
-				// Ignorováno
-				return false;
-			}
-		}
-		return true;
-	}
-	*/
 }

@@ -3,10 +3,8 @@ package cz.vutbr.web.csskit;
 import java.util.Collections;
 import java.util.List;
 
-import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RuleSet;
-import cz.vutbr.web.css.StyleSheetNotValidException;
 
 /**
  * RuleMedia
@@ -32,24 +30,7 @@ public class RuleMediaImpl implements RuleMedia {
 	public RuleMediaImpl() {
 		this.medias = Collections.emptyList();
 		this.rules = Collections.emptyList();
-	}
-	
-    /*
-    public RuleMediaImpl(SimpleNode n) {
-    	
-        for(int ii = 0; ii < n.jjtGetNumChildren(); ii++) {
-            SimpleNode cNode = (SimpleNode)n.jjtGetChild(ii);
-            if(cNode.getType().equals("medium")) {
-                String mediumName = ((SimpleNode)cNode.jjtGetChild(0)).getImage();
-                mediaList.add(mediumName);
-            }
-            else if(cNode.getType().equals("ruleset")) {
-                rulesList.add(new RuleSetImpl(cNode));
-            }
-        }
-        
-    }
-    */
+	}    
     
     public List<String> getMedias() {
 		return medias;
@@ -92,33 +73,7 @@ public class RuleMediaImpl implements RuleMedia {
     	sb.append(OutputUtil.RULE_CLOSING);
     	
     	return sb.toString();
-    }
+    }   
     
-    public void check(String path) throws StyleSheetNotValidException {
-        if(medias.isEmpty()) {
-            throw new StyleSheetNotValidException("Media type is missing", path);
-        }
-        for(String string: medias) {
-            if(!string.matches("^(all|aural|braille|embossed|handheld|print|projection|screen|tty|tv)$")) {
-                throw new StyleSheetNotValidException("Unknown Media type: " + string, path);
-            }
-        }
-        
-        String pathNew = path + " -> Media(";
-        boolean first = true;
-        for(String mName : medias) {
-            if(!first) {
-                pathNew += ", ";
-            }
-            else {
-                first = false;
-            }
-            pathNew += mName;
-        }
-        pathNew += ")";
-        for(Rule rule: rules) {
-            rule.check(pathNew);
-        }
-    }
 
 }

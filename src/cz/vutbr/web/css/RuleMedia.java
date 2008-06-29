@@ -9,7 +9,7 @@ import java.util.List;
  * @version 1.0 * Added setter methods
  * 				 * Renamed methods to reach naming consistency
  */
-public interface RuleMedia extends Rule {
+public interface RuleMedia extends Rule, PrettyOutput {
 
 	/**
 	 * Returns list of all medias associated with this rule

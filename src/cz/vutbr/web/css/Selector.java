@@ -48,8 +48,7 @@ public interface Selector extends Rule {
 		
 		public int hashCode();
 		public boolean equals(Object obj);
-	}
-	
+	}	
 	
     public List<SimpleSelector> getSimpleSelectors();
     

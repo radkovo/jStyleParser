@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import cz.vutbr.web.css.Declaration;
-import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.Term;
 
 /**
@@ -15,7 +14,6 @@ import cz.vutbr.web.css.Term;
  * 				 * Construction moved to parser
  */
 public class DeclarationImpl implements Declaration {
-
 
 	protected String property;
 	protected List<Term> terms;
@@ -35,6 +33,32 @@ public class DeclarationImpl implements Declaration {
 		this.property = clone.getProperty();
 		this.terms = clone.getTerms();
 		this.important = clone.isImportant();
+	}
+
+	/**
+	 * This declaration type is never inherited
+	 * @return <code>false</code>
+	 */
+	public boolean isInherited(int level) {
+		return false;
+	}
+	
+	public int getInheritanceLevel() {
+		return 0;
+	}
+	
+	/**
+	 * This declaration type is not about to be compared
+	 * using precise conditions
+	 */
+	public int compareTo(Declaration o) {
+		
+		if(this.isImportant() && ! o.isImportant())
+            return 1;
+        else if(o.isImportant() && ! this.isImportant())
+            return -1;
+		
+		return 0;
 	}
 	
     /**
@@ -154,23 +178,5 @@ public class DeclarationImpl implements Declaration {
 		
         return sb.toString();
     }
-
-    public void check(String path) throws StyleSheetNotValidException {
-        if (property.trim().equals("")) {
-            throw new StyleSheetNotValidException("Empty string as property name", path);
-        }
-        String pathNew = path + " -> Declaration(" + property + ")";
-        if (terms.isEmpty()) {
-            throw new StyleSheetNotValidException("Declaration without values", pathNew);
-        }
-        for (int i = 0; i < terms.size(); i++) {
-            Term term = terms.get(i);
-            if (i == 0 && term.getOperator() != null) {
-                term.setOperator(null); //Fix error
-            }
-            if (i != 0 && term.getOperator() == null) {
-                throw new StyleSheetNotValidException("Value without operator!", pathNew);
-            }
-        }
-    }
+    
 }

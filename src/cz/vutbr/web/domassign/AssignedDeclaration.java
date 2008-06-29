@@ -1,8 +1,11 @@
 package cz.vutbr.web.domassign;
 
+import java.util.List;
+
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.csskit.DeclarationImpl;
+import cz.vutbr.web.css.Term;
+import cz.vutbr.web.csskit.OutputUtil;
 
 /**
  * Adds specificity to declaration from its selector.
@@ -10,8 +13,11 @@ import cz.vutbr.web.csskit.DeclarationImpl;
  * @author kapy
  * @since 1.0
  */
-public class AssignedDeclaration extends DeclarationImpl implements Comparable<AssignedDeclaration>, Declaration {
+public class AssignedDeclaration implements Declaration {
 	
+	protected String property;
+	protected List<Term> terms;
+	protected boolean important;
 	protected int level;
 	
 	protected Selector.Specificity spec;
@@ -23,7 +29,9 @@ public class AssignedDeclaration extends DeclarationImpl implements Comparable<A
 	 * @param level Nesting level in DOM tree 
 	 */
 	public AssignedDeclaration(Declaration d, Selector.Specificity spec, int level) {
-		super(d);
+		this.important = d.isImportant();
+		this.property = d.getProperty();
+		this.terms = d.getTerms();
 		this.spec = spec;
 		this.level = level;
 	}
@@ -38,7 +46,12 @@ public class AssignedDeclaration extends DeclarationImpl implements Comparable<A
 		this(d, s.computeSpecificity(), level);
 	}
 	
-	public int compareTo(AssignedDeclaration o) {
+	public int compareTo(Declaration other) {
+		
+		if( !(other instanceof AssignedDeclaration))
+			return 0;
+		
+		final AssignedDeclaration o = (AssignedDeclaration) other;
 		
 		if(this.level > o.level) return 1;
 		if(this.level < o.level) return -1;
@@ -51,9 +64,54 @@ public class AssignedDeclaration extends DeclarationImpl implements Comparable<A
 		return this.spec.compareTo(o.spec);
 	}
 	
-	@Override
-	public String toString() {
-		return super.toString();
+	public boolean isInherited(int level) {
+		return level > this.level;
+	}
+		
+	public int getInheritanceLevel() {
+		return level;
+	}
+	
+	/**
+	 * @return the property
+	 */
+	public String getProperty() {
+		return property;
+	}
+
+	/**
+	 * @param property the property to set
+	 */
+	public void setProperty(String property) {
+		this.property = property;
+	}
+
+	/**
+	 * @return the terms
+	 */
+	public List<Term> getTerms() {
+		return terms;
+	}
+
+	/**
+	 * @param terms the terms to set
+	 */
+	public void setTerms(List<Term> terms) {
+		this.terms = terms;
+	}
+
+	/**
+	 * @return the important
+	 */
+	public boolean isImportant() {
+		return important;
+	}
+
+	/**
+	 * @param important the important to set
+	 */
+	public void setImportant(boolean important) {
+		this.important = important;
 	}
 
 	/* (non-Javadoc)
@@ -62,8 +120,9 @@ public class AssignedDeclaration extends DeclarationImpl implements Comparable<A
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
+		int result = 1;
 		result = prime * result + (important ? 1231 : 1237);
+		result = prime * result + level;
 		result = prime * result
 				+ ((property == null) ? 0 : property.hashCode());
 		result = prime * result + ((spec == null) ? 0 : spec.hashCode());
@@ -78,12 +137,14 @@ public class AssignedDeclaration extends DeclarationImpl implements Comparable<A
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
+		if (obj == null)
 			return false;
 		if (!(obj instanceof AssignedDeclaration))
 			return false;
 		final AssignedDeclaration other = (AssignedDeclaration) obj;
 		if (important != other.important)
+			return false;
+		if (level != other.level)
 			return false;
 		if (property == null) {
 			if (other.property != null)
@@ -102,7 +163,24 @@ public class AssignedDeclaration extends DeclarationImpl implements Comparable<A
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return toString(0);
+	}
 	
-	
-	
+	public String toString(int depth) {
+		
+		StringBuilder sb = new StringBuilder();
+		
+		// add property
+		sb = OutputUtil.appendTimes(sb, OutputUtil.DEPTH_DELIM, depth);
+		sb.append(property).append(OutputUtil.PROPERTY_OPENING);
+		
+		// add terms
+		sb = OutputUtil.appendList(sb, terms, OutputUtil.EMPTY_DELIM)
+				.append(OutputUtil.PROPERTY_CLOSING);
+		
+        return sb.toString();
+	}
 }

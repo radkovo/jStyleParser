@@ -9,7 +9,7 @@ import java.util.List;
  * @version 1.0 * Added setter for declaration
  * 				 * Renamed methods to achieve consistency in naming
  */
-public interface RulePage extends Rule {
+public interface RulePage extends Rule, PrettyOutput {
 
     public String getPseudo();
     
