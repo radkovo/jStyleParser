@@ -11,7 +11,7 @@ import cz.vutbr.web.css.ImportURI;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.csskit.ImportURIImpl;
-import cz.vutbr.web.csskit.parser.CssParser;
+import cz.vutbr.web.csskit.parser.CSSParser;
 
 public class ImportTest1 {
 
@@ -30,7 +30,7 @@ public class ImportTest1 {
 	@Test
 	public void testSimpleImport() throws StyleSheetNotValidException {
 
-		StyleSheet ss = (new CssParser(SIMPLE_IMPORT)).parse();
+		StyleSheet ss = (new CSSParser(SIMPLE_IMPORT)).parse();
 
 		List<ImportURI> imports = ss.getImports();
 
@@ -45,7 +45,7 @@ public class ImportTest1 {
 	@Test
 	public void testQuotImport() throws StyleSheetNotValidException {
 
-		StyleSheet ss = (new CssParser(QUOT_IMPORT)).parse();
+		StyleSheet ss = (new CSSParser(QUOT_IMPORT)).parse();
 
 		List<ImportURI> imports = ss.getImports();
 
@@ -60,7 +60,7 @@ public class ImportTest1 {
 	@Test
 	public void testURLImport() throws StyleSheetNotValidException {
 
-		StyleSheet ss = (new CssParser(URL_IMPORT)).parse();
+		StyleSheet ss = (new CSSParser(URL_IMPORT)).parse();
 
 		List<ImportURI> imports = ss.getImports();
 
@@ -76,7 +76,7 @@ public class ImportTest1 {
 	@Test
 	public void testDoubleImport() throws StyleSheetNotValidException {
 
-		StyleSheet ss = (new CssParser(DOUBLE_IMPORT)).parse();
+		StyleSheet ss = (new CSSParser(DOUBLE_IMPORT)).parse();
 
 		List<ImportURI> imports = ss.getImports();
 
@@ -105,7 +105,7 @@ public class ImportTest1 {
 		rule2.setUri("test-print.css");
 		rule2.setMedias(rule2medias);
 
-		StyleSheet ss = (new CssParser(MEDIA_IMPORT)).parse();
+		StyleSheet ss = (new CSSParser(MEDIA_IMPORT)).parse();
 
 		List<ImportURI> imports = ss.getImports();
 

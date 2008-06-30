@@ -8,7 +8,7 @@ package cz.vutbr.web.css;
  * 				 * Removed String operator(String) method
  * 				 * Added equals() and hashCode()
  */
-public abstract interface Term {
+public interface Term {
 
     public enum Operator {
     	    	

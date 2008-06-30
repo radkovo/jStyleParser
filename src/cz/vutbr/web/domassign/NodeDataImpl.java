@@ -1,8 +1,11 @@
 package cz.vutbr.web.domassign;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.NodeData;
@@ -10,14 +13,19 @@ import cz.vutbr.web.css.Term;
 
 public class NodeDataImpl implements NodeData {
 
-	public Map<String, CSSProperty> properties;	
-	public Map<String, Term> values;
-	public Map<String, List<Term>> listValues;
+	private static final int COMMON_DECLARATION_SIZE = 7;
+	
+	protected Map<String, CSSProperty> properties;	
+	protected Map<String, Term> values;
+	protected Map<String, List<Term>> listValues;
+	
+	protected DeclarationTransformer transformer;
 	
 	public NodeDataImpl() {
 		this.properties = new HashMap<String, CSSProperty>();
 		this.values = new HashMap<String, Term>();
 		this.listValues = new HashMap<String, List<Term>>();
+		this.transformer = DeclarationTransformer.getInstance();
 	}
 	
 	public <T extends CSSProperty> T getProperty(Class<T> clazz, String name) {
@@ -35,7 +43,19 @@ public class NodeDataImpl implements NodeData {
 	
 	public void push(Declaration d, int inheritanceLevel, boolean inherit) {
 		
+		Map<String,CSSProperty> properties = 
+			new HashMap<String,CSSProperty>(COMMON_DECLARATION_SIZE);
+		Map<String,Term> terms = 
+			new HashMap<String, Term>(COMMON_DECLARATION_SIZE);
 		
+		boolean result = transformer.parseDeclaration(d, properties, terms);
+		
+		// in case of false do not insert anything
+		if(!result) return;
+		
+		this.properties.putAll(properties);
+		
+		this.values.putAll(terms);
 		
 	}
 	

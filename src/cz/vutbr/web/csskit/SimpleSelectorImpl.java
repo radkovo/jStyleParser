@@ -153,6 +153,54 @@ public class SimpleSelectorImpl implements SimpleSelector {
 		}
     }
     
+    /* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((combinator == null) ? 0 : combinator.hashCode());
+		result = prime * result
+				+ ((firstItem == null) ? 0 : firstItem.hashCode());
+		result = prime * result + ((items == null) ? 0 : items.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof SimpleSelectorImpl))
+			return false;
+		final SimpleSelectorImpl other = (SimpleSelectorImpl) obj;
+		if (combinator == null) {
+			if (other.combinator != null)
+				return false;
+		} else if (!combinator.equals(other.combinator))
+			return false;
+		if (firstItem == null) {
+			if (other.firstItem != null)
+				return false;
+		} else if (!firstItem.equals(other.firstItem))
+			return false;
+		if (items == null) {
+			if (other.items != null)
+				return false;
+		} else if (!items.equals(other.items))
+			return false;
+		return true;
+	}
+    
+    
+    
+    
     
     // ============================================================
     // implementation of intern classes
@@ -434,11 +482,11 @@ public class SimpleSelectorImpl implements SimpleSelector {
     	
     	protected String attribute;
     	
-    	private boolean isValueIdent;
+    	private boolean isStringValue;
     	
-    	public ItemAttributeImpl(String value, boolean isValueIdent, Operator operator, String attribute) {
+    	public ItemAttributeImpl(String value, boolean isStringValue, Operator operator, String attribute) {
     		
-    		this.isValueIdent = isValueIdent;
+    		this.isStringValue = isStringValue;
     		setValue(value);    		
     		this.operator = operator;
     		this.attribute = attribute;
@@ -448,11 +496,13 @@ public class SimpleSelectorImpl implements SimpleSelector {
     	public void setValue(String value) {
     		
     		// sanity check
-    		if(value == null)
-    			throw new IllegalArgumentException("Invalid value ItemAttribute (null)");
+    		if(value == null) {
+    			this.value = null;
+    			return;
+    		}
     		
     		// create form string token
-    		if(!isValueIdent)
+    		if(isStringValue)
     			value = value.replaceAll("^'", "")
     			.replaceAll("^\"", "")
     			.replaceAll("'$", "")
@@ -512,12 +562,12 @@ public class SimpleSelectorImpl implements SimpleSelector {
     		sb.append(OutputUtil.ATTRIBUTE_OPENING).append(attribute);
     		sb.append(operator.value());
 
-    		if(!isValueIdent)
+    		if(isStringValue)
     			sb.append(OutputUtil.STRING_OPENING);
     		
     		if(value != null) sb.append(value);
     		
-    		if(!isValueIdent)
+    		if(isStringValue)
     			sb.append(OutputUtil.STRING_CLOSING);
 
     		sb.append(OutputUtil.ATTRIBUTE_CLOSING);
@@ -534,7 +584,7 @@ public class SimpleSelectorImpl implements SimpleSelector {
 			int result = super.hashCode();
 			result = prime * result
 					+ ((attribute == null) ? 0 : attribute.hashCode());
-			result = prime * result + (isValueIdent ? 1231 : 1237);
+			result = prime * result + (isStringValue ? 1231 : 1237);
 			result = prime * result
 					+ ((operator == null) ? 0 : operator.hashCode());
 			result = prime * result + ((value == null) ? 0 : value.hashCode());
@@ -558,7 +608,7 @@ public class SimpleSelectorImpl implements SimpleSelector {
 					return false;
 			} else if (!attribute.equals(other.attribute))
 				return false;
-			if (isValueIdent != other.isValueIdent)
+			if (isStringValue != other.isStringValue)
 				return false;
 			if (operator == null) {
 				if (other.operator != null)
@@ -572,55 +622,7 @@ public class SimpleSelectorImpl implements SimpleSelector {
 				return false;
 			return true;
 		}
+				
 		
-		
-		
-    }
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((combinator == null) ? 0 : combinator.hashCode());
-		result = prime * result
-				+ ((firstItem == null) ? 0 : firstItem.hashCode());
-		result = prime * result + ((items == null) ? 0 : items.hashCode());
-		return result;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof SimpleSelectorImpl))
-			return false;
-		final SimpleSelectorImpl other = (SimpleSelectorImpl) obj;
-		if (combinator == null) {
-			if (other.combinator != null)
-				return false;
-		} else if (!combinator.equals(other.combinator))
-			return false;
-		if (firstItem == null) {
-			if (other.firstItem != null)
-				return false;
-		} else if (!firstItem.equals(other.firstItem))
-			return false;
-		if (items == null) {
-			if (other.items != null)
-				return false;
-		} else if (!items.equals(other.items))
-			return false;
-		return true;
-	}
-    
-    
+    }	
 }

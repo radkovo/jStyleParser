@@ -12,9 +12,10 @@ public class TermIdentImpl extends TermImpl implements TermIdent {
     private String value;
    
     public String getValue() {
-        return value;
+    	return value;
     }
 
+    
     public void setValue(String value) {
         if(value == null) 
             throw new IllegalArgumentException("Invalid value for TermIndent(null)");

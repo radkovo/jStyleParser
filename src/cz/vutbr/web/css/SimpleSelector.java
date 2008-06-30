@@ -41,7 +41,8 @@ public interface SimpleSelector {
     public enum Operator {
     	EQUALS("="),
     	INCLUDES("~="),
-    	DASHMATCH("|=");
+    	DASHMATCH("|="),
+    	NO_OPERATOR("");
     	
     	private String value;
     	

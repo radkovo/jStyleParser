@@ -21,7 +21,9 @@ import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
-import cz.vutbr.web.csskit.parser.CssParser;
+import cz.vutbr.web.css.TermColor;
+import cz.vutbr.web.csskit.TermColorImpl;
+import cz.vutbr.web.csskit.parser.CSSParser;
 import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.TidyTreeWalker;
 
@@ -39,7 +41,7 @@ public class AnalyzerTest {
 		doc = parser.parseDOM(
 				new FileInputStream("data/simple/data.html"), null);
 		
-		CssParser cssparser = new CssParser(
+		CSSParser cssparser = new CSSParser(
 				new FileInputStream("data/simple/data.css"));
 		
 		sheet = cssparser.parse();
@@ -68,7 +70,7 @@ public class AnalyzerTest {
 		walker.setCurrentNode(current);
 	}	
 	
-	@Test 
+	@Test
 	public void evaluateSimple() {
 		
 		Map<Element, NodeData> decl =
@@ -79,6 +81,10 @@ public class AnalyzerTest {
 		NodeData data = decl.get(current);
 		
 		assertEquals("<body> nodedata contains color", NodeData.Color.color, data.getProperty(NodeData.Color.class, "color"));
+		assertEquals("color declaration contains red color", 
+					new java.awt.Color(255,0,0), 
+					data.getValue(TermColor.class, "color").getValue());
+		
 		
 		walker.setCurrentNode(current);
 	}

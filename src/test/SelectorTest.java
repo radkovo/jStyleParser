@@ -20,7 +20,7 @@ import cz.vutbr.web.csskit.TermIdentImpl;
 import cz.vutbr.web.csskit.TermNumberImpl;
 import cz.vutbr.web.csskit.TermPercentImpl;
 import cz.vutbr.web.csskit.TermStringImpl;
-import cz.vutbr.web.csskit.parser.CssParser;
+import cz.vutbr.web.csskit.parser.CSSParser;
 
 public class SelectorTest {
 
@@ -61,9 +61,12 @@ public class SelectorTest {
 	public static final String TEST_IDATTRIB =
 		"#krysa[id='krysa'] { text-align: right}";
 	
+	public static final String TEST_ATTRIB_PRESENCE = 
+		"*[href] { text-decoration: underline}";
+	
 	@Test
 	public void testMultiple() throws StyleSheetNotValidException {
-		StyleSheet ss = (new CssParser(TEST_MULTIPLE)).parse();
+		StyleSheet ss = (new CSSParser(TEST_MULTIPLE)).parse();
 		
 		List<Rule> rules = ss.getRules();
 		assertEquals("One rule is set", 1, rules.size());
@@ -84,7 +87,7 @@ public class SelectorTest {
 	@Test
 	public void testDescendant() throws StyleSheetNotValidException {
 		
-		StyleSheet ss = (new CssParser(TEST_DESCENDANT)).parse();
+		StyleSheet ss = (new CSSParser(TEST_DESCENDANT)).parse();
 		
 		List<Rule> rules = ss.getRules();
 		assertEquals("One rule is set", 1, rules.size());
@@ -106,7 +109,7 @@ public class SelectorTest {
 	
 	@Test
 	public void testAdjacent() throws StyleSheetNotValidException {
-		StyleSheet ss = (new CssParser(TEST_ADJACENT)).parse();
+		StyleSheet ss = (new CSSParser(TEST_ADJACENT)).parse();
 		
 		List<Rule> rules = ss.getRules();
 		assertEquals("One rule is set", 1, rules.size());
@@ -129,7 +132,7 @@ public class SelectorTest {
 	
 	@Test
 	public void testChild() throws StyleSheetNotValidException {
-		StyleSheet ss = (new CssParser(TEST_CHILD)).parse();
+		StyleSheet ss = (new CSSParser(TEST_CHILD)).parse();
 		
 		List<Rule> rules = ss.getRules();
 		assertEquals("One rule is set", 1, rules.size());
@@ -158,7 +161,7 @@ public class SelectorTest {
 	
 	@Test
 	public void testClass() throws StyleSheetNotValidException {
-		StyleSheet ss = (new CssParser(TEST_CLASS)).parse();
+		StyleSheet ss = (new CSSParser(TEST_CLASS)).parse();
 		
 		List<Rule> rules = ss.getRules();
 		assertEquals("One rule is set", 1, rules.size());
@@ -180,7 +183,7 @@ public class SelectorTest {
 	
 	@Test
 	public void testID() throws StyleSheetNotValidException {
-		StyleSheet ss = (new CssParser(TEST_ID)).parse();
+		StyleSheet ss = (new CSSParser(TEST_ID)).parse();
 		
 		List<Rule> rules = ss.getRules();
 		assertEquals("One rule is set", 1, rules.size());
@@ -202,7 +205,7 @@ public class SelectorTest {
 	
 	@Test
 	public void testIDAttrib() throws StyleSheetNotValidException {
-		StyleSheet ss = (new CssParser(TEST_IDATTRIB)).parse();
+		StyleSheet ss = (new CSSParser(TEST_IDATTRIB)).parse();
 		
 		List<Rule> rules = ss.getRules();
 		assertEquals("One rule is set", 1, rules.size());
@@ -213,7 +216,7 @@ public class SelectorTest {
 		List<Selector> sels = SelectorsUtil.appendSelector(null); 
 		SelectorsUtil.appendSimpleSelector(sels, null, null,
 				new SimpleSelectorImpl.ItemIDImpl("krysa"),
-				new SimpleSelectorImpl.ItemAttributeImpl("krysa", false, 
+				new SimpleSelectorImpl.ItemAttributeImpl("krysa", true, 
 						SimpleSelector.Operator.EQUALS, "id"));
 		
 		assertEquals("Rule contains one ID selector #krysa[id='krysa']",
@@ -228,7 +231,7 @@ public class SelectorTest {
 	
 	@Test
 	public void testAttribute() throws StyleSheetNotValidException {
-		StyleSheet ss = (new CssParser(TEST_ATTRIB)).parse();
+		StyleSheet ss = (new CSSParser(TEST_ATTRIB)).parse();
 		
 		
 		List<Rule> rules = ss.getRules();
@@ -238,8 +241,8 @@ public class SelectorTest {
 		
 		List<Selector> sels = SelectorsUtil.appendSelector(null); 
 		SelectorsUtil.appendSimpleSelector(sels, "A", null,
-				new SimpleSelectorImpl.ItemAttributeImpl("fit.vutbr.cz", false, SimpleSelector.Operator.EQUALS, "href"),
-				new SimpleSelectorImpl.ItemAttributeImpl("fit", true, SimpleSelector.Operator.DASHMATCH, "id"));
+				new SimpleSelectorImpl.ItemAttributeImpl("fit.vutbr.cz", true, SimpleSelector.Operator.EQUALS, "href"),
+				new SimpleSelectorImpl.ItemAttributeImpl("fit", false, SimpleSelector.Operator.DASHMATCH, "id"));
 		
 		assertEquals("Rule contains one ID attributed selector A[href='fit.vutbr.cz'][id|=fit]",
 				sels, rule.getSelectors());
@@ -252,7 +255,7 @@ public class SelectorTest {
 	
 	@Test
 	public void testPseudo() throws StyleSheetNotValidException {
-		StyleSheet ss = (new CssParser(TEST_PSEUDO)).parse();
+		StyleSheet ss = (new CSSParser(TEST_PSEUDO)).parse();
 		
 		
 		List<Rule> rules = ss.getRules();
@@ -275,7 +278,7 @@ public class SelectorTest {
 	
 	@Test
 	public void testPseudoFunc() throws StyleSheetNotValidException {
-		StyleSheet ss = (new CssParser(TEST_PSEUDO_FUNC)).parse();
+		StyleSheet ss = (new CSSParser(TEST_PSEUDO_FUNC)).parse();
 		
 		
 		List<Rule> rules = ss.getRules();
@@ -303,7 +306,7 @@ public class SelectorTest {
 	
 	@Test
 	public void testPSpecial() throws StyleSheetNotValidException {
-		StyleSheet ss = (new CssParser(TEST_PSPECIAL)).parse();
+		StyleSheet ss = (new CSSParser(TEST_PSPECIAL)).parse();
 		
 		
 		List<Rule> rules = ss.getRules();
@@ -341,7 +344,7 @@ public class SelectorTest {
 	
 	@Test
 	public void testAsterisk() throws StyleSheetNotValidException {
-		StyleSheet ss = (new CssParser(TEST_ASTERISK)).parse();
+		StyleSheet ss = (new CSSParser(TEST_ASTERISK)).parse();
 		
 		
 		List<Rule> rules = ss.getRules();
@@ -368,7 +371,7 @@ public class SelectorTest {
 	@Test
 	public void testElementName() throws StyleSheetNotValidException {
 		
-		StyleSheet ss = (new CssParser(TEST_MULTIPLE)).parse();
+		StyleSheet ss = (new CSSParser(TEST_MULTIPLE)).parse();
 		
 		List<Rule> rules = ss.getRules();
 		assertEquals("One rule is set", 1, rules.size());
@@ -396,5 +399,34 @@ public class SelectorTest {
 		
 		assertEquals("Selector contains element name", "DIV", list.get(0).getElementName());
 	}
+	
+	@Test
+	public void testAttributePresence() throws StyleSheetNotValidException {
+		
+		StyleSheet ss = (new CSSParser(TEST_ATTRIB_PRESENCE)).parse();
+		
+		List<Rule> rules = ss.getRules();
+		assertEquals("One rule is set", 1, rules.size());
+		
+		List<Selector> sels = SelectorsUtil.appendSelector(null);
+		SelectorsUtil.appendSimpleSelector(sels, "*", null, 
+				new SimpleSelectorImpl.ItemAttributeImpl(
+						null, false, SimpleSelector.Operator.NO_OPERATOR, "href"));				
+		
+		assertEquals("Rule 1 contains one combined selector *[href]",
+				sels, ((RuleSet) rules.get(0)).getSelectors());
+
+		List<Term> terms = DeclarationsUtil.appendTerm(null, null, 
+				new TermIdentImpl("Verdana"));
+		DeclarationsUtil.appendCommaTerm(terms, 
+				new TermIdentImpl("monospace"));
+		
+		assertEquals("Rule contains one declaration { text-decoration: underline }",
+		DeclarationsUtil.appendDeclaration(null, "text-decoration", 
+				new TermIdentImpl("underline")),
+				((RuleSet) rules.get(0)).getDeclarations());		
+		
+	}
+	
 	
 }

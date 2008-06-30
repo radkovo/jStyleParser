@@ -96,7 +96,8 @@ public class Analyzer {
 			// get inheritance level
 			// this should never rise NullPointerException
 			List<Declaration> decl = declarations.get(e);
-			int level = decl.get(decl.size()-1).getInheritanceLevel();
+			int level = (decl.size()>=1) ?
+					decl.get(decl.size()-1).getInheritanceLevel() : 0;
 			
 			for(Declaration d: decl)
 				data.push(d, level, inherit);		

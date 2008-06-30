@@ -1,33 +1,115 @@
 package cz.vutbr.web.domassign;
 
-import java.util.Collections;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Random;
+
+import org.apache.log4j.Logger;
 
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.Term;
-import cz.vutbr.web.css.NodeData.*;
+import cz.vutbr.web.css.TermColor;
+import cz.vutbr.web.css.TermIdent;
+import cz.vutbr.web.css.NodeData.Azimuth;
+import cz.vutbr.web.css.NodeData.BackgroundAttachment;
+import cz.vutbr.web.css.NodeData.BackgroundColor;
+import cz.vutbr.web.css.NodeData.BackgroundImage;
+import cz.vutbr.web.css.NodeData.BackgroundRepeat;
+import cz.vutbr.web.css.NodeData.BorderCollapse;
+import cz.vutbr.web.css.NodeData.BorderSpacing;
+import cz.vutbr.web.css.NodeData.BorderStyle;
+import cz.vutbr.web.css.NodeData.BorderWidth;
+import cz.vutbr.web.css.NodeData.Bottom;
+import cz.vutbr.web.css.NodeData.CSSProperty;
+import cz.vutbr.web.css.NodeData.CaptionSide;
+import cz.vutbr.web.css.NodeData.Clear;
+import cz.vutbr.web.css.NodeData.Clip;
+import cz.vutbr.web.css.NodeData.Color;
+import cz.vutbr.web.css.NodeData.Content;
+import cz.vutbr.web.css.NodeData.CounterIncrement;
+import cz.vutbr.web.css.NodeData.CounterReset;
+import cz.vutbr.web.css.NodeData.CueAfter;
+import cz.vutbr.web.css.NodeData.CueBefore;
+import cz.vutbr.web.css.NodeData.Cursor;
+import cz.vutbr.web.css.NodeData.Direction;
+import cz.vutbr.web.css.NodeData.Display;
+import cz.vutbr.web.css.NodeData.Elevation;
+import cz.vutbr.web.css.NodeData.EmptyCells;
+import cz.vutbr.web.css.NodeData.FontSize;
+import cz.vutbr.web.css.NodeData.FontStyle;
+import cz.vutbr.web.css.NodeData.FontVariant;
+import cz.vutbr.web.css.NodeData.FontWeight;
+import cz.vutbr.web.css.NodeData.Left;
+import cz.vutbr.web.css.NodeData.LetterSpacing;
+import cz.vutbr.web.css.NodeData.ListStyleImage;
+import cz.vutbr.web.css.NodeData.ListStylePosition;
+import cz.vutbr.web.css.NodeData.ListStyleType;
+import cz.vutbr.web.css.NodeData.MarginWidth;
+import cz.vutbr.web.css.NodeData.MaxHeight;
+import cz.vutbr.web.css.NodeData.MaxWidth;
+import cz.vutbr.web.css.NodeData.MinHeight;
+import cz.vutbr.web.css.NodeData.MinWidth;
+import cz.vutbr.web.css.NodeData.Orphans;
+import cz.vutbr.web.css.NodeData.OutlineColor;
+import cz.vutbr.web.css.NodeData.OutlineStyle;
+import cz.vutbr.web.css.NodeData.OutlineWidth;
+import cz.vutbr.web.css.NodeData.Overflow;
+import cz.vutbr.web.css.NodeData.PaddingWidth;
+import cz.vutbr.web.css.NodeData.PageBreak;
+import cz.vutbr.web.css.NodeData.PageBreakAfter;
+import cz.vutbr.web.css.NodeData.PageBreakBefore;
+import cz.vutbr.web.css.NodeData.PageBreakInside;
+import cz.vutbr.web.css.NodeData.PauseBefore;
+import cz.vutbr.web.css.NodeData.Pitch;
+import cz.vutbr.web.css.NodeData.PitchRange;
+import cz.vutbr.web.css.NodeData.PlayDuring;
+import cz.vutbr.web.css.NodeData.Position;
+import cz.vutbr.web.css.NodeData.Quotes;
+import cz.vutbr.web.css.NodeData.Richness;
+import cz.vutbr.web.css.NodeData.Right;
+import cz.vutbr.web.css.NodeData.Speak;
+import cz.vutbr.web.css.NodeData.SpeakHeader;
+import cz.vutbr.web.css.NodeData.SpeakNumeral;
+import cz.vutbr.web.css.NodeData.SpeakPunctuation;
+import cz.vutbr.web.css.NodeData.SpeechRate;
+import cz.vutbr.web.css.NodeData.Stress;
+import cz.vutbr.web.css.NodeData.TableLayout;
+import cz.vutbr.web.css.NodeData.TextDecoration;
+import cz.vutbr.web.css.NodeData.TextIndent;
+import cz.vutbr.web.css.NodeData.TextTransform;
+import cz.vutbr.web.css.NodeData.Top;
+import cz.vutbr.web.css.NodeData.UnicodeBidi;
+import cz.vutbr.web.css.NodeData.VerticalAlign;
+import cz.vutbr.web.css.NodeData.Visibility;
+import cz.vutbr.web.css.NodeData.Volume;
+import cz.vutbr.web.css.NodeData.WhiteSpace;
+import cz.vutbr.web.css.NodeData.Widows;
+import cz.vutbr.web.css.NodeData.Width;
+import cz.vutbr.web.css.NodeData.WordSpacing;
+import cz.vutbr.web.css.NodeData.ZIndex;
 
 public class DeclarationTransformer {
 
+	private static Logger log = Logger.getLogger(DeclarationTransformer.class);
+	
+	public static final int TOTAL_SUPPORTED_DECLARATIONS = 117; 
 	
 	private static final CSSProperty INHERITABLE_PROPERTY = 
 		new CSSProperty() {
-			public boolean isInheritable() {return true;}
+			public boolean inherited() {return true;}
 		};
 		
 	private static final CSSProperty NOT_INHERITABLE_PROPERTY = 
 		new CSSProperty() {
-			public boolean isInheritable() {return false;}
+			public boolean inherited() {return false;}
 		};	
 	
-	private static final CSSProperty MULTIVALUE_PROPERY = 
+	private static final CSSProperty MULTIVALUE_PROPERTY = 
 		new CSSProperty() {
-			public boolean isInheritable() {return false;}
+			public boolean inherited() {return false;}
 		};
 	
 	/**
@@ -36,241 +118,360 @@ public class DeclarationTransformer {
 	 * <a href="http://www.culturedcode.com/css/reference.html">
 	 * http://www.culturedcode.com/css/reference.html</a>
 	 */	
-	private static final Map<String, CSSProperty> supportedCSS;
+	private Map<String, CSSProperty> supportedCSS;
 	
-	static {
-		supportedCSS = new HashMap<String, CSSProperty>();
+	private Map<String, Method> methods;	
+	
+	private static DeclarationTransformer instance;
+	
+	
+	public static DeclarationTransformer getInstance() {
+		if(instance==null)
+			instance = new DeclarationTransformer();
 		
-		// text type		
-		supportedCSS.put("color", INHERITABLE_PROPERTY);
-		supportedCSS.put("font", MULTIVALUE_PROPERY);
-		supportedCSS.put("font-family", INHERITABLE_PROPERTY);
-		supportedCSS.put("font-size", FontSize.medium);
-		supportedCSS.put("font-style", FontStyle.normal);
-		supportedCSS.put("font-variant", FontVariant.normal);
-		supportedCSS.put("font-weight", FontWeight.normal);
-		supportedCSS.put("text-decoration", TextDecoration.none);
-		supportedCSS.put("text-transform", TextTransform.none);
-		
-		// text spacing
-		supportedCSS.put("white-space", WhiteSpace.normal);
-		supportedCSS.put("text-align", INHERITABLE_PROPERTY);
-		supportedCSS.put("text-indent", TextIndent.length); // zero
-		supportedCSS.put("line-height", INHERITABLE_PROPERTY);
-		supportedCSS.put("word-spacing", WordSpacing.normal);
-		supportedCSS.put("letter-spacing", LetterSpacing.normal);
-		supportedCSS.put("vertical-align", VerticalAlign.baseline);
-		supportedCSS.put("direction", Direction.ltr);
-		supportedCSS.put("unicode-bidi", UnicodeBidi.normal);
-		
-		// layout box
-		supportedCSS.put("margin", MULTIVALUE_PROPERY);
-		supportedCSS.put("margin-top", MarginWidth.lenght);
-		supportedCSS.put("margin-right", MarginWidth.lenght);
-		supportedCSS.put("margin-bottom", MarginWidth.lenght);
-		supportedCSS.put("margin-left", MarginWidth.lenght);
-		supportedCSS.put("padding", MULTIVALUE_PROPERY);
-		supportedCSS.put("padding-top", PaddingWidth.length);
-		supportedCSS.put("padding-right", PaddingWidth.length);
-		supportedCSS.put("padding-bottom", PaddingWidth.length);
-		supportedCSS.put("padding-left", PaddingWidth.length);
-		supportedCSS.put("border", MULTIVALUE_PROPERY);
-		supportedCSS.put("border-width", BorderWidth.medium);
-		supportedCSS.put("border-top-width", BorderWidth.medium);
-		supportedCSS.put("border-right-width", BorderWidth.medium);
-		supportedCSS.put("border-bottom-width", BorderWidth.medium);
-		supportedCSS.put("border-left-width", BorderWidth.medium);
-		supportedCSS.put("border-style", BorderStyle.none);
-		supportedCSS.put("border-top-style", BorderStyle.none);
-		supportedCSS.put("border-right-style", BorderStyle.none);
-		supportedCSS.put("border-bottom-style", BorderStyle.none);
-		supportedCSS.put("border-left-style", BorderStyle.none);
-		// default color is taken form color property
-		supportedCSS.put("border-color", NOT_INHERITABLE_PROPERTY);
-		supportedCSS.put("border-top-color", NOT_INHERITABLE_PROPERTY);
-		supportedCSS.put("border-right-color", NOT_INHERITABLE_PROPERTY);
-		supportedCSS.put("border-bottom-color", NOT_INHERITABLE_PROPERTY);
-		supportedCSS.put("border-left-color", NOT_INHERITABLE_PROPERTY);
-		supportedCSS.put("width", Width.auto);
-		supportedCSS.put("min-width", MinWidth.lenght);
-		supportedCSS.put("max-width", MaxWidth.none);
-		supportedCSS.put("height", Width.auto);
-		supportedCSS.put("min-height", MinHeight.lenght);
-		supportedCSS.put("max-height", MaxHeight.none);
-		supportedCSS.put("overflow", Overflow.visible);
-		supportedCSS.put("clip", Clip.auto);
-		
-		// positioning
-		supportedCSS.put("display", Display.inline);
-		supportedCSS.put("position", Position.prefix_static);
-		supportedCSS.put("top", Top.auto);
-		supportedCSS.put("right", Right.auto);
-		supportedCSS.put("bottom", Bottom.auto);
-		supportedCSS.put("left", Left.auto);
-		supportedCSS.put("float", NodeData.Float.none);
-		supportedCSS.put("clear", Clear.none);
-		supportedCSS.put("z-index", ZIndex.auto);
-		supportedCSS.put("visibility", Visibility.visible);
-		
-		// background
-		supportedCSS.put("background", MULTIVALUE_PROPERY);
-		supportedCSS.put("background-attachement", BackgroundAttachment.scroll);
-		supportedCSS.put("background-color", BackgroundColor.transparent);
-		supportedCSS.put("background-image", BackgroundImage.none);
-		supportedCSS.put("background-position", MULTIVALUE_PROPERY);
-		supportedCSS.put("background-repeat", BackgroundRepeat.repeat);
-		
-		// elements
+		return instance;
 	}
-		
 	
+	public static final String camelCase(String string) { 
+		
+		StringBuilder sb = new StringBuilder();
+		
+		boolean upperFlag = false; 
+		
+		for(int i=0; i< string.length(); i++) {
+			char ch = string.charAt(i);
+			if(ch=='-') 
+				upperFlag = true;
+			else if(upperFlag && Character.isLetter(ch)) {
+				sb.append(Character.toUpperCase(ch));
+				upperFlag = false;
+			}
+			else if(!upperFlag && Character.isLetter(ch))
+				sb.append(ch);
+			else if(ch=='_') // vendor extension
+				sb.append(ch);
+		}
+		return sb.toString();
+	}
 	
 
-	public static boolean parseDeclaration(Declaration d, 
-			List<CSSProperty> properties, List<Term> values) {
+	/**
+	 * Test function. Returns random supported CSS property
+	 * @return Default value of randomly chosen supported CSS property
+	 */
+	public CSSProperty randomValue() {
+		
+		Random generator = new Random();
+		
+		int i = generator.nextInt(supportedCSS.size());
+		for(CSSProperty prop: supportedCSS.values()) {
+			if(i==0) return prop;
+			i--;
+		}
+		// should never reach this statement
+		return null;
+	}
+	
+	
+	public boolean parseDeclaration(Declaration d, 
+			Map<String,CSSProperty> properties, Map<String,Term> values) {
 		
 		String propertyName = d.getProperty().toLowerCase();
 		
 		CSSProperty defaultValue = supportedCSS.get(propertyName);
 		
+		// no such declaration is supported
 		if(defaultValue==null)
 			return false;
 		
+		try {
+			Method m = methods.get(propertyName);
+			if(m!=null) 
+				return (Boolean) m.invoke(this, d, properties, values);
+		}
+		catch(IllegalArgumentException e) {
+			log.warn("Illegal argument: " + e);
+		}
+		catch(IllegalAccessException e) {
+			log.warn("Illegal access: " + e);
+		}
+		catch(InvocationTargetException e) {
+			log.warn("Invocation target: " + e);
+		}
 		
+		return false;
 	}
     
-    public void putDeclaration(Declaration d) {
-        try {
-            Method m = cache.get(d.getProperty());
-            if(m == null) {
-                synchronized (cache) {
-                    m = this.getClass().getDeclaredMethod(methodName(d.getProperty()), new Class [] { Declaration.class });
-                    if(m != null) {
-                       cache.put(d.getProperty(), m);
-                    }
-                }
-            }
-            
-            Boolean status = (Boolean)m.invoke(this, new Object [] { d });
-            if(status.booleanValue()) {
-                if(getPassed().length() != 0) {
-                    passed += " ";
-                }
-                passed += d.toString(0).trim();
-            }
-            else {
-                if(getIgnored().length() != 0) {
-                    ignored += " ";
-                }
-                ignored += d.toString(0).trim();
-            }
-        }
+	/**
+	 * Sole constructor
+	 */
+	private DeclarationTransformer() {
+		this.supportedCSS = supportedCSS();
+		this.methods = parsingMethods();		
+	}
+	
+	private Map<String, CSSProperty> supportedCSS() {
+		
+		Map<String, CSSProperty> map = 
+			new HashMap<String, CSSProperty>(TOTAL_SUPPORTED_DECLARATIONS, 1.0f);
+		
+		// text type		
+		map.put("color", INHERITABLE_PROPERTY);
+		map.put("font", MULTIVALUE_PROPERTY);
+		map.put("font-family", INHERITABLE_PROPERTY);
+		map.put("font-size", FontSize.MEDIUM);
+		map.put("font-style", FontStyle.NORMAL);
+		map.put("font-variant", FontVariant.NORMAL);
+		map.put("font-weight", FontWeight.NORMAL);
+		map.put("text-decoration", TextDecoration.NONE);
+		map.put("text-transform", TextTransform.NONE);
 
-        catch (NoSuchMethodException e) {
-            if(getUnsupported().length() != 0) {
-                unsupported += " ";
-            }
-            unsupported += d.toString(0).trim();
-        }        
-	catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
+		// text spacing
+		map.put("white-space", WhiteSpace.NORMAL);
+		map.put("text-align", INHERITABLE_PROPERTY);
+		map.put("text-indent", TextIndent.length); // 0
+		map.put("line-height", INHERITABLE_PROPERTY);
+		map.put("word-spacing", WordSpacing.NORMAL);
+		map.put("letter-spacing", LetterSpacing.NORMAL);
+		map.put("vertical-align", VerticalAlign.baseline);
+		map.put("direction", Direction.ltr);
+		map.put("unicode-bidi", UnicodeBidi.NORMAL);
+
+		// layout box
+		map.put("margin", MULTIVALUE_PROPERTY);
+		map.put("margin-top", MarginWidth.lenght);		// 0
+		map.put("margin-right", MarginWidth.lenght);	// 0
+		map.put("margin-bottom", MarginWidth.lenght);	// 0
+		map.put("margin-left", MarginWidth.lenght);	// 0	
+		map.put("padding", MULTIVALUE_PROPERTY);		
+		map.put("padding-top", PaddingWidth.length);	// 0
+		map.put("padding-right", PaddingWidth.length);	// 0
+		map.put("padding-bottom", PaddingWidth.length);// 0
+		map.put("padding-left", PaddingWidth.length);	// 0
+		map.put("border", MULTIVALUE_PROPERTY);
+		map.put("border-width", BorderWidth.MEDIUM);
+		map.put("border-top-width", BorderWidth.MEDIUM);
+		map.put("border-right-width", BorderWidth.MEDIUM);
+		map.put("border-bottom-width", BorderWidth.MEDIUM);
+		map.put("border-left-width", BorderWidth.MEDIUM);
+		map.put("border-style", BorderStyle.NONE);
+		map.put("border-top-style", BorderStyle.NONE);
+		map.put("border-right-style", BorderStyle.NONE);
+		map.put("border-bottom-style", BorderStyle.NONE);
+		map.put("border-left-style", BorderStyle.NONE);
+		// default color is taken form color property
+		map.put("border-color", NOT_INHERITABLE_PROPERTY);
+		map.put("border-top-color", NOT_INHERITABLE_PROPERTY);
+		map.put("border-right-color", NOT_INHERITABLE_PROPERTY);
+		map.put("border-bottom-color", NOT_INHERITABLE_PROPERTY);
+		map.put("border-left-color", NOT_INHERITABLE_PROPERTY);
+		map.put("width", Width.AUTO);
+		map.put("min-width", MinWidth.lenght);		// 0
+		map.put("max-width", MaxWidth.NONE);
+		map.put("height", Width.AUTO);
+		map.put("min-height", MinHeight.lenght);	// 0
+		map.put("max-height", MaxHeight.NONE);
+		map.put("overflow", Overflow.visible);
+		map.put("clip", Clip.AUTO);
+
+		// positioning
+		map.put("display", Display.inline);
+		map.put("position", Position.STATIC);
+		map.put("top", Top.AUTO);
+		map.put("right", Right.AUTO);
+		map.put("bottom", Bottom.AUTO);
+		map.put("left", Left.AUTO);
+		map.put("float", NodeData.Float.NONE);
+		map.put("clear", Clear.NONE);
+		map.put("z-index", ZIndex.AUTO);
+		map.put("visibility", Visibility.visible);
+
+		// background
+		map.put("background", MULTIVALUE_PROPERTY);
+		map.put("background-attachement", BackgroundAttachment.scroll);
+		map.put("background-color", BackgroundColor.transparent);
+		map.put("background-image", BackgroundImage.NONE);
+		map.put("background-position", MULTIVALUE_PROPERTY);
+		map.put("background-repeat", BackgroundRepeat.repeat);
+
+		// elements
+		map.put("list-style", MULTIVALUE_PROPERTY);
+		map.put("list-style-type", ListStyleType.disc);
+		map.put("list-style-position", ListStylePosition.outside);
+		map.put("list-style-image", ListStyleImage.NONE);
+
+		map.put("border-collapse", BorderCollapse.separate);
+		map.put("border-spacing", BorderSpacing.length);	// 0
+		map.put("empty-cells", EmptyCells.show);
+		map.put("table-layout", TableLayout.AUTO);
+		map.put("caption-side", CaptionSide.top);
+		// other supported by tables (width, vertical-align)
+		// are already defined 
+		map.put("content", Content.NORMAL);
+		map.put("quotes", Quotes.NONE);
+		map.put("counter-increment", CounterIncrement.NONE);
+		map.put("counter-reset", CounterReset.NONE);
+
+		// miscellaneous
+
+		map.put("cursor", Cursor.AUTO);
+		map.put("outline", MULTIVALUE_PROPERTY);
+		map.put("outline-width", OutlineWidth.MEDIUM);
+		map.put("outline-style", OutlineStyle.NONE);
+		map.put("outline-color", OutlineColor.invert);
+
+		map.put("page-break", PageBreak.AUTO);
+		map.put("page-break-before", PageBreakBefore.AUTO);
+		map.put("page-break-after", PageBreakAfter.AUTO);
+		map.put("page-break-inside", PageBreakInside.AUTO);
+
+		map.put("widows", Widows.integer);		// 2
+		map.put("orphans", Orphans.integer);	// 2
+
+		// other values according to
+		// http://www.w3.org/TR/CSS21/propidx.html
+
+		map.put("azimuth", Azimuth.center);
+		map.put("border-top", MULTIVALUE_PROPERTY);
+		map.put("border-right", MULTIVALUE_PROPERTY);
+		map.put("border-bottom", MULTIVALUE_PROPERTY);
+		map.put("border-left", MULTIVALUE_PROPERTY);
+
+		map.put("cue", MULTIVALUE_PROPERTY);
+		map.put("cue-before", CueBefore.NONE);
+		map.put("cue-after", CueAfter.NONE);
+		map.put("elevation", Elevation.level);
+		map.put("pause", MULTIVALUE_PROPERTY);
+		map.put("pause-before", PauseBefore.time); // 0 
+		map.put("pause-after", PauseBefore.time);  // 0
+		map.put("pitch-range", PitchRange.number); // 50
+		map.put("pitch", Pitch.MEDIUM);
+		map.put("play-during", PlayDuring.AUTO);
+		map.put("richness", Richness.number);		// 50
+		map.put("speak-header", SpeakHeader.once);
+		map.put("speak-numeral", SpeakNumeral.continuous);
+		map.put("speak-punctuation", SpeakPunctuation.NONE);
+		map.put("speak", Speak.NORMAL);
+		map.put("speech-rate", SpeechRate.MEDIUM);
+		map.put("stress", Stress.number);			// 50
+		map.put("voice-family", INHERITABLE_PROPERTY);
+		map.put("volume", Volume.MEDIUM);
+
+		if(log.isInfoEnabled()) {
+			log.info("Total supported properties: " + map.size());
+		}
+
+		return map;
+	}
+	
+	private <T extends Enum<T> & CSSProperty> boolean parseProperty(
+				Class<T> enumType, 
+				TermIdent term, 
+				Map<String, CSSProperty> properties,
+				String property) {
+		
+		// try to find enum with given value and if so
+		// insert it inside
+		try {
+			final String name = term.getValue().replace("-", "_").toUpperCase();
+			properties.put(property, Enum.valueOf(enumType, name));
+			return true;
+		}
+		catch (IllegalArgumentException e) {
+			// no such enum value
+		}
+		catch (NullPointerException e) {
+			log.warn("TermIdent contained empty value!");
+		}
+		
+		return false;
+		
+	}
+		
+	
+	private Map<String, Method> parsingMethods() {
+		
+		Map<String, Method> map = 
+			new HashMap<String, Method>(TOTAL_SUPPORTED_DECLARATIONS, 1.0f);
+		
+		for(String key: supportedCSS.keySet()) {
+			try {
+				Method m = DeclarationTransformer.class.getDeclaredMethod(
+						DeclarationTransformer.camelCase("process-" + key), 
+						new Class[] {	Declaration.class, 
+							Map.class, Map.class});
+				map.put(key, m);
+			}
+			catch(Exception e) {
+				log.warn("Unable to find method for property: " + key);
+			}
+		}
+		if(log.isInfoEnabled()) {
+			log.info("Total methods found: " + map.size());
+		}
+		return map;
+	}
+	
+	// =============================================================
+	// processing methods
+	
+	@SuppressWarnings("unused")
+	private boolean processColor(Declaration d, 
+			Map<String,CSSProperty> properties, Map<String,Term> values) {
+		
+		if(d.getTerms().size()!=1) return false;
+		
+		final Term term = d.getTerms().get(0);
+		
+		if(term instanceof TermIdent) {
+			return parseProperty(Color.class, (TermIdent) term, 
+					properties, d.getProperty());
+		}
+		else if(term instanceof TermColor) {
+			properties.put(d.getProperty(), Color.color);
+			values.put(d.getProperty(), term);
+			return true;
+		}
+		
+		return false;
+		
     }
-    */
+	
+    @SuppressWarnings("unused")	
+    private boolean processBackgroundAttachment(Declaration d,
+    		Map<String,CSSProperty> properties, Map<String,Term> values) {
+    	
+    	if(d.getTerms().size()!=1) return false;
+    	
+    	final Term term = d.getTerms().get(0);
+    	if(term instanceof TermIdent) {
+    		return parseProperty(BackgroundAttachment.class, (TermIdent) term, 
+					properties, d.getProperty());
+    	}
+    	return false; 
+    }
     
-    /**
-     * Funkce převede název vlastnosti na název funkce, která bude volána. Název
-     * funkce začíná slovem "process" a následuje názvem vlastnosti bez pomlček
-     * (pomlčky v názvu vlastnosti jsou nahrazeny velkým následujícím písemenem v
-     * názvu funkce)
-     * @param property název
-     * @return název funkce
-     */
+    @SuppressWarnings("unused")
+    private Boolean processBackgroundColor(Declaration d,
+    		Map<String,CSSProperty> properties, Map<String,Term> values) {
+    	
+    	if(d.getTerms().size()!=1) return false;
+		
+		final Term term = d.getTerms().get(0);
+		
+		if(term instanceof TermIdent) {
+			return parseProperty(BackgroundColor.class, (TermIdent) term, 
+					properties, d.getProperty());
+		}
+		else if(term instanceof TermColor) {
+			properties.put(d.getProperty(), BackgroundColor.color);
+			values.put(d.getProperty(), term);
+			return true;
+		}		
+		return false;    	
+    }
+    
 	/*
-    private String methodName(String property) {
-        byte[] b = property.getBytes();
-        StringBuffer out = new StringBuffer("process");
-        boolean upper = true;
-        for(byte chr : b) {
-            if((chr > 96 && chr < 123) || (chr > 64 && chr < 91)) {  //if(tmp.matches("[a-zA-Z]"))
-                if(upper) {
-                    if(chr > 96) { //toUpperCase()
-                        chr -= 32;
-                    }
-                    out.append((char)chr);
-                    upper = false;
-                } else {
-                    if(chr < 91) { //toLowerCase()
-                        chr += 32;
-                    }
-                    out.append((char)chr);
-                }
-            } else if(chr == 45) { //equals("-")
-                upper = true;
-            }
-            else {
-                //Nepodporovaný znak (pokus o IE-like vlastnost např. _margin-top)
-                out.append("Underscore");
-            }
-        }
-        return out.toString();
-    }
-    */
-    /*
-    private Boolean processBackgroundAttachment(Declaration d) {
-        //Zpracování vlastnosti background-attachment. Přípustné hodnoty jsou pouze 
-        //scroll, fixed a inherit. Výchozí hodnota je scroll
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("scroll")) {
-                    backgroundAttachmentType = EnumBackgroundAttachment.scroll;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("fixed")) {
-                    backgroundAttachmentType = EnumBackgroundAttachment.fixed;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    backgroundAttachmentType = EnumBackgroundAttachment.inherit;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
-    }
-    
-    private Boolean processBackgroundColor(Declaration d) {
-        //Zpracování vlastnosti background-color. Přípustné hodnoty jsou pouze 
-        //<barva>, transparent a inherit. Výchozí hodnota je transparent
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermColor) {
-                TermColor color = (TermColor)d.getTerms().get(0);
-                backgroundColorValue = color;
-                backgroundColorType = EnumColorTransparent.color;
-                return new Boolean(true);
-                
-            }
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("transparent")) {
-                    backgroundColorType = EnumColorTransparent.transparent;
-                    backgroundColorValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    backgroundColorType = EnumColorTransparent.inherit;
-                    backgroundColorValue = null;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
-    }
-    
     private Boolean processBackgroundImage(Declaration d) {
         //Zpracování vlastnosti background-image. Přípustné hodnoty jsou pouze 
         //<uri>, none a inherit. Výchozí hodnota je none
@@ -4944,5 +5145,5 @@ public class DeclarationTransformer {
             return false;
         }
     }
-	
+	*/
 }

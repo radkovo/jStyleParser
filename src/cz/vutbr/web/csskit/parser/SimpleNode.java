@@ -4,14 +4,14 @@ public class SimpleNode implements Node {
   protected Node parent;
   protected Node[] children;
   protected int id;
-  protected CssParser parser;
+  protected CSSParser parser;
   private String image = null;
 
   public SimpleNode(int i) {
     id = i;
   }
 
-  public SimpleNode(CssParser p, int i) {
+  public SimpleNode(CSSParser p, int i) {
     this(i);
     parser = p;
   }
@@ -44,7 +44,7 @@ public class SimpleNode implements Node {
     return (children == null) ? 0 : children.length;
   }
 
-  public String toString() { return CssParserTreeConstants.jjtNodeName[id] + (image == null ? "" : " " + image); }
+  public String toString() { return CSSParserTreeConstants.jjtNodeName[id] + (image == null ? "" : " " + image); }
   public String toString(String prefix) { return prefix + toString(); }
 
 
@@ -69,7 +69,7 @@ public class SimpleNode implements Node {
   }
   
   public String getType() {
-      return CssParserTreeConstants.jjtNodeName[id];
+      return CSSParserTreeConstants.jjtNodeName[id];
   }
 
 }
