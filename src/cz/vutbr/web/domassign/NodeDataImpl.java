@@ -13,15 +13,15 @@ public class NodeDataImpl implements NodeData {
 	private static final int COMMON_DECLARATION_SIZE = 7;
 	
 	protected Map<String, CSSProperty> properties;	
-	protected Map<String, Term> values;
-	protected Map<String, List<Term>> listValues;
+	protected Map<String, Term<?>> values;
+	protected Map<String, List<Term<?>>> listValues;
 	
 	protected DeclarationTransformer transformer;
 	
 	public NodeDataImpl() {
 		this.properties = new HashMap<String, CSSProperty>();
-		this.values = new HashMap<String, Term>();
-		this.listValues = new HashMap<String, List<Term>>();
+		this.values = new HashMap<String, Term<?>>();
+		this.listValues = new HashMap<String, List<Term<?>>>();
 		this.transformer = DeclarationTransformer.getInstance();
 	}
 	
@@ -29,12 +29,12 @@ public class NodeDataImpl implements NodeData {
 		return clazz.cast(properties.get(name));
 	}
 	
-	public <T extends Term> T getValue(Class<T> clazz, String name) {
+	public <T extends Term<?>> T getValue(Class<T> clazz, String name) {
 		return clazz.cast(values.get(name));
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T extends Term> List<T> getValues(Class<T> clazz, String name) {
+	public <T extends Term<?>> List<T> getValues(Class<T> clazz, String name) {
 		return (List<T>) listValues.get(name);
 	}
 	
@@ -42,10 +42,10 @@ public class NodeDataImpl implements NodeData {
 		
 		Map<String,CSSProperty> properties = 
 			new HashMap<String,CSSProperty>(COMMON_DECLARATION_SIZE);
-		Map<String,Term> terms = 
-			new HashMap<String, Term>(COMMON_DECLARATION_SIZE);
-		Map<String,List<Term>> listTerms =
-			new HashMap<String, List<Term>>(COMMON_DECLARATION_SIZE);
+		Map<String,Term<?>> terms = 
+			new HashMap<String, Term<?>>(COMMON_DECLARATION_SIZE);
+		Map<String,List<Term<?>>> listTerms =
+			new HashMap<String, List<Term<?>>>(COMMON_DECLARATION_SIZE);
 		
 		boolean result = transformer
 			.parseDeclaration(d, properties, terms, listTerms);
@@ -625,7 +625,7 @@ public class NodeDataImpl implements NodeData {
         }
         if(cursorType != null) {
             out.append("cursor: ");
-            for(TermUri t : cursorUri) {
+            for(TermURI t : cursorUri) {
                 out.append(t.toString().trim());
                 out.append(", ");
             }

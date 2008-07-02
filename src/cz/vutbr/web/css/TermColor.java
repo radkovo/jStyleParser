@@ -6,7 +6,5 @@ import java.awt.Color;
  * TermColor
  * @author Jan Svercl, VUT Brno, 2008
  */
-public interface TermColor extends Term {
-    public Color getValue();   
-    
+public interface TermColor extends Term<Color> {
 }

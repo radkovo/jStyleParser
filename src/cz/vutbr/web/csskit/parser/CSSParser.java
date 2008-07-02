@@ -20,7 +20,7 @@ import cz.vutbr.web.css.SimpleSelector;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermFunction;
-import cz.vutbr.web.css.TermNumber;
+import cz.vutbr.web.css.TermNumeric;
 import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.csskit.StyleSheetImpl;
 import cz.vutbr.web.csskit.RuleSetImpl;
@@ -32,7 +32,9 @@ import cz.vutbr.web.csskit.SimpleSelectorImpl;
 import cz.vutbr.web.csskit.ImportURIImpl;
 import cz.vutbr.web.csskit.TermStringImpl;
 import cz.vutbr.web.csskit.TermIdentImpl;
-import cz.vutbr.web.csskit.TermUriImpl;
+import cz.vutbr.web.csskit.TermURIImpl;
+import cz.vutbr.web.csskit.TermLengthImpl;
+import cz.vutbr.web.csskit.TermNumericImpl;
 import cz.vutbr.web.csskit.TermNumberImpl;
 import cz.vutbr.web.csskit.TermPercentImpl;
 import cz.vutbr.web.csskit.TermColorImpl;
@@ -945,7 +947,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
         SimpleNode jjtn000 = new SimpleNode(JJTDECLARATION);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);Declaration declaration = new DeclarationImpl();
-        List<Term> terms = null;
+        List<Term<?>> terms = null;
         String property = null;
         boolean important = false;
     try {
@@ -1892,11 +1894,11 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
  * Returns list of terms
  * @return List of terms
  */
-  final public List<Term> expr() throws ParseException {
+  final public List<Term<?>> expr() throws ParseException {
  /*@bgen(jjtree) expr */
         SimpleNode jjtn000 = new SimpleNode(JJTEXPR);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);List<Term> terms = new ArrayList<Term>();
+        jjtree.openNodeScope(jjtn000);List<Term<?>> terms = new ArrayList<Term<?>>();
         Term.Operator op = null;
         Term term = null;
     try {
@@ -1980,12 +1982,13 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
 
 /**
  * Returns term (function, color, number, percent, string, identificator)
+ * FIXME
  */
-  final public Term term() throws ParseException {
+  final public Term<?> term() throws ParseException {
  /*@bgen(jjtree) term */
         SimpleNode jjtn000 = new SimpleNode(JJTTERM);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);Term term = null;
+        jjtree.openNodeScope(jjtn000);Term<?> term = null;
         int unary = 1;
         String value = null;
     try {
@@ -2035,7 +2038,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
             }
                                   jjtree.closeNodeScope(jjtn000, true);
                                   jjtc000 = false;
-                                        term = new TermNumberImpl(value, null, unary);
+                                        term = new TermNumberImpl(value, unary);
             break;
           case PERCENTAGE:
             value = percentage();
@@ -2071,7 +2074,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
             }
                                   jjtree.closeNodeScope(jjtn000, true);
                                   jjtc000 = false;
-                                        term = new TermNumberImpl(value, TermNumber.Unit.px, unary);
+                                        term = new TermLengthImpl(value, TermNumeric.Unit.px, unary);
             break;
           case LENGTHCM:
             value = lengthcm();
@@ -2089,7 +2092,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
             }
                                   jjtree.closeNodeScope(jjtn000, true);
                                   jjtc000 = false;
-                                        term = new TermNumberImpl(value, TermNumber.Unit.cm, unary);
+                                        term = new TermLengthImpl(value, TermNumeric.Unit.cm, unary);
             break;
           case LENGTHMM:
             value = lengthmm();
@@ -2107,7 +2110,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
             }
                                   jjtree.closeNodeScope(jjtn000, true);
                                   jjtc000 = false;
-                                        term = new TermNumberImpl(value, TermNumber.Unit.mm, unary);
+                                        term = new TermLengthImpl(value, TermNumeric.Unit.mm, unary);
             break;
           case LENGTHPT:
             value = lengthpt();
@@ -2125,7 +2128,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
             }
                           jjtree.closeNodeScope(jjtn000, true);
                           jjtc000 = false;
-                                term = new TermNumberImpl(value, TermNumber.Unit.pt, unary);
+                                term = new TermLengthImpl(value, TermNumeric.Unit.pt, unary);
             break;
           case LENGTHPC:
             value = lengthpc();
@@ -2143,7 +2146,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
             }
                           jjtree.closeNodeScope(jjtn000, true);
                           jjtc000 = false;
-                                term = new TermNumberImpl(value, TermNumber.Unit.pc, unary);
+                                term = new TermLengthImpl(value, TermNumeric.Unit.pc, unary);
             break;
           case EMS:
             value = ems();
@@ -2161,7 +2164,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
             }
                           jjtree.closeNodeScope(jjtn000, true);
                           jjtc000 = false;
-                                term = new TermNumberImpl(value, TermNumber.Unit.em, unary);
+                                term = new TermLengthImpl(value, TermNumeric.Unit.em, unary);
             break;
           case EXS:
             value = exs();
@@ -2179,7 +2182,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
             }
                           jjtree.closeNodeScope(jjtn000, true);
                           jjtc000 = false;
-                                term = new TermNumberImpl(value, TermNumber.Unit.ex, unary);
+                                term = new TermLengthImpl(value, TermNumeric.Unit.ex, unary);
             break;
           case ANGLEDEG:
             value = angledeg();
@@ -2197,7 +2200,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
             }
                           jjtree.closeNodeScope(jjtn000, true);
                           jjtc000 = false;
-                                term = new TermNumberImpl(value, TermNumber.Unit.deg, unary);
+                                term = new TermLengthImpl(value, TermNumeric.Unit.deg, unary);
             break;
           case ANGLERAD:
             value = anglerad();
@@ -2215,7 +2218,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
             }
                           jjtree.closeNodeScope(jjtn000, true);
                           jjtc000 = false;
-                                term = new TermNumberImpl(value, TermNumber.Unit.rad, unary);
+                                term = new TermLengthImpl(value, TermNumeric.Unit.rad, unary);
             break;
           case ANGLEGRAD:
             value = anglegrad();
@@ -2233,7 +2236,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
             }
                           jjtree.closeNodeScope(jjtn000, true);
                           jjtc000 = false;
-                                term = new TermNumberImpl(value, TermNumber.Unit.grad, unary);
+                                term = new TermLengthImpl(value, TermNumeric.Unit.grad, unary);
             break;
           case TIMEMS:
             value = timems();
@@ -2251,7 +2254,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
             }
                           jjtree.closeNodeScope(jjtn000, true);
                           jjtc000 = false;
-                                term = new TermNumberImpl(value, TermNumber.Unit.ms, unary);
+                                term = new TermLengthImpl(value, TermNumeric.Unit.ms, unary);
             break;
           case TIMES:
             value = times();
@@ -2269,7 +2272,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
             }
                           jjtree.closeNodeScope(jjtn000, true);
                           jjtc000 = false;
-                                term = new TermNumberImpl(value, TermNumber.Unit.s, unary);
+                                term = new TermLengthImpl(value, TermNumeric.Unit.s, unary);
             break;
           case FREQHZ:
             value = freqhz();
@@ -2287,7 +2290,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
             }
                           jjtree.closeNodeScope(jjtn000, true);
                           jjtc000 = false;
-                                term = new TermNumberImpl(value, TermNumber.Unit.hz, unary);
+                                term = new TermLengthImpl(value, TermNumeric.Unit.hz, unary);
             break;
           case FREQKHZ:
             value = freqkhz();
@@ -2305,7 +2308,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
             }
                           jjtree.closeNodeScope(jjtn000, true);
                           jjtc000 = false;
-                                term = new TermNumberImpl(value, TermNumber.Unit.khz, unary);
+                                term = new TermLengthImpl(value, TermNumeric.Unit.khz, unary);
             break;
           default:
             jj_la1[82] = jj_gen;
@@ -2365,7 +2368,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
           }
                                            jjtree.closeNodeScope(jjtn000, true);
                                            jjtc000 = false;
-                                           term = new TermUriImpl(value);
+                                           term = new TermURIImpl(value);
           break;
         case HASH:
           value = hexcolor();
@@ -2440,7 +2443,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
         SimpleNode jjtn000 = new SimpleNode(JJTFUNCTION);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);String functionName = null;
-        List<Term> terms = null;
+        List<Term<?>> terms = null;
         TermFunction function = new TermFunctionImpl();
     try {
       try {
@@ -2460,7 +2463,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
           jj_consume_token(BLANK);
         }
         terms = expr();
-                                function.setTerms(terms);
+                                function.setValue(terms);
         jj_consume_token(RPAREN);
         label_63:
         while (true) {

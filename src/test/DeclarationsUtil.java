@@ -22,7 +22,7 @@ public class DeclarationsUtil {
 	 * @param important !IMPORTANT flag
 	 * @return Created declaration
 	 */
-	public static Declaration createDeclaration(String property, boolean important, List<Term> terms) {
+	public static Declaration createDeclaration(String property, boolean important, List<Term<?>> terms) {
 	
 		Declaration dec = new DeclarationImpl();
 		
@@ -43,7 +43,7 @@ public class DeclarationsUtil {
 	 * @return Modified/Created list
 	 */
 	public static List<Declaration> appendDeclaration(List<Declaration> declarations,
-			String property, boolean important, List<Term> terms) {
+			String property, boolean important, List<Term<?>> terms) {
 	
 		if(declarations==null)
 			declarations = new ArrayList<Declaration>();
@@ -60,10 +60,10 @@ public class DeclarationsUtil {
 	 * @param term Term
 	 * @return Modified/created list
 	 */
-	public static List<Term> appendTerm(List<Term> terms, Term.Operator op, Term term) {
+	public static List<Term<?>> appendTerm(List<Term<?>> terms, Term.Operator op, Term<?> term) {
 		
 		if(terms==null)
-			terms = new ArrayList<Term>();
+			terms = new ArrayList<Term<?>>();
 		
 		term.setOperator(op);
 		
@@ -74,44 +74,44 @@ public class DeclarationsUtil {
 	
 	
 	
-	public static Declaration createDeclaration(String property, List<Term> terms) {
+	public static Declaration createDeclaration(String property, List<Term<?>> terms) {
 		return createDeclaration(property, false, terms);
 	}
 	
 	
-	public static Declaration createDeclaration(String property, Term...terms) {
+	public static Declaration createDeclaration(String property, Term<?>...terms) {
 		return createDeclaration(property, Arrays.asList(terms));
 	}
 	
-	public static Declaration createDeclaration(String property, boolean important, Term...terms) {
+	public static Declaration createDeclaration(String property, boolean important, Term<?>...terms) {
 		return createDeclaration(property, important, Arrays.asList(terms));
 	}
 	
 	public static List<Declaration> appendDeclaration(List<Declaration> declarations,
-			String property, List<Term> terms) {
+			String property, List<Term<?>> terms) {
 		return appendDeclaration(declarations, property, false, terms);
 	}
 	
 	
 	public static List<Declaration> appendDeclaration(List<Declaration> declarations,
-			String property, boolean important, Term...terms) {
+			String property, boolean important, Term<?>...terms) {
 		return appendDeclaration(declarations, property, false, Arrays.asList(terms));
 	}
 	
 	public static List<Declaration> appendDeclaration(List<Declaration> declarations,
-			String property, Term...terms) {
+			String property, Term<?>...terms) {
 		return appendDeclaration(declarations, property, Arrays.asList(terms));
 	}
 	
-	public static List<Term> appendSpaceTerm(List<Term> terms, Term term) {
+	public static List<Term<?>> appendSpaceTerm(List<Term<?>> terms, Term<?> term) {
 		return appendTerm(terms, Term.Operator.SPACE, term);
 	}
 	
-	public static List<Term> appendCommaTerm(List<Term> terms, Term term) {
+	public static List<Term<?>> appendCommaTerm(List<Term<?>> terms, Term<?> term) {
 		return appendTerm(terms, Term.Operator.COMMA, term);
 	}
 	
-	public static List<Term> appendSlashTerm(List<Term> terms, Term term) {
+	public static List<Term<?>> appendSlashTerm(List<Term<?>> terms, Term<?> term) {
 		return appendTerm(terms, Term.Operator.SLASH, term);
 	}
 	

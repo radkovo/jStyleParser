@@ -462,9 +462,9 @@ public interface NodeData {
     
     public <T extends CSSProperty> T getProperty(Class<T> clazz, String name);
     
-    public <T extends Term> T getValue(Class<T> clazz, String name);
+    public <T extends Term<?>> T getValue(Class<T> clazz, String name);
     
-    public <T extends Term> List<T> getValues(Class<T> clazz, String name);
+    public <T extends Term<?>> List<T> getValues(Class<T> clazz, String name);
     
     public void push(Declaration d, int inheritanceLevel, boolean inherit);    
     

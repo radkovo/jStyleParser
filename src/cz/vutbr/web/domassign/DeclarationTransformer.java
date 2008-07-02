@@ -15,9 +15,11 @@ import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermIdent;
+import cz.vutbr.web.css.TermInteger;
+import cz.vutbr.web.css.TermLength;
 import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermPercent;
-import cz.vutbr.web.css.TermUri;
+import cz.vutbr.web.css.TermURI;
 import cz.vutbr.web.css.NodeData.Azimuth;
 import cz.vutbr.web.css.NodeData.BackgroundAttachment;
 import cz.vutbr.web.css.NodeData.BackgroundColor;
@@ -211,8 +213,8 @@ public class DeclarationTransformer {
 	 * @return <code>true</code> in case of success, <code>false</code> otherwise
 	 */
 	public boolean parseDeclaration(Declaration d, 
-			Map<String,CSSProperty> properties, Map<String,Term> values,
-			Map<String, List<Term>> listValues) {
+			Map<String,CSSProperty> properties, Map<String,Term<?>> values,
+			Map<String, List<Term<?>>> listValues) {
 		
 		String propertyName = d.getProperty().toLowerCase();
 		
@@ -479,7 +481,7 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties) {
 		
 		if(d.getTerms().size()!=1) return false;
-    	final Term term = d.getTerms().get(0);
+    	final Term<?> term = d.getTerms().get(0);
     	
     	if(term instanceof TermIdent) {
     		return genericProperty(enumType, (TermIdent) term, 
@@ -493,10 +495,10 @@ public class DeclarationTransformer {
 			Declaration d,
 			T colorIdentification,
 			Map<String, CSSProperty> properties,
-			Map<String, Term> values) {
+			Map<String, Term<?>> values) {
 		
 		if(d.getTerms().size()!=1) return false;
-    	final Term term = d.getTerms().get(0);
+    	final Term<?> term = d.getTerms().get(0);
 		
     	if(term instanceof TermColor) {
 			properties.put(d.getProperty(), colorIdentification);
@@ -513,19 +515,19 @@ public class DeclarationTransformer {
 			T lengthIdentification,
 			boolean sanify,
 			Map<String, CSSProperty> properties,
-			Map<String, Term> values
+			Map<String, Term<?>> values
 			) {
 		
 		if(d.getTerms().size()!=1) return false;
-    	final Term term = d.getTerms().get(0);
+    	final Term<?> term = d.getTerms().get(0);
 		
-    	if(term instanceof TermNumber && ((TermNumber) term).isLength()) {
+    	if(term instanceof TermLength) {
     		
     		// check if below zero, if so set value to zero
     		if(sanify) {
     			Float zero = new Float(0.0f);
-    			if(zero.compareTo(((TermNumber) term).getValue())>0) {
-    				((TermNumber) term).setValue(zero);
+    			if(zero.compareTo(((TermLength) term).getValue())>0) {
+    				((TermLength) term).setValue(zero);
     			}
     		}
     		
@@ -543,19 +545,19 @@ public class DeclarationTransformer {
 			T integerIdentification,
 			boolean sanify,
 			Map<String, CSSProperty> properties,
-			Map<String, Term> values
+			Map<String, Term<?>> values
 			) {
 		
 		if(d.getTerms().size()!=1) return false;
-    	final Term term = d.getTerms().get(0);
+    	final Term<?> term = d.getTerms().get(0);
 		
-    	if(term instanceof TermNumber && ((TermNumber) term).isInteger()) {
+    	if(term instanceof TermInteger) {
     		
     		// check if below zero, if so set value to zero
     		if(sanify) {
-    			Float zero = new Float(0.0f);
-    			if(zero.compareTo(((TermNumber) term).getValue())>0) {
-    				((TermNumber) term).setValue(zero);
+    			Integer zero = new Integer(0);
+    			if(zero.compareTo(((TermInteger) term).getValue())>0) {
+    				((TermInteger) term).setValue(zero);
     			}
     		}
     		
@@ -574,11 +576,11 @@ public class DeclarationTransformer {
 			T percentIdentification,
 			boolean sanify,
 			Map<String, CSSProperty> properties,
-			Map<String, Term> values
+			Map<String, Term<?>> values
 			) {
 		
 		if(d.getTerms().size()!=1) return false;
-    	final Term term = d.getTerms().get(0);
+    	final Term<?> term = d.getTerms().get(0);
 		
     	if(term instanceof TermPercent) {
     		
@@ -605,7 +607,7 @@ public class DeclarationTransformer {
 			T colorIdentification,
 			Declaration d,
 			Map<String, CSSProperty> properties,
-			Map<String, Term> values) {
+			Map<String, Term<?>> values) {
 	
 		return genericTermIdent(enumType, d, properties)
 			|| genericTermColor(d, colorIdentification, properties, values);
@@ -617,7 +619,7 @@ public class DeclarationTransformer {
 			boolean sanify,
 			Declaration d,
 			Map<String, CSSProperty> properties,
-			Map<String, Term> values) {
+			Map<String, Term<?>> values) {
 		
 		return genericTermIdent(enumType, d, properties)
 			|| genericTermNumberInteger(d, integerIdentification, sanify, properties, values);
@@ -629,7 +631,7 @@ public class DeclarationTransformer {
 			boolean sanify,
 			Declaration d,
 			Map<String, CSSProperty> properties,
-			Map<String, Term> values) {
+			Map<String, Term<?>> values) {
 		
 		return genericTermIdent(enumType, d, properties)
 			|| genericTermNumberLength(d, lengthIdentification, sanify, properties, values);
@@ -643,7 +645,7 @@ public class DeclarationTransformer {
 			boolean sanify,
 			Declaration d,
 			Map<String, CSSProperty> properties,
-			Map<String, Term> values) {
+			Map<String, Term<?>> values) {
 		
 		return genericTermIdent(enumType, d, properties)
 			|| genericTermNumberLength(d, lengthIdentification, sanify, properties, values)
@@ -655,35 +657,35 @@ public class DeclarationTransformer {
 	
 	@SuppressWarnings("unused")
 	private boolean processColor(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
 		return genericTermIdentOrColor(Color.class, Color.color, d, properties, values);
     }
 	
     @SuppressWarnings("unused")	
     private boolean processBackgroundAttachment(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(BackgroundAttachment.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private Boolean processBackgroundColor(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrColor(BackgroundColor.class, BackgroundColor.color, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private Boolean processBackgroundImage(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	
     	if(d.getTerms().size()!=1) return false;
     	
-    	final Term term = d.getTerms().get(0);
+    	final Term<?> term = d.getTerms().get(0);
 		
 		if(term instanceof TermIdent) {
 			return genericProperty(BackgroundImage.class, (TermIdent) term, 
 					properties, d.getProperty());
 		}
-		else if(term instanceof TermUri) {
+		else if(term instanceof TermURI) {
 			properties.put(d.getProperty(), BackgroundImage.uri);
 			values.put(d.getProperty(), term);
 			return true;
@@ -693,97 +695,97 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private Boolean processBackgroundRepeat(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(BackgroundRepeat.class, d, properties);
     }
         
     @SuppressWarnings("unused")
     private boolean processBorderCollapse(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(BorderCollapse.class, d, properties);
     }
     
      
     @SuppressWarnings("unused")
     private boolean processBorderTopColor(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrColor(BorderColor.class, BorderColor.color, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderRightColor(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrColor(BorderColor.class, BorderColor.color, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderBottomColor(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrColor(BorderColor.class, BorderColor.color, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderLeftColor(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrColor(BorderColor.class, BorderColor.color, d, properties, values);
     }
 
     @SuppressWarnings("unused")
     private boolean processBorderTopStyle(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(BorderStyle.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderRightStyle(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(BorderStyle.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderBottomStyle(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(BorderStyle.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderLeftStyle(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(BorderStyle.class, d, properties);
     }    
     
     @SuppressWarnings("unused")
     private boolean processBorderSpacing(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	
     	if(d.getTerms().size() == 1) {
-    		final Term term = d.getTerms().get(0);
+    		final Term<?> term = d.getTerms().get(0);
     		if(term instanceof TermIdent) {
     			return genericProperty(BorderSpacing.class, 
     					(TermIdent)term, properties, d.getProperty());
     		}
+    		// FIXME
     		// numerical values will be doubled
-    		else if(term instanceof TermNumber && ((TermNumber)term).isLength()) {
+    		else if(term instanceof TermLength) {
     			final TermNumber nterm = (TermNumber) term;  
     			// sanity check
     			if(nterm.getValue() < 0) nterm.setValue(0.0f); 
     				
     			properties.put(d.getProperty(), BorderSpacing.length);
     			// construct list of terms
-    			List<Term> terms = new ArrayList<Term>(2);
+    			List<Term<?>> terms = new ArrayList<Term<?>>(2);
     			terms.add(nterm);terms.add(nterm);
     			listValues.put(d.getProperty(), terms);
     			return true;
     		}
     		
     	}
+    	// FIXME
     	// two numerical values
     	else if(d.getTerms().size()==2) {
-    		final Term term1 = d.getTerms().get(0);
-    		final Term term2 = d.getTerms().get(1);
-    		if(term1 instanceof TermNumber && term2 instanceof TermNumber
-    				&& ((TermNumber) term1).isLength()
-    				&& ((TermNumber) term2).isLength()) {
+    		final Term<?> term1 = d.getTerms().get(0);
+    		final Term<?> term2 = d.getTerms().get(1);
+    		if(term1 instanceof TermLength && term2 instanceof TermLength) {
     			final TermNumber nterm1 = (TermNumber) term1;
         		final TermNumber nterm2 = (TermNumber) term2;
         		// sanity checks
@@ -792,7 +794,7 @@ public class DeclarationTransformer {
         		
         		properties.put(d.getProperty(), BorderSpacing.length);
     			// construct list of terms
-    			List<Term> terms = new ArrayList<Term>(2);
+    			List<Term<?>> terms = new ArrayList<Term<?>>(2);
     			terms.add(nterm1);terms.add(nterm2);
     			listValues.put(d.getProperty(), terms);
     			return true;
@@ -966,25 +968,25 @@ public class DeclarationTransformer {
     */
     @SuppressWarnings("unused")
     private boolean processBorderTopWidth(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLength(BorderWidth.class, BorderWidth.length, true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderRightWidth(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLength(BorderWidth.class, BorderWidth.length, true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderBottomWidth(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLength(BorderWidth.class, BorderWidth.length, true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderLeftWidth(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLength(BorderWidth.class, BorderWidth.length, true, d, properties, values);
     }
        
@@ -1652,37 +1654,37 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processFontStyle(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(FontStyle.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processFontVariant(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(FontVariant.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processFontWeight(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	
     	// test against numeric values
-    	final Float[] test = new Float[] {
-    		100.0f, 200.0f, 300.0f, 400.0f, 500.0f, 
-    		600.0f, 700.0f, 800.0f, 900.0f};
+    	final Integer[] test = new Integer[] {
+    		100, 200, 300, 400, 500, 
+    		600, 700, 800, 900};
     	
     	if(d.getTerms().size() != 1)
     		return false;
     	
-    	final Term term = d.getTerms().get(0);
+    	final Term<?> term = d.getTerms().get(0);
     	
     	if(term instanceof TermIdent) {
     		return genericProperty(FontWeight.class, 
     				(TermIdent)term, properties, d.getProperty());
     	}
-    	else if(term instanceof TermNumber && ((TermNumber) term).isInteger()) { 
+    	else if(term instanceof TermInteger) { 
     		
-    		Float value = ((TermNumber) term).getValue();
+    		Integer value = ((TermInteger) term).getValue();
     		for(int i=0; i < test.length; i++ ) {
     			int result = value.compareTo(test[i]);
     			// not found if value is smaller than currently compared
@@ -2218,7 +2220,7 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processClear(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(Clear.class, d, properties);
     }
 
@@ -2429,7 +2431,7 @@ public class DeclarationTransformer {
             
     private Boolean processCursor(Declaration d) {
         boolean processedGeneric = false;
-        ArrayList<TermUri> out = new ArrayList<TermUri>();
+        ArrayList<TermURI> out = new ArrayList<TermURI>();
         
         int index = 0;
         for(Term t : d.getTerms()) {
@@ -2615,9 +2617,9 @@ public class DeclarationTransformer {
                     return false;
                 }
             }
-            if(t instanceof TermUri) {
+            if(t instanceof TermURI) {
                 index++;
-                out.add((TermUri)t);
+                out.add((TermURI)t);
                 continue;
             }
             
@@ -2637,25 +2639,25 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processDirection(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(Direction.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processDisplay(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(Display.class, d, properties);
     }
 
     @SuppressWarnings("unused")
     private boolean processEmptyCells(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(EmptyCells.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processFloat(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(EmptyCells.class, d, properties);
     }
     
@@ -2675,8 +2677,8 @@ public class DeclarationTransformer {
                     return true;
                 }
             }
-            if(d.getTerms().get(0) instanceof TermUri) {
-                TermUri uri = (TermUri)d.getTerms().get(0);
+            if(d.getTerms().get(0) instanceof TermURI) {
+                TermURI uri = (TermURI)d.getTerms().get(0);
                 listStyleImageType = EnumListStyleImage.uri;
                 listStyleImageValue = uri;
                 return true;
@@ -2688,13 +2690,13 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processListStylePosition(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(ListStylePosition.class, d, properties);
     }
 
     @SuppressWarnings("unused")
     private boolean processListStyleType(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(ListStyleType.class, d, properties);
     }
 
@@ -2783,7 +2785,7 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processMarginTop(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLengthOrPercent(Margin.class, 
     			Margin.lenght, Margin.percentage, 
     			false, d, properties, values);
@@ -2791,7 +2793,7 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processMarginRight(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLengthOrPercent(Margin.class, 
     			Margin.lenght, Margin.percentage, 
     			false, d, properties, values);
@@ -2799,7 +2801,7 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processMarginBottom(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLengthOrPercent(Margin.class, 
     			Margin.lenght, Margin.percentage, 
     			false, d, properties, values);
@@ -2807,7 +2809,7 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processMarginLeft(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLengthOrPercent(Margin.class, 
     			Margin.lenght, Margin.percentage, 
     			false, d, properties, values);
@@ -2897,54 +2899,54 @@ public class DeclarationTransformer {
     */
     @SuppressWarnings("unused")
     private boolean processMaxHeight(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLengthOrPercent(MaxHeight.class, 
     			MaxHeight.lenght, MaxHeight.percentage, true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processMaxWidth(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLengthOrPercent(MaxWidth.class, 
     			MaxWidth.lenght, MaxWidth.percentage, true, d, properties, values);
     }
 
     @SuppressWarnings("unused")
     private boolean processMinHeight(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLengthOrPercent(MinHeight.class, 
     			MinHeight.lenght, MinHeight.percentage, true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processMinWidth(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLengthOrPercent(MinWidth.class, 
     			MinWidth.lenght, MinWidth.percentage, true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processOrphans(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrInteger(Orphans.class, 
     			Orphans.integer, true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processOutlineColor(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrColor(OutlineColor.class, OutlineColor.color, d, properties, values);
     }
 
     @SuppressWarnings("unused")
     private boolean processOutlineStyle(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(OutlineStyle.class, d, properties);
     }   
     
     @SuppressWarnings("unused")
     private boolean processOutlineWidth(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLength(OutlineWidth.class, 
     			OutlineWidth.length, false, d, properties, values);
     }
@@ -3036,13 +3038,13 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processOverflow(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(Overflow.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processPaddingTop(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLengthOrPercent(Padding.class,
     			Padding.length, Padding.percentage,
     			true, d, properties, values);
@@ -3050,7 +3052,7 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processPaddingRight(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLengthOrPercent(Padding.class,
     			Padding.length, Padding.percentage,
     			true, d, properties, values);
@@ -3058,7 +3060,7 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processPaddingBottom(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLengthOrPercent(Padding.class,
     			Padding.length, Padding.percentage,
     			true, d, properties, values);
@@ -3066,7 +3068,7 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processPaddingLeft(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdentOrLengthOrPercent(Padding.class,
     			Padding.length, Padding.percentage,
     			true, d, properties, values);
@@ -3157,25 +3159,25 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processPageBreakAfter(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(PageBreak.class, d, properties);
     }
         
     @SuppressWarnings("unused")
     private boolean processPageBreakBefore(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(PageBreak.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processPageBreakInside(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(PageBreakInside.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processPosition(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(Position.class, d, properties);
     }
 
@@ -3225,13 +3227,13 @@ public class DeclarationTransformer {
     */
     @SuppressWarnings("unused")
     private boolean processTableLayout(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(TableLayout.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processTextAlign(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(TextAlign.class, d, properties);
     }
 
@@ -3348,7 +3350,7 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processTextIdent(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
 		return genericTermIdentOrLengthOrPercent(TextIndent.class,
 				TextIndent.length, TextIndent.percentage, 
 				false, d, properties, values);		
@@ -3356,19 +3358,19 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processTextTransform(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(TextTransform.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processUnicodeBidi(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
 		return genericTermIdent(UnicodeBidi.class, d, properties);
 	}
     
     @SuppressWarnings("unused")
     private boolean processVerticalAlign(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
 		return genericTermIdentOrLengthOrPercent(VerticalAlign.class,
 				VerticalAlign.length, VerticalAlign.percentage, 
 				false, d, properties, values);		
@@ -3377,38 +3379,38 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processVisibility(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
 		return genericTermIdent(Visibility.class, d, properties);
 	}
     
     @SuppressWarnings("unused")
     private boolean processWhiteSpace(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
     	return genericTermIdent(WhiteSpace.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processWidows(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
 		return genericTermIdentOrInteger(Widows.class, Widows.integer, true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processWordSpacing(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
 		return genericTermIdentOrLength(WordSpacing.class, WordSpacing.length, false, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processZIndex(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term> values, Map<String, List<Term>> listValues) {
+			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
 		return genericTermIdentOrInteger(ZIndex.class, ZIndex.integer, false, d, properties, values);
     }
     
     /*
     private Boolean processContent(Declaration d) {
 
-        ArrayList<Term> out = new ArrayList<Term>();
+        ArrayList<Term<?>> out = new ArrayList<Term<?>>();
         
         for(Term t : d.getTerms()) {
             //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
@@ -3465,7 +3467,7 @@ public class DeclarationTransformer {
                 out.add(t);
                 continue;
             }
-            if(t instanceof TermUri) {
+            if(t instanceof TermURI) {
                 out.add(t);
                 continue;
             }

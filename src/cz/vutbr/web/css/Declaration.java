@@ -14,9 +14,9 @@ public interface Declaration extends PrettyOutput, Comparable<Declaration> {
     
     public void setImportant(boolean important);
     
-    public List<Term> getTerms();
+    public List<Term<?>> getTerms();
 
-    public void setTerms(List<Term> terms);
+    public void setTerms(List<Term<?>> terms);
     
     public String getProperty();
 

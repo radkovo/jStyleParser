@@ -51,13 +51,13 @@ public class CollectionSpeed {
 	private static final int ITERATIONS = 10000;	
 	
 	private Map<String,CSSProperty> mprop;
-	private Map<String,Term> mterm;
+	private Map<String,Term<?>> mterm;
 	
 	@Before
 	public void initMasters() {
 		this.mprop = new HashMap<String, CSSProperty>
 			(DeclarationTransformer.TOTAL_SUPPORTED_DECLARATIONS, 1.0f);
-		this.mterm = new HashMap<String, Term>
+		this.mterm = new HashMap<String, Term<?>>
 			(DeclarationTransformer.TOTAL_SUPPORTED_DECLARATIONS, 1.0f);
 	}
 	
@@ -67,7 +67,7 @@ public class CollectionSpeed {
 		long time = System.currentTimeMillis();
 		
 		Set<CSSProperty> properties = new LinkedHashSet<CSSProperty>(MAX);
-		Set<Term> terms = new LinkedHashSet<Term>(MAX);
+		Set<Term<?>> terms = new LinkedHashSet<Term<?>>(MAX);
 		
 		for(int i = 0; i < ITERATIONS; i++) {
 			insert(properties, terms);
@@ -88,7 +88,7 @@ public class CollectionSpeed {
 		
 		for(int i = 0; i < ITERATIONS; i++) {
 			Set<CSSProperty> properties = new LinkedHashSet<CSSProperty>(MAX);
-			Set<Term> terms = new LinkedHashSet<Term>(MAX);
+			Set<Term<?>> terms = new LinkedHashSet<Term<?>>(MAX);
 			insert(properties, terms);
 			properties.clear();
 			terms.clear();
@@ -108,7 +108,7 @@ public class CollectionSpeed {
 		long time = System.currentTimeMillis();
 		
 		List<CSSProperty> properties = new ArrayList<CSSProperty>(MAX);
-		List<Term> terms = new ArrayList<Term>(MAX);
+		List<Term<?>> terms = new ArrayList<Term<?>>(MAX);
 		
 		for(int i = 0; i < ITERATIONS; i++) {
 			
@@ -131,7 +131,7 @@ public class CollectionSpeed {
 		for(int i = 0; i < ITERATIONS; i++) {
 			
 			List<CSSProperty> properties = new ArrayList<CSSProperty>(MAX);
-			List<Term> terms = new ArrayList<Term>(MAX);			
+			List<Term<?>> terms = new ArrayList<Term<?>>(MAX);			
 			insert(properties, terms);
 		}
 		
@@ -147,7 +147,7 @@ public class CollectionSpeed {
 		long time = System.currentTimeMillis();
 		
 		Map<String,CSSProperty> properties = new HashMap<String,CSSProperty>(MAX);
-		Map<String,Term> terms = new HashMap<String,Term>(MAX);
+		Map<String,Term<?>> terms = new HashMap<String,Term<?>>(MAX);
 		
 		for(int i = 0; i < ITERATIONS; i++) {
 			insert(properties, terms);
@@ -175,7 +175,7 @@ public class CollectionSpeed {
 		for(int i = 0; i < ITERATIONS; i++) {
 			
 			Map<String,CSSProperty> properties = new HashMap<String,CSSProperty>(MAX);
-			Map<String,Term> terms = new HashMap<String,Term>(MAX);			
+			Map<String,Term<?>> terms = new HashMap<String,Term<?>>(MAX);			
 			insert(properties, terms);
 			
 			mprop.putAll(properties);
@@ -197,7 +197,7 @@ public class CollectionSpeed {
 		for(int i = 0; i < ITERATIONS; i++) {
 			
 			Map<String,CSSProperty> properties = new LinkedHashMap<String,CSSProperty>(MAX);
-			Map<String,Term> terms = new LinkedHashMap<String,Term>(MAX);			
+			Map<String,Term<?>> terms = new LinkedHashMap<String,Term<?>>(MAX);			
 			insert(properties, terms);
 			
 			mprop.putAll(properties);
@@ -213,7 +213,7 @@ public class CollectionSpeed {
 	
 	
 	private void insert(Collection<CSSProperty> properties, 
-			Collection<Term> terms) {
+			Collection<Term<?>> terms) {
 		
 		Random generator = new Random();
 		
@@ -225,7 +225,7 @@ public class CollectionSpeed {
 	}
 	
 	private void insert(Map<String, CSSProperty> properties,
-			Map<String, Term> terms) {
+			Map<String, Term<?>> terms) {
 		
 		Random generator = new Random();
 		

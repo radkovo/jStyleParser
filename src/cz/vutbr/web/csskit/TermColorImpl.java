@@ -18,7 +18,7 @@ import cz.vutbr.web.css.TermPercent;
  * 				 * Construction moved to parser
  * 			     * Fixed percentage of rgb() function 
  */
-public class TermColorImpl extends TermImpl implements TermColor {
+public class TermColorImpl extends TermImpl<Color> implements TermColor {
     
 	protected static final String COLOR_FUNCTION_NAME = "rgb";
 	protected static final int COLOR_PARAMS_COUNT = 3;
@@ -35,6 +35,10 @@ public class TermColorImpl extends TermImpl implements TermColor {
     
     public Color getValue() {
         return color;
+    }
+    
+    public void setValue(Color color) {
+    	this.color = color;
     }
     
     @Override
@@ -105,23 +109,19 @@ public class TermColorImpl extends TermImpl implements TermColor {
     	
     	// we matched rbg function
     	if(COLOR_FUNCTION_NAME.equals(func.getFunctionName()) &&
-    			func.getTerms().size() == COLOR_PARAMS_COUNT) {
+    			func.getValue().size() == COLOR_PARAMS_COUNT) {
     		
     		int[] rgb = new int[COLOR_PARAMS_COUNT];
     		int i = 0;
-    		for(Term term: func.getTerms()) {
+    		for(Term<?> term: func.getValue()) {
     			// term is number and numeric
     			if(term instanceof TermNumber ) {
-    				final TermNumber t = (TermNumber) term;
-    				if(t.isNumber())
-    					rgb[i] = t.getValue().intValue();
-    				else
-    					return null;
+    				rgb[i] = ((TermNumber)term).getValue().intValue();
     			}
     			// term is percent
     			else if(term instanceof TermPercent) {
-    				final TermPercent t = (TermPercent) term;
-    				rgb[i] = (t.getValue().intValue() * MAX_VALUE) / PERCENT_CONVERSION;
+    				final int value = ((TermPercent) term).getValue().intValue();
+    				rgb[i] = (value * MAX_VALUE) / PERCENT_CONVERSION;
     			}
     			// not valid term
     			else {

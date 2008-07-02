@@ -8,19 +8,13 @@ import cz.vutbr.web.css.TermString;
  * @author Jan Svercl, VUT Brno, 2008
  * 			modified by Karel Piwko, 2008
  */
-public class TermStringImpl extends TermImpl implements TermString {
+public class TermStringImpl extends TermImpl<String> implements TermString {
 
-	protected String value;
-	   
 	public TermStringImpl(String value) {
 		setValue(value);
 	}
-	
-	
-	public String getValue() {
-		return value;
-	}
 
+	@Override
 	public void setValue(String value) {
 		if (value == null) {
 			throw new IllegalArgumentException(
@@ -41,45 +35,4 @@ public class TermStringImpl extends TermImpl implements TermString {
 		
 		return sb.toString();
 	}
-
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result
-				+ ((operator == null) ? 0 : operator.hashCode());
-		result = prime * result + ((value == null) ? 0 : value.hashCode());
-		return result;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (!(obj instanceof TermStringImpl))
-			return false;
-		final TermStringImpl other = (TermStringImpl) obj;
-		if (operator == null) {
-			if (other.operator != null)
-				return false;
-		} else if (!operator.equals(other.operator))
-			return false;
-		if (value == null) {
-			if (other.value != null)
-				return false;
-		} else if (!value.equals(other.value))
-			return false;
-		return true;
-	}
-	
 }

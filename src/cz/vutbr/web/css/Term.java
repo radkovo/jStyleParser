@@ -8,7 +8,7 @@ package cz.vutbr.web.css;
  * 				 * Removed String operator(String) method
  * 				 * Added equals() and hashCode()
  */
-public interface Term {
+public interface Term<T> {
 
     public enum Operator {
     	    	
@@ -24,11 +24,11 @@ public interface Term {
     	
     	public String value() { return value;}
     }
-    /*
+    
     public T getValue();
     
     public void setValue(T value);
-    */
+    
     /**
      * Operator between two terms. The first term is having <code>null</code>
      * @return

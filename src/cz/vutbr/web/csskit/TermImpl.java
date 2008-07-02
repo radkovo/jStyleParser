@@ -4,20 +4,46 @@ import cz.vutbr.web.css.Term;
 
 /**
  * Term
- * @author Jan Svercl, VUT Brno, 2008
+ * 
+ * @author Karel Piwko, 2008
  */
-public abstract class TermImpl implements Term {
+public abstract class TermImpl<T> implements Term<T> {
 
-    protected Operator operator = null;
-    
-    public Operator getOperator() {
-        return operator;
-    }
+	protected T value;
+	protected Operator operator = null;
 
-    public void setOperator(Operator operator) {
-        this.operator = operator;
-    }
+	public Operator getOperator() {
+		return operator;
+	}
 
+	public void setOperator(Operator operator) {
+		this.operator = operator;
+	}
+
+	/**
+	 * @return the value
+	 */
+	public T getValue() {
+		return value;
+	}
+
+	/**
+	 * @param value
+	 *            the value to set
+	 */
+	public void setValue(T value) {
+		this.value = value;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		if(operator != null) sb.append(operator.value());
+		if(value!=null) sb.append(value);
+
+		return sb.toString();
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -27,6 +53,7 @@ public abstract class TermImpl implements Term {
 		int result = 1;
 		result = prime * result
 				+ ((operator == null) ? 0 : operator.hashCode());
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
 
@@ -41,15 +68,21 @@ public abstract class TermImpl implements Term {
 			return false;
 		if (!(obj instanceof TermImpl))
 			return false;
-		final TermImpl other = (TermImpl) obj;
+		@SuppressWarnings("unchecked")
+		final TermImpl<T> other = (TermImpl<T>) obj;
 		if (operator == null) {
 			if (other.operator != null)
 				return false;
 		} else if (!operator.equals(other.operator))
 			return false;
+		if (value == null) {
+			if (other.value != null)
+				return false;
+		} else if (!value.equals(other.value))
+			return false;
 		return true;
 	}
-    
-    
-    
+	
+	
+
 }

@@ -16,7 +16,7 @@ import cz.vutbr.web.css.Term;
 public class DeclarationImpl implements Declaration {
 
 	protected String property;
-	protected List<Term> terms;
+	protected List<Term<?>> terms;
 	protected boolean important;
 
 	public DeclarationImpl() {
@@ -82,7 +82,7 @@ public class DeclarationImpl implements Declaration {
 	/**
 	 * @return the terms
 	 */
-	public List<Term> getTerms() {
+	public List<Term<?>> getTerms() {
 		return terms;
 	}
 
@@ -91,7 +91,7 @@ public class DeclarationImpl implements Declaration {
 	/**
 	 * @param terms the terms to set
 	 */
-	public void setTerms(List<Term> terms) {
+	public void setTerms(List<Term<?>> terms) {
 		this.terms = terms;
 	}
 

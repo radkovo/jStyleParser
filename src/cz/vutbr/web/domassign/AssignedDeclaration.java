@@ -16,7 +16,7 @@ import cz.vutbr.web.csskit.OutputUtil;
 public class AssignedDeclaration implements Declaration {
 	
 	protected String property;
-	protected List<Term> terms;
+	protected List<Term<?>> terms;
 	protected boolean important;
 	protected int level;
 	
@@ -89,14 +89,14 @@ public class AssignedDeclaration implements Declaration {
 	/**
 	 * @return the terms
 	 */
-	public List<Term> getTerms() {
+	public List<Term<?>> getTerms() {
 		return terms;
 	}
 
 	/**
 	 * @param terms the terms to set
 	 */
-	public void setTerms(List<Term> terms) {
+	public void setTerms(List<Term<?>> terms) {
 		this.terms = terms;
 	}
 

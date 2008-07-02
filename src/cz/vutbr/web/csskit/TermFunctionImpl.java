@@ -13,10 +13,10 @@ import cz.vutbr.web.css.TermFunction;
  * @version 1.0 * Construction moved to parser
  * 				 * Implementation changed according to new interface
  */
-public class TermFunctionImpl extends TermImpl implements TermFunction {
+public class TermFunctionImpl extends TermImpl<List<Term<?>>> implements TermFunction {
 
 	protected String functionName;
-	protected List<Term> terms;
+	protected List<Term<?>> terms;
 
     public TermFunctionImpl() {
     	this.terms = Collections.emptyList();
@@ -48,7 +48,7 @@ public class TermFunctionImpl extends TermImpl implements TermFunction {
 	/**
 	 * @return the terms
 	 */
-	public List<Term> getTerms() {
+	public List<Term<?>> getValue() {
 		return terms;
 	}
 
@@ -57,7 +57,7 @@ public class TermFunctionImpl extends TermImpl implements TermFunction {
 	/**
 	 * @param terms the terms to set
 	 */
-	public void setTerms(List<Term> terms) {
+	public void setValue(List<Term<?>> terms) {
 		this.terms = terms;
 	}
 

@@ -13,11 +13,11 @@ import cz.vutbr.web.css.SimpleSelector;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.Term;
-import cz.vutbr.web.css.TermNumber;
+import cz.vutbr.web.css.TermNumeric;
 import cz.vutbr.web.csskit.SimpleSelectorImpl;
 import cz.vutbr.web.csskit.TermColorImpl;
 import cz.vutbr.web.csskit.TermIdentImpl;
-import cz.vutbr.web.csskit.TermNumberImpl;
+import cz.vutbr.web.csskit.TermLengthImpl;
 import cz.vutbr.web.csskit.TermPercentImpl;
 import cz.vutbr.web.csskit.TermStringImpl;
 import cz.vutbr.web.csskit.parser.CSSParser;
@@ -199,7 +199,7 @@ public class SelectorTest {
 		
 		assertEquals("Rule contains one declaration { font-size: 100px;}",
 				DeclarationsUtil.appendDeclaration(null, "font-size", 
-						new TermNumberImpl(100f, TermNumber.Unit.px, 1)),
+						new TermLengthImpl(100f, TermNumeric.Unit.px, 1)),
 				rule.getDeclarations());
 	}
 	
@@ -294,7 +294,7 @@ public class SelectorTest {
 		assertEquals("Rule contains one combined pseudoselector :lang(fr)>Q",
 				sels, rule.getSelectors());
 		
-		List<Term> terms = DeclarationsUtil.appendTerm(null, null, 
+		List<Term<?>> terms = DeclarationsUtil.appendTerm(null, null, 
 				new TermStringImpl("« "));
 		DeclarationsUtil.appendSpaceTerm(terms, 
 				new TermStringImpl(" »"));
@@ -357,7 +357,7 @@ public class SelectorTest {
 		assertEquals("Rule 1 contains one combined selector *.home",
 				sels, ((RuleSet) rules.get(0)).getSelectors());
 
-		List<Term> terms = DeclarationsUtil.appendTerm(null, null, 
+		List<Term<?>> terms = DeclarationsUtil.appendTerm(null, null, 
 				new TermIdentImpl("Verdana"));
 		DeclarationsUtil.appendCommaTerm(terms, 
 				new TermIdentImpl("monospace"));
@@ -416,7 +416,7 @@ public class SelectorTest {
 		assertEquals("Rule 1 contains one combined selector *[href]",
 				sels, ((RuleSet) rules.get(0)).getSelectors());
 
-		List<Term> terms = DeclarationsUtil.appendTerm(null, null, 
+		List<Term<?>> terms = DeclarationsUtil.appendTerm(null, null, 
 				new TermIdentImpl("Verdana"));
 		DeclarationsUtil.appendCommaTerm(terms, 
 				new TermIdentImpl("monospace"));

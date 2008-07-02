@@ -120,7 +120,8 @@ public class SimpleTest {
 		assertEquals("Rule contains one declaration {display:block;}",
 				DeclarationsUtil.appendDeclaration(null, "display", 
 						new TermIdentImpl("block")),
-				rule.getDeclarations());			
+				rule.getDeclarations());
+							
 	}
 	
 	
