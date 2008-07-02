@@ -1,11 +1,8 @@
 package cz.vutbr.web.domassign;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.NodeData;
@@ -47,15 +44,18 @@ public class NodeDataImpl implements NodeData {
 			new HashMap<String,CSSProperty>(COMMON_DECLARATION_SIZE);
 		Map<String,Term> terms = 
 			new HashMap<String, Term>(COMMON_DECLARATION_SIZE);
+		Map<String,List<Term>> listTerms =
+			new HashMap<String, List<Term>>(COMMON_DECLARATION_SIZE);
 		
-		boolean result = transformer.parseDeclaration(d, properties, terms);
+		boolean result = transformer
+			.parseDeclaration(d, properties, terms, listTerms);
 		
 		// in case of false do not insert anything
 		if(!result) return;
 		
 		this.properties.putAll(properties);
-		
 		this.values.putAll(terms);
+		this.listValues.putAll(listTerms);
 		
 	}
 	

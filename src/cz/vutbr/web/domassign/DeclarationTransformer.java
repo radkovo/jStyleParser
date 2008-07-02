@@ -2,7 +2,9 @@ package cz.vutbr.web.domassign;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -13,12 +15,16 @@ import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermIdent;
+import cz.vutbr.web.css.TermNumber;
+import cz.vutbr.web.css.TermPercent;
+import cz.vutbr.web.css.TermUri;
 import cz.vutbr.web.css.NodeData.Azimuth;
 import cz.vutbr.web.css.NodeData.BackgroundAttachment;
 import cz.vutbr.web.css.NodeData.BackgroundColor;
 import cz.vutbr.web.css.NodeData.BackgroundImage;
 import cz.vutbr.web.css.NodeData.BackgroundRepeat;
 import cz.vutbr.web.css.NodeData.BorderCollapse;
+import cz.vutbr.web.css.NodeData.BorderColor;
 import cz.vutbr.web.css.NodeData.BorderSpacing;
 import cz.vutbr.web.css.NodeData.BorderStyle;
 import cz.vutbr.web.css.NodeData.BorderWidth;
@@ -47,7 +53,7 @@ import cz.vutbr.web.css.NodeData.LetterSpacing;
 import cz.vutbr.web.css.NodeData.ListStyleImage;
 import cz.vutbr.web.css.NodeData.ListStylePosition;
 import cz.vutbr.web.css.NodeData.ListStyleType;
-import cz.vutbr.web.css.NodeData.MarginWidth;
+import cz.vutbr.web.css.NodeData.Margin;
 import cz.vutbr.web.css.NodeData.MaxHeight;
 import cz.vutbr.web.css.NodeData.MaxWidth;
 import cz.vutbr.web.css.NodeData.MinHeight;
@@ -57,10 +63,8 @@ import cz.vutbr.web.css.NodeData.OutlineColor;
 import cz.vutbr.web.css.NodeData.OutlineStyle;
 import cz.vutbr.web.css.NodeData.OutlineWidth;
 import cz.vutbr.web.css.NodeData.Overflow;
-import cz.vutbr.web.css.NodeData.PaddingWidth;
+import cz.vutbr.web.css.NodeData.Padding;
 import cz.vutbr.web.css.NodeData.PageBreak;
-import cz.vutbr.web.css.NodeData.PageBreakAfter;
-import cz.vutbr.web.css.NodeData.PageBreakBefore;
 import cz.vutbr.web.css.NodeData.PageBreakInside;
 import cz.vutbr.web.css.NodeData.PauseBefore;
 import cz.vutbr.web.css.NodeData.Pitch;
@@ -77,6 +81,7 @@ import cz.vutbr.web.css.NodeData.SpeakPunctuation;
 import cz.vutbr.web.css.NodeData.SpeechRate;
 import cz.vutbr.web.css.NodeData.Stress;
 import cz.vutbr.web.css.NodeData.TableLayout;
+import cz.vutbr.web.css.NodeData.TextAlign;
 import cz.vutbr.web.css.NodeData.TextDecoration;
 import cz.vutbr.web.css.NodeData.TextIndent;
 import cz.vutbr.web.css.NodeData.TextTransform;
@@ -91,6 +96,15 @@ import cz.vutbr.web.css.NodeData.Width;
 import cz.vutbr.web.css.NodeData.WordSpacing;
 import cz.vutbr.web.css.NodeData.ZIndex;
 
+/**
+ * Contains methods to transform declaration into 
+ * values applicable to NodeDataImpl.
+ * Contains map of CSS properties as supported in CSS 2.1 and
+ * their default values.
+ * Implements singleton pattern.
+ * @author kapy
+ *
+ */
 public class DeclarationTransformer {
 
 	private static Logger log = Logger.getLogger(DeclarationTransformer.class);
@@ -120,11 +134,21 @@ public class DeclarationTransformer {
 	 */	
 	private Map<String, CSSProperty> supportedCSS;
 	
+	/**
+	 * Cache of parsing methods
+	 */
 	private Map<String, Method> methods;	
 	
+	/**
+	 * Singleton instance
+	 */
 	private static DeclarationTransformer instance;
 	
 	
+	/**
+	 * Returns instance if exists, or creates new one
+	 * @return Singleton instance
+	 */
 	public static DeclarationTransformer getInstance() {
 		if(instance==null)
 			instance = new DeclarationTransformer();
@@ -132,6 +156,12 @@ public class DeclarationTransformer {
 		return instance;
 	}
 	
+	/**
+	 * Converts string divided by dash ('-') characters into
+	 * camelCase such as convenient for Java method names
+	 * @param string String to convert
+	 * @return CamelCase version of string
+	 */
 	public static final String camelCase(String string) { 
 		
 		StringBuilder sb = new StringBuilder();
@@ -172,14 +202,21 @@ public class DeclarationTransformer {
 		return null;
 	}
 	
-	
+	/**
+	 * Core function. Parses CSS declaration into structure applicable
+	 * to DataNodeImpl
+	 * @param d Declaration
+	 * @param properties Holder of parsed declaration's properties
+	 * @param values Holder of parsed declaration's value
+	 * @return <code>true</code> in case of success, <code>false</code> otherwise
+	 */
 	public boolean parseDeclaration(Declaration d, 
-			Map<String,CSSProperty> properties, Map<String,Term> values) {
+			Map<String,CSSProperty> properties, Map<String,Term> values,
+			Map<String, List<Term>> listValues) {
 		
 		String propertyName = d.getProperty().toLowerCase();
 		
 		CSSProperty defaultValue = supportedCSS.get(propertyName);
-		
 		// no such declaration is supported
 		if(defaultValue==null)
 			return false;
@@ -187,7 +224,7 @@ public class DeclarationTransformer {
 		try {
 			Method m = methods.get(propertyName);
 			if(m!=null) 
-				return (Boolean) m.invoke(this, d, properties, values);
+				return (Boolean) m.invoke(this, d, properties, values, listValues);
 		}
 		catch(IllegalArgumentException e) {
 			log.warn("Illegal argument: " + e);
@@ -210,6 +247,10 @@ public class DeclarationTransformer {
 		this.methods = parsingMethods();		
 	}
 	
+	/**
+	 * Constructs map of supported properties as keys and their default values
+	 * @return Constructed map
+	 */
 	private Map<String, CSSProperty> supportedCSS() {
 		
 		Map<String, CSSProperty> map = 
@@ -233,21 +274,21 @@ public class DeclarationTransformer {
 		map.put("line-height", INHERITABLE_PROPERTY);
 		map.put("word-spacing", WordSpacing.NORMAL);
 		map.put("letter-spacing", LetterSpacing.NORMAL);
-		map.put("vertical-align", VerticalAlign.baseline);
-		map.put("direction", Direction.ltr);
+		map.put("vertical-align", VerticalAlign.BASELINE);
+		map.put("direction", Direction.LTR);
 		map.put("unicode-bidi", UnicodeBidi.NORMAL);
 
 		// layout box
 		map.put("margin", MULTIVALUE_PROPERTY);
-		map.put("margin-top", MarginWidth.lenght);		// 0
-		map.put("margin-right", MarginWidth.lenght);	// 0
-		map.put("margin-bottom", MarginWidth.lenght);	// 0
-		map.put("margin-left", MarginWidth.lenght);	// 0	
+		map.put("margin-top", Margin.lenght);		// 0
+		map.put("margin-right", Margin.lenght);	// 0
+		map.put("margin-bottom", Margin.lenght);	// 0
+		map.put("margin-left", Margin.lenght);	// 0	
 		map.put("padding", MULTIVALUE_PROPERTY);		
-		map.put("padding-top", PaddingWidth.length);	// 0
-		map.put("padding-right", PaddingWidth.length);	// 0
-		map.put("padding-bottom", PaddingWidth.length);// 0
-		map.put("padding-left", PaddingWidth.length);	// 0
+		map.put("padding-top", Padding.length);	// 0
+		map.put("padding-right", Padding.length);	// 0
+		map.put("padding-bottom", Padding.length);// 0
+		map.put("padding-left", Padding.length);	// 0
 		map.put("border", MULTIVALUE_PROPERTY);
 		map.put("border-width", BorderWidth.MEDIUM);
 		map.put("border-top-width", BorderWidth.MEDIUM);
@@ -271,11 +312,11 @@ public class DeclarationTransformer {
 		map.put("height", Width.AUTO);
 		map.put("min-height", MinHeight.lenght);	// 0
 		map.put("max-height", MaxHeight.NONE);
-		map.put("overflow", Overflow.visible);
+		map.put("overflow", Overflow.VISIBLE);
 		map.put("clip", Clip.AUTO);
 
 		// positioning
-		map.put("display", Display.inline);
+		map.put("display", Display.INLINE);
 		map.put("position", Position.STATIC);
 		map.put("top", Top.AUTO);
 		map.put("right", Right.AUTO);
@@ -284,27 +325,27 @@ public class DeclarationTransformer {
 		map.put("float", NodeData.Float.NONE);
 		map.put("clear", Clear.NONE);
 		map.put("z-index", ZIndex.AUTO);
-		map.put("visibility", Visibility.visible);
+		map.put("visibility", Visibility.VISIBLE);
 
 		// background
 		map.put("background", MULTIVALUE_PROPERTY);
-		map.put("background-attachement", BackgroundAttachment.scroll);
-		map.put("background-color", BackgroundColor.transparent);
+		map.put("background-attachement", BackgroundAttachment.SCROLL);
+		map.put("background-color", BackgroundColor.TRANSPARENT);
 		map.put("background-image", BackgroundImage.NONE);
 		map.put("background-position", MULTIVALUE_PROPERTY);
-		map.put("background-repeat", BackgroundRepeat.repeat);
+		map.put("background-repeat", BackgroundRepeat.REPEAT);
 
 		// elements
 		map.put("list-style", MULTIVALUE_PROPERTY);
-		map.put("list-style-type", ListStyleType.disc);
-		map.put("list-style-position", ListStylePosition.outside);
+		map.put("list-style-type", ListStyleType.DISC);
+		map.put("list-style-position", ListStylePosition.OUTSIDE);
 		map.put("list-style-image", ListStyleImage.NONE);
 
-		map.put("border-collapse", BorderCollapse.separate);
+		map.put("border-collapse", BorderCollapse.SEPARATE);
 		map.put("border-spacing", BorderSpacing.length);	// 0
-		map.put("empty-cells", EmptyCells.show);
+		map.put("empty-cells", EmptyCells.SHOW);
 		map.put("table-layout", TableLayout.AUTO);
-		map.put("caption-side", CaptionSide.top);
+		map.put("caption-side", CaptionSide.TOP);
 		// other supported by tables (width, vertical-align)
 		// are already defined 
 		map.put("content", Content.NORMAL);
@@ -318,11 +359,11 @@ public class DeclarationTransformer {
 		map.put("outline", MULTIVALUE_PROPERTY);
 		map.put("outline-width", OutlineWidth.MEDIUM);
 		map.put("outline-style", OutlineStyle.NONE);
-		map.put("outline-color", OutlineColor.invert);
+		map.put("outline-color", OutlineColor.INVERT);
 
 		map.put("page-break", PageBreak.AUTO);
-		map.put("page-break-before", PageBreakBefore.AUTO);
-		map.put("page-break-after", PageBreakAfter.AUTO);
+		map.put("page-break-before", PageBreak.AUTO);
+		map.put("page-break-after", PageBreak.AUTO);
 		map.put("page-break-inside", PageBreakInside.AUTO);
 
 		map.put("widows", Widows.integer);		// 2
@@ -331,7 +372,7 @@ public class DeclarationTransformer {
 		// other values according to
 		// http://www.w3.org/TR/CSS21/propidx.html
 
-		map.put("azimuth", Azimuth.center);
+		map.put("azimuth", Azimuth.CENTER);
 		map.put("border-top", MULTIVALUE_PROPERTY);
 		map.put("border-right", MULTIVALUE_PROPERTY);
 		map.put("border-bottom", MULTIVALUE_PROPERTY);
@@ -340,7 +381,7 @@ public class DeclarationTransformer {
 		map.put("cue", MULTIVALUE_PROPERTY);
 		map.put("cue-before", CueBefore.NONE);
 		map.put("cue-after", CueAfter.NONE);
-		map.put("elevation", Elevation.level);
+		map.put("elevation", Elevation.LEVEL);
 		map.put("pause", MULTIVALUE_PROPERTY);
 		map.put("pause-before", PauseBefore.time); // 0 
 		map.put("pause-after", PauseBefore.time);  // 0
@@ -348,8 +389,8 @@ public class DeclarationTransformer {
 		map.put("pitch", Pitch.MEDIUM);
 		map.put("play-during", PlayDuring.AUTO);
 		map.put("richness", Richness.number);		// 50
-		map.put("speak-header", SpeakHeader.once);
-		map.put("speak-numeral", SpeakNumeral.continuous);
+		map.put("speak-header", SpeakHeader.ONCE);
+		map.put("speak-numeral", SpeakNumeral.CONTINUOUS);
 		map.put("speak-punctuation", SpeakPunctuation.NONE);
 		map.put("speak", Speak.NORMAL);
 		map.put("speech-rate", SpeechRate.MEDIUM);
@@ -364,7 +405,42 @@ public class DeclarationTransformer {
 		return map;
 	}
 	
-	private <T extends Enum<T> & CSSProperty> boolean parseProperty(
+	private Map<String, Method> parsingMethods() {
+		
+		Map<String, Method> map = 
+			new HashMap<String, Method>(TOTAL_SUPPORTED_DECLARATIONS, 1.0f);
+		
+		for(String key: supportedCSS.keySet()) {
+			try {
+				Method m = DeclarationTransformer.class.getDeclaredMethod(
+						DeclarationTransformer.camelCase("process-" + key), 
+						new Class[] {	Declaration.class, 
+							Map.class, Map.class, Map.class});
+				map.put(key, m);
+			}
+			catch(Exception e) {
+				log.warn("Unable to find method for property: " + key);
+			}
+		}
+		if(log.isInfoEnabled()) {
+			log.info("Total methods found: " + map.size());
+		}
+		return map;
+	}
+	
+	
+	
+	/**
+	 * Converts TermIdent into value of enum of given class and stores
+	 * it into properties map under key property
+	 * @param <T> 
+	 * @param enumType
+	 * @param term
+	 * @param properties
+	 * @param property
+	 * @return <code>true</code> in case of success, <code>false</code> otherwise
+	 */
+	private <T extends Enum<T> & CSSProperty> boolean genericProperty(
 				Class<T> enumType, 
 				TermIdent term, 
 				Map<String, CSSProperty> properties,
@@ -387,426 +463,345 @@ public class DeclarationTransformer {
 		return false;
 		
 	}
-		
 	
-	private Map<String, Method> parsingMethods() {
-		
-		Map<String, Method> map = 
-			new HashMap<String, Method>(TOTAL_SUPPORTED_DECLARATIONS, 1.0f);
-		
-		for(String key: supportedCSS.keySet()) {
-			try {
-				Method m = DeclarationTransformer.class.getDeclaredMethod(
-						DeclarationTransformer.camelCase("process-" + key), 
-						new Class[] {	Declaration.class, 
-							Map.class, Map.class});
-				map.put(key, m);
-			}
-			catch(Exception e) {
-				log.warn("Unable to find method for property: " + key);
-			}
-		}
-		if(log.isInfoEnabled()) {
-			log.info("Total methods found: " + map.size());
-		}
-		return map;
-	}
-	
-	// =============================================================
-	// processing methods
-	
-	@SuppressWarnings("unused")
-	private boolean processColor(Declaration d, 
-			Map<String,CSSProperty> properties, Map<String,Term> values) {
+	/**
+	 * Converts TermIdent into value of enum for given class, check where 
+	 * there is only none term in Declaration
+	 * @param <T>
+	 * @param enumType
+	 * @param d
+	 * @param properties
+	 * @return
+	 */
+	private <T extends Enum<T> & CSSProperty> boolean genericTermIdent(
+			Class<T> enumType, 
+			Declaration d, 
+			Map<String, CSSProperty> properties) {
 		
 		if(d.getTerms().size()!=1) return false;
-		
-		final Term term = d.getTerms().get(0);
-		
-		if(term instanceof TermIdent) {
-			return parseProperty(Color.class, (TermIdent) term, 
+    	final Term term = d.getTerms().get(0);
+    	
+    	if(term instanceof TermIdent) {
+    		return genericProperty(enumType, (TermIdent) term, 
 					properties, d.getProperty());
+    	}
+    	return false; 
+		
+	}
+	
+	private <T extends Enum<T> & CSSProperty> boolean genericTermColor(
+			Declaration d,
+			T colorIdentification,
+			Map<String, CSSProperty> properties,
+			Map<String, Term> values) {
+		
+		if(d.getTerms().size()!=1) return false;
+    	final Term term = d.getTerms().get(0);
+		
+    	if(term instanceof TermColor) {
+			properties.put(d.getProperty(), colorIdentification);
+			values.put(d.getProperty(), term);
+			return true;
 		}
-		else if(term instanceof TermColor) {
-			properties.put(d.getProperty(), Color.color);
+		
+		return false;
+    	
+	}
+	
+	private <T extends Enum<T> & CSSProperty> boolean genericTermNumberLength(
+			Declaration d,
+			T lengthIdentification,
+			boolean sanify,
+			Map<String, CSSProperty> properties,
+			Map<String, Term> values
+			) {
+		
+		if(d.getTerms().size()!=1) return false;
+    	final Term term = d.getTerms().get(0);
+		
+    	if(term instanceof TermNumber && ((TermNumber) term).isLength()) {
+    		
+    		// check if below zero, if so set value to zero
+    		if(sanify) {
+    			Float zero = new Float(0.0f);
+    			if(zero.compareTo(((TermNumber) term).getValue())>0) {
+    				((TermNumber) term).setValue(zero);
+    			}
+    		}
+    		
+			properties.put(d.getProperty(), lengthIdentification);
 			values.put(d.getProperty(), term);
 			return true;
 		}
 		
 		return false;
 		
+	}
+	
+	private <T extends Enum<T> & CSSProperty> boolean genericTermNumberInteger(
+			Declaration d,
+			T integerIdentification,
+			boolean sanify,
+			Map<String, CSSProperty> properties,
+			Map<String, Term> values
+			) {
+		
+		if(d.getTerms().size()!=1) return false;
+    	final Term term = d.getTerms().get(0);
+		
+    	if(term instanceof TermNumber && ((TermNumber) term).isInteger()) {
+    		
+    		// check if below zero, if so set value to zero
+    		if(sanify) {
+    			Float zero = new Float(0.0f);
+    			if(zero.compareTo(((TermNumber) term).getValue())>0) {
+    				((TermNumber) term).setValue(zero);
+    			}
+    		}
+    		
+			properties.put(d.getProperty(), integerIdentification);
+			values.put(d.getProperty(), term);
+			return true;
+		}
+		
+		return false;
+		
+	}
+	
+	
+	private <T extends Enum<T> & CSSProperty> boolean genericTermPercent(
+			Declaration d,
+			T percentIdentification,
+			boolean sanify,
+			Map<String, CSSProperty> properties,
+			Map<String, Term> values
+			) {
+		
+		if(d.getTerms().size()!=1) return false;
+    	final Term term = d.getTerms().get(0);
+		
+    	if(term instanceof TermPercent) {
+    		
+    		// check if below zero, if so set value to zero
+    		if(sanify) {
+    			Float zero = new Float(0.0f);
+    			if(zero.compareTo(((TermPercent) term).getValue())>0) {
+    				((TermPercent) term).setValue(zero);
+    			}
+    		}
+    		
+			properties.put(d.getProperty(), percentIdentification);
+			values.put(d.getProperty(), term);
+			return true;
+		}
+		
+		return false;
+		
+	}
+	
+	
+	private <T extends Enum<T> & CSSProperty> boolean genericTermIdentOrColor(
+			Class<T> enumType,
+			T colorIdentification,
+			Declaration d,
+			Map<String, CSSProperty> properties,
+			Map<String, Term> values) {
+	
+		return genericTermIdent(enumType, d, properties)
+			|| genericTermColor(d, colorIdentification, properties, values);
+	}
+		
+	private <T extends Enum<T> & CSSProperty> boolean genericTermIdentOrInteger(
+			Class<T> enumType,
+			T integerIdentification,
+			boolean sanify,
+			Declaration d,
+			Map<String, CSSProperty> properties,
+			Map<String, Term> values) {
+		
+		return genericTermIdent(enumType, d, properties)
+			|| genericTermNumberInteger(d, integerIdentification, sanify, properties, values);
+	}	
+	
+	private <T extends Enum<T> & CSSProperty> boolean genericTermIdentOrLength(
+			Class<T> enumType,
+			T lengthIdentification,
+			boolean sanify,
+			Declaration d,
+			Map<String, CSSProperty> properties,
+			Map<String, Term> values) {
+		
+		return genericTermIdent(enumType, d, properties)
+			|| genericTermNumberLength(d, lengthIdentification, sanify, properties, values);
+	}
+	
+	
+	private <T extends Enum<T> & CSSProperty> boolean genericTermIdentOrLengthOrPercent(
+			Class<T> enumType,
+			T lengthIdentification,
+			T percentIdentification,
+			boolean sanify,
+			Declaration d,
+			Map<String, CSSProperty> properties,
+			Map<String, Term> values) {
+		
+		return genericTermIdent(enumType, d, properties)
+			|| genericTermNumberLength(d, lengthIdentification, sanify, properties, values)
+			|| genericTermPercent(d, percentIdentification, sanify, properties, values);
+	}
+	
+	// =============================================================
+	// processing methods
+	
+	@SuppressWarnings("unused")
+	private boolean processColor(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+		return genericTermIdentOrColor(Color.class, Color.color, d, properties, values);
     }
 	
     @SuppressWarnings("unused")	
-    private boolean processBackgroundAttachment(Declaration d,
-    		Map<String,CSSProperty> properties, Map<String,Term> values) {
+    private boolean processBackgroundAttachment(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(BackgroundAttachment.class, d, properties);
+    }
+    
+    @SuppressWarnings("unused")
+    private Boolean processBackgroundColor(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrColor(BackgroundColor.class, BackgroundColor.color, d, properties, values);
+    }
+    
+    @SuppressWarnings("unused")
+    private Boolean processBackgroundImage(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
     	
     	if(d.getTerms().size()!=1) return false;
     	
     	final Term term = d.getTerms().get(0);
-    	if(term instanceof TermIdent) {
-    		return parseProperty(BackgroundAttachment.class, (TermIdent) term, 
-					properties, d.getProperty());
-    	}
-    	return false; 
-    }
-    
-    @SuppressWarnings("unused")
-    private Boolean processBackgroundColor(Declaration d,
-    		Map<String,CSSProperty> properties, Map<String,Term> values) {
-    	
-    	if(d.getTerms().size()!=1) return false;
-		
-		final Term term = d.getTerms().get(0);
 		
 		if(term instanceof TermIdent) {
-			return parseProperty(BackgroundColor.class, (TermIdent) term, 
+			return genericProperty(BackgroundImage.class, (TermIdent) term, 
 					properties, d.getProperty());
 		}
-		else if(term instanceof TermColor) {
-			properties.put(d.getProperty(), BackgroundColor.color);
+		else if(term instanceof TermUri) {
+			properties.put(d.getProperty(), BackgroundImage.uri);
 			values.put(d.getProperty(), term);
 			return true;
 		}		
-		return false;    	
+		return false; 
     }
     
-	/*
-    private Boolean processBackgroundImage(Declaration d) {
-        //Zpracování vlastnosti background-image. Přípustné hodnoty jsou pouze 
-        //<uri>, none a inherit. Výchozí hodnota je none
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermUri) {
-                TermUri uri = (TermUri)d.getTerms().get(0);
-                backgroundImageValue = uri;
-                backgroundImageType = EnumBackgroundImage.uri;
-                return new Boolean(true);
-                
-            }
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("none")) {
-                    backgroundImageType = EnumBackgroundImage.none;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    backgroundImageType = EnumBackgroundImage.inherit;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
+    @SuppressWarnings("unused")
+    private Boolean processBackgroundRepeat(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(BackgroundRepeat.class, d, properties);
     }
-    
-    private Boolean processBackgroundRepeat(Declaration d) {
-        //Zpracování vlastnosti background-repeat. Přípustné hodnoty jsou pouze 
-        //repeat, repeat-x, repeat-y a inherit. Výchozí hodnota je repeat
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("repeat")) {
-                    backgroundRepeatType = EnumBackgroundRepeat.repeat;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("repeat-x")) {
-                    backgroundRepeatType = EnumBackgroundRepeat.repeat_x;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("repeat-y")) {
-                    backgroundRepeatType = EnumBackgroundRepeat.repeat_y;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("no-repeat")) {
-                    backgroundRepeatType = EnumBackgroundRepeat.no_repeat;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    backgroundRepeatType = EnumBackgroundRepeat.inherit;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
-    }
-    
-    private Boolean processBackgroundPosition(Declaration d) {
-        //Zpracování vlastnosti background-position.
-        Term t1 = null;
-        Term t2 = null;
-        if(d.getTerms().size() == 1) {
-            //Pokud je v deklaraci pouze jeden term, znamená to, že buď je tento term inherit,
-            //nebo je třeba druhou hodnotu doplnit jako identifikátor center
-            //Popis dle W3C: If only one value is specified, the second value is assumed to be 'center'.
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("inherit")) {
-                    backgroundPositionType = EnumBackgroundPosition.inherit;
-                    backgroundPositionHorNumberValue = null;
-                    backgroundPositionHorPercentValue = null;
-                    backgroundPositionVerNumberValue = null;
-                    backgroundPositionVerPercentValue = null;
-                    backgroundPositionHorType = null;
-                    backgroundPositionVerType = null;
-                    return new Boolean(true);
-                }
-            }
-            t1 = d.getTerms().get(0);
-            t2 = new DataTermIdent("center");
-        }
-        if(d.getTerms().size() == 2) {
-            t1 = d.getTerms().get(0);
-            t2 = d.getTerms().get(1);
-        }
         
-        //V tomto bodě jsou definovány termy t1 a t2
-        if(d.getTerms().size() <= 2) {
-            //Pořadí termů Vertical - Horizontal je pouze v případě že druhý je left nebo right
-            //nebo první je top nebo bottom
-            //Pokud ano, přehodím je.
-            if(    ((t2 instanceof TermIdent) && (((TermIdent)t2).getValue().equalsIgnoreCase("left")))
-                || ((t2 instanceof TermIdent) && (((TermIdent)t2).getValue().equalsIgnoreCase("right")))
-                || ((t1 instanceof TermIdent) && (((TermIdent)t1).getValue().equalsIgnoreCase("top")))
-                || ((t1 instanceof TermIdent) && (((TermIdent)t1).getValue().equalsIgnoreCase("bottom")))
-            ) {
-                Term tmp = t1;
-                t1 = t2;
-                t2 = tmp;
-            }
-            //Teď je určitě pořadí termů Horizontal - Vertical
-            NodeData trans = beginTransaction();
-            backgroundPositionType = EnumBackgroundPosition.value;
-            
-            //Zpracování první hodnoty (horizontální směr)
-            if((t1 instanceof TermNumber) && ((TermNumber)t1).isLength()) {
-                backgroundPositionHorNumberValue = (TermNumber)t1;
-                backgroundPositionHorPercentValue = null;
-                backgroundPositionHorType = EnumBackgroundPositionHor.length;
-            }
-            else if(t1 instanceof TermPercent) {
-                backgroundPositionHorNumberValue = null;
-                backgroundPositionHorPercentValue = (TermPercent)t1;
-                backgroundPositionHorType = EnumBackgroundPositionHor.percentage;
-            }
-            else if((t1 instanceof TermIdent) && (((TermIdent)t1).getValue().equalsIgnoreCase("left"))) {
-                backgroundPositionHorNumberValue = null;
-                backgroundPositionHorPercentValue = null;
-                backgroundPositionHorType = EnumBackgroundPositionHor.left;
-            }
-            else if((t1 instanceof TermIdent) && (((TermIdent)t1).getValue().equalsIgnoreCase("right"))) {
-                backgroundPositionHorNumberValue = null;
-                backgroundPositionHorPercentValue = null;
-                backgroundPositionHorType = EnumBackgroundPositionHor.right;
-            }
-            else if((t1 instanceof TermIdent) && (((TermIdent)t1).getValue().equalsIgnoreCase("center"))) {
-                backgroundPositionHorNumberValue = null;
-                backgroundPositionHorPercentValue = null;
-                backgroundPositionHorType = EnumBackgroundPositionHor.center;
-            }
-            else {
-                rollbackTransaction(trans);
-                return new Boolean(false);
-            }
-            
-            //Zpracování druhé hodnoty (Vertikální směr)
-            if((t2 instanceof TermNumber) && ((TermNumber)t2).isLength()) {
-                backgroundPositionVerNumberValue = (TermNumber)t2;
-                backgroundPositionVerPercentValue = null;
-                backgroundPositionVerType = EnumBackgroundPositionVer.length;
-            }
-            else if(t2 instanceof TermPercent) {
-                backgroundPositionVerNumberValue = null;
-                backgroundPositionVerPercentValue = (TermPercent)t2;
-                backgroundPositionVerType = EnumBackgroundPositionVer.percentage;
-            }
-            else if((t2 instanceof TermIdent) && (((TermIdent)t2).getValue().equalsIgnoreCase("top"))) {
-                backgroundPositionVerNumberValue = null;
-                backgroundPositionVerPercentValue = null;
-                backgroundPositionVerType = EnumBackgroundPositionVer.top;
-            }
-            else if((t2 instanceof TermIdent) && (((TermIdent)t2).getValue().equalsIgnoreCase("bottom"))) {
-                backgroundPositionVerNumberValue = null;
-                backgroundPositionVerPercentValue = null;
-                backgroundPositionVerType = EnumBackgroundPositionVer.bottom;
-            }
-            else if((t2 instanceof TermIdent) && (((TermIdent)t2).getValue().equalsIgnoreCase("center"))) {
-                backgroundPositionVerNumberValue = null;
-                backgroundPositionVerPercentValue = null;
-                backgroundPositionVerType = EnumBackgroundPositionVer.center;
-            }
-            else {
-                rollbackTransaction(trans);
-                return new Boolean(false);
-            }
-            
-            //Pokud došel běh programu až sem, jsou obě hodnoty správně rozpoznány
-            return new Boolean(true);
-        }
-        return new Boolean(false);
+    @SuppressWarnings("unused")
+    private boolean processBorderCollapse(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(BorderCollapse.class, d, properties);
     }
     
-    private Boolean processBackground(Declaration d) {
-        NodeData trans = beginTransaction();
-        //Nastavení na výchozí hodnoty
-        backgroundAttachmentType = null;
-        backgroundColorType = null;
-        backgroundColorValue = null;
-        backgroundImageType = null;
-        backgroundImageValue = null;
-        backgroundPositionType = null;
-        backgroundPositionHorType = null;
-        backgroundPositionVerType = null;
-        backgroundPositionHorPercentValue = null;
-        backgroundPositionHorNumberValue = null;
-        backgroundPositionVerPercentValue = null;
-        backgroundPositionVerNumberValue = null;
-        backgroundRepeatType = null;
-        
-        //Každou z částí lze nastavit pouze jednou. Není přípustné aby se v jedné deklaraci
-        //objevila například 2x barva. K určení slouží následující proměnné
-        boolean processedColor = false;
-        boolean processedAttachment = false;
-        boolean processedRepeat = false;
-        boolean processedImage = false;
-        
-        //V seznamu se může vyskytnout 1 nebo 2 termy (pokud dva, tak za sebou), které identifikují
-        //vlastnost background-position. Ty se načítají do pomocných proměnných a na konci cyklu se ověří
-        Term probablyFirstPositionTerm = null;
-        Term probablySecondPositionTerm = null;
-        int firstTermIndex = 0;
-        
-        int index = 0;
-        for(Term t : d.getTerms()) {
-            //Pokud je první (a jediný) identifikátor inherit, pak se nastaví všecm hodnotám inherit
-            //Pokud by se inherit objevilo až například jako třetí term, dojde k ignorování celé deklarace
-            if((t instanceof TermIdent) && ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-                if(d.getTerms().size() == 1) {
-                    backgroundAttachmentType = EnumBackgroundAttachment.inherit;
-                    backgroundColorType = EnumColorTransparent.inherit;
-                    backgroundImageType = EnumBackgroundImage.inherit;
-                    backgroundPositionType = EnumBackgroundPosition.inherit;
-                    backgroundPositionHorType = null;
-                    backgroundPositionVerType = null;
-                    backgroundRepeatType = EnumBackgroundRepeat.inherit;
-                    return true;
-                }
-                else {
-                    rollbackTransaction(trans);
-                    return false;
-                }
-            }
-            
-            //Vytvořím pomocnou deklaraci, která obsahuje jeden jediný term (ten aktuální)
-            //a v jednotlivých blocích se pokouším tuto deklaraci zpracovat. 
-            Declaration tmpDeclaration = new DataDeclaration("background");
-            tmpDeclaration.getTerms().add(t);
-            
-            //Vyzkouším, jestli se jedná o barvu
-            tmpDeclaration.setProperty("background-color");
-            if(processBackgroundColor(tmpDeclaration)) {
-                //Jedná se o barvu. Zjistím, jestli barva už nebyla jednou zadána
-                if(processedColor) {
-                    //Barva už byla jednou zadáno, deklarace je chybná, rollback a konec
-                    rollbackTransaction(trans);
-                    return false;
-                }
-                else {
-                    //Barva ještě nebyla zadána, pokračujeme dalším termem
-                    processedColor = true;
-                    continue;
-                }
-            }
-            tmpDeclaration.setProperty("background-attachment");
-            if(processBackgroundAttachment(tmpDeclaration)) {
-                if(processedAttachment) {
-                    rollbackTransaction(trans);
-                    return false;
-                }
-                else {
-                    processedAttachment = true;
-                    continue;
-                }
-            }
-            tmpDeclaration.setProperty("background-image");
-            if(processBackgroundImage(tmpDeclaration)) {
-                if(processedImage) {
-                    rollbackTransaction(trans);
-                    return false;
-                }
-                else {
-                    processedImage = true;
-                    continue;
-                }
-            }
-            tmpDeclaration.setProperty("background-repeat");
-            if(processBackgroundRepeat(tmpDeclaration)) {
-                if(processedRepeat) {
-                    rollbackTransaction(trans);
-                    return false;
-                }
-                else {
-                    processedRepeat = true;
-                    continue;
-                }
-            }
-            
-            //Term není nic z předchozího, možná se jedná o term z dvojice pro určení background-position
-            //uložím si ho postupně do probablyFirstPositionTerm či probablySecondPositionTerm, pokud nenásledují
-            //přímo po sobě či by se objevil třetí term, je deklarace ignotována
-            if(probablyFirstPositionTerm == null) {
-                probablyFirstPositionTerm = t;
-                firstTermIndex = index;
-            }
-            else {
-                if(index-1 == firstTermIndex) {
-                    probablySecondPositionTerm = t;
-                }
-                else {
-                    rollbackTransaction(trans);
-                    return false;
-                }
-            }
-            
-            index++;
-        }
-        
-        //Pokud byl nalezen jeden nebo dva neidentifikovatelné termy, zkusím je použít jako
-        //backround-position. Pokud se to nepodaří, deklarace je ignorována
-        if(probablyFirstPositionTerm != null) {
-            Declaration tmpDeclaration = new DataDeclaration("background-position");
-            tmpDeclaration.getTerms().add(probablyFirstPositionTerm);
-            if(probablySecondPositionTerm != null) {
-                tmpDeclaration.getTerms().add(probablySecondPositionTerm);
-            }
-            if(!processBackgroundPosition(tmpDeclaration)) {
-            	// FIXME not valid CSS behaviour
-                rollbackTransaction(trans);
-                return false;
-            }
-        }
-        return true;
+     
+    @SuppressWarnings("unused")
+    private boolean processBorderTopColor(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrColor(BorderColor.class, BorderColor.color, d, properties, values);
     }
     
-    private Boolean processBorderCollapse(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("collapse")) {
-                    borderCollapseType = EnumBorderCollapse.collapse;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("separate")) {
-                    borderCollapseType = EnumBorderCollapse.separate;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    borderCollapseType = EnumBorderCollapse.inherit;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
+    @SuppressWarnings("unused")
+    private boolean processBorderRightColor(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrColor(BorderColor.class, BorderColor.color, d, properties, values);
     }
     
+    @SuppressWarnings("unused")
+    private boolean processBorderBottomColor(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrColor(BorderColor.class, BorderColor.color, d, properties, values);
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processBorderLeftColor(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrColor(BorderColor.class, BorderColor.color, d, properties, values);
+    }
+
+    @SuppressWarnings("unused")
+    private boolean processBorderTopStyle(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(BorderStyle.class, d, properties);
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processBorderRightStyle(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(BorderStyle.class, d, properties);
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processBorderBottomStyle(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(BorderStyle.class, d, properties);
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processBorderLeftStyle(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(BorderStyle.class, d, properties);
+    }    
+    
+    @SuppressWarnings("unused")
+    private boolean processBorderSpacing(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	
+    	if(d.getTerms().size() == 1) {
+    		final Term term = d.getTerms().get(0);
+    		if(term instanceof TermIdent) {
+    			return genericProperty(BorderSpacing.class, 
+    					(TermIdent)term, properties, d.getProperty());
+    		}
+    		// numerical values will be doubled
+    		else if(term instanceof TermNumber && ((TermNumber)term).isLength()) {
+    			final TermNumber nterm = (TermNumber) term;  
+    			// sanity check
+    			if(nterm.getValue() < 0) nterm.setValue(0.0f); 
+    				
+    			properties.put(d.getProperty(), BorderSpacing.length);
+    			// construct list of terms
+    			List<Term> terms = new ArrayList<Term>(2);
+    			terms.add(nterm);terms.add(nterm);
+    			listValues.put(d.getProperty(), terms);
+    			return true;
+    		}
+    		
+    	}
+    	// two numerical values
+    	else if(d.getTerms().size()==2) {
+    		final Term term1 = d.getTerms().get(0);
+    		final Term term2 = d.getTerms().get(1);
+    		if(term1 instanceof TermNumber && term2 instanceof TermNumber
+    				&& ((TermNumber) term1).isLength()
+    				&& ((TermNumber) term2).isLength()) {
+    			final TermNumber nterm1 = (TermNumber) term1;
+        		final TermNumber nterm2 = (TermNumber) term2;
+        		// sanity checks
+        		if(nterm1.getValue() < 0) nterm1.setValue(0.0f); 
+        		if(nterm2.getValue() < 0) nterm2.setValue(0.0f);
+        		
+        		properties.put(d.getProperty(), BorderSpacing.length);
+    			// construct list of terms
+    			List<Term> terms = new ArrayList<Term>(2);
+    			terms.add(nterm1);terms.add(nterm2);
+    			listValues.put(d.getProperty(), terms);
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    /*
     private Boolean processBorderColor(Declaration d) {
         NodeData trans = beginTransaction();
         if(d.getTerms().size() == 1) {
@@ -883,367 +878,6 @@ public class DeclarationTransformer {
             else {
                 rollbackTransaction(trans);
                 return false;
-            }
-        }
-        return new Boolean(false);
-    }
-    
-    private Boolean processBorderTopColor(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermColor) {
-                TermColor color = (TermColor)d.getTerms().get(0);
-                borderColorTopValue = color;
-                borderColorTopType = EnumColorTransparent.color;
-                return new Boolean(true);
-                
-            }
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("transparent")) {
-                    borderColorTopType = EnumColorTransparent.transparent;
-                    borderColorTopValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    borderColorTopType = EnumColorTransparent.inherit;
-                    borderColorTopValue = null;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
-    }
-    
-    private Boolean processBorderRightColor(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermColor) {
-                TermColor color = (TermColor)d.getTerms().get(0);
-                borderColorRightValue = color;
-                borderColorRightType = EnumColorTransparent.color;
-                return new Boolean(true);
-                
-            }
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("transparent")) {
-                    borderColorRightType = EnumColorTransparent.transparent;
-                    borderColorRightValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    borderColorRightType = EnumColorTransparent.inherit;
-                    borderColorRightValue = null;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
-    }
-    
-    private Boolean processBorderBottomColor(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermColor) {
-                TermColor color = (TermColor)d.getTerms().get(0);
-                borderColorBottomValue = color;
-                borderColorBottomType = EnumColorTransparent.color;
-                return new Boolean(true);
-                
-            }
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("transparent")) {
-                    borderColorBottomType = EnumColorTransparent.transparent;
-                    borderColorBottomValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    borderColorBottomType = EnumColorTransparent.inherit;
-                    borderColorBottomValue = null;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
-    }
-    
-    private Boolean processBorderLeftColor(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermColor) {
-                TermColor color = (TermColor)d.getTerms().get(0);
-                borderColorLeftValue = color;
-                borderColorLeftType = EnumColorTransparent.color;
-                return new Boolean(true);
-                
-            }
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("transparent")) {
-                    borderColorLeftType = EnumColorTransparent.transparent;
-                    borderColorLeftValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    borderColorLeftType = EnumColorTransparent.inherit;
-                    borderColorLeftValue = null;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
-    }
-    
-    private Boolean processBorderSpacing(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("inherit")) {
-                    borderSpacingType = EnumBorderSpacing.inherit;
-                    borderSpacingHorValue = null;
-                    borderSpacingVerValue = null;
-                    return new Boolean(true);
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    if(num.getValue().floatValue() < 0) {
-                        num.setValue(new Float(0));
-                    }
-                    borderSpacingType = EnumBorderSpacing.length;
-                    borderSpacingHorValue = num;
-                    borderSpacingVerValue = num;
-                    return new Boolean(true);
-                }
-            }
-        }
-        if(d.getTerms().size() == 2) {
-            if(d.getTerms().get(0) instanceof TermNumber && d.getTerms().get(1) instanceof TermNumber) {
-                TermNumber num1 = (TermNumber)d.getTerms().get(0);
-                TermNumber num2 = (TermNumber)d.getTerms().get(1);
-                if(num1.isLength() && num2.isLength()) {
-                    if(num1.getValue().floatValue() < 0) {
-                        num1.setValue(new Float(0));
-                    }
-                    if(num2.getValue().floatValue() < 0) {
-                        num2.setValue(new Float(0));
-                    }
-                    borderSpacingType = EnumBorderSpacing.length;
-                    borderSpacingHorValue = num1;
-                    borderSpacingVerValue = num2;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
-    }
-    
-    private Boolean processBorderTopStyle(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("none")) {
-                    borderStyleTopType = EnumBorderStyle.none;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("hidden")) {
-                    borderStyleTopType = EnumBorderStyle.hidden;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("dotted")) {
-                    borderStyleTopType = EnumBorderStyle.dotted;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("dashed")) {
-                    borderStyleTopType = EnumBorderStyle.dashed;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("solid")) {
-                    borderStyleTopType = EnumBorderStyle.solid;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("double")) {
-                    borderStyleTopType = EnumBorderStyle.prefix_double;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("groove")) {
-                    borderStyleTopType = EnumBorderStyle.groove;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("ridge")) {
-                    borderStyleTopType = EnumBorderStyle.ridge;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inset")) {
-                    borderStyleTopType = EnumBorderStyle.inset;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("outset")) {
-                    borderStyleTopType = EnumBorderStyle.outset;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    borderStyleTopType = EnumBorderStyle.inherit;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
-    }
-    
-    private Boolean processBorderRightStyle(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("none")) {
-                    borderStyleRightType = EnumBorderStyle.none;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("hidden")) {
-                    borderStyleRightType = EnumBorderStyle.hidden;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("dotted")) {
-                    borderStyleRightType = EnumBorderStyle.dotted;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("dashed")) {
-                    borderStyleRightType = EnumBorderStyle.dashed;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("solid")) {
-                    borderStyleRightType = EnumBorderStyle.solid;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("double")) {
-                    borderStyleRightType = EnumBorderStyle.prefix_double;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("groove")) {
-                    borderStyleRightType = EnumBorderStyle.groove;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("ridge")) {
-                    borderStyleRightType = EnumBorderStyle.ridge;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inset")) {
-                    borderStyleRightType = EnumBorderStyle.inset;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("outset")) {
-                    borderStyleRightType = EnumBorderStyle.outset;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    borderStyleRightType = EnumBorderStyle.inherit;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
-    }
-    
-    private Boolean processBorderBottomStyle(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("none")) {
-                    borderStyleBottomType = EnumBorderStyle.none;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("hidden")) {
-                    borderStyleBottomType = EnumBorderStyle.hidden;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("dotted")) {
-                    borderStyleBottomType = EnumBorderStyle.dotted;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("dashed")) {
-                    borderStyleBottomType = EnumBorderStyle.dashed;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("solid")) {
-                    borderStyleBottomType = EnumBorderStyle.solid;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("double")) {
-                    borderStyleBottomType = EnumBorderStyle.prefix_double;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("groove")) {
-                    borderStyleBottomType = EnumBorderStyle.groove;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("ridge")) {
-                    borderStyleBottomType = EnumBorderStyle.ridge;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inset")) {
-                    borderStyleBottomType = EnumBorderStyle.inset;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("outset")) {
-                    borderStyleBottomType = EnumBorderStyle.outset;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    borderStyleBottomType = EnumBorderStyle.inherit;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
-    }
-    
-    private Boolean processBorderLeftStyle(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("none")) {
-                    borderStyleLeftType = EnumBorderStyle.none;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("hidden")) {
-                    borderStyleLeftType = EnumBorderStyle.hidden;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("dotted")) {
-                    borderStyleLeftType = EnumBorderStyle.dotted;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("dashed")) {
-                    borderStyleLeftType = EnumBorderStyle.dashed;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("solid")) {
-                    borderStyleLeftType = EnumBorderStyle.solid;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("double")) {
-                    borderStyleLeftType = EnumBorderStyle.prefix_double;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("groove")) {
-                    borderStyleLeftType = EnumBorderStyle.groove;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("ridge")) {
-                    borderStyleLeftType = EnumBorderStyle.ridge;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inset")) {
-                    borderStyleLeftType = EnumBorderStyle.inset;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("outset")) {
-                    borderStyleLeftType = EnumBorderStyle.outset;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    borderStyleLeftType = EnumBorderStyle.inherit;
-                    return new Boolean(true);
-                }
             }
         }
         return new Boolean(false);
@@ -1329,155 +963,32 @@ public class DeclarationTransformer {
         }
         return new Boolean(false);
     }
-    
-    private Boolean processBorderTopWidth(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    borderWidthTopValue = num;
-                    borderWidthTopType = EnumBorderWidth.length;
-                    return new Boolean(true);
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("thin")) {
-                    borderWidthTopType = EnumBorderWidth.thin;
-                    borderWidthTopValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("medium")) {
-                    borderWidthTopType = EnumBorderWidth.medium;
-                    borderWidthTopValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("thick")) {
-                    borderWidthTopType = EnumBorderWidth.thick;
-                    borderWidthTopValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    borderWidthTopType = EnumBorderWidth.inherit;
-                    borderWidthTopValue = null;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
+    */
+    @SuppressWarnings("unused")
+    private boolean processBorderTopWidth(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLength(BorderWidth.class, BorderWidth.length, true, d, properties, values);
     }
     
-    private Boolean processBorderRightWidth(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    borderWidthRightValue = num;
-                    borderWidthRightType = EnumBorderWidth.length;
-                    return new Boolean(true);
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("thin")) {
-                    borderWidthRightType = EnumBorderWidth.thin;
-                    borderWidthRightValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("medium")) {
-                    borderWidthRightType = EnumBorderWidth.medium;
-                    borderWidthRightValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("thick")) {
-                    borderWidthRightType = EnumBorderWidth.thick;
-                    borderWidthRightValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    borderWidthRightType = EnumBorderWidth.inherit;
-                    borderWidthRightValue = null;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
+    @SuppressWarnings("unused")
+    private boolean processBorderRightWidth(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLength(BorderWidth.class, BorderWidth.length, true, d, properties, values);
     }
     
-    private Boolean processBorderBottomWidth(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    borderWidthBottomValue = num;
-                    borderWidthBottomType = EnumBorderWidth.length;
-                    return new Boolean(true);
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("thin")) {
-                    borderWidthBottomType = EnumBorderWidth.thin;
-                    borderWidthBottomValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("medium")) {
-                    borderWidthBottomType = EnumBorderWidth.medium;
-                    borderWidthBottomValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("thick")) {
-                    borderWidthBottomType = EnumBorderWidth.thick;
-                    borderWidthBottomValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    borderWidthBottomType = EnumBorderWidth.inherit;
-                    borderWidthBottomValue = null;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
+    @SuppressWarnings("unused")
+    private boolean processBorderBottomWidth(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLength(BorderWidth.class, BorderWidth.length, true, d, properties, values);
     }
     
-    private Boolean processBorderLeftWidth(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    borderWidthLeftValue = num;
-                    borderWidthLeftType = EnumBorderWidth.length;
-                    return new Boolean(true);
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("thin")) {
-                    borderWidthLeftType = EnumBorderWidth.thin;
-                    borderWidthLeftValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("medium")) {
-                    borderWidthLeftType = EnumBorderWidth.medium;
-                    borderWidthLeftValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("thick")) {
-                    borderWidthLeftType = EnumBorderWidth.thick;
-                    borderWidthLeftValue = null;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    borderWidthLeftType = EnumBorderWidth.inherit;
-                    borderWidthLeftValue = null;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
+    @SuppressWarnings("unused")
+    private boolean processBorderLeftWidth(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLength(BorderWidth.class, BorderWidth.length, true, d, properties, values);
     }
-    
+       
+    /*
     private Boolean processBorderWidth(Declaration d) {
         NodeData trans = beginTransaction();
         if(d.getTerms().size() == 1) {
@@ -2137,123 +1648,67 @@ public class DeclarationTransformer {
         }
         return false;
     }
+    */
     
-    private Boolean processFontStyle(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("normal")) {
-                    fontStyleType = EnumFontStyle.normal;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("italic")) {
-                    fontStyleType = EnumFontStyle.italic;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("oblique")) {
-                    fontStyleType = EnumFontStyle.oblique;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    fontStyleType = EnumFontStyle.inherit;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
+    @SuppressWarnings("unused")
+    private boolean processFontStyle(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(FontStyle.class, d, properties);
     }
     
-    private Boolean processFontVariant(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("normal")) {
-                    fontVariantType = EnumFontVariant.normal;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("small-caps")) {
-                    fontVariantType = EnumFontVariant.small_caps;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    fontVariantType = EnumFontVariant.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processFontVariant(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(FontVariant.class, d, properties);
     }
     
-    private Boolean processFontWeight(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("normal")) {
-                    fontWeightType = EnumFontWeight.normal;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("bold")) {
-                    fontWeightType = EnumFontWeight.bold;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("bolder")) {
-                    fontWeightType = EnumFontWeight.bolder;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("lighter")) {
-                    fontWeightType = EnumFontWeight.lighter;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    fontWeightType = EnumFontWeight.inherit;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.getUnit() == null) {
-                    if(num.getValue() == 100.0) {
-                        fontWeightType = EnumFontWeight.prefix_100;
-                        return true;
-                    }
-                    if(num.getValue() == 200.0) {
-                        fontWeightType = EnumFontWeight.prefix_200;
-                        return true;
-                    }
-                    if(num.getValue() == 300.0) {
-                        fontWeightType = EnumFontWeight.prefix_300;
-                        return true;
-                    }
-                    if(num.getValue() == 400.0) {
-                        fontWeightType = EnumFontWeight.prefix_400;
-                        return true;
-                    }
-                    if(num.getValue() == 500.0) {
-                        fontWeightType = EnumFontWeight.prefix_500;
-                        return true;
-                    }
-                    if(num.getValue() == 600.0) {
-                        fontWeightType = EnumFontWeight.prefix_600;
-                        return true;
-                    }
-                    if(num.getValue() == 700.0) {
-                        fontWeightType = EnumFontWeight.prefix_700;
-                        return true;
-                    }
-                    if(num.getValue() == 800.0) {
-                        fontWeightType = EnumFontWeight.prefix_800;
-                        return true;
-                    }
-                    if(num.getValue() == 900.0) {
-                        fontWeightType = EnumFontWeight.prefix_900;
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processFontWeight(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	
+    	// test against numeric values
+    	final Float[] test = new Float[] {
+    		100.0f, 200.0f, 300.0f, 400.0f, 500.0f, 
+    		600.0f, 700.0f, 800.0f, 900.0f};
+    	
+    	if(d.getTerms().size() != 1)
+    		return false;
+    	
+    	final Term term = d.getTerms().get(0);
+    	
+    	if(term instanceof TermIdent) {
+    		return genericProperty(FontWeight.class, 
+    				(TermIdent)term, properties, d.getProperty());
+    	}
+    	else if(term instanceof TermNumber && ((TermNumber) term).isInteger()) { 
+    		
+    		Float value = ((TermNumber) term).getValue();
+    		for(int i=0; i < test.length; i++ ) {
+    			int result = value.compareTo(test[i]);
+    			// not found if value is smaller than currently compared
+    			if(result<0) break;
+    			
+    			// match
+    			// construct according enum name
+    			if(result==0) {
+    				try {
+    					properties.put(d.getProperty(), 
+    						FontWeight.valueOf("numeric_" + value.intValue()));
+    					return true;
+    				}
+    				catch(IllegalArgumentException e) {
+    					log.warn("Not found numeric values for FontWeight: " + 
+    							"numeric_ " + value.intValue());
+    					return false;
+    				}
+    			}
+    		}
+    	}
+    	return false;
+    		
     }
     
+    /*
     private Boolean processFont(Declaration d) {
         NodeData trans = beginTransaction();
         //Hodnoty jsou děděné (inherited) - Nastavení na výchozí hodnoty
@@ -2462,7 +1917,9 @@ public class DeclarationTransformer {
             return false;
         }
     }
+    */
     
+    /*
     private Boolean processLineHeight(Declaration d) {
         if(d.getTerms().size() == 1) {
             if(d.getTerms().get(0) instanceof TermIdent) {
@@ -2757,36 +2214,15 @@ public class DeclarationTransformer {
         }
         return false;
     }
+    */
     
-    private Boolean processClear(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("none")) {
-                    clearType = EnumClear.none;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("left")) {
-                    clearType = EnumClear.left;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("right")) {
-                    clearType = EnumClear.right;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("both")) {
-                    clearType = EnumClear.both;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    clearType = EnumClear.both;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processClear(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(Clear.class, d, properties);
     }
-    
+
+    /*
     private Boolean processClip(Declaration d) {
         if(d.getTerms().size() == 1) {
             if(d.getTerms().get(0) instanceof TermIdent) {
@@ -2880,28 +2316,7 @@ public class DeclarationTransformer {
         }
         return false;
     }
-    
-    private Boolean processColor(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermColor) {
-                TermColor color = (TermColor)d.getTerms().get(0);
-                colorValue = color;
-                colorType = EnumColor.color;
-                return true;
-                
-            }
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("inherit")) {
-                    colorType = EnumColor.inherit;
-                    colorValue = null;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
+        
     private Boolean processCounterIncrement(Declaration d) {
         HashMap<String, Integer> out = new HashMap<String, Integer>();
         String lastIdent = null;
@@ -3218,151 +2633,33 @@ public class DeclarationTransformer {
             return false;
         }
     }
+    */
     
-    private Boolean processDirection(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("ltr")) {
-                    directionType = EnumDirection.ltr;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("rtl")) {
-                    directionType = EnumDirection.rtl;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    directionType = EnumDirection.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processDirection(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(Direction.class, d, properties);
     }
     
-    private Boolean processDisplay(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("inline")) {
-                    displayType = EnumDisplay.inline;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("block")) {
-                    displayType = EnumDisplay.block;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("list-item")) {
-                    displayType = EnumDisplay.list_item;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("run-in")) {
-                    displayType = EnumDisplay.run_in;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inline-block")) {
-                    displayType = EnumDisplay.inline_block;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("table")) {
-                    displayType = EnumDisplay.table;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inline-table")) {
-                    displayType = EnumDisplay.inline_table;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("table-row-group")) {
-                    displayType = EnumDisplay.table_row_group;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("table-header-group")) {
-                    displayType = EnumDisplay.table_header_group;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("table-footer-group")) {
-                    displayType = EnumDisplay.table_footer_group;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("table-row")) {
-                    displayType = EnumDisplay.table_row;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("table-column-group")) {
-                    displayType = EnumDisplay.table_column_group;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("table-column")) {
-                    displayType = EnumDisplay.table_column;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("table-cell")) {
-                    displayType = EnumDisplay.table_cell;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("table-caption")) {
-                    displayType = EnumDisplay.table_caption;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("none")) {
-                    displayType = EnumDisplay.none;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    displayType = EnumDisplay.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processDisplay(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(Display.class, d, properties);
+    }
+
+    @SuppressWarnings("unused")
+    private boolean processEmptyCells(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(EmptyCells.class, d, properties);
     }
     
-    private Boolean processEmptyCells(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("show")) {
-                    emptyCellsType = EnumEmptyCells.show;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("hide")) {
-                    emptyCellsType = EnumEmptyCells.hide;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    emptyCellsType = EnumEmptyCells.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processFloat(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(EmptyCells.class, d, properties);
     }
     
-    private Boolean processFloat(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("none")) {
-                    floatType = EnumFloat.none;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("left")) {
-                    floatType = EnumFloat.left;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("right")) {
-                    floatType = EnumFloat.right;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    floatType = EnumFloat.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
+    /*
     private Boolean processListStyleImage(Declaration d) {
         if(d.getTerms().size() == 1) {
             if(d.getTerms().get(0) instanceof TermIdent) {
@@ -3387,101 +2684,21 @@ public class DeclarationTransformer {
         }
         return false;
     }
+    */
     
-    private Boolean processListStylePosition(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("inside")) {
-                    listStylePositionType = EnumListStylePosition.inside;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("outside")) {
-                    listStylePositionType = EnumListStylePosition.outside;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    listStylePositionType = EnumListStylePosition.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processListStylePosition(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(ListStylePosition.class, d, properties);
     }
-    
-    private Boolean processListStyleType(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("disc")) {
-                    listStyleTypeType = EnumListStyleType.disc;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("circle")) {
-                    listStyleTypeType = EnumListStyleType.circle;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("square")) {
-                    listStyleTypeType = EnumListStyleType.square;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("decimal")) {
-                    listStyleTypeType = EnumListStyleType.decimal;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("decimal-leading-zero")) {
-                    listStyleTypeType = EnumListStyleType.decimal_leading_zero;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("lower-roman")) {
-                    listStyleTypeType = EnumListStyleType.lower_roman;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("upper-roman")) {
-                    listStyleTypeType = EnumListStyleType.upper_roman;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("lower-greek")) {
-                    listStyleTypeType = EnumListStyleType.lower_greek;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("lower-latin")) {
-                    listStyleTypeType = EnumListStyleType.lower_latin;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("upper-latin")) {
-                    listStyleTypeType = EnumListStyleType.upper_latin;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("armenian")) {
-                    listStyleTypeType = EnumListStyleType.armenian;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("georgian")) {
-                    listStyleTypeType = EnumListStyleType.georgian;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("lower-alpha")) {
-                    listStyleTypeType = EnumListStyleType.lower_alpha;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("upper-alpha")) {
-                    listStyleTypeType = EnumListStyleType.upper_alpha;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("none")) {
-                    listStyleTypeType = EnumListStyleType.none;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    listStyleTypeType = EnumListStyleType.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+
+    @SuppressWarnings("unused")
+    private boolean processListStyleType(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(ListStyleType.class, d, properties);
     }
-    
+
+    /*
     private Boolean processListStyle(Declaration d) {
         NodeData trans = beginTransaction();
         //Nastavení na výchozí hodnoty
@@ -3562,155 +2779,41 @@ public class DeclarationTransformer {
         }
         return true;
     }
+    */
     
-    private Boolean processMarginTop(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("auto")) {
-                    marginTopType = EnumSize.auto;
-                    marginTopNumberValue = null;
-                    marginTopPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    marginTopType = EnumSize.inherit;
-                    marginTopNumberValue = null;
-                    marginTopPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    marginTopType = EnumSize.length;
-                    marginTopNumberValue = num;
-                    marginTopPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                marginTopType = EnumSize.percentage;
-                marginTopNumberValue = null;
-                marginTopPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processMarginTop(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLengthOrPercent(Margin.class, 
+    			Margin.lenght, Margin.percentage, 
+    			false, d, properties, values);
     }
     
-    private Boolean processMarginRight(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("auto")) {
-                    marginRightType = EnumSize.auto;
-                    marginRightNumberValue = null;
-                    marginRightPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    marginRightType = EnumSize.inherit;
-                    marginRightNumberValue = null;
-                    marginRightPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    marginRightType = EnumSize.length;
-                    marginRightNumberValue = num;
-                    marginRightPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                marginRightType = EnumSize.percentage;
-                marginRightNumberValue = null;
-                marginRightPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processMarginRight(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLengthOrPercent(Margin.class, 
+    			Margin.lenght, Margin.percentage, 
+    			false, d, properties, values);
     }
     
-    private Boolean processMarginBottom(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("auto")) {
-                    marginBottomType = EnumSize.auto;
-                    marginBottomNumberValue = null;
-                    marginBottomPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    marginBottomType = EnumSize.inherit;
-                    marginBottomNumberValue = null;
-                    marginBottomPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    marginBottomType = EnumSize.length;
-                    marginBottomNumberValue = num;
-                    marginBottomPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                marginBottomType = EnumSize.percentage;
-                marginBottomNumberValue = null;
-                marginBottomPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processMarginBottom(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLengthOrPercent(Margin.class, 
+    			Margin.lenght, Margin.percentage, 
+    			false, d, properties, values);
     }
     
-    private Boolean processMarginLeft(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("auto")) {
-                    marginLeftType = EnumSize.auto;
-                    marginLeftNumberValue = null;
-                    marginLeftPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    marginLeftType = EnumSize.inherit;
-                    marginLeftNumberValue = null;
-                    marginLeftPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    marginLeftType = EnumSize.length;
-                    marginLeftNumberValue = num;
-                    marginLeftPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                marginLeftType = EnumSize.percentage;
-                marginLeftNumberValue = null;
-                marginLeftPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processMarginLeft(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLengthOrPercent(Margin.class, 
+    			Margin.lenght, Margin.percentage, 
+    			false, d, properties, values);
     }
     
+    /*
     private Boolean processMargin(Declaration d) {
         NodeData trans = beginTransaction();
         if(d.getTerms().size() == 1) {
@@ -3791,317 +2894,62 @@ public class DeclarationTransformer {
         }
         return new Boolean(false);
     }
-    
-    private Boolean processMaxHeight(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("none")) {
-                    maxHeightType = EnumMinMaxSize.none;
-                    maxHeightNumberValue = null;
-                    maxHeightPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    maxHeightType = EnumMinMaxSize.inherit;
-                    maxHeightNumberValue = null;
-                    maxHeightPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    if(num.getValue().floatValue() < 0) {
-                        num.setValue(new Float(0));
-                    }
-                    maxHeightType = EnumMinMaxSize.length;
-                    maxHeightNumberValue = num;
-                    maxHeightPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                if(percentage.getValue().floatValue() < 0) {
-                    percentage.setValue(new Float(0));
-                }
-                maxHeightType = EnumMinMaxSize.percentage;
-                maxHeightNumberValue = null;
-                maxHeightPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    */
+    @SuppressWarnings("unused")
+    private boolean processMaxHeight(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLengthOrPercent(MaxHeight.class, 
+    			MaxHeight.lenght, MaxHeight.percentage, true, d, properties, values);
     }
     
-    private Boolean processMaxWidth(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("none")) {
-                    maxWidthType = EnumMinMaxSize.none;
-                    maxWidthNumberValue = null;
-                    maxWidthPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    maxWidthType = EnumMinMaxSize.inherit;
-                    maxWidthNumberValue = null;
-                    maxWidthPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    if(num.getValue().floatValue() < 0) {
-                        num.setValue(new Float(0));
-                    }
-                    maxWidthType = EnumMinMaxSize.length;
-                    maxWidthNumberValue = num;
-                    maxWidthPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                if(percentage.getValue().floatValue() < 0) {
-                    percentage.setValue(new Float(0));
-                }
-                maxWidthType = EnumMinMaxSize.percentage;
-                maxWidthNumberValue = null;
-                maxWidthPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processMaxWidth(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLengthOrPercent(MaxWidth.class, 
+    			MaxWidth.lenght, MaxWidth.percentage, true, d, properties, values);
+    }
+
+    @SuppressWarnings("unused")
+    private boolean processMinHeight(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLengthOrPercent(MinHeight.class, 
+    			MinHeight.lenght, MinHeight.percentage, true, d, properties, values);
     }
     
-    private Boolean processMinHeight(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("none")) {
-                    minHeightType = EnumMinMaxSize.none;
-                    minHeightNumberValue = null;
-                    minHeightPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    minHeightType = EnumMinMaxSize.inherit;
-                    minHeightNumberValue = null;
-                    minHeightPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    if(num.getValue().floatValue() < 0) {
-                        num.setValue(new Float(0));
-                    }
-                    minHeightType = EnumMinMaxSize.length;
-                    minHeightNumberValue = num;
-                    minHeightPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                if(percentage.getValue().floatValue() < 0) {
-                    percentage.setValue(new Float(0));
-                }
-                minHeightType = EnumMinMaxSize.percentage;
-                minHeightNumberValue = null;
-                minHeightPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processMinWidth(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLengthOrPercent(MinWidth.class, 
+    			MinWidth.lenght, MinWidth.percentage, true, d, properties, values);
     }
     
-    private Boolean processMinWidth(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("none")) {
-                    minWidthType = EnumMinMaxSize.none;
-                    minWidthNumberValue = null;
-                    minWidthPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    minWidthType = EnumMinMaxSize.inherit;
-                    minWidthNumberValue = null;
-                    minWidthPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    if(num.getValue().floatValue() < 0) {
-                        num.setValue(new Float(0));
-                    }
-                    minWidthType = EnumMinMaxSize.length;
-                    minWidthNumberValue = num;
-                    minWidthPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                if(percentage.getValue().floatValue() < 0) {
-                    percentage.setValue(new Float(0));
-                }
-                minWidthType = EnumMinMaxSize.percentage;
-                minWidthNumberValue = null;
-                minWidthPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processOrphans(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrInteger(Orphans.class, 
+    			Orphans.integer, true, d, properties, values);
     }
     
-    private Boolean processOrphans(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("inherit")) {
-                    orphansType = EnumOrphans.inherit;
-                    orphansIntegerValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isInteger()) {
-                    orphansType = EnumOrphans.integer;
-                    orphansIntegerValue = num;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processOutlineColor(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrColor(OutlineColor.class, OutlineColor.color, d, properties, values);
+    }
+
+    @SuppressWarnings("unused")
+    private boolean processOutlineStyle(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(OutlineStyle.class, d, properties);
+    }   
+    
+    @SuppressWarnings("unused")
+    private boolean processOutlineWidth(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLength(OutlineWidth.class, 
+    			OutlineWidth.length, false, d, properties, values);
     }
     
-    private Boolean processOutlineColor(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermColor) {
-                TermColor color = (TermColor)d.getTerms().get(0);
-                outlineColorValue = color;
-                outlineColorType = EnumColorInvert.color;
-                return true;
-                
-            }
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("invert")) {
-                    outlineColorType = EnumColorInvert.invert;
-                    outlineColorValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    outlineColorType = EnumColorInvert.inherit;
-                    outlineColorValue = null;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
-    private Boolean processOutlineStyle(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("none")) {
-                    outlineStyleType = EnumBorderStyle.none;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("hidden")) {
-                    outlineStyleType = EnumBorderStyle.hidden;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("dotted")) {
-                    outlineStyleType = EnumBorderStyle.dotted;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("dashed")) {
-                    outlineStyleType = EnumBorderStyle.dashed;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("solid")) {
-                    outlineStyleType = EnumBorderStyle.solid;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("double")) {
-                    outlineStyleType = EnumBorderStyle.prefix_double;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("groove")) {
-                    outlineStyleType = EnumBorderStyle.groove;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("ridge")) {
-                    outlineStyleType = EnumBorderStyle.ridge;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inset")) {
-                    outlineStyleType = EnumBorderStyle.inset;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("outset")) {
-                    outlineStyleType = EnumBorderStyle.outset;
-                    return new Boolean(true);
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    outlineStyleType = EnumBorderStyle.inherit;
-                    return new Boolean(true);
-                }
-            }
-        }
-        return new Boolean(false);
-    }
-    
-    private Boolean processOutlineWidth(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    outlineWidthValue = num;
-                    outlineWidthType = EnumBorderWidth.length;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("thin")) {
-                    outlineWidthType = EnumBorderWidth.thin;
-                    outlineWidthValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("medium")) {
-                    outlineWidthType = EnumBorderWidth.medium;
-                    outlineWidthValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("thick")) {
-                    outlineWidthType = EnumBorderWidth.thick;
-                    outlineWidthValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    outlineWidthType = EnumBorderWidth.inherit;
-                    outlineWidthValue = null;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
+    /*
     private Boolean processOutline(Declaration d) {
         NodeData trans = beginTransaction();
         //Nastavení na výchozí hodnoty
@@ -4184,184 +3032,47 @@ public class DeclarationTransformer {
         }
         return true;
     }
+    */
     
-    private Boolean processOverflow(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("visible")) {
-                    overflowType = EnumOverflow.visible;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("hidden")) {
-                    overflowType = EnumOverflow.hidden;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("scroll")) {
-                    overflowType = EnumOverflow.scroll;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("auto")) {
-                    overflowType = EnumOverflow.auto;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    overflowType = EnumOverflow.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processOverflow(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(Overflow.class, d, properties);
     }
     
-    private Boolean processPaddingTop(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("inherit")) {
-                    paddingTopType = EnumPaddingWidth.inherit;
-                    paddingTopNumberValue = null;
-                    paddingTopPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    if(num.getValue().floatValue() < 0) {
-                        num.setValue(new Float(0));
-                    }
-                    paddingTopType = EnumPaddingWidth.length;
-                    paddingTopNumberValue = num;
-                    paddingTopPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                if(percentage.getValue().floatValue() < 0) {
-                    percentage.setValue(new Float(0));
-                }
-                paddingTopType = EnumPaddingWidth.percentage;
-                paddingTopNumberValue = null;
-                paddingTopPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processPaddingTop(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLengthOrPercent(Padding.class,
+    			Padding.length, Padding.percentage,
+    			true, d, properties, values);
     }
     
-    private Boolean processPaddingRight(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("inherit")) {
-                    paddingRightType = EnumPaddingWidth.inherit;
-                    paddingRightNumberValue = null;
-                    paddingRightPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    if(num.getValue().floatValue() < 0) {
-                        num.setValue(new Float(0));
-                    }
-                    paddingRightType = EnumPaddingWidth.length;
-                    paddingRightNumberValue = num;
-                    paddingRightPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                if(percentage.getValue().floatValue() < 0) {
-                    percentage.setValue(new Float(0));
-                }
-                paddingRightType = EnumPaddingWidth.percentage;
-                paddingRightNumberValue = null;
-                paddingRightPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processPaddingRight(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLengthOrPercent(Padding.class,
+    			Padding.length, Padding.percentage,
+    			true, d, properties, values);
     }
     
-    private Boolean processPaddingBottom(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("inherit")) {
-                    paddingBottomType = EnumPaddingWidth.inherit;
-                    paddingBottomNumberValue = null;
-                    paddingBottomPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    if(num.getValue().floatValue() < 0) {
-                        num.setValue(new Float(0));
-                    }
-                    paddingBottomType = EnumPaddingWidth.length;
-                    paddingBottomNumberValue = num;
-                    paddingBottomPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                if(percentage.getValue().floatValue() < 0) {
-                    percentage.setValue(new Float(0));
-                }
-                paddingBottomType = EnumPaddingWidth.percentage;
-                paddingBottomNumberValue = null;
-                paddingBottomPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processPaddingBottom(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLengthOrPercent(Padding.class,
+    			Padding.length, Padding.percentage,
+    			true, d, properties, values);
     }
     
-    private Boolean processPaddingLeft(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("inherit")) {
-                    paddingLeftType = EnumPaddingWidth.inherit;
-                    paddingLeftNumberValue = null;
-                    paddingLeftPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    if(num.getValue().floatValue() < 0) {
-                        num.setValue(new Float(0));
-                    }
-                    paddingLeftType = EnumPaddingWidth.length;
-                    paddingLeftNumberValue = num;
-                    paddingLeftPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                if(percentage.getValue().floatValue() < 0) {
-                    percentage.setValue(new Float(0));
-                }
-                paddingLeftType = EnumPaddingWidth.percentage;
-                paddingLeftNumberValue = null;
-                paddingLeftPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processPaddingLeft(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdentOrLengthOrPercent(Padding.class,
+    			Padding.length, Padding.percentage,
+    			true, d, properties, values);
     }
-    
+
+    /*
     private Boolean processPadding(Declaration d) {
         NodeData trans = beginTransaction();
         if(d.getTerms().size() == 1) {
@@ -4442,123 +3153,33 @@ public class DeclarationTransformer {
         }
         return new Boolean(false);
     }
+    */
     
-    private Boolean processPageBreakAfter(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("auto")) {
-                    pageBreakAfterType = EnumPageBreak.auto;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("always")) {
-                    pageBreakAfterType = EnumPageBreak.always;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("avoid")) {
-                    pageBreakAfterType = EnumPageBreak.avoid;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("left")) {
-                    pageBreakAfterType = EnumPageBreak.left;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("right")) {
-                    pageBreakAfterType = EnumPageBreak.right;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    pageBreakAfterType = EnumPageBreak.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processPageBreakAfter(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(PageBreak.class, d, properties);
+    }
+        
+    @SuppressWarnings("unused")
+    private boolean processPageBreakBefore(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(PageBreak.class, d, properties);
     }
     
-    private Boolean processPageBreakBefore(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("auto")) {
-                    pageBreakBeforeType = EnumPageBreak.auto;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("always")) {
-                    pageBreakBeforeType = EnumPageBreak.always;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("avoid")) {
-                    pageBreakBeforeType = EnumPageBreak.avoid;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("left")) {
-                    pageBreakBeforeType = EnumPageBreak.left;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("right")) {
-                    pageBreakBeforeType = EnumPageBreak.right;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    pageBreakBeforeType = EnumPageBreak.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processPageBreakInside(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(PageBreakInside.class, d, properties);
     }
     
-    private Boolean processPageBreakInside(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("auto")) {
-                    pageBreakInsideType = EnumPageBreakInside.auto;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("avoid")) {
-                    pageBreakInsideType = EnumPageBreakInside.avoid;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    pageBreakInsideType = EnumPageBreakInside.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processPosition(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(Position.class, d, properties);
     }
-   
-    private Boolean processPosition(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("static")) {
-                    positionType = EnumPosition.prefix_static;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("relative")) {
-                    positionType = EnumPosition.relative;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("absolute")) {
-                    positionType = EnumPosition.absolute;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("fixed")) {
-                    positionType = EnumPosition.fixed;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    positionType = EnumPosition.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
+
+    /*
     private Boolean processQuotes(Declaration d) {
         ArrayList<String> out = new ArrayList<String>();
         for(Term t : d.getTerms()) {
@@ -4601,57 +3222,20 @@ public class DeclarationTransformer {
             return false;
         }
     }
-    
-    private Boolean processTableLayout(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("auto")) {
-                    tableLayoutType = EnumTableLayout.auto;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("fixed")) {
-                    tableLayoutType = EnumTableLayout.fixed;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    tableLayoutType = EnumTableLayout.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+    */
+    @SuppressWarnings("unused")
+    private boolean processTableLayout(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(TableLayout.class, d, properties);
     }
     
-    private Boolean processTextAlign(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("left")) {
-                    textAlignType = EnumTextAlign.left;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("right")) {
-                    textAlignType = EnumTextAlign.right;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("center")) {
-                    textAlignType = EnumTextAlign.center;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("justify")) {
-                    textAlignType = EnumTextAlign.justify;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    textAlignType = EnumTextAlign.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processTextAlign(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(TextAlign.class, d, properties);
     }
-    
+
+    /*
     private Boolean processTextDecoration(Declaration d) {
         NodeData trans = beginTransaction();
         //Nastavení na výchozí hodnoty
@@ -4760,303 +3344,68 @@ public class DeclarationTransformer {
         }
         return true;
     }
+    */
     
-    private Boolean processTextIndent(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("inherit")) {
-                    textIndentType = EnumTextIndent.inherit;
-                    textIndentNumberValue = null;
-                    textIndentPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    textIndentType = EnumTextIndent.length;
-                    textIndentNumberValue = num;
-                    textIndentPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                textIndentType = EnumTextIndent.percentage;
-                textIndentNumberValue = null;
-                textIndentPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processTextIdent(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+		return genericTermIdentOrLengthOrPercent(TextIndent.class,
+				TextIndent.length, TextIndent.percentage, 
+				false, d, properties, values);		
     }
     
-    private Boolean processTextTransform(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("capitalize")) {
-                    textTransformType = EnumTextTransform.capitalize;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("uppercase")) {
-                    textTransformType = EnumTextTransform.uppercase;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("lowercase")) {
-                    textTransformType = EnumTextTransform.lowercase;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("none")) {
-                    textTransformType = EnumTextTransform.none;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    textTransformType = EnumTextTransform.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processTextTransform(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(TextTransform.class, d, properties);
     }
     
-    private Boolean processUnicodeBidi(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("normal")) {
-                    unicodeBidiType = EnumUnicodeBidi.normal;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("embed")) {
-                    unicodeBidiType = EnumUnicodeBidi.embed;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("bidi-override")) {
-                    unicodeBidiType = EnumUnicodeBidi.bidi_override;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    unicodeBidiType = EnumUnicodeBidi.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processUnicodeBidi(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+		return genericTermIdent(UnicodeBidi.class, d, properties);
+	}
+    
+    @SuppressWarnings("unused")
+    private boolean processVerticalAlign(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+		return genericTermIdentOrLengthOrPercent(VerticalAlign.class,
+				VerticalAlign.length, VerticalAlign.percentage, 
+				false, d, properties, values);		
     }
     
-    private Boolean processVerticalAlign(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("inherit")) {
-                    verticalAlignType = EnumVerticalAlign.inherit;
-                    verticalAlignNumberValue = null;
-                    verticalAlignPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("baseline")) {
-                    verticalAlignType = EnumVerticalAlign.baseline;
-                    verticalAlignNumberValue = null;
-                    verticalAlignPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("sub")) {
-                    verticalAlignType = EnumVerticalAlign.sub;
-                    verticalAlignNumberValue = null;
-                    verticalAlignPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("super")) {
-                    verticalAlignType = EnumVerticalAlign.prefix_super;
-                    verticalAlignNumberValue = null;
-                    verticalAlignPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("top")) {
-                    verticalAlignType = EnumVerticalAlign.top;
-                    verticalAlignNumberValue = null;
-                    verticalAlignPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("text-top")) {
-                    verticalAlignType = EnumVerticalAlign.text_top;
-                    verticalAlignNumberValue = null;
-                    verticalAlignPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("middle")) {
-                    verticalAlignType = EnumVerticalAlign.middle;
-                    verticalAlignNumberValue = null;
-                    verticalAlignPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("bottom")) {
-                    verticalAlignType = EnumVerticalAlign.bottom;
-                    verticalAlignNumberValue = null;
-                    verticalAlignPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("text-bottom")) {
-                    verticalAlignType = EnumVerticalAlign.text_bottom;
-                    verticalAlignNumberValue = null;
-                    verticalAlignPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    verticalAlignType = EnumVerticalAlign.length;
-                    verticalAlignNumberValue = num;
-                    verticalAlignPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                verticalAlignType = EnumVerticalAlign.percentage;
-                verticalAlignNumberValue = null;
-                verticalAlignPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    
+    @SuppressWarnings("unused")
+    private boolean processVisibility(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+		return genericTermIdent(Visibility.class, d, properties);
+	}
+    
+    @SuppressWarnings("unused")
+    private boolean processWhiteSpace(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+    	return genericTermIdent(WhiteSpace.class, d, properties);
     }
     
-    private Boolean processVisibility(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("visible")) {
-                    visibilityType = EnumVisibility.visible;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("hidden")) {
-                    visibilityType = EnumVisibility.hidden;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("collapse")) {
-                    visibilityType = EnumVisibility.collapse;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    visibilityType = EnumVisibility.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processWidows(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+		return genericTermIdentOrInteger(Widows.class, Widows.integer, true, d, properties, values);
     }
     
-    private Boolean processWhiteSpace(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("normal")) {
-                    whiteSpaceType = EnumWhiteSpace.normal;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("pre")) {
-                    whiteSpaceType = EnumWhiteSpace.pre;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("nowrap")) {
-                    whiteSpaceType = EnumWhiteSpace.nowrap;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("pre-wrap")) {
-                    whiteSpaceType = EnumWhiteSpace.pre_wrap;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("pre-line")) {
-                    whiteSpaceType = EnumWhiteSpace.pre_line;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    whiteSpaceType = EnumWhiteSpace.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processWordSpacing(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+		return genericTermIdentOrLength(WordSpacing.class, WordSpacing.length, false, d, properties, values);
     }
     
-    private Boolean processWidows(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("inherit")) {
-                    widowsType = EnumWidows.inherit;
-                    widowsIntegerValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isInteger()) {
-                    widowsType = EnumWidows.integer;
-                    widowsIntegerValue = num;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processZIndex(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term> values, Map<String, List<Term>> listValues) {
+		return genericTermIdentOrInteger(ZIndex.class, ZIndex.integer, false, d, properties, values);
     }
     
-    private Boolean processWordSpacing(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("inherit")) {
-                    wordSpacingType = EnumWordSpacing.inherit;
-                    wordSpacingNumberValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isNumber()) {
-                    wordSpacingType = EnumWordSpacing.length;
-                    wordSpacingNumberValue = num;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
-    private Boolean processZIndex(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("inherit")) {
-                    zIndexType = EnumZIndex.inherit;
-                    zIndexIntegerValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("auto")) {
-                    zIndexType = EnumZIndex.auto;
-                    zIndexIntegerValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isInteger()) {
-                    zIndexType = EnumZIndex.integer;
-                    zIndexIntegerValue = num;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
+    /*
     private Boolean processContent(Declaration d) {
 
         ArrayList<Term> out = new ArrayList<Term>();

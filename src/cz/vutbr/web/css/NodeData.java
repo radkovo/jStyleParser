@@ -17,9 +17,9 @@ public interface NodeData {
 	};    
 	
 	public enum Azimuth implements CSSProperty {
-		angle, left_side, far_left, left, center_left, center,
-		center_right, right, far_right, right_side, behind,
-		leftwards, rightwards, INHERIT;
+		angle, LEFT_SIDE, FAR_LEFT, LEFT, CENTER_LEFT, CENTER,
+		CENTER_RIGHT, RIGHT, FAR_RIGHT, RIGHT_SIDE, BEHIND,
+		LEFTWARDS, RIGHTWARDS, INHERIT;
 		public boolean inherited() { return true;}
 	}
     
@@ -39,12 +39,12 @@ public interface NodeData {
     }
     
     public enum BackgroundAttachment implements CSSProperty {
-    	scroll, fixed, INHERIT;
+    	SCROLL, FIXED, INHERIT;
     	public boolean inherited() { return false;}
     };
     
     public enum BackgroundColor implements CSSProperty {
-    	color, transparent, INHERIT;
+    	color, TRANSPARENT, INHERIT;
     	public boolean inherited() { return false;}
     }
     
@@ -59,21 +59,26 @@ public interface NodeData {
     };
     
     public enum BackgroundPositionHor implements CSSProperty {
-    	percentage, lenght, left, center, right, INHERIT;
+    	percentage, lenght, LEFT, CENTER, RIGHT, INHERIT;
     	public boolean inherited() { return false;}
     };
     
     public enum BackgroundPositionVer implements CSSProperty {
-    	percentage, length, top, center, bottom, INHERIT;
+    	percentage, length, TOP, CENTER, BOTTOM, INHERIT;
     	public boolean inherited() { return false;}
     };
     public enum BackgroundRepeat implements CSSProperty {
-    	repeat, repeat_x, repeat_y, no_repeat, INHERIT;
+    	REPEAT, REPEAT_X, REPEAT_Y, NO_REPEAT, INHERIT;
     	public boolean inherited() { return false;}
     };
     
     public enum BorderCollapse implements CSSProperty { 
-    	collapse, separate, INHERIT;
+    	COLLAPSE, SEPARATE, INHERIT;
+    	public boolean inherited() { return false;}
+    };
+    
+    public enum BorderColor implements CSSProperty {
+    	color, TRANSPARENT, INHERIT;
     	public boolean inherited() { return false;}
     };
     
@@ -83,17 +88,17 @@ public interface NodeData {
     }
     
     public enum BorderStyle implements CSSProperty { 
-    	NONE, hidden, dotted, dashed, solid, DOUBLE, 
-    	groove, ridge, inset, outset, INHERIT;
+    	NONE, HIDDEN, DOTTED, DASHED, SOLID, DOUBLE, 
+    	GROOVE, RIDGE, INSET, OUTSET, INHERIT;
     	public boolean inherited() { return false;}
     };
     public enum BorderWidth implements CSSProperty {
-    	length, thin, MEDIUM, thick, INHERIT;
+    	length, THIN, MEDIUM, THICK, INHERIT;
     	public boolean inherited() { return false;}
     };
     
     public enum Elevation implements CSSProperty {
-    	angle, below, level, above, higher, lower, INHERIT;
+    	angle, BELOW, LEVEL, ABOVE, HIGHER, LOWER, INHERIT;
     	public boolean inherited() { return true;}
     }
     
@@ -103,57 +108,56 @@ public interface NodeData {
     };
     
     public enum FontSize implements CSSProperty { 
-    	percentage, length, xx_small, x_small, small, 
-    	MEDIUM, large, x_large, xx_large, larger, 
-    	smaller, INHERIT;
+    	percentage, length, XX_SMALL, X_SMALL, SMALL, 
+    	MEDIUM, LARGE, X_LARGE, XX_LARGE, LARGER, 
+    	SMALLER, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum FontStyle implements CSSProperty { 
-    	NORMAL, italic, oblique, INHERIT;
+    	NORMAL, ITALIC, OBLIQUE, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum FontVariant implements CSSProperty { 
-    	small_caps, INHERIT, NORMAL;
+    	SMALL_CAPS, INHERIT, NORMAL;
     	public boolean inherited() { return true;}
     };
     
     public enum FontWeight implements CSSProperty { 
-    	NORMAL, bold, bolder, lighter, prefix_100, 
-    	prefix_200, prefix_300, prefix_400, prefix_500, 
-    	prefix_600, prefix_700, prefix_800, prefix_900, 
-    	INHERIT;
+    	numeric_100, numeric_200, numeric_300, numeric_400, numeric_500, 
+    	numeric_600, numeric_700, numeric_800, numeric_900, 
+    	NORMAL, BOLD, BOLDER, LIGHTER, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum LineHeight implements CSSProperty {
-    	NORMAL, number, length, percentage, INHERIT;
+    	number, length, percentage, NORMAL, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum CaptionSide implements CSSProperty {
-    	top, bottom, INHERIT;
+    	TOP, BOTTOM, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum Content implements CSSProperty { 
-    	NORMAL, NONE, list_values, INHERIT;
+    	list_values, NORMAL, NONE, INHERIT;
     	public boolean inherited() { return false;}
     };
     
     public enum CounterIncrement implements CSSProperty { 
-    	NONE, list_values, INHERIT;
+    	list_values, NONE, INHERIT;
     	public boolean inherited() { return false;}
     };
     
     public enum CounterReset implements CSSProperty {
-    	NONE, list_values, INHERIT;
+    	list_values, NONE, INHERIT;
     	public boolean inherited() { return false;}
     };
     
     public enum Clear implements CSSProperty {
-    	NONE, left, right, both, INHERIT;
+    	NONE, LEFT, RIGHT, BOTH, INHERIT;
     	public boolean inherited() { return false;}
     };
     
@@ -163,24 +167,24 @@ public interface NodeData {
     };
     
     public enum Cursor implements CSSProperty { 
-    	AUTO, crosshair, DEFAULT, pointer, 
-    	move, e_resize, ne_resize, nw_resize, n_resize, se_resize, 
-    	sw_resize, s_resize, w_resize, text, wait, 
-    	progress, help, INHERIT;
+    	AUTO, CROSSHAIR, DEFAULT, POINTER, MOVE, E_RESIZE, 
+    	NE_RESIZE, NW_RESIZE, N_RESIZE, SE_RESIZE, 
+    	SW_RESIZE, S_RESIZE, W_RESIZE, TEXT, WAIT, 
+    	PROGRESS, HELP, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum Direction implements CSSProperty { 
-    	ltr, rtl, INHERIT;
+    	LTR, RTL, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum Display implements CSSProperty { 
-    	inline, block, list_item, run_in, inline_block, 
-    	table, inline_table, table_row_group, 
-    	table_header_group, table_footer_group, table_row, 
-    	table_column_group, table_column, table_cell, 
-    	table_caption, NONE, INHERIT;
+    	INLINE, BLOCK, LIST_ITEM, RUN_IN, INLINE_BLOCK, 
+    	TABLE, INLINE_TABLE, TABLE_ROW_GROUP, 
+    	TABLE_HEADER_GROUP, TABLE_FOOTER_GROUP, TABLE_ROW, 
+    	TABLE_COLUMN_GROUP, TABLE_COLUMN, TABLE_CELL, 
+    	TABLE_CAPTION, NONE, INHERIT;
     	public boolean inherited() { return false;}
     };
     
@@ -215,12 +219,12 @@ public interface NodeData {
     }
     
     public enum EmptyCells implements CSSProperty { 
-    	show, hide, INHERIT;
+    	SHOW, HIDE, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum Float implements CSSProperty { 
-    	NONE, left, right, INHERIT;
+    	NONE, LEFT, RIGHT, INHERIT;
     	public boolean inherited() { return false;}
     };
     
@@ -230,19 +234,19 @@ public interface NodeData {
     };
     
     public enum ListStylePosition implements CSSProperty { 
-    	inside, outside, INHERIT;
+    	INSIDE, OUTSIDE, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum ListStyleType implements CSSProperty { 
-    	disc, circle, square, decimal, decimal_leading_zero, 
-    	lower_roman, upper_roman, lower_greek, lower_latin, 
-    	upper_latin, armenian, georgian, lower_alpha, 
-    	upper_alpha, NONE, INHERIT;
+    	DISC, CIRCLE, SQUARE, DECIMAL, DECIMAL_LEADING_ZERO, 
+    	LOWER_ROMAN, UPPER_ROMAN, LOWER_GREEK, LOWER_LATIN, 
+    	UPPER_LATN, ARMENIAN, GEORGIAN, LOWER_ALPHA, 
+    	UPPER_ALPHA, NONE, INHERIT;
     	public boolean inherited() { return true;}
     };
     
-    public enum MarginWidth implements CSSProperty {
+    public enum Margin implements CSSProperty {
     	lenght, percentage, AUTO, INHERIT;
     	public boolean inherited() { return false;}
     }
@@ -253,48 +257,38 @@ public interface NodeData {
     };
     
     public enum OutlineWidth implements CSSProperty {
-    	thin, MEDIUM, thick, INHERIT;
+    	length, THIN, MEDIUM, THICK, INHERIT;
     	public boolean inherited() { return false;}
     };
     
     public enum OutlineStyle implements CSSProperty {
-    	NONE, dotted, dashed, solid, DOUBLE, 
-    	groove, ridge, inset, outset, hidden, INHERIT;
+    	NONE, DOTTED, DASHED, SOLID, DOUBLE, 
+    	GROOVE, RIDGE, INSET, OUTSET, HIDDEN, INHERIT;
     	public boolean inherited() { return false;}
     };
     
     public enum OutlineColor implements CSSProperty {
-    	invert, color, inerit;
+    	color, INVERT, INHERIT;
     	public boolean inherited() { return false;}
     };
     
     public enum Overflow implements CSSProperty { 
-    	visible, hidden, scroll, AUTO, INHERIT;
+    	VISIBLE, HIDDEN, SCROLL, AUTO, INHERIT;
     	public boolean inherited() { return false;}
     };
     
-    public enum PaddingWidth implements CSSProperty {
+    public enum Padding implements CSSProperty {
     	length, percentage, AUTO, INHERIT;
     	public boolean inherited() { return false;}
     };
     
     public enum PageBreak implements CSSProperty { 
-    	AUTO, always, avoid, left, right, INHERIT;
+    	AUTO, ALWAYS, AVOID, LEFT, RIGHT, INHERIT;
     	public boolean inherited() { return false;}
-    };
-    
-    public enum PageBreakBefore implements CSSProperty {
-    	AUTO, always, avoid, left, right, INHERIT;
-    	public boolean inherited() { return false;} 
-    };
-    
-    public enum PageBreakAfter implements CSSProperty {
-    	AUTO, always, avoid, left, right, INHERIT;
-    	public boolean inherited() { return false;} 
-    };
+    };    
     
     public enum PageBreakInside implements CSSProperty {
-    	AUTO, avoid, INHERIT;
+    	AUTO, AVOID, INHERIT;
     	public boolean inherited() { return true;}
     };
     
@@ -314,7 +308,7 @@ public interface NodeData {
     };
     
     public enum Pitch implements CSSProperty {
-    	frequency, x_low, low, MEDIUM, high, x_high, INHERIT;
+    	frequency, X_LOW, LOW, MEDIUM, HIGH, X_HIGH, INHERIT;
     	public boolean inherited() { return true;}
     };
     
@@ -324,7 +318,7 @@ public interface NodeData {
     };
     
     public enum Position implements CSSProperty { 
-    	STATIC, relative, absolute, fixed, INHERIT;
+    	STATIC, RELATIVE, ABSOLUTE, FIXED, INHERIT;
     	public boolean inherited() { return false;}
     };
     
@@ -334,28 +328,28 @@ public interface NodeData {
     };
     
     public enum SpeakHeader implements CSSProperty {
-    	once, always, INHERIT;
+    	ONCE, ALWAYS, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum SpeakNumeral implements CSSProperty {
-    	digits, continuous, INHERIT;
+    	DIGITS, CONTINUOUS, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum SpeakPunctuation implements CSSProperty {
-    	code, NONE, INHERIT;
+    	CODE, NONE, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum Speak implements CSSProperty {
-    	NORMAL, NONE, spell_out, INHERIT;
+    	NORMAL, NONE, SPELL_OUT, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum SpeechRate implements CSSProperty {
-    	number, x_slow, slow, MEDIUM, fast, x_fast,
-    	faster, slower, INHERIT;
+    	number, X_SLOW, SLOW, MEDIUM, FAST, X_FAST,
+    	FASTER, SLOWER, INHERIT;
     	public boolean inherited() { return true;}
     }
     
@@ -385,22 +379,22 @@ public interface NodeData {
     };
     
     public enum Quotes implements CSSProperty { 
-    	NONE, list_values, INHERIT;
+    	list_values, NONE, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum TableLayout implements CSSProperty { 
-    	AUTO, fixed, INHERIT;
+    	AUTO, FIXED, INHERIT;
     	public boolean inherited() { return false;}
     }
     
     public enum TextAlign implements CSSProperty { 
-    	by_direction, left, right, center, justify, INHERIT;
+    	BY_DIRECTION, LEFT, RIGHT, CENTER, JUSTIFY, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum TextDecoration implements CSSProperty { 
-    	underline, overline, line_through, blink, NONE, INHERIT;
+    	UNDERLINE, OVERLINE, BLINK, LINE_THROUGH, NONE, INHERIT;
     	public boolean inherited() { return false;}
     };
     
@@ -410,24 +404,23 @@ public interface NodeData {
     };
     
     public enum TextTransform implements CSSProperty { 
-    	capitalize, uppercase, lowercase, NONE, INHERIT;
+    	CAPITALIZE, UPPERCASE, LOWERCASE, NONE, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum UnicodeBidi implements CSSProperty { 
-    	NORMAL, embed, bidi_override, INHERIT;
+    	NORMAL, EMDEB, BIDI_OVERRIDE, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum VerticalAlign implements CSSProperty { 
-    	baseline, sub, SUPER, top, text_top, 
-    	middle, bottom, text_bottom, length, percentage, 
-    	INHERIT;
+    	length, percentage, BASELINE, SUB, SUPER, TOP,
+    	TEXT_TOP, MIDDLE, BOTTOM, TEXT_BOTTOM, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum Visibility implements CSSProperty { 
-    	visible, hidden, collapse, INHERIT;
+    	VISIBLE, HIDDEN, COLLAPSE, INHERIT;
     	public boolean inherited() { return true;}
     };
     
@@ -437,13 +430,13 @@ public interface NodeData {
     };
     
     public enum Volume implements CSSProperty {
-    	number, percentage, silent, x_soft, soft, 
-    	MEDIUM, loud, x_loud, INHERIT;
+    	number, percentage, SILENT, X_SOFT, SOFT, 
+    	MEDIUM, LOUD, X_LOUD, INHERIT;
     	public boolean inherited() { return true;}
     };
     
     public enum WhiteSpace implements CSSProperty { 
-    	NORMAL, pre, nowrap, pre_wrap, pre_line, INHERIT;
+    	NORMAL, PRE, NOWRAP, PRE_WRAP, PRE_LINE, INHERIT;
     	public boolean inherited() { return true;}
     };
     
@@ -463,7 +456,7 @@ public interface NodeData {
     }
     
     public enum ZIndex implements CSSProperty { 
-    	AUTO, integer, INHERIT;
+    	integer, AUTO, INHERIT;
     	public boolean inherited() { return false;}
     };
     

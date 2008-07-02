@@ -65,7 +65,7 @@ public class AnalyzerTest {
 		
 		Node current = walker.getCurrentNode();
 		
-		assertEquals("<body> contains two assigned declaration", 2, decl.get(current).size());
+		assertEquals("<body> contains three assigned declaration", 3, decl.get(current).size());
 				
 		walker.setCurrentNode(current);
 	}	
@@ -85,6 +85,8 @@ public class AnalyzerTest {
 					new java.awt.Color(255,0,0), 
 					data.getValue(TermColor.class, "color").getValue());
 		
+		assertEquals("<body> nodedata contains font-weight: 200", 
+				NodeData.FontWeight.numeric_200, data.getProperty(NodeData.FontWeight.class, "font-weight"));
 		
 		walker.setCurrentNode(current);
 	}

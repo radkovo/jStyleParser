@@ -1,6 +1,7 @@
 BODY {
   background-color: #EEE;
   color: red;
+  font-weight: 200;
 }
 
 H1.prvni+P {

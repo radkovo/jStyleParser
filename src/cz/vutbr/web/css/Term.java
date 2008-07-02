@@ -24,7 +24,11 @@ public interface Term {
     	
     	public String value() { return value;}
     }
+    /*
+    public T getValue();
     
+    public void setValue(T value);
+    */
     /**
      * Operator between two terms. The first term is having <code>null</code>
      * @return
@@ -39,5 +43,6 @@ public interface Term {
     
     public int hashCode();
     public boolean equals(Object obj);
+
     
 }
