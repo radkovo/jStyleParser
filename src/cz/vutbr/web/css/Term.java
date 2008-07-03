@@ -1,15 +1,22 @@
 package cz.vutbr.web.css;
 
 /**
- * Term
- * @author Jan Svercl, VUT Brno, 2008
- * 			modified by Karel Piwko, 2008
- * @version 1.0 * Rewritten and changed EnumOperator to Operator 
- * 				 * Removed String operator(String) method
- * 				 * Added equals() and hashCode()
+ * Part of value declaration of CSS property. Can be atomic or
+ * contain other Terms inside in case of TermList or TermFuncion.
+ * @param <T> Type of value stored in term, for atomic types
+ * 			 usually of type String, Float or Integer
+ * @author Jan Svercl, 2008
+ * @author Karel Piwko, 2008
  */
 public interface Term<T> {
 
+	/**
+	 * This operator is between terms in value part of CSS declaration.
+	 * Typically, indistinguishable values of are shorthanded by SLASH, alternatives are 
+	 * divides by COMMA and SPACE when multivalues are used 
+	 * @author kapy
+	 *
+	 */
     public enum Operator {
     	    	
     	SPACE(" "),
@@ -25,8 +32,16 @@ public interface Term<T> {
     	public String value() { return value;}
     }
     
+    /**
+     * Getter for value
+     * @return
+     */
     public T getValue();
     
+    /**
+     * Setter for value
+     * @param value
+     */
     public void setValue(T value);
     
     /**

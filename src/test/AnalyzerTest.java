@@ -22,7 +22,6 @@ import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.TermColor;
-import cz.vutbr.web.csskit.TermColorImpl;
 import cz.vutbr.web.csskit.parser.CSSParser;
 import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.TidyTreeWalker;
@@ -89,6 +88,10 @@ public class AnalyzerTest {
 				NodeData.FontWeight.numeric_200, data.getProperty(NodeData.FontWeight.class, "font-weight"));
 		
 		walker.setCurrentNode(current);
+		
+		
+		
+		
 	}
 	
 }

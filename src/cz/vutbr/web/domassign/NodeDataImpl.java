@@ -1,7 +1,6 @@
 package cz.vutbr.web.domassign;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import cz.vutbr.web.css.Declaration;
@@ -14,14 +13,12 @@ public class NodeDataImpl implements NodeData {
 	
 	protected Map<String, CSSProperty> properties;	
 	protected Map<String, Term<?>> values;
-	protected Map<String, List<Term<?>>> listValues;
 	
 	protected DeclarationTransformer transformer;
 	
 	public NodeDataImpl() {
 		this.properties = new HashMap<String, CSSProperty>();
 		this.values = new HashMap<String, Term<?>>();
-		this.listValues = new HashMap<String, List<Term<?>>>();
 		this.transformer = DeclarationTransformer.getInstance();
 	}
 	
@@ -33,83 +30,24 @@ public class NodeDataImpl implements NodeData {
 		return clazz.cast(values.get(name));
 	}
 	
-	@SuppressWarnings("unchecked")
-	public <T extends Term<?>> List<T> getValues(Class<T> clazz, String name) {
-		return (List<T>) listValues.get(name);
-	}
-	
 	public void push(Declaration d, int inheritanceLevel, boolean inherit) {
 		
 		Map<String,CSSProperty> properties = 
 			new HashMap<String,CSSProperty>(COMMON_DECLARATION_SIZE);
 		Map<String,Term<?>> terms = 
 			new HashMap<String, Term<?>>(COMMON_DECLARATION_SIZE);
-		Map<String,List<Term<?>>> listTerms =
-			new HashMap<String, List<Term<?>>>(COMMON_DECLARATION_SIZE);
 		
 		boolean result = transformer
-			.parseDeclaration(d, properties, terms, listTerms);
+			.parseDeclaration(d, properties, terms);
 		
 		// in case of false do not insert anything
 		if(!result) return;
 		
 		this.properties.putAll(properties);
 		this.values.putAll(terms);
-		this.listValues.putAll(listTerms);
 		
-	}
-	
-	/*
-	
-    
-    */
-    
-    /**
-     * Funkce začne transakci (klokuje obsah tohoto objektu). Na rozdíl od DB 
-     * systémů jsou operace automaticky potvrzovány (commit), ale je možné se 
-     * kdykoli vrátit do výchozího stavu (rollback)
-     * @return kopie dat sloužící pro případný rollback
-     */
-    /*
-    protected NodeData beginTransaction() {
-        try {
-            return (NodeData)this.clone();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    */
-    /**
-     * Návrat objektu do výchozího stavu před započetím transakce
-     * @param data kopie dat objektu
-     */
-    /*
-    protected void rollbackTransaction(NodeData data) {
-        for(Field f : this.getClass().getDeclaredFields()) {
-            try {
-                f.set(this, f.get(data));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    */
-    /**
-     * Funkce pro klonování objektu
-     * @return klonovaný objekt
-     */
-    /*
-    @Override
-    public Object clone() {
-        try {
-            return super.clone();
-        }
-        catch ( CloneNotSupportedException e ) {
-            return null;
-        }
-    }
-    */
+	}	
+
     /**
      * Výpis objektu v textové formě.
      * @param depth určuje zanoření v hierarchii, slouží k odsazení jednotlivých řádků

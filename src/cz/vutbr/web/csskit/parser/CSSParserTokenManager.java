@@ -36,6 +36,9 @@ import cz.vutbr.web.csskit.TermNumberImpl;
 import cz.vutbr.web.csskit.TermPercentImpl;
 import cz.vutbr.web.csskit.TermColorImpl;
 import cz.vutbr.web.csskit.TermFunctionImpl;
+import cz.vutbr.web.csskit.TermFrequencyImpl;
+import cz.vutbr.web.csskit.TermAngleImpl;
+import cz.vutbr.web.csskit.TermTimeImpl;
 
 public class CSSParserTokenManager implements CSSParserConstants
 {

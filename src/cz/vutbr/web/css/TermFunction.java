@@ -1,13 +1,12 @@
 package cz.vutbr.web.css;
 
-import java.util.List;
 
 /**
- * TermFunction
+ * Holds name of CSS function and terms stored inside
  * @author Jan Svercl, VUT Brno, 2008
- * 			modified by Karel Piwko 2008
+ * @author Karel Piwko, 2008
  */
-public interface TermFunction extends Term<List<Term<?>>> {
+public interface TermFunction extends TermList {
 
     public String getFunctionName();
     

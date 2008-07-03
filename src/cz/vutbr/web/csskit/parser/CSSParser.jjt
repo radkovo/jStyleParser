@@ -50,6 +50,9 @@ import cz.vutbr.web.csskit.TermNumberImpl;
 import cz.vutbr.web.csskit.TermPercentImpl;
 import cz.vutbr.web.csskit.TermColorImpl;
 import cz.vutbr.web.csskit.TermFunctionImpl;
+import cz.vutbr.web.csskit.TermFrequencyImpl;
+import cz.vutbr.web.csskit.TermAngleImpl;
+import cz.vutbr.web.csskit.TermTimeImpl;
 
 /**
  * Parser of CSS passed as InputStream, Reader or directly as String.
@@ -858,7 +861,7 @@ List<Term<?>> expr() :
 {
 	List<Term<?>> terms = new ArrayList<Term<?>>();
 	Term.Operator op = null;
-	Term term = null;
+	Term<?> term = null;
 }
 {
 	try {
@@ -907,7 +910,8 @@ Term<?> term() :
 		[ unary = unary_operator() ]
 		(	value = number() (<BLANK>)* 
 				{
-					term = new TermNumberImpl(value, unary);	
+					// this will create either TermInteger or TermNumber
+					term = TermNumericImpl.valueOf(value, unary);	
 				} | 
 			value = percentage() (<BLANK>)* 
 				{
@@ -943,31 +947,31 @@ Term<?> term() :
     			} | 
     		value = angledeg() (<BLANK>)* 
     			{
-    				term = new TermLengthImpl(value, TermNumeric.Unit.deg, unary);
+    				term = new TermAngleImpl(value, TermNumeric.Unit.deg, unary);
     			} |
     		value = anglerad() (<BLANK>)* 
     			{
-    				term = new TermLengthImpl(value, TermNumeric.Unit.rad, unary);
+    				term = new TermAngleImpl(value, TermNumeric.Unit.rad, unary);
     			} | 
 	    	value = anglegrad() (<BLANK>)* 
 	    		{
-	    			term = new TermLengthImpl(value, TermNumeric.Unit.grad, unary);
+	    			term = new TermAngleImpl(value, TermNumeric.Unit.grad, unary);
 	    		} |
     		value = timems() (<BLANK>)* 
     			{
-    				term = new TermLengthImpl(value, TermNumeric.Unit.ms, unary);
+    				term = new TermTimeImpl(value, TermNumeric.Unit.ms, unary);
     			} |
     		value = times() (<BLANK>)* 
     			{
-    				term = new TermLengthImpl(value, TermNumeric.Unit.s, unary);
+    				term = new TermTimeImpl(value, TermNumeric.Unit.s, unary);
     			} | 
     		value = freqhz() (<BLANK>)* 
     			{
-    				term = new TermLengthImpl(value, TermNumeric.Unit.hz, unary);
+    				term = new TermFrequencyImpl(value, TermNumeric.Unit.hz, unary);
     			} | 
     		value = freqkhz() (<BLANK>)* 
     			{
-    				term = new TermLengthImpl(value, TermNumeric.Unit.khz, unary);
+    				term = new TermFrequencyImpl(value, TermNumeric.Unit.khz, unary);
     			}
    		) | 
    		value = string() (<BLANK>)*	{ term = new TermStringImpl(value);	} | 
@@ -989,7 +993,7 @@ Term<?> term() :
    	finally {
    	
    		// check color and replace
-   		Term colorTerm = null;
+   		Term<?> colorTerm = null;
    		if(term instanceof TermIdent) {
    			colorTerm = TermColorImpl.getColorByIdent((TermIdent)term);
    			if (colorTerm != null)

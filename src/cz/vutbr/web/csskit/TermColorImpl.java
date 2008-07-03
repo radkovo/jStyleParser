@@ -6,7 +6,7 @@ import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
-import cz.vutbr.web.css.TermNumber;
+import cz.vutbr.web.css.TermInteger;
 import cz.vutbr.web.css.TermPercent;
 
 /**
@@ -26,19 +26,8 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
 	protected static final int MIN_VALUE = 0;
 	protected static final int PERCENT_CONVERSION = 100;
 	
-	/** AWT Color */
-    protected Color color;
-
     public TermColorImpl(int r, int g, int b) {
-        color = new Color(r, g, b);
-    }
-    
-    public Color getValue() {
-        return color;
-    }
-    
-    public void setValue(Color color) {
-    	this.color = color;
+        value = new Color(r, g, b);
     }
     
     @Override
@@ -48,7 +37,7 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
     	
     	if(operator!=null) sb.append(operator.value());
     	
-        String s = Integer.toHexString(color.getRGB() & 0xffffff );
+        String s = Integer.toHexString(value.getRGB() & 0xffffff );
         if ( s.length() < 6 ) { 
             s = "000000".substring(0, 6 - s.length()) + s;
         }
@@ -107,16 +96,16 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
      */
     public static TermColor getColorByFunction(TermFunction func) {
     	
-    	// we matched rbg function
+    	// we matched rgb function
     	if(COLOR_FUNCTION_NAME.equals(func.getFunctionName()) &&
-    			func.getValue().size() == COLOR_PARAMS_COUNT) {
+    			func.size() == COLOR_PARAMS_COUNT) {
     		
     		int[] rgb = new int[COLOR_PARAMS_COUNT];
     		int i = 0;
-    		for(Term<?> term: func.getValue()) {
+    		for(Term<?> term: func) {
     			// term is number and numeric
-    			if(term instanceof TermNumber ) {
-    				rgb[i] = ((TermNumber)term).getValue().intValue();
+    			if(term instanceof TermInteger ) {
+    				rgb[i] = ((TermInteger)term).getValue();
     			}
     			// term is percent
     			else if(term instanceof TermPercent) {
@@ -137,49 +126,8 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
     		}
     		return new TermColorImpl(rgb[0], rgb[1], rgb[2]);
     	}
-    	
     	// invalid function
     	return null;
     }
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((color == null) ? 0 : color.hashCode());
-		result = prime * result
-				+ ((operator == null) ? 0 : operator.hashCode());
-		return result;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (!(obj instanceof TermColorImpl))
-			return false;
-		final TermColorImpl other = (TermColorImpl) obj;
-		if (color == null) {
-			if (other.color != null)
-				return false;
-		} else if (!color.equals(other.color))
-			return false;
-		if (operator == null) {
-			if (other.operator != null)
-				return false;
-		} else if (!operator.equals(other.operator))
-			return false;
-		return true;
-	}
-    
-    
-    
+	
 }

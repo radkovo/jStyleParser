@@ -2,9 +2,7 @@ package cz.vutbr.web.domassign;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -17,6 +15,7 @@ import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermInteger;
 import cz.vutbr.web.css.TermLength;
+import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermPercent;
 import cz.vutbr.web.css.TermURI;
@@ -50,8 +49,10 @@ import cz.vutbr.web.css.NodeData.FontSize;
 import cz.vutbr.web.css.NodeData.FontStyle;
 import cz.vutbr.web.css.NodeData.FontVariant;
 import cz.vutbr.web.css.NodeData.FontWeight;
+import cz.vutbr.web.css.NodeData.Height;
 import cz.vutbr.web.css.NodeData.Left;
 import cz.vutbr.web.css.NodeData.LetterSpacing;
+import cz.vutbr.web.css.NodeData.LineHeight;
 import cz.vutbr.web.css.NodeData.ListStyleImage;
 import cz.vutbr.web.css.NodeData.ListStylePosition;
 import cz.vutbr.web.css.NodeData.ListStyleType;
@@ -97,6 +98,7 @@ import cz.vutbr.web.css.NodeData.Widows;
 import cz.vutbr.web.css.NodeData.Width;
 import cz.vutbr.web.css.NodeData.WordSpacing;
 import cz.vutbr.web.css.NodeData.ZIndex;
+import cz.vutbr.web.csskit.TermListImpl;
 
 /**
  * Contains methods to transform declaration into 
@@ -213,8 +215,7 @@ public class DeclarationTransformer {
 	 * @return <code>true</code> in case of success, <code>false</code> otherwise
 	 */
 	public boolean parseDeclaration(Declaration d, 
-			Map<String,CSSProperty> properties, Map<String,Term<?>> values,
-			Map<String, List<Term<?>>> listValues) {
+			Map<String,CSSProperty> properties, Map<String,Term<?>> values) {
 		
 		String propertyName = d.getProperty().toLowerCase();
 		
@@ -226,7 +227,7 @@ public class DeclarationTransformer {
 		try {
 			Method m = methods.get(propertyName);
 			if(m!=null) 
-				return (Boolean) m.invoke(this, d, properties, values, listValues);
+				return (Boolean) m.invoke(this, d, properties, values);
 		}
 		catch(IllegalArgumentException e) {
 			log.warn("Illegal argument: " + e);
@@ -344,7 +345,7 @@ public class DeclarationTransformer {
 		map.put("list-style-image", ListStyleImage.NONE);
 
 		map.put("border-collapse", BorderCollapse.SEPARATE);
-		map.put("border-spacing", BorderSpacing.length);	// 0
+		map.put("border-spacing", BorderSpacing.hor_ver_list);	// 0 0
 		map.put("empty-cells", EmptyCells.SHOW);
 		map.put("table-layout", TableLayout.AUTO);
 		map.put("caption-side", CaptionSide.TOP);
@@ -417,7 +418,7 @@ public class DeclarationTransformer {
 				Method m = DeclarationTransformer.class.getDeclaredMethod(
 						DeclarationTransformer.camelCase("process-" + key), 
 						new Class[] {	Declaration.class, 
-							Map.class, Map.class, Map.class});
+							Map.class, Map.class});
 				map.put(key, m);
 			}
 			catch(Exception e) {
@@ -446,13 +447,13 @@ public class DeclarationTransformer {
 				Class<T> enumType, 
 				TermIdent term, 
 				Map<String, CSSProperty> properties,
-				String property) {
+				String propertyName) {
 		
 		// try to find enum with given value and if so
 		// insert it inside
 		try {
 			final String name = term.getValue().replace("-", "_").toUpperCase();
-			properties.put(property, Enum.valueOf(enumType, name));
+			properties.put(propertyName, Enum.valueOf(enumType, name));
 			return true;
 		}
 		catch (IllegalArgumentException e) {
@@ -477,32 +478,26 @@ public class DeclarationTransformer {
 	 */
 	private <T extends Enum<T> & CSSProperty> boolean genericTermIdent(
 			Class<T> enumType, 
-			Declaration d, 
+			Term<?> term, String propertyName,
 			Map<String, CSSProperty> properties) {
 		
-		if(d.getTerms().size()!=1) return false;
-    	final Term<?> term = d.getTerms().get(0);
-    	
     	if(term instanceof TermIdent) {
     		return genericProperty(enumType, (TermIdent) term, 
-					properties, d.getProperty());
+					properties, propertyName);
     	}
     	return false; 
 		
 	}
 	
 	private <T extends Enum<T> & CSSProperty> boolean genericTermColor(
-			Declaration d,
+			Term<?> term, String propertyName,
 			T colorIdentification,
 			Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values) {
 		
-		if(d.getTerms().size()!=1) return false;
-    	final Term<?> term = d.getTerms().get(0);
-		
     	if(term instanceof TermColor) {
-			properties.put(d.getProperty(), colorIdentification);
-			values.put(d.getProperty(), term);
+			properties.put(propertyName, colorIdentification);
+			values.put(propertyName, term);
 			return true;
 		}
 		
@@ -510,110 +505,86 @@ public class DeclarationTransformer {
     	
 	}
 	
-	private <T extends Enum<T> & CSSProperty> boolean genericTermNumberLength(
-			Declaration d,
-			T lengthIdentification,
+	/**
+	 * Check whether given declaration contains one term of given type.
+	 * It is able to check even whether is above zero for numeric values
+	 * @param <T> Class of enum to be used for result
+	 * @param termType Type of term
+	 * @param d Declaration
+	 * @param typeIdentification How this type of term is described in enum T
+	 * @param sanify Check if value is positive
+	 * @param properties Where to store property type
+	 * @param values Where to store property value
+	 * @return <code>true</code> if succeeded in recognition, <code>false</code>
+	 * 	otherwise
+	 */
+	private <T extends Enum<T> & CSSProperty> boolean genericTerm(
+			Class<? extends Term<?>> termType,
+			Term<?> term, String propertyName,
+			T typeIdentification,
 			boolean sanify,
 			Map<String, CSSProperty> properties,
-			Map<String, Term<?>> values
-			) {
+			Map<String, Term<?>> values) {
 		
-		if(d.getTerms().size()!=1) return false;
-    	final Term<?> term = d.getTerms().get(0);
-		
-    	if(term instanceof TermLength) {
-    		
-    		// check if below zero, if so set value to zero
-    		if(sanify) {
-    			Float zero = new Float(0.0f);
-    			if(zero.compareTo(((TermLength) term).getValue())>0) {
-    				((TermLength) term).setValue(zero);
-    			}
-    		}
-    		
-			properties.put(d.getProperty(), lengthIdentification);
-			values.put(d.getProperty(), term);
+		// check type
+		if(termType.isInstance(term)) {
+			// sanity check
+			if(sanify) {
+				// check for integer
+				if(term.getValue() instanceof Integer) {
+					final Integer zero = new Integer(0);
+					if(zero.compareTo((Integer)term.getValue())>0) {
+						// return false is also possibility
+						// but we will change to zero
+						((TermInteger)term).setValue(zero);
+					}
+				}
+				// check for float
+				else if(term.getValue() instanceof Float) {
+					final Float zero = new Float(0.0f);
+					if(zero.compareTo((Float) term.getValue())>0) {
+						// return false is also possibility
+						// but we will change to zero
+						((TermNumber)term).setValue(zero);
+					}
+				}
+			}
+			// passed both type check and (optional) sanity check, 
+			// store
+			properties.put(propertyName, typeIdentification);
+			values.put(propertyName, term);
 			return true;
+			
 		}
-		
 		return false;
 		
 	}
 	
-	private <T extends Enum<T> & CSSProperty> boolean genericTermNumberInteger(
+	private <T extends Enum<T> & CSSProperty> boolean genericOneIdent(
+			Class<T> enumType,
 			Declaration d,
-			T integerIdentification,
-			boolean sanify,
-			Map<String, CSSProperty> properties,
-			Map<String, Term<?>> values
-			) {
-		
+			Map<String, CSSProperty> properties) {
+	
 		if(d.getTerms().size()!=1) return false;
-    	final Term<?> term = d.getTerms().get(0);
 		
-    	if(term instanceof TermInteger) {
-    		
-    		// check if below zero, if so set value to zero
-    		if(sanify) {
-    			Integer zero = new Integer(0);
-    			if(zero.compareTo(((TermInteger) term).getValue())>0) {
-    				((TermInteger) term).setValue(zero);
-    			}
-    		}
-    		
-			properties.put(d.getProperty(), integerIdentification);
-			values.put(d.getProperty(), term);
-			return true;
-		}
-		
-		return false;
-		
+		return genericTermIdent(enumType, d.getTerms().get(0), d.getProperty(), properties);
 	}
 	
 	
-	private <T extends Enum<T> & CSSProperty> boolean genericTermPercent(
-			Declaration d,
-			T percentIdentification,
-			boolean sanify,
-			Map<String, CSSProperty> properties,
-			Map<String, Term<?>> values
-			) {
-		
-		if(d.getTerms().size()!=1) return false;
-    	final Term<?> term = d.getTerms().get(0);
-		
-    	if(term instanceof TermPercent) {
-    		
-    		// check if below zero, if so set value to zero
-    		if(sanify) {
-    			Float zero = new Float(0.0f);
-    			if(zero.compareTo(((TermPercent) term).getValue())>0) {
-    				((TermPercent) term).setValue(zero);
-    			}
-    		}
-    		
-			properties.put(d.getProperty(), percentIdentification);
-			values.put(d.getProperty(), term);
-			return true;
-		}
-		
-		return false;
-		
-	}
-	
-	
-	private <T extends Enum<T> & CSSProperty> boolean genericTermIdentOrColor(
+	private <T extends Enum<T> & CSSProperty> boolean genericOneIdentOrColor(
 			Class<T> enumType,
 			T colorIdentification,
 			Declaration d,
 			Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values) {
 	
-		return genericTermIdent(enumType, d, properties)
-			|| genericTermColor(d, colorIdentification, properties, values);
+		if(d.getTerms().size()!=1) return false;
+		
+		return genericTermIdent(enumType, d.getTerms().get(0), d.getProperty(), properties)
+			|| genericTermColor(d.getTerms().get(0), d.getProperty(), colorIdentification, properties, values);
 	}
 		
-	private <T extends Enum<T> & CSSProperty> boolean genericTermIdentOrInteger(
+	private <T extends Enum<T> & CSSProperty> boolean genericOneIdentOrInteger(
 			Class<T> enumType,
 			T integerIdentification,
 			boolean sanify,
@@ -621,11 +592,13 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values) {
 		
-		return genericTermIdent(enumType, d, properties)
-			|| genericTermNumberInteger(d, integerIdentification, sanify, properties, values);
+		if(d.getTerms().size()!=1) return false;
+		
+		return genericTermIdent(enumType, d.getTerms().get(0), d.getProperty(), properties)
+			|| genericTerm(TermInteger.class, d.getTerms().get(0), d.getProperty(), integerIdentification, sanify, properties, values);
 	}	
 	
-	private <T extends Enum<T> & CSSProperty> boolean genericTermIdentOrLength(
+	private <T extends Enum<T> & CSSProperty> boolean genericOneIdentOrLength(
 			Class<T> enumType,
 			T lengthIdentification,
 			boolean sanify,
@@ -633,12 +606,14 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values) {
 		
-		return genericTermIdent(enumType, d, properties)
-			|| genericTermNumberLength(d, lengthIdentification, sanify, properties, values);
+		if(d.getTerms().size()!=1) return false;
+		
+		return genericTermIdent(enumType, d.getTerms().get(0), d.getProperty(), properties)
+			|| genericTerm(TermLength.class, d.getTerms().get(0), d.getProperty(), lengthIdentification, sanify, properties, values);
 	}
 	
 	
-	private <T extends Enum<T> & CSSProperty> boolean genericTermIdentOrLengthOrPercent(
+	private <T extends Enum<T> & CSSProperty> boolean genericOneIdentOrLengthOrPercent(
 			Class<T> enumType,
 			T lengthIdentification,
 			T percentIdentification,
@@ -647,9 +622,11 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values) {
 		
-		return genericTermIdent(enumType, d, properties)
-			|| genericTermNumberLength(d, lengthIdentification, sanify, properties, values)
-			|| genericTermPercent(d, percentIdentification, sanify, properties, values);
+		if(d.getTerms().size()!=1) return false;
+		
+		return genericTermIdent(enumType, d.getTerms().get(0), d.getProperty(), properties)
+			|| genericTerm(TermLength.class, d.getTerms().get(0), d.getProperty(), lengthIdentification, sanify, properties, values)
+			|| genericTerm(TermPercent.class, d.getTerms().get(0), d.getProperty(), percentIdentification, sanify, properties, values);
 	}
 	
 	// =============================================================
@@ -657,148 +634,127 @@ public class DeclarationTransformer {
 	
 	@SuppressWarnings("unused")
 	private boolean processColor(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-		return genericTermIdentOrColor(Color.class, Color.color, d, properties, values);
+			Map<String,Term<?>> values) {
+		return genericOneIdentOrColor(Color.class, Color.color, d, properties, values);
     }
 	
     @SuppressWarnings("unused")	
     private boolean processBackgroundAttachment(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(BackgroundAttachment.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(BackgroundAttachment.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private Boolean processBackgroundColor(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrColor(BackgroundColor.class, BackgroundColor.color, d, properties, values);
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrColor(BackgroundColor.class, BackgroundColor.color, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private Boolean processBackgroundImage(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
+			Map<String,Term<?>> values) {
     	
     	if(d.getTerms().size()!=1) return false;
     	
-    	final Term<?> term = d.getTerms().get(0);
-		
-		if(term instanceof TermIdent) {
-			return genericProperty(BackgroundImage.class, (TermIdent) term, 
-					properties, d.getProperty());
-		}
-		else if(term instanceof TermURI) {
-			properties.put(d.getProperty(), BackgroundImage.uri);
-			values.put(d.getProperty(), term);
-			return true;
-		}		
-		return false; 
+    	return genericOneIdent(BackgroundImage.class, d, properties)
+    		|| genericTerm(TermURI.class, d.getTerms().get(0), d.getProperty(), BackgroundImage.uri, false, properties, values);
     }
     
     @SuppressWarnings("unused")
     private Boolean processBackgroundRepeat(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(BackgroundRepeat.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(BackgroundRepeat.class, d, properties);
     }
         
     @SuppressWarnings("unused")
     private boolean processBorderCollapse(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(BorderCollapse.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(BorderCollapse.class, d, properties);
     }
     
      
     @SuppressWarnings("unused")
     private boolean processBorderTopColor(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrColor(BorderColor.class, BorderColor.color, d, properties, values);
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrColor(BorderColor.class, BorderColor.color, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderRightColor(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrColor(BorderColor.class, BorderColor.color, d, properties, values);
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrColor(BorderColor.class, BorderColor.color, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderBottomColor(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrColor(BorderColor.class, BorderColor.color, d, properties, values);
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrColor(BorderColor.class, BorderColor.color, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderLeftColor(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrColor(BorderColor.class, BorderColor.color, d, properties, values);
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrColor(BorderColor.class, BorderColor.color, d, properties, values);
     }
 
     @SuppressWarnings("unused")
     private boolean processBorderTopStyle(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(BorderStyle.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(BorderStyle.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderRightStyle(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(BorderStyle.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(BorderStyle.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderBottomStyle(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(BorderStyle.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(BorderStyle.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderLeftStyle(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(BorderStyle.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(BorderStyle.class, d, properties);
     }    
     
     @SuppressWarnings("unused")
     private boolean processBorderSpacing(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
+			Map<String,Term<?>> values) {
     	
     	if(d.getTerms().size() == 1) {
-    		final Term<?> term = d.getTerms().get(0);
-    		if(term instanceof TermIdent) {
-    			return genericProperty(BorderSpacing.class, 
-    					(TermIdent)term, properties, d.getProperty());
-    		}
-    		// FIXME
-    		// numerical values will be doubled
-    		else if(term instanceof TermLength) {
-    			final TermNumber nterm = (TermNumber) term;  
-    			// sanity check
-    			if(nterm.getValue() < 0) nterm.setValue(0.0f); 
-    				
-    			properties.put(d.getProperty(), BorderSpacing.length);
-    			// construct list of terms
-    			List<Term<?>> terms = new ArrayList<Term<?>>(2);
-    			terms.add(nterm);terms.add(nterm);
-    			listValues.put(d.getProperty(), terms);
+    		Term<?> term = d.getTerms().get(0);
+    		String propertyName = d.getProperty();
+    		// is it identificator or lenght ?
+    		if(genericTermIdent(BorderSpacing.class, term, propertyName, properties)
+    				|| genericTerm(TermLength.class, term, propertyName, BorderSpacing.hor_ver_list, 
+    						true, properties, values)) {
+    			// one term with lenght was inserted, double it
+    			if(properties.get(propertyName)==BorderSpacing.hor_ver_list) {
+    				TermList terms = new TermListImpl(2);
+        			terms.add(term);terms.add(term);
+        			values.put(propertyName, terms);
+    			}	
     			return true;
     		}
-    		
     	}
-    	// FIXME
     	// two numerical values
     	else if(d.getTerms().size()==2) {
-    		final Term<?> term1 = d.getTerms().get(0);
-    		final Term<?> term2 = d.getTerms().get(1);
-    		if(term1 instanceof TermLength && term2 instanceof TermLength) {
-    			final TermNumber nterm1 = (TermNumber) term1;
-        		final TermNumber nterm2 = (TermNumber) term2;
-        		// sanity checks
-        		if(nterm1.getValue() < 0) nterm1.setValue(0.0f); 
-        		if(nterm2.getValue() < 0) nterm2.setValue(0.0f);
-        		
-        		properties.put(d.getProperty(), BorderSpacing.length);
-    			// construct list of terms
-    			List<Term<?>> terms = new ArrayList<Term<?>>(2);
-    			terms.add(nterm1);terms.add(nterm2);
-    			listValues.put(d.getProperty(), terms);
+    		Term<?> term1 = d.getTerms().get(0);
+    		Term<?> term2 = d.getTerms().get(1);
+    		String propertyName = d.getProperty();
+    		// two lengths ?
+    		if(genericTerm(TermLength.class, term1, propertyName, BorderSpacing.hor_ver_list, true, properties, values)
+    				&& genericTerm(TermLength.class, term2, propertyName, BorderSpacing.hor_ver_list, true, properties, values)) {
+    			TermList terms = new TermListImpl(2);
+    			terms.add(term1);terms.add(term2);
+    			values.put(propertyName, terms);
     			return true;
     		}
+    		return false;
     	}
     	return false;
     }
@@ -968,26 +924,26 @@ public class DeclarationTransformer {
     */
     @SuppressWarnings("unused")
     private boolean processBorderTopWidth(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLength(BorderWidth.class, BorderWidth.length, true, d, properties, values);
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLength(BorderWidth.class, BorderWidth.length, true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderRightWidth(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLength(BorderWidth.class, BorderWidth.length, true, d, properties, values);
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLength(BorderWidth.class, BorderWidth.length, true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderBottomWidth(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLength(BorderWidth.class, BorderWidth.length, true, d, properties, values);
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLength(BorderWidth.class, BorderWidth.length, true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderLeftWidth(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLength(BorderWidth.class, BorderWidth.length, true, d, properties, values);
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLength(BorderWidth.class, BorderWidth.length, true, d, properties, values);
     }
        
     /*
@@ -1559,114 +1515,30 @@ public class DeclarationTransformer {
         fontFamilyValues.addAll(input);
         return true;
     }
-    
-    private Boolean processFontSize(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("xx-small")) {
-                    fontSizeType = EnumFontSize.xx_small;
-                    fontSizeNumberValue = null;
-                    fontSizePercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("x-small")) {
-                    fontSizeType = EnumFontSize.x_small;
-                    fontSizeNumberValue = null;
-                    fontSizePercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("small")) {
-                    fontSizeType = EnumFontSize.small;
-                    fontSizeNumberValue = null;
-                    fontSizePercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("medium")) {
-                    fontSizeType = EnumFontSize.medium;
-                    fontSizeNumberValue = null;
-                    fontSizePercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("large")) {
-                    fontSizeType = EnumFontSize.large;
-                    fontSizeNumberValue = null;
-                    fontSizePercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("x-large")) {
-                    fontSizeType = EnumFontSize.x_large;
-                    fontSizeNumberValue = null;
-                    fontSizePercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("xx-large")) {
-                    fontSizeType = EnumFontSize.xx_large;
-                    fontSizeNumberValue = null;
-                    fontSizePercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("larger")) {
-                    fontSizeType = EnumFontSize.larger;
-                    fontSizeNumberValue = null;
-                    fontSizePercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("smaller")) {
-                    fontSizeType = EnumFontSize.smaller;
-                    fontSizeNumberValue = null;
-                    fontSizePercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    fontSizeType = EnumFontSize.inherit;
-                    fontSizeNumberValue = null;
-                    fontSizePercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    if(num.getValue().floatValue() < 0) {
-                        num.setValue(new Float(0));
-                    }
-                    fontSizeType = EnumFontSize.length;
-                    fontSizeNumberValue = num;
-                    fontSizePercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                if(percentage.getValue().floatValue() < 0) {
-                    percentage.setValue(new Float(0));
-                }
-                fontSizeType = EnumFontSize.percentage;
-                fontSizeNumberValue = null;
-                fontSizePercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
-    }
     */
     
     @SuppressWarnings("unused")
+    private boolean processFontSize(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(FontSize.class,
+    			FontSize.length, FontSize.percentage, true, d, properties, values);
+    }
+    
+    @SuppressWarnings("unused")
     private boolean processFontStyle(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(FontStyle.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(FontStyle.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processFontVariant(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(FontVariant.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(FontVariant.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processFontWeight(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
+			Map<String,Term<?>> values) {
     	
     	// test against numeric values
     	final Integer[] test = new Integer[] {
@@ -1921,307 +1793,70 @@ public class DeclarationTransformer {
     }
     */
     
-    /*
-    private Boolean processLineHeight(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("normal")) {
-                    lineHeightType = EnumLineHeight.normal;
-                    lineHeightNumberValue = null;
-                    lineHeightPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    lineHeightType = EnumLineHeight.inherit;
-                    lineHeightNumberValue = null;
-                    lineHeightPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    if(num.getValue().floatValue() < 0) {
-                        num.setValue(new Float(0));
-                    }
-                    lineHeightType = EnumLineHeight.length;
-                    lineHeightNumberValue = num;
-                    lineHeightPercentValue = null;
-                    return true;
-                }
-                if(num.isNumber()) {
-                    if(num.getValue().floatValue() < 0) {
-                        num.setValue(new Float(0));
-                    }
-                    lineHeightType = EnumLineHeight.number;
-                    lineHeightNumberValue = num;
-                    lineHeightPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                if(percentage.getValue().floatValue() < 0) {
-                    percentage.setValue(new Float(0));
-                }
-                lineHeightType = EnumLineHeight.percentage;
-                lineHeightNumberValue = null;
-                lineHeightPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processLineHeight(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term<?>> values) {
+    	
+    	if(d.getTerms().size()!=1) return false;
+    	
+    	return genericOneIdent(LineHeight.class, d, properties)
+    		|| genericTerm(TermNumber.class, d.getTerms().get(0), d.getProperty(), LineHeight.number, true, properties, values)
+    		|| genericTerm(TermPercent.class, d.getTerms().get(0), d.getProperty(), LineHeight.percentage, true, properties, values)
+    		|| genericTerm(TermLength.class, d.getTerms().get(0), d.getProperty(), LineHeight.length, true, properties, values);
     }
     
-    private Boolean processTop(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("auto")) {
-                    topType = EnumSize.auto;
-                    topNumberValue = null;
-                    topPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    topType = EnumSize.inherit;
-                    topNumberValue = null;
-                    topPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    topType = EnumSize.length;
-                    topNumberValue = num;
-                    topPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                topType = EnumSize.percentage;
-                topNumberValue = null;
-                topPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processTop(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(Top.class, 
+    			Top.lenght, Top.percentage, false, d, properties, values);
     }
     
-    private Boolean processRight(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("auto")) {
-                    rightType = EnumSize.auto;
-                    rightNumberValue = null;
-                    rightPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    rightType = EnumSize.inherit;
-                    rightNumberValue = null;
-                    rightPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    rightType = EnumSize.length;
-                    rightNumberValue = num;
-                    rightPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                rightType = EnumSize.percentage;
-                rightNumberValue = null;
-                rightPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processRight(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(Right.class, 
+    			Right.lenght, Right.percentage, false, d, properties, values);
     }
     
-    private Boolean processBottom(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("auto")) {
-                    bottomType = EnumSize.auto;
-                    bottomNumberValue = null;
-                    bottomPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    bottomType = EnumSize.inherit;
-                    bottomNumberValue = null;
-                    bottomPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    bottomType = EnumSize.length;
-                    bottomNumberValue = num;
-                    bottomPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                bottomType = EnumSize.percentage;
-                bottomNumberValue = null;
-                bottomPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processBottom(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(Bottom.class, 
+    			Bottom.lenght, Bottom.percentage, false, d, properties, values);
     }
     
-    private Boolean processLeft(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("auto")) {
-                    leftType = EnumSize.auto;
-                    leftNumberValue = null;
-                    leftPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    leftType = EnumSize.inherit;
-                    leftNumberValue = null;
-                    leftPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    leftType = EnumSize.length;
-                    leftNumberValue = num;
-                    leftPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                leftType = EnumSize.percentage;
-                leftNumberValue = null;
-                leftPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processLeft(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(Left.class, 
+    			Left.lenght, Left.percentage, false, d, properties, values);
     }
     
-    private Boolean processWidth(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("auto")) {
-                    widthType = EnumSize.auto;
-                    widthNumberValue = null;
-                    widthPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    widthType = EnumSize.inherit;
-                    widthNumberValue = null;
-                    widthPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    widthType = EnumSize.length;
-                    widthNumberValue = num;
-                    widthPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                widthType = EnumSize.percentage;
-                widthNumberValue = null;
-                widthPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processWidth(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(Width.class, 
+    			Width.lenght, Width.percentage, false, d, properties, values);
     }
     
-    private Boolean processHeight(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("auto")) {
-                    heightType = EnumSize.auto;
-                    heightNumberValue = null;
-                    heightPercentValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    heightType = EnumSize.inherit;
-                    heightNumberValue = null;
-                    heightPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermNumber) {
-                TermNumber num = (TermNumber)d.getTerms().get(0);
-                if(num.isLength()) {
-                    heightType = EnumSize.length;
-                    heightNumberValue = num;
-                    heightPercentValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermPercent) {
-                TermPercent percentage = (TermPercent)d.getTerms().get(0);
-                heightType = EnumSize.percentage;
-                heightNumberValue = null;
-                heightPercentValue = percentage;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processHeight(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(Height.class, 
+    			Height.lenght, Height.percentage, false, d, properties, values);
     }
     
-    private Boolean processCaptionSide(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("top")) {
-                    captionSideType = EnumCaptionSide.top;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("bottom")) {
-                    captionSideType = EnumCaptionSide.bottom;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    captionSideType = EnumCaptionSide.inherit;
-                    return true;
-                }
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processCaptionSide(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(CaptionSide.class, d, properties); 
     }
-    */
     
     @SuppressWarnings("unused")
     private boolean processClear(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(Clear.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(Clear.class, d, properties);
     }
 
     /*
@@ -2639,65 +2274,48 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processDirection(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(Direction.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(Direction.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processDisplay(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(Display.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(Display.class, d, properties);
     }
 
     @SuppressWarnings("unused")
     private boolean processEmptyCells(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(EmptyCells.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(EmptyCells.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processFloat(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(EmptyCells.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(EmptyCells.class, d, properties);
     }
     
-    /*
-    private Boolean processListStyleImage(Declaration d) {
-        if(d.getTerms().size() == 1) {
-            if(d.getTerms().get(0) instanceof TermIdent) {
-                String ident = ((TermIdent)d.getTerms().get(0)).getValue();
-                if(ident.equalsIgnoreCase("none")) {
-                    listStyleImageType = EnumListStyleImage.none;
-                    listStyleImageValue = null;
-                    return true;
-                }
-                if(ident.equalsIgnoreCase("inherit")) {
-                    listStyleImageType = EnumListStyleImage.inherit;
-                    listStyleImageValue = null;
-                    return true;
-                }
-            }
-            if(d.getTerms().get(0) instanceof TermURI) {
-                TermURI uri = (TermURI)d.getTerms().get(0);
-                listStyleImageType = EnumListStyleImage.uri;
-                listStyleImageValue = uri;
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("unused")
+    private boolean processListStyleImage(Declaration d, Map<String,CSSProperty> properties, 
+			Map<String,Term<?>> values) {
+    	
+    	if(d.getTerms().size()!=1) return false;
+    	
+    	return genericOneIdent(ListStyleImage.class, d, properties)
+    		|| genericTerm(TermURI.class, d.getTerms().get(0), d.getProperty(), ListStyleImage.uri, false, properties, values);
     }
-    */
     
     @SuppressWarnings("unused")
     private boolean processListStylePosition(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(ListStylePosition.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(ListStylePosition.class, d, properties);
     }
 
     @SuppressWarnings("unused")
     private boolean processListStyleType(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(ListStyleType.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(ListStyleType.class, d, properties);
     }
 
     /*
@@ -2785,32 +2403,32 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processMarginTop(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLengthOrPercent(Margin.class, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(Margin.class, 
     			Margin.lenght, Margin.percentage, 
     			false, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processMarginRight(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLengthOrPercent(Margin.class, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(Margin.class, 
     			Margin.lenght, Margin.percentage, 
     			false, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processMarginBottom(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLengthOrPercent(Margin.class, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(Margin.class, 
     			Margin.lenght, Margin.percentage, 
     			false, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processMarginLeft(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLengthOrPercent(Margin.class, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(Margin.class, 
     			Margin.lenght, Margin.percentage, 
     			false, d, properties, values);
     }
@@ -2899,55 +2517,55 @@ public class DeclarationTransformer {
     */
     @SuppressWarnings("unused")
     private boolean processMaxHeight(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLengthOrPercent(MaxHeight.class, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(MaxHeight.class, 
     			MaxHeight.lenght, MaxHeight.percentage, true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processMaxWidth(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLengthOrPercent(MaxWidth.class, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(MaxWidth.class, 
     			MaxWidth.lenght, MaxWidth.percentage, true, d, properties, values);
     }
 
     @SuppressWarnings("unused")
     private boolean processMinHeight(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLengthOrPercent(MinHeight.class, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(MinHeight.class, 
     			MinHeight.lenght, MinHeight.percentage, true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processMinWidth(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLengthOrPercent(MinWidth.class, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(MinWidth.class, 
     			MinWidth.lenght, MinWidth.percentage, true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processOrphans(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrInteger(Orphans.class, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrInteger(Orphans.class, 
     			Orphans.integer, true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processOutlineColor(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrColor(OutlineColor.class, OutlineColor.color, d, properties, values);
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrColor(OutlineColor.class, OutlineColor.color, d, properties, values);
     }
 
     @SuppressWarnings("unused")
     private boolean processOutlineStyle(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(OutlineStyle.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(OutlineStyle.class, d, properties);
     }   
     
     @SuppressWarnings("unused")
     private boolean processOutlineWidth(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLength(OutlineWidth.class, 
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLength(OutlineWidth.class, 
     			OutlineWidth.length, false, d, properties, values);
     }
     
@@ -3038,38 +2656,38 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processOverflow(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(Overflow.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(Overflow.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processPaddingTop(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLengthOrPercent(Padding.class,
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(Padding.class,
     			Padding.length, Padding.percentage,
     			true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processPaddingRight(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLengthOrPercent(Padding.class,
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(Padding.class,
     			Padding.length, Padding.percentage,
     			true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processPaddingBottom(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLengthOrPercent(Padding.class,
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(Padding.class,
     			Padding.length, Padding.percentage,
     			true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processPaddingLeft(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdentOrLengthOrPercent(Padding.class,
+			Map<String,Term<?>> values) {
+    	return genericOneIdentOrLengthOrPercent(Padding.class,
     			Padding.length, Padding.percentage,
     			true, d, properties, values);
     }
@@ -3159,26 +2777,26 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processPageBreakAfter(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(PageBreak.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(PageBreak.class, d, properties);
     }
         
     @SuppressWarnings("unused")
     private boolean processPageBreakBefore(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(PageBreak.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(PageBreak.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processPageBreakInside(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(PageBreakInside.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(PageBreakInside.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processPosition(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(Position.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(Position.class, d, properties);
     }
 
     /*
@@ -3227,14 +2845,14 @@ public class DeclarationTransformer {
     */
     @SuppressWarnings("unused")
     private boolean processTableLayout(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(TableLayout.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(TableLayout.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processTextAlign(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(TextAlign.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(TextAlign.class, d, properties);
     }
 
     /*
@@ -3350,28 +2968,28 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processTextIdent(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-		return genericTermIdentOrLengthOrPercent(TextIndent.class,
+			Map<String,Term<?>> values) {
+		return genericOneIdentOrLengthOrPercent(TextIndent.class,
 				TextIndent.length, TextIndent.percentage, 
 				false, d, properties, values);		
     }
     
     @SuppressWarnings("unused")
     private boolean processTextTransform(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(TextTransform.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(TextTransform.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processUnicodeBidi(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-		return genericTermIdent(UnicodeBidi.class, d, properties);
+			Map<String,Term<?>> values) {
+		return genericOneIdent(UnicodeBidi.class, d, properties);
 	}
     
     @SuppressWarnings("unused")
     private boolean processVerticalAlign(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-		return genericTermIdentOrLengthOrPercent(VerticalAlign.class,
+			Map<String,Term<?>> values) {
+		return genericOneIdentOrLengthOrPercent(VerticalAlign.class,
 				VerticalAlign.length, VerticalAlign.percentage, 
 				false, d, properties, values);		
     }
@@ -3379,32 +2997,32 @@ public class DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processVisibility(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-		return genericTermIdent(Visibility.class, d, properties);
+			Map<String,Term<?>> values) {
+		return genericOneIdent(Visibility.class, d, properties);
 	}
     
     @SuppressWarnings("unused")
     private boolean processWhiteSpace(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-    	return genericTermIdent(WhiteSpace.class, d, properties);
+			Map<String,Term<?>> values) {
+    	return genericOneIdent(WhiteSpace.class, d, properties);
     }
     
     @SuppressWarnings("unused")
     private boolean processWidows(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-		return genericTermIdentOrInteger(Widows.class, Widows.integer, true, d, properties, values);
+			Map<String,Term<?>> values) {
+		return genericOneIdentOrInteger(Widows.class, Widows.integer, true, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processWordSpacing(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-		return genericTermIdentOrLength(WordSpacing.class, WordSpacing.length, false, d, properties, values);
+			Map<String,Term<?>> values) {
+		return genericOneIdentOrLength(WordSpacing.class, WordSpacing.length, false, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processZIndex(Declaration d, Map<String,CSSProperty> properties, 
-			Map<String,Term<?>> values, Map<String, List<Term<?>>> listValues) {
-		return genericTermIdentOrInteger(ZIndex.class, ZIndex.integer, false, d, properties, values);
+			Map<String,Term<?>> values) {
+		return genericOneIdentOrInteger(ZIndex.class, ZIndex.integer, false, d, properties, values);
     }
     
     /*
