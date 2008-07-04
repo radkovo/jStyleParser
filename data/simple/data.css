@@ -24,3 +24,8 @@ H1.prvni {
 .BB {
   color: #0F0;
 }
+
+#marginator {
+	margin: 100px;
+	border-top: olive dotted 5ex;
+}

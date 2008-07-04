@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.BeforeClass;
+import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -22,6 +23,10 @@ import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.TermColor;
+import cz.vutbr.web.css.TermLength;
+import cz.vutbr.web.css.TermNumeric;
+import cz.vutbr.web.css.NodeData.BorderStyle;
+import cz.vutbr.web.css.NodeData.Margin;
 import cz.vutbr.web.csskit.parser.CSSParser;
 import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.TidyTreeWalker;
@@ -88,9 +93,49 @@ public class AnalyzerTest {
 				NodeData.FontWeight.numeric_200, data.getProperty(NodeData.FontWeight.class, "font-weight"));
 		
 		walker.setCurrentNode(current);
+	}
+	
+	@Test 
+	public void evaluateRepeaterOnMargin() {
+		Map<Element, NodeData> decl =
+			analyzer.evaluateDOM(doc, "all", false);
 		
+		Element marginator = (Element) doc.getElementsByTagName("div").item(0);
+		String id = marginator.getAttribute("id");
 		
+		Assert.assertEquals("Element marginator exists", "marginator", id);
 		
+		NodeData data = decl.get(marginator);
+		
+		assertEquals("<div id=\"marginator\"> contains margin with for same values",
+				Margin.lenght, data.getProperty(Margin.class, "margin-top"));
+		assertEquals("<div id=\"marginator\"> contains margin with for same values",
+				Margin.lenght, data.getProperty(Margin.class, "margin-bottom"));
+		assertEquals("Margin of 100px", new Float(100.0f), 
+				data.getValue(TermLength.class, "margin-top").getValue());
+		assertEquals("Margin of 100px", TermNumeric.Unit.px, 
+				data.getValue(TermLength.class, "margin-top").getUnit());
+		assertEquals("for all for both values", 
+				data.getValue(TermLength.class, "margin-bottom"),
+				data.getValue(TermLength.class, "margin-left"));
+		
+	}
+	
+	@Test
+	public void testVariatorOnBorderTop() {
+	
+		Map<Element, NodeData> decl =
+			analyzer.evaluateDOM(doc, "all", false);
+		
+		Element marginator = (Element) doc.getElementsByTagName("div").item(0);
+		String id = marginator.getAttribute("id");
+		
+		Assert.assertEquals("Element marginator exists", "marginator", id);
+		
+		NodeData data = decl.get(marginator);
+		
+		assertEquals("Border-top-style: dotted",
+				BorderStyle.DOTTED, data.getProperty(BorderStyle.class, "border-top-style"));
 		
 	}
 	

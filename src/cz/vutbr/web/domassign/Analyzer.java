@@ -433,7 +433,7 @@ public class Analyzer {
 			// is id
 			final String id = last.getIDName();
 			if(id!=null)
-				hs.add(new HolderSelector(HolderItem.CLASS, id.toLowerCase()));
+				hs.add(new HolderSelector(HolderItem.ID, id.toLowerCase()));
 
 			// is in others
 			if(hs.size()==0)
