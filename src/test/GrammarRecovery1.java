@@ -49,7 +49,7 @@ public class GrammarRecovery1 {
 		StyleSheet ss = (new CSSParser(TEST_CHARSET_WITHOUT_SEMICOLON3)).parse();
 		assertEquals("Charset should not be set", null, ss.getCharset());
 		
-		final RuleSet rule = (RuleSet) ss.getRules().get(0);				
+		RuleSet rule = (RuleSet) ss.getRules().get(0);				
 		
 		assertEquals("Rule contains one selector BODY ", 
 				SelectorsUtil.createSelectors("BODY"), 

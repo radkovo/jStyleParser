@@ -104,7 +104,7 @@ public class SelectorImpl implements Selector {
 			return false;
 		if (!(obj instanceof SelectorImpl))
 			return false;
-		final SelectorImpl other = (SelectorImpl) obj;
+		SelectorImpl other = (SelectorImpl) obj;
 		if (simpleSelectors == null) {
 			if (other.simpleSelectors != null)
 				return false;
@@ -193,7 +193,7 @@ public class SelectorImpl implements Selector {
 				return false;
 			if (!(obj instanceof SpecificityImpl))
 				return false;
-			final SpecificityImpl other = (SpecificityImpl) obj;
+			SpecificityImpl other = (SpecificityImpl) obj;
 			if (!Arrays.equals(spec, other.spec))
 				return false;
 			return true;

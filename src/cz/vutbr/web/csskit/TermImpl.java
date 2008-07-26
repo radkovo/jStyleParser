@@ -7,7 +7,7 @@ import cz.vutbr.web.css.Term;
  * 
  * @author Karel Piwko, 2008
  */
-public abstract class TermImpl<T> implements Term<T> {
+public class TermImpl<T> implements Term<T> {
 
 	protected T value;
 	protected Operator operator = null;
@@ -69,7 +69,7 @@ public abstract class TermImpl<T> implements Term<T> {
 		if (!(obj instanceof TermImpl))
 			return false;
 		@SuppressWarnings("unchecked")
-		final TermImpl<T> other = (TermImpl<T>) obj;
+		TermImpl<T> other = (TermImpl<T>) obj;
 		if (operator == null) {
 			if (other.operator != null)
 				return false;

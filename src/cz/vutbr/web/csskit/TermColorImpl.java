@@ -109,7 +109,7 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
     			}
     			// term is percent
     			else if(term instanceof TermPercent) {
-    				final int value = ((TermPercent) term).getValue().intValue();
+    				int value = ((TermPercent) term).getValue().intValue();
     				rgb[i] = (value * MAX_VALUE) / PERCENT_CONVERSION;
     			}
     			// not valid term

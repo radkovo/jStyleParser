@@ -18,7 +18,7 @@ import org.junit.Test;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.NodeData.CSSProperty;
 import cz.vutbr.web.csskit.TermNumberImpl;
-import cz.vutbr.web.domassign.DeclarationTransformer;
+import cz.vutbr.web.domassign.SupportedCSS;
 
 /**
  * This test is to show performance difference between
@@ -44,8 +44,8 @@ public class CollectionSpeed {
 
 	private static Logger log = Logger.getLogger(CollectionSpeed.class);
 	
-	private final DeclarationTransformer transformer = 
-		DeclarationTransformer.getInstance();
+	private final SupportedCSS css = 
+		SupportedCSS.getInstance();
 	
 	private static final int MAX = 6;
 	private static final int ITERATIONS = 10000;	
@@ -56,9 +56,9 @@ public class CollectionSpeed {
 	@Before
 	public void initMasters() {
 		this.mprop = new HashMap<String, CSSProperty>
-			(DeclarationTransformer.TOTAL_SUPPORTED_DECLARATIONS, 1.0f);
+			(css.totalProperties(), 1.0f);
 		this.mterm = new HashMap<String, Term<?>>
-			(DeclarationTransformer.TOTAL_SUPPORTED_DECLARATIONS, 1.0f);
+			(css.totalProperties(), 1.0f);
 	}
 	
 	@Test
@@ -218,7 +218,7 @@ public class CollectionSpeed {
 		Random generator = new Random();
 		
 		for(int i = 0; i < generator.nextInt(MAX); i++) 
-			properties.add(transformer.randomValue());
+			properties.add(css.randomValue());
 		
 		for(int i = 0; i < generator.nextInt(MAX); i++)
 			terms.add(new TermNumberImpl(generator.nextFloat()));
@@ -230,7 +230,7 @@ public class CollectionSpeed {
 		Random generator = new Random();
 		
 		for(int i = 0; i < generator.nextInt(MAX); i++) {
-			final CSSProperty p = transformer.randomValue(); 
+			CSSProperty p = css.randomValue(); 
 			properties.put(p.toString(), p);
 			terms.put(p.toString(), new TermNumberImpl(generator.nextFloat()));
 		}		

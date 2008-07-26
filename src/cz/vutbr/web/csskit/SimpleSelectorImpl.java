@@ -125,7 +125,7 @@ public class SimpleSelectorImpl implements SimpleSelector {
     
     public boolean matches(Element e) {
     	
-		final String elementName = getElementName();
+		String elementName = getElementName();
 		if(elementName!=null && ! ElementUtil.matchesName(e, elementName))
 			return false;
 		
@@ -179,7 +179,7 @@ public class SimpleSelectorImpl implements SimpleSelector {
 			return false;
 		if (!(obj instanceof SimpleSelectorImpl))
 			return false;
-		final SimpleSelectorImpl other = (SimpleSelectorImpl) obj;
+		SimpleSelectorImpl other = (SimpleSelectorImpl) obj;
 		if (combinator == null) {
 			if (other.combinator != null)
 				return false;
@@ -271,7 +271,7 @@ public class SimpleSelectorImpl implements SimpleSelector {
 				return false;
 			if (!(obj instanceof ItemImpl))
 				return false;
-			final ItemImpl other = (ItemImpl) obj;
+			ItemImpl other = (ItemImpl) obj;
 			if (value == null) {
 				if (other.value != null)
 					return false;
@@ -418,7 +418,7 @@ public class SimpleSelectorImpl implements SimpleSelector {
 				return false;
 			if (!(obj instanceof ItemPseudoImpl))
 				return false;
-			final ItemPseudoImpl other = (ItemPseudoImpl) obj;
+			ItemPseudoImpl other = (ItemPseudoImpl) obj;
 			if (functionName == null) {
 				if (other.functionName != null)
 					return false;
@@ -602,7 +602,7 @@ public class SimpleSelectorImpl implements SimpleSelector {
 				return false;
 			if (!(obj instanceof ItemAttributeImpl))
 				return false;
-			final ItemAttributeImpl other = (ItemAttributeImpl) obj;
+			ItemAttributeImpl other = (ItemAttributeImpl) obj;
 			if (attribute == null) {
 				if (other.attribute != null)
 					return false;

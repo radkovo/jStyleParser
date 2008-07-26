@@ -186,7 +186,7 @@ public class Analyzer {
 		// match element classes
 		for(String cname: ElementUtil.elementClasses(e)) {
 			// holder contains rule with given class
-			final List<RuleSet> rules = holder.get(HolderItem.CLASS,cname);
+			List<RuleSet> rules = holder.get(HolderItem.CLASS,cname);
 			if(rules!=null)
 				candidates.addAll(rules);
 		}
@@ -196,9 +196,9 @@ public class Analyzer {
 		}
 		
 		// match IDs
-		final String id = ElementUtil.elementID(e);
+		String id = ElementUtil.elementID(e);
 		if(id!=null) {
-			final List<RuleSet> rules = holder.get(HolderItem.ID,id);
+			List<RuleSet> rules = holder.get(HolderItem.ID,id);
 			if(rules!= null)
 				candidates.addAll(rules);
 		}
@@ -208,9 +208,9 @@ public class Analyzer {
 		}
 		
 		// match elements
-		final String name = ElementUtil.elementName(e);
+		String name = ElementUtil.elementName(e);
 		if(name!=null) {
-			final List<RuleSet> rules = holder.get(HolderItem.ELEMENT, name);
+			List<RuleSet> rules = holder.get(HolderItem.ELEMENT, name);
 			if(rules!=null)
 				candidates.addAll(rules);
 		}
@@ -290,7 +290,7 @@ public class Analyzer {
 		// traverse simple selector backwards
 		for(int i= sel.getSimpleSelectors().size()-1; i>=0; i--) {
 			// last simple selector
-			final SimpleSelector s = sel.getSimpleSelectors().get(i);
+			SimpleSelector s = sel.getSimpleSelectors().get(i);
 			
 			if(log.isTraceEnabled()) {
 				log.trace("Iterating loop with sel: " + s +
@@ -302,12 +302,12 @@ public class Analyzer {
 				retval = s.matches(e);
 			}
 			else if(combinator==SimpleSelector.Combinator.ADJACENT) {
-				final Element adjacent = (Element) w.previousSibling();
+				Element adjacent = (Element) w.previousSibling();
 				retval = false;
 				if(adjacent!=null) retval = s.matches(adjacent);
 			}
 			else if(combinator==SimpleSelector.Combinator.DESCENDANT) {
-				final Element parent = (Element) w.parentNode();
+				Element parent = (Element) w.parentNode();
 				retval = false;
 				if(parent!=null) retval = s.matches(parent);
 			}
@@ -349,21 +349,21 @@ public class Analyzer {
 		for(Rule rule: sheet.getRules()) {
 			// this rule conforms to all media
 			if(rule instanceof RuleSet) {
-				final RuleSet ruleset = (RuleSet) rule;
+				RuleSet ruleset = (RuleSet) rule;
 				for(Selector s: ruleset.getSelectors()) {
 					insertClassified(all, classifySelector(s), ruleset);
 				}
 			}
 			// this rule conforms to different media
 			if(rule instanceof RuleMedia) {
-				final RuleMedia rulemedia = (RuleMedia) rule;
+				RuleMedia rulemedia = (RuleMedia) rule;
 				
 				// for all rules in media set   
 				for(RuleSet ruleset : rulemedia.getRules()) {
 					// for all selectors in there
 					for(Selector s: ruleset.getSelectors()) {
 						
-						final List<HolderSelector> hs = classifySelector(s);
+						List<HolderSelector> hs = classifySelector(s);
 						// insert into all medias
 						for(String media: rulemedia.getMedias()) {
 							Holder h = rules.get(media);
@@ -415,7 +415,7 @@ public class Analyzer {
 			SimpleSelector last = selector.getLastSimpleSelector();
 
 			// is element or other (wildcard)
-			final String element = last.getElementName();
+			String element = last.getElementName();
 			if(element!=null) {
 				// wildcard
 				if(SimpleSelector.Item.WILDCARD.equals(element)) 
@@ -426,12 +426,12 @@ public class Analyzer {
 			}
 
 			// is class name
-			final String className = last.getClassName();
+			String className = last.getClassName();
 			if(className!=null)
 				hs.add(new HolderSelector(HolderItem.CLASS, className.toLowerCase()));
 
 			// is id
-			final String id = last.getIDName();
+			String id = last.getIDName();
 			if(id!=null)
 				hs.add(new HolderSelector(HolderItem.ID, id.toLowerCase()));
 

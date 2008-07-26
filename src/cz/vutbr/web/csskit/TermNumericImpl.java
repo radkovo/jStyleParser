@@ -94,7 +94,7 @@ public abstract class TermNumericImpl<T> extends TermImpl<T> implements TermNume
 		if (!(obj instanceof TermNumericImpl))
 			return false;
 		@SuppressWarnings("unchecked")
-		final TermNumericImpl<T> other = (TermNumericImpl<T>) obj;
+		TermNumericImpl<T> other = (TermNumericImpl<T>) obj;
 		if (unit == null) {
 			if (other.unit != null)
 				return false;

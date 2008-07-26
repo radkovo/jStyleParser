@@ -77,7 +77,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
 			return false;
 		if (!(obj instanceof TermFunctionImpl))
 			return false;
-		final TermFunctionImpl other = (TermFunctionImpl) obj;
+		TermFunctionImpl other = (TermFunctionImpl) obj;
 		if (functionName == null) {
 			if (other.functionName != null)
 				return false;

@@ -76,7 +76,7 @@ public class RuleSetImpl implements RuleSet {
 		if(o.getClass()!=RuleSetImpl.class)
 			throw new IllegalArgumentException("Allowed to compare RuleSetImpl only");
 		
-		final RuleSetImpl other = (RuleSetImpl) o;
+		RuleSetImpl other = (RuleSetImpl) o;
 		
 		if (order < other.order)	return -1;
 		else if (order > other.order)	return 1;

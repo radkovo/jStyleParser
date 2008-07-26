@@ -80,7 +80,7 @@ public class ImportURIImpl implements ImportURI {
 			return false;
 		if (!(obj instanceof ImportURIImpl))
 			return false;
-		final ImportURIImpl other = (ImportURIImpl) obj;
+		ImportURIImpl other = (ImportURIImpl) obj;
 		if (medias == null) {
 			if (other.medias != null)
 				return false;

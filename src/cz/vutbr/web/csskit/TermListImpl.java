@@ -86,7 +86,7 @@ public class TermListImpl extends AbstractCollection<Term<?>> implements TermLis
 			return false;
 		if (!(obj instanceof TermListImpl))
 			return false;
-		final TermListImpl other = (TermListImpl) obj;
+		TermListImpl other = (TermListImpl) obj;
 		if (operator == null) {
 			if (other.operator != null)
 				return false;

@@ -51,7 +51,7 @@ public class AssignedDeclaration implements Declaration {
 		if( !(other instanceof AssignedDeclaration))
 			return 0;
 		
-		final AssignedDeclaration o = (AssignedDeclaration) other;
+		AssignedDeclaration o = (AssignedDeclaration) other;
 		
 		if(this.level > o.level) return 1;
 		if(this.level < o.level) return -1;
@@ -141,7 +141,7 @@ public class AssignedDeclaration implements Declaration {
 			return false;
 		if (!(obj instanceof AssignedDeclaration))
 			return false;
-		final AssignedDeclaration other = (AssignedDeclaration) obj;
+		AssignedDeclaration other = (AssignedDeclaration) obj;
 		if (important != other.important)
 			return false;
 		if (level != other.level)
