@@ -1,6 +1,7 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.BeforeClass;
-import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -26,6 +26,7 @@ import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermLength;
 import cz.vutbr.web.css.TermNumeric;
 import cz.vutbr.web.css.NodeData.BorderStyle;
+import cz.vutbr.web.css.NodeData.FontFamily;
 import cz.vutbr.web.css.NodeData.Margin;
 import cz.vutbr.web.csskit.parser.CSSParser;
 import cz.vutbr.web.domassign.Analyzer;
@@ -37,11 +38,13 @@ public class AnalyzerTest {
 	private static StyleSheet sheet;
 	private static Analyzer analyzer;
 	private static TreeWalker walker;
+	private static ElementMap elements;
 	
 	@BeforeClass
 	public static void init() throws FileNotFoundException, StyleSheetNotValidException {
 		Tidy parser = new Tidy();
 		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
+
 		doc = parser.parseDOM(
 				new FileInputStream("data/simple/data.html"), null);
 		
@@ -56,7 +59,7 @@ public class AnalyzerTest {
 		assertEquals("There is one <body> element", 1, list.getLength());
 		
 		walker = new TidyTreeWalker(list.item(0), NodeFilter.SHOW_ELEMENT);
-		
+		elements = new ElementMap(doc);
 	}
 	
 	
@@ -96,14 +99,13 @@ public class AnalyzerTest {
 	}
 	
 	@Test 
-	public void evaluateRepeaterOnMargin() {
+	public void testRepeaterOnMargin() {
 		Map<Element, NodeData> decl =
 			analyzer.evaluateDOM(doc, "all", false);
 		
-		Element marginator = (Element) doc.getElementsByTagName("div").item(0);
-		String id = marginator.getAttribute("id");
+		Element marginator = elements.getElementById("marginator"); 
 		
-		Assert.assertEquals("Element marginator exists", "marginator", id);
+		assertNotNull("Element marginator exists", marginator);
 		
 		NodeData data = decl.get(marginator);
 		
@@ -127,16 +129,28 @@ public class AnalyzerTest {
 		Map<Element, NodeData> decl =
 			analyzer.evaluateDOM(doc, "all", false);
 		
-		Element marginator = (Element) doc.getElementsByTagName("div").item(0);
-		String id = marginator.getAttribute("id");
-		
-		Assert.assertEquals("Element marginator exists", "marginator", id);
+		Element marginator = elements.getElementById("marginator");
+		assertNotNull("Element marginator exists", marginator);
 		
 		NodeData data = decl.get(marginator);
 		
-		assertEquals("Border-top-style: dotted",
+		assertEquals("border-top-style: dotted",
 				BorderStyle.DOTTED, data.getProperty(BorderStyle.class, "border-top-style"));
+	}
+	
+	@Test
+	public void testFontFamily() {
 		
+		Map<Element, NodeData> decl =
+			analyzer.evaluateDOM(doc, "all", false);
+		
+		Element fontoid = elements.getElementById("fontoid");
+		assertNotNull("Element fontoid exist", fontoid);
+		
+		NodeData data = decl.get(fontoid);
+		
+		assertEquals("font-family: monospace",
+				FontFamily.MONOSPACE, data.getProperty(FontFamily.class, "font-family"));
 	}
 	
 }

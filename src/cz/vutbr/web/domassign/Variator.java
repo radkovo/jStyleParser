@@ -65,7 +65,22 @@ public abstract class Variator {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values);
 
 	/**
-	 * Solves variant which leads to <code>inherit</code> CSS Property
+	 * Solves variant which leads to <code>inherit</code> CSS Property value.
+	 * This overrides all other possible variants and no other informations are 
+	 * allowed per CSS Declaration.
+	 * 
+	 * Example:
+	 * <code>margin: inherit</code> is valid value and leads to setting of
+	 * <ul>
+	 * <li><code>margin-top: inherit</code></li>
+	 * <li><code>margin-right: inherit</code></li>
+	 * <li><code>margin-bottom: inherit</code></li>
+	 * <li><code>margin-left: inherit</code></li>
+	 * <ul>
+	 * 
+	 * <br/>
+	 * <code>margin: 0px inherit</code> is invalid value.
+	 * 
 	 * @param properties Properties map where to store properties types
 	 * @param values Values map where to store properties values
 	 * @return <code>true</code> in case of success, <code>false</code> otherwise
@@ -73,6 +88,42 @@ public abstract class Variator {
 	protected abstract boolean inheritance(
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values);
 
+	/**
+	 * Check if variant, which was passed is able to be located in place where it was 
+	 * found.
+	 * 
+	 * Example:<br/>
+	 * We have declaration:
+	 * <code>font: 12px/14px sans-serif</code>
+	 * Then according to grammar:<br/>
+	 * <pre>
+	 * 	[ 
+	 * 		[ <'font-style'> || <'font-variant'> || <'font-weight'> ]? 
+	 * 		<'font-size'> 
+	 * 		[ / <'line-height'> ]? 
+	 * 		<'font-family'> 
+	 *  ] 
+	 *  | caption | icon | menu | message-box | 
+	 *  small-caption | status-bar | inherit
+	 * </pre> 
+	 * <ol>
+	 * <li><code>12px</code> is assigned to </i>font-size</i></li>
+	 * <li><code>14px</code> is checked to have SLASH operator before 
+	 * and check to whether <i>font-size</i> was defined before it</li>
+	 * <li><code>sans-serif</code> is tested to have at least 
+	 * definition of <i>font-size</i> before itself</li>
+	 * <li>declaration passes</li>
+	 * </ol>
+	 *   	  
+	 * @param variant Identification of current variant which passed test 
+	 * @param term Position in term list of terms which passed test
+	 * @return <code>true</code> in case of success, <code>false</code> elsewhere
+	 * @see Term.Operator
+	 */
+	protected boolean variantCondition(int variant, int term) {
+		return true;
+	}
+	
 	/**
 	 * Test all terms
 	 * @param properties
@@ -102,8 +153,12 @@ public abstract class Variator {
 				passed = variant(v, i, properties, values);
 				if (passed) {
 					// failed on term, because this variant already passed in past
-					if (variantPassed[v])
-						return false;
+					if (variantPassed[v]) return false;
+									
+					// check variant conditions
+					if (!variantCondition(v, i)) return false;
+					
+					// mark occurrence of variant
 					variantPassed[v] = true;
 					// we have found, skip evaluation
 					break;
@@ -125,7 +180,7 @@ public abstract class Variator {
 	 * @param values Values map where to store property value
 	 * @return <code>true</code> in case of success, <code>false</code> otherwise
 	 */
-	public boolean tryVariant(int variant, Declaration d, Map<String, CSSProperty> properties,
+	public boolean tryOneTermVariant(int variant, Declaration d, Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values) {
 		
 		// only one term is allowed
@@ -139,18 +194,18 @@ public abstract class Variator {
 	}
 	
 	/**
-	 * Uses variator functionality to test selected variant on more term.
+	 * Uses variator functionality to test selected variant on more terms.
 	 * This is used when variant is represented by more terms. Since usually
-	 * is used only one term per variant, only one multiple variant is allowed
+	 * only one term per variant is used, only one multiple variant is allowed
 	 * per variator and should be placed as the last one 
 	 * 
-	 * @param variant Number of variant (last variant in variator
+	 * @param variant Number of variant (last variant in variator)
 	 * @param properties Properties map where to store property type
 	 * @param values Values map where to store property value
 	 * @param terms Array of terms used for variant
 	 * @return <code>true</code> in case of success, <code>false</code> otherwise
 	 */
-	public boolean tryVariant(int variant, Map<String, CSSProperty> properties,
+	public boolean tryMultiTermVariant(int variant, Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values, Term<?>...terms) {
 		
 		this.terms = Arrays.asList(terms);

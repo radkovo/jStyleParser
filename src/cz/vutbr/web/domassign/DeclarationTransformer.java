@@ -28,6 +28,7 @@ import cz.vutbr.web.css.TermURI;
 import cz.vutbr.web.css.NodeData.BackgroundAttachment;
 import cz.vutbr.web.css.NodeData.BackgroundColor;
 import cz.vutbr.web.css.NodeData.BackgroundImage;
+import cz.vutbr.web.css.NodeData.BackgroundPosition;
 import cz.vutbr.web.css.NodeData.BackgroundRepeat;
 import cz.vutbr.web.css.NodeData.BorderCollapse;
 import cz.vutbr.web.css.NodeData.BorderColor;
@@ -47,6 +48,7 @@ import cz.vutbr.web.css.NodeData.Cursor;
 import cz.vutbr.web.css.NodeData.Direction;
 import cz.vutbr.web.css.NodeData.Display;
 import cz.vutbr.web.css.NodeData.EmptyCells;
+import cz.vutbr.web.css.NodeData.Font;
 import cz.vutbr.web.css.NodeData.FontFamily;
 import cz.vutbr.web.css.NodeData.FontSize;
 import cz.vutbr.web.css.NodeData.FontStyle;
@@ -54,6 +56,7 @@ import cz.vutbr.web.css.NodeData.FontVariant;
 import cz.vutbr.web.css.NodeData.FontWeight;
 import cz.vutbr.web.css.NodeData.Height;
 import cz.vutbr.web.css.NodeData.Left;
+import cz.vutbr.web.css.NodeData.LetterSpacing;
 import cz.vutbr.web.css.NodeData.LineHeight;
 import cz.vutbr.web.css.NodeData.ListStyleImage;
 import cz.vutbr.web.css.NodeData.ListStylePosition;
@@ -88,9 +91,12 @@ import cz.vutbr.web.css.NodeData.Widows;
 import cz.vutbr.web.css.NodeData.Width;
 import cz.vutbr.web.css.NodeData.WordSpacing;
 import cz.vutbr.web.css.NodeData.ZIndex;
+import cz.vutbr.web.css.Term.Operator;
+import cz.vutbr.web.csskit.TermIdentImpl;
 import cz.vutbr.web.csskit.TermImpl;
 import cz.vutbr.web.csskit.TermListImpl;
 import cz.vutbr.web.csskit.TermPairImpl;
+import cz.vutbr.web.csskit.TermStringImpl;
 
 /**
  * Contains methods to transform declaration into values applicable to
@@ -321,13 +327,16 @@ public class DeclarationTransformer {
 	 * able to check even whether is above zero for numeric values
 	 * 
 	 * @param <T>
-	 *            Class of enum to be used for result
+	 *            Class of enum and CSSProperty to be used for result
 	 * @param termType
-	 *            Type of term
-	 * @param d
-	 *            Declaration
+	 *            Type of term to be
+	 * @param term
+	 *            Term of which is supposed to be of type <code>termType</code>,
+	 *            that is input data
+	 * @param propertyName
+	 *            Name under which property's value and type is stored in maps
 	 * @param typeIdentification
-	 *            How this type of term is described in enum T
+	 *            How this type of term is described in type T
 	 * @param sanify
 	 *            Check if value is positive
 	 * @param properties
@@ -495,33 +504,36 @@ public class DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processBackgroundAttachement(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(BackgroundAttachment.class, d, properties);
+		final Variator background = new BackgroundVariator();
+		return background.tryOneTermVariant(BackgroundVariator.ATTACHEMENT, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBackgroundColor(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrColor(BackgroundColor.class,
-				BackgroundColor.color, d, properties, values);
+		final Variator background = new BackgroundVariator();
+		return background.tryOneTermVariant(BackgroundVariator.COLOR, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBackgroundImage(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-
-		if (d.getTerms().size() != 1)
-			return false;
-
-		return genericOneIdent(BackgroundImage.class, d, properties)
-				|| genericTerm(TermURI.class, d.getTerms().get(0), d
-						.getProperty(), BackgroundImage.uri, false, properties,
-						values);
+		final Variator background = new BackgroundVariator();
+		return background.tryOneTermVariant(BackgroundVariator.IMAGE, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBackgroundRepeat(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(BackgroundRepeat.class, d, properties);
+		final Variator background = new BackgroundVariator();
+		return background.tryOneTermVariant(BackgroundVariator.REPEAT, d, properties, values);
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean processBackgroundPosition(Declaration d,
+			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		final Variator background = new BackgroundVariator();
+		return background.tryOneTermVariant(BackgroundVariator.POSITION, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
@@ -534,64 +546,64 @@ public class DeclarationTransformer {
 	private boolean processBorderTopColor(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator borderSide = new BorderSideVariator("top");
-		return borderSide.tryVariant(BorderSideVariator.COLOR, d, properties,
-				values);
+		return borderSide.tryOneTermVariant(BorderSideVariator.COLOR, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBorderRightColor(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator borderSide = new BorderSideVariator("right");
-		return borderSide.tryVariant(BorderSideVariator.COLOR, d, properties,
-				values);
+		return borderSide.tryOneTermVariant(BorderSideVariator.COLOR, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBorderBottomColor(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator borderSide = new BorderSideVariator("bottom");
-		return borderSide.tryVariant(BorderSideVariator.COLOR, d, properties,
-				values);
+		return borderSide.tryOneTermVariant(BorderSideVariator.COLOR, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBorderLeftColor(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator borderSide = new BorderSideVariator("left");
-		return borderSide.tryVariant(BorderSideVariator.COLOR, d, properties,
-				values);
+		return borderSide.tryOneTermVariant(BorderSideVariator.COLOR, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBorderTopStyle(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator borderSide = new BorderSideVariator("top");
-		return borderSide.tryVariant(BorderSideVariator.STYLE, d, properties,
-				values);
+		return borderSide.tryOneTermVariant(BorderSideVariator.STYLE, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBorderRightStyle(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator borderSide = new BorderSideVariator("right");
-		return borderSide.tryVariant(BorderSideVariator.STYLE, d, properties,
-				values);
+		return borderSide.tryOneTermVariant(BorderSideVariator.STYLE, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBorderBottomStyle(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator borderSide = new BorderSideVariator("bottom");
-		return borderSide.tryVariant(BorderSideVariator.STYLE, d, properties,
-				values);
+		return borderSide.tryOneTermVariant(BorderSideVariator.STYLE, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBorderLeftStyle(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator borderSide = new BorderSideVariator("left");
-		return borderSide.tryVariant(BorderSideVariator.STYLE, d, properties,
-				values);
+		return borderSide.tryOneTermVariant(BorderSideVariator.STYLE, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
@@ -605,10 +617,10 @@ public class DeclarationTransformer {
 			if (genericTermIdent(BorderSpacing.class, term, propertyName,
 					properties)
 					|| genericTerm(TermLength.class, term, propertyName,
-							BorderSpacing.hor_ver_list, true, properties,
+							BorderSpacing.list_values, true, properties,
 							values)) {
 				// one term with length was inserted, double it
-				if (properties.get(propertyName) == BorderSpacing.hor_ver_list) {
+				if (properties.get(propertyName) == BorderSpacing.list_values) {
 					TermList terms = new TermListImpl(2);
 					terms.add(term);
 					terms.add(term);
@@ -624,9 +636,9 @@ public class DeclarationTransformer {
 			String propertyName = d.getProperty();
 			// two lengths ?
 			if (genericTerm(TermLength.class, term1, propertyName,
-					BorderSpacing.hor_ver_list, true, properties, values)
+					BorderSpacing.list_values, true, properties, values)
 					&& genericTerm(TermLength.class, term2, propertyName,
-							BorderSpacing.hor_ver_list, true, properties,
+							BorderSpacing.list_values, true, properties,
 							values)) {
 				TermList terms = new TermListImpl(2);
 				terms.add(term1);
@@ -657,32 +669,32 @@ public class DeclarationTransformer {
 	private boolean processBorderTopWidth(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator borderSide = new BorderSideVariator("top");
-		return borderSide.tryVariant(BorderSideVariator.WIDTH, d, properties,
-				values);
+		return borderSide.tryOneTermVariant(BorderSideVariator.WIDTH, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBorderRightWidth(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator borderSide = new BorderSideVariator("right");
-		return borderSide.tryVariant(BorderSideVariator.WIDTH, d, properties,
-				values);
+		return borderSide.tryOneTermVariant(BorderSideVariator.WIDTH, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBorderBottomWidth(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator borderSide = new BorderSideVariator("bottom");
-		return borderSide.tryVariant(BorderSideVariator.WIDTH, d, properties,
-				values);
+		return borderSide.tryOneTermVariant(BorderSideVariator.WIDTH, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBorderLeftWidth(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator borderSide = new BorderSideVariator("left");
-		return borderSide.tryVariant(BorderSideVariator.WIDTH, d, properties,
-				values);
+		return borderSide.tryOneTermVariant(BorderSideVariator.WIDTH, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
@@ -794,153 +806,55 @@ public class DeclarationTransformer {
 	private boolean processFontFamily(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator font = new FontVariator();
-		return font.tryVariant(FontVariator.FONT_FAMILY, properties, values, d
-				.getTerms().toArray(new Term<?>[0]));
+		return font.tryMultiTermVariant(FontVariator.FAMILY, properties,
+				values, d.getTerms().toArray(new Term<?>[0]));
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processFontSize(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(FontSize.class,
-				FontSize.length, FontSize.percentage, true, d, properties,
-				values);
+		final Variator font = new FontVariator();
+		return font.tryOneTermVariant(FontVariator.SIZE, d, properties, values);
+
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processFontStyle(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator font = new FontVariator();
-		return font.tryVariant(FontVariator.FONT_STYLE, d, properties, values);
+		return font
+				.tryOneTermVariant(FontVariator.STYLE, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processFontVariant(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator font = new FontVariator();
-		return font.tryVariant(FontVariator.FONT_WEIGHT, d, properties, values);
+		return font.tryOneTermVariant(FontVariator.WEIGHT, d, properties,
+				values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processFontWeight(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator font = new FontVariator();
-		return font.tryVariant(FontVariator.FONT_WEIGHT, d, properties, values);
+		return font.tryOneTermVariant(FontVariator.WEIGHT, d, properties,
+				values);
 	}
 
-	/*
-	 * private Boolean processFont(Declaration d) { NodeData trans =
-	 * beginTransaction(); //Hodnoty jsou děděné (inherited) - Nastavení na
-	 * výchozí hodnoty fontStyleType = EnumFontStyle.normal; fontFamilyType =
-	 * EnumFontFamily.font; fontFamilyValues.clear(); fontSizeType =
-	 * EnumFontSize.medium; fontSizePercentValue = null; fontSizeNumberValue =
-	 * null; fontVariantType = EnumFontVariant.normal; fontWeightType =
-	 * EnumFontWeight.normal; lineHeightType = EnumLineHeight.normal;
-	 * lineHeightNumberValue = null; lineHeightPercentValue = null;
-	 * 
-	 * //Každou z částí lze nastavit pouze jednou. Není přípustné aby se v jedné
-	 * deklaraci //objevila například 2x barva. K určení slouží následující
-	 * proměnné boolean processedStyle = false; boolean processedVariant =
-	 * false; boolean processedWeight = false; boolean processedFontSize =
-	 * false; boolean processedLineHeight = false; int count = 0;
-	 * 
-	 * //Sem se budou kládat všechny hodnoty na konci (pravděpodobně se bude
-	 * jednat o hodnoty font-family) Declaration fontFamilyDeclaration = new
-	 * DataDeclaration("font-family");
-	 * 
-	 * for(Term t : d.getTerms()) { //Pokud je první (a jediný) identifikátor
-	 * inherit, pak se nastaví všecm hodnotám inherit //Pokud by se inherit
-	 * objevilo až například jako třetí term, dojde k ignorování celé deklarace
-	 * if((t instanceof TermIdent) &&
-	 * ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-	 * if(d.getTerms().size() == 1) { fontStyleType = EnumFontStyle.inherit;
-	 * fontFamilyType = EnumFontFamily.inherit; fontFamilyValues.clear();
-	 * fontSizeType = EnumFontSize.inherit; fontSizePercentValue = null;
-	 * fontSizeNumberValue = null; fontVariantType = EnumFontVariant.inherit;
-	 * fontWeightType = EnumFontWeight.inherit; lineHeightType =
-	 * EnumLineHeight.inherit; lineHeightNumberValue = null;
-	 * lineHeightPercentValue = null; return true; } else {
-	 * rollbackTransaction(trans); return false; } } if((t instanceof TermIdent)
-	 * && ((TermIdent)t).getValue().equalsIgnoreCase("caption")) {
-	 * if(d.getTerms().size() == 1) { //neimplementováno return true; } else {
-	 * rollbackTransaction(trans); return false; } } if((t instanceof TermIdent)
-	 * && ((TermIdent)t).getValue().equalsIgnoreCase("icon")) {
-	 * if(d.getTerms().size() == 1) { //neimplementováno return true; } else {
-	 * rollbackTransaction(trans); return false; } } if((t instanceof TermIdent)
-	 * && ((TermIdent)t).getValue().equalsIgnoreCase("menu")) {
-	 * if(d.getTerms().size() == 1) { //neimplementováno return true; } else {
-	 * rollbackTransaction(trans); return false; } } if((t instanceof TermIdent)
-	 * && ((TermIdent)t).getValue().equalsIgnoreCase("message-box")) {
-	 * if(d.getTerms().size() == 1) { //neimplementováno return true; } else {
-	 * rollbackTransaction(trans); return false; } } if((t instanceof TermIdent)
-	 * && ((TermIdent)t).getValue().equalsIgnoreCase("small-caption")) {
-	 * if(d.getTerms().size() == 1) { //neimplementováno return true; } else {
-	 * rollbackTransaction(trans); return false; } } if((t instanceof TermIdent)
-	 * && ((TermIdent)t).getValue().equalsIgnoreCase("status-bar")) {
-	 * if(d.getTerms().size() == 1) { //neimplementováno return true; } else {
-	 * rollbackTransaction(trans); return false; } }
-	 * 
-	 * //Vytvořím pomocnou deklaraci, která obsahuje jeden jediný term (ten
-	 * aktuální) //a v jednotlivých blocích se pokouším tuto deklaraci
-	 * zpracovat. Declaration tmpDeclaration = new DataDeclaration("font");
-	 * tmpDeclaration.getTerms().add(t);
-	 * 
-	 * if(!processedFontSize && count < 3) { if((t instanceof TermIdent) &&
-	 * ((TermIdent)t).getValue().equalsIgnoreCase("normal")) { //U normal není
-	 * jasné o co se jedná. Ale je to výchozí hodnota, lze jí ignorovat count++;
-	 * continue; }
-	 * 
-	 * //Vyzkouším, jestli se jedná o barvu
-	 * tmpDeclaration.setProperty("font-style");
-	 * if(processFontStyle(tmpDeclaration)) { //Jedná se o barvu. Zjistím,
-	 * jestli barva už nebyla jednou zadána if(processedStyle) { //Barva už byla
-	 * jednou zadáno, deklarace je chybná, rollback a konec
-	 * rollbackTransaction(trans); return false; } else { //Barva ještě nebyla
-	 * zadána, pokračujeme dalším termem processedStyle = true; count++;
-	 * continue; } } tmpDeclaration.setProperty("font-variant");
-	 * if(processFontVariant(tmpDeclaration)) { if(processedVariant) {
-	 * rollbackTransaction(trans); return false; } else { processedVariant =
-	 * true; count++; continue; } } tmpDeclaration.setProperty("font-weight");
-	 * if(processFontWeight(tmpDeclaration)) { if(processedWeight) {
-	 * rollbackTransaction(trans); return false; } else { processedWeight =
-	 * true; count++; continue; } } }
-	 * 
-	 * //V tomto místě musí být deklarováno bezpodmínečně font-size
-	 * if(!processedFontSize) { tmpDeclaration.setProperty("font-size");
-	 * if(processFontSize(tmpDeclaration)) { processedFontSize = true; continue;
-	 * } else { rollbackTransaction(trans); return false; } }
-	 * 
-	 * if(!processedLineHeight && t.getOperator() == Term.Operator.SLASH) {
-	 * tmpDeclaration.setProperty("line-height");
-	 * if(processLineHeight(tmpDeclaration)) { processedLineHeight = true;
-	 * continue; } else { rollbackTransaction(trans); return false; } }
-	 * 
-	 * //Vše co neprojde předchozím fontFamilyDeclaration.getTerms().add(t); }
-	 * 
-	 * //Font family musí být zadáno
-	 * if(fontFamilyDeclaration.getTerms().isEmpty()) {
-	 * rollbackTransaction(trans); return false; }
-	 * 
-	 * if(processFontFamily(fontFamilyDeclaration)) { return true; } else {
-	 * rollbackTransaction(trans); return false; } }
-	 */
-
+	@SuppressWarnings("unused")
+	private boolean processFont(Declaration d,
+			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		Variator font = new FontVariator();
+		font.assignTermsFromDeclaration(d);
+		return font.vary(properties, values);
+	}
+	
 	@SuppressWarnings("unused")
 	private boolean processLineHeight(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-
-		if (d.getTerms().size() != 1)
-			return false;
-
-		return genericOneIdent(LineHeight.class, d, properties)
-				|| genericTerm(TermNumber.class, d.getTerms().get(0), d
-						.getProperty(), LineHeight.number, true, properties,
-						values)
-				|| genericTerm(TermPercent.class, d.getTerms().get(0), d
-						.getProperty(), LineHeight.percentage, true,
-						properties, values)
-				|| genericTerm(TermLength.class, d.getTerms().get(0), d
-						.getProperty(), LineHeight.length, true, properties,
-						values);
+		final Variator font = new FontVariator();
+		return font.tryOneTermVariant(FontVariator.LINE_HEIGHT, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
@@ -1185,24 +1099,24 @@ public class DeclarationTransformer {
 	private boolean processListStyleImage(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator listStyle = new ListStyleVariator();
-		return listStyle.tryVariant(ListStyleVariator.IMAGE, d, properties,
-				values);
+		return listStyle.tryOneTermVariant(ListStyleVariator.IMAGE, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processListStylePosition(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator listStyle = new ListStyleVariator();
-		return listStyle.tryVariant(ListStyleVariator.POSITION, d, properties,
-				values);
+		return listStyle.tryOneTermVariant(ListStyleVariator.POSITION, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processListStyleType(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator listStyle = new ListStyleVariator();
-		return listStyle.tryVariant(ListStyleVariator.TYPE, d, properties,
-				values);
+		return listStyle.tryOneTermVariant(ListStyleVariator.TYPE, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
@@ -1291,21 +1205,24 @@ public class DeclarationTransformer {
 	private boolean processOutlineColor(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator outline = new OutlineVariator();
-		return outline.tryVariant(OutlineVariator.COLOR, d, properties, values);
+		return outline.tryOneTermVariant(OutlineVariator.COLOR, d, properties,
+				values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processOutlineStyle(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator outline = new OutlineVariator();
-		return outline.tryVariant(OutlineVariator.STYLE, d, properties, values);
+		return outline.tryOneTermVariant(OutlineVariator.STYLE, d, properties,
+				values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processOutlineWidth(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator outline = new OutlineVariator();
-		return outline.tryVariant(OutlineVariator.WIDTH, d, properties, values);
+		return outline.tryOneTermVariant(OutlineVariator.WIDTH, d, properties,
+				values);
 	}
 
 	@SuppressWarnings("unused")
@@ -1457,7 +1374,7 @@ public class DeclarationTransformer {
 	}
 
 	@SuppressWarnings("unused")
-	private boolean processTextIdent(Declaration d,
+	private boolean processTextIndent(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		return genericOneIdentOrLengthOrPercent(TextIndent.class,
 				TextIndent.length, TextIndent.percentage, false, d, properties,
@@ -1509,6 +1426,13 @@ public class DeclarationTransformer {
 		return genericOneIdentOrLength(WordSpacing.class, WordSpacing.length,
 				false, d, properties, values);
 	}
+	
+	@SuppressWarnings("unused")
+	private boolean processLetterSpacing(Declaration d,
+			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		return genericOneIdentOrLength(LetterSpacing.class, LetterSpacing.length,
+				false, d, properties, values);
+	}
 
 	@SuppressWarnings("unused")
 	private boolean processZIndex(Declaration d,
@@ -1516,7 +1440,7 @@ public class DeclarationTransformer {
 		return genericOneIdentOrInteger(ZIndex.class, ZIndex.integer, false, d,
 				properties, values);
 	}
-
+	
 	@SuppressWarnings("unused")
 	private boolean processContent(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
@@ -1566,7 +1490,11 @@ public class DeclarationTransformer {
 	}
 
 	/**
-	 * Variator for list style
+	 * Variator for list style. Grammar:
+	 * 
+	 * <pre>
+	 * [ 'list-style-type' || 'list-style-position' || 'list-style-image' ]
+	 * | inherit
 	 * 
 	 * @author kapy
 	 */
@@ -1611,16 +1539,21 @@ public class DeclarationTransformer {
 		@Override
 		protected boolean inheritance(Map<String, CSSProperty> properties,
 				Map<String, Term<?>> values) {
-			properties.put(variantPropertyNames[0], ListStyleImage.INHERIT);
-			properties.put(variantPropertyNames[1], ListStyleType.INHERIT);
-			properties.put(variantPropertyNames[2], ListStylePosition.INHERIT);
+			properties.put(variantPropertyNames[IMAGE], ListStyleImage.INHERIT);
+			properties.put(variantPropertyNames[TYPE], ListStyleType.INHERIT);
+			properties.put(variantPropertyNames[POSITION], ListStylePosition.INHERIT);
 			return true;
 		}
 
 	}
 
-	/**
-	 * Variator for border side
+/**
+	 * Variator for border side.
+	 * Grammar:
+	 * <pre>
+	 * [ <border-width> || <border-style> || <'border-top-color'> ] 
+	 * | inherit
+	 * </pre>
 	 * 
 	 * @author kapy
 	 * 
@@ -1673,15 +1606,21 @@ public class DeclarationTransformer {
 		@Override
 		protected boolean inheritance(Map<String, CSSProperty> properties,
 				Map<String, Term<?>> values) {
-			properties.put(variantPropertyNames[0], BorderColor.INHERIT);
-			properties.put(variantPropertyNames[1], BorderStyle.INHERIT);
-			properties.put(variantPropertyNames[2], BorderWidth.INHERIT);
+			properties.put(variantPropertyNames[COLOR], BorderColor.INHERIT);
+			properties.put(variantPropertyNames[STYLE], BorderStyle.INHERIT);
+			properties.put(variantPropertyNames[WIDTH], BorderWidth.INHERIT);
 			return true;
 		}
+
 	}
 
 	/**
-	 * Outline variator
+	 * Outline variator Grammar:
+	 * 
+	 * <pre>
+	 * [ 'outline-color' || 'outline-style' || 'outline-width' ] 
+	 * | inherit
+	 * </pre>
 	 * 
 	 * @author kapy
 	 * 
@@ -1730,25 +1669,43 @@ public class DeclarationTransformer {
 		@Override
 		protected boolean inheritance(Map<String, CSSProperty> properties,
 				Map<String, Term<?>> values) {
-			properties.put(variantPropertyNames[0], OutlineColor.INHERIT);
-			properties.put(variantPropertyNames[1], OutlineStyle.INHERIT);
-			properties.put(variantPropertyNames[2], OutlineWidth.INHERIT);
+			properties.put(variantPropertyNames[COLOR], OutlineColor.INHERIT);
+			properties.put(variantPropertyNames[STYLE], OutlineStyle.INHERIT);
+			properties.put(variantPropertyNames[WIDTH], OutlineWidth.INHERIT);
 			return true;
 		}
+
 	}
 
+/**
+	 * Font variator:
+	 * Grammar:
+	 * <pre>
+	 * 	[ 
+	 * 		[ <'font-style'> || <'font-variant'> || <'font-weight'> ]? 
+	 * 		<'font-size'> 
+	 * 		[ / <'line-height'> ]? 
+	 * 		<'font-family'> 
+	 * 	] 
+	 * 	| caption | icon | menu | message-box 
+	 * 	| small-caption | status-bar | inherit
+	 * </pre>
+	 * 
+	 * @author kapy
+	 *
+	 */
 	private final class FontVariator extends Variator {
 
-		public static final int FONT_STYLE = 0;
-		public static final int FONT_VARIANT = 1;
-		public static final int FONT_WEIGHT = 2;
-		public static final int FONT_SIZE = 3;
+		public static final int STYLE = 0;
+		public static final int VARIANT = 1;
+		public static final int WEIGHT = 2;
+		public static final int SIZE = 3;
 		public static final int LINE_HEIGHT = 4;
-		public static final int FONT_FAMILY = 5;
+		public static final int FAMILY = 5;
 
 		protected String[] variantPropertyNames = { "font-style",
 				"font-variant", "font-weight", "font-size", "line-height",
-				"font_family" };
+				"font-family" };
 
 		public FontVariator() {
 			super(6);
@@ -1757,8 +1714,13 @@ public class DeclarationTransformer {
 		@Override
 		protected boolean inheritance(Map<String, CSSProperty> properties,
 				Map<String, Term<?>> values) {
-			// TODO Auto-generated method stub
-			return false;
+			properties.put(variantPropertyNames[STYLE], FontStyle.INHERIT);
+			properties.put(variantPropertyNames[VARIANT], FontVariant.INHERIT);
+			properties.put(variantPropertyNames[WEIGHT], FontWeight.INHERIT);
+			properties.put(variantPropertyNames[SIZE], FontSize.INHERIT);
+			properties.put(variantPropertyNames[LINE_HEIGHT], LineHeight.INHERIT);
+			properties.put(variantPropertyNames[FAMILY], FontFamily.INHERIT);
+			return true;
 		}
 
 		@Override
@@ -1766,15 +1728,15 @@ public class DeclarationTransformer {
 				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
 			switch (v) {
-			case FONT_STYLE:
+			case STYLE:
 				// process font style
 				return genericTermIdent(FontStyle.class, terms.get(i),
-						variantPropertyNames[v], properties);
-			case FONT_VARIANT:
+						variantPropertyNames[STYLE], properties);
+			case VARIANT:
 				// process font variant
 				return genericTermIdent(FontVariant.class, terms.get(i),
-						variantPropertyNames[v], properties);
-			case FONT_WEIGHT:
+						variantPropertyNames[VARIANT], properties);
+			case WEIGHT:
 				// process font weight
 				// test against numeric values
 				final Integer[] fontWeight = new Integer[] { 100, 200, 300,
@@ -1784,7 +1746,7 @@ public class DeclarationTransformer {
 
 				if (term instanceof TermIdent) {
 					return genericProperty(FontWeight.class, (TermIdent) term,
-							properties, variantPropertyNames[v]);
+							properties, variantPropertyNames[WEIGHT]);
 				} else if (term instanceof TermInteger) {
 
 					Integer value = ((TermInteger) term).getValue();
@@ -1798,7 +1760,7 @@ public class DeclarationTransformer {
 						// construct according enum name
 						if (result == 0) {
 							try {
-								properties.put(variantPropertyNames[v],
+								properties.put(variantPropertyNames[WEIGHT],
 										FontWeight.valueOf("numeric_"
 												+ value.intValue()));
 								return true;
@@ -1813,32 +1775,215 @@ public class DeclarationTransformer {
 					}
 				}
 				return false;
-
-			case FONT_FAMILY:
-				/*
-				 * for (Term t : d.getTerms()) { if (t instanceof TermIdent) {
-				 * String ident = ((TermIdent) t).getValue(); fontFamilyType =
-				 * EnumFontFamily.font; if (t.getOperator() ==
-				 * Term.Operator.SPACE && !input.isEmpty()) { String tmp =
-				 * input.get(input.size() - 1); tmp = tmp + " " + ident;
-				 * input.remove(input.size() - 1); input.add(tmp); } else {
-				 * input.add(ident); } } else if (t instanceof TermString) {
-				 * String ident = ((TermString) t).getValue(); fontFamilyType =
-				 * EnumFontFamily.font; input.add(ident); } else {
-				 * rollbackTransaction(trans); return false; } }
-				 * fontFamilyValues.clear(); fontFamilyValues.addAll(input);
-				 * 
-				 * return true; }
-				 */
-
+			case SIZE:
+				return genericTermIdent(FontSize.class, terms.get(i), 
+								variantPropertyNames[SIZE], properties) 
+						|| genericTerm(TermLength.class, terms.get(i), 
+								variantPropertyNames[SIZE], 
+								FontSize.length, true, properties, values)
+						|| genericTerm(TermPercent.class, terms.get(i), 
+								variantPropertyNames[SIZE], 
+								FontSize.percentage, true, properties, values);
+			case LINE_HEIGHT:
+				return genericTermIdent(LineHeight.class, terms.get(i), 
+						variantPropertyNames[LINE_HEIGHT], properties)
+				|| genericTerm(TermNumber.class, terms.get(i), 
+						variantPropertyNames[LINE_HEIGHT], LineHeight.number, true, properties,
+						values)
+				|| genericTerm(TermPercent.class, terms.get(i), 
+						variantPropertyNames[LINE_HEIGHT], LineHeight.percentage, true,
+						properties, values)
+				|| genericTerm(TermLength.class, terms.get(i),
+						variantPropertyNames[LINE_HEIGHT], LineHeight.length, true, properties,
+						values);
+			case FAMILY:
+				// all values parsed
+				TermList list = new TermListImpl();
+				// current font name
+				StringBuffer sb = new StringBuffer();
+				// font name was composed from multiple parts
+				boolean composed = false;
+				for(Term<?> t: terms.subList(i, terms.size())) {
+					// first item
+					if(t instanceof TermIdent && t.getOperator()==null) {
+						sb.append(t.getValue());
+						composed = false;
+					}
+					// next item
+					else if(t instanceof TermIdent && t.getOperator()==Operator.SPACE) {
+						sb.append(" ").append(t.getValue());
+						composed = true;
+					}
+					// store current state
+					else if(t instanceof TermString || (t instanceof TermIdent && t.getOperator()==Operator.COMMA)) {
+						storeFamilyName(list, sb.toString(), composed);
+						sb = new StringBuffer();
+						composed=false;
+						// store next
+						if(t instanceof TermString) {
+							storeFamilyName(list, (String) t.getValue(), true);
+						}
+						else {
+							sb.append(t.getValue());
+						}
+					}
+					// invalid term
+					else
+						return false;
+				}
+				// add last item
+				storeFamilyName(list, sb.toString(), composed);
+				
+				if(list.isEmpty())
+					return false;
+				
+				// when only generic family is stored, there is no need to have
+				// list with one value
+				if(list.size()==1 && (list.toArray(new Term<?>[0])[0] instanceof TermString)==false) {
+					properties.put(variantPropertyNames[FAMILY], (FontFamily) (list.toArray(new Term<?>[0])[0]).getValue());
+					return true;
+				}
+								
+				properties.put(variantPropertyNames[FAMILY], FontFamily.list_values);
+				values.put(variantPropertyNames[FAMILY], list);
 				return true;
 			default:
 				return false;
 			}
 		}
 
+		@Override
+		protected boolean variantCondition(int variant, int term) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean vary(Map<String, CSSProperty> properties,
+				Map<String, Term<?>> values) {
+
+			// special check for user interface values
+			// such as "caption", "icon" or "menu"
+			// this will break inheritance division into distint categories,
+			// so it must be reconstructed later
+			if (terms.size() == 1 && terms.get(0) instanceof TermIdent) {
+				boolean value = genericTermIdent(Font.class, terms.get(0), "font",
+						properties);
+				// reconstruction
+				// inheritance values will be divided into subcategories
+				if(value && "inherit".equals(((TermIdent) terms.get(0)).getValue())) {
+					properties.remove("font");
+					return inheritance(properties, values);
+				}
+				
+				return value;
+			}
+			// follow basic control flow
+			return super.vary(properties, values);
+		}
+		
+		private void storeFamilyName(TermList storage, String name, boolean composed) {
+			
+			final Set<FontFamily> allowedFamilies = EnumSet.complementOf(
+					EnumSet.of(FontFamily.INHERIT, FontFamily.list_values));
+			
+			if(name==null || "".equals(name) || name.length()==0)
+				return;
+		
+			// if composed, store directly as family name
+			if(composed)
+				storage.add(new TermStringImpl(name));
+			// try to find generic name
+			else {
+				FontFamily generic = genericPropertyRaw(FontFamily.class, allowedFamilies, 
+						new TermIdentImpl(name));
+				// generic name found,
+				// store in term which value is generic font name FontFamily
+				if(generic!=null) {
+					Term<FontFamily> value = new TermImpl<FontFamily>();
+					value.setValue(generic);
+					storage.add(value);
+				}
+				// generic name not found, store as family name
+				else {
+					storage.add(new TermStringImpl(name));
+				}
+			}
+		}
+
 	}
 
+	/**
+	 * Background variator.
+	 * Grammar:
+	 * <pre>
+	 * [ <'background-color'> || <'background-image'> 
+	 * 		|| <'background-repeat'> || <'background-attachment'> 
+	 * 		|| <'background-position'>
+	 * ] 
+	 * | inherit
+	 * </pre>
+	 * 
+	 * @author kapy
+	 */
+	private final class BackgroundVariator extends Variator {
+		
+		public static final int COLOR = 0;
+		public static final int IMAGE = 1;
+		public static final int REPEAT = 2;
+		public static final int ATTACHEMENT = 3;
+		public static final int POSITION = 4;
+
+		protected String[] variantPropertyNames = { "background-color",
+				"background-image", "background-repeat", 
+				"background-attachement", "background-position" };
+
+		public BackgroundVariator() {
+			super(5);
+		}
+		
+		@Override
+		protected boolean inheritance(Map<String, CSSProperty> properties,
+				Map<String, Term<?>> values) {
+			properties.put(variantPropertyNames[COLOR], BackgroundColor.INHERIT);
+			properties.put(variantPropertyNames[IMAGE], BackgroundImage.INHERIT);
+			properties.put(variantPropertyNames[REPEAT], BackgroundRepeat.INHERIT);
+			properties.put(variantPropertyNames[ATTACHEMENT], BackgroundAttachment.INHERIT);
+			properties.put(variantPropertyNames[POSITION], BackgroundPosition.INHERIT);
+			return true;
+		}
+		
+		@Override
+		protected boolean variant(int v, int i,
+				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+			
+			switch(v) {
+			case COLOR:
+				return genericTermIdent(BackgroundColor.class, terms.get(i), 
+							variantPropertyNames[COLOR], properties)
+						|| genericTermColor(terms.get(i), variantPropertyNames[COLOR],
+								BackgroundColor.color, properties, values);
+			case IMAGE:
+				return genericTermIdent(BackgroundImage.class, terms.get(i), 
+							variantPropertyNames[IMAGE],properties)
+						|| genericTerm(TermURI.class, terms.get(i), 
+							variantPropertyNames[IMAGE], BackgroundImage.uri, 
+							false, properties, values);
+			case REPEAT:
+				return genericTermIdent(BackgroundRepeat.class, terms.get(i),
+							variantPropertyNames[REPEAT], properties);
+			case ATTACHEMENT:
+				return genericTermIdent(BackgroundRepeat.class, terms.get(i),
+						variantPropertyNames[REPEAT], properties);
+			case POSITION:
+				// TODO background-position
+			default:
+				return false;
+			}
+		}
+		
+	}
+	
 	/**
 	 * Border style repeater
 	 * 

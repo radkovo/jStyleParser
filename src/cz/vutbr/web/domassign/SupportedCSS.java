@@ -257,7 +257,7 @@ public class SupportedCSS {
 		map.put("list-style-image", ListStyleImage.NONE);
 
 		map.put("border-collapse", BorderCollapse.SEPARATE);
-		map.put("border-spacing", BorderSpacing.hor_ver_list); // 0 0
+		map.put("border-spacing", BorderSpacing.list_values); // 0 0
 		map.put("empty-cells", EmptyCells.SHOW);
 		map.put("table-layout", TableLayout.AUTO);
 		map.put("caption-side", CaptionSide.TOP);

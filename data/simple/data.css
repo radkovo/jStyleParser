@@ -29,3 +29,7 @@ H1.prvni {
 	margin: 100px;
 	border-top: olive dotted 5ex;
 }
+
+#fontoid {
+	font-family: monospace;
+}

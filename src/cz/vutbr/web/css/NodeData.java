@@ -1,6 +1,5 @@
 package cz.vutbr.web.css;
 
-
 /**
  * Holder of CSS properties defined for element. Enumeration values follows this
  * syntax: * UPPERCASE terminal symbols, direct values present in stylesheet,
@@ -9,7 +8,22 @@ package cz.vutbr.web.css;
  */
 public interface NodeData {
 
+	/**
+	 * Interface for definition of CSS properties.
+	 * This interface simplifies storing of values in maps, and provides
+	 * basic inheritance support.
+	 * 
+	 * @author kapy
+	 * 
+	 */
 	public interface CSSProperty {
+
+		/**
+		 * Allows declarations of properties to inherit or to be inherited
+		 * 
+		 * @return <code>true</code> in case that this property could be
+		 *         inherited from parent, <code>false</code> elsewhere
+		 */
 		public boolean inherited();
 	};
 
@@ -63,7 +77,7 @@ public interface NodeData {
 	};
 
 	public enum BackgroundPosition implements CSSProperty {
-		VALUE, INHERIT;
+		component_values, INHERIT;
 		public boolean inherited() {
 			return false;
 		}
@@ -105,7 +119,7 @@ public interface NodeData {
 	};
 
 	public enum BorderSpacing implements CSSProperty {
-		hor_ver_list, INHERIT;
+		list_values, INHERIT;
 		public boolean inherited() {
 			return true;
 		}
@@ -130,6 +144,15 @@ public interface NodeData {
 		public boolean inherited() {
 			return true;
 		}
+	}
+
+	public enum Font implements CSSProperty {
+		component_values, CAPTION, ICON, MENU,
+		MESSAGE_BOX, SMALL_CAPTION, STATUS_BAR, INHERIT;
+		public boolean inherited() {
+			return true;
+		}
+
 	}
 
 	public enum FontFamily implements CSSProperty {
