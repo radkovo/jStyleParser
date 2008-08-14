@@ -12,12 +12,16 @@ public class TermImpl<T> implements Term<T> {
 	protected T value;
 	protected Operator operator = null;
 
+	protected TermImpl() {
+	}
+	
 	public Operator getOperator() {
 		return operator;
 	}
 
-	public void setOperator(Operator operator) {
+	public Term<T> setOperator(Operator operator) {
 		this.operator = operator;
+		return this;
 	}
 
 	/**
@@ -31,8 +35,9 @@ public class TermImpl<T> implements Term<T> {
 	 * @param value
 	 *            the value to set
 	 */
-	public void setValue(T value) {
+	public Term<T> setValue(T value) {
 		this.value = value;
+		return this;
 	}
 
 	@Override

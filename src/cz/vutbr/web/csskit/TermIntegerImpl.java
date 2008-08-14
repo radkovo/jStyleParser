@@ -4,11 +4,7 @@ import cz.vutbr.web.css.TermInteger;
 
 public class TermIntegerImpl extends TermNumericImpl<Integer> implements TermInteger {
 
-	public TermIntegerImpl(Integer value) {
-		this.value = value;
+	protected TermIntegerImpl() {
 	}
 	
-	public TermIntegerImpl(Integer value, int unary) {
-		this(value*unary);
-	}
 }

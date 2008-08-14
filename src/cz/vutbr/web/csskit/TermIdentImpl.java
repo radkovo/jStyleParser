@@ -9,7 +9,6 @@ import cz.vutbr.web.css.TermIdent;
  */
 public class TermIdentImpl extends TermImpl<String> implements TermIdent {    
     
-    public TermIdentImpl(String value) {
-        setValue(value);
+    protected TermIdentImpl() {
     }    
 }

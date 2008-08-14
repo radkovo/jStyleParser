@@ -26,7 +26,7 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
 	protected static final int MIN_VALUE = 0;
 	protected static final int PERCENT_CONVERSION = 100;
 	
-    public TermColorImpl(int r, int g, int b) {
+    protected TermColorImpl(int r, int g, int b) {
         value = new Color(r, g, b);
     }
     

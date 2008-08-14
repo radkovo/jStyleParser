@@ -6,6 +6,8 @@ import java.util.Random;
 import java.util.Set;
 
 import cz.vutbr.web.css.NodeData;
+import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.NodeData.Azimuth;
 import cz.vutbr.web.css.NodeData.BackgroundAttachment;
 import cz.vutbr.web.css.NodeData.BackgroundColor;
@@ -20,6 +22,7 @@ import cz.vutbr.web.css.NodeData.CSSProperty;
 import cz.vutbr.web.css.NodeData.CaptionSide;
 import cz.vutbr.web.css.NodeData.Clear;
 import cz.vutbr.web.css.NodeData.Clip;
+import cz.vutbr.web.css.NodeData.Color;
 import cz.vutbr.web.css.NodeData.Content;
 import cz.vutbr.web.css.NodeData.CounterIncrement;
 import cz.vutbr.web.css.NodeData.CounterReset;
@@ -30,6 +33,8 @@ import cz.vutbr.web.css.NodeData.Direction;
 import cz.vutbr.web.css.NodeData.Display;
 import cz.vutbr.web.css.NodeData.Elevation;
 import cz.vutbr.web.css.NodeData.EmptyCells;
+import cz.vutbr.web.css.NodeData.Font;
+import cz.vutbr.web.css.NodeData.FontFamily;
 import cz.vutbr.web.css.NodeData.FontSize;
 import cz.vutbr.web.css.NodeData.FontStyle;
 import cz.vutbr.web.css.NodeData.FontVariant;
@@ -67,6 +72,7 @@ import cz.vutbr.web.css.NodeData.SpeakPunctuation;
 import cz.vutbr.web.css.NodeData.SpeechRate;
 import cz.vutbr.web.css.NodeData.Stress;
 import cz.vutbr.web.css.NodeData.TableLayout;
+import cz.vutbr.web.css.NodeData.TextAlign;
 import cz.vutbr.web.css.NodeData.TextDecoration;
 import cz.vutbr.web.css.NodeData.TextIndent;
 import cz.vutbr.web.css.NodeData.TextTransform;
@@ -80,6 +86,8 @@ import cz.vutbr.web.css.NodeData.Widows;
 import cz.vutbr.web.css.NodeData.Width;
 import cz.vutbr.web.css.NodeData.WordSpacing;
 import cz.vutbr.web.css.NodeData.ZIndex;
+import cz.vutbr.web.csskit.ColorCard;
+import cz.vutbr.web.csskit.TermLengthImpl;
 
 /**
  * Contains default values for properties supported by parser (CSS 2.1)
@@ -91,15 +99,26 @@ public class SupportedCSS {
 
 	public static final int TOTAL_SUPPORTED_DECLARATIONS = 117;
 
+	public static Term<?> DEFAULT_UA_COLOR = ColorCard.getTermColor("black"); 
+	public static CSSProperty DEFAULT_UA_FONT_FAMILY = FontFamily.SANS_SERIF;
+	public static CSSProperty DEFAULT_UA_TEXT_ALIGN = TextAlign.BY_DIRECTION;
+	public static Term<?> DEFAULT_UA_TEXT_IDENT = new TermLengthImpl(0.0f);
+	
 	/**
 	 * Contains names of supported elements and default values according to <a
 	 * href="http://www.culturedcode.com/css/reference.html">
 	 * http://www.culturedcode.com/css/reference.html</a>
 	 */
-	private Map<String, CSSProperty> supportedCSS;
+	private Map<String, CSSProperty> defaultCSSproperties;
+	private Map<String, Term<?>> defaultCSSvalues;
+	
+	private Map<String, Integer> oridinal;
 
 	private static final CSSProperty INHERITABLE_PROPERTY = new CSSProperty() {
 		public boolean inherited() {
+			return true;
+		}
+		public boolean equalsInherit() {
 			return true;
 		}
 	};
@@ -108,10 +127,17 @@ public class SupportedCSS {
 		public boolean inherited() {
 			return false;
 		}
+		public boolean equalsInherit() {
+			return false;
+		}
 	};
 
 	private static final CSSProperty MULTIVALUE_PROPERTY = new CSSProperty() {
 		public boolean inherited() {
+			return false;
+		}
+		
+		public boolean equalsInherit() {
 			return false;
 		}
 	};
@@ -127,19 +153,29 @@ public class SupportedCSS {
 	}
 
 	private SupportedCSS() {
-		this.supportedCSS = supportedCSS();
+		this.setSupportedCSS();
+		this.oridinal = oridinal();
 	}
 
-	public final CSSProperty getDefaultValue(String property) {
-		return supportedCSS.get(property);
+	public final CSSProperty getDefaultCSSProperty(String property) {
+		return defaultCSSproperties.get(property);
+	}
+	
+	public final Term<?> getDefaultCSSValueTerm(String property) {
+		return defaultCSSvalues.get(property);
+	}
+	
+	public final int getOridinalValue(String property) {
+		Integer i = oridinal.get(property);
+		return (i==null) ? -1 : i.intValue();
 	}
 
 	public final int totalProperties() {
-		return supportedCSS.size();
+		return defaultCSSproperties.size();
 	}
 
 	public final Set<String> propertyNames() {
-		return supportedCSS.keySet();
+		return defaultCSSproperties.keySet();
 	}
 
 	/**
@@ -151,8 +187,8 @@ public class SupportedCSS {
 
 		Random generator = new Random();
 
-		int i = generator.nextInt(supportedCSS.size());
-		for (CSSProperty prop : supportedCSS.values()) {
+		int i = generator.nextInt(defaultCSSproperties.size());
+		for (CSSProperty prop : defaultCSSproperties.values()) {
 			if (i == 0)
 				return prop;
 			i--;
@@ -166,25 +202,29 @@ public class SupportedCSS {
 	 * 
 	 * @return Constructed map
 	 */
-	private Map<String, CSSProperty> supportedCSS() {
+	private void setSupportedCSS() {
 
-		Map<String, CSSProperty> map = new HashMap<String, CSSProperty>(
+		Map<String, CSSProperty> props = new HashMap<String, CSSProperty>(
 				TOTAL_SUPPORTED_DECLARATIONS, 1.0f);
 
+		Map<String, Term<?>> values = new HashMap<String, Term<?>>(
+				TOTAL_SUPPORTED_DECLARATIONS, 1.0f);
+		
 		// text type
-		map.put("color", INHERITABLE_PROPERTY);
-		map.put("font", MULTIVALUE_PROPERTY);
-		map.put("font-family", INHERITABLE_PROPERTY);
-		map.put("font-size", FontSize.MEDIUM);
-		map.put("font-style", FontStyle.NORMAL);
-		map.put("font-variant", FontVariant.NORMAL);
-		map.put("font-weight", FontWeight.NORMAL);
-		map.put("text-decoration", TextDecoration.NONE);
-		map.put("text-transform", TextTransform.NONE);
+		props.put("color", Color.color); 
+		values.put("color", DEFAULT_UA_COLOR);
+		props.put("font", Font.component_values);
+		props.put("font-family", DEFAULT_UA_FONT_FAMILY);
+		props.put("font-size", FontSize.MEDIUM);
+		props.put("font-style", FontStyle.NORMAL);
+		props.put("font-variant", FontVariant.NORMAL);
+		props.put("font-weight", FontWeight.NORMAL);
+		props.put("text-decoration", TextDecoration.NONE);
+		props.put("text-transform", TextTransform.NONE);
 
 		// text spacing
 		map.put("white-space", WhiteSpace.NORMAL);
-		map.put("text-align", INHERITABLE_PROPERTY);
+		map.put("text-align", DEFAULT_UA_TEXT_ALIGN);
 		map.put("text-indent", TextIndent.length); // 0
 		map.put("line-height", INHERITABLE_PROPERTY);
 		map.put("word-spacing", WordSpacing.NORMAL);
@@ -315,4 +355,16 @@ public class SupportedCSS {
 
 		return map;
 	}
+	
+	private Map<String, Integer> oridinal() {
+		Map<String, Integer> map = new HashMap<String, Integer>(totalProperties(), 1.0f);
+		
+		int i = 0;
+		for(String key: defaultCSSproperties.keySet()) {
+			map.put(key, i++);
+		}
+		
+		return map;
+	}
+	
 }

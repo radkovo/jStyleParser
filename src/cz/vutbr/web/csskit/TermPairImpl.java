@@ -6,12 +6,16 @@ public class TermPairImpl<K,V> extends TermImpl<V> implements TermPair<K,V> {
 
 	protected K key;
 	
+	protected TermPairImpl() {
+	}
+	
 	public K getKey() {
 		return key;
 	}
 	
-	public void setKey(K key) {
+	public TermPair<K,V> setKey(K key) {
 		this.key = key;
+		return this;
 	}
 	
 	@Override

@@ -11,13 +11,8 @@ import cz.vutbr.web.css.TermPercent;
  */
 public class TermPercentImpl extends TermNumericImpl<Float> implements TermPercent {
 
-    public TermPercentImpl(Float value) {
-    	setValue(value);
+    protected TermPercentImpl() {
     }
-    
-    public TermPercentImpl(String value, int unary) {
-    	this(TermNumericImpl.convertFloat(value, OutputUtil.PERCENT_SIGN, unary));
-    }    
     
 	@Override
     public String toString() {

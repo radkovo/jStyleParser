@@ -13,7 +13,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
 
 	protected String functionName;
 	
-    public TermFunctionImpl() {    	
+    protected TermFunctionImpl() {    	
     }
     
     
@@ -29,12 +29,13 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
 	/**
 	 * @param functionName the functionName to set
 	 */
-	public void setFunctionName(String functionName) {
+	public TermFunction setFunctionName(String functionName) {
 		if(functionName==null)
 			throw new IllegalArgumentException("Invalid functionName in function (null)");
 		
 		functionName = functionName.replaceAll("\\($", "");
 		this.functionName = functionName;
+		return this;
 	}
 
 	@Override

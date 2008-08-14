@@ -15,6 +15,7 @@ import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.SimpleSelector;
 import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermNumeric;
@@ -27,18 +28,7 @@ import cz.vutbr.web.csskit.DeclarationImpl;
 import cz.vutbr.web.csskit.SelectorImpl;
 import cz.vutbr.web.csskit.SimpleSelectorImpl;
 import cz.vutbr.web.csskit.ImportURIImpl;
-import cz.vutbr.web.csskit.TermStringImpl;
-import cz.vutbr.web.csskit.TermIdentImpl;
-import cz.vutbr.web.csskit.TermURIImpl;
-import cz.vutbr.web.csskit.TermLengthImpl;
-import cz.vutbr.web.csskit.TermNumericImpl;
-import cz.vutbr.web.csskit.TermNumberImpl;
-import cz.vutbr.web.csskit.TermPercentImpl;
-import cz.vutbr.web.csskit.TermColorImpl;
-import cz.vutbr.web.csskit.TermFunctionImpl;
-import cz.vutbr.web.csskit.TermFrequencyImpl;
-import cz.vutbr.web.csskit.TermAngleImpl;
-import cz.vutbr.web.csskit.TermTimeImpl;
+import cz.vutbr.web.csskit.TermFactoryImpl;
 
 public class CSSParserTokenManager implements CSSParserConstants
 {

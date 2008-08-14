@@ -10,12 +10,11 @@ import cz.vutbr.web.css.TermString;
  */
 public class TermStringImpl extends TermImpl<String> implements TermString {
 
-	public TermStringImpl(String value) {
-		setValue(value);
+	protected TermStringImpl() {
 	}
 
 	@Override
-	public void setValue(String value) {
+	public TermString setValue(String value) {
 		if (value == null) {
 			throw new IllegalArgumentException(
 					"Invalid value for TermString(null)");
@@ -25,6 +24,7 @@ public class TermStringImpl extends TermImpl<String> implements TermString {
 			.replaceAll("'$", "")
 			.replaceAll("\"$", "");
 		this.value = value;
+		return this;
 	}
 
 	@Override

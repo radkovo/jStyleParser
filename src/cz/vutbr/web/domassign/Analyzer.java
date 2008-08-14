@@ -98,9 +98,9 @@ public class Analyzer {
 			List<Declaration> decl = declarations.get(e);
 			int level = (decl.size()>=1) ?
 					decl.get(decl.size()-1).getInheritanceLevel() : 0;
-			
+			// TODO inheritance
 			for(Declaration d: decl)
-				data.push(d, level, inherit);		
+				data.push(d);		
 			
 			nodes.put(e, data);
 		}

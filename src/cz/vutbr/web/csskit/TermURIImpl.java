@@ -3,20 +3,17 @@ package cz.vutbr.web.csskit;
 import cz.vutbr.web.css.TermURI;
 
 /**
- * TermURI
+ * TermURIImpl
+ * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
- * 			modified by Karel Piwko
  */
 public class TermURIImpl extends TermImpl<String> implements TermURI {
 
-    
-    public TermURIImpl(String uri) {
-        setValue(uri);
-    }
-    
+	protected TermURIImpl() {
+	}
 
     @Override
-    public void setValue(String uri) {
+    public TermURI setValue(String uri) {
         if(uri == null) 
             throw new IllegalArgumentException("Invalid uri for TermURI(null)");
         
@@ -29,6 +26,7 @@ public class TermURIImpl extends TermImpl<String> implements TermURI {
         	  .replaceAll("\"$", "");
         
         this.value = uri;
+        return this;
     }
     
     @Override

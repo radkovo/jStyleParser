@@ -10,6 +10,6 @@ public interface TermFunction extends TermList {
 
     public String getFunctionName();
     
-    public void setFunctionName(String functionName);
+    public TermFunction setFunctionName(String functionName);
 
 }

@@ -11,6 +11,7 @@ public interface TermPair<K,V> extends Term<V> {
 	/**
 	 * Sets key
 	 * @param key Key to be stored in pair
+	 * @return Modified object to allow chaining
 	 */
-	public void setKey(K key);
+	public TermPair<K,V> setKey(K key);
 }

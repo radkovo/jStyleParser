@@ -48,7 +48,8 @@ public interface TermNumeric<T> extends Term<T> {
 	/**
 	 * Sets unit
 	 * @param unit Unit value
+	 * @return Modified object to allow chaining
 	 */
-    public void setUnit(Unit unit);
+    public TermNumeric<T> setUnit(Unit unit);
 
 }

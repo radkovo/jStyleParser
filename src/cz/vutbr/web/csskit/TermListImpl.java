@@ -13,11 +13,11 @@ public class TermListImpl extends AbstractCollection<Term<?>> implements TermLis
 	protected List<Term<?>> value;
 	protected Operator operator;
 	
-	public TermListImpl() {
+	protected TermListImpl() {
 		this.value = new ArrayList<Term<?>>();
 	}
 	
-	public TermListImpl(int initialSize) {
+	protected TermListImpl(int initialSize) {
 		this.value = new ArrayList<Term<?>>(initialSize);
 	}
 	
@@ -46,8 +46,9 @@ public class TermListImpl extends AbstractCollection<Term<?>> implements TermLis
 	/**
 	 * @param value the value to set
 	 */
-	public void setValue(List<Term<?>> value) {
+	public TermList setValue(List<Term<?>> value) {
 		this.value = value;
+		return this;
 	}
 	/**
 	 * @return the operator
@@ -58,8 +59,9 @@ public class TermListImpl extends AbstractCollection<Term<?>> implements TermLis
 	/**
 	 * @param operator the operator to set
 	 */
-	public void setOperator(Operator operator) {
+	public TermList setOperator(Operator operator) {
 		this.operator = operator;
+		return this;
 	}
 
 	/* (non-Javadoc)

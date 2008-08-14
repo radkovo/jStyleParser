@@ -49,8 +49,9 @@ public interface Term<T> {
     /**
      * Setter for value
      * @param value
+     * @return Modified object to allow chaining
      */
-    public void setValue(T value);
+    public Term<T> setValue(T value);
     
     /**
      * Operator between two terms. The first term is having <code>null</code>
@@ -61,8 +62,9 @@ public interface Term<T> {
     /**
      * Sets operator
      * @param operator
+     * @return Modified object to allow chaining
      */
-    public void setOperator(Operator operator);
+    public Term<T> setOperator(Operator operator);
     
     public int hashCode();
     public boolean equals(Object obj);
