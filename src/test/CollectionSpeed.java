@@ -15,10 +15,11 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.NodeData.CSSProperty;
-import cz.vutbr.web.csskit.TermNumberImpl;
-import cz.vutbr.web.domassign.SupportedCSS;
 
 /**
  * This test is to show performance difference between
@@ -44,11 +45,11 @@ public class CollectionSpeed {
 
 	private static Logger log = Logger.getLogger(CollectionSpeed.class);
 	
-	private final SupportedCSS css = 
-		SupportedCSS.getInstance();
+	private static final SupportedCSS css = CSSFactory.getSupportedCSS(); 
+	private static final TermFactory tf = CSSFactory.getTermFactory();
 	
 	private static final int MAX = 6;
-	private static final int ITERATIONS = 10000;	
+	private static final int ITERATIONS = 100000;		
 	
 	private Map<String,CSSProperty> mprop;
 	private Map<String,Term<?>> mterm;
@@ -56,9 +57,9 @@ public class CollectionSpeed {
 	@Before
 	public void initMasters() {
 		this.mprop = new HashMap<String, CSSProperty>
-			(css.totalProperties(), 1.0f);
+			(css.getTotalProperties(), 1.0f);
 		this.mterm = new HashMap<String, Term<?>>
-			(css.totalProperties(), 1.0f);
+			(css.getTotalProperties(), 1.0f);
 	}
 	
 	@Test
@@ -215,24 +216,26 @@ public class CollectionSpeed {
 	private void insert(Collection<CSSProperty> properties, 
 			Collection<Term<?>> terms) {
 		
-		Random generator = new Random();
+		final Random generator = new Random();
 		
 		for(int i = 0; i < generator.nextInt(MAX); i++) 
-			properties.add(css.randomValue());
+			properties.add(css.getDefaultProperty(css.getRandomPropertyName()));
 		
 		for(int i = 0; i < generator.nextInt(MAX); i++)
-			terms.add(new TermNumberImpl(generator.nextFloat()));
+			terms.add(tf.createNumber(generator.nextFloat()));
 	}
 	
 	private void insert(Map<String, CSSProperty> properties,
 			Map<String, Term<?>> terms) {
 		
-		Random generator = new Random();
+		final Random generator = new Random();
 		
 		for(int i = 0; i < generator.nextInt(MAX); i++) {
-			CSSProperty p = css.randomValue(); 
-			properties.put(p.toString(), p);
-			terms.put(p.toString(), new TermNumberImpl(generator.nextFloat()));
+			
+			String name = css.getRandomPropertyName();
+			CSSProperty p = css.getDefaultProperty(name); 
+			properties.put(name, p);
+			terms.put(name, tf.createNumber(generator.nextFloat()));
 		}		
 	}
 	

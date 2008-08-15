@@ -6,16 +6,17 @@ import java.util.List;
 
 import org.junit.Test;
 
+import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
-import cz.vutbr.web.csskit.TermColorImpl;
-import cz.vutbr.web.csskit.TermIdentImpl;
+import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.csskit.parser.CSSParser;
 
 public class SimpleTest {
 
+	public static final TermFactory tf = CSSFactory.getTermFactory();
 	
 	public static final String TEST_STRING1 = 
 		"BODY { display: block;}";
@@ -95,7 +96,7 @@ public class SimpleTest {
 		
 		assertEquals("Rule contains one declaration { color: blue;}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
-						new TermColorImpl(0,0,255)),
+						tf.createColor(0,0,255)),
 				rule.getDeclarations());	
 	}
 	
@@ -119,7 +120,7 @@ public class SimpleTest {
 		
 		assertEquals("Rule contains one declaration {display:block;}",
 				DeclarationsUtil.appendDeclaration(null, "display", 
-						new TermIdentImpl("block")),
+						tf.createIdent("block")),
 				rule.getDeclarations());
 							
 	}
@@ -142,7 +143,7 @@ public class SimpleTest {
 		
 		assertEquals("Rule contains one declaration {color: #00aa85;}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
-						new TermColorImpl(192, 64, 32)),
+						tf.createColor(192, 64, 32)),
 				rule.getDeclarations());
 		
 	}
@@ -162,7 +163,7 @@ public class SimpleTest {
 		
 		assertEquals("Rule contains one declaration {color: rgb(50%,128,30%);}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
-						new TermColorImpl(127, 128, 76)),
+						tf.createColor(127, 128, 76)),
 				rule.getDeclarations());
 	}
 	
@@ -181,7 +182,7 @@ public class SimpleTest {
 		
 		assertEquals("Rule contains one declaration {color: #00aa85;}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
-						new TermColorImpl(0, 170, 133)),
+						tf.createColor(0, 170, 133)),
 				rule.getDeclarations());
 		
 	}
@@ -201,7 +202,7 @@ public class SimpleTest {
 		
 		assertEquals("Rule contains one declaration {color: #CCC;}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
-						new TermColorImpl(204,204,204)),
+						tf.createColor(204,204,204)),
 				rule.getDeclarations());
 	}
 	

@@ -76,8 +76,8 @@ public interface NodeData {
 		}
 	}
 
-	public enum CueBefore implements CSSProperty {
-		uri, NONE, INHERIT;
+	public enum Cue implements CSSProperty {
+		component_values, uri, NONE, INHERIT;
 		public boolean inherited() {
 			return false;
 		}
@@ -87,12 +87,11 @@ public interface NodeData {
 		}
 	}
 
-	public enum CueAfter implements CSSProperty {
-		uri, NONE, INHERIT;
+	public enum Background implements CSSProperty {
+		component_values, INHERIT;
 		public boolean inherited() {
 			return false;
 		}
-
 		public boolean equalsInherit() {
 			return this==INHERIT;
 		}
@@ -132,29 +131,7 @@ public interface NodeData {
 	}
 
 	public enum BackgroundPosition implements CSSProperty {
-		component_values, INHERIT;
-		public boolean inherited() {
-			return false;
-		}
-
-		public boolean equalsInherit() {
-			return this==INHERIT;
-		}
-	}
-
-	public enum BackgroundPositionHor implements CSSProperty {
-		percentage, lenght, LEFT, CENTER, RIGHT, INHERIT;
-		public boolean inherited() {
-			return false;
-		}
-
-		public boolean equalsInherit() {
-			return this==INHERIT;
-		}
-	}
-
-	public enum BackgroundPositionVer implements CSSProperty {
-		percentage, length, TOP, CENTER, BOTTOM, INHERIT;
+		list_values, LEFT, CENTER, RIGHT, INHERIT;
 		public boolean inherited() {
 			return false;
 		}
@@ -174,6 +151,17 @@ public interface NodeData {
 			return this==INHERIT;
 		}
 	}
+	
+	public enum Border implements CSSProperty {
+		component_values, INHERIT;
+		public boolean inherited() {
+			return false;
+		}
+		
+		public boolean equalsInherit() {
+			return this==INHERIT;
+		}
+	}
 
 	public enum BorderCollapse implements CSSProperty {
 		COLLAPSE, SEPARATE, INHERIT;
@@ -187,7 +175,7 @@ public interface NodeData {
 	}
 	
 	public enum BorderColor implements CSSProperty {
-		color, TRANSPARENT, INHERIT;
+		color, taken, component_values, TRANSPARENT, INHERIT;
 		public boolean inherited() {
 			return false;
 		}
@@ -209,7 +197,7 @@ public interface NodeData {
 	}
 
 	public enum BorderStyle implements CSSProperty {
-		NONE, HIDDEN, DOTTED, DASHED, SOLID, DOUBLE, GROOVE, RIDGE, INSET, OUTSET, INHERIT;
+		component_values, NONE, HIDDEN, DOTTED, DASHED, SOLID, DOUBLE, GROOVE, RIDGE, INSET, OUTSET, INHERIT;
 		public boolean inherited() {
 			return false;
 		}
@@ -220,7 +208,7 @@ public interface NodeData {
 	}
 
 	public enum BorderWidth implements CSSProperty {
-		length, THIN, MEDIUM, THICK, INHERIT;
+		component_values, length, THIN, MEDIUM, THICK, INHERIT;
 		public boolean inherited() {
 			return false;
 		}
@@ -504,6 +492,16 @@ public interface NodeData {
 			return this==INHERIT;
 		}
 	}
+	
+	public enum ListStyle implements CSSProperty {
+		component_values, INHERIT;
+		public boolean inherited() {
+			return true;
+		}
+		public boolean equalsInherit() {
+			return this==INHERIT;
+		}
+	}
 
 	public enum ListStyleImage implements CSSProperty {
 		uri, NONE, INHERIT;
@@ -539,7 +537,7 @@ public interface NodeData {
 	}
 
 	public enum Margin implements CSSProperty {
-		lenght, percentage, AUTO, INHERIT;
+		lenght, percentage, component_values, AUTO, INHERIT;
 		public boolean inherited() {
 			return false;
 		}
@@ -560,6 +558,16 @@ public interface NodeData {
 		}
 	}
 
+	public enum Outline implements CSSProperty {
+		component_values, INHERIT;
+		public boolean inherited() {
+			return false;
+		}
+		public boolean equalsInherit() {
+			return this==INHERIT;
+		}
+	}
+	
 	public enum OutlineWidth implements CSSProperty {
 		length, THIN, MEDIUM, THICK, INHERIT;
 		public boolean inherited() {
@@ -605,7 +613,7 @@ public interface NodeData {
 	}
 
 	public enum Padding implements CSSProperty {
-		length, percentage, AUTO, INHERIT;
+		length, percentage, component_values, AUTO, INHERIT;
 		public boolean inherited() {
 			return false;
 		}
@@ -637,19 +645,8 @@ public interface NodeData {
 		}
 	}
 
-	public enum PauseBefore implements CSSProperty {
-		time, percentage, INHERIT;
-		public boolean inherited() {
-			return true;
-		}
-
-		public boolean equalsInherit() {
-			return this==INHERIT;
-		}
-	}
-
-	public enum PauseAfter implements CSSProperty {
-		time, percentage, INHERIT;
+	public enum Pause implements CSSProperty {
+		component_values, time, percentage, INHERIT;
 		public boolean inherited() {
 			return true;
 		}
@@ -924,7 +921,7 @@ public interface NodeData {
 	}
 
 	public enum VoiceFamily implements CSSProperty {
-		list_values, specific_voice, generic_voice, INHERIT;
+		list_values, MALE, FEMALE, CHILD, INHERIT;
 		public boolean inherited() {
 			return true;
 		}

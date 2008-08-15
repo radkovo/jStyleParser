@@ -1,5 +1,6 @@
 package cz.vutbr.web.csskit;
 
+import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermAngle;
 import cz.vutbr.web.css.TermColor;
@@ -23,8 +24,13 @@ public class TermFactoryImpl implements TermFactory {
 
 	private static final TermFactory instance;
 	
+	/**
+	 * This automatically registers TermFactoryImpl as 
+	 * default TermFactory when this class is loaded 
+	 */
 	static {
 		instance = new TermFactoryImpl();
+		CSSFactory.registerTermFactory(instance);
 	}
 	
 	public static final TermFactory getInstance() {
@@ -145,7 +151,7 @@ public class TermFactoryImpl implements TermFactory {
 
 	public TermPercent createPercent(String value, int unary) {
 		return (TermPercent) (new TermPercentImpl())
-			.setValue(convertFloat(value, null, unary));
+			.setValue(convertFloat(value, OutputUtil.PERCENT_SIGN, unary));
 	}
 
 	public TermString createString(String value) {

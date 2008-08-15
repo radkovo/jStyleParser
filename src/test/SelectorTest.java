@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
@@ -13,17 +14,16 @@ import cz.vutbr.web.css.SimpleSelector;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermNumeric;
 import cz.vutbr.web.csskit.SimpleSelectorImpl;
-import cz.vutbr.web.csskit.TermColorImpl;
-import cz.vutbr.web.csskit.TermIdentImpl;
-import cz.vutbr.web.csskit.TermLengthImpl;
-import cz.vutbr.web.csskit.TermPercentImpl;
-import cz.vutbr.web.csskit.TermStringImpl;
 import cz.vutbr.web.csskit.parser.CSSParser;
 
 public class SelectorTest {
 
+	private static final TermFactory tf = CSSFactory.getTermFactory();
+	
+	
 	public static final String TEST_MULTIPLE =
 		"H1, DIV { display: block;}";
 	
@@ -79,7 +79,7 @@ public class SelectorTest {
 		
 		assertEquals("Rule contains one declaration {display:block;}",
 				DeclarationsUtil.appendDeclaration(null, "display", 
-						new TermIdentImpl("block")),
+						tf.createIdent("block")),
 				rule.getDeclarations());
 	}
 	
@@ -103,7 +103,7 @@ public class SelectorTest {
 		
 		assertEquals("Rule contains one declaration {display:inline;}",
 				DeclarationsUtil.appendDeclaration(null, "display", 
-						new TermIdentImpl("inline")),
+						tf.createIdent("inline")),
 				rule.getDeclarations());
 	}
 	
@@ -125,7 +125,7 @@ public class SelectorTest {
 		
 		assertEquals("Rule contains one declaration {color:blue;}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
-						new TermColorImpl(0, 0, 255)),
+						tf.createColor(0, 0, 255)),
 				rule.getDeclarations());
 		
 	}
@@ -155,7 +155,7 @@ public class SelectorTest {
 		
 		assertEquals("Rule contains one declaration {color:white;}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
-						new TermColorImpl(255, 255, 255)),
+						tf.createColor(255, 255, 255)),
 				rule.getDeclarations());
 	}
 	
@@ -177,7 +177,7 @@ public class SelectorTest {
 		
 		assertEquals("Rule contains one declaration { width: 80%;}",
 				DeclarationsUtil.appendDeclaration(null, "width", 
-						new TermPercentImpl(80.0f)),
+						tf.createPercent(80.0f)),
 				rule.getDeclarations());
 	}
 	
@@ -199,7 +199,7 @@ public class SelectorTest {
 		
 		assertEquals("Rule contains one declaration { font-size: 100px;}",
 				DeclarationsUtil.appendDeclaration(null, "font-size", 
-						new TermLengthImpl(100f, TermNumeric.Unit.px, 1)),
+						tf.createLength(100.0f).setUnit(TermNumeric.Unit.px)),
 				rule.getDeclarations());
 	}
 	
@@ -224,7 +224,7 @@ public class SelectorTest {
 		
 		assertEquals("Rule contains one declaration { text-align: right }",
 				DeclarationsUtil.appendDeclaration(null, "text-align",
-						new TermIdentImpl("right")),
+						tf.createIdent("right")),
 				rule.getDeclarations());
 	}
 	
@@ -249,7 +249,7 @@ public class SelectorTest {
 		
 		assertEquals("Rule contains one declaration { text-align: left; }",
 				DeclarationsUtil.appendDeclaration(null, "text-align", 
-						new TermIdentImpl("left")),
+						tf.createIdent("left")),
 				rule.getDeclarations());
 	}
 	
@@ -272,7 +272,7 @@ public class SelectorTest {
 		
 		assertEquals("Rule contains one declaration { text-decoration: underline; }",
 				DeclarationsUtil.appendDeclaration(null, "text-decoration", 
-						new TermIdentImpl("underline")),
+						tf.createIdent("underline")),
 				rule.getDeclarations());
 	}
 	
@@ -295,9 +295,9 @@ public class SelectorTest {
 				sels, rule.getSelectors());
 		
 		List<Term<?>> terms = DeclarationsUtil.appendTerm(null, null, 
-				new TermStringImpl("« "));
+				tf.createString("« "));
 		DeclarationsUtil.appendSpaceTerm(terms, 
-				new TermStringImpl(" »"));
+				tf.createString(" »"));
 		
 		assertEquals("Rule contains one declaration { quotes: '« ' ' »' }",
 				DeclarationsUtil.appendDeclaration(null, "quotes", terms), 
@@ -324,7 +324,7 @@ public class SelectorTest {
 		
 		assertEquals("Rule 2 contains one declaration { content: \"Special! \"}",
 				DeclarationsUtil.appendDeclaration(null, "content", 
-						new TermStringImpl("Special! ")), 
+						tf.createString("Special! ")), 
 				((RuleSet)rules.get(0)).getDeclarations());
 		
 		// test second rule
@@ -338,7 +338,7 @@ public class SelectorTest {
 		
 		assertEquals("Rule 2 contains one declaration { color: #ffd800}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
-						new TermColorImpl(255,216,0)), 
+						tf.createColor(255,216,0)), 
 				((RuleSet)rules.get(1)).getDeclarations());
 	}
 	
@@ -358,9 +358,9 @@ public class SelectorTest {
 				sels, ((RuleSet) rules.get(0)).getSelectors());
 
 		List<Term<?>> terms = DeclarationsUtil.appendTerm(null, null, 
-				new TermIdentImpl("Verdana"));
+				tf.createIdent("Verdana"));
 		DeclarationsUtil.appendCommaTerm(terms, 
-				new TermIdentImpl("monospace"));
+				tf.createIdent("monospace"));
 		
 		
 		assertEquals("Rule contains one declaration { font-family: Verdana, monospace }",
@@ -417,13 +417,13 @@ public class SelectorTest {
 				sels, ((RuleSet) rules.get(0)).getSelectors());
 
 		List<Term<?>> terms = DeclarationsUtil.appendTerm(null, null, 
-				new TermIdentImpl("Verdana"));
+				tf.createIdent("Verdana"));
 		DeclarationsUtil.appendCommaTerm(terms, 
-				new TermIdentImpl("monospace"));
+				tf.createIdent("monospace"));
 		
 		assertEquals("Rule contains one declaration { text-decoration: underline }",
 		DeclarationsUtil.appendDeclaration(null, "text-decoration", 
-				new TermIdentImpl("underline")),
+				tf.createIdent("underline")),
 				((RuleSet) rules.get(0)).getDeclarations());		
 		
 	}

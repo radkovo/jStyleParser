@@ -12,16 +12,18 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermColor;
+import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermInteger;
 import cz.vutbr.web.css.TermLength;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumber;
-import cz.vutbr.web.css.TermPair;
 import cz.vutbr.web.css.TermPercent;
 import cz.vutbr.web.css.TermString;
 import cz.vutbr.web.css.TermURI;
@@ -92,11 +94,6 @@ import cz.vutbr.web.css.NodeData.Width;
 import cz.vutbr.web.css.NodeData.WordSpacing;
 import cz.vutbr.web.css.NodeData.ZIndex;
 import cz.vutbr.web.css.Term.Operator;
-import cz.vutbr.web.csskit.TermIdentImpl;
-import cz.vutbr.web.csskit.TermImpl;
-import cz.vutbr.web.csskit.TermListImpl;
-import cz.vutbr.web.csskit.TermPairImpl;
-import cz.vutbr.web.csskit.TermStringImpl;
 
 /**
  * Contains methods to transform declaration into values applicable to
@@ -119,6 +116,9 @@ public class DeclarationTransformer {
 	 * Singleton instance
 	 */
 	private static final DeclarationTransformer instance;
+	
+	private static final TermFactory tf = CSSFactory.getTermFactory();
+	private static final SupportedCSS css = CSSFactory.getSupportedCSS();
 
 	static {
 		instance = new DeclarationTransformer();
@@ -180,8 +180,8 @@ public class DeclarationTransformer {
 
 		String propertyName = d.getProperty().toLowerCase();
 
-		CSSProperty defaultValue = SupportedCSS.getInstance().getDefaultValue(
-				propertyName);
+		CSSProperty defaultValue = css.getDefaultProperty(propertyName);
+				
 		// no such declaration is supported
 		if (defaultValue == null)
 			return false;
@@ -210,10 +210,10 @@ public class DeclarationTransformer {
 
 	private Map<String, Method> parsingMethods() {
 
-		Map<String, Method> map = new HashMap<String, Method>(SupportedCSS
-				.getInstance().totalProperties(), 1.0f);
+		Map<String, Method> map = new HashMap<String, Method>(SupportedCSS21
+				.getInstance().getTotalProperties(), 1.0f);
 
-		for (String key : SupportedCSS.getInstance().propertyNames()) {
+		for (String key : SupportedCSS21.getInstance().getDefinedPropertyNames()) {
 			try {
 				Method m = DeclarationTransformer.class.getDeclaredMethod(
 						DeclarationTransformer.camelCase("process-" + key),
@@ -621,7 +621,7 @@ public class DeclarationTransformer {
 							values)) {
 				// one term with length was inserted, double it
 				if (properties.get(propertyName) == BorderSpacing.list_values) {
-					TermList terms = new TermListImpl(2);
+					TermList terms = tf.createList(2);
 					terms.add(term);
 					terms.add(term);
 					values.put(propertyName, terms);
@@ -640,7 +640,7 @@ public class DeclarationTransformer {
 					&& genericTerm(TermLength.class, term2, propertyName,
 							BorderSpacing.list_values, true, properties,
 							values)) {
-				TermList terms = new TermListImpl(2);
+				TermList terms = tf.createList(2);
 				terms.add(term1);
 				terms.add(term2);
 				values.put(propertyName, terms);
@@ -961,24 +961,18 @@ public class DeclarationTransformer {
 				// counter name
 				if (term instanceof TermIdent) {
 					counterName = ((TermIdent) term).getValue();
-					TermPair<String, Integer> tp = new TermPairImpl<String, Integer>();
-					tp.setKey(counterName);
-					tp.setValue(new Integer(1));
-					termList.add(tp);
+					termList.add(tf.createPair(counterName, new Integer(1)));
 				}
 				// counter reset value follows counter name
 				else if (term instanceof TermInteger && counterName != null) {
-					TermPair<String, Integer> tp = new TermPairImpl<String, Integer>();
-					tp.setKey(counterName);
-					tp.setValue(((TermInteger) term).getValue());
-					termList.add(tp);
+					termList.add(tf.createPair(counterName, ((TermInteger) term).getValue()));
 					counterName = null;
 				} else {
 					return false;
 				}
 			}
 			if (!termList.isEmpty()) {
-				TermList list = new TermListImpl();
+				TermList list = tf.createList(termList.size());
 				list.addAll(termList);
 				properties.put("counter-increment",
 						CounterIncrement.list_values);
@@ -1006,24 +1000,18 @@ public class DeclarationTransformer {
 				// counter name
 				if (term instanceof TermIdent) {
 					counterName = ((TermIdent) term).getValue();
-					TermPair<String, Integer> tp = new TermPairImpl<String, Integer>();
-					tp.setKey(counterName);
-					tp.setValue(new Integer(1));
-					termList.add(tp);
+					termList.add(tf.createPair(counterName, new Integer(1)));
 				}
 				// counter reset value follows counter name
 				else if (term instanceof TermInteger && counterName != null) {
-					TermPair<String, Integer> tp = new TermPairImpl<String, Integer>();
-					tp.setKey(counterName);
-					tp.setValue(((TermInteger) term).getValue());
-					termList.add(tp);
+					termList.add(tf.createPair(counterName,((TermInteger) term).getValue()));
 					counterName = null;
 				} else {
 					return false;
 				}
 			}
 			if (!termList.isEmpty()) {
-				TermList list = new TermListImpl();
+				TermList list = tf.createList(termList.size());
 				list.addAll(termList);
 				properties.put("counter-reset", CounterReset.list_values);
 				values.put("counter-reset", list);
@@ -1046,7 +1034,7 @@ public class DeclarationTransformer {
 			final Set<Cursor> allowedCursors = EnumSet.complementOf(EnumSet
 					.of(Cursor.INHERIT));
 
-			TermList list = new TermListImpl();
+			TermList list = tf.createList();
 			Cursor cur = null;
 			for (Term<?> term : d.getTerms()) {
 				if (term instanceof TermURI) {
@@ -1307,7 +1295,7 @@ public class DeclarationTransformer {
 						"quotes", properties)) {
 			return true;
 		} else {
-			TermList list = new TermListImpl();
+			TermList list = tf.createList();
 			for (Term<?> term : d.getTerms()) {
 				if (term instanceof TermString)
 					list.add(term);
@@ -1351,16 +1339,14 @@ public class DeclarationTransformer {
 		}
 		// there are more terms, we have to construct list
 		else {
-			TermList list = new TermListImpl();
+			TermList list = tf.createList();
 			TextDecoration dec = null;
 			for (Term<?> term : d.getTerms()) {
 				if (term instanceof TermIdent
 						&& (dec = genericPropertyRaw(TextDecoration.class,
 								availableDecorations, (TermIdent) term)) != null) {
 					// construct term with value of parsed decoration
-					Term<TextDecoration> decTerm = new TermImpl<TextDecoration>();
-					decTerm.setValue(dec);
-					list.add(decTerm);
+					list.add(tf.createTerm(dec));
 				} else
 					return false;
 			}
@@ -1460,7 +1446,7 @@ public class DeclarationTransformer {
 			final Set<String> validFuncNames = new HashSet<String>(Arrays
 					.asList("counter", "counters", "attr"));
 
-			TermList list = new TermListImpl();
+			TermList list = tf.createList();
 
 			for (Term<?> t : d.getTerms()) {
 				// one of valid terms
@@ -1798,7 +1784,7 @@ public class DeclarationTransformer {
 						values);
 			case FAMILY:
 				// all values parsed
-				TermList list = new TermListImpl();
+				TermList list = tf.createList();
 				// current font name
 				StringBuffer sb = new StringBuffer();
 				// font name was composed from multiple parts
@@ -1892,21 +1878,19 @@ public class DeclarationTransformer {
 		
 			// if composed, store directly as family name
 			if(composed)
-				storage.add(new TermStringImpl(name));
+				storage.add(tf.createString(name));
 			// try to find generic name
 			else {
 				FontFamily generic = genericPropertyRaw(FontFamily.class, allowedFamilies, 
-						new TermIdentImpl(name));
+						tf.createIdent(name));
 				// generic name found,
 				// store in term which value is generic font name FontFamily
 				if(generic!=null) {
-					Term<FontFamily> value = new TermImpl<FontFamily>();
-					value.setValue(generic);
-					storage.add(value);
+					storage.add(tf.createTerm(generic));
 				}
 				// generic name not found, store as family name
 				else {
-					storage.add(new TermStringImpl(name));
+					storage.add(tf.createString(name));
 				}
 			}
 		}

@@ -4,14 +4,18 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
-import cz.vutbr.web.csskit.TermColorImpl;
+import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.csskit.parser.CSSParser;
 
 public class GrammarRecovery1 {
 
+	public static final TermFactory tf = CSSFactory.getTermFactory();
+	
+	
 	public static final String TEST_CHARSET_WITHOUT_SEMICOLON1 =
 		"@charset \"UTF-8\"";
 		
@@ -57,7 +61,7 @@ public class GrammarRecovery1 {
 		
 		assertEquals("Rule contains one declaration { color: red;}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
-						new TermColorImpl(255,0,0)),
+						tf.createColor(255,0,0)),
 				rule.getDeclarations());
 		
 	}

@@ -7,18 +7,19 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
+import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.NodeData;
+import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.domassign.DeclarationTransformer;
-import cz.vutbr.web.domassign.SupportedCSS;
 
 
 public class NodeDataVariant {
 
 	private static Logger log = Logger.getLogger(NodeDataVariant.class); 
 	
-	private static SupportedCSS css = SupportedCSS.getInstance();
+	private static SupportedCSS css = CSSFactory.getSupportedCSS();
 	
 	private static DeclarationTransformer dt = DeclarationTransformer.getInstance();
 	
@@ -96,9 +97,9 @@ public class NodeDataVariant {
 		private BitSet inherited;
 		
 		public NodeDataEnumArray() {
-			this.properties = new NodeData[css.totalProperties()];
-			this.values = new Term<?>[css.totalProperties()];
-			this.inherited = new BitSet(css.totalProperties());
+			this.properties = new NodeData[css.getTotalProperties()];
+			this.values = new Term<?>[css.getTotalProperties()];
+			this.inherited = new BitSet(css.getTotalProperties());
 		}
 		
 		public <T extends CSSProperty> T getProperty(Class<T> clazz, String name) {
@@ -143,9 +144,9 @@ public class NodeDataVariant {
 		private BitSet inherited;
 		
 		public NodeDataSingleMap() {
-			this.properties = new HashMap<String, CSSProperty>(css.totalProperties(), 1.0f);
-			this.values = new HashMap<String, Term<?>>(css.totalProperties(), 1.0f);
-			this.inherited = new BitSet(css.totalProperties());
+			this.properties = new HashMap<String, CSSProperty>(css.getTotalProperties(), 1.0f);
+			this.values = new HashMap<String, Term<?>>(css.getTotalProperties(), 1.0f);
+			this.inherited = new BitSet(css.getTotalProperties());
 		}
 		
 		public <T extends CSSProperty> T getProperty(Class<T> clazz, String name) {
@@ -158,7 +159,7 @@ public class NodeDataVariant {
 			T property = clazz.cast(properties.get(name));
 			
 			if(includeInherited) return property;
-			if(inherited.get(css.getOridinalValue(name))) return null;
+			if(inherited.get(css.getOrdinal(name))) return null;
 			
 			return property;
 		}
@@ -174,7 +175,7 @@ public class NodeDataVariant {
 			
 			if(includeInherited) return value;
 			
-			if(inherited.get(css.getOridinalValue(name)))
+			if(inherited.get(css.getOrdinal(name)))
 				return null;
 			
 			return value;
@@ -213,10 +214,10 @@ public class NodeDataVariant {
 		private Map<String,Term<?>> valuesInh;
 		
 		public NodeDataDoubleMap() {
-			this.propertiesOwn = new HashMap<String, CSSProperty>(css.totalProperties(), 1.0f);
-			this.propertiesInh = new HashMap<String, CSSProperty>(css.totalProperties(), 1.0f);
-			this.valuesOwn = new HashMap<String, Term<?>>(css.totalProperties(), 1.0f);
-			this.valuesInh = new HashMap<String, Term<?>>(css.totalProperties(), 1.0f);
+			this.propertiesOwn = new HashMap<String, CSSProperty>(css.getTotalProperties(), 1.0f);
+			this.propertiesInh = new HashMap<String, CSSProperty>(css.getTotalProperties(), 1.0f);
+			this.valuesOwn = new HashMap<String, Term<?>>(css.getTotalProperties(), 1.0f);
+			this.valuesInh = new HashMap<String, Term<?>>(css.getTotalProperties(), 1.0f);
 		}
 		
 		public <T extends CSSProperty> T getProperty(Class<T> clazz, String name, boolean includeInherited) {
@@ -300,7 +301,7 @@ public class NodeDataVariant {
 			// substitute "INHERIT" values
 			for(String key:this.propertiesOwn.keySet()) {
 				if(this.propertiesOwn.get(key).equalsInherit()) {
-					CSSProperty value = 
+					CSSProperty value = null; // FIXME
 				}
 					
 					propertiesOwn.put(key, null);

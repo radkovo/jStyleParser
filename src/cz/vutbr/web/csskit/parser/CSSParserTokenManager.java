@@ -19,6 +19,7 @@ import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermNumeric;
+import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.csskit.StyleSheetImpl;
 import cz.vutbr.web.csskit.RuleSetImpl;
@@ -28,7 +29,6 @@ import cz.vutbr.web.csskit.DeclarationImpl;
 import cz.vutbr.web.csskit.SelectorImpl;
 import cz.vutbr.web.csskit.SimpleSelectorImpl;
 import cz.vutbr.web.csskit.ImportURIImpl;
-import cz.vutbr.web.csskit.TermFactoryImpl;
 
 public class CSSParserTokenManager implements CSSParserConstants
 {
