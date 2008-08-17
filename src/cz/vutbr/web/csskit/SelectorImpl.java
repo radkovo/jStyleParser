@@ -1,95 +1,142 @@
 package cz.vutbr.web.csskit;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import org.w3c.dom.Element;
 
-import javax.naming.OperationNotSupportedException;
-
+import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.SimpleSelector;
-import cz.vutbr.web.css.StyleSheetNotValidException;
+import cz.vutbr.web.css.CombinedSelector.Specificity;
+import cz.vutbr.web.css.CombinedSelector.Specificity.Level;
 
 /**
- * Selector
- * @author Jan Svercl, VUT Brno, 2008
- * 			modified by Karel Piwko, 2008
- * @version 1.0 * Changed according to new interface
- * 				 * Construction moved to parser
- * 				 * Rewritten toString() method 
- * 				 * Added method to compute specificity
+ * Encapsulates one selector for CSS declaration.
+ * CombinedSelector can contain classes, attributes, ids, pseudoatrributes,
+ * and element name, together with combinator according to next placed selectors
+ * 
+ * @author kapy
+ * @author Jan Svercl, VUT Brno, 2008   	    
  */
-public class SelectorImpl implements Selector {
-  
-	protected List<SimpleSelector> simpleSelectors;
-	
-	public SelectorImpl() {
-		this.simpleSelectors = Collections.emptyList();
-	}	
-	
-	public SimpleSelector getLastSimpleSelector()
-			throws OperationNotSupportedException {
-	
-		if(simpleSelectors.size()==0)
-			throw new OperationNotSupportedException("There is no \"last\" simple selector");
-		
-		return simpleSelectors.get(simpleSelectors.size()-1);
-	}
-	
-	
-	/**
-	 * @return the simpleSelectors
-	 */
-	public List<SimpleSelector> getSimpleSelectors() {
-		return simpleSelectors;
-	}
+public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements Selector {
 
+	protected SelectorPart firstItem;
+	
+    protected Combinator combinator;
+    
+    protected SelectorImpl() {
+    	this.firstItem = null;
+    	this.combinator = null;
+    }  
+    
+	/**
+	 * @return the firstItem
+	 */
+	public SelectorPart getFirstItem() {
+		return firstItem;
+	}
 
 	/**
-	 * @param simpleSelectors the simpleSelectors to set
+	 * @param firstItem the firstItem to set
 	 */
-	public void setSimpleSelectors(List<SimpleSelector> simpleSelectors) {
-		this.simpleSelectors = simpleSelectors;
+	public Selector setFirstItem(SelectorPart firstItem) {
+		this.firstItem = firstItem;
+		return this;
 	}
-	
+
 	/**
-	 * Computes specificity of selector
+	 * @return the combinator
 	 */
-	public Specificity computeSpecificity() {
-		
-		Specificity spec = new SpecificityImpl();
-		
-		for(SimpleSelector s: simpleSelectors) 
-			s.computeSpecificity(spec);
-			
-		return spec;
-		
+	public Combinator getCombinator() {
+		return combinator;
 	}
-	
 
-	public String toString(int depth) {
-
-		StringBuilder sb = new StringBuilder();
-		sb = OutputUtil.appendList(sb, simpleSelectors, OutputUtil.EMPTY_DELIM);
-		
-		return sb.toString();
+	/**
+	 * @param combinator the combinator to set
+	 */
+	public Selector setCombinator(Combinator combinator) {
+		this.combinator = combinator;
+		return this;
 	}
-	
-    @Override
+
+	@Override
     public String toString() {
-    	return this.toString(0);
-    }       
+    	
+    	StringBuilder sb = new StringBuilder();
+    	
+    	if(combinator!=null) sb.append(combinator.value());
+    	if(firstItem!=null) sb.append(firstItem.getValue());
+    	sb = OutputUtil.appendList(sb, list, OutputUtil.EMPTY_DELIM);
+    	
+    	return sb.toString();
+    }
+
+	
+    public String getClassName() {
+        String className = null;
+        for(SelectorPart item : list) {
+            if(item instanceof ElementClass) {
+                className = item.getValue();
+            }
+        }
+        return className;
+    }
     
     
+    public String getIDName() {
+        String idName = null;
+        for(SelectorPart item : list) {
+            if(item instanceof ElementID)
+            	idName = item.getValue();
+        }
+        return idName;
+    }
+    
+    public String getElementName() {
+        if(firstItem == null) 
+            return null;
+        return firstItem.getValue();
+    }
+    
+    public boolean matches(Element e) {
+    	
+		String elementName = getElementName();
+		if(elementName!=null && ! ElementUtil.matchesName(e, elementName))
+			return false;
+		
+		// check other items of simple selector
+		for(SelectorPart item : list) {
+			if(!item.matches(e))
+				return false;
+		}
+		
+		// we passed checking
+		return true;
+    }
+    
+    /**
+     * Computes specificity of this selector
+     */
+    public void computeSpecificity(CombinedSelector.Specificity spec) {
+    	
+    	if(getFirstItem()!=null)
+    		getFirstItem().computeSpecificity(spec);
+			spec.add(Level.D);
+		
+		for(SelectorPart item: list) {
+			item.computeSpecificity(spec);
+		}
+    }   
+    
+   
     /* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		int result = super.hashCode();
 		result = prime * result
-				+ ((simpleSelectors == null) ? 0 : simpleSelectors.hashCode());
+				+ ((combinator == null) ? 0 : combinator.hashCode());
+		result = prime * result
+				+ ((firstItem == null) ? 0 : firstItem.hashCode());
 		return result;
 	}
 
@@ -100,75 +147,48 @@ public class SelectorImpl implements Selector {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (!(obj instanceof SelectorImpl))
 			return false;
 		SelectorImpl other = (SelectorImpl) obj;
-		if (simpleSelectors == null) {
-			if (other.simpleSelectors != null)
+		if (combinator == null) {
+			if (other.combinator != null)
 				return false;
-		} else if (!simpleSelectors.equals(other.simpleSelectors))
+		} else if (!combinator.equals(other.combinator))
+			return false;
+		if (firstItem == null) {
+			if (other.firstItem != null)
+				return false;
+		} else if (!firstItem.equals(other.firstItem))
 			return false;
 		return true;
 	}
 
-	public void check(String path) throws StyleSheetNotValidException {
-        if(simpleSelectors.isEmpty()) {
-            throw new StyleSheetNotValidException("Selector without SimpleSelector", path);
-        }
-        for(int i = 0; i < simpleSelectors.size(); i++) {
-            SimpleSelector simpleSelector = simpleSelectors.get(i);
-            if(i == 0 && simpleSelector.getCombinator() != null) {
-                simpleSelector.setCombinator(null); //Fix error
-            }
-            if(i != 0 && simpleSelector.getCombinator() == null) {
-                throw new StyleSheetNotValidException("SimpleSelector without operator!", path + " -> simpleSelector("+simpleSelector.toString()+")");
-            }
-        }
-    }
+	 
+    // ============================================================
+    // implementation of intern classes
 	
-	public static class SpecificityImpl implements Specificity {
-			
-		protected int[] spec = new int[Level.values().length];
+
+	/**
+	 * Abstract class with shared functionality
+	 */
+	public static abstract class AbstractSelectorPart implements SelectorPart {
 		
-		public int compareTo(Specificity o) {
-			
-			if(get(Level.A) > o.get(Level.A)) return 1;
-			else if(get(Level.A) < o.get(Level.A)) return -1;
-			
-			if(get(Level.B) > o.get(Level.B)) return 1;
-			else if(get(Level.B) < o.get(Level.B)) return -1;
-			
-			if(get(Level.C) > o.get(Level.C)) return 1;
-			else if(get(Level.C) < o.get(Level.C)) return -1;
-			
-			if(get(Level.D) > o.get(Level.D)) return 1;
-			else if(get(Level.D) < o.get(Level.D)) return -1;
-			
-			return 0;
-			
+		/** content */
+		protected String value;
+		
+		protected AbstractSelectorPart(String value) {
+			setValue(value);
 		}
 		
-		public int get(Level level) {
-			
-			switch(level) {
-			case A: return spec[0];
-			case B: return spec[1];
-			case C: return spec[2];
-			case D: return spec[3];
-			default: return 0;
-			}
-		}
+		/**
+		 * @param value the value to set
+		 */
+		public abstract SelectorPart setValue(String value);
 		
-		public void add(Level level) {
-			
-			switch(level) {
-			case A: spec[0]++;
-			case B: spec[1]++;
-			case C: spec[2]++;
-			case D: spec[3]++;
-			}
+		public String getValue() {
+			return value;
 		}
 
 		/* (non-Javadoc)
@@ -178,7 +198,7 @@ public class SelectorImpl implements Selector {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + Arrays.hashCode(spec);
+			result = prime * result + ((value == null) ? 0 : value.hashCode());
 			return result;
 		}
 
@@ -191,15 +211,392 @@ public class SelectorImpl implements Selector {
 				return true;
 			if (obj == null)
 				return false;
-			if (!(obj instanceof SpecificityImpl))
+			if (!(obj instanceof AbstractSelectorPart))
 				return false;
-			SpecificityImpl other = (SpecificityImpl) obj;
-			if (!Arrays.equals(spec, other.spec))
+			AbstractSelectorPart other = (AbstractSelectorPart) obj;
+			if (value == null) {
+				if (other.value != null)
+					return false;
+			} else if (!value.equals(other.value))
 				return false;
 			return true;
 		}
 		
-		
+		@Override
+		public abstract String toString();
+			
 	}
 	
+	
+	/**
+     * Element name
+     * @author kapy
+     */
+    public static class ElementNameImpl extends AbstractSelectorPart implements ElementName {    	 
+		    	
+    	protected ElementNameImpl(String value) {
+    		super(value);
+    	}
+    	
+		public void computeSpecificity(CombinedSelector.Specificity spec) {
+			if(!WILDCARD.equals(value))
+				spec.add(Level.D);
+		}
+		
+		public boolean matches(Element e) {
+			if(value!=null && WILDCARD.equals(value)) return true;
+			return ElementUtil.matchesName(e, value);
+		}	
+		
+		@Override
+		public SelectorPart setValue(String value) {
+			if(value == null)
+				throw new IllegalArgumentException("Invalid SelectorPart value(null)");
+				
+			this.value = value;
+			return this;
+		}
+		
+		@Override
+		public String toString() {
+			return value;
+		}
+    	
+    }
+    
+    /**
+     * Element class
+     * @author kapy
+     *
+     */
+    public static class ElementClassImpl extends AbstractSelectorPart implements ElementClass {
+    	
+    	protected ElementClassImpl(String value) {
+    		super(value);
+    	}
+    	
+    	public void computeSpecificity(Specificity spec) {
+    		spec.add(Level.C);
+    	}
+    	
+    	public boolean matches(Element e) {
+    		return ElementUtil.	matchesClass(e, value);
+    	}
+    	
+    	@Override
+		public SelectorPart setValue(String value) {
+			if(value == null)
+				throw new IllegalArgumentException("Invalid SelectorPart value(null)");
+				
+			this.value = value;
+			return this;
+		}
+    	
+    	@Override
+    	public String toString() {
+    		return "." + value;
+    	}
+    }
+    
+    /**
+     * Holder of CSS pseudo class or pseudo class with function
+     * @author kapy
+     *
+     */
+    public static class PseudoPageImpl extends AbstractSelectorPart implements PseudoPage {
+    	
+    	protected static final String PSEUDO_CLASSES = 
+    		"active|focus|hover|link|visited|first-child|lang";
+    	
+    	protected static final String PSEUDO_ELEMENTS =
+    		"first-letter|first-line|before|after";
+    	
+    	protected String functionName;
+    	
+    	protected PseudoPageImpl(String value, String functionName) {
+    		super(value);
+    		setFunctionName(functionName);
+    	}
+
+		/**
+		 * @return the functionName
+		 */
+		public String getFunctionName() {
+			return functionName;
+		}
+
+		/**
+		 * @param functionName the functionName to set
+		 */
+		public PseudoPage setFunctionName(String functionName) {
+			
+			// sanity check
+			if(functionName!=null)
+				functionName = functionName.replaceAll("\\($", "");
+			
+			this.functionName = functionName;
+			return this;
+		}
+		
+		public void computeSpecificity(Specificity spec) {
+
+			// pseudo-class
+			if((value!=null && value.matches(PSEUDO_CLASSES)) ||
+					(functionName!=null && functionName.matches(PSEUDO_CLASSES)))
+				spec.add(Level.C);
+			
+			// pseudo element
+			else if((value!=null && value.matches(PSEUDO_ELEMENTS)) ||
+				(functionName!=null && functionName.matches(PSEUDO_ELEMENTS)))
+				spec.add(Level.D);
+
+		}		
+		
+		public boolean matches(Element e) {
+			return false;
+		}
+		
+		/**
+		 * Sets value of pseudo. Could be even <code>null</code>
+		 * @param value New value
+		 */
+		@Override
+		public PseudoPage setValue(String value) {
+			this.value = value;
+			return this;
+		}
+				
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			 
+			sb.append(OutputUtil.PAGE_OPENING);
+			if(functionName!=null) 
+				sb.append(functionName).append(OutputUtil.FUNCTION_OPENING);
+			if(value!=null)		sb.append(value);
+			if(functionName!=null)
+				sb.append(OutputUtil.FUNCTION_CLOSING);
+			
+			sb.append(OutputUtil.PAGE_CLOSING);
+			
+			return sb.toString();
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = super.hashCode();
+			result = prime * result
+					+ ((functionName == null) ? 0 : functionName.hashCode());
+			return result;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (!super.equals(obj))
+				return false;
+			if (!(obj instanceof PseudoPageImpl))
+				return false;
+			PseudoPageImpl other = (PseudoPageImpl) obj;
+			if (functionName == null) {
+				if (other.functionName != null)
+					return false;
+			} else if (!functionName.equals(other.functionName))
+				return false;
+			return true;
+		}
+
+    }
+    
+    /**
+     * Element ID
+     * @author kapy
+     *
+     */
+    public static class ElementIDImpl extends AbstractSelectorPart implements ElementID {
+    	
+    	protected ElementIDImpl(String value) {
+    		super(value);
+    	}
+    	
+    	public void computeSpecificity(Specificity spec) {
+    		spec.add(Level.B);
+		}    	
+    	
+    	public boolean matches(Element e) {
+    		return ElementUtil.matchesID(e, value);
+    	}
+    	
+    	@Override
+    	public ElementID setValue(String value) {
+    		if(value==null)
+    			throw new IllegalArgumentException("Invalid value for ElementID(null)");
+    		
+    		value = value.replaceAll("^#", "");
+    		this.value = value;
+    		return this;
+    	}
+    	    	
+    	@Override
+    	public String toString() {
+    		return "#" + value;
+    	}
+    }
+    
+    /**
+     * Attribute holder
+     * @author kapy
+     *
+     */
+    public static class ElementAttributeImpl extends AbstractSelectorPart implements ElementAttribute {
+    	
+    	/** Operator between attribute and value */
+    	protected Operator operator;
+    	
+    	protected String attribute;
+    	
+    	private boolean isStringValue;
+    	
+    	protected ElementAttributeImpl(String value, boolean isStringValue, Operator operator, String attribute) {
+    		super(value);
+    		this.isStringValue = isStringValue;
+    		this.operator = operator;
+    		this.attribute = attribute;
+    		setValue(value);
+    	}
+    	
+    	/**
+		 * @return the operator
+		 */
+		public Operator getOperator() {
+			return operator;
+		}
+
+
+
+		/**
+		 * @param operator the operator to set
+		 */
+		public void setOperator(Operator operator) {
+			this.operator = operator;
+		}
+
+
+
+		/**
+		 * @return the attribute
+		 */
+		public String getName() {
+			return attribute;
+		}
+
+
+
+		/**
+		 * @param attribute the attribute to set
+		 */
+		public void setName(String name) {
+			this.attribute = name;
+		}
+		
+		public void computeSpecificity(Specificity spec) {
+			spec.add(Level.C);
+		}
+		
+		public boolean matches(Element e) {
+			return ElementUtil.matchesAttribute(e, attribute, value, operator);
+		}
+    	
+    	@Override
+    	public ElementAttribute setValue(String value) {
+    		
+    		// sanity check
+    		if(value == null) {
+    			this.value = null;
+    			return this;
+    		}
+    		
+    		// create form string token
+    		if(isStringValue)
+    			value = value.replaceAll("^'", "")
+    			.replaceAll("^\"", "")
+    			.replaceAll("'$", "")
+    			.replaceAll("\"$", "");
+    		
+    		this.value = value;
+    		return this;
+    	}
+		
+		@Override
+    	public String toString() {
+    		StringBuilder sb = new StringBuilder();
+    		
+    		sb.append(OutputUtil.ATTRIBUTE_OPENING).append(attribute);
+    		sb.append(operator.value());
+
+    		if(isStringValue)
+    			sb.append(OutputUtil.STRING_OPENING);
+    		
+    		if(value != null) sb.append(value);
+    		
+    		if(isStringValue)
+    			sb.append(OutputUtil.STRING_CLOSING);
+
+    		sb.append(OutputUtil.ATTRIBUTE_CLOSING);
+    		
+    		return sb.toString();
+    	}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = super.hashCode();
+			result = prime * result
+					+ ((attribute == null) ? 0 : attribute.hashCode());
+			result = prime * result + (isStringValue ? 1231 : 1237);
+			result = prime * result
+					+ ((operator == null) ? 0 : operator.hashCode());
+			return result;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (!super.equals(obj))
+				return false;
+			if (!(obj instanceof ElementAttributeImpl))
+				return false;
+			ElementAttributeImpl other = (ElementAttributeImpl) obj;
+			if (attribute == null) {
+				if (other.attribute != null)
+					return false;
+			} else if (!attribute.equals(other.attribute))
+				return false;
+			if (isStringValue != other.isStringValue)
+				return false;
+			if (operator == null) {
+				if (other.operator != null)
+					return false;
+			} else if (!operator.equals(other.operator))
+				return false;
+			return true;
+		}
+				
+		
+    }	
 }

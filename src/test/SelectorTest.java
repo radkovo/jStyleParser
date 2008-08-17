@@ -7,21 +7,21 @@ import java.util.List;
 import org.junit.Test;
 
 import cz.vutbr.web.css.CSSFactory;
-import cz.vutbr.web.css.Rule;
+import cz.vutbr.web.css.CombinedSelector;
+import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.SimpleSelector;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermNumeric;
-import cz.vutbr.web.csskit.SimpleSelectorImpl;
 import cz.vutbr.web.csskit.parser.CSSParser;
 
 public class SelectorTest {
 
 	private static final TermFactory tf = CSSFactory.getTermFactory();
+	private static final RuleFactory rf = CSSFactory.getRuleFactory();
 	
 	
 	public static final String TEST_MULTIPLE =
@@ -68,10 +68,9 @@ public class SelectorTest {
 	public void testMultiple() throws StyleSheetNotValidException {
 		StyleSheet ss = (new CSSParser(TEST_MULTIPLE)).parse();
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
+		assertEquals("One rule is set", 1, ss.size());
 		
-		final RuleSet rule = (RuleSet) rules.get(0);				
+		RuleSet rule = (RuleSet) ss.get(0);				
 		
 		assertEquals("Rule contains two selectors H1, DIV  ", 
 				SelectorsUtil.createSelectors("H1", "DIV"), 
@@ -80,7 +79,7 @@ public class SelectorTest {
 		assertEquals("Rule contains one declaration {display:block;}",
 				DeclarationsUtil.appendDeclaration(null, "display", 
 						tf.createIdent("block")),
-				rule.getDeclarations());
+				rule.asList());
 	}
 	
 	
@@ -89,210 +88,197 @@ public class SelectorTest {
 		
 		StyleSheet ss = (new CSSParser(TEST_DESCENDANT)).parse();
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
+		assertEquals("One rule is set", 1, ss.size());
 		
-		final RuleSet rule = (RuleSet) rules.get(0);				
+		RuleSet rule = (RuleSet) ss.get(0);				
 		
-		List<Selector> sels = SelectorsUtil.appendSelector(null); 
-		SelectorsUtil.appendSimpleSelector(sels, "H1", null);
-		SelectorsUtil.appendDescendant(sels, "P");
+		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null); 
+		SelectorsUtil.appendSimpleSelector(cslist, "H1", null);
+		SelectorsUtil.appendDescendant(cslist, "P");
 		
 		assertEquals("Rule contains one combined selectors H1 P  ",
-				sels, rule.getSelectors());
+				cslist, rule.getSelectors());
 		
 		assertEquals("Rule contains one declaration {display:inline;}",
 				DeclarationsUtil.appendDeclaration(null, "display", 
 						tf.createIdent("inline")),
-				rule.getDeclarations());
+				rule.asList());
 	}
 	
 	@Test
 	public void testAdjacent() throws StyleSheetNotValidException {
+		
 		StyleSheet ss = (new CSSParser(TEST_ADJACENT)).parse();
+		assertEquals("One rule is set", 1, ss.size());
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
+		RuleSet rule = (RuleSet) ss.get(0);
 		
-		final RuleSet rule = (RuleSet) rules.get(0);
-		
-		List<Selector> sels = SelectorsUtil.appendSelector(null); 
-		SelectorsUtil.appendSimpleSelector(sels, "DIV", null);
-		SelectorsUtil.appendAdjacent(sels, "P");
+		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null); 
+		SelectorsUtil.appendSimpleSelector(cslist, "DIV", null);
+		SelectorsUtil.appendAdjacent(cslist, "P");
 		
 		assertEquals("Rule contains one combined selectors DIV+P ",
-				sels, rule.getSelectors());
+				cslist, rule.getSelectors());
 		
 		assertEquals("Rule contains one declaration {color:blue;}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
 						tf.createColor(0, 0, 255)),
-				rule.getDeclarations());
+				rule.asList());
 		
 	}
 	
 	@Test
 	public void testChild() throws StyleSheetNotValidException {
+
 		StyleSheet ss = (new CSSParser(TEST_CHILD)).parse();
+		assertEquals("One rule is set", 1, ss.size());
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
+		RuleSet rule = (RuleSet) ss.get(0);
 		
-		final RuleSet rule = (RuleSet) rules.get(0);
-		
-		List<Selector> sels = SelectorsUtil.appendSelector(null); 
-		SelectorsUtil.appendSimpleSelector(sels, "DIV", null);
-		SelectorsUtil.appendChild(sels, "P");
-		SelectorsUtil.appendSelector(sels);
-		SelectorsUtil.appendSimpleSelector(sels, "SPAN", null);
-		SelectorsUtil.appendSelector(sels);
-		SelectorsUtil.appendSimpleSelector(sels, "A", null);
-		SelectorsUtil.appendSelector(sels);
-		SelectorsUtil.appendSimpleSelector(sels, "FORM", null);
-		SelectorsUtil.appendAdjacent(sels, "DIV");
+		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null); 
+		SelectorsUtil.appendSimpleSelector(cslist, "DIV", null);
+		SelectorsUtil.appendChild(cslist, "P");
+		SelectorsUtil.appendCS(cslist);
+		SelectorsUtil.appendSimpleSelector(cslist, "SPAN", null);
+		SelectorsUtil.appendCS(cslist);
+		SelectorsUtil.appendSimpleSelector(cslist, "A", null);
+		SelectorsUtil.appendCS(cslist);
+		SelectorsUtil.appendSimpleSelector(cslist, "FORM", null);
+		SelectorsUtil.appendAdjacent(cslist, "DIV");
 		
 		assertEquals("Rule contains four combined selectors DIV>P, SPAN, A, FORM+DIV ",
-				sels, rule.getSelectors());
+				cslist, rule.getSelectors());
 		
 		assertEquals("Rule contains one declaration {color:white;}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
 						tf.createColor(255, 255, 255)),
-				rule.getDeclarations());
+				rule.asList());
 	}
 	
 	@Test
 	public void testClass() throws StyleSheetNotValidException {
+
 		StyleSheet ss = (new CSSParser(TEST_CLASS)).parse();
+		assertEquals("One rule is set", 1, ss.size());
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
+		RuleSet rule = (RuleSet) ss.get(0);
 		
-		final RuleSet rule = (RuleSet) rules.get(0);
-		
-		List<Selector> sels = SelectorsUtil.appendSelector(null); 
-		SelectorsUtil.appendSimpleSelector(sels, null, null,
-				new SimpleSelectorImpl.ItemClassImpl("fit"));
+		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null); 
+		SelectorsUtil.appendSimpleSelector(cslist, null, null,
+				rf.createClass("fit"));
 		
 		assertEquals("Rule contains one class selector .fit",
-				sels, rule.getSelectors());
+				cslist, rule.getSelectors());
 		
 		assertEquals("Rule contains one declaration { width: 80%;}",
 				DeclarationsUtil.appendDeclaration(null, "width", 
 						tf.createPercent(80.0f)),
-				rule.getDeclarations());
+				rule.asList());
 	}
 	
 	@Test
 	public void testID() throws StyleSheetNotValidException {
+
 		StyleSheet ss = (new CSSParser(TEST_ID)).parse();
+		assertEquals("One rule is set", 1, ss.size());
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
+		RuleSet rule = (RuleSet) ss.get(0);
 		
-		final RuleSet rule = (RuleSet) rules.get(0);
-		
-		List<Selector> sels = SelectorsUtil.appendSelector(null); 
-		SelectorsUtil.appendSimpleSelector(sels, null, null,
-				new SimpleSelectorImpl.ItemIDImpl("krysa"));
+		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null); 
+		SelectorsUtil.appendSimpleSelector(cslist, null, null,
+				rf.createID("krysa"));
 		
 		assertEquals("Rule contains one ID selector #krysa",
-				sels, rule.getSelectors());
+				cslist, rule.getSelectors());
 		
 		assertEquals("Rule contains one declaration { font-size: 100px;}",
 				DeclarationsUtil.appendDeclaration(null, "font-size", 
 						tf.createLength(100.0f).setUnit(TermNumeric.Unit.px)),
-				rule.getDeclarations());
+				rule.asList());
 	}
 	
 	@Test
 	public void testIDAttrib() throws StyleSheetNotValidException {
+
 		StyleSheet ss = (new CSSParser(TEST_IDATTRIB)).parse();
+		assertEquals("One rule is set", 1, ss.size());
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
+		RuleSet rule = (RuleSet) ss.get(0);
 		
-		final RuleSet rule = (RuleSet) rules.get(0);
-		
-		
-		List<Selector> sels = SelectorsUtil.appendSelector(null); 
-		SelectorsUtil.appendSimpleSelector(sels, null, null,
-				new SimpleSelectorImpl.ItemIDImpl("krysa"),
-				new SimpleSelectorImpl.ItemAttributeImpl("krysa", true, 
-						SimpleSelector.Operator.EQUALS, "id"));
+		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null); 
+		SelectorsUtil.appendSimpleSelector(cslist, null, null,
+				rf.createID("krysa"),
+				rf.createAttribute("krysa", true, 
+						Selector.Operator.EQUALS, "id"));
 		
 		assertEquals("Rule contains one ID selector #krysa[id='krysa']",
-				sels, rule.getSelectors());
+				cslist, rule.getSelectors());
 		
 		assertEquals("Rule contains one declaration { text-align: right }",
 				DeclarationsUtil.appendDeclaration(null, "text-align",
 						tf.createIdent("right")),
-				rule.getDeclarations());
+				rule.asList());
 	}
 	
 	
 	@Test
 	public void testAttribute() throws StyleSheetNotValidException {
+		
 		StyleSheet ss = (new CSSParser(TEST_ATTRIB)).parse();
+		assertEquals("One rule is set", 1, ss.size());
 		
+		RuleSet rule = (RuleSet) ss.get(0);
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
-		
-		final RuleSet rule = (RuleSet) rules.get(0);
-		
-		List<Selector> sels = SelectorsUtil.appendSelector(null); 
-		SelectorsUtil.appendSimpleSelector(sels, "A", null,
-				new SimpleSelectorImpl.ItemAttributeImpl("fit.vutbr.cz", true, SimpleSelector.Operator.EQUALS, "href"),
-				new SimpleSelectorImpl.ItemAttributeImpl("fit", false, SimpleSelector.Operator.DASHMATCH, "id"));
+		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null); 
+		SelectorsUtil.appendSimpleSelector(cslist, "A", null,
+				rf.createAttribute("fit.vutbr.cz", true, Selector.Operator.EQUALS, "href"),
+				rf.createAttribute("fit", false, Selector.Operator.DASHMATCH, "id"));
 		
 		assertEquals("Rule contains one ID attributed selector A[href='fit.vutbr.cz'][id|=fit]",
-				sels, rule.getSelectors());
+				cslist, rule.getSelectors());
 		
 		assertEquals("Rule contains one declaration { text-align: left; }",
 				DeclarationsUtil.appendDeclaration(null, "text-align", 
 						tf.createIdent("left")),
-				rule.getDeclarations());
+				rule.asList());
 	}
 	
 	@Test
 	public void testPseudo() throws StyleSheetNotValidException {
+		
 		StyleSheet ss = (new CSSParser(TEST_PSEUDO)).parse();
+		assertEquals("One rule is set", 1, ss.size());
 		
+		RuleSet rule = (RuleSet) ss.get(0);
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
-		
-		final RuleSet rule = (RuleSet) rules.get(0);
-		
-		List<Selector> sels = SelectorsUtil.appendSelector(null); 
-		SelectorsUtil.appendSimpleSelector(sels, null, null,
-				new SimpleSelectorImpl.ItemPseudoImpl("hover", null));
+		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null); 
+		SelectorsUtil.appendSimpleSelector(cslist, null, null,
+				rf.createPseudoPage("hover", null));
 		
 		assertEquals("Rule contains one pseudoselector :hover",
-				sels, rule.getSelectors());
+				cslist, rule.getSelectors());
 		
 		assertEquals("Rule contains one declaration { text-decoration: underline; }",
 				DeclarationsUtil.appendDeclaration(null, "text-decoration", 
 						tf.createIdent("underline")),
-				rule.getDeclarations());
+				rule.asList());
 	}
 	
 	@Test
 	public void testPseudoFunc() throws StyleSheetNotValidException {
+		
 		StyleSheet ss = (new CSSParser(TEST_PSEUDO_FUNC)).parse();
+		assertEquals("One rule is set", 1, ss.size());
 		
+		RuleSet rule = (RuleSet) ss.get(0);
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
-		
-		final RuleSet rule = (RuleSet) rules.get(0);
-		
-		List<Selector> sels = SelectorsUtil.appendSelector(null); 
-		SelectorsUtil.appendSimpleSelector(sels, null, null,
-				new SimpleSelectorImpl.ItemPseudoImpl("fr", "lang"));
-		SelectorsUtil.appendChild(sels, "Q");
+		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null); 
+		SelectorsUtil.appendSimpleSelector(cslist, null, null,
+				rf.createPseudoPage("fr", "lang"));
+		SelectorsUtil.appendChild(cslist, "Q");
 		
 		assertEquals("Rule contains one combined pseudoselector :lang(fr)>Q",
-				sels, rule.getSelectors());
+				cslist, rule.getSelectors());
 		
 		List<Term<?>> terms = DeclarationsUtil.appendTerm(null, null, 
 				tf.createString("« "));
@@ -301,61 +287,57 @@ public class SelectorTest {
 		
 		assertEquals("Rule contains one declaration { quotes: '« ' ' »' }",
 				DeclarationsUtil.appendDeclaration(null, "quotes", terms), 
-				rule.getDeclarations());
+				rule.asList());
 	}
 	
 	@Test
 	public void testPSpecial() throws StyleSheetNotValidException {
+		
 		StyleSheet ss = (new CSSParser(TEST_PSPECIAL)).parse();
-		
-		
-		List<Rule> rules = ss.getRules();
-		assertEquals("Two rules are set", 2, rules.size());
+		assertEquals("Two rules are set", 2, ss.size());
 		
 		// test first rule
-		List<Selector> sels = SelectorsUtil.appendSelector(null);
-		SelectorsUtil.appendSimpleSelector(sels, "P", null, 
-				new SimpleSelectorImpl.ItemClassImpl("special"),
-				new SimpleSelectorImpl.ItemPseudoImpl("before", null));
+		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null);
+		SelectorsUtil.appendSimpleSelector(cslist, "P", null, 
+				rf.createClass("special"),
+				rf.createPseudoPage("before", null));
 				
 		
 		assertEquals("Rule 1 contains one combined selector P.special:before",
-				sels, ((RuleSet) rules.get(0)).getSelectors());
+				cslist, ((RuleSet) ss.get(0)).getSelectors());
 		
 		assertEquals("Rule 2 contains one declaration { content: \"Special! \"}",
 				DeclarationsUtil.appendDeclaration(null, "content", 
 						tf.createString("Special! ")), 
-				((RuleSet)rules.get(0)).getDeclarations());
+				((RuleSet) ss.get(0)).asList());
 		
 		// test second rule
-		sels = SelectorsUtil.appendSelector(null);
-		SelectorsUtil.appendSimpleSelector(sels, "P", null, 
-				new SimpleSelectorImpl.ItemClassImpl("special"),
-				new SimpleSelectorImpl.ItemPseudoImpl("first-letter", null));
+		cslist = SelectorsUtil.appendCS(null);
+		SelectorsUtil.appendSimpleSelector(cslist, "P", null, 
+				rf.createClass("special"),
+				rf.createPseudoPage("first-letter", null));
 		
 		assertEquals("Rule 2 contains one combined selector P.special:first-letter",
-				sels, ((RuleSet) rules.get(1)).getSelectors());
+				cslist, ((RuleSet) ss.get(1)).getSelectors());
 		
 		assertEquals("Rule 2 contains one declaration { color: #ffd800}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
 						tf.createColor(255,216,0)), 
-				((RuleSet)rules.get(1)).getDeclarations());
+				((RuleSet) ss.get(1)).asList());
 	}
 	
 	@Test
 	public void testAsterisk() throws StyleSheetNotValidException {
+		
 		StyleSheet ss = (new CSSParser(TEST_ASTERISK)).parse();
+		assertEquals("One rule is set", 1, ss.size());
 		
-		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
-		
-		List<Selector> sels = SelectorsUtil.appendSelector(null);
-		SelectorsUtil.appendSimpleSelector(sels, "*", null, 
-				new SimpleSelectorImpl.ItemClassImpl("home"));				
+		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null);
+		SelectorsUtil.appendSimpleSelector(cslist, "*", null,
+				rf.createClass("home"));				
 		
 		assertEquals("Rule 1 contains one combined selector *.home",
-				sels, ((RuleSet) rules.get(0)).getSelectors());
+				cslist, ((RuleSet) ss.get(0)).getSelectors());
 
 		List<Term<?>> terms = DeclarationsUtil.appendTerm(null, null, 
 				tf.createIdent("Verdana"));
@@ -365,56 +347,49 @@ public class SelectorTest {
 		
 		assertEquals("Rule contains one declaration { font-family: Verdana, monospace }",
 				DeclarationsUtil.appendDeclaration(null, "font-family", terms), 
-				((RuleSet)rules.get(0)).getDeclarations());
+				((RuleSet) ss.get(0)).asList());
 	}
 	
 	@Test
 	public void testElementName() throws StyleSheetNotValidException {
 		
 		StyleSheet ss = (new CSSParser(TEST_MULTIPLE)).parse();
+		assertEquals("One rule is set", 1, ss.size());
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
+		RuleSet rule = (RuleSet) ss.get(0);				
 		
-		final RuleSet rule = (RuleSet) rules.get(0);				
+		List<CombinedSelector> cslist = rule.getSelectors();
 		
-		List<Selector> selectors = rule.getSelectors();
-		
-		assertEquals("Rule rule contains two selectors", 2, selectors.size());
+		assertEquals("Rule rule contains two selectors", 2, cslist.size());
 		
 		// H1
-		Selector s = selectors.get(0);
-		List<SimpleSelector> list = s.getSimpleSelectors();
+		CombinedSelector s = cslist.get(0);
 		
-		assertEquals("Selector 1 contains one simple selector", 1, list.size());
+		assertEquals("CombinedSelector 1 contains one simple selector", 1, s.size());
 		
-		assertEquals("Selector contains element name", "H1", list.get(0).getElementName());
+		assertEquals("CombinedSelector contains element name", "H1", s.get(0).getElementName());
 		
 		
 		// DIV
-		s = selectors.get(1);
-		list = s.getSimpleSelectors();
+		s = cslist.get(1);
 		
-		assertEquals("Selector 2 contains one simple selector", 1, list.size());
+		assertEquals("CombinedSelector 2 contains one simple selector", 1, s.size());
 		
-		assertEquals("Selector contains element name", "DIV", list.get(0).getElementName());
+		assertEquals("CombinedSelector contains element name", "DIV", s.get(0).getElementName());
 	}
 	
 	@Test
 	public void testAttributePresence() throws StyleSheetNotValidException {
 		
 		StyleSheet ss = (new CSSParser(TEST_ATTRIB_PRESENCE)).parse();
+		assertEquals("One rule is set", 1, ss.size());
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
-		
-		List<Selector> sels = SelectorsUtil.appendSelector(null);
-		SelectorsUtil.appendSimpleSelector(sels, "*", null, 
-				new SimpleSelectorImpl.ItemAttributeImpl(
-						null, false, SimpleSelector.Operator.NO_OPERATOR, "href"));				
+		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null);
+		SelectorsUtil.appendSimpleSelector(cslist, "*", null,
+				rf.createAttribute(null, false, Selector.Operator.NO_OPERATOR, "href"));				
 		
 		assertEquals("Rule 1 contains one combined selector *[href]",
-				sels, ((RuleSet) rules.get(0)).getSelectors());
+				cslist, ((RuleSet) ss.get(0)).getSelectors());
 
 		List<Term<?>> terms = DeclarationsUtil.appendTerm(null, null, 
 				tf.createIdent("Verdana"));
@@ -424,7 +399,7 @@ public class SelectorTest {
 		assertEquals("Rule contains one declaration { text-decoration: underline }",
 		DeclarationsUtil.appendDeclaration(null, "text-decoration", 
 				tf.createIdent("underline")),
-				((RuleSet) rules.get(0)).getDeclarations());		
+				((RuleSet) ss.get(0)).asList());		
 		
 	}
 	

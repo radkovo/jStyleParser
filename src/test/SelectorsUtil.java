@@ -5,10 +5,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.CombinedSelector;
+import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.SimpleSelector;
-import cz.vutbr.web.csskit.SelectorImpl;
-import cz.vutbr.web.csskit.SimpleSelectorImpl;
+
 
 /**
  * Creates selectors
@@ -17,114 +18,114 @@ import cz.vutbr.web.csskit.SimpleSelectorImpl;
  */
 public class SelectorsUtil {
 
+	public static final RuleFactory rf = CSSFactory.getRuleFactory();
+	
+	
 	/**
 	 * Create basic selector of HTML element
 	 * @param element
 	 * @return
 	 */
-	public static Selector createSelector(String element) {
+	public static CombinedSelector createCS(String element) {
 		
-		Selector sel = new SelectorImpl();
+		CombinedSelector cs = rf.createCombinedSelector();
 		
-		List<SimpleSelector> ssels = new ArrayList<SimpleSelector>();
-		SimpleSelector ss = new SimpleSelectorImpl();
-		ss.setFirstItem( new SimpleSelectorImpl.ItemImpl(element));
-		ssels.add(ss);
-		sel.setSimpleSelectors(ssels);
+		List<Selector> list = new ArrayList<Selector>();
+		Selector ss = rf.createSelector().setFirstItem(rf.createElement(element));
+		list.add(ss);
+		cs.replaceAll(list);
 		
-		return sel;
+		return cs;
 	}
 	
 	/**
-	 * Create list of basic selectors
+	 * Create list of combined selectors
 	 * @param elements
 	 * @return
 	 */
-	public static List<Selector> createSelectors(String...elements) {
+	public static List<CombinedSelector> createSelectors(String...elements) {
 		
-		List<Selector> list = new ArrayList<Selector>();
+		List<CombinedSelector> list = new ArrayList<CombinedSelector>();
 		for(String e: elements)
-			list.add(createSelector(e));
+			list.add(createCS(e));
 	
 		return list;
 	}
 	
 	/**
 	 * Appends simple selector to current selector in list
-	 * @param selectors List of selector
+	 * @param cslist List of selector
 	 * @param element Name of selectors element
 	 * @param c Combinator
 	 * @param items Items of simple selector
 	 * @return modified list
 	 */
-	public static List<Selector> appendSimpleSelector(List<Selector> selectors,
-			String element, SimpleSelector.Combinator c, SimpleSelector.Item...items) {
+	public static List<CombinedSelector> appendSimpleSelector(List<CombinedSelector> cslist,
+			String element, Selector.Combinator c, Selector.SelectorPart...items) {
 		
-		if(selectors==null)
-			selectors = new ArrayList<Selector>();
+		if(cslist==null)
+			cslist = new ArrayList<CombinedSelector>();
 		
-		// add new selector if empty
-		if(selectors.size()==0)
-			selectors.add(new SelectorImpl());
+		// add new combined selector if empty
+		if(cslist.size()==0)
+			cslist.add(rf.createCombinedSelector());
 
-		// get last selector
-		Selector current = selectors.get(selectors.size()-1);
+		// get last combined selector
+		CombinedSelector current = cslist.get(cslist.size()-1);
 		
-		// list of simple selectors, create if empty
-		List<SimpleSelector> ssels = current.getSimpleSelectors();
-		if(ssels == null || Collections.emptyList().equals(ssels)) {
-			ssels = new ArrayList<SimpleSelector>();
+		// list of selectors, create if empty
+		if(current.asList()==null || Collections.emptyList().equals(current.asList())) {
+			current.replaceAll(new ArrayList<Selector>());
 		}
 		
-		// create new simple selector
-		SimpleSelector ss = new SimpleSelectorImpl();
+		// create new selector
+		Selector s = rf.createSelector();
 		if(element!=null) // avoid inserting empty element
-			ss.setFirstItem(new SimpleSelectorImpl.ItemImpl(element));
-		ss.setCombinator(c);
-		ss.setItems(Arrays.asList(items));
+			s.setFirstItem(rf.createElement(element));
+		s.setCombinator(c);
+		s.replaceAll(Arrays.asList(items));
 		
 		// add
-		ssels.add(ss);
-		current.setSimpleSelectors(ssels);
+		current.add(s);
 		
-		return selectors;
+		return cslist;
 	}
 	
 	/* wrappers */
-	public static List<Selector> appendDescendant(List<Selector> selectors,
-			String element, SimpleSelector.Item...items) {
-		return appendSimpleSelector(selectors, element, SimpleSelector.Combinator.DESCENDANT, items);
+	public static List<CombinedSelector> appendDescendant(List<CombinedSelector> selectors,
+			String element, Selector.SelectorPart...items) {
+		return appendSimpleSelector(selectors, element, Selector.Combinator.DESCENDANT, items);
 	}
 	
-	public static List<Selector> appendChild(List<Selector> selectors,
-			String element, SimpleSelector.Item...items) {
-		return appendSimpleSelector(selectors, element, SimpleSelector.Combinator.CHILD, items);
+	public static List<CombinedSelector> appendChild(List<CombinedSelector> selectors,
+			String element, Selector.SelectorPart...items) {
+		return appendSimpleSelector(selectors, element, Selector.Combinator.CHILD, items);
 	}
 	
-	public static List<Selector> appendAdjacent(List<Selector> selectors,
-			String element, SimpleSelector.Item...items) {
-		return appendSimpleSelector(selectors, element, SimpleSelector.Combinator.ADJACENT, items);
+	public static List<CombinedSelector> appendAdjacent(List<CombinedSelector> selectors,
+			String element, Selector.SelectorPart...items) {
+		return appendSimpleSelector(selectors, element, Selector.Combinator.ADJACENT, items);
 	}
 	
 	/**
-	 * Append new empty selector to list of selectors
-	 * @param selectors List of selectors
+	 * Append new empty combined selector to list of selectors
+	 * @param cslist List of selectors
 	 * @return Modified list
 	 */
-	public static List<Selector> appendSelector(List<Selector> selectors) {
+	public static List<CombinedSelector> appendCS(List<CombinedSelector> cslist) {
 		
-		if(selectors==null)
-			selectors = new ArrayList<Selector>();
+		if(cslist==null)
+			cslist = new ArrayList<CombinedSelector>();
 		
 		// add new selector if empty
-		if(selectors.size()==0) {
-			selectors.add(new SelectorImpl());
-			return selectors;
+		if(cslist.size()==0) {
+			cslist.add(rf.createCombinedSelector());
+			return cslist;
 		}
 		
-		selectors.add(new SelectorImpl());
+		cslist.add(rf.createCombinedSelector());
 		
-		return selectors;
+		return cslist;
 	}
 	
 }

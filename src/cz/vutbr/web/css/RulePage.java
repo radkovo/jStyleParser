@@ -1,21 +1,25 @@
 package cz.vutbr.web.css;
 
-import java.util.List;
 
 /**
- * RulePage
+ * Contains collection of CSS declarations specified for name of CSS pseudo-page.
+ * 
+ * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
- * 			modified by Karel Piwko, 2008
- * @version 1.0 * Added setter for declaration
- * 				 * Renamed methods to achieve consistency in naming
  */
-public interface RulePage extends Rule, PrettyOutput {
+public interface RulePage extends Rule<Declaration>, PrettyOutput {
 
+	/**
+	 * Gets name of CSS pseudo-page
+	 * @return Name of pseudo-page
+	 */
     public String getPseudo();
     
-    public void setPseudo(String pseudo);
+    /**
+     * Sets name of CSS pseudo-page
+     * @param pseudo New name of pseudo-page
+     * @return Modified instance
+     */
+    public RulePage setPseudo(String pseudo);
 
-    public List<Declaration> getDeclarations();   
-    
-    public void setDeclarations(List<Declaration> declarations);
 }

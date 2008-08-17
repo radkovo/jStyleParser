@@ -1,15 +1,14 @@
 package cz.vutbr.web.css;
 
-import java.util.List;
 
 /**
- * Contains imports associated with medias
+ * Contains imports associated with medias. Acts as collection
+ * of associated medias
+ * 
+ * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
- * 			modified by Karel Piwko, 2008
- * @version 1.0 * Now it is implementation of Rule
- * 				 * Added setters
  */
-public interface ImportURI extends Rule {
+public interface ImportURI extends Rule<String> {
   
 	/**
 	 * Gets URI of import rule file
@@ -21,18 +20,6 @@ public interface ImportURI extends Rule {
      * Sets URI of import rule
      * @param uri URI of file to be imported
      */
-    public void setUri(String uri);
+    public ImportURI setUri(String uri);
 
-    /**
-     * Gets media associated with import
-     * @return List of medias for which import is valid
-     */
-    public List<String> getMedias();
-    
-    /**
-     * Sets media associated with import
-     * @param medias List of medias for which import is valid
-     */
-    public void setMedias(List<String> medias);
-    
 }

@@ -35,13 +35,23 @@ public final class CSSFactory {
 	
 	private static final String DEFAULT_TERM_FACTORY = "cz.vutbr.web.csskit.TermFactoryImpl";
 	private static final String DEFAULT_SUPPORTED_CSS = "cz.vutbr.web.domassign.SupportedCSS21";
+	private static final String DEFAULT_RULE_FACTORY = "cz.vutbr.web.csskit.RuleFactoryImpl";
 	
 	
 	/**
 	 * Default instance of TermFactory implementation
 	 */
 	private static TermFactory tf;
+	
+	/**
+	 * Default instance of SupportedCSS implementation
+	 */
 	private static SupportedCSS css;
+	
+	/**
+	 * Default instance of RuleFactory implementation 
+	 */
+	private static RuleFactory rf;
 	
 	/**
 	 * Registers new TermFactory instance
@@ -86,5 +96,22 @@ public final class CSSFactory {
 		return css;
 	}
 	
+	public static final void registerRuleFactory(RuleFactory newRuleFactory) {
+		rf = newRuleFactory;
+	}
+	
+	public static final RuleFactory getRuleFactory() {
+		if(rf==null) {
+			try {
+				Class.forName(DEFAULT_RULE_FACTORY);
+				if(rf!=null) return rf;
+			}
+			catch(Exception e) {}
+			
+			throw new RuntimeException("No RuleFactory implementation registered!");
+		}
+		
+		return rf;
+	}
 	
 }

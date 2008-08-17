@@ -184,11 +184,11 @@ public abstract class Variator {
 			Map<String, Term<?>> values) {
 		
 		// only one term is allowed
-		if(d.getTerms().size()!=1)
+		if(d.size()!=1)
 			return false;
 		
 		this.terms = new ArrayList<Term<?>>();
-		this.terms.add(d.getTerms().get(0));
+		this.terms.add(d.get(0));
 		
 		return variant(variant, 0, properties, values);
 	}
@@ -234,6 +234,6 @@ public abstract class Variator {
 	 * @param d Declaration which contains terms
 	 */
 	public void assignTermsFromDeclaration(Declaration d) {
-		this.terms = d.getTerms();
+		this.terms = d.asList();
 	}
 }

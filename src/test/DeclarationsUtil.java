@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.Term;
-import cz.vutbr.web.csskit.DeclarationImpl;
 
 /**
  * Creates declarations
@@ -15,6 +16,9 @@ import cz.vutbr.web.csskit.DeclarationImpl;
  */
 public class DeclarationsUtil {
 
+	private static final RuleFactory rf = CSSFactory.getRuleFactory();
+	
+	
 	/**
 	 * Simple declaration of rule. Other functions are wrappers
 	 * @param property Property name
@@ -24,11 +28,10 @@ public class DeclarationsUtil {
 	 */
 	public static Declaration createDeclaration(String property, boolean important, List<Term<?>> terms) {
 	
-		Declaration dec = new DeclarationImpl();
+		Declaration dec = (Declaration) rf.createDeclaration().replaceAll(terms);
 		
 		dec.setProperty(property);
 		dec.setImportant(important);
-		dec.setTerms(terms);
 		
 		return dec;
 		

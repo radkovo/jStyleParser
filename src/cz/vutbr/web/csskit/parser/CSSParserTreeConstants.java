@@ -15,8 +15,8 @@ public interface CSSParserTreeConstants
   public int JJTPSEUDO_PAGE = 8;
   public int JJTDECLARATION = 9;
   public int JJTPROPERTY = 10;
-  public int JJTSELECTOR = 11;
-  public int JJTSIMPLE_SELECTOR = 12;
+  public int JJTCOMBINED_SELECTOR = 11;
+  public int JJTSELECTOR = 12;
   public int JJTCLASS_A = 13;
   public int JJTELEMENT_NAME = 14;
   public int JJTATTRIB = 15;
@@ -74,8 +74,8 @@ public interface CSSParserTreeConstants
     "pseudo_page",
     "declaration",
     "property",
+    "combined_selector",
     "selector",
-    "simple_selector",
     "class_a",
     "element_name",
     "attrib",

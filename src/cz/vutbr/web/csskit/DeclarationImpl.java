@@ -1,8 +1,5 @@
 package cz.vutbr.web.csskit;
 
-import java.util.Collections;
-import java.util.List;
-
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.Term;
 
@@ -13,15 +10,13 @@ import cz.vutbr.web.css.Term;
  * @version 1.0 * Rewritten according to interface
  * 				 * Construction moved to parser
  */
-public class DeclarationImpl implements Declaration {
+public class DeclarationImpl extends AbstractRule<Term<?>> implements Declaration {
 
 	protected String property;
-	protected List<Term<?>> terms;
 	protected boolean important;
 
-	public DeclarationImpl() {
+	protected DeclarationImpl() {
 		this.property = "";
-		this.terms = Collections.emptyList();
 		this.important = false;
 	}
 	
@@ -29,10 +24,10 @@ public class DeclarationImpl implements Declaration {
 	 * Shallow copy constructor
 	 * @param clone Declaration to share term values with
 	 */
-	public DeclarationImpl(Declaration clone) {
+	protected DeclarationImpl(Declaration clone) {
 		this.property = clone.getProperty();
-		this.terms = clone.getTerms();
 		this.important = clone.isImportant();
+		this.replaceAll(clone.asList());
 	}
 
 	/**
@@ -78,25 +73,6 @@ public class DeclarationImpl implements Declaration {
 	}
 
 
-
-	/**
-	 * @return the terms
-	 */
-	public List<Term<?>> getTerms() {
-		return terms;
-	}
-
-
-
-	/**
-	 * @param terms the terms to set
-	 */
-	public void setTerms(List<Term<?>> terms) {
-		this.terms = terms;
-	}
-
-
-
 	/**
 	 * @return the important
 	 */
@@ -104,59 +80,12 @@ public class DeclarationImpl implements Declaration {
 		return important;
 	}
 
-
-
 	/**
 	 * @param important the important to set
 	 */
 	public void setImportant(boolean important) {
 		this.important = important;
-	}
-
-
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (important ? 1231 : 1237);
-		result = prime * result
-				+ ((property == null) ? 0 : property.hashCode());
-		result = prime * result + ((terms == null) ? 0 : terms.hashCode());
-		return result;
-	}
-
-
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof DeclarationImpl))
-			return false;
-		final DeclarationImpl other = (DeclarationImpl) obj;
-		if (important != other.important)
-			return false;
-		if (property == null) {
-			if (other.property != null)
-				return false;
-		} else if (!property.equals(other.property))
-			return false;
-		if (terms == null) {
-			if (other.terms != null)
-				return false;
-		} else if (!terms.equals(other.terms))
-			return false;
-		return true;
-	}
+	}	
 
 	@Override
 	public String toString() {
@@ -173,10 +102,49 @@ public class DeclarationImpl implements Declaration {
 		sb.append(property).append(OutputUtil.PROPERTY_OPENING);
 		
 		// add terms
-		sb = OutputUtil.appendList(sb, terms, OutputUtil.EMPTY_DELIM)
+		sb = OutputUtil.appendList(sb, list, OutputUtil.EMPTY_DELIM)
 				.append(OutputUtil.PROPERTY_CLOSING);
 		
         return sb.toString();
     }
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (important ? 1231 : 1237);
+		result = prime * result
+				+ ((property == null) ? 0 : property.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof DeclarationImpl))
+			return false;
+		DeclarationImpl other = (DeclarationImpl) obj;
+		if (important != other.important)
+			return false;
+		if (property == null) {
+			if (other.property != null)
+				return false;
+		} else if (!property.equals(other.property))
+			return false;
+		return true;
+	}
+
+	
+	
+	
     
 }

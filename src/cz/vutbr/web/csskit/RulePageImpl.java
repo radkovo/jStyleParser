@@ -1,47 +1,24 @@
 package cz.vutbr.web.csskit;
 
-import java.util.Collections;
-import java.util.List;
-
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RulePage;
 
 /**
- * RulePage
+ * Holder of declarations bounded with pseudo-page 
+ * 
+ * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
- * 			modified by Karel Piwko, 2008
- * @version 1.0 * Changed according to new interface
- * 				 * Construction moved to parser
- * 				 * Rewritten toString() method 
  */
-public class RulePageImpl implements RulePage {
+public class RulePageImpl extends AbstractRule<Declaration> implements RulePage {
 
 	protected String pseudo;
-	protected List<Declaration> declarations;
 	
-	public RulePageImpl() {
+	protected RulePageImpl() {
 		this.pseudo = "";
-		this.declarations = Collections.emptyList();
 	}
 	
-	/*
-    public RulePageImpl(SimpleNode n) {
-        for(int i = 0; i < n.jjtGetNumChildren(); i++) {
-            SimpleNode cNode = (SimpleNode)n.jjtGetChild(i);
-            
-            if(cNode.getType().equals("declaration") && cNode.jjtGetNumChildren() > 0) {
-                declarationsList.add(new DeclarationImpl(cNode));
-            }
-            
-            if(cNode.getType().equals("pseudo_page")) {
-                pseudo = ((SimpleNode)cNode.jjtGetChild(0)).getImage();
-            }
-        }
-    }
-    */
-    
 	/**
-	 * @return the pseudo
+	 * Gets name of pseudopage
 	 */
 	public String getPseudo() {
 		return pseudo;
@@ -49,23 +26,11 @@ public class RulePageImpl implements RulePage {
 
 	/**
 	 * @param pseudo the pseudo to set
+	 * @return Modified instance
 	 */
-	public void setPseudo(String pseudo) {
+	public RulePage setPseudo(String pseudo) {
 		this.pseudo = pseudo;
-	}
-
-	/**
-	 * @return the declarations
-	 */
-	public List<Declaration> getDeclarations() {
-		return declarations;
-	}
-
-	/**
-	 * @param declarations the declarations to set
-	 */
-	public void setDeclarations(List<Declaration> declarations) {
-		this.declarations = declarations;
+		return this;
 	}
 
 	@Override 
@@ -83,10 +48,43 @@ public class RulePageImpl implements RulePage {
     	
     	// append declarations
     	sb.append(OutputUtil.RULE_OPENING);
-    	sb = OutputUtil.appendList(sb, declarations, OutputUtil.EMPTY_DELIM, depth + 1);
+    	sb = OutputUtil.appendList(sb, list, OutputUtil.EMPTY_DELIM, depth + 1);
     	sb.append(OutputUtil.RULE_CLOSING).append(OutputUtil.PAGE_CLOSING);
     
     	return sb.toString();
     }
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((pseudo == null) ? 0 : pseudo.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof RulePageImpl))
+			return false;
+		RulePageImpl other = (RulePageImpl) obj;
+		if (pseudo == null) {
+			if (other.pseudo != null)
+				return false;
+		} else if (!pseudo.equals(other.pseudo))
+			return false;
+		return true;
+	}
+    
+    
    
 }

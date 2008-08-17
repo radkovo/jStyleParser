@@ -13,37 +13,29 @@ PARSER_BEGIN(CSSParser)
 
 package cz.vutbr.web.csskit.parser;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
-import java.io.StringReader;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import cz.vutbr.web.css.Rule;
-import cz.vutbr.web.css.ImportURI;
-import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.RuleMedia;
-import cz.vutbr.web.css.RuleSet;
-import cz.vutbr.web.css.RulePage;
+import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.ImportURI;
+import cz.vutbr.web.css.Rule;
+import cz.vutbr.web.css.RuleFactory;
+import cz.vutbr.web.css.RuleMedia;
+import cz.vutbr.web.css.RulePage;
+import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.SimpleSelector;
+import cz.vutbr.web.css.StyleSheet;
+import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFactory;
-import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermFunction;
+import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermNumeric;
-import cz.vutbr.web.css.CSSFactory;
-import cz.vutbr.web.css.StyleSheetNotValidException;
-import cz.vutbr.web.csskit.StyleSheetImpl;
-import cz.vutbr.web.csskit.RuleSetImpl;
-import cz.vutbr.web.csskit.RuleMediaImpl;
-import cz.vutbr.web.csskit.RulePageImpl;
-import cz.vutbr.web.csskit.DeclarationImpl;
-import cz.vutbr.web.csskit.SelectorImpl;
-import cz.vutbr.web.csskit.SimpleSelectorImpl;
-import cz.vutbr.web.csskit.ImportURIImpl;
 
 /**
  * Parser of CSS passed as InputStream, Reader or directly as String.
@@ -58,17 +50,16 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants/*@egen*
 	private static Logger log = Logger.getLogger(CSSParser.class);
 
 	private static final TermFactory tf = CSSFactory.getTermFactory();
+	private static final RuleFactory rf = CSSFactory.getRuleFactory();
 
 	/** Charset of given css */
 	private String charset;
 	
 	/** Rules gathered from input */
-	private List<Rule> rules = new ArrayList<Rule>();
+	private List<Rule<?>> rules = new ArrayList<Rule<?>>();
 	
 	/** Files to be imported into stylesheet */
-	private List<ImportURI> imports = new ArrayList<ImportURI>();
-
-	private int rulesetNum;
+	private List<ImportURI> imports = new ArrayList<ImportURI>();	
 
 	/** 
 	 * Creates CSSParser.
@@ -87,7 +78,6 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants/*@egen*
 	 */
 	public StyleSheet parse() throws StyleSheetNotValidException {
 		try {
-			this.rulesetNum = 0;
 			return this.start();
 		}
 		catch (ParseException e) {
@@ -242,7 +232,7 @@ StyleSheet start() :
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
 /*@egen*/
-	StyleSheet stylesheet = new StyleSheetImpl();
+	StyleSheet stylesheet = rf.createStyleSheet();
 }
 {/*@bgen(jjtree) start */
         try {
@@ -256,7 +246,7 @@ StyleSheet start() :
   	{ 
   		stylesheet.setCharset(charset);
   		stylesheet.setImports(imports);
-  		stylesheet.setRules(rules);
+  		stylesheet.replaceAll(rules);
   
   		return stylesheet; 
   	}/*@bgen(jjtree)*/
@@ -389,7 +379,7 @@ void import_a() :
         jjtree.openNodeScope(jjtn000);
 /*@egen*/
 	String currentUri = null;
-	ImportURI uri = new ImportURIImpl();
+	ImportURI uri = rf.createImport();
 	List<String> medias = new ArrayList<String>();
 }
 {/*@bgen(jjtree) import_a */
@@ -416,7 +406,7 @@ void import_a() :
   		{	
   			if(currentUri!=null || !"".equals(currentUri))
   				uri.setUri(currentUri);
-  			uri.setMedias(medias);
+  			uri.replaceAll(medias);
   			this.imports.add(uri);	
   		}
   	}
@@ -455,9 +445,9 @@ void media() :
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
 /*@egen*/
-	RuleMedia media = new RuleMediaImpl();
+	RuleMedia media = rf.createMedia();
 	List<String> medias = new ArrayList<String>();
-	List<? extends Rule> rules = new ArrayList<RuleSet>();
+	List<? extends Rule<?>> rules = new ArrayList<RuleSet>();
 }
 {/*@bgen(jjtree) media */
         try {
@@ -473,7 +463,7 @@ void media() :
   		)* 
   		<LCURLY> 
   		(<BLANK>)* 
-  		(ruleset( (List<Rule>) rules))* 
+  		(ruleset( (List<Rule<?>>) rules))* 
   		<RCURLY>/*@bgen(jjtree)*/
                 {
                   jjtree.closeNodeScope(jjtn000, true);
@@ -482,7 +472,7 @@ void media() :
 /*@egen*/ 
   		{
   			media.setMedias(medias);
-  			media.setRules( (List<RuleSet>) rules);
+  			media.replaceAll( (List<RuleSet>) rules);
   			this.rules.add(media);
   		}
   	}
@@ -570,30 +560,29 @@ void medium(List<String> medias) :
  * Inserts ruleset's rule into rule set
  * @param rules List of rules where new ruleset will be added
  */
-void ruleset(List<Rule> rules) :
+void ruleset(List<Rule<?>> rules) :
 {/*@bgen(jjtree) ruleset */
         SimpleNode jjtn000 = new SimpleNode(JJTRULESET);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
 /*@egen*/
-	RuleSetImpl rule = new RuleSetImpl();
-	List<Selector> selectors = new ArrayList<Selector>();
+	List<CombinedSelector> cslist = new ArrayList<CombinedSelector>();
 	List<Declaration> declarations = new ArrayList<Declaration>();
 	
-	Selector sel = null;
+	CombinedSelector cs = null;
 	Declaration dec = null;
 }
 {/*@bgen(jjtree) ruleset */
         try {
 /*@egen*/
 	try {
-  		sel = selector() 
+  		cs = combined_selector() 
   		{
-  			if(sel!=null) selectors.add(sel);
+  			if(cs!=null) cslist.add(cs);
   		}
-  		( <COMMA> (<BLANK>)* sel = selector()
+  		( <COMMA> (<BLANK>)* cs = combined_selector()
   			{
-  				if(sel!=null) selectors.add(sel);
+  				if(cs!=null) cslist.add(cs);
   			} 
   		)*
   		<LCURLY> 
@@ -615,10 +604,10 @@ void ruleset(List<Rule> rules) :
   	}
   	// be error graceful to unknown selectors and declarations
   	finally {
-  		if(selectors.size() > 0 && declarations.size() > 0) {
-  			rule.setSelectors(selectors);
-  			rule.setDeclarations(declarations);
-  			rule.setOrder(++rulesetNum);
+  		if(cslist.size() > 0 && declarations.size() > 0) {
+  			RuleSet rule = rf.createSet();
+  			rule.setSelectors(cslist);
+  			rule.replaceAll(declarations);
   			rules.add(rule);
   		}
   	}/*@bgen(jjtree)*/
@@ -653,7 +642,7 @@ void page() :
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
 /*@egen*/
-	RulePage page = new RulePageImpl();
+	RulePage page = rf.createPage();
 	List<Declaration> declarations = new ArrayList<Declaration>();
 	Declaration dec = null;
 	String pseudo = null;
@@ -684,7 +673,7 @@ void page() :
   	finally {
   		if(declarations.size() > 0) {
   			page.setPseudo(pseudo);
-    		page.setDeclarations(declarations);
+  			page.replaceAll(declarations);
     		this.rules.add(page);
   		}
   	}/*@bgen(jjtree)*/
@@ -766,7 +755,7 @@ Declaration declaration() :
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
 /*@egen*/
-	Declaration declaration = new DeclarationImpl();
+	Declaration declaration = rf.createDeclaration();
 	List<Term<?>> terms = null;
 	String property = null;
 	boolean important = false;
@@ -786,11 +775,11 @@ Declaration declaration() :
   	
   		declaration.setImportant(important);
 		declaration.setProperty(property);
-		declaration.setTerms(terms);
+		declaration.replaceAll(terms);
   			
 		if(log.isDebugEnabled()) {
 			log.debug("Having declaration of property: " + property +
-  				", and " + declaration.getTerms().size() + " terms " + terms);
+  				", and " + declaration.size() + " terms " + terms);
   		}
   		return declaration;
   	}/*@bgen(jjtree)*/
@@ -862,26 +851,26 @@ String property() :
 
 /**
  * Returns selector for given rules
- * @return Selector 
+ * @return CombinedSelector  
  */
-Selector selector() :
-{/*@bgen(jjtree) selector */
-        SimpleNode jjtn000 = new SimpleNode(JJTSELECTOR);
+CombinedSelector combined_selector() :
+{/*@bgen(jjtree) combined_selector */
+        SimpleNode jjtn000 = new SimpleNode(JJTCOMBINED_SELECTOR);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
 /*@egen*/
-	Selector s = new SelectorImpl();
-	List<SimpleSelector> ss = new ArrayList<SimpleSelector>();
-	SimpleSelector selector = null;
-	SimpleSelector.Combinator c = null;
+	CombinedSelector cs = rf.createCombinedSelector();
+	List<Selector> list = new ArrayList<Selector>();
+	Selector selector = null;
+	Selector.Combinator c = null;
 }
-{/*@bgen(jjtree) selector */
+{/*@bgen(jjtree) combined_selector */
         try {
 /*@egen*/
 	try {
-  		selector=simple_selector()
+  		selector=selector()
   			{
-  				if(selector!=null) ss.add(selector); 
+  				if(selector!=null) list.add(selector); 
   			} 
   		( 
   			c = combinator() {
@@ -889,11 +878,11 @@ Selector selector() :
   					log.trace("Combinator: " + c);
   				}
   			}
-  			selector = simple_selector()
+  			selector = selector()
   				{
   					if(selector!=null) {
   						selector.setCombinator(c);
-  						ss.add(selector);
+  						list.add(selector);
   					}
   				} 
   		)*
@@ -903,10 +892,10 @@ Selector selector() :
   	}
   	finally {
   		if(log.isDebugEnabled()) {
-  			log.debug("Having selectors(" + ss.size() + "): " + ss);
+  			log.debug("Having selectors(" + list.size() + "): " + list);
   		}
-  		s.setSimpleSelectors(ss);
-  		return s;
+  		cs.replaceAll(list);
+  		return cs;
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -931,35 +920,35 @@ Selector selector() :
 }
 
 /**
- * Returns simple selector
- * @return Simple selector as a part of Selector
+ * Returns selector
+ * @return Selector as a part of CombinedSelector
  */
-SimpleSelector simple_selector() :
-{/*@bgen(jjtree) simple_selector */
-        SimpleNode jjtn000 = new SimpleNode(JJTSIMPLE_SELECTOR);
+Selector selector() :
+{/*@bgen(jjtree) selector */
+        SimpleNode jjtn000 = new SimpleNode(JJTSELECTOR);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
 /*@egen*/
-	SimpleSelector s = new SimpleSelectorImpl();
+	Selector selector = rf.createSelector();
 	String value = null;
-	SimpleSelector.Item item = null;
-	List<SimpleSelector.Item> items = new ArrayList<SimpleSelector.Item>();
+	Selector.SelectorPart item = null;
+	List<Selector.SelectorPart> items = new ArrayList<Selector.SelectorPart>();
 }
-{/*@bgen(jjtree) simple_selector */
+{/*@bgen(jjtree) selector */
         try {
 /*@egen*/
 	try {
   		value = element_name()
   			{
   				if(log.isTraceEnabled()) log.trace("elementName: " + value);
-  				s.setFirstItem(new SimpleSelectorImpl.ItemImpl(value));
+  				selector.setFirstItem(rf.createElement(value));
   				
   			} 
   		( 
   			value = hash() 
   				{
   					if(log.isTraceEnabled()) log.trace("ID: " + value);
-  					item = new SimpleSelectorImpl.ItemIDImpl(value);
+  					item = rf.createID(value);
   					if(item != null) items.add(item);
   			 	} |
   			item = class_a() 
@@ -982,7 +971,7 @@ SimpleSelector simple_selector() :
   			value = hash()
   			 	{
   			 		if(log.isTraceEnabled()) log.trace("ID: " + value);
-  					item = new SimpleSelectorImpl.ItemIDImpl(value);
+  					item = rf.createID(value);
   					if(item != null) items.add(item);
   			 	} |
   			item = class_a() 
@@ -1003,17 +992,17 @@ SimpleSelector simple_selector() :
   		)+
   	}
   	catch(ParseException e) {
-  		errorSkipTo("Unable to get simple selector", BLANK, LCURLY);
+  		errorSkipTo("Unable to get selector", BLANK, LCURLY);
   	}
   	finally {
   	
-  		s.setItems(items);
+  		selector.replaceAll(items);
   	
   		if(log.isTraceEnabled()) {
-  			log.trace("SimpleSelector: " + s);
+  			log.trace("Selector: " + selector);
   		}
   		
-  		return s;
+  		return selector;
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -1040,7 +1029,7 @@ SimpleSelector simple_selector() :
 /**
  * Returns .class simple selector
  */
-SimpleSelector.Item class_a() :
+Selector.ElementClass class_a() :
 {/*@bgen(jjtree) class_a */
         SimpleNode jjtn000 = new SimpleNode(JJTCLASS_A);
         boolean jjtc000 = true;
@@ -1058,7 +1047,7 @@ SimpleSelector.Item class_a() :
         }
 /*@egen*/ 
   	{ 
-  		return new SimpleSelectorImpl.ItemClassImpl(value);
+  		return rf.createClass(value);
   	}/*@bgen(jjtree)*/
   } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -1131,9 +1120,9 @@ String element_name() :
 }
 
 /**
- * Returns [attribute] simple selector
+ * Returns [attribute] 
  */
-SimpleSelector.Item attrib() :
+Selector.ElementAttribute attrib() :
 {/*@bgen(jjtree) attrib */
         SimpleNode jjtn000 = new SimpleNode(JJTATTRIB);
         boolean jjtc000 = true;
@@ -1142,7 +1131,7 @@ SimpleSelector.Item attrib() :
 	String attribute = null;
 	String value = null;
 	boolean isStringValue = false;	// default value is identificator, so false
-	SimpleSelector.Operator op = SimpleSelector.Operator.NO_OPERATOR;
+	Selector.Operator op = Selector.Operator.NO_OPERATOR;
 }
 {/*@bgen(jjtree) attrib */
         try {
@@ -1168,7 +1157,7 @@ SimpleSelector.Item attrib() :
     finally {
     	// attribute is only required value
     	if(attribute!=null)
-    		return new SimpleSelectorImpl.ItemAttributeImpl(value, isStringValue, op, attribute);
+    		return rf.createAttribute(value, isStringValue, op, attribute);
     	
     	return null;
     }/*@bgen(jjtree)*/
@@ -1195,16 +1184,16 @@ SimpleSelector.Item attrib() :
 }
 
 /**
- * Returns :pseudo simple selector
+ * Returns pseudopage
  */
-SimpleSelector.Item pseudo() :
+Selector.PseudoPage pseudo() :
 {/*@bgen(jjtree) pseudo */
         SimpleNode jjtn000 = new SimpleNode(JJTPSEUDO);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
 /*@egen*/
 	String pseudo = null;
-	SimpleSelector.Item function = null;
+	Selector.PseudoPage function = null;
 }
 {/*@bgen(jjtree) pseudo */
         try {
@@ -1222,7 +1211,7 @@ SimpleSelector.Item pseudo() :
   	finally {
   		// matched first branch
   		if(pseudo!=null) 
-  			return new SimpleSelectorImpl.ItemPseudoImpl(pseudo, null);
+  			return rf.createPseudoPage(pseudo, null);
   		
   		return function;
   	}/*@bgen(jjtree)*/
@@ -1251,7 +1240,7 @@ SimpleSelector.Item pseudo() :
 /**
  * Returns :pseudo-function() simple selector 
  */
-SimpleSelector.Item pfunction() :
+Selector.PseudoPage pfunction() :
 {/*@bgen(jjtree) pfunction */
         SimpleNode jjtn000 = new SimpleNode(JJTPFUNCTION);
         boolean jjtc000 = true;
@@ -1275,7 +1264,7 @@ SimpleSelector.Item pfunction() :
   	}
   	finally {
   		if(functionName!=null) {
-  			return new SimpleSelectorImpl.ItemPseudoImpl(value, functionName);
+  			return rf.createPseudoPage(value, functionName);
   		}
   		return null;
   	}/*@bgen(jjtree)*/
@@ -1359,13 +1348,13 @@ Term.Operator operator() :
 /**
  * Returns combinator between selectors
  */
-SimpleSelector.Combinator combinator() :
+Selector.Combinator combinator() :
 {/*@bgen(jjtree) combinator */
         SimpleNode jjtn000 = new SimpleNode(JJTCOMBINATOR);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
 /*@egen*/
-	SimpleSelector.Combinator c = SimpleSelector.Combinator.DESCENDANT;
+	Selector.Combinator c = Selector.Combinator.DESCENDANT;
 }
 {/*@bgen(jjtree) combinator */
         try {
@@ -1392,7 +1381,7 @@ SimpleSelector.Combinator combinator() :
   	}
   	catch (ParseException e) {
   		errorSkipTo("Failed to get combinator", LCURLY, BLANK, COMMA);
-  		return SimpleSelector.Combinator.DESCENDANT;
+  		return Selector.Combinator.DESCENDANT;
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -1560,7 +1549,6 @@ List<Term<?>> expr() :
 
 /**
  * Returns term (function, color, number, percent, string, identificator)
- * FIXME
  */
 Term<?> term() :
 {/*@bgen(jjtree) term */
@@ -1916,9 +1904,9 @@ String function_begin() :
 /*@egen*/ }
 
 /**
- * SimpleSelector operator
+ * Selector operator
  */
-SimpleSelector.Operator equal() :      
+Selector.Operator equal() :      
 {/*@bgen(jjtree) equal */
   SimpleNode jjtn000 = new SimpleNode(JJTEQUAL);
   boolean jjtc000 = true;
@@ -1930,7 +1918,7 @@ SimpleSelector.Operator equal() :
                           jjtree.closeNodeScope(jjtn000, true);
                           jjtc000 = false;
                         }
-/*@egen*/ 	{ return SimpleSelector.Operator.EQUALS; }/*@bgen(jjtree)*/
+/*@egen*/ 	{ return Selector.Operator.EQUALS; }/*@bgen(jjtree)*/
         } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
@@ -1939,9 +1927,9 @@ SimpleSelector.Operator equal() :
 /*@egen*/ }
 
 /**
- * SimpleSelector operator
+ * Selector operator
  */
-SimpleSelector.Operator includes() :   
+Selector.Operator includes() :   
 {/*@bgen(jjtree) includes */
   SimpleNode jjtn000 = new SimpleNode(JJTINCLUDES);
   boolean jjtc000 = true;
@@ -1953,7 +1941,7 @@ SimpleSelector.Operator includes() :
                           jjtree.closeNodeScope(jjtn000, true);
                           jjtc000 = false;
                         }
-/*@egen*/ 	{ return SimpleSelector.Operator.INCLUDES; }/*@bgen(jjtree)*/
+/*@egen*/ 	{ return Selector.Operator.INCLUDES; }/*@bgen(jjtree)*/
         } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
@@ -1962,9 +1950,9 @@ SimpleSelector.Operator includes() :
 /*@egen*/ }
 
 /**
- * SimpleSelector operator
+ * Selector operator
  */
-SimpleSelector.Operator dashmatch() :  
+Selector.Operator dashmatch() :  
 {/*@bgen(jjtree) dashmatch */
   SimpleNode jjtn000 = new SimpleNode(JJTDASHMATCH);
   boolean jjtc000 = true;
@@ -1976,7 +1964,7 @@ SimpleSelector.Operator dashmatch() :
                       jjtree.closeNodeScope(jjtn000, true);
                       jjtc000 = false;
                     }
-/*@egen*/ { return SimpleSelector.Operator.DASHMATCH; }/*@bgen(jjtree)*/
+/*@egen*/ { return Selector.Operator.DASHMATCH; }/*@bgen(jjtree)*/
         } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
@@ -2587,7 +2575,7 @@ String hash() :
 /**
  * Returns plus combinator
  */
-SimpleSelector.Combinator plus() : 
+Selector.Combinator plus() : 
 {/*@bgen(jjtree) plus */
   SimpleNode jjtn000 = new SimpleNode(JJTPLUS);
   boolean jjtc000 = true;
@@ -2599,7 +2587,7 @@ SimpleSelector.Combinator plus() :
                     jjtree.closeNodeScope(jjtn000, true);
                     jjtc000 = false;
                   }
-/*@egen*/  { return SimpleSelector.Combinator.ADJACENT;}/*@bgen(jjtree)*/
+/*@egen*/  { return Selector.Combinator.ADJACENT;}/*@bgen(jjtree)*/
           } finally {
             if (jjtc000) {
               jjtree.closeNodeScope(jjtn000, true);
@@ -2610,7 +2598,7 @@ SimpleSelector.Combinator plus() :
 /**
  * Returns greater combinator
  */
-SimpleSelector.Combinator greater():
+Selector.Combinator greater():
 {/*@bgen(jjtree) greater */
   SimpleNode jjtn000 = new SimpleNode(JJTGREATER);
   boolean jjtc000 = true;
@@ -2622,7 +2610,7 @@ SimpleSelector.Combinator greater():
                   jjtree.closeNodeScope(jjtn000, true);
                   jjtc000 = false;
                 }
-/*@egen*/	{ return SimpleSelector.Combinator.CHILD;}/*@bgen(jjtree)*/
+/*@egen*/	{ return Selector.Combinator.CHILD;}/*@bgen(jjtree)*/
      } finally {
        if (jjtc000) {
          jjtree.closeNodeScope(jjtn000, true);

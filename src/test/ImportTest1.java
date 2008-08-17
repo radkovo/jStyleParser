@@ -7,13 +7,16 @@ import java.util.List;
 
 import org.junit.Test;
 
+import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.ImportURI;
+import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
-import cz.vutbr.web.csskit.ImportURIImpl;
 import cz.vutbr.web.csskit.parser.CSSParser;
 
 public class ImportTest1 {
+	
+	private static final RuleFactory rf = CSSFactory.getRuleFactory();
 
 	public static final String SIMPLE_IMPORT = "@import 'bla.css';\n";
 
@@ -92,23 +95,17 @@ public class ImportTest1 {
 	@Test
 	public void testMediaImport() throws StyleSheetNotValidException {
 
-		final ImportURI rule1 = new ImportURIImpl();
-		List<String> rule1medias = new ArrayList<String>(1);
-		rule1medias.add("aural");
+		ImportURI rule1 = (ImportURI) rf.createImport().replaceAll(new ArrayList<String>(1));
+		rule1.add("aural");
 		rule1.setUri("test.css");
-		rule1.setMedias(rule1medias);
 
-		final ImportURI rule2 = new ImportURIImpl();
-		List<String> rule2medias = new ArrayList<String>(2);
-		rule2medias.add("print");
-		rule2medias.add("screen");
+		final ImportURI rule2 = (ImportURI) rf.createImport().replaceAll(new ArrayList<String>(2));
+		rule2.add("print");
+		rule2.add("screen");
 		rule2.setUri("test-print.css");
-		rule2.setMedias(rule2medias);
 
 		StyleSheet ss = (new CSSParser(MEDIA_IMPORT)).parse();
-
 		List<ImportURI> imports = ss.getImports();
-
 		assertEquals("There should be two imports", 2, imports.size());
 
 		assertEquals(

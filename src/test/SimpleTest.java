@@ -2,12 +2,9 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
-
 import org.junit.Test;
 
 import cz.vutbr.web.css.CSSFactory;
-import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
@@ -80,15 +77,14 @@ public class SimpleTest {
 		ss = (new CSSParser(TEST_CHARSET_STRING1)).parse();
 		assertEquals("This should be UTF-8", "UTF-8", ss.getCharset());
 		
-		assertEquals("No rules are defined", 0, ss.getRules().size());
+		assertEquals("No rules are defined", 0, ss.size());
 
 		ss = (new CSSParser(TEST_CHARSET_STRING2)).parse();
 		assertEquals("This should be ISO-8859-1", "ISO-8859-1", ss.getCharset());
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
+		assertEquals("One rule is set", 1, ss.size());
 		
-		final RuleSet rule = (RuleSet) rules.get(0);				
+		RuleSet rule = (RuleSet) ss.get(0);				
 		
 		assertEquals("Rule contains one selector BODY ", 
 				SelectorsUtil.createSelectors("BODY"), 
@@ -97,7 +93,7 @@ public class SimpleTest {
 		assertEquals("Rule contains one declaration { color: blue;}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
 						tf.createColor(0,0,255)),
-				rule.getDeclarations());	
+				rule.asList());	
 	}
 	
 	
@@ -108,11 +104,9 @@ public class SimpleTest {
 		
 		assertEquals("No charset is set", null, ss.getCharset());
 		assertEquals("No imports are set", 0, ss.getImports().size());
+		assertEquals("One rule is set", 1, ss.size());
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
-		
-		final RuleSet rule = (RuleSet) rules.get(0);				
+		RuleSet rule = (RuleSet) ss.get(0);				
 		
 		assertEquals("Rule contains one selector BODY ", 
 				SelectorsUtil.createSelectors("BODY"), 
@@ -121,7 +115,7 @@ public class SimpleTest {
 		assertEquals("Rule contains one declaration {display:block;}",
 				DeclarationsUtil.appendDeclaration(null, "display", 
 						tf.createIdent("block")),
-				rule.getDeclarations());
+				rule.asList());
 							
 	}
 	
@@ -131,11 +125,9 @@ public class SimpleTest {
 	public void testRGBFunction1() throws StyleSheetNotValidException {
 		
 		StyleSheet ss = (new CSSParser(TEST_RGBFUNCTION1)).parse();
+		assertEquals("One rule is set", 1, ss.size());
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
-		
-		final RuleSet rule = (RuleSet) rules.get(0);				
+		RuleSet rule = (RuleSet) ss.get(0);				
 		
 		assertEquals("Rule contains one selector BODY ", 
 				SelectorsUtil.createSelectors("BODY"), 
@@ -144,18 +136,17 @@ public class SimpleTest {
 		assertEquals("Rule contains one declaration {color: #00aa85;}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
 						tf.createColor(192, 64, 32)),
-				rule.getDeclarations());
+				rule.asList());
 		
 	}
 	
 	@Test 
 	public void testRGBFunction2() throws StyleSheetNotValidException {
+		
 		StyleSheet ss = (new CSSParser(TEST_RGBFUNCTION2)).parse();
+		assertEquals("One rule is set", 1, ss.size());
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
-		
-		final RuleSet rule = (RuleSet) rules.get(0);				
+		RuleSet rule = (RuleSet) ss.get(0);				
 		
 		assertEquals("Rule contains one selector BODY ", 
 				SelectorsUtil.createSelectors("BODY"), 
@@ -164,17 +155,16 @@ public class SimpleTest {
 		assertEquals("Rule contains one declaration {color: rgb(50%,128,30%);}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
 						tf.createColor(127, 128, 76)),
-				rule.getDeclarations());
+				rule.asList());
 	}
 	
 	@Test
 	public void testHashColor1() throws StyleSheetNotValidException {
+
 		StyleSheet ss = (new CSSParser(TEST_HASH_COLOR1)).parse();
+		assertEquals("One rule is set", 1, ss.size());
 		
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
-		
-		final RuleSet rule = (RuleSet) rules.get(0);				
+		RuleSet rule = (RuleSet) ss.get(0);				
 		
 		assertEquals("Rule contains one selector BODY ", 
 				SelectorsUtil.createSelectors("BODY"), 
@@ -183,7 +173,7 @@ public class SimpleTest {
 		assertEquals("Rule contains one declaration {color: #00aa85;}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
 						tf.createColor(0, 170, 133)),
-				rule.getDeclarations());
+				rule.asList());
 		
 	}
 	
@@ -191,10 +181,9 @@ public class SimpleTest {
 	public void testHashColor2() throws StyleSheetNotValidException {
 		
 		StyleSheet ss = (new CSSParser(TEST_HASH_COLOR2)).parse();
-		List<Rule> rules = ss.getRules();
-		assertEquals("One rule is set", 1, rules.size());
+		assertEquals("One rule is set", 1, ss.size());
 		
-		final RuleSet rule = (RuleSet) rules.get(0);				
+		final RuleSet rule = (RuleSet) ss.get(0);				
 		
 		assertEquals("Rule contains two selectors DIV, P", 
 				SelectorsUtil.createSelectors("DIV", "P"), 
@@ -203,16 +192,14 @@ public class SimpleTest {
 		assertEquals("Rule contains one declaration {color: #CCC;}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
 						tf.createColor(204,204,204)),
-				rule.getDeclarations());
+				rule.asList());
 	}
 	
 	@Test
 	public void testString2() throws StyleSheetNotValidException {
+		
 		StyleSheet ss = (new CSSParser(TEST_STRING2)).parse();
-		
-		List<Rule> rules = ss.getRules();
-		
-		assertEquals("Six rules are set", 6, rules.size());
+		assertEquals("Six rules are set", 6, ss.size());
 	}
 	
 }

@@ -8,21 +8,22 @@ import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.StyleSheet;
 
 /**
- * StyleSheet
+ * CSS stylesheet, entry point
+ * 
+ * @author kapy
  * @author Jan Svercl, VUT Brno, 2008,
- * 			modified by Karel Piwko
- * @version 1.0 * Changed constructor
- * 				 * Optimized and repaired toString() method
- * 				 * Implemented new operations added to interface
- * 				 * Changed visibility of attributes
  * 
  */
-public class StyleSheetImpl implements StyleSheet {
+public class StyleSheetImpl extends AbstractRule<Rule<?>> implements StyleSheet {
 	
     protected String charset;
     protected List<ImportURI> imports;
-    protected List<Rule> rules;
 
+	protected StyleSheetImpl() {
+    	this.charset = null;
+    	this.imports = Collections.emptyList();
+    }    
+    
     public String getCharset() {
         return charset;
     }
@@ -54,20 +55,6 @@ public class StyleSheetImpl implements StyleSheet {
 		this.imports = imports;
 	}
 
-	public List<Rule> getRules() {
-		return rules;
-	}
-
-	public void setRules(List<Rule> rules) {
-		this.rules = rules;
-	}
-
-	public StyleSheetImpl() {
-    	this.charset = null;
-    	this.imports = Collections.emptyList();
-    	this.rules = Collections.emptyList();
-    }    
-	
     @Override
     public String toString() {
     	
@@ -84,10 +71,49 @@ public class StyleSheetImpl implements StyleSheet {
     	// and other rules
     	sb = OutputUtil.appendList(sb, imports, OutputUtil.EMPTY_DELIM)
     		.append(OutputUtil.NEW_LINE);
-    	sb = OutputUtil.appendList(sb, rules, OutputUtil.NEW_LINE)
+    	sb = OutputUtil.appendList(sb, list, OutputUtil.NEW_LINE)
     		.append(OutputUtil.NEW_LINE);		
     	    	
     	return sb.toString();
-    }   
+    }
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((charset == null) ? 0 : charset.hashCode());
+		result = prime * result + ((imports == null) ? 0 : imports.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof StyleSheetImpl))
+			return false;
+		StyleSheetImpl other = (StyleSheetImpl) obj;
+		if (charset == null) {
+			if (other.charset != null)
+				return false;
+		} else if (!charset.equals(other.charset))
+			return false;
+		if (imports == null) {
+			if (other.imports != null)
+				return false;
+		} else if (!imports.equals(other.imports))
+			return false;
+		return true;
+	}
+    
+    
     
 }

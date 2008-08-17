@@ -3,11 +3,13 @@ package cz.vutbr.web.css;
 import java.util.List;
 
 /**
- * StyleSheet
+ * Acts as collection of Rules with added character sets.
+ * This is entry point to parsed stylesheet.
+ * 
+ * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
- * @author Karel Piwko, 2008
  */
-public interface StyleSheet {
+public interface StyleSheet extends Rule<Rule<?>>{
   
 	/**
 	 * Charset defined in stylesheet
@@ -31,20 +33,6 @@ public interface StyleSheet {
      * Sets import rules
      * @param imports Imports to be set
      */
-    public void setImports(List<ImportURI> imports);
-    
-    /**
-     * Gets rules defined in stylesheet
-     * @return List of rules defined in stylesheet
-     */
-    public List<Rule> getRules();
-    
-    /**
-     * Sets rules of stylesheet
-     * @param rules Rules to be set
-     */
-    public void setRules(List<Rule> rules);
-    
-   
+    public void setImports(List<ImportURI> imports);   
 
 }

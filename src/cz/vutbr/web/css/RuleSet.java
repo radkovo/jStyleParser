@@ -3,37 +3,28 @@ package cz.vutbr.web.css;
 import java.util.List;
 
 /**
- * Holds set of CSS selectors and CSS declaration rules.
+ * Holds set of CSS declarations for specified selectors.
+ * 
+ * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
- * 			modified by Karel Piwko
- * @version 1.0 * Added setter methods
- * 				 * Renamed methods to reach naming consistency
- * 				 * Implements Comparable
  */
-public interface RuleSet extends Rule, Comparable<RuleSet>, PrettyOutput {
+public interface RuleSet extends Rule<Declaration>, Comparable<RuleSet>,
+		PrettyOutput {
 
 	/**
 	 * Gets selectors of given declaration
+	 * 
 	 * @return Selectors for this rule
 	 */
-    public List<Selector> getSelectors();
-    
-    /**
-     * Gets declarations of this rule
-     * @return Declarations included in this rule
-     */
-    public List<Declaration> getDeclarations();
-    
-    /**
-     * Sets selectors of this rule
-     * @param selectors Selectors to be set
-     */
-    public void setSelectors(List<Selector> selectors);
-    
-    /**
-     * Set declarations of this rule
-     * @param declarations Declarations to be set
-     */
-    public void setDeclarations(List<Declaration> declarations);
-    
+	public List<CombinedSelector> getSelectors();
+
+	/**
+	 * Sets selectors for this CSS declarations
+	 * 
+	 * @param selectors
+	 *            Selectors to be set
+	 * @return Modified instance
+	 */
+	public RuleSet setSelectors(List<CombinedSelector> selectors);
+
 }

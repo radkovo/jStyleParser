@@ -5,70 +5,49 @@ import java.util.List;
 
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleSet;
-import cz.vutbr.web.css.Selector;
+import cz.vutbr.web.css.CombinedSelector;
 
 /**
- * RuleSet
+ * Basic holder of declarations with CSS selectors
+ * 
+ * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
- * 			modified by Karel Piwko, 2008
- * @version 1.0 * Changed according to changed interface
- * 				 * Rewritten toString() method	
- * 				 * Construction moved to parser
  */
-public class RuleSetImpl implements RuleSet {
+public class RuleSetImpl extends AbstractRule<Declaration> implements RuleSet {
 
 	private int order;
 	
-	protected List<Selector> selectors;
-	protected List<Declaration> declarations;
+	protected List<CombinedSelector> selectors;
 	
-	public RuleSetImpl() {
+	protected RuleSetImpl(int order) {
 		this.selectors = Collections.emptyList();
-		this.selectors = Collections.emptyList();
+		this.order = order;
 	}
 	
 	/**
 	 * Shallow copy constructor
 	 * @param rs RuleSet to share selectors and declarations with 
 	 */
-	public RuleSetImpl(RuleSet rs) {
+	protected RuleSetImpl(int order, RuleSet rs) {
 		this.selectors = rs.getSelectors();
-		this.declarations = rs.getDeclarations();
+		this.replaceAll(rs.asList());
 	}
 	
 	
     /**
 	 * @return the selectors
 	 */
-	public List<Selector> getSelectors() {
+	public List<CombinedSelector> getSelectors() {
 		return selectors;
 	}
 
-
-
 	/**
 	 * @param selectors the selectors to set
+	 * @return Modified instance
 	 */
-	public void setSelectors(List<Selector> selectors) {
+	public RuleSet setSelectors(List<CombinedSelector> selectors) {
 		this.selectors = selectors;
-	}
-
-
-
-	/**
-	 * @return the declarations
-	 */
-	public List<Declaration> getDeclarations() {
-		return declarations;
-	}
-
-
-
-	/**
-	 * @param declarations the declarations to set
-	 */
-	public void setDeclarations(List<Declaration> declarations) {
-		this.declarations = declarations;
+		return this;
 	}
 
 	public int compareTo(RuleSet o) {
@@ -102,26 +81,49 @@ public class RuleSetImpl implements RuleSet {
 
     	// append rules (declarations)
     	sb.append(OutputUtil.RULE_OPENING);
-    	sb = OutputUtil.appendList(sb, declarations, OutputUtil.EMPTY_DELIM, depth + 1); 
+    	sb = OutputUtil.appendList(sb, list, OutputUtil.EMPTY_DELIM, depth + 1); 
     	sb = OutputUtil.appendTimes(sb, OutputUtil.DEPTH_DELIM, depth);
         sb.append(OutputUtil.RULE_CLOSING);
         
         return sb.toString();
-    }    
+    }
 
-	/**
-	 * @return the order
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
 	 */
-	public int getOrder() {
-		return order;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + order;
+		result = prime * result
+				+ ((selectors == null) ? 0 : selectors.hashCode());
+		return result;
 	}
 
-	/**
-	 * @param order the order to set
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	public void setOrder(int order) {
-		this.order = order;
-	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof RuleSetImpl))
+			return false;
+		RuleSetImpl other = (RuleSetImpl) obj;
+		if (order != other.order)
+			return false;
+		if (selectors == null) {
+			if (other.selectors != null)
+				return false;
+		} else if (!selectors.equals(other.selectors))
+			return false;
+		return true;
+	} 
+    
+    
     
     
     

@@ -7,29 +7,23 @@ import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RuleSet;
 
 /**
- * RuleMedia
- * @author Jan Svercl, VUT Brno, 2008,
- * 			modified by Karel Piwko, 2008
- * @version 1.0 * Changed constructor to create empty object,
- * 				   node creation moved to parser,
- * 				 * Rewritten toString() method,
- * 				 * Renamed getters/setters according to changed interface		
+ * Implementation of RuleMedia
+ * 
+ * @author kapy
+ * @author Jan Svercl, VUT Brno, 2008
+ * 
  */
-public class RuleMediaImpl implements RuleMedia {
+public class RuleMediaImpl extends AbstractRule<RuleSet> implements RuleMedia {
   
 	/** List of medias */
 	protected List<String> medias;
-	
-	/** List of rules */
-	protected List<RuleSet> rules;
 	
 	/**
 	 * Creates empty object to be fulfilled by interface methods
 	 * @return New empty instance of RuleMedia
 	 */
-	public RuleMediaImpl() {
+	protected RuleMediaImpl() {
 		this.medias = Collections.emptyList();
-		this.rules = Collections.emptyList();
 	}    
     
     public List<String> getMedias() {
@@ -37,20 +31,11 @@ public class RuleMediaImpl implements RuleMedia {
 	}
 
 
-	public void setMedias(List<String> medias) {
+	public RuleMedia setMedias(List<String> medias) {
 		this.medias = medias;
+		return this;
 	}
-
-
-	public List<RuleSet> getRules() {
-		return rules;
-	}
-
-
-	public void setRules(List<RuleSet> rules) {
-		this.rules = rules;
-	}
-
+	
 
 	@Override
     public String toString() {
@@ -69,11 +54,43 @@ public class RuleMediaImpl implements RuleMedia {
     	// append rules
     	sb = OutputUtil.appendTimes(sb, OutputUtil.DEPTH_DELIM, depth);
     	sb.append(OutputUtil.RULE_OPENING);
-    	sb = OutputUtil.appendList(sb, rules, OutputUtil.RULE_DELIM, depth + 1);
+    	sb = OutputUtil.appendList(sb, list, OutputUtil.RULE_DELIM, depth + 1);
     	sb.append(OutputUtil.RULE_CLOSING);
     	
     	return sb.toString();
-    }   
+    }
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((medias == null) ? 0 : medias.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof RuleMediaImpl))
+			return false;
+		RuleMediaImpl other = (RuleMediaImpl) obj;
+		if (medias == null) {
+			if (other.medias != null)
+				return false;
+		} else if (!medias.equals(other.medias))
+			return false;
+		return true;
+	}   
+    
     
 
 }

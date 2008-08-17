@@ -34,7 +34,7 @@ public class GrammarRecovery1 {
 		StyleSheet ss = (new CSSParser(TEST_CHARSET_WITHOUT_SEMICOLON1)).parse();
 		assertEquals("Charset should not be set", null, ss.getCharset());
 		
-		assertEquals("No rules are defined", 0, ss.getRules().size());
+		assertEquals("No rules are defined", 0, ss.size());
 	}
 	
 	@Test
@@ -43,7 +43,7 @@ public class GrammarRecovery1 {
 		StyleSheet ss = (new CSSParser(TEST_CHARSET_WITHOUT_SEMICOLON2)).parse();
 		assertEquals("Charset should not be set", null, ss.getCharset());
 		
-		assertEquals("No rules are set", 0, ss.getRules().size());
+		assertEquals("No rules are set", 0, ss.size());
 		
 	}
 	
@@ -53,7 +53,7 @@ public class GrammarRecovery1 {
 		StyleSheet ss = (new CSSParser(TEST_CHARSET_WITHOUT_SEMICOLON3)).parse();
 		assertEquals("Charset should not be set", null, ss.getCharset());
 		
-		RuleSet rule = (RuleSet) ss.getRules().get(0);				
+		RuleSet rule = (RuleSet) ss.get(0);				
 		
 		assertEquals("Rule contains one selector BODY ", 
 				SelectorsUtil.createSelectors("BODY"), 
@@ -62,7 +62,7 @@ public class GrammarRecovery1 {
 		assertEquals("Rule contains one declaration { color: red;}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
 						tf.createColor(255,0,0)),
-				rule.getDeclarations());
+				rule.asList());
 		
 	}
 	

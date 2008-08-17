@@ -1,11 +1,20 @@
 package cz.vutbr.web.css;
 
+import java.util.List;
+
 /**
- * Base class for elements of CSS definition
- * @author Karel Piwko, 2008
- * @version 1.0 * Added comments
+ * Base class for elements of CSS definition.
+ * All rules can be created as immutable object.
+ * Rule is generally collection of other, finier grained object. 
+ * Calling this function replaces this immutable object with another one,
+ * which can be mutable.
+ * 
+ * @author kapy
  */
-public interface Rule  { 
+public interface Rule<T> extends List<T> {  
 	   
+	Rule<T> replaceAll(List<T> replacement);
+	
+	List<T> asList();
     
 }

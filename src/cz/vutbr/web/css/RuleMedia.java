@@ -3,36 +3,29 @@ package cz.vutbr.web.css;
 import java.util.List;
 
 /**
- * Contains CSS rules associated with medias
+ * Contains CSS rules associated with medias. 
+ * Externally provides view of collection of defined RuleSet 
+ * with additional media information.
+ * 
+ * 
+ * @author kapy
  * @author Jan Svercl, VUT Brno, 2008,
- * 			modified by Karel Piwko, 2008
- * @version 1.0 * Added setter methods
- * 				 * Renamed methods to reach naming consistency
+ * 
  */
-public interface RuleMedia extends Rule, PrettyOutput {
+public interface RuleMedia extends Rule<RuleSet>, PrettyOutput {
 
 	/**
 	 * Returns list of all medias associated with this rule
 	 * @return List of media
 	 */
-	public List<String> getMedias();
-	
-	/**
-	 * Returns list of all rules internally stored in this rule
-	 * @return List of rules
-	 */
-	public List<RuleSet> getRules();
+	public List<String> getMedias();	
 	
 	/**
 	 * Sets medias associated with rules
 	 * @param medias Medias associated
+	 * @return Modified instance
 	 */
-	public void setMedias(List<String> medias);
-	
-	/**
-	 * Sets rules associated with CSS definition element
-	 * @param rules Rules associated
-	 */
-	public void setRules(List<RuleSet> rules);
+	public RuleMedia setMedias(List<String> medias);	
+
 	
 }

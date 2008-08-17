@@ -1,5 +1,11 @@
 package cz.vutbr.web.css;
 
+/**
+ * Forces human readable variant of toString() method.
+ * 
+ * @author kapy
+ *
+ */
 public interface PrettyOutput {
 
 	/**

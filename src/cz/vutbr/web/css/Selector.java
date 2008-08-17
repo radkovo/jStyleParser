@@ -1,71 +1,187 @@
 package cz.vutbr.web.css;
 
-import java.util.List;
-
-import javax.naming.OperationNotSupportedException;
+import org.w3c.dom.Element;
 
 /**
- * Selector
+ * Acts as collection of parsed parts of Selector (Parts)
+ * with extended functionality.
+ * 
+ * Items are defined within this interface.
+ * 
+ * 
+ * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
- * 			modified by Karel Piwko, 2008
- * @version 1.0 * Extends Rule interface
- * 				 * Added setters
- * 			     * Added getLastSimpleSelector() method
  */
-public interface Selector extends Rule {
-  
+public interface Selector extends Rule<Selector.SelectorPart> {
+
 	/**
-	 * Specificity of given selector
+	 * Combinator for simple selectors 
 	 * @author kapy
 	 *
 	 */
-	public interface Specificity extends Comparable<Specificity> {
-		
-		/**
-		 * Specificity levels
-		 * @author kapy
-		 *
-		 */
-		public enum Level { A,	B, C, D	};
-		
-		/**
-		 * Compare specificities
-		 */
-		public int compareTo(Specificity o);
-		
-		/**
-		 * Gets specificity of level
-		 * @param level Specificity level
-		 * @return Numerical value of specificity
-		 */
-		public int get(Level level);
-		
-		/**
-		 * Adds one to specificity level
-		 * @param level
-		 */
-		public void add(Level level);
-		
-		public int hashCode();
-		public boolean equals(Object obj);
-	}	
-	
-    public List<SimpleSelector> getSimpleSelectors();
+    public enum Combinator {
+    	DESCENDANT(" "),
+    	ADJACENT("+"),
+    	CHILD(">");
     
-    public void setSimpleSelectors(List<SimpleSelector> selectors);
+    	private String value;
+    	
+    	private Combinator(String value) {
+    		this.value = value;
+    	}
+    	
+    	public String value() {return value;}
+    }
+    
+    /**
+     * Operator for SelectorPart attributes 
+     * @author kapy
+     *
+     */
+    public enum Operator {
+    	EQUALS("="),
+    	INCLUDES("~="),
+    	DASHMATCH("|="),
+    	NO_OPERATOR("");
+    	
+    	private String value;
+    	
+    	private Operator(String value) {
+    		this.value = value;
+    	}
+    	
+    	public String value() {return value;}
+    }
+
+    
+    /**
+     * Returns combinator of this and other simple selector
+     * @return Combinator
+     */
+    public Combinator getCombinator();
+    
+    /**
+     * Sets combinator 
+     * @param combinator Combinator between this and other selector
+     * @return Modified instance
+     */
+    public Selector setCombinator(Combinator combinator);
 
     /**
-     * Gets last SimpleSelector stored in list,
-     * so its values are easily read
-     * @return Last SimpleSelector or null, 
-     * @throws OperationNotSupportedException In case that there is no simple selector inside
+     * First item, that is elements name
+     * @return The first item
      */
-    public SimpleSelector getLastSimpleSelector() throws OperationNotSupportedException;
+    public SelectorPart getFirstItem();
+
+    /**
+     * Sets the first item
+     * @param firstItem
+     * @return Modified instance
+     */
+    public Selector setFirstItem(SelectorPart firstItem);    
     
     /**
-     * Computes specificity according to CSS rules
-     * @return
+     * Name of CSS class which is affected by this selector  
+     * @return Name of CSS class
      */
-    public Specificity computeSpecificity();
+    public String getClassName();
     
+    /**
+     * ID of CSS item which is affected by this selector
+     * @return ID of CSS item
+     */
+    public String getIDName();
+    
+    /**
+     * Name of HTML element which is affected by this selector
+     * @return Name of HTML element
+     */
+    public String getElementName();
+    
+    /**
+     * Modifies specificity according to CSS standard
+     * @param spec Specificity to be modified
+     */
+    public void computeSpecificity(CombinedSelector.Specificity spec);
+    
+    /**
+     * Matches simple selector against DOM element
+     * @param e Element
+     * @return <code>true</true> in case of match
+     */
+    public boolean matches(Element e);
+    
+    
+    
+    
+    /**
+     * Interface for handling items
+     * @author kapy
+     *
+     */
+    public interface SelectorPart {
+    	
+    	public static final String WILDCARD = "*";
+    	
+    	public String getValue();
+    	public SelectorPart setValue(String value);
+    	public int hashCode();
+    	public boolean equals(Object obj);
+    	
+    	public boolean matches(Element e);
+    	public void computeSpecificity(CombinedSelector.Specificity spec);
+    }
+    
+    /**
+     * Element name
+     * @author kapy
+     *
+     */
+    public interface ElementName extends SelectorPart {
+    	
+    }
+    
+    /**
+     * Element attribute
+     * @author kapy
+     *
+     */
+    public interface ElementAttribute extends SelectorPart {
+    	
+    	public String getName();
+    	public void setName(String name);
+    	
+    	public Operator getOperator();
+    	public void setOperator(Operator operator);
+    }
+    
+    /**
+     * Element class
+     * @author kapy
+     *
+     */
+    public interface ElementClass extends SelectorPart {
+    	
+    }
+    
+    /**
+     * Element id
+     * @author kapy
+     *
+     */
+    public interface ElementID extends SelectorPart {
+    	
+    }
+    
+    /**
+     * Pseudo page
+     * @author kapy
+     *
+     */
+    public interface PseudoPage extends SelectorPart {
+    	public String getFunctionName();
+    	public PseudoPage setFunctionName(String functionName);
+    }
+       
+   
 }

@@ -3,7 +3,7 @@ package cz.vutbr.web.domassign;
 import java.util.List;
 
 import cz.vutbr.web.css.Declaration;
-import cz.vutbr.web.css.Selector;
+import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.csskit.OutputUtil;
 
@@ -20,7 +20,7 @@ public class AssignedDeclaration implements Declaration {
 	protected boolean important;
 	protected int level;
 	
-	protected Selector.Specificity spec;
+	protected CombinedSelector.Specificity spec;
 
 	/**
 	 * Creates assigned declaration from specificity and shallow copy of declaration
@@ -28,7 +28,7 @@ public class AssignedDeclaration implements Declaration {
 	 * @param spec Specificity
 	 * @param level Nesting level in DOM tree 
 	 */
-	public AssignedDeclaration(Declaration d, Selector.Specificity spec, int level) {
+	public AssignedDeclaration(Declaration d, CombinedSelector.Specificity spec, int level) {
 		this.important = d.isImportant();
 		this.property = d.getProperty();
 		this.terms = d.getTerms();
@@ -39,10 +39,10 @@ public class AssignedDeclaration implements Declaration {
 	/**
 	 * Creates assigned declaration from selector and shallow copy of declaration 
 	 * @param d Declaration to be shallow-copied
-	 * @param s Selector, which's specificity is computed inside
+	 * @param s CombinedSelector, which's specificity is computed inside
 	 * @param level Nesting level in DOM tree
 	 */
-	public AssignedDeclaration(Declaration d, Selector s, int level) {
+	public AssignedDeclaration(Declaration d, CombinedSelector s, int level) {
 		this(d, s.computeSpecificity(), level);
 	}
 	

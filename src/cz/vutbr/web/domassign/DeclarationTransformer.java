@@ -404,10 +404,10 @@ public class DeclarationTransformer {
 			Class<T> enumType, Declaration d,
 			Map<String, CSSProperty> properties) {
 
-		if (d.getTerms().size() != 1)
+		if (d.size() != 1)
 			return false;
 
-		return genericTermIdent(enumType, d.getTerms().get(0), d.getProperty(),
+		return genericTermIdent(enumType, d.get(0), d.getProperty(),
 				properties);
 	}
 
@@ -434,12 +434,12 @@ public class DeclarationTransformer {
 			Class<T> enumType, T colorIdentification, Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
-		if (d.getTerms().size() != 1)
+		if (d.size() != 1)
 			return false;
 
-		return genericTermIdent(enumType, d.getTerms().get(0), d.getProperty(),
+		return genericTermIdent(enumType, d.get(0), d.getProperty(),
 				properties)
-				|| genericTermColor(d.getTerms().get(0), d.getProperty(),
+				|| genericTermColor(d.get(0), d.getProperty(),
 						colorIdentification, properties, values);
 	}
 
@@ -448,12 +448,12 @@ public class DeclarationTransformer {
 			Declaration d, Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values) {
 
-		if (d.getTerms().size() != 1)
+		if (d.size() != 1)
 			return false;
 
-		return genericTermIdent(enumType, d.getTerms().get(0), d.getProperty(),
+		return genericTermIdent(enumType, d.get(0), d.getProperty(),
 				properties)
-				|| genericTerm(TermInteger.class, d.getTerms().get(0), d
+				|| genericTerm(TermInteger.class, d.get(0), d
 						.getProperty(), integerIdentification, sanify,
 						properties, values);
 	}
@@ -463,12 +463,12 @@ public class DeclarationTransformer {
 			Declaration d, Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values) {
 
-		if (d.getTerms().size() != 1)
+		if (d.size() != 1)
 			return false;
 
-		return genericTermIdent(enumType, d.getTerms().get(0), d.getProperty(),
+		return genericTermIdent(enumType, d.get(0), d.getProperty(),
 				properties)
-				|| genericTerm(TermLength.class, d.getTerms().get(0), d
+				|| genericTerm(TermLength.class, d.get(0), d
 						.getProperty(), lengthIdentification, sanify,
 						properties, values);
 	}
@@ -478,15 +478,15 @@ public class DeclarationTransformer {
 			boolean sanify, Declaration d, Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values) {
 
-		if (d.getTerms().size() != 1)
+		if (d.size() != 1)
 			return false;
 
-		return genericTermIdent(enumType, d.getTerms().get(0), d.getProperty(),
+		return genericTermIdent(enumType, d.get(0), d.getProperty(),
 				properties)
-				|| genericTerm(TermLength.class, d.getTerms().get(0), d
+				|| genericTerm(TermLength.class, d.get(0), d
 						.getProperty(), lengthIdentification, sanify,
 						properties, values)
-				|| genericTerm(TermPercent.class, d.getTerms().get(0), d
+				|| genericTerm(TermPercent.class, d.get(0), d
 						.getProperty(), percentIdentification, sanify,
 						properties, values);
 	}
@@ -610,8 +610,8 @@ public class DeclarationTransformer {
 	private boolean processBorderSpacing(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
-		if (d.getTerms().size() == 1) {
-			Term<?> term = d.getTerms().get(0);
+		if (d.size() == 1) {
+			Term<?> term = d.get(0);
 			String propertyName = d.getProperty();
 			// is it identifier or length ?
 			if (genericTermIdent(BorderSpacing.class, term, propertyName,
@@ -630,9 +630,9 @@ public class DeclarationTransformer {
 			}
 		}
 		// two numerical values
-		else if (d.getTerms().size() == 2) {
-			Term<?> term1 = d.getTerms().get(0);
-			Term<?> term2 = d.getTerms().get(1);
+		else if (d.size() == 2) {
+			Term<?> term1 = d.get(0);
+			Term<?> term2 = d.get(1);
 			String propertyName = d.getProperty();
 			// two lengths ?
 			if (genericTerm(TermLength.class, term1, propertyName,
@@ -807,7 +807,7 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator font = new FontVariator();
 		return font.tryMultiTermVariant(FontVariator.FAMILY, properties,
-				values, d.getTerms().toArray(new Term<?>[0]));
+				values, d.toArray(new Term<?>[0]));
 	}
 
 	@SuppressWarnings("unused")
@@ -915,10 +915,10 @@ public class DeclarationTransformer {
 	private boolean processClip(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
-		if (d.getTerms().size() != 1)
+		if (d.size() != 1)
 			return false;
 
-		Term<?> term = d.getTerms().get(0);
+		Term<?> term = d.get(0);
 		if (term instanceof TermIdent) {
 
 			final Set<Clip> allowedClips = EnumSet.allOf(Clip.class);
@@ -948,7 +948,7 @@ public class DeclarationTransformer {
 	private boolean processCounterIncrement(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
-		if (d.getTerms().size() == 1
+		if (d.size() == 1
 				&& genericOneIdent(CounterIncrement.class, d, properties)) {
 			return true;
 		}
@@ -957,7 +957,7 @@ public class DeclarationTransformer {
 			// counters are stored there
 			Set<Term<?>> termList = new LinkedHashSet<Term<?>>();
 			String counterName = null;
-			for (Term<?> term : d.getTerms()) {
+			for (Term<?> term : d.asList()) {
 				// counter name
 				if (term instanceof TermIdent) {
 					counterName = ((TermIdent) term).getValue();
@@ -987,7 +987,7 @@ public class DeclarationTransformer {
 	private boolean processCounterReset(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
-		if (d.getTerms().size() == 1
+		if (d.size() == 1
 				&& genericOneIdent(CounterReset.class, d, properties)) {
 			return true;
 		}
@@ -996,7 +996,7 @@ public class DeclarationTransformer {
 			// counters are stored there
 			Set<Term<?>> termList = new LinkedHashSet<Term<?>>();
 			String counterName = null;
-			for (Term<?> term : d.getTerms()) {
+			for (Term<?> term : d.asList()) {
 				// counter name
 				if (term instanceof TermIdent) {
 					counterName = ((TermIdent) term).getValue();
@@ -1026,7 +1026,7 @@ public class DeclarationTransformer {
 	private boolean processCursor(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
-		if (d.getTerms().size() == 1
+		if (d.size() == 1
 				&& genericOneIdent(Cursor.class, d, properties)) {
 			return true;
 		} else {
@@ -1036,7 +1036,7 @@ public class DeclarationTransformer {
 
 			TermList list = tf.createList();
 			Cursor cur = null;
-			for (Term<?> term : d.getTerms()) {
+			for (Term<?> term : d.asList()) {
 				if (term instanceof TermURI) {
 					list.add(term);
 				} else if (term instanceof TermIdent
@@ -1044,7 +1044,7 @@ public class DeclarationTransformer {
 								allowedCursors, (TermIdent) term)) != null) {
 					// this have to be the last cursor in sequence
 					// and only one generic cursor is allowed
-					if (d.getTerms().indexOf(term) != d.getTerms().size() - 1)
+					if (d.indexOf(term) != d.size() - 1)
 						return false;
 
 					// passed as last cursor, insert into properties and values
@@ -1290,13 +1290,13 @@ public class DeclarationTransformer {
 	private boolean processQuotes(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
-		if (d.getTerms().size() == 1
-				&& genericTermIdent(Quotes.class, d.getTerms().get(0),
+		if (d.size() == 1
+				&& genericTermIdent(Quotes.class, d.get(0),
 						"quotes", properties)) {
 			return true;
 		} else {
 			TermList list = tf.createList();
-			for (Term<?> term : d.getTerms()) {
+			for (Term<?> term : d.asList()) {
 				if (term instanceof TermString)
 					list.add(term);
 				else
@@ -1334,14 +1334,14 @@ public class DeclarationTransformer {
 				TextDecoration.OVERLINE, TextDecoration.UNDERLINE);
 
 		// it one term
-		if (d.getTerms().size() == 1) {
+		if (d.size() == 1) {
 			return genericOneIdent(TextDecoration.class, d, properties);
 		}
 		// there are more terms, we have to construct list
 		else {
 			TermList list = tf.createList();
 			TextDecoration dec = null;
-			for (Term<?> term : d.getTerms()) {
+			for (Term<?> term : d.asList()) {
 				if (term instanceof TermIdent
 						&& (dec = genericPropertyRaw(TextDecoration.class,
 								availableDecorations, (TermIdent) term)) != null) {
@@ -1432,7 +1432,7 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
 		// content contains no explicit values
-		if (d.getTerms().size() == 1
+		if (d.size() == 1
 				&& genericOneIdent(Content.class, d, properties)) {
 			return true;
 		} else {
@@ -1448,7 +1448,7 @@ public class DeclarationTransformer {
 
 			TermList list = tf.createList();
 
-			for (Term<?> t : d.getTerms()) {
+			for (Term<?> t : d.asList()) {
 				// one of valid terms
 				if (t instanceof TermIdent
 						&& validTermIdents.contains(((TermIdent) t).getValue()

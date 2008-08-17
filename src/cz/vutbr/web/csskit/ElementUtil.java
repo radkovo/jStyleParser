@@ -6,7 +6,7 @@ import java.util.Collections;
 
 import org.w3c.dom.Element;
 
-import cz.vutbr.web.css.SimpleSelector;
+import cz.vutbr.web.css.Selector;
 
 public class ElementUtil {
 
@@ -65,7 +65,7 @@ public class ElementUtil {
 		return name.equals(elementName(e));
 	}
 	
-	public static boolean matchesAttribute(Element e, String name, String value, SimpleSelector.Operator o) {
+	public static boolean matchesAttribute(Element e, String name, String value, Selector.Operator o) {
 		
 		String attributeValue = e.getAttribute(name);
 		

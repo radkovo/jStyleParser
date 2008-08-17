@@ -1,22 +1,16 @@
 package cz.vutbr.web.css;
 
-import java.util.List;
-
 /**
- * Declaration
+ * Basic CSS declaration consisting of list of terms
+ * 
+ * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
- * 			modified by Karel Piwko, 2008
- * @version 1.0 * Rewritten to allow inheritance
  */
-public interface Declaration extends PrettyOutput, Comparable<Declaration> {
+public interface Declaration extends Rule<Term<?>>, PrettyOutput, Comparable<Declaration> {
 
     public boolean isImportant();
     
     public void setImportant(boolean important);
-    
-    public List<Term<?>> getTerms();
-
-    public void setTerms(List<Term<?>> terms);
     
     public String getProperty();
 

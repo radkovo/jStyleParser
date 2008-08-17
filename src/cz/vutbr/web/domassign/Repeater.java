@@ -101,31 +101,31 @@ public abstract class Repeater {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values)
 			throws IllegalArgumentException {
 
-		switch (d.getTerms().size()) {
+		switch (d.size()) {
 		case 1:
 			// one term for all value
-			Term<?> term = d.getTerms().get(0);
+			Term<?> term = d.get(0);
 			assignTerms(term, term, term, term);
 			return repeat(properties, values);
 		case 2:
 			// one term for bottom-top and left-right
-			Term<?> term1 = d.getTerms().get(0);
-			Term<?> term2 = d.getTerms().get(1);
+			Term<?> term1 = d.get(0);
+			Term<?> term2 = d.get(1);
 			assignTerms(term1, term2, term1, term2);
 			return repeat(properties, values);
 		case 3:
 			// terms for bottom, top, left-right
-			Term<?> term31 = d.getTerms().get(0);
-			Term<?> term32 = d.getTerms().get(1);
-			Term<?> term33 = d.getTerms().get(2);
+			Term<?> term31 = d.get(0);
+			Term<?> term32 = d.get(1);
+			Term<?> term33 = d.get(2);
 			assignTerms(term31, term32, term33, term32);
 			return repeat(properties, values);
 		case 4:
 			// four individual terms
-			Term<?> term41 = d.getTerms().get(0);
-			Term<?> term42 = d.getTerms().get(1);
-			Term<?> term43 = d.getTerms().get(2);
-			Term<?> term44 = d.getTerms().get(3);
+			Term<?> term41 = d.get(0);
+			Term<?> term42 = d.get(1);
+			Term<?> term43 = d.get(2);
+			Term<?> term44 = d.get(3);
 			assignTerms(term41, term42, term43, term44);
 			return repeat(properties, values);
 		default:

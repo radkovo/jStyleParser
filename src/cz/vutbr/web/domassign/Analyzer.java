@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.naming.OperationNotSupportedException;
-
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -22,8 +20,8 @@ import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RuleSet;
+import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.SimpleSelector;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.csskit.ElementUtil;
 
@@ -240,16 +238,16 @@ public class Analyzer {
 		// for all candidates
 		for(RuleSet rule: clist) {
 			// for all selectors inside
-			for(Selector s: rule.getSelectors()) {
+			for(CombinedSelector s: rule.getSelectors()) {
 				// this method does automatic rewind of walker 
 				if(!matchSelector(s, e, walker))
 					continue;
 				
-				log.trace("Selector matched, adding declarations");
+				log.trace("CombinedSelector matched, adding declarations");
 				
 				//if match, add to declarations				
-				Selector.Specificity spec = s.computeSpecificity();				
-				for(Declaration d: rule.getDeclarations())
+				CombinedSelector.Specificity spec = s.computeSpecificity();				
+				for(Declaration d: rule)
 					eldecl.add(new AssignedDeclaration(d, spec, level));
 				
 			}
@@ -280,17 +278,17 @@ public class Analyzer {
 		declarations.put(e, eldecl);	
 	}
 	
-	private boolean matchSelector(Selector sel, Element e, TreeWalker w) {
+	private boolean matchSelector(CombinedSelector sel, Element e, TreeWalker w) {
 		
 		// store current walker position
 		Node current = w.getCurrentNode();
 		
 		boolean retval = false;
-		SimpleSelector.Combinator combinator = null;
+		Selector.Combinator combinator = null;
 		// traverse simple selector backwards
-		for(int i= sel.getSimpleSelectors().size()-1; i>=0; i--) {
+		for(int i= sel.size()-1; i>=0; i--) {
 			// last simple selector
-			SimpleSelector s = sel.getSimpleSelectors().get(i);
+			Selector s = sel.get(i);
 			
 			if(log.isTraceEnabled()) {
 				log.trace("Iterating loop with sel: " + s +
@@ -301,17 +299,17 @@ public class Analyzer {
 			if(combinator==null) {
 				retval = s.matches(e);
 			}
-			else if(combinator==SimpleSelector.Combinator.ADJACENT) {
+			else if(combinator==Selector.Combinator.ADJACENT) {
 				Element adjacent = (Element) w.previousSibling();
 				retval = false;
 				if(adjacent!=null) retval = s.matches(adjacent);
 			}
-			else if(combinator==SimpleSelector.Combinator.DESCENDANT) {
+			else if(combinator==Selector.Combinator.DESCENDANT) {
 				Element parent = (Element) w.parentNode();
 				retval = false;
 				if(parent!=null) retval = s.matches(parent);
 			}
-			else if(combinator==SimpleSelector.Combinator.CHILD) {
+			else if(combinator==Selector.Combinator.CHILD) {
 				Element ancestor;
 				retval = false;
 				while((ancestor=(Element)w.parentNode())!=null && retval==false) {
@@ -346,11 +344,11 @@ public class Analyzer {
 		Holder all = new Holder();
 		rules.put("all", all);
 		
-		for(Rule rule: sheet.getRules()) {
+		for(Rule<?> rule: sheet) {
 			// this rule conforms to all media
 			if(rule instanceof RuleSet) {
 				RuleSet ruleset = (RuleSet) rule;
-				for(Selector s: ruleset.getSelectors()) {
+				for(CombinedSelector s: ruleset.getSelectors()) {
 					insertClassified(all, classifySelector(s), ruleset);
 				}
 			}
@@ -359,9 +357,9 @@ public class Analyzer {
 				RuleMedia rulemedia = (RuleMedia) rule;
 				
 				// for all rules in media set   
-				for(RuleSet ruleset : rulemedia.getRules()) {
+				for(RuleSet ruleset : rulemedia) {
 					// for all selectors in there
-					for(Selector s: ruleset.getSelectors()) {
+					for(CombinedSelector s: ruleset.getSelectors()) {
 						
 						List<HolderSelector> hs = classifySelector(s);
 						// insert into all medias
@@ -403,22 +401,22 @@ public class Analyzer {
 
 	/**
 	 * Classify CSS rule according its selector for to be of specified item(s)
-	 * @param Selector Selector of rules
+	 * @param CombinedSelector CombinedSelector of rules
 	 * @return List of HolderSelectors to which selectors conforms
 	 */
-	private List<HolderSelector> classifySelector(Selector selector) {
+	private List<HolderSelector> classifySelector(CombinedSelector selector) {
 
 		List<HolderSelector> hs = new ArrayList<HolderSelector>();
 		
 		try {
 			// last simple selector decided about all selector
-			SimpleSelector last = selector.getLastSimpleSelector();
+			Selector last = selector.getLastSelector();
 
 			// is element or other (wildcard)
 			String element = last.getElementName();
 			if(element!=null) {
 				// wildcard
-				if(SimpleSelector.Item.WILDCARD.equals(element)) 
+				if(Selector.SelectorPart.WILDCARD.equals(element)) 
 					hs.add(new HolderSelector(HolderItem.OTHER, null));
 				// element
 				else
@@ -442,8 +440,8 @@ public class Analyzer {
 			return hs;
 			
 		}
-		catch(OperationNotSupportedException e) {
-			log.error("Selector does not include any simple selector, this should not happen!");
+		catch(UnsupportedOperationException e) {
+			log.error("CombinedSelector does not include any simple selector, this should not happen!");
 			return Collections.emptyList();
 		}
 	}	

@@ -1,45 +1,35 @@
 package cz.vutbr.web.csskit;
 
-import java.util.Collections;
-import java.util.List;
-
 import cz.vutbr.web.css.ImportURI;
-import cz.vutbr.web.css.StyleSheetNotValidException;
 
 /**
- * Implementation of ImportURI
+ * URI with stylesheet to be imported
+ * 
+ * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
- * 			modified by Karel Piwko
- * @version 1.0 * Rewritten according to new interface
- * 				 * Construction moved to parser 
- * 				 * Added equals() and hashCode() methods
  */
-public class ImportURIImpl implements ImportURI {
+public class ImportURIImpl extends AbstractRule<String> implements ImportURI {
   
 	/** URI of file to be imported */
     protected String uri;
     
-    /** List of associated medias */
-    protected List<String> medias;
-
     /** 
      * Creates empty ImportURI instance 
      * 
      */
-    public ImportURIImpl() {
+    protected ImportURIImpl() {
     	this.uri = "";
-    	this.medias = Collections.emptyList();
     }
     
     public String getUri() {
         return uri;
     }
 
-    public void setUri(String uri) {
+    public ImportURI setUri(String uri) {
 
     	// sanity check
     	if(uri == null) 
-        	return; 
+        	return this; 
 
     	this.uri = uri.replaceAll("^url\\(", "")
     				  .replaceAll("\\)$", "")
@@ -47,15 +37,29 @@ public class ImportURIImpl implements ImportURI {
     				  .replaceAll("^\"", "")
     				  .replaceAll("'$", "")
     				  .replaceAll("\"$", "");
+    	return this;
     }
-    
-    public List<String> getMedias() {
-		return medias;
+    	
+	public String toString(int depth) {
+		
+		StringBuilder sb = new StringBuilder();
+    	
+    	sb.append(OutputUtil.IMPORT_KEYWORD).append(OutputUtil.URL_OPENING)
+    			.append(uri).append(OutputUtil.URL_CLOSING);
+    	
+    	// append medias
+    	if(list.size()!=0) sb.append(OutputUtil.SPACE_DELIM);
+    	sb = OutputUtil.appendList(sb, list, OutputUtil.MEDIA_DELIM); 
+    	sb.append(OutputUtil.LINE_CLOSING);
+    	
+    	return sb.toString();
+		
 	}
 
-	public void setMedias(List<String> medias) {
-		this.medias = medias;
-	}
+    @Override
+    public String toString() {
+    	return toString(0);
+    }
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -63,8 +67,7 @@ public class ImportURIImpl implements ImportURI {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((medias == null) ? 0 : medias.hashCode());
+		int result = super.hashCode();
 		result = prime * result + ((uri == null) ? 0 : uri.hashCode());
 		return result;
 	}
@@ -76,47 +79,19 @@ public class ImportURIImpl implements ImportURI {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (!(obj instanceof ImportURIImpl))
 			return false;
 		ImportURIImpl other = (ImportURIImpl) obj;
-		if (medias == null) {
-			if (other.medias != null)
-				return false;
-		} else if (!medias.equals(other.medias))
-			return false;
 		if (uri == null) {
 			if (other.uri != null)
 				return false;
 		} else if (!uri.equals(other.uri))
 			return false;
 		return true;
-	}
+	}    
 
-	public String toString(int depth) {
-		
-		StringBuilder sb = new StringBuilder();
-    	
-    	sb.append(OutputUtil.IMPORT_KEYWORD).append(OutputUtil.URL_OPENING)
-    			.append(uri).append(OutputUtil.URL_CLOSING);
-    	
-    	// append medias
-    	if(medias.size()!=0)
-    		sb.append(OutputUtil.SPACE_DELIM);
-    	sb = OutputUtil.appendList(sb, medias, OutputUtil.MEDIA_DELIM); 
-    	sb.append(OutputUtil.LINE_CLOSING);
-    	
-    	return sb.toString();
-		
-	}
-
-    @Override
-    public String toString() {
-    	return toString(0);
-    }
     
-    public void check(String path) throws StyleSheetNotValidException {
-        //Nothing
-    }
+    
 }
