@@ -2,9 +2,9 @@ package cz.vutbr.web.domassign;
 
 import java.util.Map;
 
+import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.Term;
-import cz.vutbr.web.css.NodeData.CSSProperty;
 
 /**
  * Repeats one operation on different CSS declaration duplication of code. To

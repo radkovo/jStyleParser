@@ -16,10 +16,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFactory;
-import cz.vutbr.web.css.NodeData.CSSProperty;
 
 /**
  * This test is to show performance difference between
@@ -27,7 +27,7 @@ import cz.vutbr.web.css.NodeData.CSSProperty;
  * Set is slightly slower, but its functionality to avoid duplicates
  * is a big plus. Set is backed by Map, so Maps are also 
  * possible candidates. Maps are even used internally inside
- * NodeDataImpl.
+ * QuadrupleMapNodeData.
  * 
  * For more then 50 000 declarations Maps becomes 10% slower than
  * Set with performs nearly as well as array.

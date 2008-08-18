@@ -2,7 +2,6 @@ package cz.vutbr.web.css;
 
 import java.util.Set;
 
-import cz.vutbr.web.css.NodeData.CSSProperty;
 
 /**
  * Encapsulates supported CSS properties, their types and default values.

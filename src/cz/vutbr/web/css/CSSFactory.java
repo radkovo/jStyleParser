@@ -2,18 +2,20 @@ package cz.vutbr.web.css;
 
 /**
  * This class is abstract factory for other factories used during CSS parsing.
- * Use it, for example, to retrieve current(default) TermFactory, current(default)
- * SupportedCSS implementation and so on.
+ * Use it, for example, to retrieve current(default) TermFactory,
+ * current(default) SupportedCSS implementation and so on.
  * 
- * Factories need to be registered first.
- * This can be done using Java static block initialization together with 
- * Java classloader.
+ * Factories need to be registered first. This can be done using Java static
+ * block initialization together with Java classloader.
  * 
  * By default, factory searches automatically for implementations:
  * <code>cz.vutbr.web.csskit.TermFactoryImpl</code>
  * <code>cz.vutbr.web.domassign.SupportedCSS21</code>
+ * <code>cz.vutbr.web.csskit.RuleFactoryImpl</code>
+ * <code>cz.vutbr.web.domassign.QuadrupleMapNodeData</code>
  * 
  * Example:
+ * 
  * <pre>
  * public class TermFactoryImpl implemenent TermFactory {
  * 		static {
@@ -23,39 +25,45 @@ package cz.vutbr.web.css;
  * }
  * 
  * That, default factory is set when this class is loaded by class loader.
+ * 
  * <pre>
- * Class.forName("xx.package.TermFactoryImpl")
+ * Class.forName(&quot;xx.package.TermFactoryImpl&quot;)
  * </pre>
  * 
  * </pre>
+ * 
  * @author kapy
- *
+ * 
  */
 public final class CSSFactory {
-	
+
 	private static final String DEFAULT_TERM_FACTORY = "cz.vutbr.web.csskit.TermFactoryImpl";
 	private static final String DEFAULT_SUPPORTED_CSS = "cz.vutbr.web.domassign.SupportedCSS21";
 	private static final String DEFAULT_RULE_FACTORY = "cz.vutbr.web.csskit.RuleFactoryImpl";
-	
-	
+	private static final String DEFAULT_NODE_DATA_IMPL = "cz.vutbr.web.domassign.QuadrupleMapNodeData";
+
 	/**
 	 * Default instance of TermFactory implementation
 	 */
 	private static TermFactory tf;
-	
+
 	/**
 	 * Default instance of SupportedCSS implementation
 	 */
 	private static SupportedCSS css;
-	
+
 	/**
-	 * Default instance of RuleFactory implementation 
+	 * Default instance of RuleFactory implementation
 	 */
 	private static RuleFactory rf;
-	
+
+	private static Class<? extends NodeData> ndImpl;
+
 	/**
 	 * Registers new TermFactory instance
-	 * @param newFactory New TermFactory
+	 * 
+	 * @param newFactory
+	 *            New TermFactory
 	 */
 	public static final void registerTermFactory(TermFactory newFactory) {
 		tf = newFactory;
@@ -63,17 +71,20 @@ public final class CSSFactory {
 
 	/**
 	 * Returns TermFactory registered in step above
+	 * 
 	 * @return TermFactory registered
 	 */
 	public static final TermFactory getTermFactory() {
-		if(tf==null) {
+		if (tf == null) {
 			try {
 				Class.forName(DEFAULT_TERM_FACTORY);
-				if(tf!=null) return tf;
+				if (tf != null)
+					return tf;
+			} catch (Exception e) {
 			}
-			catch(Exception e) {}
-			
-			throw new RuntimeException("No TermFactory implementation registered!");
+
+			throw new RuntimeException(
+					"No TermFactory implementation registered!");
 		}
 		return tf;
 	}
@@ -81,37 +92,73 @@ public final class CSSFactory {
 	public static final void registerSupportedCSS(SupportedCSS newCSS) {
 		css = newCSS;
 	}
-	
-	
+
 	public static final SupportedCSS getSupportedCSS() {
-		if(css==null) {
+		if (css == null) {
 			try {
 				Class.forName(DEFAULT_SUPPORTED_CSS);
-				if(css!=null) return css;
+				if (css != null)
+					return css;
+			} catch (Exception e) {
 			}
-			catch(Exception e) {}
-			
-			throw new RuntimeException("No SupportedCSS implementation registered!");
+
+			throw new RuntimeException(
+					"No SupportedCSS implementation registered!");
 		}
 		return css;
 	}
-	
+
 	public static final void registerRuleFactory(RuleFactory newRuleFactory) {
 		rf = newRuleFactory;
 	}
-	
+
 	public static final RuleFactory getRuleFactory() {
-		if(rf==null) {
+		if (rf == null) {
 			try {
 				Class.forName(DEFAULT_RULE_FACTORY);
-				if(rf!=null) return rf;
+				if (rf != null)
+					return rf;
+			} catch (Exception e) {
 			}
-			catch(Exception e) {}
-			
-			throw new RuntimeException("No RuleFactory implementation registered!");
+
+			throw new RuntimeException(
+					"No RuleFactory implementation registered!");
 		}
-		
+
 		return rf;
 	}
-	
+
+	public static final void registerNodeDataInstance(
+			Class<? extends NodeData> clazz) {
+		try {
+			@SuppressWarnings("unused")
+			NodeData test = clazz.newInstance();
+			ndImpl = clazz;
+		} catch (InstantiationException e) {
+			throw new RuntimeException("NodeData implemenation ("
+					+ clazz.getName() + ") doesn't provide sole constructor", e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("NodeData implementation ("
+					+ clazz.getName() + ") is not accesible", e);
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public static final NodeData createNodeData() {
+		if(ndImpl==null) {
+			try {
+				registerNodeDataInstance((Class<? extends NodeData>)Class.forName(DEFAULT_NODE_DATA_IMPL));
+			} catch(Exception e) {
+			}
+		}	
+		
+		try {
+			return ndImpl.newInstance();
+		}
+		catch(Exception e) {
+			throw new RuntimeException("No NodeData implementation registered");
+		}
+	}
+
 }

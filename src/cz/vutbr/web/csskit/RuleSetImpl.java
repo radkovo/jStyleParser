@@ -19,16 +19,16 @@ public class RuleSetImpl extends AbstractRule<Declaration> implements RuleSet {
 	
 	protected List<CombinedSelector> selectors;
 	
-	protected RuleSetImpl(int order) {
+	protected RuleSetImpl(Integer order) {
 		this.selectors = Collections.emptyList();
-		this.order = order;
+		this.order = order.intValue();
 	}
 	
 	/**
 	 * Shallow copy constructor
 	 * @param rs RuleSet to share selectors and declarations with 
 	 */
-	protected RuleSetImpl(int order, RuleSet rs) {
+	protected RuleSetImpl(Integer order, RuleSet rs) {
 		this.selectors = rs.getSelectors();
 		this.replaceAll(rs.asList());
 	}

@@ -32,4 +32,5 @@ H1.prvni {
 
 #fontoid {
 	font-family: monospace;
+	color: inherit;
 }

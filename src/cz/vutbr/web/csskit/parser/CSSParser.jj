@@ -52,6 +52,8 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants/*@egen*
 	private static final TermFactory tf = CSSFactory.getTermFactory();
 	private static final RuleFactory rf = CSSFactory.getRuleFactory();
 
+	private Integer ruleSetNum;
+
 	/** Charset of given css */
 	private String charset;
 	
@@ -78,6 +80,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants/*@egen*
 	 */
 	public StyleSheet parse() throws StyleSheetNotValidException {
 		try {
+			this.ruleSetNum = 0;
 			return this.start();
 		}
 		catch (ParseException e) {
@@ -605,7 +608,7 @@ void ruleset(List<Rule<?>> rules) :
   	// be error graceful to unknown selectors and declarations
   	finally {
   		if(cslist.size() > 0 && declarations.size() > 0) {
-  			RuleSet rule = rf.createSet();
+  			RuleSet rule = rf.createSet((Object)ruleSetNum++);
   			rule.setSelectors(cslist);
   			rule.replaceAll(declarations);
   			rules.add(rule);

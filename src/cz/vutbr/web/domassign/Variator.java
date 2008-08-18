@@ -5,10 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermIdent;
-import cz.vutbr.web.css.NodeData.CSSProperty;
 
 /**
  * Selects appropriate variant when parsing content of CSS declaration.

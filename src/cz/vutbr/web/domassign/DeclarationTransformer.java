@@ -13,6 +13,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
@@ -27,78 +28,76 @@ import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermPercent;
 import cz.vutbr.web.css.TermString;
 import cz.vutbr.web.css.TermURI;
-import cz.vutbr.web.css.NodeData.BackgroundAttachment;
-import cz.vutbr.web.css.NodeData.BackgroundColor;
-import cz.vutbr.web.css.NodeData.BackgroundImage;
-import cz.vutbr.web.css.NodeData.BackgroundPosition;
-import cz.vutbr.web.css.NodeData.BackgroundRepeat;
-import cz.vutbr.web.css.NodeData.BorderCollapse;
-import cz.vutbr.web.css.NodeData.BorderColor;
-import cz.vutbr.web.css.NodeData.BorderSpacing;
-import cz.vutbr.web.css.NodeData.BorderStyle;
-import cz.vutbr.web.css.NodeData.BorderWidth;
-import cz.vutbr.web.css.NodeData.Bottom;
-import cz.vutbr.web.css.NodeData.CSSProperty;
-import cz.vutbr.web.css.NodeData.CaptionSide;
-import cz.vutbr.web.css.NodeData.Clear;
-import cz.vutbr.web.css.NodeData.Clip;
-import cz.vutbr.web.css.NodeData.Color;
-import cz.vutbr.web.css.NodeData.Content;
-import cz.vutbr.web.css.NodeData.CounterIncrement;
-import cz.vutbr.web.css.NodeData.CounterReset;
-import cz.vutbr.web.css.NodeData.Cursor;
-import cz.vutbr.web.css.NodeData.Direction;
-import cz.vutbr.web.css.NodeData.Display;
-import cz.vutbr.web.css.NodeData.EmptyCells;
-import cz.vutbr.web.css.NodeData.Font;
-import cz.vutbr.web.css.NodeData.FontFamily;
-import cz.vutbr.web.css.NodeData.FontSize;
-import cz.vutbr.web.css.NodeData.FontStyle;
-import cz.vutbr.web.css.NodeData.FontVariant;
-import cz.vutbr.web.css.NodeData.FontWeight;
-import cz.vutbr.web.css.NodeData.Height;
-import cz.vutbr.web.css.NodeData.Left;
-import cz.vutbr.web.css.NodeData.LetterSpacing;
-import cz.vutbr.web.css.NodeData.LineHeight;
-import cz.vutbr.web.css.NodeData.ListStyleImage;
-import cz.vutbr.web.css.NodeData.ListStylePosition;
-import cz.vutbr.web.css.NodeData.ListStyleType;
-import cz.vutbr.web.css.NodeData.Margin;
-import cz.vutbr.web.css.NodeData.MaxHeight;
-import cz.vutbr.web.css.NodeData.MaxWidth;
-import cz.vutbr.web.css.NodeData.MinHeight;
-import cz.vutbr.web.css.NodeData.MinWidth;
-import cz.vutbr.web.css.NodeData.Orphans;
-import cz.vutbr.web.css.NodeData.OutlineColor;
-import cz.vutbr.web.css.NodeData.OutlineStyle;
-import cz.vutbr.web.css.NodeData.OutlineWidth;
-import cz.vutbr.web.css.NodeData.Overflow;
-import cz.vutbr.web.css.NodeData.Padding;
-import cz.vutbr.web.css.NodeData.PageBreak;
-import cz.vutbr.web.css.NodeData.PageBreakInside;
-import cz.vutbr.web.css.NodeData.Position;
-import cz.vutbr.web.css.NodeData.Quotes;
-import cz.vutbr.web.css.NodeData.Right;
-import cz.vutbr.web.css.NodeData.TableLayout;
-import cz.vutbr.web.css.NodeData.TextAlign;
-import cz.vutbr.web.css.NodeData.TextDecoration;
-import cz.vutbr.web.css.NodeData.TextIndent;
-import cz.vutbr.web.css.NodeData.TextTransform;
-import cz.vutbr.web.css.NodeData.Top;
-import cz.vutbr.web.css.NodeData.UnicodeBidi;
-import cz.vutbr.web.css.NodeData.VerticalAlign;
-import cz.vutbr.web.css.NodeData.Visibility;
-import cz.vutbr.web.css.NodeData.WhiteSpace;
-import cz.vutbr.web.css.NodeData.Widows;
-import cz.vutbr.web.css.NodeData.Width;
-import cz.vutbr.web.css.NodeData.WordSpacing;
-import cz.vutbr.web.css.NodeData.ZIndex;
+import cz.vutbr.web.css.CSSProperty.BackgroundAttachment;
+import cz.vutbr.web.css.CSSProperty.BackgroundColor;
+import cz.vutbr.web.css.CSSProperty.BackgroundImage;
+import cz.vutbr.web.css.CSSProperty.BackgroundPosition;
+import cz.vutbr.web.css.CSSProperty.BackgroundRepeat;
+import cz.vutbr.web.css.CSSProperty.BorderCollapse;
+import cz.vutbr.web.css.CSSProperty.BorderColor;
+import cz.vutbr.web.css.CSSProperty.BorderSpacing;
+import cz.vutbr.web.css.CSSProperty.BorderStyle;
+import cz.vutbr.web.css.CSSProperty.BorderWidth;
+import cz.vutbr.web.css.CSSProperty.Bottom;
+import cz.vutbr.web.css.CSSProperty.CaptionSide;
+import cz.vutbr.web.css.CSSProperty.Clear;
+import cz.vutbr.web.css.CSSProperty.Clip;
+import cz.vutbr.web.css.CSSProperty.Color;
+import cz.vutbr.web.css.CSSProperty.Content;
+import cz.vutbr.web.css.CSSProperty.CounterIncrement;
+import cz.vutbr.web.css.CSSProperty.CounterReset;
+import cz.vutbr.web.css.CSSProperty.Cursor;
+import cz.vutbr.web.css.CSSProperty.Direction;
+import cz.vutbr.web.css.CSSProperty.Display;
+import cz.vutbr.web.css.CSSProperty.EmptyCells;
+import cz.vutbr.web.css.CSSProperty.Font;
+import cz.vutbr.web.css.CSSProperty.FontFamily;
+import cz.vutbr.web.css.CSSProperty.FontSize;
+import cz.vutbr.web.css.CSSProperty.FontStyle;
+import cz.vutbr.web.css.CSSProperty.FontVariant;
+import cz.vutbr.web.css.CSSProperty.FontWeight;
+import cz.vutbr.web.css.CSSProperty.Height;
+import cz.vutbr.web.css.CSSProperty.Left;
+import cz.vutbr.web.css.CSSProperty.LetterSpacing;
+import cz.vutbr.web.css.CSSProperty.LineHeight;
+import cz.vutbr.web.css.CSSProperty.ListStyleImage;
+import cz.vutbr.web.css.CSSProperty.ListStylePosition;
+import cz.vutbr.web.css.CSSProperty.ListStyleType;
+import cz.vutbr.web.css.CSSProperty.Margin;
+import cz.vutbr.web.css.CSSProperty.MaxHeight;
+import cz.vutbr.web.css.CSSProperty.MaxWidth;
+import cz.vutbr.web.css.CSSProperty.MinHeight;
+import cz.vutbr.web.css.CSSProperty.MinWidth;
+import cz.vutbr.web.css.CSSProperty.Orphans;
+import cz.vutbr.web.css.CSSProperty.OutlineColor;
+import cz.vutbr.web.css.CSSProperty.OutlineStyle;
+import cz.vutbr.web.css.CSSProperty.OutlineWidth;
+import cz.vutbr.web.css.CSSProperty.Overflow;
+import cz.vutbr.web.css.CSSProperty.Padding;
+import cz.vutbr.web.css.CSSProperty.PageBreak;
+import cz.vutbr.web.css.CSSProperty.PageBreakInside;
+import cz.vutbr.web.css.CSSProperty.Position;
+import cz.vutbr.web.css.CSSProperty.Quotes;
+import cz.vutbr.web.css.CSSProperty.Right;
+import cz.vutbr.web.css.CSSProperty.TableLayout;
+import cz.vutbr.web.css.CSSProperty.TextAlign;
+import cz.vutbr.web.css.CSSProperty.TextDecoration;
+import cz.vutbr.web.css.CSSProperty.TextIndent;
+import cz.vutbr.web.css.CSSProperty.TextTransform;
+import cz.vutbr.web.css.CSSProperty.Top;
+import cz.vutbr.web.css.CSSProperty.UnicodeBidi;
+import cz.vutbr.web.css.CSSProperty.VerticalAlign;
+import cz.vutbr.web.css.CSSProperty.Visibility;
+import cz.vutbr.web.css.CSSProperty.WhiteSpace;
+import cz.vutbr.web.css.CSSProperty.Widows;
+import cz.vutbr.web.css.CSSProperty.Width;
+import cz.vutbr.web.css.CSSProperty.WordSpacing;
+import cz.vutbr.web.css.CSSProperty.ZIndex;
 import cz.vutbr.web.css.Term.Operator;
 
 /**
  * Contains methods to transform declaration into values applicable to
- * NodeDataImpl. Contains map of CSS properties as supported in CSS 2.1 and
- * their default values. Implements singleton pattern.
+ * NodeData. Uses defaults defined by CSSFactory
  * 
  * @author kapy
  * 
@@ -860,42 +859,42 @@ public class DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processTop(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Top.class, Top.lenght,
+		return genericOneIdentOrLengthOrPercent(Top.class, Top.length,
 				Top.percentage, false, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processRight(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Right.class, Right.lenght,
+		return genericOneIdentOrLengthOrPercent(Right.class, Right.length,
 				Right.percentage, false, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBottom(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Bottom.class, Bottom.lenght,
+		return genericOneIdentOrLengthOrPercent(Bottom.class, Bottom.length,
 				Bottom.percentage, false, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processLeft(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Left.class, Left.lenght,
+		return genericOneIdentOrLengthOrPercent(Left.class, Left.length,
 				Left.percentage, false, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processWidth(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Width.class, Width.lenght,
+		return genericOneIdentOrLengthOrPercent(Width.class, Width.length,
 				Width.percentage, false, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processHeight(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Height.class, Height.lenght,
+		return genericOneIdentOrLengthOrPercent(Height.class, Height.length,
 				Height.percentage, false, d, properties, values);
 	}
 
@@ -1118,28 +1117,28 @@ public class DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processMarginTop(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Margin.class, Margin.lenght,
+		return genericOneIdentOrLengthOrPercent(Margin.class, Margin.length,
 				Margin.percentage, false, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processMarginRight(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Margin.class, Margin.lenght,
+		return genericOneIdentOrLengthOrPercent(Margin.class, Margin.length,
 				Margin.percentage, false, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processMarginBottom(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Margin.class, Margin.lenght,
+		return genericOneIdentOrLengthOrPercent(Margin.class, Margin.length,
 				Margin.percentage, false, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processMarginLeft(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Margin.class, Margin.lenght,
+		return genericOneIdentOrLengthOrPercent(Margin.class, Margin.length,
 				Margin.percentage, false, d, properties, values);
 	}
 
@@ -1154,7 +1153,7 @@ public class DeclarationTransformer {
 	private boolean processMaxHeight(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		return genericOneIdentOrLengthOrPercent(MaxHeight.class,
-				MaxHeight.lenght, MaxHeight.percentage, true, d, properties,
+				MaxHeight.length, MaxHeight.percentage, true, d, properties,
 				values);
 	}
 
@@ -1162,7 +1161,7 @@ public class DeclarationTransformer {
 	private boolean processMaxWidth(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		return genericOneIdentOrLengthOrPercent(MaxWidth.class,
-				MaxWidth.lenght, MaxWidth.percentage, true, d, properties,
+				MaxWidth.length, MaxWidth.percentage, true, d, properties,
 				values);
 	}
 
@@ -1170,7 +1169,7 @@ public class DeclarationTransformer {
 	private boolean processMinHeight(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		return genericOneIdentOrLengthOrPercent(MinHeight.class,
-				MinHeight.lenght, MinHeight.percentage, true, d, properties,
+				MinHeight.length, MinHeight.percentage, true, d, properties,
 				values);
 	}
 
@@ -1178,7 +1177,7 @@ public class DeclarationTransformer {
 	private boolean processMinWidth(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		return genericOneIdentOrLengthOrPercent(MinWidth.class,
-				MinWidth.lenght, MinWidth.percentage, true, d, properties,
+				MinWidth.length, MinWidth.percentage, true, d, properties,
 				values);
 	}
 
@@ -2070,7 +2069,7 @@ public class DeclarationTransformer {
 			return genericTermIdent(Margin.class, terms[i], propertyNames[i],
 					properties)
 					|| genericTerm(TermLength.class, terms[i],
-							propertyNames[i], Margin.lenght, false, properties,
+							propertyNames[i], Margin.length, false, properties,
 							values)
 					|| genericTerm(TermPercent.class, terms[i],
 							propertyNames[i], Margin.percentage, false,
@@ -2100,7 +2099,7 @@ public class DeclarationTransformer {
 			return genericTermIdent(Margin.class, terms[i], propertyNames[i],
 					properties)
 					|| genericTerm(TermLength.class, terms[i],
-							propertyNames[i], Margin.lenght, false, properties,
+							propertyNames[i], Margin.length, false, properties,
 							values)
 					|| genericTerm(TermPercent.class, terms[i],
 							propertyNames[i], Margin.percentage, false,

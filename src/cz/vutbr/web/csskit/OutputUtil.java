@@ -30,6 +30,7 @@ public class OutputUtil {
 	public static final String CHARSET_CLOSING = "\";\n";
 	public static final String PROPERTY_OPENING = ": ";
 	public static final String PROPERTY_CLOSING = ";\n";
+	public static final String IMPORTANT_KEYWORD = "!important";
 	public static final String PAGE_KEYWORD = "@page";
 	public static final String PAGE_OPENING = ":";
 	public static final String PAGE_CLOSING = "";

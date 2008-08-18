@@ -4,11 +4,10 @@ import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.Term;
 
 /**
- * Declaration
+ * CSS Declaration
+ * 
+ * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
- * 			modifed by Karel Piwko, 2008
- * @version 1.0 * Rewritten according to interface
- * 				 * Construction moved to parser
  */
 public class DeclarationImpl extends AbstractRule<Term<?>> implements Declaration {
 
@@ -102,8 +101,12 @@ public class DeclarationImpl extends AbstractRule<Term<?>> implements Declaratio
 		sb.append(property).append(OutputUtil.PROPERTY_OPENING);
 		
 		// add terms
-		sb = OutputUtil.appendList(sb, list, OutputUtil.EMPTY_DELIM)
-				.append(OutputUtil.PROPERTY_CLOSING);
+		sb = OutputUtil.appendList(sb, list, OutputUtil.EMPTY_DELIM);
+		
+		// importance flag
+		if(important) sb.append(OutputUtil.IMPORTANT_KEYWORD);
+		
+		sb.append(OutputUtil.PROPERTY_CLOSING);
 		
         return sb.toString();
     }

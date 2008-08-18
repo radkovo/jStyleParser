@@ -26,9 +26,6 @@ import cz.vutbr.web.css.Selector.PseudoPage;
  */
 public class RuleFactoryImpl implements RuleFactory {
 
-	
-	private static int ruleSetNum = 0;
-	
 	private static RuleFactory instance;
 	
 	static {
@@ -84,15 +81,8 @@ public class RuleFactoryImpl implements RuleFactory {
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createSet()
 	 */
-	public RuleSet createSet() {
-		return new RuleSetImpl(++ruleSetNum);
-	}
-
-	/* (non-Javadoc)
-	 * @see cz.vutbr.web.css.RuleFactory#createSet(cz.vutbr.web.css.RuleSet)
-	 */
-	public RuleSet createSet(RuleSet clone) {
-		return new RuleSetImpl(++ruleSetNum, clone);
+	public RuleSet createSet(Object ad) {
+		return new RuleSetImpl((Integer) ad);
 	}
 
 	/* (non-Javadoc)

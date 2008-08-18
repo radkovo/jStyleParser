@@ -37,6 +37,8 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
         private static final TermFactory tf = CSSFactory.getTermFactory();
         private static final RuleFactory rf = CSSFactory.getRuleFactory();
 
+        private Integer ruleSetNum;
+
         /** Charset of given css */
         private String charset;
 
@@ -63,6 +65,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
 	 */
         public StyleSheet parse() throws StyleSheetNotValidException {
                 try {
+                        this.ruleSetNum = 0;
                         return this.start();
                 }
                 catch (ParseException e) {
@@ -737,7 +740,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
                 errorSkipTo("Failed to retrieve ruleset()", RCURLY);
       } finally {
                 if(cslist.size() > 0 && declarations.size() > 0) {
-                        RuleSet rule = rf.createSet();
+                        RuleSet rule = rf.createSet((Object)ruleSetNum++);
                         rule.setSelectors(cslist);
                         rule.replaceAll(declarations);
                         rules.add(rule);
