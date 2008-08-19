@@ -99,13 +99,9 @@ public interface NodeData {
 	 * 
 	 * @param d
 	 *            Declaration to be added
-	 */
-	public void push(Declaration d);
-
-	/**
-	 * Provides CSS representation of node
-	 * 
-	 * @return String with CSS style
-	 */	
+	 * @return Modified instance
+	 *            	 
+	 */            
+	public NodeData push(Declaration d);
 
 }

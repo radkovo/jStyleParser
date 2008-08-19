@@ -1839,8 +1839,25 @@ public class DeclarationTransformer {
 
 		@Override
 		protected boolean variantCondition(int variant, int term) {
-			// TODO Auto-generated method stub
-			return false;
+			
+			switch(variant) {
+			case STYLE:
+			case VARIANT:
+			case WEIGHT:
+				// must be within 3 first terms
+				return term < 3;
+			case SIZE:
+				// no condition
+				return true;
+			case LINE_HEIGHT:
+				if(!variantPassed[SIZE]) return false;
+				return terms.get(term).getOperator()==Operator.SLASH;
+			case FAMILY:
+				// requires passed size
+				return variantPassed[SIZE];
+			default:
+				return false;
+			}
 		}
 
 		@Override

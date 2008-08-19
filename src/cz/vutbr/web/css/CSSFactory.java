@@ -12,7 +12,7 @@ package cz.vutbr.web.css;
  * <code>cz.vutbr.web.csskit.TermFactoryImpl</code>
  * <code>cz.vutbr.web.domassign.SupportedCSS21</code>
  * <code>cz.vutbr.web.csskit.RuleFactoryImpl</code>
- * <code>cz.vutbr.web.domassign.QuadrupleMapNodeData</code>
+ * <code>cz.vutbr.web.domassign.SingleMapNodeData</code>
  * 
  * Example:
  * 
@@ -40,7 +40,7 @@ public final class CSSFactory {
 	private static final String DEFAULT_TERM_FACTORY = "cz.vutbr.web.csskit.TermFactoryImpl";
 	private static final String DEFAULT_SUPPORTED_CSS = "cz.vutbr.web.domassign.SupportedCSS21";
 	private static final String DEFAULT_RULE_FACTORY = "cz.vutbr.web.csskit.RuleFactoryImpl";
-	private static final String DEFAULT_NODE_DATA_IMPL = "cz.vutbr.web.domassign.QuadrupleMapNodeData";
+	private static final String DEFAULT_NODE_DATA_IMPL = "cz.vutbr.web.domassign.SingleMapNodeData";
 
 	/**
 	 * Default instance of TermFactory implementation

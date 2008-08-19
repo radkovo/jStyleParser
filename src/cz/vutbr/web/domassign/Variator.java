@@ -150,13 +150,13 @@ public abstract class Variator {
 			for (int v = 0; v < variants; v++) {
 				// check and if variant was already found
 				// signalize error by discarding complete declaration
+				// have to check variant condition firstly to avoid false positive 
+				// variantPassed 
+				if(!variantCondition(v, i))	continue;
 				passed = variant(v, i, properties, values);
-				if (passed) {
+				if (passed) {										
 					// failed on term, because this variant already passed in past
 					if (variantPassed[v]) return false;
-									
-					// check variant conditions
-					if (!variantCondition(v, i)) return false;
 					
 					// mark occurrence of variant
 					variantPassed[v] = true;
@@ -164,7 +164,7 @@ public abstract class Variator {
 					break;
 				}
 			}
-			// no variant could be assingned
+			// no variant could be assigned
 			if (!passed)
 				return false;
 		}

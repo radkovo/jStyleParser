@@ -16,6 +16,14 @@ import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.csskit.OutputUtil;
 
+/**
+ * Implementation of NodeData by four distinct HashMaps. According to tests,
+ * it is about 25% faster then SingleDataMap when retrieving values and inheriting 
+ * but occupies up to 100% more memory.
+ * 
+ * @author kapy
+ *
+ */
 public class QuadrupleMapNodeData implements NodeData {
 
 	private static final int COMMON_DECLARATION_SIZE = 7;
@@ -67,7 +75,7 @@ public class QuadrupleMapNodeData implements NodeData {
 		return getValue(clazz, name, true);
 	}
 	
-	public void push(Declaration d) {
+	public NodeData push(Declaration d) {
 		
 		Map<String,CSSProperty> properties = 
 			new HashMap<String,CSSProperty>(COMMON_DECLARATION_SIZE);
@@ -77,10 +85,11 @@ public class QuadrupleMapNodeData implements NodeData {
 		boolean result = transformer.parseDeclaration(d, properties, terms);
 		
 		// in case of false do not insert anything
-		if(!result) return;
+		if(!result) return this;
 		
 		this.propertiesOwn.putAll(properties);
 		this.valuesOwn.putAll(terms);
+		return this;
 		
 	}
 	
@@ -101,6 +110,8 @@ public class QuadrupleMapNodeData implements NodeData {
 			CSSProperty value = nd.propertiesInh.get(key);
 			if(value.inherited()) {
 				this.propertiesInh.put(key, value);
+				// remove old value to be sure
+				this.valuesInh.remove(key);
 				Term<?> term = nd.valuesInh.get(key);
 				if(term!=null)
 					this.valuesInh.put(key, term);
@@ -111,6 +122,8 @@ public class QuadrupleMapNodeData implements NodeData {
 			CSSProperty value = nd.propertiesOwn.get(key);
 			if(value.inherited()) {
 				this.propertiesInh.put(key, value);
+				// remove old value to be sure
+				this.valuesInh.remove(key);
 				Term<?> term = nd.valuesOwn.get(key);
 				if(term!=null)
 					this.valuesInh.put(key, term);

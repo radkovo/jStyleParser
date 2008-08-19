@@ -2,13 +2,11 @@ package test;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -27,18 +25,16 @@ import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.csskit.parser.CSSParser;
 import cz.vutbr.web.domassign.Analyzer;
-import cz.vutbr.web.domassign.DeclarationTransformer;
 import cz.vutbr.web.domassign.QuadrupleMapNodeData;
+import cz.vutbr.web.domassign.SingleMapNodeData;
 import cz.vutbr.web.domassign.TidyTreeWalker.Traversal;
 
+@Ignore
 public class NodeDataVariant {
 
 	private static Logger log = Logger.getLogger(NodeDataVariant.class);
 
 	private static SupportedCSS css = CSSFactory.getSupportedCSS();
-
-	private static DeclarationTransformer dt = DeclarationTransformer
-			.getInstance();
 
 	private static Document doc;
 	private static Analyzer analyzer;
@@ -63,60 +59,125 @@ public class NodeDataVariant {
 	@Ignore
 	public void testMemoryAllocationEmpty() throws Exception {
 
-		long singleMap, qm, enumArray;
+		long sm, qm, enumArray;
 
-		singleMap = memoryUsage(NodeDataSingleMap.class);
+		sm = memoryUsage(SingleMapNodeData.class);
 		qm = memoryUsage(QuadrupleMapNodeData.class);
 		enumArray = memoryUsage(NodeDataEnumArray.class);
 
 		log.debug("===\nMemory test:");
-		log.debug("NodeDataSingleMap size: " + singleMap
+		log.debug("SingleMap size: " + sm
 				+ " QuadrupleMap size: " + qm + " NodeDataEnumArray size: "
 				+ enumArray);
 
 	}
 
 	@Test
+	//@Ignore
 	public void testTimeUsage() throws Exception {
 
-		long singleMap, qm, enumArray;
+		long sm, qm, enumArray;
 
-		singleMap = timeUsage(NodeDataSingleMap.class);
+		sm = timeUsage(SingleMapNodeData.class);
 		qm = timeUsage(QuadrupleMapNodeData.class);
 		enumArray = timeUsage(NodeDataEnumArray.class);
 
 		log.debug("===\nTime test:");
-		log.debug("QuadrupleMap time: " + qm + " NodeDataSingleMap time: "
-				+ singleMap + " NodeDataEnumArray time: " + enumArray);
+		log.debug("QuadrupleMap time: " + qm + " SingleMap time: "
+				+ sm + " NodeDataEnumArray time: " + enumArray);
 
 	}
-
+	
 	@Test
-	public void testInheritance() {
-
-		CSSFactory.registerNodeDataInstance(QuadrupleMapNodeData.class);
+	//@Ignore
+	public void testInheritance() throws Exception {
 		
-		Map<Element, NodeData> nodes = analyzer.evaluateDOM(doc, "all", true);
+		final int SAMPLE = 100;
+		
+		long sm = 0, smt = 0, qm = 0, qmt = 0, tmp = 0;
+		
+		// memory tests
+		/*
+		inheritance(SingleMapNodeData.class);
+		tmp = memoryUsage();
+		for(int i=0; i<SAMPLE; i++)
+			inheritance(SingleMapNodeData.class);
+		sm = memoryUsage();
+		
+		sm = Math.round((sm - tmp)/(float) SAMPLE);
+		
+		inheritance(QuadrupleMapNodeData.class);
+		tmp = memoryUsage();
+		for(int i=0; i<SAMPLE; i++)
+			inheritance(QuadrupleMapNodeData.class);
+		qm = memoryUsage();
+		
+		qm = Math.round((qm - tmp)/(float) SAMPLE);
+		*/
 
-		Traversal<List<String>> traversal = new Traversal<List<String>>(doc, (Object) nodes, NodeFilter.SHOW_ELEMENT) {
+		// time tests
+		for(int i=0; i<SAMPLE; i++) {
+			tmp = System.currentTimeMillis();
+			inheritance(SingleMapNodeData.class);
+			smt +=  System.currentTimeMillis() - tmp;
+		}
+		smt = Math.round(smt/((float) SAMPLE));
+		
+		for(int i=0; i<SAMPLE; i++) {
+			tmp = System.currentTimeMillis();
+			inheritance(QuadrupleMapNodeData.class);
+			qmt += System.currentTimeMillis() - tmp;
+		}
+		qmt = Math.round(qmt/((float) SAMPLE));
+		
+		
+		
+		log.debug("===\nInheritance test:");
+		log.debug("Quadruple map memory: " + qm + "B at " + qmt + 
+				"ms SingleMap memory: " + sm + "B at " + smt +"ms");
+		
+	}
+	
+
+	private void inheritance(Class<? extends NodeData> clazz) {
+
+		CSSFactory.registerNodeDataInstance(clazz);
+		
+		Map<Element, NodeData> declInh = analyzer.evaluateDOM(doc, "all", true);
+
+		Map<Element, NodeData> decl = analyzer.evaluateDOM(doc, "all", false);
+
+		Pair<Map<Element, NodeData>, Map<Element, NodeData>> pair = new Pair<Map<Element, NodeData>, Map<Element, NodeData>>(
+				declInh, decl);
+
+		Traversal<Boolean> traversal = new Traversal<Boolean>(doc,
+				(Object) pair, NodeFilter.SHOW_ELEMENT) {
 			@SuppressWarnings("unchecked")
 			@Override
-			protected void processNode(List<String> result, Node current,
+			protected void processNode(Boolean result, Node current,
 					Object source) {
 
-				NodeData nd = ((Map<Element, NodeData>) source).get(current);
-				result.add("<" + current.getNodeName() +" style=\""+ nd.toString() + "\">");
+				Pair<Map<Element, NodeData>, Map<Element, NodeData>> pair = (Pair<Map<Element, NodeData>, Map<Element, NodeData>>) source;
+
+				Element e = (Element) current;
+
+				NodeData ndInh = pair.getFirst().get(e);
+				NodeData nd = pair.getSecond().get(e);
+
+				String id = e.getAttribute("id");
+
+				if (id != null)
+					Assert.assertNotSame("Inherited differs for #" + id, ndInh,
+							nd);
 			}
 
 		};
 
-		List<String> result = new ArrayList<String>();
-
-		traversal.levelTraversal(result);
-
-		log.debug(result);
-
+		traversal.levelTraversal(null);		
 	}
+	
+	
+	
 
 	private long timeUsage(Class<? extends NodeData> clazz) throws Exception {
 
@@ -216,7 +277,8 @@ public class NodeDataVariant {
 			return null;
 		}
 
-		public void push(Declaration d) {
+		public NodeData push(Declaration d) {
+			return this;
 		}
 
 		public NodeData inheritFrom(NodeData parent) {
@@ -228,82 +290,24 @@ public class NodeDataVariant {
 		}
 
 	}
+	
+	static class Pair<T, V> {
+		private T first;
+		private V second;
 
-	public static class NodeDataSingleMap implements NodeData {
-
-		private Map<String, CSSProperty> properties;
-		private Map<String, Term<?>> values;
-		private BitSet inherited;
-
-		public NodeDataSingleMap() {
-			this.properties = new HashMap<String, CSSProperty>(css
-					.getTotalProperties(), 1.0f);
-			this.values = new HashMap<String, Term<?>>(
-					css.getTotalProperties(), 1.0f);
-			this.inherited = new BitSet(css.getTotalProperties());
+		public Pair(T first, V second) {
+			this.first = first;
+			this.second = second;
 		}
 
-		public <T extends CSSProperty> T getProperty(Class<T> clazz, String name) {
-			return getProperty(clazz, name, true);
+		public T getFirst() {
+			return first;
 		}
 
-		public <T extends CSSProperty> T getProperty(Class<T> clazz,
-				String name, boolean includeInherited) {
-
-			T property = clazz.cast(properties.get(name));
-
-			if (includeInherited)
-				return property;
-			if (inherited.get(css.getOrdinal(name)))
-				return null;
-
-			return property;
+		public V getSecond() {
+			return second;
 		}
 
-		public <T extends Term<?>> T getValue(Class<T> clazz, String name) {
-			return getValue(clazz, name, true);
-		}
-
-		public <T extends Term<?>> T getValue(Class<T> clazz, String name,
-				boolean includeInherited) {
-
-			T value = clazz.cast(values.get(name));
-
-			if (includeInherited)
-				return value;
-
-			if (inherited.get(css.getOrdinal(name)))
-				return null;
-
-			return value;
-		}
-
-		public void push(Declaration d) {
-
-			Map<String, CSSProperty> properties = new HashMap<String, CSSProperty>(
-					7);
-			Map<String, Term<?>> terms = new HashMap<String, Term<?>>(7);
-
-			boolean result = dt.parseDeclaration(d, properties, terms);
-
-			// in case of false do not insert anything
-			if (!result)
-				return;
-
-			this.properties.putAll(properties);
-			this.values.putAll(terms);
-
-		}
-
-		public NodeData inheritFrom(NodeData parent) {
-			// TODO Auto-generated method stub
-			return this;
-		}
-
-		public NodeData concretize() {
-			// TODO Auto-generated method stub
-			return this;
-		}
 	}
 
 }
