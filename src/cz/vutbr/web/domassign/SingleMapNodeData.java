@@ -114,13 +114,13 @@ public class SingleMapNodeData implements NodeData {
 		return this;
 	}
 	
-	public NodeData inheritFrom(NodeData parent) {
+	public NodeData inheritFrom(NodeData parent) throws ClassCastException{
 		
 		if(parent==null)
 			return this;
 		
 		if(!(parent instanceof SingleMapNodeData))
-			throw new IllegalArgumentException(
+			throw new ClassCastException(
 					"Cant't inherit from NodeData different from "
 							+ this.getClass().getName() + "("+ parent.getClass().getName()+")");
 		

@@ -27,4 +27,12 @@ public interface RuleSet extends Rule<Declaration>, Comparable<RuleSet>,
 	 */
 	public RuleSet setSelectors(List<CombinedSelector> selectors);
 
+	/**
+	 * Compares with another instance of RuleSet
+	 * @throws ClassCastException When compared instance if a different
+	 * implementation
+	 * @see Comparable
+	 */
+	public int compareTo(RuleSet o) throws ClassCastException;
+	
 }

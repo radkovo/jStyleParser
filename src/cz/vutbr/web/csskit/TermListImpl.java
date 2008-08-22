@@ -1,6 +1,6 @@
 package cz.vutbr.web.csskit;
 
-import java.util.AbstractCollection;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermList;
 
-public class TermListImpl extends AbstractCollection<Term<?>> implements TermList {
+public class TermListImpl extends AbstractList<Term<?>> implements TermList {
 
 	protected List<Term<?>> value;
 	protected Operator operator;
@@ -26,21 +26,6 @@ public class TermListImpl extends AbstractCollection<Term<?>> implements TermLis
 	 */
 	public List<Term<?>> getValue() {
 		return value;
-	}
-	
-	@Override
-	public int size() {
-		return value.size();
-	}
-	
-	@Override
-	public Iterator<Term<?>> iterator() {
-		return value.iterator();
-	}
-	
-	@Override
-	public boolean add(Term<?> o) {
-		return value.add(o);
 	}
 	
 	/**
@@ -63,7 +48,54 @@ public class TermListImpl extends AbstractCollection<Term<?>> implements TermLis
 		this.operator = operator;
 		return this;
 	}
+	
+	@Override
+	public Term<?> get(int arg0) {
+		return value.get(arg0);
+	}
+	
+	@Override
+	public void add(int index, Term<?> element) {
+		value.add(index, element);
+	}
+	
+	@Override
+	public Term<?> remove(int index) {
+		return value.remove(index);
+	}
 
+	@Override
+	public int size() {
+		return value.size();
+	}
+	
+	@Override
+	public Iterator<Term<?>> iterator() {
+		return value.iterator();
+	}
+	
+	@Override
+	public boolean add(Term<?> o) {
+		return value.add(o);
+	}
+	
+	@Override
+	public String toString() {
+		
+		StringBuilder sb = new StringBuilder();
+		
+		// append operator
+		if(operator!=null) sb.append(operator.value());
+		
+		for(Term<?> element: value) {
+			if(element.getOperator()!=null) sb.append(element.getOperator().value());
+			sb.append(element.toString());
+		}
+		
+		return sb.toString();
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -100,8 +132,6 @@ public class TermListImpl extends AbstractCollection<Term<?>> implements TermLis
 		} else if (!value.equals(other.value))
 			return false;
 		return true;
-	}
-	
-	
+	}	
 	
 }

@@ -1,6 +1,5 @@
 package cz.vutbr.web.css;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -8,6 +7,6 @@ import java.util.List;
  * @author kapy
  *
  */
-public interface TermList extends Term<List<Term<?>>>, Collection<Term<?>> {
+public interface TermList extends Term<List<Term<?>>>, List<Term<?>> {
 
 }

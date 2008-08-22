@@ -1,7 +1,7 @@
 package cz.vutbr.web.css;
 
 /**
- * Holder of CSS properties defined for element. Enumeration values follows this
+ * Wrap of CSS properties defined for element. Enumeration values follows this
  * syntax:
  * 
  * <ul style="list-style:none"> <li>
@@ -83,8 +83,9 @@ public interface NodeData {
 	 * @param parent
 	 *            Source of inheritance
 	 * @return Modified instance
+	 * @throws ClassCastException When parent implementation class is not the same
 	 */
-	public NodeData inheritFrom(NodeData parent);
+	public NodeData inheritFrom(NodeData parent) throws ClassCastException;
 
 	/**
 	 * Replaces all <code>inherit</code> CSS properties either with values of

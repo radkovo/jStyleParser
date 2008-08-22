@@ -4,7 +4,7 @@ import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RulePage;
 
 /**
- * Holder of declarations bounded with pseudo-page 
+ * Wrap of declarations bounded with pseudo-page 
  * 
  * @author kapy
  * @author Jan Svercl, VUT Brno, 2008

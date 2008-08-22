@@ -4,7 +4,7 @@ import cz.vutbr.web.css.Selector.Operator;
 
 /**
  * Creates rules, declarations and selectors,
- * that is most of CSS grammar elements
+ * that is the most of CSS grammar elements
  * @author kapy
  *
  */
@@ -30,10 +30,17 @@ public interface RuleFactory {
 	ImportURI createImport();
 
 	/**
-	 * Creates CSS ruleset, that is collection of CSS declarations
-	 * with collection of CSS combined selectors
-	 * @param ad Additional data for ruleset
-	 * @return New CSS ruleset
+	 * Creates CSS rule set, that is collection of CSS declarations
+	 * with collection of CSS combined selectors. Additional data
+	 * are meant to be useful for determining rule order.
+	 * 
+	 * In current implementation of parser they are used to pass 
+	 * integer value by parser to preserve rule ordering according
+	 * to their occurrence in CSS style sheet.
+	 * 
+	 * 
+	 * @param ad Additional data for rule set
+	 * @return New CSS rule set
 	 */
 	RuleSet createSet(Object ad);
 
@@ -71,7 +78,7 @@ public interface RuleFactory {
 	/**
 	 * Creates CSS selector part, element attribute
 	 * @param value Value of attribute
-	 * @param isStringValue Value given is string or identificator
+	 * @param isStringValue Value given is string or identifier
 	 * @param operator Operator between value and attribute
 	 * @param attribute Name of attribute
 	 * @return New CSS element attribute selector part

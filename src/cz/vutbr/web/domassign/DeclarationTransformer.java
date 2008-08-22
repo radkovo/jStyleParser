@@ -96,8 +96,8 @@ import cz.vutbr.web.css.CSSProperty.ZIndex;
 import cz.vutbr.web.css.Term.Operator;
 
 /**
- * Contains methods to transform declaration into values applicable to
- * NodeData. Uses defaults defined by CSSFactory
+ * Contains methods to transform declaration into values applicable to NodeData.
+ * Uses defaults defined by CSSFactory
  * 
  * @author kapy
  * 
@@ -105,6 +105,12 @@ import cz.vutbr.web.css.Term.Operator;
 public class DeclarationTransformer {
 
 	private static Logger log = Logger.getLogger(DeclarationTransformer.class);
+
+	/**
+	 * Inherit acceptance flags
+	 */
+	private static final boolean AVOID_INH = true;
+	private static final boolean ALLOW_INH = false;
 
 	/**
 	 * Cache of parsing methods
@@ -115,7 +121,7 @@ public class DeclarationTransformer {
 	 * Singleton instance
 	 */
 	private static final DeclarationTransformer instance;
-	
+
 	private static final TermFactory tf = CSSFactory.getTermFactory();
 	private static final SupportedCSS css = CSSFactory.getSupportedCSS();
 
@@ -168,9 +174,9 @@ public class DeclarationTransformer {
 	 * @param d
 	 *            Declaration
 	 * @param properties
-	 *            Holder of parsed declaration's properties
+	 *            Wrap of parsed declaration's properties
 	 * @param values
-	 *            Holder of parsed declaration's value
+	 *            Wrap of parsed declaration's value
 	 * @return <code>true</code> in case of success, <code>false</code>
 	 *         otherwise
 	 */
@@ -180,7 +186,7 @@ public class DeclarationTransformer {
 		String propertyName = d.getProperty().toLowerCase();
 
 		CSSProperty defaultValue = css.getDefaultProperty(propertyName);
-				
+
 		// no such declaration is supported
 		if (defaultValue == null)
 			return false;
@@ -190,11 +196,12 @@ public class DeclarationTransformer {
 			if (m != null)
 				return (Boolean) m.invoke(this, d, properties, values);
 		} catch (IllegalArgumentException e) {
-			log.warn("Illegal argument: " + e);
+			log.warn("Illegal argument: ", e);
 		} catch (IllegalAccessException e) {
-			log.warn("Illegal access: " + e);
+			log.warn("Illegal access: ", e);
 		} catch (InvocationTargetException e) {
-			log.warn("Invocation target: " + e + e.getCause());
+			log.warn("Invocation target: ", e);
+			log.warn(e.getCause());
 		}
 
 		return false;
@@ -209,10 +216,10 @@ public class DeclarationTransformer {
 
 	private Map<String, Method> parsingMethods() {
 
-		Map<String, Method> map = new HashMap<String, Method>(SupportedCSS21
-				.getInstance().getTotalProperties(), 1.0f);
+		Map<String, Method> map = new HashMap<String, Method>(css
+				.getTotalProperties(), 1.0f);
 
-		for (String key : SupportedCSS21.getInstance().getDefinedPropertyNames()) {
+		for (String key : css.getDefinedPropertyNames()) {
 			try {
 				Method m = DeclarationTransformer.class.getDeclaredMethod(
 						DeclarationTransformer.camelCase("process-" + key),
@@ -228,22 +235,34 @@ public class DeclarationTransformer {
 		return map;
 	}
 
-	// generic methods
+	/****************************************************************
+	 * GENERIC METHODS *
+	 ****************************************************************/
 
 	/**
-	 * Converts term into property if it is contained in intersection set and is
-	 * valid property for given enum class
+	 * Converts TermIdent into CSSProperty using intersection set.
+	 * CSSProperty.Translator is used.
+	 * 
+	 * @param <T>
+	 *            Subclass of CSSProperty to be returned
+	 * @param type
+	 *            Class of property to be used to retrive value
+	 * @param intersection
+	 *            Intersection set or <code>null</code> if no intersection is
+	 *            used
+	 * @param term
+	 *            TermIdent to be transfered to property
+	 * @returns CSSProperty of type <T> or <code>null</code>            
 	 */
-	private <T extends Enum<T> & CSSProperty> T genericPropertyRaw(
-			Class<T> enumType, Set<T> intersection, TermIdent term) {
+	public <T extends CSSProperty> T genericPropertyRaw(Class<T> type,
+			Set<T> intersection, TermIdent term) {
 
 		try {
 			String name = term.getValue().replace("-", "_").toUpperCase();
-			T property = Enum.valueOf(enumType, name);
-			if (intersection.contains(property))
+			T property = CSSProperty.Translator.valueOf(type, name);
+			if (intersection != null && intersection.contains(property))
 				return property;
-
-			return null;
+			return property;
 		} catch (Exception e) {
 			return null;
 		}
@@ -259,6 +278,8 @@ public class DeclarationTransformer {
 	 *            Type of enum which instance is retrieved
 	 * @param term
 	 *            Term with value to be converted
+	 * @param avoidInherit
+	 *            If <code>true</code> inherit value is not considered valid
 	 * @param properties
 	 *            Properties map where to store value
 	 * @param propertyName
@@ -266,28 +287,20 @@ public class DeclarationTransformer {
 	 * @return <code>true</code> in case of success, <code>false</code>
 	 *         otherwise
 	 */
-	private <T extends Enum<T> & CSSProperty> boolean genericProperty(
-			Class<T> enumType, TermIdent term,
+	private <T extends CSSProperty> boolean genericProperty(Class<T> type,
+			TermIdent term, boolean avoidInherit,
 			Map<String, CSSProperty> properties, String propertyName) {
 
-		// try to find enum with given value and if so
-		// insert it inside
-		try {
-			String name = term.getValue().replace("-", "_").toUpperCase();
-			properties.put(propertyName, Enum.valueOf(enumType, name));
-			return true;
-		} catch (IllegalArgumentException e) {
-			// no such enum value
-		} catch (NullPointerException e) {
-			log.warn("TermIdent contained empty value!");
-		}
+		T property = genericPropertyRaw(type, null, term);
+		if (property==null || (avoidInherit && property.equalsInherit()))
+			return false;
 
-		return false;
-
+		properties.put(propertyName, property);
+		return true;
 	}
 
 	/**
-	 * Converts TermIdent into value of enum for given class
+	 * Converts TermIdent into value of CSSProperty for given class
 	 * 
 	 * @param <T>
 	 * @param enumType
@@ -295,20 +308,37 @@ public class DeclarationTransformer {
 	 * @param properties
 	 * @return
 	 */
-	private <T extends Enum<T> & CSSProperty> boolean genericTermIdent(
-			Class<T> enumType, Term<?> term, String propertyName,
+	private <T extends CSSProperty> boolean genericTermIdent(Class<T> type,
+			Term<?> term, boolean avoidInherit, String propertyName,
 			Map<String, CSSProperty> properties) {
 
 		if (term instanceof TermIdent) {
-			return genericProperty(enumType, (TermIdent) term, properties,
-					propertyName);
+			return genericProperty(type, (TermIdent) term, avoidInherit,
+					properties, propertyName);
 		}
 		return false;
-
 	}
 
-	private <T extends Enum<T> & CSSProperty> boolean genericTermColor(
-			Term<?> term, String propertyName, T colorIdentification,
+	/**
+	 * Converts term into Color and stored values and types in maps
+	 * 
+	 * @param <T>
+	 *            CSSProperty
+	 * @param term
+	 *            Term to be parsed
+	 * @param propertyName
+	 *            How to store colorIdentificiton
+	 * @param colorIdentification
+	 *            What to store under propertyName
+	 * @param properties
+	 *            Map to store property types
+	 * @param values
+	 *            Map to store property values
+	 * @return <code>true</code> in case of success, <code>false</code>
+	 *         otherwise
+	 */
+	private <T extends CSSProperty> boolean genericTermColor(Term<?> term,
+			String propertyName, T colorIdentification,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
 		if (term instanceof TermColor) {
@@ -326,9 +356,9 @@ public class DeclarationTransformer {
 	 * able to check even whether is above zero for numeric values
 	 * 
 	 * @param <T>
-	 *            Class of enum and CSSProperty to be used for result
+	 *            Class of CSSProperty to be used for result
 	 * @param termType
-	 *            Type of term to be
+	 *            Supposed type of term
 	 * @param term
 	 *            Term of which is supposed to be of type <code>termType</code>,
 	 *            that is input data
@@ -345,7 +375,7 @@ public class DeclarationTransformer {
 	 * @return <code>true</code> if succeeded in recognition, <code>false</code>
 	 *         otherwise
 	 */
-	private <T extends Enum<T> & CSSProperty> boolean genericTerm(
+	private <T extends CSSProperty> boolean genericTerm(
 			Class<? extends Term<?>> termType, Term<?> term,
 			String propertyName, T typeIdentification, boolean sanify,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
@@ -389,9 +419,9 @@ public class DeclarationTransformer {
 	 * term
 	 * 
 	 * @param <T>
-	 *            Type of enum
-	 * @param enumType
-	 *            Class of enum to be stored
+	 *            Type of CSSProperty
+	 * @param type
+	 *            Class of CSSProperty to be stored
 	 * @param d
 	 *            Declaration to be parsed
 	 * @param properties
@@ -399,14 +429,13 @@ public class DeclarationTransformer {
 	 * @return <code>true</code> in case of success, <code>false</code>
 	 *         elsewhere
 	 */
-	private <T extends Enum<T> & CSSProperty> boolean genericOneIdent(
-			Class<T> enumType, Declaration d,
-			Map<String, CSSProperty> properties) {
+	private <T extends CSSProperty> boolean genericOneIdent(Class<T> type,
+			Declaration d, Map<String, CSSProperty> properties) {
 
 		if (d.size() != 1)
 			return false;
 
-		return genericTermIdent(enumType, d.get(0), d.getProperty(),
+		return genericTermIdent(type, d.get(0), ALLOW_INH, d.getProperty(),
 				properties);
 	}
 
@@ -415,12 +444,12 @@ public class DeclarationTransformer {
 	 * term or one TermColor
 	 * 
 	 * @param <T>
-	 *            Type of enum
-	 * @param enumType
+	 *            Type of CSSProperty
+	 * @param type
 	 *            Class of enum to be stored
 	 * @param colorIdentification
-	 *            Instance of enum stored into properties to indicate that
-	 *            additional value of type TermColor is stored in values
+	 *            Instance of CSSProperty stored into properties to indicate
+	 *            that additional value of type TermColor is stored in values
 	 * @param d
 	 *            Declaration to be parsed
 	 * @param properties
@@ -429,65 +458,61 @@ public class DeclarationTransformer {
 	 * @return <code>true</code> in case of success, <code>false</code>
 	 *         elsewhere
 	 */
-	private <T extends Enum<T> & CSSProperty> boolean genericOneIdentOrColor(
-			Class<T> enumType, T colorIdentification, Declaration d,
+	private <T extends CSSProperty> boolean genericOneIdentOrColor(
+			Class<T> type, T colorIdentification, Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
 		if (d.size() != 1)
 			return false;
 
-		return genericTermIdent(enumType, d.get(0), d.getProperty(),
+		return genericTermIdent(type, d.get(0), ALLOW_INH, d.getProperty(),
 				properties)
 				|| genericTermColor(d.get(0), d.getProperty(),
 						colorIdentification, properties, values);
 	}
 
-	private <T extends Enum<T> & CSSProperty> boolean genericOneIdentOrInteger(
-			Class<T> enumType, T integerIdentification, boolean sanify,
+	private <T extends CSSProperty> boolean genericOneIdentOrInteger(
+			Class<T> type, T integerIdentification, boolean sanify,
 			Declaration d, Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values) {
 
 		if (d.size() != 1)
 			return false;
 
-		return genericTermIdent(enumType, d.get(0), d.getProperty(),
+		return genericTermIdent(type, d.get(0), ALLOW_INH, d.getProperty(),
 				properties)
-				|| genericTerm(TermInteger.class, d.get(0), d
-						.getProperty(), integerIdentification, sanify,
-						properties, values);
+				|| genericTerm(TermInteger.class, d.get(0), d.getProperty(),
+						integerIdentification, sanify, properties, values);
 	}
 
-	private <T extends Enum<T> & CSSProperty> boolean genericOneIdentOrLength(
-			Class<T> enumType, T lengthIdentification, boolean sanify,
+	private <T extends CSSProperty> boolean genericOneIdentOrLength(
+			Class<T> type, T lengthIdentification, boolean sanify,
 			Declaration d, Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values) {
 
 		if (d.size() != 1)
 			return false;
 
-		return genericTermIdent(enumType, d.get(0), d.getProperty(),
+		return genericTermIdent(type, d.get(0), ALLOW_INH, d.getProperty(),
 				properties)
-				|| genericTerm(TermLength.class, d.get(0), d
-						.getProperty(), lengthIdentification, sanify,
-						properties, values);
+				|| genericTerm(TermLength.class, d.get(0), d.getProperty(),
+						lengthIdentification, sanify, properties, values);
 	}
 
 	private <T extends Enum<T> & CSSProperty> boolean genericOneIdentOrLengthOrPercent(
-			Class<T> enumType, T lengthIdentification, T percentIdentification,
+			Class<T> type, T lengthIdentification, T percentIdentification,
 			boolean sanify, Declaration d, Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values) {
 
 		if (d.size() != 1)
 			return false;
 
-		return genericTermIdent(enumType, d.get(0), d.getProperty(),
+		return genericTermIdent(type, d.get(0), ALLOW_INH, d.getProperty(),
 				properties)
-				|| genericTerm(TermLength.class, d.get(0), d
-						.getProperty(), lengthIdentification, sanify,
-						properties, values)
-				|| genericTerm(TermPercent.class, d.get(0), d
-						.getProperty(), percentIdentification, sanify,
-						properties, values);
+				|| genericTerm(TermLength.class, d.get(0), d.getProperty(),
+						lengthIdentification, sanify, properties, values)
+				|| genericTerm(TermPercent.class, d.get(0), d.getProperty(),
+						percentIdentification, sanify, properties, values);
 	}
 
 	// =============================================================
@@ -504,35 +529,40 @@ public class DeclarationTransformer {
 	private boolean processBackgroundAttachement(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator background = new BackgroundVariator();
-		return background.tryOneTermVariant(BackgroundVariator.ATTACHEMENT, d, properties, values);
+		return background.tryOneTermVariant(BackgroundVariator.ATTACHEMENT, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBackgroundColor(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator background = new BackgroundVariator();
-		return background.tryOneTermVariant(BackgroundVariator.COLOR, d, properties, values);
+		return background.tryOneTermVariant(BackgroundVariator.COLOR, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBackgroundImage(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator background = new BackgroundVariator();
-		return background.tryOneTermVariant(BackgroundVariator.IMAGE, d, properties, values);
+		return background.tryOneTermVariant(BackgroundVariator.IMAGE, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBackgroundRepeat(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator background = new BackgroundVariator();
-		return background.tryOneTermVariant(BackgroundVariator.REPEAT, d, properties, values);
+		return background.tryOneTermVariant(BackgroundVariator.REPEAT, d,
+				properties, values);
 	}
-	
+
 	@SuppressWarnings("unused")
 	private boolean processBackgroundPosition(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator background = new BackgroundVariator();
-		return background.tryOneTermVariant(BackgroundVariator.POSITION, d, properties, values);
+		return background.tryOneTermVariant(BackgroundVariator.POSITION, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")
@@ -613,11 +643,10 @@ public class DeclarationTransformer {
 			Term<?> term = d.get(0);
 			String propertyName = d.getProperty();
 			// is it identifier or length ?
-			if (genericTermIdent(BorderSpacing.class, term, propertyName,
-					properties)
+			if (genericTermIdent(BorderSpacing.class, term, ALLOW_INH,
+					propertyName, properties)
 					|| genericTerm(TermLength.class, term, propertyName,
-							BorderSpacing.list_values, true, properties,
-							values)) {
+							BorderSpacing.list_values, true, properties, values)) {
 				// one term with length was inserted, double it
 				if (properties.get(propertyName) == BorderSpacing.list_values) {
 					TermList terms = tf.createList(2);
@@ -637,8 +666,7 @@ public class DeclarationTransformer {
 			if (genericTerm(TermLength.class, term1, propertyName,
 					BorderSpacing.list_values, true, properties, values)
 					&& genericTerm(TermLength.class, term2, propertyName,
-							BorderSpacing.list_values, true, properties,
-							values)) {
+							BorderSpacing.list_values, true, properties, values)) {
 				TermList terms = tf.createList(2);
 				terms.add(term1);
 				terms.add(term2);
@@ -848,12 +876,13 @@ public class DeclarationTransformer {
 		font.assignTermsFromDeclaration(d);
 		return font.vary(properties, values);
 	}
-	
+
 	@SuppressWarnings("unused")
 	private boolean processLineHeight(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator font = new FontVariator();
-		return font.tryOneTermVariant(FontVariator.LINE_HEIGHT, d, properties, values);
+		return font.tryOneTermVariant(FontVariator.LINE_HEIGHT, d, properties,
+				values);
 	}
 
 	@SuppressWarnings("unused")
@@ -964,7 +993,8 @@ public class DeclarationTransformer {
 				}
 				// counter reset value follows counter name
 				else if (term instanceof TermInteger && counterName != null) {
-					termList.add(tf.createPair(counterName, ((TermInteger) term).getValue()));
+					termList.add(tf.createPair(counterName,
+							((TermInteger) term).getValue()));
 					counterName = null;
 				} else {
 					return false;
@@ -986,8 +1016,7 @@ public class DeclarationTransformer {
 	private boolean processCounterReset(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
-		if (d.size() == 1
-				&& genericOneIdent(CounterReset.class, d, properties)) {
+		if (d.size() == 1 && genericOneIdent(CounterReset.class, d, properties)) {
 			return true;
 		}
 		// counter with resets
@@ -1003,7 +1032,8 @@ public class DeclarationTransformer {
 				}
 				// counter reset value follows counter name
 				else if (term instanceof TermInteger && counterName != null) {
-					termList.add(tf.createPair(counterName,((TermInteger) term).getValue()));
+					termList.add(tf.createPair(counterName,
+							((TermInteger) term).getValue()));
 					counterName = null;
 				} else {
 					return false;
@@ -1025,8 +1055,7 @@ public class DeclarationTransformer {
 	private boolean processCursor(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
-		if (d.size() == 1
-				&& genericOneIdent(Cursor.class, d, properties)) {
+		if (d.size() == 1 && genericOneIdent(Cursor.class, d, properties)) {
 			return true;
 		} else {
 
@@ -1290,7 +1319,7 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
 		if (d.size() == 1
-				&& genericTermIdent(Quotes.class, d.get(0),
+				&& genericTermIdent(Quotes.class, d.get(0), ALLOW_INH,
 						"quotes", properties)) {
 			return true;
 		} else {
@@ -1411,12 +1440,12 @@ public class DeclarationTransformer {
 		return genericOneIdentOrLength(WordSpacing.class, WordSpacing.length,
 				false, d, properties, values);
 	}
-	
+
 	@SuppressWarnings("unused")
 	private boolean processLetterSpacing(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLength(LetterSpacing.class, LetterSpacing.length,
-				false, d, properties, values);
+		return genericOneIdentOrLength(LetterSpacing.class,
+				LetterSpacing.length, false, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
@@ -1425,14 +1454,13 @@ public class DeclarationTransformer {
 		return genericOneIdentOrInteger(ZIndex.class, ZIndex.integer, false, d,
 				properties, values);
 	}
-	
+
 	@SuppressWarnings("unused")
 	private boolean processContent(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
 		// content contains no explicit values
-		if (d.size() == 1
-				&& genericOneIdent(Content.class, d, properties)) {
+		if (d.size() == 1 && genericOneIdent(Content.class, d, properties)) {
 			return true;
 		} else {
 
@@ -1489,11 +1517,18 @@ public class DeclarationTransformer {
 		public static final int TYPE = 1;
 		public static final int POSITION = 2;
 
-		protected String[] variantPropertyNames = { "list-style-image",
-				"list-style-type", "list-style-position" };
-
+		/*
+		 * protected String[] names = { "list-style-image", "list-style-type",
+		 * "list-style-position" };
+		 */
 		public ListStyleVariator() {
 			super(3);
+			names.add("list-style-image");
+			types.add(ListStyleImage.class);
+			names.add("list-style-type");
+			types.add(ListStyleType.class);
+			names.add("list-style-position");
+			types.add(ListStylePosition.class);
 		}
 
 		@Override
@@ -1503,33 +1538,23 @@ public class DeclarationTransformer {
 			switch (v) {
 			case IMAGE:
 				// list style image
-				return genericTermIdent(ListStyleImage.class, terms.get(i),
-						variantPropertyNames[v], properties)
-						|| genericTerm(TermURI.class, terms.get(i),
-								variantPropertyNames[v], ListStyleImage.uri,
-								false, properties, values);
+				return genericTermIdent(types.get(IMAGE), terms.get(i),
+						AVOID_INH, names.get(IMAGE), properties)
+						|| genericTerm(TermURI.class, terms.get(i), names
+								.get(IMAGE), ListStyleImage.uri, false,
+								properties, values);
 			case TYPE:
 				// list style type
 				return genericTermIdent(ListStyleType.class, terms.get(i),
-						variantPropertyNames[v], properties);
+						AVOID_INH, names.get(TYPE), properties);
 			case POSITION:
 				// list style position
 				return genericTermIdent(ListStylePosition.class, terms.get(i),
-						variantPropertyNames[v], properties);
+						AVOID_INH, names.get(POSITION), properties);
 			default:
 				return false;
 			}
 		}
-
-		@Override
-		protected boolean inheritance(Map<String, CSSProperty> properties,
-				Map<String, Term<?>> values) {
-			properties.put(variantPropertyNames[IMAGE], ListStyleImage.INHERIT);
-			properties.put(variantPropertyNames[TYPE], ListStyleType.INHERIT);
-			properties.put(variantPropertyNames[POSITION], ListStylePosition.INHERIT);
-			return true;
-		}
-
 	}
 
 /**
@@ -1549,15 +1574,14 @@ public class DeclarationTransformer {
 		public static final int STYLE = 1;
 		public static final int WIDTH = 2;
 
-		public BorderSideVariator() {
-			super(3);
-		}
-
 		public BorderSideVariator(String side) {
 			super(3);
-			this.variantPropertyNames = new String[] {
-					"border-" + side + "-color", "border-" + side + "-style",
-					"border-" + side + "-width" };
+			names.add("border-" + side + "-color");
+			types.add(BorderColor.class);
+			names.add("border-" + side + "-style");
+			types.add(BorderStyle.class);
+			names.add("border-" + side + "-width");
+			types.add(BorderWidth.class);
 		}
 
 		@Override
@@ -1565,38 +1589,28 @@ public class DeclarationTransformer {
 				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
 			switch (v) {
-			case 0:
+			case COLOR:
 				// process color
-				return genericTermIdent(BorderColor.class, terms.get(i),
-						variantPropertyNames[v], properties)
-						|| genericTermColor(terms.get(i),
-								variantPropertyNames[v], BorderColor.color,
-								properties, values);
-			case 1:
+				return genericTermIdent(types.get(COLOR), terms.get(i),
+						AVOID_INH, names.get(COLOR), properties)
+						|| genericTermColor(terms.get(i), names.get(COLOR),
+								BorderColor.color, properties, values);
+			case STYLE:
 				// process style
-				return genericTermIdent(BorderStyle.class, terms.get(i),
-						variantPropertyNames[v], properties);
-			case 2:
+				return genericTermIdent(types.get(STYLE), terms.get(i),
+						AVOID_INH, names.get(STYLE), properties);
+			case WIDTH:
 				// process width
-				return genericTermIdent(BorderWidth.class, terms.get(i),
-						variantPropertyNames[v], properties)
-						|| genericTerm(TermLength.class, terms.get(i),
-								variantPropertyNames[v], BorderWidth.length,
-								true, properties, values);
+				return genericTermIdent(types.get(WIDTH), terms.get(i),
+						AVOID_INH, names.get(WIDTH), properties)
+						|| genericTerm(TermLength.class, terms.get(i), names
+								.get(WIDTH), BorderWidth.length, true,
+								properties, values);
 			default:
 				return false;
 			}
+			
 		}
-
-		@Override
-		protected boolean inheritance(Map<String, CSSProperty> properties,
-				Map<String, Term<?>> values) {
-			properties.put(variantPropertyNames[COLOR], BorderColor.INHERIT);
-			properties.put(variantPropertyNames[STYLE], BorderStyle.INHERIT);
-			properties.put(variantPropertyNames[WIDTH], BorderWidth.INHERIT);
-			return true;
-		}
-
 	}
 
 	/**
@@ -1616,11 +1630,14 @@ public class DeclarationTransformer {
 		public static final int STYLE = 1;
 		public static final int WIDTH = 2;
 
-		protected String[] variantPropertyNames = { "outline-color",
-				"outline-style", "outline-width" };
-
 		public OutlineVariator() {
 			super(3);
+			names.add("outline-color");
+			types.add(OutlineColor.class);
+			names.add("outline-style");
+			types.add(OutlineStyle.class);
+			names.add("outline-width");
+			types.add(OutlineWidth.class);
 		}
 
 		@Override
@@ -1630,36 +1647,25 @@ public class DeclarationTransformer {
 			switch (v) {
 			case COLOR:
 				// process color
-				return genericTermIdent(OutlineColor.class, terms.get(i),
-						variantPropertyNames[v], properties)
-						|| genericTermColor(terms.get(i),
-								variantPropertyNames[v], OutlineColor.color,
-								properties, values);
+				return genericTermIdent(types.get(COLOR), terms.get(i),
+						AVOID_INH, names.get(COLOR), properties)
+						|| genericTermColor(terms.get(i), names.get(COLOR),
+								OutlineColor.color, properties, values);
 			case STYLE:
 				// process style
-				return genericTermIdent(OutlineStyle.class, terms.get(i),
-						variantPropertyNames[v], properties);
+				return genericTermIdent(types.get(STYLE), terms.get(i),
+						AVOID_INH, names.get(STYLE), properties);
 			case WIDTH:
 				// process width
-				return genericTermIdent(OutlineWidth.class, terms.get(i),
-						variantPropertyNames[v], properties)
-						|| genericTerm(TermLength.class, terms.get(i),
-								variantPropertyNames[v], OutlineWidth.length,
-								true, properties, values);
+				return genericTermIdent(types.get(WIDTH), terms.get(i),
+						AVOID_INH, names.get(WIDTH), properties)
+						|| genericTerm(TermLength.class, terms.get(i), names
+								.get(WIDTH), OutlineWidth.length, true,
+								properties, values);
 			default:
 				return false;
 			}
 		}
-
-		@Override
-		protected boolean inheritance(Map<String, CSSProperty> properties,
-				Map<String, Term<?>> values) {
-			properties.put(variantPropertyNames[COLOR], OutlineColor.INHERIT);
-			properties.put(variantPropertyNames[STYLE], OutlineStyle.INHERIT);
-			properties.put(variantPropertyNames[WIDTH], OutlineWidth.INHERIT);
-			return true;
-		}
-
 	}
 
 /**
@@ -1688,24 +1694,20 @@ public class DeclarationTransformer {
 		public static final int LINE_HEIGHT = 4;
 		public static final int FAMILY = 5;
 
-		protected String[] variantPropertyNames = { "font-style",
-				"font-variant", "font-weight", "font-size", "line-height",
-				"font-family" };
-
 		public FontVariator() {
 			super(6);
-		}
-
-		@Override
-		protected boolean inheritance(Map<String, CSSProperty> properties,
-				Map<String, Term<?>> values) {
-			properties.put(variantPropertyNames[STYLE], FontStyle.INHERIT);
-			properties.put(variantPropertyNames[VARIANT], FontVariant.INHERIT);
-			properties.put(variantPropertyNames[WEIGHT], FontWeight.INHERIT);
-			properties.put(variantPropertyNames[SIZE], FontSize.INHERIT);
-			properties.put(variantPropertyNames[LINE_HEIGHT], LineHeight.INHERIT);
-			properties.put(variantPropertyNames[FAMILY], FontFamily.INHERIT);
-			return true;
+			names.add("font-style");
+			types.add(FontStyle.class);
+			names.add("font-variant");
+			types.add(FontVariant.class);
+			names.add("font-weight");
+			types.add(FontWeight.class);
+			names.add("font-size");
+			types.add(FontSize.class);
+			names.add("line-height");
+			types.add(LineHeight.class);
+			names.add("font-family");
+			types.add(FontFamily.class);
 		}
 
 		@Override
@@ -1715,12 +1717,12 @@ public class DeclarationTransformer {
 			switch (v) {
 			case STYLE:
 				// process font style
-				return genericTermIdent(FontStyle.class, terms.get(i),
-						variantPropertyNames[STYLE], properties);
+				return genericTermIdent(types.get(STYLE), terms.get(i),
+						AVOID_INH, names.get(STYLE), properties);
 			case VARIANT:
 				// process font variant
-				return genericTermIdent(FontVariant.class, terms.get(i),
-						variantPropertyNames[VARIANT], properties);
+				return genericTermIdent(types.get(VARIANT), terms.get(i),
+						AVOID_INH, names.get(VARIANT), properties);
 			case WEIGHT:
 				// process font weight
 				// test against numeric values
@@ -1730,8 +1732,8 @@ public class DeclarationTransformer {
 				Term<?> term = terms.get(i);
 
 				if (term instanceof TermIdent) {
-					return genericProperty(FontWeight.class, (TermIdent) term,
-							properties, variantPropertyNames[WEIGHT]);
+					return genericProperty(types.get(WEIGHT), (TermIdent) term,
+							AVOID_INH, properties, names.get(WEIGHT));
 				} else if (term instanceof TermInteger) {
 
 					Integer value = ((TermInteger) term).getValue();
@@ -1742,45 +1744,45 @@ public class DeclarationTransformer {
 							break;
 
 						// match
-						// construct according enum name
+						// construct according CSSProperty name
 						if (result == 0) {
-							try {
-								properties.put(variantPropertyNames[WEIGHT],
-										FontWeight.valueOf("numeric_"
-												+ value.intValue()));
-								return true;
-							} catch (IllegalArgumentException e) {
+							CSSProperty property = CSSProperty.Translator
+									.valueOf(types.get(WEIGHT), "numeric_"
+											+ value.intValue());
+							if (property == null) {
 								log
 										.warn("Not found numeric values for FontWeight: "
 												+ "numeric_ "
 												+ value.intValue());
 								return false;
 							}
+							properties.put(names.get(WEIGHT), property);
+							return true;
 						}
 					}
 				}
 				return false;
 			case SIZE:
-				return genericTermIdent(FontSize.class, terms.get(i), 
-								variantPropertyNames[SIZE], properties) 
-						|| genericTerm(TermLength.class, terms.get(i), 
-								variantPropertyNames[SIZE], 
-								FontSize.length, true, properties, values)
-						|| genericTerm(TermPercent.class, terms.get(i), 
-								variantPropertyNames[SIZE], 
-								FontSize.percentage, true, properties, values);
+				return genericTermIdent(types.get(SIZE), terms.get(i),
+						AVOID_INH, names.get(SIZE), properties)
+						|| genericTerm(TermLength.class, terms.get(i), names
+								.get(SIZE), FontSize.length, true, properties,
+								values)
+						|| genericTerm(TermPercent.class, terms.get(i), names
+								.get(SIZE), FontSize.percentage, true,
+								properties, values);
 			case LINE_HEIGHT:
-				return genericTermIdent(LineHeight.class, terms.get(i), 
-						variantPropertyNames[LINE_HEIGHT], properties)
-				|| genericTerm(TermNumber.class, terms.get(i), 
-						variantPropertyNames[LINE_HEIGHT], LineHeight.number, true, properties,
-						values)
-				|| genericTerm(TermPercent.class, terms.get(i), 
-						variantPropertyNames[LINE_HEIGHT], LineHeight.percentage, true,
-						properties, values)
-				|| genericTerm(TermLength.class, terms.get(i),
-						variantPropertyNames[LINE_HEIGHT], LineHeight.length, true, properties,
-						values);
+				return genericTermIdent(types.get(LINE_HEIGHT), terms.get(i),
+						AVOID_INH, names.get(LINE_HEIGHT), properties)
+						|| genericTerm(TermNumber.class, terms.get(i), names
+								.get(LINE_HEIGHT), LineHeight.number, true,
+								properties, values)
+						|| genericTerm(TermPercent.class, terms.get(i), names
+								.get(LINE_HEIGHT), LineHeight.percentage, true,
+								properties, values)
+						|| genericTerm(TermLength.class, terms.get(i), names
+								.get(LINE_HEIGHT), LineHeight.length, true,
+								properties, values);
 			case FAMILY:
 				// all values parsed
 				TermList list = tf.createList();
@@ -1788,27 +1790,28 @@ public class DeclarationTransformer {
 				StringBuffer sb = new StringBuffer();
 				// font name was composed from multiple parts
 				boolean composed = false;
-				for(Term<?> t: terms.subList(i, terms.size())) {
+				for (Term<?> t : terms.subList(i, terms.size())) {
 					// first item
-					if(t instanceof TermIdent && t.getOperator()==null) {
+					if (t instanceof TermIdent && t.getOperator() == null) {
 						sb.append(t.getValue());
 						composed = false;
 					}
 					// next item
-					else if(t instanceof TermIdent && t.getOperator()==Operator.SPACE) {
+					else if (t instanceof TermIdent
+							&& t.getOperator() == Operator.SPACE) {
 						sb.append(" ").append(t.getValue());
 						composed = true;
 					}
 					// store current state
-					else if(t instanceof TermString || (t instanceof TermIdent && t.getOperator()==Operator.COMMA)) {
+					else if (t instanceof TermString
+							|| (t instanceof TermIdent && t.getOperator() == Operator.COMMA)) {
 						storeFamilyName(list, sb.toString(), composed);
 						sb = new StringBuffer();
-						composed=false;
+						composed = false;
 						// store next
-						if(t instanceof TermString) {
+						if (t instanceof TermString) {
 							storeFamilyName(list, (String) t.getValue(), true);
-						}
-						else {
+						} else {
 							sb.append(t.getValue());
 						}
 					}
@@ -1818,19 +1821,21 @@ public class DeclarationTransformer {
 				}
 				// add last item
 				storeFamilyName(list, sb.toString(), composed);
-				
-				if(list.isEmpty())
+
+				if (list.isEmpty())
 					return false;
-				
+
 				// when only generic family is stored, there is no need to have
 				// list with one value
-				if(list.size()==1 && (list.toArray(new Term<?>[0])[0] instanceof TermString)==false) {
-					properties.put(variantPropertyNames[FAMILY], (FontFamily) (list.toArray(new Term<?>[0])[0]).getValue());
+				if (list.size() == 1
+						&& (list.toArray(new Term<?>[0])[0] instanceof TermString) == false) {
+					properties.put(names.get(FAMILY), (FontFamily) (list
+							.toArray(new Term<?>[0])[0]).getValue());
 					return true;
 				}
-								
-				properties.put(variantPropertyNames[FAMILY], FontFamily.list_values);
-				values.put(variantPropertyNames[FAMILY], list);
+
+				properties.put(names.get(FAMILY), FontFamily.list_values);
+				values.put(names.get(FAMILY), list);
 				return true;
 			default:
 				return false;
@@ -1839,8 +1844,8 @@ public class DeclarationTransformer {
 
 		@Override
 		protected boolean variantCondition(int variant, int term) {
-			
-			switch(variant) {
+
+			switch (variant) {
 			case STYLE:
 			case VARIANT:
 			case WEIGHT:
@@ -1850,8 +1855,9 @@ public class DeclarationTransformer {
 				// no condition
 				return true;
 			case LINE_HEIGHT:
-				if(!variantPassed[SIZE]) return false;
-				return terms.get(term).getOperator()==Operator.SLASH;
+				if (!variantPassed[SIZE])
+					return false;
+				return terms.get(term).getOperator() == Operator.SLASH;
 			case FAMILY:
 				// requires passed size
 				return variantPassed[SIZE];
@@ -1869,51 +1875,53 @@ public class DeclarationTransformer {
 			// this will break inheritance division into distint categories,
 			// so it must be reconstructed later
 			if (terms.size() == 1 && terms.get(0) instanceof TermIdent) {
-				boolean value = genericTermIdent(Font.class, terms.get(0), "font",
-						properties);
-				// reconstruction
-				// inheritance values will be divided into subcategories
-				if(value && "inherit".equals(((TermIdent) terms.get(0)).getValue())) {
-					properties.remove("font");
-					return inheritance(properties, values);
-				}
-				
-				return value;
+
+				if (checkInherit(ALL_VARIANTS, terms.get(0), properties))
+					return true;
+
+				return genericTermIdent(Font.class, terms.get(0), AVOID_INH,
+						"font", properties);
 			}
 			// follow basic control flow
 			return super.vary(properties, values);
 		}
-		
-		private void storeFamilyName(TermList storage, String name, boolean composed) {
-			
-			final Set<FontFamily> allowedFamilies = EnumSet.complementOf(
-					EnumSet.of(FontFamily.INHERIT, FontFamily.list_values));
-			
-			if(name==null || "".equals(name) || name.length()==0)
+
+		private void storeFamilyName(TermList storage, String name,
+				boolean composed) {
+
+			final Set<FontFamily> allowedFamilies = EnumSet
+					.complementOf(EnumSet.of(FontFamily.INHERIT,
+							FontFamily.list_values));
+
+			if (name == null || "".equals(name) || name.length() == 0)
 				return;
-		
+
 			// if composed, store directly as family name
-			if(composed)
+			if (composed)
 				storage.add(tf.createString(name));
 			// try to find generic name
 			else {
-				FontFamily generic = genericPropertyRaw(FontFamily.class, allowedFamilies, 
-						tf.createIdent(name));
+				FontFamily generic = genericPropertyRaw(FontFamily.class,
+						allowedFamilies, tf.createIdent(name));
 				// generic name found,
 				// store in term which value is generic font name FontFamily
-				if(generic!=null) {
-					storage.add(tf.createTerm(generic));
+				// we have to append even operator
+				if (generic != null) {
+					storage.add(tf.createTerm(generic).setOperator(
+							Operator.COMMA));
 				}
 				// generic name not found, store as family name
+				// we have to append even operator
 				else {
-					storage.add(tf.createString(name));
+					storage.add(tf.createString(name).setOperator(
+							Operator.COMMA));
 				}
 			}
 		}
 
 	}
 
-	/**
+/**
 	 * Background variator.
 	 * Grammar:
 	 * <pre>
@@ -1927,63 +1935,69 @@ public class DeclarationTransformer {
 	 * @author kapy
 	 */
 	private final class BackgroundVariator extends Variator {
-		
+
 		public static final int COLOR = 0;
 		public static final int IMAGE = 1;
 		public static final int REPEAT = 2;
 		public static final int ATTACHEMENT = 3;
 		public static final int POSITION = 4;
 
-		protected String[] variantPropertyNames = { "background-color",
-				"background-image", "background-repeat", 
-				"background-attachement", "background-position" };
-
 		public BackgroundVariator() {
 			super(5);
+			names.add("background-color");
+			types.add(BackgroundColor.class);
+			names.add("background-image");
+			types.add(BackgroundImage.class);
+			names.add("background-repeat");
+			types.add(BackgroundRepeat.class);
+			names.add("background-attachement");
+			types.add(BackgroundAttachment.class);
+			names.add("background-position");
+			types.add(BackgroundPosition.class);
 		}
-		
-		@Override
-		protected boolean inheritance(Map<String, CSSProperty> properties,
-				Map<String, Term<?>> values) {
-			properties.put(variantPropertyNames[COLOR], BackgroundColor.INHERIT);
-			properties.put(variantPropertyNames[IMAGE], BackgroundImage.INHERIT);
-			properties.put(variantPropertyNames[REPEAT], BackgroundRepeat.INHERIT);
-			properties.put(variantPropertyNames[ATTACHEMENT], BackgroundAttachment.INHERIT);
-			properties.put(variantPropertyNames[POSITION], BackgroundPosition.INHERIT);
-			return true;
-		}
-		
+
 		@Override
 		protected boolean variant(int v, int i,
 				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-			
-			switch(v) {
+
+			switch (v) {
 			case COLOR:
-				return genericTermIdent(BackgroundColor.class, terms.get(i), 
-							variantPropertyNames[COLOR], properties)
-						|| genericTermColor(terms.get(i), variantPropertyNames[COLOR],
+				return genericTermIdent(types.get(COLOR), terms.get(i),
+						AVOID_INH, names.get(COLOR), properties)
+						|| genericTermColor(terms.get(i), names.get(COLOR),
 								BackgroundColor.color, properties, values);
 			case IMAGE:
-				return genericTermIdent(BackgroundImage.class, terms.get(i), 
-							variantPropertyNames[IMAGE],properties)
-						|| genericTerm(TermURI.class, terms.get(i), 
-							variantPropertyNames[IMAGE], BackgroundImage.uri, 
-							false, properties, values);
+				return genericTermIdent(types.get(IMAGE), terms.get(i),
+						AVOID_INH, names.get(IMAGE), properties)
+						|| genericTerm(TermURI.class, terms.get(i), names
+								.get(IMAGE), BackgroundImage.uri, false,
+								properties, values);
 			case REPEAT:
-				return genericTermIdent(BackgroundRepeat.class, terms.get(i),
-							variantPropertyNames[REPEAT], properties);
+				return genericTermIdent(types.get(REPEAT), terms.get(i),
+						AVOID_INH, names.get(REPEAT), properties);
 			case ATTACHEMENT:
-				return genericTermIdent(BackgroundRepeat.class, terms.get(i),
-						variantPropertyNames[REPEAT], properties);
+				return genericTermIdent(types.get(ATTACHEMENT), terms.get(i),
+						AVOID_INH, names.get(ATTACHEMENT), properties);
 			case POSITION:
+
+				final EnumSet<BackgroundPosition> allowedBackground = EnumSet
+						.complementOf(EnumSet
+								.of(BackgroundPosition.list_values));
+
+				Term<?> t1 = terms.get(i);
+				if (t1 instanceof TermIdent) {
+					BackgroundPosition bp = genericPropertyRaw(
+							BackgroundPosition.class, allowedBackground,
+							(TermIdent) t1);
+					// if(bp!=null)
+				}
 				// TODO background-position
 			default:
 				return false;
 			}
 		}
-		
 	}
-	
+
 	/**
 	 * Border style repeater
 	 * 
@@ -1992,20 +2006,21 @@ public class DeclarationTransformer {
 	 */
 	private final class BorderStyleRepeater extends Repeater {
 
-		protected String[] propertyNames = new String[] { "border-top-style",
-				"border-right-style", "border-bottom-style",
-				"border-left-style" };
-
 		public BorderStyleRepeater() {
 			super(4);
+			this.type = BorderStyle.class;
+			names.add("border-top-style");
+			names.add("border-right-style");
+			names.add("border-bottom-style");
+			names.add("border-left-style");
 		}
 
 		@Override
 		protected boolean operation(int i, Map<String, CSSProperty> properties,
 				Map<String, Term<?>> values) {
 
-			return genericTermIdent(BorderStyle.class, terms[i],
-					propertyNames[i], properties);
+			return genericTermIdent(BorderStyle.class, terms.get(i), AVOID_INH,
+					names.get(i), properties);
 		}
 	}
 
@@ -2017,21 +2032,22 @@ public class DeclarationTransformer {
 	 */
 	private final class BorderColorRepeater extends Repeater {
 
-		protected String[] propertyNames = new String[] { "border-top-color",
-				"border-right-color", "border-bottom-color",
-				"border-left-color" };
-
 		public BorderColorRepeater() {
 			super(4);
+			this.type = BorderColor.class;
+			names.add("border-top-color");
+			names.add("border-right-color");
+			names.add("border-bottom-color");
+			names.add("border-left-color");
 		}
 
 		@Override
 		protected boolean operation(int i, Map<String, CSSProperty> properties,
 				Map<String, Term<?>> values) {
 
-			return genericTermIdent(BorderColor.class, terms[i],
-					propertyNames[i], properties)
-					|| genericTerm(TermColor.class, terms[i], propertyNames[i],
+			return genericTermIdent(type, terms.get(i), AVOID_INH,
+					names.get(i), properties)
+					|| genericTerm(TermColor.class, terms.get(i), names.get(i),
 							BorderColor.color, false, properties, values);
 		}
 	}
@@ -2044,23 +2060,24 @@ public class DeclarationTransformer {
 	 */
 	private final class BorderWidthRepeater extends Repeater {
 
-		protected String[] propertyNames = new String[] { "border-top-width",
-				"border-right-width", "border-bottom-width",
-				"border-left-width" };
-
 		public BorderWidthRepeater() {
 			super(4);
+			this.type = BorderWidth.class;
+			names.add("border-top-width");
+			names.add("border-right-width");
+			names.add("border-bottom-width");
+			names.add("border-left-width");
 		}
 
 		@Override
 		protected boolean operation(int i, Map<String, CSSProperty> properties,
 				Map<String, Term<?>> values) {
 
-			return genericTermIdent(BorderWidth.class, terms[i],
-					propertyNames[i], properties)
-					|| genericTerm(TermLength.class, terms[i],
-							propertyNames[i], BorderWidth.length, true,
-							properties, values);
+			return genericTermIdent(type, terms.get(i), AVOID_INH,
+					names.get(i), properties)
+					|| genericTerm(TermLength.class, terms.get(i),
+							names.get(i), BorderWidth.length, true, properties,
+							values);
 		}
 	}
 
@@ -2072,25 +2089,28 @@ public class DeclarationTransformer {
 	 */
 	private final class MarginRepeater extends Repeater {
 
-		protected String[] propertyNames = new String[] { "margin-top",
-				"margin-right", "margin-bottom", "margin-left" };
-
 		public MarginRepeater() {
 			super(4);
+			this.type = Margin.class;
+			names.add("margin-top");
+			names.add("margin-right");
+			names.add("margin-bottom");
+			names.add("margin-left");
+
 		}
 
 		@Override
 		protected boolean operation(int i, Map<String, CSSProperty> properties,
 				Map<String, Term<?>> values) {
 
-			return genericTermIdent(Margin.class, terms[i], propertyNames[i],
-					properties)
-					|| genericTerm(TermLength.class, terms[i],
-							propertyNames[i], Margin.length, false, properties,
+			return genericTermIdent(type, terms.get(i), AVOID_INH,
+					names.get(i), properties)
+					|| genericTerm(TermLength.class, terms.get(i),
+							names.get(i), Margin.length, false, properties,
 							values)
-					|| genericTerm(TermPercent.class, terms[i],
-							propertyNames[i], Margin.percentage, false,
-							properties, values);
+					|| genericTerm(TermPercent.class, terms.get(i), names
+							.get(i), Margin.percentage, false, properties,
+							values);
 		}
 	}
 
@@ -2102,25 +2122,27 @@ public class DeclarationTransformer {
 	 */
 	private final class PaddingRepeater extends Repeater {
 
-		protected String[] propertyNames = new String[] { "padding-top",
-				"padding-right", "padding-bottom", "padding-left" };
-
 		public PaddingRepeater() {
 			super(4);
+			names.add("padding-top");
+			names.add("padding-right");
+			names.add("padding-bottom");
+			names.add("padding-left");
+			this.type = Padding.class;
 		}
 
 		@Override
 		protected boolean operation(int i, Map<String, CSSProperty> properties,
 				Map<String, Term<?>> values) {
 
-			return genericTermIdent(Margin.class, terms[i], propertyNames[i],
-					properties)
-					|| genericTerm(TermLength.class, terms[i],
-							propertyNames[i], Margin.length, false, properties,
+			return genericTermIdent(type, terms.get(i), AVOID_INH,
+					names.get(i), properties)
+					|| genericTerm(TermLength.class, terms.get(i),
+							names.get(i), Padding.length, false, properties,
 							values)
-					|| genericTerm(TermPercent.class, terms[i],
-							propertyNames[i], Margin.percentage, false,
-							properties, values);
+					|| genericTerm(TermPercent.class, terms.get(i), names
+							.get(i), Padding.percentage, false, properties,
+							values);
 		}
 	}
 
@@ -2131,11 +2153,14 @@ public class DeclarationTransformer {
 	 * 
 	 */
 	private final class ClipRepeater extends Repeater {
-		protected String[] propertyNames = new String[] { "clip-top",
-				"clip-right", "clip-bottom", "clip-left" };
 
 		public ClipRepeater() {
 			super(4);
+			names.add("clip-top");
+			names.add("clip-right");
+			names.add("clip-bottom");
+			names.add("clip-left");
+			this.type = Clip.class;
 		}
 
 		@Override
@@ -2146,14 +2171,14 @@ public class DeclarationTransformer {
 
 			Clip clip = null;
 
-			if (terms[i] instanceof TermIdent
+			if (terms.get(i) instanceof TermIdent
 					&& (clip = genericPropertyRaw(Clip.class, allowedClips,
-							(TermIdent) terms[i])) != null) {
-				properties.put(propertyNames[i], clip);
+							(TermIdent) terms.get(i))) != null) {
+				properties.put(names.get(i), clip);
 				return true;
 			} else
-				return genericTerm(TermLength.class, terms[i],
-						propertyNames[i], Clip.rect, false, properties, values);
+				return genericTerm(TermLength.class, terms.get(i),
+						names.get(i), Clip.rect, false, properties, values);
 		}
 	}
 

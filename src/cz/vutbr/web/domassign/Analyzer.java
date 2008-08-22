@@ -149,7 +149,7 @@ public class Analyzer {
 	 * @param e
 	 *            DOM Element
 	 * @param holder
-	 *            Holder
+	 *            Wrap
 	 */
 	private void assignDeclarationsToElement(
 			Map<Element, List<Declaration>> declarations, TreeWalker walker,
@@ -437,9 +437,9 @@ public class Analyzer {
 	 * Inserts rules into holder
 	 * 
 	 * @param holder
-	 *            Holder to be inserted
+	 *            Wrap to be inserted
 	 * @param hs
-	 *            Holder's selector and key
+	 *            Wrap's selector and key
 	 * @param value
 	 *            Value to be inserted
 	 */

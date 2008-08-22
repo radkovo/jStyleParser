@@ -1,13 +1,42 @@
 package cz.vutbr.web.css;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Interface for definition of CSS properties. This interface simplifies storing
  * of values in maps, and provides basic inheritance support.
+ * 
+ * All implementations of this interface should provide static value with
+ * signature:
+ * 
+ * <pre><b>public static</b> CSSProperty valueOf(String value);</pre>
+ * 
+ * to retrieve instance of property by string value. Since enum classes
+ * provides this value automatically, it is encouraged to use them.
+ * 
+ * For make use of enums easier, this contract should be followed:
+ * 
+ * All values directly represented in CSS style sheet such as:
+ * <code>float: <b>left</b>;</code> or <code>background-repeat: 
+ * <b>repeat-x</b>;</code> should to converted to upper case and 
+ * all not alphanumeric characters should be converted into underscores
+ * (<code>_</code>), for example <code>REPEAT_X</code>
+ * 
+ * All other values, with essentially requires additional data, should 
+ * broke enum standard and use lower case letters only. This way it is
+ * guaranteed that this value won't never be considered as a keyword. 
  * 
  * @author kapy
  * 
  */
 public interface CSSProperty {
+
+	/**
+	 * CSS "inherit" keyword for retrieving instance by Translator object
+	 */
+	public static final String INHERIT_KEYWORD = "INHERIT";
 
 	/**
 	 * Allows declarations of properties to inherit or to be inherited
@@ -31,6 +60,61 @@ public interface CSSProperty {
 	 * @return String
 	 */
 	public String toString();
+	
+	/***************************************************************
+	 * TRANSLATOR *
+	 ****************************************************************/
+
+	/**
+	 * Retrieves value of property of given class and text value
+	 * 
+	 * @author kapy
+	 * 
+	 */
+	public static class Translator {
+
+		/**
+		 * Methods cache
+		 */
+		private static Map<Class<? extends CSSProperty>, Method> translators = new HashMap<Class<? extends CSSProperty>, Method>();
+
+		/**
+		 * Retrieves CSSProperty by its name and class
+		 * 
+		 * @param type
+		 *            Class of CSSProperty
+		 * @param value
+		 *            Text value
+		 * @return CSSProperty if found, <code>null</code> elsewhere
+		 */
+		@SuppressWarnings("unchecked")
+		public static final <T extends CSSProperty> T valueOf(Class<T> type,
+				String value) {
+			try {
+				Method m = translators.get(type);
+				if (m == null) {
+					m = type.getMethod("valueOf", String.class);
+				}
+				return (T) m.invoke(null, value);
+			} catch (Exception e) {
+				return null;
+				/*
+				throw new IllegalArgumentException("Unable to get: " + value
+						+ " for: " + type.getName(), e);
+				*/		
+			}
+		}
+		
+		/**
+		 * Creates "inherit" instance
+		 * @param type Type of CSS property
+		 * @return Should always return CSS instance. If <code>null</code> is returned, something
+		 * is flawed.
+		 */
+		public static final <T extends CSSProperty> T createInherit(Class<T> type) {
+			return valueOf(type, INHERIT_KEYWORD);
+		}
+	}
 
 	/************************************************************************
 	 * CSS PROPERTIES *
@@ -61,6 +145,7 @@ public interface CSSProperty {
 		public String toString() {
 			return text;
 		}
+
 	}
 
 	public enum Color implements CSSProperty {
@@ -242,7 +327,7 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
-
+		
 		@Override
 		public String toString() {
 			return text;
@@ -287,7 +372,7 @@ public interface CSSProperty {
 
 		public boolean equalsInherit() {
 			return this == INHERIT;
-		}
+		}		
 
 		@Override
 		public String toString() {
@@ -408,7 +493,7 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
-
+	
 		@Override
 		public String toString() {
 			return text;
@@ -628,7 +713,7 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
-
+	
 		@Override
 		public String toString() {
 			return text;
@@ -870,7 +955,7 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
-
+		
 		@Override
 		public String toString() {
 			return text;
@@ -893,7 +978,7 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
-
+		
 		@Override
 		public String toString() {
 			return text;
@@ -1224,7 +1309,6 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
-
 		@Override
 		public String toString() {
 			return text;
@@ -1437,7 +1521,7 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
-
+		
 		@Override
 		public String toString() {
 			return text;
@@ -1529,7 +1613,7 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
-
+		
 		@Override
 		public String toString() {
 			return text;
@@ -1553,7 +1637,7 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
-
+		
 		@Override
 		public String toString() {
 			return text;
@@ -1858,7 +1942,7 @@ public interface CSSProperty {
 
 		public boolean equalsInherit() {
 			return this == INHERIT;
-		}
+		}		
 
 		@Override
 		public String toString() {
@@ -2073,7 +2157,7 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
-
+		
 		@Override
 		public String toString() {
 			return text;

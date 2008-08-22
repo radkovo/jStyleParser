@@ -299,7 +299,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     }
     
     /**
-     * Holder of CSS pseudo class or pseudo class with function
+     * Wrap of CSS pseudo class or pseudo class with function
      * @author kapy
      *
      */

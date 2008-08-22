@@ -1,10 +1,14 @@
 package cz.vutbr.web.domassign;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.TermIdent;
 
 /**
  * Repeats one operation on different CSS declaration duplication of code. To
@@ -23,13 +27,18 @@ public abstract class Repeater {
 	/**
 	 * Terms over which operation is repeated
 	 */
-	protected Term<?>[] terms;
+	protected List<Term<?>> terms;
 
 	/**
 	 * Property names for each iteration of repeater object
 	 */
-	protected String[] propertyNames;
+	protected List<String> names;
 
+	/**
+	 * Which property is used to repeat
+	 */
+	protected Class<? extends CSSProperty> type;
+	
 	/**
 	 * Constructor
 	 * 
@@ -38,6 +47,8 @@ public abstract class Repeater {
 	 */
 	public Repeater(int times) {
 		this.times = times;
+		this.terms = new ArrayList<Term<?>>(times);
+		this.names = new ArrayList<String>(times);
 	}
 
 	/**
@@ -105,6 +116,16 @@ public abstract class Repeater {
 		case 1:
 			// one term for all value
 			Term<?> term = d.get(0);
+			
+			// check inherit
+			if(term instanceof TermIdent && CSSProperty.INHERIT_KEYWORD.equalsIgnoreCase(((TermIdent) term).getValue())) {
+				CSSProperty property = CSSProperty.Translator.createInherit(type);
+				for(int i = 0; i < times; i++) {
+					properties.put(names.get(i), property);
+				}
+				return true;
+			}
+			
 			assignTerms(term, term, term, term);
 			return repeat(properties, values);
 		case 2:
@@ -148,7 +169,7 @@ public abstract class Repeater {
 		if (propertyNames.length != times)
 			throw new IllegalArgumentException(
 					"Invalid length of propertyNames in Repeater.");
-		this.propertyNames = propertyNames;
+		this.names = Arrays.asList(propertyNames);
 	}
 
 	/**
@@ -164,7 +185,7 @@ public abstract class Repeater {
 		if (terms.length != times)
 			throw new IllegalArgumentException(
 					"Invalid length of terms in Repeater.");
-		this.terms = terms;
+		this.terms = Arrays.asList(terms);
 	}
 
 }

@@ -50,10 +50,10 @@ public class RuleSetImpl extends AbstractRule<Declaration> implements RuleSet {
 		return this;
 	}
 
-	public int compareTo(RuleSet o) {
+	public int compareTo(RuleSet o) throws ClassCastException {
 		
 		if(o.getClass()!=RuleSetImpl.class)
-			throw new IllegalArgumentException("Allowed to compare RuleSetImpl only");
+			throw new ClassCastException("Allowed to compare RuleSetImpl only");
 		
 		RuleSetImpl other = (RuleSetImpl) o;
 		
