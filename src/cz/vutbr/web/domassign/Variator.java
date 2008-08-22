@@ -70,7 +70,9 @@ public abstract class Variator {
 	 * @param variant
 	 *            Tested variant
 	 * @param iteration
-	 *            Number of iteration, that is term to be tested
+	 *            Number of iteration, that is term to be tested.
+	 *            This number may be changed internally in function 
+	 *            to inform that more than one term was used for variant
 	 * @param properties
 	 *            Properties map where to store properties types
 	 * @param values
@@ -78,7 +80,7 @@ public abstract class Variator {
 	 * @return <code>true</code> in case of success, <code>false</code>
 	 *         otherwise
 	 */
-	protected abstract boolean variant(int variant, int iteration,
+	protected abstract boolean variant(int variant, IntegerRef iteration,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values);
 
 	/**
@@ -187,11 +189,12 @@ public abstract class Variator {
 	 * </ol>
 	 *   	  
 	 * @param variant Identification of current variant which passed test 
-	 * @param term Position in term list of terms which passed test
+	 * @param term Position in term list of terms which passed test, for multiple
+	 * value term allow to change it
 	 * @return <code>true</code> in case of success, <code>false</code> elsewhere
 	 * @see Term.Operator
 	 */
-	protected boolean variantCondition(int variant, int term) {
+	protected boolean variantCondition(int variant, IntegerRef term) {
 		return true;
 	}
 
@@ -211,7 +214,7 @@ public abstract class Variator {
 			return true;
 
 		// for all terms
-		for (int i = 0; i < terms.size(); i++) {
+		for (IntegerRef i = new IntegerRef(0); i.get() < terms.size(); i.inc()) {
 
 			boolean passed = false;
 
@@ -273,7 +276,7 @@ public abstract class Variator {
 		this.terms = new ArrayList<Term<?>>();
 		this.terms.add(d.get(0));
 
-		return variant(variant, 0, properties, values);
+		return variant(variant, new IntegerRef(0), properties, values);
 	}
 
 	/**
@@ -304,7 +307,7 @@ public abstract class Variator {
 				&& checkInherit(variant, this.terms.get(0), properties))
 			return true;
 
-		return variant(variant, 0, properties, values);
+		return variant(variant, new IntegerRef(0), properties, values);
 	}
 
 	/**
@@ -335,5 +338,38 @@ public abstract class Variator {
 	 */
 	public void assignTermsFromDeclaration(Declaration d) {
 		this.terms = d.asList();
+	}
+	
+	/**
+	 * Reference to integer
+	 * @author kapy
+	 *
+	 */
+	protected static class IntegerRef {
+		
+		private int i;
+		
+		public IntegerRef(int i) {
+			this.i = i;
+		}
+
+		/**
+		 * @return the i
+		 */
+		public int get() {
+			return i;
+		}
+
+		/**
+		 * @param i the i to set
+		 */
+		public void set(int i) {
+			this.i = i;
+		}
+		
+		public void inc() {
+			this.i++;
+		}
+		
 	}
 }

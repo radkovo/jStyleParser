@@ -44,7 +44,7 @@ public class TermImpl<T> implements Term<T> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		if(operator != null) sb.append(operator.value());
-		if(value!=null) sb.append(value);
+		if(value!=null) sb.append(value.toString());
 
 		return sb.toString();
 	}

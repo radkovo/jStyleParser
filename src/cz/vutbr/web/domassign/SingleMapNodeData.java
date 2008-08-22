@@ -1,6 +1,9 @@
 package cz.vutbr.web.domassign;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cz.vutbr.web.css.CSSFactory;
@@ -9,6 +12,7 @@ import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
+import cz.vutbr.web.csskit.OutputUtil;
 
 /**
  * Implementation of NodeData by single HashMap. Is more space efficient at the cost of 
@@ -148,6 +152,34 @@ public class SingleMapNodeData implements NodeData {
 	}
 
 	
+	@Override
+	public String toString() {
+		
+		StringBuilder sb = new StringBuilder();
+		
+		List<String> keys = new ArrayList<String>(map.keySet());
+		Collections.sort(keys);
+
+		for(String key:keys) {
+			// always use own value if exists
+			Quadruple q = map.get(key);
+
+			CSSProperty prop = q.curProp;
+			if(prop==null) prop = q.inhProp;
+
+			Term<?> value = q.curValue;
+			if(value==null) value = q.inhValue;
+			
+			sb.append(key).append(OutputUtil.PROPERTY_OPENING);
+			
+			if(value!=null) sb.append(value.toString());
+			else sb.append(prop.toString());
+				
+			sb.append(OutputUtil.PROPERTY_CLOSING);
+			
+		}
+		return sb.toString();
+	}
 	
 	static class Quadruple {
 		CSSProperty inhProp = null;

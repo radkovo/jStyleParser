@@ -86,12 +86,7 @@ public class TermListImpl extends AbstractList<Term<?>> implements TermList {
 		
 		// append operator
 		if(operator!=null) sb.append(operator.value());
-		
-		for(Term<?> element: value) {
-			if(element.getOperator()!=null) sb.append(element.getOperator().value());
-			sb.append(element.toString());
-		}
-		
+		OutputUtil.appendList(sb, value, OutputUtil.SPACE_DELIM);
 		return sb.toString();
 	}
 	

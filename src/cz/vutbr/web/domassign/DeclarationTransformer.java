@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.hamcrest.core.IsEqual;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
@@ -193,8 +194,14 @@ public class DeclarationTransformer {
 
 		try {
 			Method m = methods.get(propertyName);
-			if (m != null)
-				return (Boolean) m.invoke(this, d, properties, values);
+			if (m != null) {
+				boolean result = (Boolean) m.invoke(this, d, properties, values);
+				if(log.isDebugEnabled()) {
+					log.debug("Parsing: " + d + " with " + m.getName() + " => " + result);
+				}
+				return result;
+				
+			}
 		} catch (IllegalArgumentException e) {
 			log.warn("Illegal argument: ", e);
 		} catch (IllegalAccessException e) {
@@ -525,6 +532,14 @@ public class DeclarationTransformer {
 				values);
 	}
 
+	@SuppressWarnings("unused")
+	private boolean processBackground(Declaration d,
+			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		Variator background = new BackgroundVariator();
+		background.assignTermsFromDeclaration(d);
+		return background.vary(properties, values);
+	}
+	
 	@SuppressWarnings("unused")
 	private boolean processBackgroundAttachement(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
@@ -1532,9 +1547,12 @@ public class DeclarationTransformer {
 		}
 
 		@Override
-		protected boolean variant(int v, int i,
+		protected boolean variant(int v, IntegerRef iteration,
 				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
+			// we won't use multivalue functionallity
+			int i = iteration.get();
+			
 			switch (v) {
 			case IMAGE:
 				// list style image
@@ -1585,9 +1603,12 @@ public class DeclarationTransformer {
 		}
 
 		@Override
-		protected boolean variant(int v, int i,
+		protected boolean variant(int v, IntegerRef iteration,
 				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
+			// we won't use multivalue functionallity
+			int i = iteration.get();
+			
 			switch (v) {
 			case COLOR:
 				// process color
@@ -1641,9 +1662,12 @@ public class DeclarationTransformer {
 		}
 
 		@Override
-		protected boolean variant(int v, int i,
+		protected boolean variant(int v, IntegerRef iteration,
 				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
+			// we won't use multivalue functionallity
+			int i = iteration.get();
+			
 			switch (v) {
 			case COLOR:
 				// process color
@@ -1711,9 +1735,13 @@ public class DeclarationTransformer {
 		}
 
 		@Override
-		protected boolean variant(int v, int i,
+		protected boolean variant(int v, IntegerRef iteration,
 				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
+			// we will use multi value functionality in 
+			// FAMILY branch
+			int i = iteration.get();
+			
 			switch (v) {
 			case STYLE:
 				// process font style
@@ -1792,13 +1820,12 @@ public class DeclarationTransformer {
 				boolean composed = false;
 				for (Term<?> t : terms.subList(i, terms.size())) {
 					// first item
-					if (t instanceof TermIdent && t.getOperator() == null) {
+					if (t instanceof TermIdent && sb.length()==0) {
 						sb.append(t.getValue());
 						composed = false;
 					}
 					// next item
-					else if (t instanceof TermIdent
-							&& t.getOperator() == Operator.SPACE) {
+					else if (t instanceof TermIdent && sb.length()!=0 && t.getOperator()!=Operator.COMMA) {
 						sb.append(" ").append(t.getValue());
 						composed = true;
 					}
@@ -1836,6 +1863,8 @@ public class DeclarationTransformer {
 
 				properties.put(names.get(FAMILY), FontFamily.list_values);
 				values.put(names.get(FAMILY), list);
+				// modify reference to the last element
+				iteration.set(terms.size());
 				return true;
 			default:
 				return false;
@@ -1843,21 +1872,21 @@ public class DeclarationTransformer {
 		}
 
 		@Override
-		protected boolean variantCondition(int variant, int term) {
+		protected boolean variantCondition(int variant, IntegerRef iteration) {
 
 			switch (variant) {
 			case STYLE:
 			case VARIANT:
 			case WEIGHT:
 				// must be within 3 first terms
-				return term < 3;
+				return  iteration.get() < 3;
 			case SIZE:
 				// no condition
 				return true;
 			case LINE_HEIGHT:
 				if (!variantPassed[SIZE])
 					return false;
-				return terms.get(term).getOperator() == Operator.SLASH;
+				return terms.get(iteration.get()).getOperator() == Operator.SLASH;
 			case FAMILY:
 				// requires passed size
 				return variantPassed[SIZE];
@@ -1896,9 +1925,15 @@ public class DeclarationTransformer {
 			if (name == null || "".equals(name) || name.length() == 0)
 				return;
 
+			// trim spaces
+			name = name.trim();
+			
 			// if composed, store directly as family name
-			if (composed)
-				storage.add(tf.createString(name));
+			if (composed) {
+				Term<?> term = tf.createString(name);
+				if(!storage.isEmpty()) term.setOperator(Operator.COMMA);
+				storage.add(term);
+			}
 			// try to find generic name
 			else {
 				FontFamily generic = genericPropertyRaw(FontFamily.class,
@@ -1907,14 +1942,16 @@ public class DeclarationTransformer {
 				// store in term which value is generic font name FontFamily
 				// we have to append even operator
 				if (generic != null) {
-					storage.add(tf.createTerm(generic).setOperator(
-							Operator.COMMA));
+					Term<?> term = tf.createTerm(generic);
+					if(!storage.isEmpty()) term.setOperator(Operator.COMMA);
+					storage.add(term);
 				}
 				// generic name not found, store as family name
 				// we have to append even operator
 				else {
-					storage.add(tf.createString(name).setOperator(
-							Operator.COMMA));
+					Term<?> term = tf.createString(name);
+					if(!storage.isEmpty()) term.setOperator(Operator.COMMA);
+					storage.add(term);
 				}
 			}
 		}
@@ -1957,9 +1994,13 @@ public class DeclarationTransformer {
 		}
 
 		@Override
-		protected boolean variant(int v, int i,
+		protected boolean variant(int v, IntegerRef iteration,
 				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
+			// we will use multi value functionality in 
+			// POSITION branch
+			int i = iteration.get();
+			
 			switch (v) {
 			case COLOR:
 				return genericTermIdent(types.get(COLOR), terms.get(i),
@@ -1982,19 +2023,52 @@ public class DeclarationTransformer {
 
 				final EnumSet<BackgroundPosition> allowedBackground = EnumSet
 						.complementOf(EnumSet
-								.of(BackgroundPosition.list_values));
+								.of(BackgroundPosition.list_values, BackgroundPosition.INHERIT));
 
-				Term<?> t1 = terms.get(i);
-				if (t1 instanceof TermIdent) {
-					BackgroundPosition bp = genericPropertyRaw(
-							BackgroundPosition.class, allowedBackground,
-							(TermIdent) t1);
-					// if(bp!=null)
+				// try this and next term, but consider terms size
+				BackgroundPosition bp = null;
+				TermList list = tf.createList(2);
+				for(; (i <= i+1) && (i < terms.size()) ; i++) {
+					Term<?> term = terms.get(i);
+					if(term instanceof TermIdent) {
+						bp = genericPropertyRaw(
+								BackgroundPosition.class, allowedBackground,
+								(TermIdent) term);
+						if(bp!=null)
+							storeBackgroundPosition(list, bp, term);
+					}
+					else if(term instanceof TermPercent) {
+						storeBackgroundPosition(list, null, term);
+					}
+					else if(term instanceof TermLength)
+						storeBackgroundPosition(list, null, term);
 				}
-				// TODO background-position
+				
+				if(list.isEmpty()) return false;
+				// copy element if only one present
+				else if(list.size()==1) list.add(1, list.get(0));
+				// if used two elements, inform master 
+				else if(list.size()==2) iteration.inc();
+
+				// store list
+				properties.put(names.get(POSITION), BackgroundPosition.list_values);
+				values.put(names.get(POSITION), list);
+				return true;
+				
 			default:
 				return false;
 			}
+		}
+		
+		private void storeBackgroundPosition(TermList storage, BackgroundPosition bp, Term<?> term) {
+			if(bp==BackgroundPosition.LEFT)
+				storage.add(tf.createPercent(0.0f));
+			else if(bp==BackgroundPosition.CENTER)
+				storage.add(tf.createPercent(50.0f));
+			else if(bp==BackgroundPosition.RIGHT)
+				storage.add(tf.createPercent(100.0f));
+			else
+				storage.add(term);
 		}
 	}
 
