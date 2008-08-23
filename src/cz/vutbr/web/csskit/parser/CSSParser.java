@@ -971,7 +971,8 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
       } catch (ParseException e) {
                 errorSkipTo("Failed to read declaration", NL, SEMICOLON, RCURLY);
       } finally {
-                if(terms==null && property==null)
+                // do not allow improperly filled declaration
+                if(terms==null || property==null)
                         {if (true) return null;}
 
                 declaration.setImportant(important);

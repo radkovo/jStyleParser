@@ -1,0 +1,110 @@
+h1 { color: red; rotation: 70minutes }
+
+/*
+the user agent will treat this as if the style sheet had been
+h1 { color: red }
+*/
+
+img { float: left }       /* correct CSS 2.1 */
+img { float: left here }  /* "here" is not a value of 'float' */
+img { background: "red" } /* keywords cannot be quoted */
+img { border-width: 3 }   /* a unit must be specified for length values */
+
+/*
+A CSS 2.1 parser would honor the first rule and ignore the rest, as if the style sheet had been:
+img { float: left }
+img { }
+img { }
+img { }
+*/
+/*
+A user agent conforming to a future CSS specification may accept one or more of the other rules as well.
+# Malformed declarations. 
+User agents must handle unexpected tokens encountered while parsing a declaration by reading until the end of the declaration, while observing the rules for matching pairs of (), [], {}, "", and '', and correctly handling escapes. For example, a malformed declaration 
+may be missing a property, colon (:) or value. The following are all equivalent:
+*/
+
+p { color:green }
+p { color:green; color }  /* malformed declaration missing ':', value */
+p { color:red;   color; color:green }  /* same with expected recovery */
+p { color:green; color: } /* malformed declaration missing value */
+p { color:red;   color:; color:green } /* same with expected recovery */
+/*p { color:green; color{;color:maroon} } */ /* unexpected tokens { } */
+/*p { color:red;   color{;color:maroon}; color:green } */ /* same with recovery */
+
+/*
+# Invalid at-keywords. User agents must ignore an invalid at-keyword 
+together with everything following it, up to and 
+including the next semicolon (;) or block ({...}),
+whichever comes first. For example, consider the following:
+*/
+/*
+@three-dee {
+  @background-lighting {
+    azimuth: 30deg;
+    elevation: 190deg;
+  }
+  h2 { color: green }
+}
+*/
+/*
+
+The '@three-dee' at-rule is not part of CSS 2.1. 
+Therefore, the whole at-rule (up to, and including, 
+the third right curly brace) is ignored.
+ A CSS 2.1 user agent ignores it, 
+ effectively reducing the style sheet to:
+
+
+h2 { color: blue }
+*/
+
+/*
+Something inside an at-rule that is ignored because it is invalid, 
+such as an invalid declaration within an @media-rule, 
+does not make the entire at-rule invalid.
+
+/*                        
+Unexpected end of string.
+User agents must close strings upon reaching the end of a line, 
+but then drop the construct (declaration or rule) 
+in which the string was found. For example:
+*/
+
+      div {
+        color: green;
+        font-family: 'Courier New Times
+        color: red;
+        color: green;
+      }
+/*
+...would be treated the same as:
+
+
+      div { color: green; color: green; }
+*/
+
+
+/*
+# Unexpected end of style sheet.
+
+User agents must close all open constructs
+(for example: blocks, parentheses, brackets, rules, strings, and comments)
+at the end of the style sheet. For example:
+
+would be treated the same as:
+
+
+  @media screen {
+    p:before { content: 'Hello'; }
+  }
+
+in a conformant UA.
+*/
+/*
+@media screen {
+    p:before { content: 'Hello
+*/
+                        
+
+

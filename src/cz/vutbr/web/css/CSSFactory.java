@@ -1,5 +1,17 @@
 package cz.vutbr.web.css;
 
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.tidy.Tidy;
+
+import cz.vutbr.web.csskit.parser.CSSParser;
+import cz.vutbr.web.domassign.Analyzer;
+
 /**
  * This class is abstract factory for other factories used during CSS parsing.
  * Use it, for example, to retrieve current(default) TermFactory,
@@ -36,7 +48,8 @@ package cz.vutbr.web.css;
  * 
  */
 public final class CSSFactory {
-
+	private static Logger log = Logger.getLogger(CSSFactory.class);
+	
 	private static final String DEFAULT_TERM_FACTORY = "cz.vutbr.web.csskit.TermFactoryImpl";
 	private static final String DEFAULT_SUPPORTED_CSS = "cz.vutbr.web.domassign.SupportedCSS21";
 	private static final String DEFAULT_RULE_FACTORY = "cz.vutbr.web.csskit.RuleFactoryImpl";
@@ -159,6 +172,25 @@ public final class CSSFactory {
 		catch(Exception e) {
 			throw new RuntimeException("No NodeData implementation registered");
 		}
+	}
+	
+	public static final Map<Element, NodeData> parse(InputStream stylesheet, InputStream html, String media, boolean inherit) {
+		
+		try {
+			StyleSheet style = (new CSSParser(stylesheet)).parse();
+			Tidy parser = new Tidy();
+			parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
+
+			Document doc = parser.parseDOM(html, null);
+			
+			Analyzer analyzer = new Analyzer(style);
+			return analyzer.evaluateDOM(doc, media, inherit);
+		}
+		catch(Exception e) {
+			log.error("Unable to parse document", e);
+			return Collections.emptyMap();
+		}
+		
 	}
 
 }

@@ -26,7 +26,7 @@
     </logger>
     
     <logger name="cz.vutbr.web.csskit.parser" additivity="false">
-        <level value="info" />
+        <level value="trace" />
         <appender-ref ref="cssbox" />
     </logger>    
     

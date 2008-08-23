@@ -499,7 +499,8 @@ Declaration declaration() :
   		errorSkipTo("Failed to read declaration", NL, SEMICOLON, RCURLY);
   	}
   	finally {
-  		if(terms==null && property==null)
+  		// do not allow improperly filled declaration
+  		if(terms==null || property==null)
   		 	return null;
   	
   		declaration.setImportant(important);

@@ -104,7 +104,7 @@ public class DeclarationImpl extends AbstractRule<Term<?>> implements Declaratio
 		sb = OutputUtil.appendList(sb, list, OutputUtil.EMPTY_DELIM);
 		
 		// importance flag
-		if(important) sb.append(OutputUtil.IMPORTANT_KEYWORD);
+		if(important) sb.append(OutputUtil.SPACE_DELIM).append(OutputUtil.IMPORTANT_KEYWORD);
 		
 		sb.append(OutputUtil.PROPERTY_CLOSING);
 		

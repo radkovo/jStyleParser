@@ -119,6 +119,10 @@ public class Analyzer {
 
 		// resulting map
 		Map<Element, List<Declaration>> declarations = new HashMap<Element, List<Declaration>>();
+		
+		// if holder is empty skip evaluation
+		if(holder==null) return declarations;
+		
 		Traversal<Map<Element, List<Declaration>>> traversal = new Traversal<Map<Element, List<Declaration>>>(
 				doc, (Object) holder, NodeFilter.SHOW_ELEMENT) {
 			protected void processNode(Map<Element, List<Declaration>> result,
