@@ -2,6 +2,7 @@ package test;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.BitSet;
 import java.util.Map;
 
@@ -20,10 +21,10 @@ import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.NodeData;
+import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
-import cz.vutbr.web.csskit.parser.CSSParser;
 import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.QuadrupleMapNodeData;
 import cz.vutbr.web.domassign.SingleMapNodeData;
@@ -49,10 +50,10 @@ public class NodeDataVariant {
 		doc = parser.parseDOM(new FileInputStream("data/simple/data.html"),
 				null);
 
-		CSSParser cssparser = new CSSParser(new FileInputStream(
+		StyleSheet style = CSSFactory.parse(new FileReader(
 				"data/simple/data.css"));
 
-		analyzer = new Analyzer(cssparser.parse());
+		analyzer = new Analyzer(style);
 	}
 
 	@Test

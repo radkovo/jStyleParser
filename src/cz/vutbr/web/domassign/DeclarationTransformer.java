@@ -1132,7 +1132,7 @@ public class DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processFloat(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(EmptyCells.class, d, properties);
+		return genericOneIdent(CSSProperty.Float.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")

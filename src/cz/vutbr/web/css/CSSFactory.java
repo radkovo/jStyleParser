@@ -1,6 +1,7 @@
 package cz.vutbr.web.css;
 
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.Collections;
 import java.util.Map;
 
@@ -174,10 +175,21 @@ public final class CSSFactory {
 		}
 	}
 	
-	public static final Map<Element, NodeData> parse(InputStream stylesheet, InputStream html, String media, boolean inherit) {
+	public static final StyleSheet parse(Reader source) {
+		try {
+			CSSParser parser = new CSSParser(source);
+			return parser.parse();
+		}
+		catch(StyleSheetNotValidException e) {
+			log.error("While parsing CSS stylesheet", e);
+			return getRuleFactory().createStyleSheet();
+		}
+	}
+
+	public static final Map<Element, NodeData> parse(Reader stylesheet, InputStream html, String media, boolean inherit) {
 		
 		try {
-			StyleSheet style = (new CSSParser(stylesheet)).parse();
+			StyleSheet style = parse(stylesheet);
 			Tidy parser = new Tidy();
 			parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
 
@@ -187,7 +199,7 @@ public final class CSSFactory {
 			return analyzer.evaluateDOM(doc, media, inherit);
 		}
 		catch(Exception e) {
-			log.error("Unable to parse document", e);
+			log.error("While parsing document document", e);
 			return Collections.emptyMap();
 		}
 		

@@ -2,14 +2,16 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.StringReader;
+
 import org.junit.Test;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.TermFactory;
-import cz.vutbr.web.csskit.parser.CSSParser;
 
 public class GrammarRecovery1 {
 
@@ -29,18 +31,18 @@ public class GrammarRecovery1 {
 		"BODY { color: red; }";
 	
 	@Test	
-	public void charsetCharsetWithoutSemicolon() throws StyleSheetNotValidException {
+	public void charsetCharsetWithoutSemicolon() {
 		
-		StyleSheet ss = (new CSSParser(TEST_CHARSET_WITHOUT_SEMICOLON1)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_CHARSET_WITHOUT_SEMICOLON1));
 		assertEquals("Charset should not be set", null, ss.getCharset());
 		
 		assertEquals("No rules are defined", 0, ss.size());
 	}
 	
 	@Test
-	public void charsetWithoutSemicolonAndDefinitinAfter() throws StyleSheetNotValidException {
+	public void charsetWithoutSemicolonAndDefinitinAfter() throws FileNotFoundException {
 		
-		StyleSheet ss = (new CSSParser(TEST_CHARSET_WITHOUT_SEMICOLON2)).parse();
+		StyleSheet ss = CSSFactory.parse(new FileReader("data/invalid/recovery2.css"));
 		assertEquals("Charset should not be set", null, ss.getCharset());
 		
 		assertEquals("No rules are set", 0, ss.size());
@@ -48,9 +50,9 @@ public class GrammarRecovery1 {
 	}
 	
 	@Test
-	public void charsetWithoutSemicolonAndDoubleDAfter() throws StyleSheetNotValidException {
+	public void charsetWithoutSemicolonAndDoubleDAfter() {
 		
-		StyleSheet ss = (new CSSParser(TEST_CHARSET_WITHOUT_SEMICOLON3)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_CHARSET_WITHOUT_SEMICOLON3));
 		assertEquals("Charset should not be set", null, ss.getCharset());
 		
 		RuleSet rule = (RuleSet) ss.get(0);				

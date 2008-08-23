@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,6 @@ import cz.vutbr.web.css.ImportURI;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
-import cz.vutbr.web.csskit.parser.CSSParser;
 
 public class ImportTest1 {
 	
@@ -33,7 +33,7 @@ public class ImportTest1 {
 	@Test
 	public void testSimpleImport() throws StyleSheetNotValidException {
 
-		StyleSheet ss = (new CSSParser(SIMPLE_IMPORT)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(SIMPLE_IMPORT));
 
 		List<ImportURI> imports = ss.getImports();
 
@@ -48,7 +48,7 @@ public class ImportTest1 {
 	@Test
 	public void testQuotImport() throws StyleSheetNotValidException {
 
-		StyleSheet ss = (new CSSParser(QUOT_IMPORT)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(QUOT_IMPORT));
 
 		List<ImportURI> imports = ss.getImports();
 
@@ -63,7 +63,7 @@ public class ImportTest1 {
 	@Test
 	public void testURLImport() throws StyleSheetNotValidException {
 
-		StyleSheet ss = (new CSSParser(URL_IMPORT)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(URL_IMPORT));
 
 		List<ImportURI> imports = ss.getImports();
 
@@ -79,7 +79,7 @@ public class ImportTest1 {
 	@Test
 	public void testDoubleImport() throws StyleSheetNotValidException {
 
-		StyleSheet ss = (new CSSParser(DOUBLE_IMPORT)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(DOUBLE_IMPORT));
 
 		List<ImportURI> imports = ss.getImports();
 
@@ -104,7 +104,7 @@ public class ImportTest1 {
 		rule2.add("screen");
 		rule2.setUri("test-print.css");
 
-		StyleSheet ss = (new CSSParser(MEDIA_IMPORT)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(MEDIA_IMPORT));
 		List<ImportURI> imports = ss.getImports();
 		assertEquals("There should be two imports", 2, imports.size());
 

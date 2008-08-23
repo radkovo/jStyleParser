@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.StringReader;
 import java.util.List;
 
 import org.junit.Test;
@@ -16,7 +17,6 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermNumeric;
-import cz.vutbr.web.csskit.parser.CSSParser;
 
 public class SelectorTest {
 
@@ -66,7 +66,7 @@ public class SelectorTest {
 	
 	@Test
 	public void testMultiple() throws StyleSheetNotValidException {
-		StyleSheet ss = (new CSSParser(TEST_MULTIPLE)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_MULTIPLE));
 		
 		assertEquals("One rule is set", 1, ss.size());
 		
@@ -86,7 +86,7 @@ public class SelectorTest {
 	@Test
 	public void testDescendant() throws StyleSheetNotValidException {
 		
-		StyleSheet ss = (new CSSParser(TEST_DESCENDANT)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_DESCENDANT));
 		
 		assertEquals("One rule is set", 1, ss.size());
 		
@@ -108,7 +108,7 @@ public class SelectorTest {
 	@Test
 	public void testAdjacent() throws StyleSheetNotValidException {
 		
-		StyleSheet ss = (new CSSParser(TEST_ADJACENT)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_ADJACENT));
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);
@@ -130,7 +130,7 @@ public class SelectorTest {
 	@Test
 	public void testChild() throws StyleSheetNotValidException {
 
-		StyleSheet ss = (new CSSParser(TEST_CHILD)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_CHILD));
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);
@@ -158,7 +158,7 @@ public class SelectorTest {
 	@Test
 	public void testClass() throws StyleSheetNotValidException {
 
-		StyleSheet ss = (new CSSParser(TEST_CLASS)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_CLASS));
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);
@@ -179,7 +179,7 @@ public class SelectorTest {
 	@Test
 	public void testID() throws StyleSheetNotValidException {
 
-		StyleSheet ss = (new CSSParser(TEST_ID)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_ID));
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);
@@ -200,7 +200,7 @@ public class SelectorTest {
 	@Test
 	public void testIDAttrib() throws StyleSheetNotValidException {
 
-		StyleSheet ss = (new CSSParser(TEST_IDATTRIB)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_IDATTRIB));
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);
@@ -224,7 +224,7 @@ public class SelectorTest {
 	@Test
 	public void testAttribute() throws StyleSheetNotValidException {
 		
-		StyleSheet ss = (new CSSParser(TEST_ATTRIB)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_ATTRIB));
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);
@@ -246,7 +246,7 @@ public class SelectorTest {
 	@Test
 	public void testPseudo() throws StyleSheetNotValidException {
 		
-		StyleSheet ss = (new CSSParser(TEST_PSEUDO)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_PSEUDO));
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);
@@ -267,7 +267,7 @@ public class SelectorTest {
 	@Test
 	public void testPseudoFunc() throws StyleSheetNotValidException {
 		
-		StyleSheet ss = (new CSSParser(TEST_PSEUDO_FUNC)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_PSEUDO_FUNC));
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);
@@ -293,7 +293,7 @@ public class SelectorTest {
 	@Test
 	public void testPSpecial() throws StyleSheetNotValidException {
 		
-		StyleSheet ss = (new CSSParser(TEST_PSPECIAL)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_PSPECIAL));
 		assertEquals("Two rules are set", 2, ss.size());
 		
 		// test first rule
@@ -329,7 +329,7 @@ public class SelectorTest {
 	@Test
 	public void testAsterisk() throws StyleSheetNotValidException {
 		
-		StyleSheet ss = (new CSSParser(TEST_ASTERISK)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_ASTERISK));
 		assertEquals("One rule is set", 1, ss.size());
 		
 		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null);
@@ -353,7 +353,7 @@ public class SelectorTest {
 	@Test
 	public void testElementName() throws StyleSheetNotValidException {
 		
-		StyleSheet ss = (new CSSParser(TEST_MULTIPLE)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_MULTIPLE));
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);				
@@ -381,7 +381,7 @@ public class SelectorTest {
 	@Test
 	public void testAttributePresence() throws StyleSheetNotValidException {
 		
-		StyleSheet ss = (new CSSParser(TEST_ATTRIB_PRESENCE)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_ATTRIB_PRESENCE));
 		assertEquals("One rule is set", 1, ss.size());
 		
 		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null);

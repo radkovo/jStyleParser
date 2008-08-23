@@ -13,9 +13,11 @@ PARSER_BEGIN(CSSParser)
 
 package cz.vutbr.web.csskit.parser;
 
-import java.io.StringReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.apache.log4j.Logger;
 
@@ -52,26 +54,26 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants/*@egen*
 	private static final TermFactory tf = CSSFactory.getTermFactory();
 	private static final RuleFactory rf = CSSFactory.getRuleFactory();
 
+	 /**
+      * This flag causes skipping of token with checking for 
+      * type of next token. Use it with errorRecover function
+      * Note:
+      * This negative value should be never identification of token
+      */
+    private static final int FAST_SKIP = -10;
+
+
 	private Integer ruleSetNum;
 
-	/** Charset of given css */
+	/** Character set of given css */
 	private String charset;
 	
 	/** Rules gathered from input */
-	private List<Rule<?>> rules = new ArrayList<Rule<?>>();
+	private List<Rule<?>> rules;
 	
 	/** Files to be imported into stylesheet */
-	private List<ImportURI> imports = new ArrayList<ImportURI>();	
+	private List<ImportURI> imports;
 
-	/** 
-	 * Creates CSSParser.
-	 * Uses string as input
-	 * @param css Input string to be parsed
-	 */ 
-	public CSSParser(String css) {
-		this(new StringReader(css));
-	}
-	
 	/**
 	 * Returns StyleSheet from input set by constructor.
 	 *   
@@ -80,12 +82,16 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants/*@egen*
 	 */
 	public StyleSheet parse() throws StyleSheetNotValidException {
 		try {
+			//ReInit(reader);
+			this.rules = new ArrayList<Rule<?>>();
+			this.charset = null;
+			this.imports = new ArrayList<ImportURI>();	
 			this.ruleSetNum = 0;
 			return this.start();
 		}
 		catch (ParseException e) {
 			log.error("Parse exception at top level, this should not happen!\n"
-				+ e);
+				,e);
 			throw new StyleSheetNotValidException("Not a valid stylesheet!"); 
 		}
 	}
@@ -94,41 +100,52 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants/*@egen*
 	 * Error recovery.
 	 * Skip to given token in case of error.
 	 * End of File (EOF) token is added automatically.
+	 * @param e Exception to be logged  
 	 * @param message message to be logged
-	 * @param kinds Type(s) of token where to continue  
+	 * @param kinds Type(s) of token where to continue, if <code>null</code> do not skip anything  
 	 */
-	private void errorSkipTo(final String message, final int...kinds) {
+	private void errorRecover(final ParseException exception, final String message, final int...kinds) {
 	
 		if(log.isInfoEnabled()) {
-			log.info(message);
+			if(log.isDebugEnabled()) {
+				log.debug(message, exception);
+			}
+			else {	
+				log.info(message);
+			}
 		}
 		
-		if(log.isDebugEnabled()) {
-			ParseException e = generateParseException();	
-			log.debug(e);
-		}
+		// don't do skipping
+		if(kinds.length==0) return;
+		
 	
 	    // use auto boxing and unboxing, not very pretty 
 		// construct stop tokens
 		// array list should be faster for this situation
-		List<Integer>  stopTokens = new ArrayList<Integer>(kinds.length + 1);
+		Set<Integer>  stopTokens = new HashSet<Integer>(kinds.length + 1);
 		for(int i = 0; i < kinds.length; i++)
 			stopTokens.add(new Integer(kinds[i]));
 			
 		stopTokens.add(EOF); 
 	
-		if(log.isTraceEnabled()) {
-			log.trace("Stopped on token: " +
-					CSSParserConstants.tokenImage[getToken(0).kind] +
-					" with value: " + getToken(0).image); 
-		}
-		
-		Token t = getToken(0);
-		while(!stopTokens.contains(t.kind)) {
+		// TODO: is this appropriate behavior?
+		boolean first = true;
+		Token t;
+		do {
 			t = getNextToken();
-			if(log.isTraceEnabled())
-				log.trace("Skipping to token:" + CSSParserConstants.tokenImage[t.kind] + ", " + t.image );
-		}
+			if(first) {
+				if(log.isTraceEnabled()) {
+					log.trace("Failed on token: " +
+					CSSParserConstants.tokenImage[t.kind] +
+					" = " + t.image);
+					first = false; 
+				}
+			}
+		}while(!(stopTokens.contains(t.kind) || stopTokens.contains(FAST_SKIP)));
+	
+		if(log.isTraceEnabled()) {
+			log.trace("Recovered on token: " + CSSParserConstants.tokenImage[t.kind] + " = " + t.image );
+		}	
 		
 	}
 
@@ -231,12 +248,10 @@ TOKEN :
  */
 StyleSheet start() :
 {/*@bgen(jjtree) start */
-        SimpleNode jjtn000 = new SimpleNode(JJTSTART);
-        boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);
-/*@egen*/
-	StyleSheet stylesheet = rf.createStyleSheet();
-}
+  SimpleNode jjtn000 = new SimpleNode(JJTSTART);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+/*@egen*/}
 {/*@bgen(jjtree) start */
         try {
 /*@egen*/
@@ -247,6 +262,7 @@ StyleSheet start() :
         }
 /*@egen*/
   	{ 
+  		StyleSheet stylesheet = rf.createStyleSheet();
   		stylesheet.setCharset(charset);
   		stylesheet.setImports(imports);
   		stylesheet.replaceAll(rules);
@@ -289,7 +305,7 @@ void stylesheet() :
   		(<BLANK> | <CDO> | <CDC>)* 
   		( import_a() (<BLANK> | <CDO> | <CDC> )* )*
   		( 
-  			( 	ruleset(this.rules) | 
+  			( 	ruleset(rules) | 
   				media() | 
   				page() 
   			) 
@@ -297,6 +313,7 @@ void stylesheet() :
   		)*
   	}
   	catch (ParseException e) {
+  		errorRecover(e, "f: stylesheet()");
   		throw e;
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
@@ -347,7 +364,7 @@ void charset() :
   	catch (ParseException e) {
   		// according to CSS UA
   		// ignore until next block is found
-  		errorSkipTo("Failed to retrive charset", RCURLY);
+  		errorRecover(e, "f: charset(), failed to retrieve", RCURLY);
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -414,7 +431,7 @@ void import_a() :
   		}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed parsing importing rule import_a()", BLANK);
+  		errorRecover(e, "f: import_a()", BLANK);
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -441,7 +458,6 @@ void import_a() :
 /**
  * Creates and sets new media rule to stylesheet
  */
-//@SuppressWarnings("unchecked") 
 void media() :
 {/*@bgen(jjtree) media */
         SimpleNode jjtn000 = new SimpleNode(JJTMEDIA);
@@ -450,7 +466,7 @@ void media() :
 /*@egen*/
 	RuleMedia media = rf.createMedia();
 	List<String> medias = new ArrayList<String>();
-	List<? extends Rule<?>> rules = new ArrayList<RuleSet>();
+	List<? extends Rule<?>> mediarules = new ArrayList<RuleSet>();
 }
 {/*@bgen(jjtree) media */
         try {
@@ -466,7 +482,7 @@ void media() :
   		)* 
   		<LCURLY> 
   		(<BLANK>)* 
-  		(ruleset( (List<Rule<?>>) rules))* 
+  		(ruleset( (List<Rule<?>>) mediarules))* 
   		<RCURLY>/*@bgen(jjtree)*/
                 {
                   jjtree.closeNodeScope(jjtn000, true);
@@ -475,12 +491,12 @@ void media() :
 /*@egen*/ 
   		{
   			media.setMedias(medias);
-  			media.replaceAll( (List<RuleSet>) rules);
-  			this.rules.add(media);
+  			media.replaceAll( (List<RuleSet>) mediarules);
+  			rules.add(media);
   		}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed parsing media rule media()", RCURLY);
+  		errorRecover(e, "f: media()", RCURLY);
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -531,7 +547,7 @@ void medium(List<String> medias) :
   		}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to retrieve medium()", BLANK);
+  		errorRecover(e, "f: medium()", BLANK);
   	}
   	// trying to add the same element more times
   	catch (IllegalArgumentException e) {
@@ -603,7 +619,7 @@ void ruleset(List<Rule<?>> rules) :
   		<RCURLY>
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to retrieve ruleset()", RCURLY);
+  		errorRecover(e, "f: ruleset()", RCURLY);
   	}
   	// be error graceful to unknown selectors and declarations
   	finally {
@@ -670,7 +686,7 @@ void page() :
     	<RCURLY> 
     }
     catch (ParseException e) {
-		errorSkipTo("Failed to retrieve page()", RCURLY);    
+		errorRecover(e, "f: page()", RCURLY);    
     }
     // be error graceful to unknown declarations
   	finally {
@@ -770,7 +786,7 @@ Declaration declaration() :
   		( property = property() ":" (<BLANK>)* terms = expr() ( important = prio())? )?
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to read declaration", NL, SEMICOLON, RCURLY);
+  		errorRecover(e, "f: declaration()", BLANK, NL, SEMICOLON, RCURLY);
   	}
   	finally {
   		// do not allow improperly filled declaration
@@ -892,7 +908,7 @@ CombinedSelector combined_selector() :
   		)*
   	}
   	catch(ParseException e) {
-  		errorSkipTo("Unable to get selector", BLANK, LCURLY);
+  		errorRecover(e, "f: combined_selector()", BLANK, LCURLY);
   	}
   	finally {
   		if(log.isDebugEnabled()) {
@@ -944,66 +960,54 @@ Selector selector() :
 	try {
   		value = element_name()
   			{
-  				if(log.isTraceEnabled()) log.trace("elementName: " + value);
   				selector.setFirstItem(rf.createElement(value));
-  				
   			} 
   		( 
   			value = hash() 
   				{
-  					if(log.isTraceEnabled()) log.trace("ID: " + value);
   					item = rf.createID(value);
   					if(item != null) items.add(item);
   			 	} |
   			item = class_a() 
   				{
-  					if(log.isTraceEnabled()) log.trace(".class: " + item);
   					if(item!=null) items.add(item);
   				} |	 
   			item = attrib() 
   				{
-  					if(log.isTraceEnabled()) log.trace("[attrib]: " + item);
   					if(item!=null) items.add(item);
   				} | 
   			item = pseudo()  
   				{
-  					if(log.isTraceEnabled()) log.trace(":pseudo: " + item);
   					if(item!=null) items.add(item);
   				}
   		)*| 
   		( 
   			value = hash()
   			 	{
-  			 		if(log.isTraceEnabled()) log.trace("ID: " + value);
   					item = rf.createID(value);
   					if(item != null) items.add(item);
   			 	} |
   			item = class_a() 
   				{
-  					if(log.isTraceEnabled()) log.trace(".class: " + item);
   					if(item!=null) items.add(item);
   				} |	 
   			item = attrib() 
   				{
-  					if(log.isTraceEnabled()) log.trace("[attrib]: " + item);
   					if(item!=null) items.add(item);
   				} |	
   			item = pseudo() 
   				{
-  					if(log.isTraceEnabled()) log.trace(":pseudo: " + item);
   					if(item!=null) items.add(item);
   				}
   		)+
   	}
   	catch(ParseException e) {
-  		errorSkipTo("Unable to get selector", BLANK, LCURLY);
+  		errorRecover(e, "f: selector()", BLANK, LCURLY);
   	}
   	finally {
-  	
-  		selector.replaceAll(items);
-  	
+  		selector.replaceAll(items);  	
   		if(log.isTraceEnabled()) {
-  			log.trace("Selector: " + selector);
+  			log.trace("Returning selector: " + selector);
   		}
   		
   		return selector;
@@ -1154,8 +1158,8 @@ Selector.ElementAttribute attrib() :
     	] 
     	<RBRACE>
     }
-    catch (ParseException ex) {
-    	errorSkipTo("Unable to get selectors attribute", NL, COMMA, LBRACE, RBRACE);
+    catch (ParseException e) {
+    	errorRecover(e, "f: attrib(), selector's attribute", NL, COMMA, LBRACE, RBRACE);
     	return null;
     }
     finally {
@@ -1210,7 +1214,7 @@ Selector.PseudoPage pseudo() :
   		)
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Unable to get :pseudo in simpleselector", BLANK, LBRACE, COMMA); 
+  		errorRecover(e, "f: pseudo(), selector's attribute", BLANK, LBRACE, COMMA); 
   	}
   	finally {
   		// matched first branch
@@ -1262,8 +1266,8 @@ Selector.PseudoPage pfunction() :
   		[ value = ident() (<BLANK>)* ] 
   		<RPAREN>
   	}
-  	catch (ParseException ex) {
-  		errorSkipTo("Unable to get :pseudo()", RPAREN, NL, COMMA, LBRACE);
+  	catch (ParseException e) {
+  		errorRecover(e, "f: pfunction(), selector's attribute", RPAREN, NL, COMMA, LBRACE);
   		functionName = null;
   	}
   	finally {
@@ -1316,7 +1320,7 @@ Term.Operator operator() :
   		{ return op;}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to get operator", RCURLY, SEMICOLON, BLANK);
+  		errorRecover(e, "operator(), term's connection", RCURLY, SEMICOLON, BLANK);
   		return Term.Operator.SPACE;
   	}/*@bgen(jjtree)*/
   {
@@ -1384,7 +1388,7 @@ Selector.Combinator combinator() :
 /*@egen*/ {return c;}
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Failed to get combinator", LCURLY, BLANK, COMMA);
+  		errorRecover(e, "f: combinator(), selector's connection", LCURLY, BLANK, COMMA);
   		return Selector.Combinator.DESCENDANT;
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
@@ -1520,10 +1524,13 @@ List<Term<?>> expr() :
   	}
   	// even in case of error return currently parsed terms
   	catch (ParseException e) {
-  		errorSkipTo("Failed to retrieve term", SEMICOLON, NL);
+  		errorRecover(e, "f: expr(), set of terms", SEMICOLON, NL);
   	}
   	finally {
-  		// return all parsed terms
+  		// do not return terms if there are no terms
+  		if(terms.isEmpty()) return null;
+  		
+  		// otherwise return all parsed terms
   		if(log.isTraceEnabled()) {
   			log.trace("Total terms returned for expression: " + terms.size());
   		}
@@ -1744,12 +1751,12 @@ Term<?> term() :
    		
    	}
    	catch(ParseException e) {
-   		errorSkipTo("Failed getting term", SEMICOLON, NL);
+   		errorRecover(e, "f: term(), fast skipping", FAST_SKIP);
    		return null;
    	}
    	catch(IllegalArgumentException e) {
    		if(log.isInfoEnabled()) 
-   			log.info("Failed to set term: " + e);  
+   			log.info("Failed to set term: ", e);  
    		return null;
    	}
    	finally {
@@ -1766,13 +1773,13 @@ Term<?> term() :
    			if(colorTerm != null)
    				term = colorTerm;
    		}
-   	
+   		
+   		/*
    		if(log.isTraceEnabled()) {
-   			log.trace("Having term: " 
-   				+ term + ", value: " 
-   				+ "(" + unary 
-   				+ ")"+ value);
+   			log.trace("Having term: " + term + ", value: " 
+   				+ "(" + unary + ")"+ value);
    		}
+   		*/
    		return term;
    	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
@@ -1828,14 +1835,12 @@ TermFunction function() :
   		(<BLANK>)*
   	}
   	catch (ParseException e) {
-  		errorSkipTo("Unable to get function", BLANK, SEMICOLON, RPAREN);
+  		errorRecover(e, "f: function()", BLANK, SEMICOLON, RPAREN);
   	}
   	finally {
-  	
-  		if(log.isDebugEnabled()) {
-  			log.debug("Matched function: " + function);
+  		if(log.isTraceEnabled()) {
+  			log.trace("Matched function: " + function);
   		}
-  	
   		return function; 
   	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {

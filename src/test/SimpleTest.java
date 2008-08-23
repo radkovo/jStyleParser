@@ -2,6 +2,8 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.StringReader;
+
 import org.junit.Test;
 
 import cz.vutbr.web.css.CSSFactory;
@@ -9,7 +11,6 @@ import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.TermFactory;
-import cz.vutbr.web.csskit.parser.CSSParser;
 
 public class SimpleTest {
 
@@ -74,12 +75,12 @@ public class SimpleTest {
 		
 		StyleSheet ss;
 		
-		ss = (new CSSParser(TEST_CHARSET_STRING1)).parse();
+		ss = CSSFactory.parse(new StringReader(TEST_CHARSET_STRING1));
 		assertEquals("This should be UTF-8", "UTF-8", ss.getCharset());
 		
 		assertEquals("No rules are defined", 0, ss.size());
 
-		ss = (new CSSParser(TEST_CHARSET_STRING2)).parse();
+		ss = CSSFactory.parse(new StringReader(TEST_CHARSET_STRING2));
 		assertEquals("This should be ISO-8859-1", "ISO-8859-1", ss.getCharset());
 		
 		assertEquals("One rule is set", 1, ss.size());
@@ -100,7 +101,7 @@ public class SimpleTest {
 	@Test 
 	public void testString1() throws StyleSheetNotValidException {
 		
-		StyleSheet ss = (new CSSParser(TEST_STRING1)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_STRING1));
 		
 		assertEquals("No charset is set", null, ss.getCharset());
 		assertEquals("No imports are set", 0, ss.getImports().size());
@@ -124,7 +125,7 @@ public class SimpleTest {
 	@Test 
 	public void testRGBFunction1() throws StyleSheetNotValidException {
 		
-		StyleSheet ss = (new CSSParser(TEST_RGBFUNCTION1)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_RGBFUNCTION1));
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);				
@@ -143,7 +144,7 @@ public class SimpleTest {
 	@Test 
 	public void testRGBFunction2() throws StyleSheetNotValidException {
 		
-		StyleSheet ss = (new CSSParser(TEST_RGBFUNCTION2)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_RGBFUNCTION2));
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);				
@@ -161,7 +162,7 @@ public class SimpleTest {
 	@Test
 	public void testHashColor1() throws StyleSheetNotValidException {
 
-		StyleSheet ss = (new CSSParser(TEST_HASH_COLOR1)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_HASH_COLOR1));
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);				
@@ -180,7 +181,7 @@ public class SimpleTest {
 	@Test
 	public void testHashColor2() throws StyleSheetNotValidException {
 		
-		StyleSheet ss = (new CSSParser(TEST_HASH_COLOR2)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_HASH_COLOR2));
 		assertEquals("One rule is set", 1, ss.size());
 		
 		final RuleSet rule = (RuleSet) ss.get(0);				
@@ -198,7 +199,7 @@ public class SimpleTest {
 	@Test
 	public void testString2() throws StyleSheetNotValidException {
 		
-		StyleSheet ss = (new CSSParser(TEST_STRING2)).parse();
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_STRING2));
 		assertEquals("Six rules are set", 6, ss.size());
 	}
 	

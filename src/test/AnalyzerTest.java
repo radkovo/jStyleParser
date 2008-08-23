@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -32,7 +33,6 @@ import cz.vutbr.web.css.TermNumeric;
 import cz.vutbr.web.css.CSSProperty.BorderStyle;
 import cz.vutbr.web.css.CSSProperty.FontFamily;
 import cz.vutbr.web.css.CSSProperty.Margin;
-import cz.vutbr.web.csskit.parser.CSSParser;
 import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.TidyTreeWalker;
 import cz.vutbr.web.domassign.TidyTreeWalker.Traversal;
@@ -58,10 +58,7 @@ public class AnalyzerTest {
 		doc = parser.parseDOM(new FileInputStream("data/simple/data.html"),
 				null);
 
-		CSSParser cssparser = new CSSParser(new FileInputStream(
-				"data/simple/data.css"));
-
-		sheet = cssparser.parse();
+		sheet = CSSFactory.parse(new FileReader("data/simple/data.css"));
 
 		analyzer = new Analyzer(sheet);
 

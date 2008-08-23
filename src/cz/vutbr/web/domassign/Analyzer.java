@@ -39,6 +39,8 @@ public class Analyzer {
 
 	private static final Logger log = Logger.getLogger(Analyzer.class);
 
+	private static final String UNIVERSAL_HOLDER = "all";
+	
 	/**
 	 * For all medias holds maps of declared rules classified into groups of
 	 * HolderItem (ID, CLASS, ELEMENT, OTHER). Media's type is key
@@ -115,13 +117,14 @@ public class Analyzer {
 	private Map<Element, List<Declaration>> assingDeclarationsToDOM(
 			Document doc, String media, final boolean inherit) {
 
-		Holder holder = rules.get(media);
-
+		// get holder
+		Holder holder = Holder.union(rules.get(UNIVERSAL_HOLDER),
+								     rules.get(media));
+		// if holder is empty skip evaluation
+		if(holder.isEmpty()) return Collections.emptyMap();
+		
 		// resulting map
 		Map<Element, List<Declaration>> declarations = new HashMap<Element, List<Declaration>>();
-		
-		// if holder is empty skip evaluation
-		if(holder==null) return declarations;
 		
 		Traversal<Map<Element, List<Declaration>>> traversal = new Traversal<Map<Element, List<Declaration>>>(
 				doc, (Object) holder, NodeFilter.SHOW_ELEMENT) {
@@ -317,7 +320,7 @@ public class Analyzer {
 
 		// create holder for medium of type all
 		Holder all = new Holder();
-		rules.put("all", all);
+		rules.put(UNIVERSAL_HOLDER, all);
 
 		for (Rule<?> rule : sheet) {
 			// this rule conforms to all media
@@ -496,7 +499,7 @@ public class Analyzer {
 	 * @author kapy
 	 * 
 	 */
-	private class Holder {
+	private static class Holder {
 
 		/** HolderItem.* except OTHER are stored there */
 		private List<Map<String, List<RuleSet>>> items;
@@ -519,6 +522,35 @@ public class Analyzer {
 			}
 		}
 
+		public boolean isEmpty() {
+			for(HolderItem hi: HolderItem.values())
+				if(!items.get(hi.type).isEmpty())
+					return false;
+			
+			return others.isEmpty();
+		}
+		
+		
+		public static Holder union(Holder one, Holder two) {
+			
+			Holder h = new Holder();
+			if(one==null) one = new Holder();
+			if(two==null) two = new Holder();
+			
+			for(HolderItem hi: HolderItem.values()) {
+				if(hi == HolderItem.OTHER) {
+					h.others.addAll(one.others);
+					h.others.addAll(two.others);
+				}
+				else {
+					h.items.get(hi.type).putAll(one.items.get(hi.type));
+					h.items.get(hi.type).putAll(two.items.get(hi.type));
+				}
+				
+			}
+			return h;
+		}
+		
 		/**
 		 * Inserts Ruleset into group identified by HolderType, and optionally
 		 * by key value

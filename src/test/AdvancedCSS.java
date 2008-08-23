@@ -2,6 +2,7 @@ package test;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -20,7 +21,6 @@ import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.CSSProperty.FontFamily;
 import cz.vutbr.web.css.Term.Operator;
-import cz.vutbr.web.csskit.parser.CSSParser;
 import cz.vutbr.web.domassign.Analyzer;
 
 public class AdvancedCSS {
@@ -44,10 +44,8 @@ public class AdvancedCSS {
 		doc = parser.parseDOM(new FileInputStream("data/advanced/style.html"),
 				null);
 
-		CSSParser cssparser = new CSSParser(new FileInputStream(
+		sheet = CSSFactory.parse(new FileReader(
 				"data/advanced/style.css"));
-
-		sheet = cssparser.parse();
 
 		analyzer = new Analyzer(sheet);
 		decl = analyzer.evaluateDOM(doc, "all", true);
