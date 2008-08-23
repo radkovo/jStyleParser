@@ -79,11 +79,7 @@ public class AdvancedCSS {
 	@Test
 	public void testFF() {
 
-		Element ff = elements.getElementById("ff");
-
-		Assert.assertNotNull("Element ff exists", ff);
-
-		NodeData data = decl.get(ff);
+		NodeData data = decl.get(elements.getElementById("ff"));
 
 		log.debug(data.toString());
 
@@ -98,5 +94,25 @@ public class AdvancedCSS {
 				TermList.class, "font-family").get(1));
 
 	}
+	
+	@Test
+	public void testBorder() {
+
+		NodeData data = decl.get(elements.getElementById("border"));
+
+		log.debug(data.toString());
+/*
+		Assert.assertEquals("Font family contains two fonts ", 2, data
+				.getValue(TermList.class, "font-family").size());
+
+		Assert.assertEquals("Which is serif", tf.createTerm(FontFamily.SERIF),
+				data.getValue(TermList.class, "font-family").get(0));
+
+		Assert.assertEquals("Which is 'Times New Roman'", tf.createString(
+				"Times New Roman").setOperator(Operator.COMMA), data.getValue(
+				TermList.class, "font-family").get(1));
+*/
+	}
+	
 
 }

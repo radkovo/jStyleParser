@@ -2,16 +2,17 @@ package cz.vutbr.web.domassign;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.hamcrest.core.IsEqual;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
@@ -580,6 +581,14 @@ public class DeclarationTransformer {
 				properties, values);
 	}
 
+	@SuppressWarnings("unused")
+	private boolean processBorder(Declaration d,
+			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		Variator border = new BorderVariator();
+		border.assignTermsFromDeclaration(d);
+		return border.vary(properties, values);
+	}
+	
 	@SuppressWarnings("unused")
 	private boolean processBorderCollapse(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
@@ -2071,6 +2080,96 @@ public class DeclarationTransformer {
 				storage.add(term);
 		}
 	}
+	
+	/**
+	 * Border variator.
+	 * Grammar:
+	 * [ <border-width> || 
+	 * 	 <border-style> || 
+	 *   <border-top-color> 
+	 * ] 
+	 * | inherit
+	 * 
+	 * @author kapy
+	 *
+	 */
+	private final class BorderVariator extends Variator {
+		
+		public static final int WIDTH = 0;
+		public static final int STYLE = 1;
+		public static final int COLOR = 2;
+		
+		private List<Repeater> repeaters;
+		
+		public BorderVariator() {
+			super(3);
+			types.add(BorderWidth.class);
+			types.add(BorderStyle.class);
+			types.add(BorderColor.class);
+			repeaters = new ArrayList<Repeater>(variants);
+			repeaters.add(new BorderWidthRepeater());
+			repeaters.add(new BorderStyleRepeater());
+			repeaters.add(new BorderColorRepeater());
+		}
+		
+		@Override
+		protected boolean variant(int variant, IntegerRef iteration,
+				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+			
+			// iteration is not modified in this function
+			int i = iteration.get();
+			Term<?> term = terms.get(i);
+			Repeater r;
+			
+			switch(variant) {
+			case WIDTH:
+				 r = repeaters.get(WIDTH);
+				 r.assignTerms(term, term, term, term);
+				 return r.repeat(properties, values);
+			case STYLE:
+				 r = repeaters.get(STYLE);
+				 r.assignTerms(term, term, term, term);
+				 return r.repeat(properties, values);
+			case COLOR:
+				 r = repeaters.get(COLOR);
+				 r.assignTerms(term, term, term, term);
+				 return r.repeat(properties, values);
+			default:
+				return false;
+			}
+		}
+		
+		/**
+		 * This method is overriden to use repeaters
+		 */
+		@Override
+		protected boolean checkInherit(int variant, Term<?> term,
+				Map<String, CSSProperty> properties) {
+			
+			// check whether term equals inherit
+			if (!(term instanceof TermIdent)
+					|| !CSSProperty.INHERIT_KEYWORD
+							.equalsIgnoreCase(((TermIdent) term).getValue())) {
+				return false;
+			}
+
+			if (variant == ALL_VARIANTS) {
+				for (int i = 0; i < variants; i++) {
+					Repeater r = repeaters.get(i);
+					r.assignTerms(term, term, term, term);
+					r.repeat(properties, null);
+				}
+				return true;
+			}
+
+			Repeater r = repeaters.get(variant);
+			r.assignTerms(term, term, term, term);
+			r.repeat(properties, null);
+			return true;
+		}
+		
+	}
+	
 
 	/**
 	 * Border style repeater
