@@ -3,8 +3,11 @@ package test;
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import cz.vutbr.web.css.CSSFactory;
@@ -19,7 +22,8 @@ import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermNumeric;
 
 public class SelectorTest {
-
+	private static Logger log = Logger.getLogger(SelectorTest.class);
+	
 	private static final TermFactory tf = CSSFactory.getTermFactory();
 	private static final RuleFactory rf = CSSFactory.getRuleFactory();
 	
@@ -63,6 +67,12 @@ public class SelectorTest {
 	
 	public static final String TEST_ATTRIB_PRESENCE = 
 		"*[href] { text-decoration: underline}";
+	
+	@BeforeClass
+	public static void init()  {
+		log.info("\n\n\n == SelectorTest test == " + new Date() + " == \n\n\n");
+	}
+	
 	
 	@Test
 	public void testMultiple() throws StyleSheetNotValidException {

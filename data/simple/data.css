@@ -1,3 +1,8 @@
+#marginator {
+	margin: 100px;
+	border-top: olive dotted 5ex;
+}
+
 BODY {
   background-color: #EEE;
   color: red;
@@ -25,12 +30,8 @@ H1.prvni {
   color: #0F0;
 }
 
-#marginator {
-	margin: 100px;
-	border-top: olive dotted 5ex;
-}
-
 #fontoid {
 	font-family: monospace;
 	color: inherit;
 }
+

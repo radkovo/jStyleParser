@@ -2,18 +2,23 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.StringReader;
+import java.util.Date;
 
+import org.apache.log4j.Logger;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.TermFactory;
 
 public class SimpleTest {
-
+	private static Logger log = Logger.getLogger(SimpleTest.class);
+	
 	public static final TermFactory tf = CSSFactory.getTermFactory();
 	
 	public static final String TEST_STRING1 = 
@@ -67,11 +72,14 @@ public class SimpleTest {
 		"\n";
 	
 	
-	
+	@BeforeClass
+	public static void init()  {
+		log.info("\n\n\n == SimpleTest test == " + new Date() + " == \n\n\n");
+	}
 	
 	
 	@Test
-	public void testCharsets() throws StyleSheetNotValidException {
+	public void testCharsets()   {
 		
 		StyleSheet ss;
 		
@@ -99,7 +107,7 @@ public class SimpleTest {
 	
 	
 	@Test 
-	public void testString1() throws StyleSheetNotValidException {
+	public void testString1()   {
 		
 		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_STRING1));
 		
@@ -123,7 +131,7 @@ public class SimpleTest {
 	
 	
 	@Test 
-	public void testRGBFunction1() throws StyleSheetNotValidException {
+	public void testRGBFunction1()   {
 		
 		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_RGBFUNCTION1));
 		assertEquals("One rule is set", 1, ss.size());
@@ -142,7 +150,7 @@ public class SimpleTest {
 	}
 	
 	@Test 
-	public void testRGBFunction2() throws StyleSheetNotValidException {
+	public void testRGBFunction2()   {
 		
 		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_RGBFUNCTION2));
 		assertEquals("One rule is set", 1, ss.size());
@@ -160,7 +168,7 @@ public class SimpleTest {
 	}
 	
 	@Test
-	public void testHashColor1() throws StyleSheetNotValidException {
+	public void testHashColor1()   {
 
 		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_HASH_COLOR1));
 		assertEquals("One rule is set", 1, ss.size());
@@ -179,7 +187,7 @@ public class SimpleTest {
 	}
 	
 	@Test
-	public void testHashColor2() throws StyleSheetNotValidException {
+	public void testHashColor2()   {
 		
 		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_HASH_COLOR2));
 		assertEquals("One rule is set", 1, ss.size());
@@ -197,10 +205,16 @@ public class SimpleTest {
 	}
 	
 	@Test
-	public void testString2() throws StyleSheetNotValidException {
+	public void testString2()   {
 		
 		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_STRING2));
 		assertEquals("Six rules are set", 6, ss.size());
+	}
+	
+	@Test
+	public void testSimpleFile() throws FileNotFoundException {
+		StyleSheet ss = CSSFactory.parse(new FileReader("data/simple/data.css"));
+		
 	}
 	
 }
