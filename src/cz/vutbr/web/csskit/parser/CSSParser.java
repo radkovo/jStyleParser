@@ -12,8 +12,9 @@ import org.apache.log4j.Logger;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
-import cz.vutbr.web.css.ImportURI;
+import cz.vutbr.web.css.RuleImport;
 import cz.vutbr.web.css.Rule;
+import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
@@ -48,16 +49,14 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
     private static final int FAST_SKIP = -10;
 
 
-        private Integer ruleSetNum;
+        private Integer ruleNum;
 
         /** Character set of given css */
         private String charset;
 
         /** Rules gathered from input */
-        private List<Rule<?>> rules;
+        private List<RuleBlock<?>> rules;
 
-        /** Files to be imported into stylesheet */
-        private List<ImportURI> imports;
 
         /**
 	 * Returns StyleSheet from input set by constructor.
@@ -68,10 +67,9 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
         public StyleSheet parse() throws StyleSheetNotValidException {
                 try {
                         //ReInit(reader);
-                        this.rules = new ArrayList<Rule<?>>();
+                        this.rules = new ArrayList<RuleBlock<?>>();
                         this.charset = null;
-                        this.imports = new ArrayList<ImportURI>();
-                        this.ruleSetNum = 0;
+                        this.ruleNum = 0;
                         return this.start();
                 }
                 catch (ParseException e) {
@@ -151,7 +149,6 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
           jjtc000 = false;
                 StyleSheet stylesheet = rf.createStyleSheet();
                 stylesheet.setCharset(charset);
-                stylesheet.setImports(imports);
                 stylesheet.replaceAll(rules);
 
                 {if (true) return stylesheet;}
@@ -401,7 +398,6 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
         SimpleNode jjtn000 = new SimpleNode(JJTIMPORT_A);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);String currentUri = null;
-        ImportURI uri = rf.createImport();
         List<String> medias = new ArrayList<String>();
     try {
       try {
@@ -475,10 +471,12 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
         jj_consume_token(SEMICOLON);
                   jjtree.closeNodeScope(jjtn000, true);
                   jjtc000 = false;
-                        if(currentUri!=null || !"".equals(currentUri))
-                                uri.setUri(currentUri);
-                        uri.replaceAll(medias);
-                        this.imports.add(uri);
+                        if(currentUri!=null || !"".equals(currentUri)) {
+                                RuleImport uri = rf.createImport(ruleNum++);
+                                uri.setURI(currentUri);
+                                uri.replaceAll(medias);
+                                this.rules.add(uri);
+                        }
       } catch (ParseException e) {
                 errorRecover(e, "f: import_a()", BLANK);
       }
@@ -510,9 +508,8 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
  /*@bgen(jjtree) media */
         SimpleNode jjtn000 = new SimpleNode(JJTMEDIA);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);RuleMedia media = rf.createMedia();
-        List<String> medias = new ArrayList<String>();
-        List<? extends Rule<?>> mediarules = new ArrayList<RuleSet>();
+        jjtree.openNodeScope(jjtn000);List<String> medias = new ArrayList<String>();
+        List<? extends RuleBlock<?>> mediarules = new ArrayList<RuleSet>();
     try {
       try {
         jj_consume_token(MEDIA_SYM);
@@ -582,11 +579,12 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
             jj_la1[20] = jj_gen;
             break label_14;
           }
-          ruleset((List<Rule<?>>) mediarules);
+          ruleset((List<RuleBlock<?>>) mediarules);
         }
         jj_consume_token(RCURLY);
                   jjtree.closeNodeScope(jjtn000, true);
                   jjtc000 = false;
+                        RuleMedia media = rf.createMedia(ruleNum++);
                         media.setMedias(medias);
                         media.replaceAll( (List<RuleSet>) mediarules);
                         rules.add(media);
@@ -671,7 +669,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
  * Inserts ruleset's rule into rule set
  * @param rules List of rules where new ruleset will be added
  */
-  final public void ruleset(List<Rule<?>> rules) throws ParseException {
+  final public void ruleset(List<RuleBlock<?>> rules) throws ParseException {
  /*@bgen(jjtree) ruleset */
         SimpleNode jjtn000 = new SimpleNode(JJTRULESET);
         boolean jjtc000 = true;
@@ -758,7 +756,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
                 errorRecover(e, "f: ruleset()", RCURLY);
       } finally {
                 if(cslist.size() > 0 && declarations.size() > 0) {
-                        RuleSet rule = rf.createSet((Object)ruleSetNum++);
+                        RuleSet rule = rf.createSet(ruleNum++);
                         rule.setSelectors(cslist);
                         rule.replaceAll(declarations);
                         rules.add(rule);
@@ -792,8 +790,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
  /*@bgen(jjtree) page */
         SimpleNode jjtn000 = new SimpleNode(JJTPAGE);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);RulePage page = rf.createPage();
-        List<Declaration> declarations = new ArrayList<Declaration>();
+        jjtree.openNodeScope(jjtn000);List<Declaration> declarations = new ArrayList<Declaration>();
         Declaration dec = null;
         String pseudo = null;
     try {
@@ -879,6 +876,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
                 errorRecover(e, "f: page()", RCURLY);
       } finally {
                 if(declarations.size() > 0) {
+                        RulePage page = rf.createPage(ruleNum++);
                         page.setPseudo(pseudo);
                         page.replaceAll(declarations);
                 this.rules.add(page);

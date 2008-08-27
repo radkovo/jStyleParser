@@ -7,7 +7,7 @@ package cz.vutbr.web.css;
  * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
  */
-public interface RulePage extends Rule<Declaration>, PrettyOutput {
+public interface RulePage extends RuleBlock<Declaration>, PrettyOutput {
 
 	/**
 	 * Gets name of CSS pseudo-page

@@ -1,10 +1,6 @@
 package cz.vutbr.web.csskit;
 
-import java.util.Collections;
-import java.util.List;
-
-import cz.vutbr.web.css.ImportURI;
-import cz.vutbr.web.css.Rule;
+import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.StyleSheet;
 
 /**
@@ -14,14 +10,12 @@ import cz.vutbr.web.css.StyleSheet;
  * @author Jan Svercl, VUT Brno, 2008,
  * 
  */
-public class StyleSheetImpl extends AbstractRule<Rule<?>> implements StyleSheet {
+public class StyleSheetImpl extends AbstractRule<RuleBlock<?>> implements StyleSheet {
 	
     protected String charset;
-    protected List<ImportURI> imports;
 
 	protected StyleSheetImpl() {
     	this.charset = null;
-    	this.imports = Collections.emptyList();
     }    
     
     public String getCharset() {
@@ -45,16 +39,8 @@ public class StyleSheetImpl extends AbstractRule<Rule<?>> implements StyleSheet 
     		   .replaceAll("\"$", "");
     		   
         this.charset = charset;
-    }    
+    }       
     
-    public List<ImportURI> getImports() {
-		return imports;
-	}
-
-	public void setImports(List<ImportURI> imports) {
-		this.imports = imports;
-	}
-
     @Override
     public String toString() {
     	
@@ -67,10 +53,7 @@ public class StyleSheetImpl extends AbstractRule<Rule<?>> implements StyleSheet 
     		  .append(charset)
     		  .append(OutputUtil.CHARSET_CLOSING);
     	
-    	// append @import rules
-    	// and other rules
-    	sb = OutputUtil.appendList(sb, imports, OutputUtil.EMPTY_DELIM)
-    		.append(OutputUtil.NEW_LINE);
+    	// append rules
     	sb = OutputUtil.appendList(sb, list, OutputUtil.NEW_LINE)
     		.append(OutputUtil.NEW_LINE);		
     	    	
@@ -85,7 +68,6 @@ public class StyleSheetImpl extends AbstractRule<Rule<?>> implements StyleSheet 
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((charset == null) ? 0 : charset.hashCode());
-		result = prime * result + ((imports == null) ? 0 : imports.hashCode());
 		return result;
 	}
 
@@ -106,14 +88,8 @@ public class StyleSheetImpl extends AbstractRule<Rule<?>> implements StyleSheet 
 				return false;
 		} else if (!charset.equals(other.charset))
 			return false;
-		if (imports == null) {
-			if (other.imports != null)
-				return false;
-		} else if (!imports.equals(other.imports))
-			return false;
 		return true;
 	}
-    
-    
-    
+
+	
 }

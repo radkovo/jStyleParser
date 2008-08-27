@@ -11,24 +11,22 @@ import cz.vutbr.web.css.CombinedSelector;
  * Basic holder of declarations with CSS selectors
  * 
  * @author kapy
- * @author Jan Svercl, VUT Brno, 2008
  */
-public class RuleSetImpl extends AbstractRule<Declaration> implements RuleSet {
+public class RuleSetImpl extends AbstractRuleBlock<Declaration> implements RuleSet {
 
-	private int order;
-	
 	protected List<CombinedSelector> selectors;
 	
-	protected RuleSetImpl(Integer order) {
+	protected RuleSetImpl(int position) {
+		super(position);
 		this.selectors = Collections.emptyList();
-		this.order = order.intValue();
 	}
 	
 	/**
 	 * Shallow copy constructor
 	 * @param rs RuleSet to share selectors and declarations with 
 	 */
-	protected RuleSetImpl(Integer order, RuleSet rs) {
+	protected RuleSetImpl(RuleSet rs) {
+		super(rs.getFilePosition());
 		this.selectors = rs.getSelectors();
 		this.replaceAll(rs.asList());
 	}
@@ -49,21 +47,6 @@ public class RuleSetImpl extends AbstractRule<Declaration> implements RuleSet {
 		this.selectors = selectors;
 		return this;
 	}
-
-	public int compareTo(RuleSet o) throws ClassCastException {
-		
-		if(o.getClass()!=RuleSetImpl.class)
-			throw new ClassCastException("Allowed to compare RuleSetImpl only");
-		
-		RuleSetImpl other = (RuleSetImpl) o;
-		
-		if (order < other.order)	return -1;
-		else if (order > other.order)	return 1;
-		
-		return 0;
-		
-	}
-
 
 	@Override
     public String toString() {
@@ -95,7 +78,6 @@ public class RuleSetImpl extends AbstractRule<Declaration> implements RuleSet {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + order;
 		result = prime * result
 				+ ((selectors == null) ? 0 : selectors.hashCode());
 		return result;
@@ -113,17 +95,15 @@ public class RuleSetImpl extends AbstractRule<Declaration> implements RuleSet {
 		if (!(obj instanceof RuleSetImpl))
 			return false;
 		RuleSetImpl other = (RuleSetImpl) obj;
-		if (order != other.order)
-			return false;
 		if (selectors == null) {
 			if (other.selectors != null)
 				return false;
 		} else if (!selectors.equals(other.selectors))
 			return false;
 		return true;
-	} 
-    
-    
+	}
+
+	
     
     
     

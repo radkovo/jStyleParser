@@ -5,7 +5,10 @@ import static org.junit.Assert.assertEquals;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.StringReader;
+import java.util.Date;
 
+import org.apache.log4j.Logger;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import cz.vutbr.web.css.CSSFactory;
@@ -14,6 +17,7 @@ import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermFactory;
 
 public class GrammarRecovery1 {
+	private static Logger log = Logger.getLogger(GrammarRecovery1.class);
 
 	public static final TermFactory tf = CSSFactory.getTermFactory();
 	
@@ -29,6 +33,11 @@ public class GrammarRecovery1 {
 		"@charset \"UTF-8\"\n" +
 		"BODY { color: blue;}\n" +
 		"BODY { color: red; }";
+	
+	@BeforeClass
+	public static void init()  {
+		log.info("\n\n\n == GrammarRecovery1 test == " + new Date() + " == \n\n\n");
+	}
 	
 	@Test	
 	public void charsetCharsetWithoutSemicolon() {

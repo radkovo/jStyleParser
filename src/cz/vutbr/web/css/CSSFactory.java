@@ -182,8 +182,10 @@ public final class CSSFactory {
 			CSSParser parser = new CSSParser(source);
 			return parser.parse();
 			*/
+			
 			CSSTreeParser parser = CSSTreeParser.createParser(source);
 			return parser.stylesheet();
+			
 		}
 		catch(Exception e) {
 			log.error("While parsing CSS stylesheet", e);

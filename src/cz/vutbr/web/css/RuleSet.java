@@ -8,8 +8,7 @@ import java.util.List;
  * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
  */
-public interface RuleSet extends Rule<Declaration>, Comparable<RuleSet>,
-		PrettyOutput {
+public interface RuleSet extends RuleBlock<Declaration>, PrettyOutput {
 
 	/**
 	 * Gets selectors of given declaration
@@ -26,13 +25,5 @@ public interface RuleSet extends Rule<Declaration>, Comparable<RuleSet>,
 	 * @return Modified instance
 	 */
 	public RuleSet setSelectors(List<CombinedSelector> selectors);
-
-	/**
-	 * Compares with another instance of RuleSet
-	 * @throws ClassCastException When compared instance if a different
-	 * implementation
-	 * @see Comparable
-	 */
-	public int compareTo(RuleSet o) throws ClassCastException;
 	
 }

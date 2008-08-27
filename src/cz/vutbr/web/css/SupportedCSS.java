@@ -24,6 +24,15 @@ public interface SupportedCSS {
 	 */
 	Set<String> getDefinedPropertyNames();
 	
+	
+	/**
+	 * Checks whether keyword is supported
+	 * @param keyword Keyword, either with or without preceding '@' character
+	 * @return <code>true</code> if supported, <code>false</code> otherwise
+	 */
+	boolean isSupportedAtKeyword(String keyword);
+	
+	
 	/**
 	 * Return default value of CSSProperty under given name
 	 * @param propertyName Name of CSSProperty

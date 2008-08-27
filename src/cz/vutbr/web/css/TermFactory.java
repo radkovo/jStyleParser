@@ -33,6 +33,8 @@ public interface TermFactory {
 	
 	TermNumeric<?> createNumeric(String value, int unary);
 	
+	TermNumeric<Float> createDimension(String value, int unary);
+	
 	<K,V> TermPair<K,V> createPair(K key, V value);
 	
 	TermPercent createPercent(Float value);

@@ -9,11 +9,12 @@ import cz.vutbr.web.css.RulePage;
  * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
  */
-public class RulePageImpl extends AbstractRule<Declaration> implements RulePage {
+public class RulePageImpl extends AbstractRuleBlock<Declaration> implements RulePage {
 
 	protected String pseudo;
 	
-	protected RulePageImpl() {
+	protected RulePageImpl(int position) {
+		super(position);
 		this.pseudo = "";
 	}
 	

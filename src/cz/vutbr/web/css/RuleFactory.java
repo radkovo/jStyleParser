@@ -25,36 +25,38 @@ public interface RuleFactory {
 
 	/**
 	 * Creates CSS import rule
+	 * @param position Position in CSS style sheet
 	 * @return New CSS import rule
 	 */
-	ImportURI createImport();
+	RuleImport createImport(int position);
 
 	/**
 	 * Creates CSS rule set, that is collection of CSS declarations
-	 * with collection of CSS combined selectors. Additional data
-	 * are meant to be useful for determining rule order.
+	 * with collection of CSS combined selectors. 
 	 * 
 	 * In current implementation of parser they are used to pass 
 	 * integer value by parser to preserve rule ordering according
 	 * to their occurrence in CSS style sheet.
 	 * 
 	 * 
-	 * @param ad Additional data for rule set
+	 * @param position Position in CSS style sheet
 	 * @return New CSS rule set
 	 */
-	RuleSet createSet(Object ad);
+	RuleSet createSet(int position);
 
 	/**
 	 * Creates CSS media page
+	 * @param position Position in CSS style sheet
 	 * @return New CSS media page
 	 */
-	RuleMedia createMedia();
+	RuleMedia createMedia(int position);
 
 	/**
 	 * Creates CSS named page
+	 * @param position Position in CSS style sheet
 	 * @return New CSS page
 	 */
-	RulePage createPage();
+	RulePage createPage(int position);
 
 	/**
 	 * Creates CSS combined selector, collection of (simple) selectors

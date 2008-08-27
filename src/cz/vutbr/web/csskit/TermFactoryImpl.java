@@ -136,6 +136,19 @@ public class TermFactoryImpl implements TermFactory {
 			return createNumber(value, unary);
 		}
 	}
+	
+	public TermNumeric<Float> createDimension(String value, int unary) {
+		
+		for(TermNumeric.Unit unit: TermNumeric.Unit.values()) {
+			if(value.matches("^[0-9.]" + unit.value() + "$"))
+				return (TermNumeric<Float>) (new TermNumericImpl<Float>())
+					.setUnit(unit)
+					.setValue(convertFloat(value, unit.value(), unary));
+		}
+		
+		return null;
+		
+	}
 
 	@SuppressWarnings("unchecked")
 	public <K, V> TermPair<K, V> createPair(K key, V value) {

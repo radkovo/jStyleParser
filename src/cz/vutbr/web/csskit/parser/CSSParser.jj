@@ -24,8 +24,9 @@ import org.apache.log4j.Logger;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
-import cz.vutbr.web.css.ImportURI;
+import cz.vutbr.web.css.RuleImport;
 import cz.vutbr.web.css.Rule;
+import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
@@ -63,16 +64,14 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants/*@egen*
     private static final int FAST_SKIP = -10;
 
 
-	private Integer ruleSetNum;
+	private Integer ruleNum;
 
 	/** Character set of given css */
 	private String charset;
 	
 	/** Rules gathered from input */
-	private List<Rule<?>> rules;
-	
-	/** Files to be imported into stylesheet */
-	private List<ImportURI> imports;
+	private List<RuleBlock<?>> rules;	
+
 
 	/**
 	 * Returns StyleSheet from input set by constructor.
@@ -83,10 +82,9 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants/*@egen*
 	public StyleSheet parse() throws StyleSheetNotValidException {
 		try {
 			//ReInit(reader);
-			this.rules = new ArrayList<Rule<?>>();
+			this.rules = new ArrayList<RuleBlock<?>>();
 			this.charset = null;
-			this.imports = new ArrayList<ImportURI>();	
-			this.ruleSetNum = 0;
+			this.ruleNum = 0;
 			return this.start();
 		}
 		catch (ParseException e) {
@@ -264,7 +262,6 @@ StyleSheet start() :
   	{ 
   		StyleSheet stylesheet = rf.createStyleSheet();
   		stylesheet.setCharset(charset);
-  		stylesheet.setImports(imports);
   		stylesheet.replaceAll(rules);
   
   		return stylesheet; 
@@ -399,7 +396,6 @@ void import_a() :
         jjtree.openNodeScope(jjtn000);
 /*@egen*/
 	String currentUri = null;
-	ImportURI uri = rf.createImport();
 	List<String> medias = new ArrayList<String>();
 }
 {/*@bgen(jjtree) import_a */
@@ -424,10 +420,12 @@ void import_a() :
                 }
 /*@egen*/ 
   		{	
-  			if(currentUri!=null || !"".equals(currentUri))
-  				uri.setUri(currentUri);
-  			uri.replaceAll(medias);
-  			this.imports.add(uri);	
+  			if(currentUri!=null || !"".equals(currentUri)) {
+  				RuleImport uri = rf.createImport(ruleNum++);
+  				uri.setURI(currentUri);
+  				uri.replaceAll(medias);
+  				this.rules.add(uri);	
+  			}	
   		}
   	}
   	catch (ParseException e) {
@@ -464,9 +462,8 @@ void media() :
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
 /*@egen*/
-	RuleMedia media = rf.createMedia();
 	List<String> medias = new ArrayList<String>();
-	List<? extends Rule<?>> mediarules = new ArrayList<RuleSet>();
+	List<? extends RuleBlock<?>> mediarules = new ArrayList<RuleSet>();
 }
 {/*@bgen(jjtree) media */
         try {
@@ -482,7 +479,7 @@ void media() :
   		)* 
   		<LCURLY> 
   		(<BLANK>)* 
-  		(ruleset( (List<Rule<?>>) mediarules))* 
+  		(ruleset( (List<RuleBlock<?>>) mediarules))* 
   		<RCURLY>/*@bgen(jjtree)*/
                 {
                   jjtree.closeNodeScope(jjtn000, true);
@@ -490,6 +487,7 @@ void media() :
                 }
 /*@egen*/ 
   		{
+			RuleMedia media = rf.createMedia(ruleNum++);
   			media.setMedias(medias);
   			media.replaceAll( (List<RuleSet>) mediarules);
   			rules.add(media);
@@ -579,7 +577,7 @@ void medium(List<String> medias) :
  * Inserts ruleset's rule into rule set
  * @param rules List of rules where new ruleset will be added
  */
-void ruleset(List<Rule<?>> rules) :
+void ruleset(List<RuleBlock<?>> rules) :
 {/*@bgen(jjtree) ruleset */
         SimpleNode jjtn000 = new SimpleNode(JJTRULESET);
         boolean jjtc000 = true;
@@ -624,7 +622,7 @@ void ruleset(List<Rule<?>> rules) :
   	// be error graceful to unknown selectors and declarations
   	finally {
   		if(cslist.size() > 0 && declarations.size() > 0) {
-  			RuleSet rule = rf.createSet((Object)ruleSetNum++);
+  			RuleSet rule = rf.createSet(ruleNum++);
   			rule.setSelectors(cslist);
   			rule.replaceAll(declarations);
   			rules.add(rule);
@@ -661,7 +659,6 @@ void page() :
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
 /*@egen*/
-	RulePage page = rf.createPage();
 	List<Declaration> declarations = new ArrayList<Declaration>();
 	Declaration dec = null;
 	String pseudo = null;
@@ -691,6 +688,7 @@ void page() :
     // be error graceful to unknown declarations
   	finally {
   		if(declarations.size() > 0) {
+  			RulePage page = rf.createPage(ruleNum++);
   			page.setPseudo(pseudo);
   			page.replaceAll(declarations);
     		this.rules.add(page);

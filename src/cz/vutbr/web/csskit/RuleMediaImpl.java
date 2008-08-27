@@ -13,16 +13,18 @@ import cz.vutbr.web.css.RuleSet;
  * @author Jan Svercl, VUT Brno, 2008
  * 
  */
-public class RuleMediaImpl extends AbstractRule<RuleSet> implements RuleMedia {
+public class RuleMediaImpl extends AbstractRuleBlock<RuleSet> implements RuleMedia {
   
 	/** List of medias */
 	protected List<String> medias;
 	
 	/**
 	 * Creates empty object to be fulfilled by interface methods
+	 * @param position Position in CSS stylesheet 
 	 * @return New empty instance of RuleMedia
 	 */
-	protected RuleMediaImpl() {
+	protected RuleMediaImpl(int position) {
+		super(position);
 		this.medias = Collections.emptyList();
 	}    
     

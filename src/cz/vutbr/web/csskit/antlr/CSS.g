@@ -7,39 +7,14 @@ options {
 
 tokens {
 	STYLESHEET;
-    	
-    	CHARSET;
-	IMPORT;
-	PAGE;
-	MEDIA;
-	BLOCK;
-	RULE;
-	
-	ATTRIB;
-	
-	SOADJACENT;
-	SOCHILD;
-	SODESCENDANT;
-	SOSTANDALONE;
-	
-	AOEQUALS;
-    	AOINCLUDES;
-    	AODASHMATCH;
-	
-	PSEUDO;
-	PROPERTY;
-	FUNCTION;
-	IMPORTANT;
-	URI;
-	
-	TAG;
-	UNIVERSAL;
-	ID;
-	CLASS;
-	
-	TOCOMMA;
-	TOSLASH;
-	TOSPACE;
+	ATBLOCK;
+	CURLYBLOCK;
+	PARENBLOCK;
+	BRACEBLOCK;
+	RULE;	
+	SELECTOR;
+	DECLARATION;	
+	VALUE;
 }
 
 
@@ -52,367 +27,413 @@ package cz.vutbr.web.csskit.antlr;
 package cz.vutbr.web.csskit.antlr;
 }
 
+@parser::members {
 
-stylesheet 
-	: (ruleset | atblock)*
-	-> ^(STYLESHEET atblock* ruleset*)
+    public String toStringTree(CommonTree tree) {
+        StringBuilder sb = new StringBuilder();
+        rec(tree, sb, 0);
+        return sb.toString();       
+    }
+    
+    private void rec(CommonTree tree, StringBuilder sb, int nest) {
+        if(tree.getChildCount()==0) {
+            addTree(sb, tree, nest);
+            return;
+        }
+            
+        if(!tree.isNil()) {
+            addTree(sb, tree, nest);
+        }
+       
+        for(int i=0; i < tree.getChildCount(); i++) {
+            CommonTree n = (CommonTree) tree.getChild(i);
+            rec(n, sb, nest+1);
+        }
+        if(!tree.isNil()) {
+            sb.append(")");
+        }
+    
+    }
+    
+    private StringBuilder addTree(StringBuilder sb, CommonTree tree, int nest) {
+        sb.append("\n");
+        for(int i=0; i< nest; i++) {
+            sb.append("  ");
+        }
+        
+        if(!tree.isNil())
+          sb.append("(");
+        
+        sb.append(tree.toString()).append(" |")
+          .append(tree.getType()).append("| ");
+        
+        return sb;
+    }
+
+}
+
+
+stylesheet  
+	: ( CDO | CDC | S | statement )* 
+	-> ^(STYLESHEET statement*)
+	;
+	
+statement   
+	: ruleset | atrule
+	;
+	
+atrule     
+	: ATKEYWORD S* 
+	  any* 
+	  ( block | SEMICOLON S* )
+	  -> ^(ATBLOCK ATKEYWORD any* block?)
+	;
+	
+block       
+	: LCURLY S* 
+		blockpart* 
+	  RCURLY S*
+	  -> ^(CURLYBLOCK blockpart*)
 	;
 
-atblock	
-	: '@' atkeyword BLANK? specifier? ( block | SEMICOLON ) 
-	-> ^(atkeyword specifier? block?)
+blockpart
+    : any -> any 
+    | block -> block 
+    | (ATKEYWORD S*) -> ATKEYWORD 
+    | (SEMICOLON S*) -> SEMICOLON
+    ;
+  	
+	
+ruleset     
+	: selector? 
+	  LCURLY S* 
+	  	declaration? (SEMICOLON S* declaration? )* 
+	  RCURLY S*
+	  -> ^(RULE selector* declaration*)
+	;
+	
+selector    
+	: selpart+ -> ^(SELECTOR selpart+)
 	;
 
-atkeyword
-	: 'charset' -> CHARSET
-	| 'import' -> IMPORT
-	| 'page' -> PAGE
-	| 'media' -> MEDIA
-	| ident -> BLOCK
+declaration 
+	: property COLON S* terms -> ^(DECLARATION property terms)
 	;
-
-specifier
-	: ident (COMMA ident) -> ident+	
-	| string
-	| uri
+	
+property    
+	: IDENT S* -> IDENT
 	;
+	
+terms	       
+	: term+
+	-> ^(VALUE term+)
+	;
+	
+term
+    : valuepart -> valuepart
+    | block -> block
+    | ATKEYWORD S* -> ATKEYWORD
+    ;	
 
-block	
-	: LCURLY properties RCURLY -> properties
+valuepart
+    : ( IDENT -> IDENT
+      | IDKEYWORD -> IDKEYWORD
+      | NUMBER -> NUMBER
+      | PERCENTAGE ->PERCENTAGE
+      | DIMENSION -> DIMENSION
+      | STRING -> STRING
+      | URI    -> URI
+      | HASH -> HASH
+      | UNIRANGE -> UNIRANGE
+      | INCLUDES -> INCLUDES
+      | COLON -> COLON
+      | COMMA -> COMMA
+      | GREATER -> GREATER
+      | EQUALS -> EQUALS
+      | SLASH -> SLASH
+      | FUNCTION S* terms RPAREN -> ^(FUNCTION terms) 
+      | DASHMATCH -> DASHMATCH
+      | LPAREN any* RPAREN -> ^(PARENBLOCK any*)
+      | LBRACE any* RBRACE -> ^(BRACEBLOCK any*)
+    ) !S*
+  ;
+
+selpart
+    : ( IDENT -> IDENT
+      | IDKEYWORD -> IDKEYWORD
+      | NUMBER -> NUMBER
+      | PERCENTAGE ->PERCENTAGE
+      | DIMENSION -> DIMENSION
+      | STRING -> STRING
+      | URI    -> URI
+      | HASH -> HASH
+      | UNIRANGE -> UNIRANGE
+      | INCLUDES -> INCLUDES
+      | COLON -> COLON
+      | COMMA -> COMMA
+      | GREATER -> GREATER
+      | EQUALS -> EQUALS
+      | SLASH -> SLASH
+      | FUNCTION S* any* RPAREN -> ^(FUNCTION any*) 
+      | DASHMATCH -> DASHMATCH
+      | LPAREN any* RPAREN -> ^(PARENBLOCK any*)
+      | LBRACE any* RBRACE -> ^(BRACEBLOCK any*)
+    ) !S*
+  ;
+	
+any
+	: ( IDENT -> IDENT
+	  | IDKEYWORD -> IDKEYWORD
+	  | NUMBER -> NUMBER
+	  | PERCENTAGE ->PERCENTAGE
+	  | DIMENSION -> DIMENSION
+	  | STRING -> STRING
+      | URI    -> URI
+      | HASH -> HASH
+      | UNIRANGE -> UNIRANGE
+      | INCLUDES -> INCLUDES
+      | COLON -> COLON
+      | COMMA -> COMMA
+      | GREATER -> GREATER
+      | EQUALS -> EQUALS
+      | SLASH -> SLASH
+      | FUNCTION S* any* RPAREN -> ^(FUNCTION any*) 
+      | DASHMATCH -> DASHMATCH
+      | LPAREN any* RPAREN -> ^(PARENBLOCK any*)
+      | LBRACE any* RBRACE -> ^(BRACEBLOCK any*)
+    ) !S*;
+
+
+/////////////////////////////////////////////////////////////////////////////////
+// TOKENS //
+/////////////////////////////////////////////////////////////////////////////////
+
+/** Identifier */
+IDENT	
+	: IDENT_MACR
 	;	
 
-ruleset
- 	: selectors block -> ^( RULE selectors block)
-	;
-	
-selectors
-	: selector (selectorop selector )* -> (selector selectorop*)+
-	;
-	
-selector
-	: element ( elhash | elclass | attrib | pseudo)*
-	;
-	
-selectorop
-	: ADJACENT -> SOADJACENT
-	| CHILD -> SOCHILD
-	| BLANK -> SODESCENDANT
-	| COMMA -> SOSTANDALONE
-	;
-	
-element
-	: ident -> ^( TAG ident )
-	| '*' -> ^(UNIVERSAL)
-	| -> ^(UNIVERSAL)
+/** Keyword beginning with '@' */
+ATKEYWORD
+	: '@' IDENT_MACR
 	;
 
-elhash	
-	: HASH -> ^(ID HASH )
-	;		
+IDKEYWORD
+    : '.' IDENT_MACR
+    ;
 
-elclass
-	: '.' ident -> ^(CLASS ident)
-	;	
-
-pseudo
-	: (':'|'::') ident -> ^( PSEUDO ident )
-	| (':'|'::') function -> ^( PSEUDO function )
+/** String including 'decorations' */
+STRING
+	: STRING_MACR
 	;
 
-attrib
-	: '[' ident (attribRelate (string | ident))? ']' -> ^( ATTRIB ident (attribRelate string* ident*)? )
-	;
-	
-attribRelate
-	: '='  -> AOEQUALS
-	| '~=' -> AOINCLUDES
-	| '|=' -> AODASHMATCH
-	;	
-
-properties
-	: declaration (SEMICOLON declaration? )* ->  declaration+
-	;
-  
-declaration
-	: ident COLON terms priority? -> ^( PROPERTY ident priority? terms )
-	;
-
-priority
-	: '!' BLANK? 'important' BLANK? -> IMPORTANT
-	;
-
-terms
-	: term (termop term)* 
-	;
-
-termop	
-	: COMMA -> TOCOMMA
-	| SLASH -> TOSLASH
-	| BLANK -> TOSPACE
-	;
-	
-
-term 
-	: LENGTH
-	| NUMBER
-	| PERCENTAGE
-	| ANGLE
-	| TIME
-	| FREQ
-	| HASH
-	| ident
-	| uri
-	| string
-	| function
-	;
-
-ident
-	: IDENT 
-	;
-
-string
-	: STRING 
-	;
-
-uri
-	: 'url' LPAREN 
-		(u=URI_STRING | u=STRING ) 
-		RPAREN -> ^(URI $u)
-	;
-	
-function
-	: ident LPAREN terms? RPAREN -> ^( FUNCTION ident terms? )
-	;
-
-
-/****************************************************************************
- * TOKENS *
- ****************************************************************************/
-
+/** Hash, either color or other */
 HASH
-	: '#' IDENT_CHAR* 
+	: '#' NAME_MACR	
 	;
 
+/** Number, decimal or integer */
+NUMBER
+	: NUMBER_MACR
+	;
 
-IDENT
-	:	IDENT_START IDENT_CHAR*
+/** Number with percent sign */
+PERCENTAGE
+	: NUMBER_MACR '%'
+	;
+
+/** Number with other unit */
+DIMENSION
+	: NUMBER_MACR IDENT_MACR
+	;
+
+/** URI encapsulated in 'url(' ... ')' */
+URI
+	: 'url(' W_MACR (STRING_MACR | URI_MACR) W_MACR ')'
+	;
+
+/** Unicode range */	
+UNIRANGE:	
+	'U+' ('0'..'9' | 'a'..'f' | 'A'..'F' | '?')
+	     ('0'..'9' | 'a'..'f' | 'A'..'F' | '?')
+	     ('0'..'9' | 'a'..'f' | 'A'..'F' | '?')
+	     ('0'..'9' | 'a'..'f' | 'A'..'F' | '?')
+	     (('0'..'9' | 'a'..'f' | 'A'..'F' | '?') ('0'..'9' | 'a'..'f' | 'A'..'F' | '?'))?
+	('-'
+	     ('0'..'9' | 'a'..'f' | 'A'..'F')
+	     ('0'..'9' | 'a'..'f' | 'A'..'F')
+             ('0'..'9' | 'a'..'f' | 'A'..'F')
+             ('0'..'9' | 'a'..'f' | 'A'..'F')
+             (('0'..'9' | 'a'..'f' | 'A'..'F') ('0'..'9' | 'a'..'f' | 'A'..'F'))?
+	)?
+	;
+
+/** Comment opening */
+CDO
+	: '<!--'
+	;
+
+/** Comment closing */
+CDC
+	: '-->'
 	;	
-	
+
+SEMICOLON
+	: ';'
+	;
+
 COLON
-	: SPACE* ':' SPACE*
-	;	
+	: ':'
+	;
 	
 COMMA
-	: SPACE* ',' SPACE* 
-	;	
-	
+    : ','
+    ;
+
+EQUALS
+    : '='
+    ;
+
 SLASH
-	: SPACE* '/' SPACE*
-	;
-		
+    : '/'
+    ;
+
+GREATER
+    : '>'
+    ;    	
+
 LCURLY
-	: SPACE* '{' SPACE*
+	: '{'
 	;
 
-RCURLY
-	: SPACE* '}' SPACE*
+RCURLY	
+	: '}'
 	;
 
 LPAREN
-	: SPACE* '(' SPACE*
+	: '('
 	;
 
 RPAREN
-	: SPACE* ')' SPACE*
+	: ')'
 	;		
-	
-SEMICOLON
-	: SPACE* ';' SPACE*
+
+LBRACE
+	: '['
 	;
 
-ADJACENT
-	: SPACE* '+' SPACE*
-	;
-
-CHILD
-	: SPACE* '>' SPACE*
-	;
-	
-	
-URI_STRING
-	: URI_CHAR*
-	;
-
-NUMBER
-	: DIGIT+ 
-	| DIGIT* '.' DIGIT+ 
-	;
-
-LENGTH
-	:	NUMBER LENGTH_UNIT
-	;
-	
-ANGLE
-	: NUMBER ANGLE_UNIT
+RBRACE
+	: ']'
 	;	
 
-FREQ
-	: NUMBER FREQ_UNIT
+/** White character */		
+S
+	: W_CHAR+
 	;
 
-TIME
-	: NUMBER TIME_UNIT
-	;
-	
-PERCENTAGE
-	: NUMBER PERCENT
-	;	
-	
-BLANK
-	: SPACE+
+COMMENT	
+	: '/*' ( options {greedy=false;} : .)* '*/' { $channel = HIDDEN; }
 	;
 
 SL_COMMENT
-	:	'//' ( options {greedy=false;} : .)* ('\n' | '\r' ) { $channel=HIDDEN; }
-	;
+	: '//' ( options {greedy=false;} : .)* ('\n' | '\r' ) { $channel=HIDDEN; }
+	;		
 	
-
-COMMENT
-	:	'/*' ( options {greedy=false;} : .)* '*/' { $channel = HIDDEN; }
+/** Function beginning */	
+FUNCTION
+	: IDENT_MACR '('
 	;
 
-STRING
-	: '"' STRING_V1_CHAR* '"' | '\'' STRING_V2_CHAR* '\''
-	;	
+INCLUDES
+	: '~='
+	;
 
+DASHMATCH
+	: '|='
+	;
 
 /*********************************************************************
  * FRAGMENTS *
  *********************************************************************/
 
-fragment LENGTH_UNIT
-	: (PX | CM | MM | IN | PT | PC | EM | EX)
-	;
-	
-fragment ANGLE_UNIT
-	: (DEG | RAD | GRAD)
-	;
-	
-fragment FREQ_UNIT
-	: ( HZ | KHZ)
-	;
+fragment 
+IDENT_MACR
+  	: NAME_START NAME_CHAR*
+  	;
 
-fragment TIME_UNIT
-	: ( MS | S)
+fragment 
+NAME_MACR
+ 	: NAME_CHAR+
+  	;
+
+fragment 
+NAME_START
+  	: ('a'..'z' | 'A'..'Z' | NON_ASCII | ESCAPE_CHAR)
+  	;     
+
+fragment 
+NON_ASCII
+  	: ('\u0080'..'\uD7FF' | '\uE000'..'\uFFFD')
+  	;
+
+fragment 
+ESCAPE_CHAR
+ 	: ('\\') 
+ 	  (
+ 	    (('0'..'9' | 'a'..'f' | 'A'..'F')
+ 	     ('0'..'9' | 'a'..'f' | 'A'..'F')
+ 	     ('0'..'9' | 'a'..'f' | 'A'..'F')
+ 	     ('0'..'9' | 'a'..'f' | 'A'..'F')
+ 	     (('0'..'9' | 'a'..'f' | 'A'..'F') ('0'..'9' | 'a'..'f' | 'A'..'F'))?
+ 	    )
+ 	     
+ 	   |('\u0020'..'\u007E' | '\u0080'..'\uD7FF' | '\uE000'..'\uFFFD')
+ 	  )
+  	;
+
+fragment 
+NAME_CHAR
+  	: ('a'..'z' | 'A'..'Z' | '0'..'9' | '-' | NON_ASCII | ESCAPE_CHAR)
+  	;
+
+fragment 
+NUMBER_MACR
+  	: ('0'..'9')+ | (('0'..'9')* '.' ('0'..'9')+)
+  	;
+
+fragment 
+STRING_MACR
+	: '"' (STRING_CHAR | '\'')* '"' 
+	| '\'' (STRING_CHAR | '"')* '\''
+  	;
+
+fragment
+STRING_CHAR
+	:  (URI_CHAR | ' ' | ('\\' NL_CHAR))
 	;
-
-fragment DIGIT
-	: ('0'..'9') 
-	;
-
-fragment HEXDIGIT
-	: ('0'..'9'|'a'..'f'|'A'..'F')
-	;
- 
-fragment PERCENT
-	: '%'
-	;
-
-fragment PX
-	: 'px'
-	;	 
-
-fragment CM
-	: 'cm'
-	; 
-
-fragment MM
-	: 'mm'
-	;
-
-fragment IN
-	: 'in'
-	;
-
-fragment PT
-	: 'pt'
-	;
-
-fragment PC
-	: 'pc'
-	;
-
-fragment EM
-	: 'em'
-	;
-
-fragment EX
-	: 'ex'
+  	
+fragment
+URI_MACR
+	: URI_CHAR*
+	;  	
+  	
+fragment
+URI_CHAR
+	: ('\u0009' | '\u0021' | '\u0023'..'\u0026' | '\u0028'..'\u007E')
+	  | NON_ASCII | ESCAPE_CHAR
 	;	
 
-fragment DEG
-	: 'deg'
+fragment 
+NL_CHAR
+  	: '\u000A' | '\u000D' '\u000A' | '\u000D' | '\u000C'
+  	; 
+
+fragment
+W_MACR
+	: W_CHAR*
 	;
 
-fragment RAD
-	: 'rad'
-	;
-
-fragment GRAD
-	: 'grad'
-	;
-
-fragment MS
-	: 'ms'
-	;
-
-fragment S
-	: 's'
-	;
-
-fragment HZ
-	: 'hz'
-	;
-
-fragment KHZ
-	: 'khz'
-	;
-
-fragment SPACE
-	: (' ' | '\t' | '\r' | '\n' | '\f')
-	;
-
-
-fragment ESC
-	: '\\' (UNICODE_ESC |'b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\')
-	;	
-
-fragment UNICODE_ESC
-	: 'u' HEXDIGIT HEXDIGIT HEXDIGIT HEXDIGIT
-	;
-
-fragment NON_ASCII
-	: ('\u0100'..'\ufffe')
-	;
-	
-fragment IDENT_START
-	: 	('_' | 'a'..'z'| 'A'..'Z' | NON_ASCII | ESC)
-	;
-	
-fragment IDENT_CHAR
-	:	( IDENT_START | '-' | '0'..'9')
-	;
-	
-	
-fragment URI_CHAR
-	:   ('!'|'#'|'$'|'%'|'&'|'*'|'-'|'~'|'/'|':'| NON_ASCII | ESC)
-	;
-	
-fragment STRING_V1_CHAR
-	:	(~( '\r' | '\n' | '\f' | '"') | ESC)
-	;
-	
-fragment STRING_V2_CHAR
-	: 	(~( '\r' | '\n' | '\f' | '\'') | ESC)
-	;	
-	
+fragment 
+W_CHAR
+  	: '\u0009' | '\u000A' | '\u000C' | '\u000D' | '\u0020'
+  	;

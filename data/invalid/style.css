@@ -38,16 +38,16 @@ while observing the rules for matching pairs of (), [], {}, "", and '',
 and correctly handling escapes. For example, a malformed declaration 
 may be missing a property, colon (:) or value. The following are all equivalent:
 */
-/*
+
 
 p { color:green }
-p { color:green; color }   /*
+p { color:green; color }   
 p { color:red;   color; color:green }  
 p { color:green; color: } 
 p { color:red;   color:; color:green } 
 p { color:green; color{;color:maroon} } 
 p { color:red;   color{;color:maroon}; color:green }
-*/
+
 /*
 # Invalid at-keywords. User agents must ignore an invalid at-keyword 
 together with everything following it, up to and 
@@ -55,7 +55,6 @@ including the next semicolon (;) or block ({...}),
 whichever comes first. For example, consider the following:
 */
 
-/* == TEST
 @three-dee {
   @background-lighting {
     azimuth: 30deg;
@@ -63,7 +62,7 @@ whichever comes first. For example, consider the following:
   }
   h2 { color: green }
 }
-*/
+
 
 /*
 The '@three-dee' at-rule is not part of CSS 2.1. 
@@ -72,9 +71,7 @@ the third right curly brace) is ignored.
  A CSS 2.1 user agent ignores it, 
  effectively reducing the style sheet to:
 h2 { color: blue }
-*/
 
-/*
 Something inside an at-rule that is ignored because it is invalid, 
 such as an invalid declaration within an @media-rule, 
 does not make the entire at-rule invalid.
@@ -86,7 +83,7 @@ but then drop the construct (declaration or rule)
 in which the string was found. For example:
 */
 
-/* == TEST
+
       div {
         color: green;
         font-family: 'Courier New Times
@@ -94,7 +91,7 @@ in which the string was found. For example:
         color: green;
 
 }
-*/
+
 
 /*
 ...would be treated the same as:
@@ -118,7 +115,7 @@ would be treated the same as:
 in a conformant UA.
 */
 
-/* == TEST
+
 @media screen {
     p:before { content: 'Hello
-*/
+

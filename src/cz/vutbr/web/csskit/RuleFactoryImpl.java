@@ -5,7 +5,7 @@ package cz.vutbr.web.csskit;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Declaration;
-import cz.vutbr.web.css.ImportURI;
+import cz.vutbr.web.css.RuleImport;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
@@ -53,22 +53,22 @@ public class RuleFactoryImpl implements RuleFactory {
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createImport()
 	 */
-	public ImportURI createImport() {
-		return new ImportURIImpl();
+	public RuleImport createImport(int position) {
+		return new RuleImportImpl(position);
 	}
 
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createMedia()
 	 */
-	public RuleMedia createMedia() {
-		return new RuleMediaImpl();
+	public RuleMedia createMedia(int position) {
+		return new RuleMediaImpl(position);
 	}
 
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createPage()
 	 */
-	public RulePage createPage() {
-		return new RulePageImpl();
+	public RulePage createPage(int position) {
+		return new RulePageImpl(position);
 	}
 
 	/* (non-Javadoc)
@@ -81,8 +81,8 @@ public class RuleFactoryImpl implements RuleFactory {
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createSet()
 	 */
-	public RuleSet createSet(Object ad) {
-		return new RuleSetImpl((Integer) ad);
+	public RuleSet createSet(int position) {
+		return new RuleSetImpl(position);
 	}
 
 	/* (non-Javadoc)

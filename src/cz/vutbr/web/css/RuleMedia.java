@@ -12,7 +12,7 @@ import java.util.List;
  * @author Jan Svercl, VUT Brno, 2008,
  * 
  */
-public interface RuleMedia extends Rule<RuleSet>, PrettyOutput {
+public interface RuleMedia extends RuleBlock<RuleSet>, PrettyOutput {
 
 	/**
 	 * Returns list of all medias associated with this rule

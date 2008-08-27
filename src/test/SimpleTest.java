@@ -112,7 +112,6 @@ public class SimpleTest {
 		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_STRING1));
 		
 		assertEquals("No charset is set", null, ss.getCharset());
-		assertEquals("No imports are set", 0, ss.getImports().size());
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);				
@@ -214,6 +213,8 @@ public class SimpleTest {
 	@Test
 	public void testSimpleFile() throws FileNotFoundException {
 		StyleSheet ss = CSSFactory.parse(new FileReader("data/simple/data.css"));
+		
+		log.debug(ss.toString());
 		
 	}
 	

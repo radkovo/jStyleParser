@@ -1,6 +1,6 @@
 package cz.vutbr.web.csskit;
 
-import cz.vutbr.web.css.ImportURI;
+import cz.vutbr.web.css.RuleImport;
 
 /**
  * URI with stylesheet to be imported
@@ -8,24 +8,25 @@ import cz.vutbr.web.css.ImportURI;
  * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
  */
-public class ImportURIImpl extends AbstractRule<String> implements ImportURI {
+public class RuleImportImpl extends AbstractRuleBlock<String> implements RuleImport {
   
 	/** URI of file to be imported */
     protected String uri;
     
     /** 
-     * Creates empty ImportURI instance 
+     * Creates empty RuleImport instance 
      * 
      */
-    protected ImportURIImpl() {
+    protected RuleImportImpl(int position) {
+    	super(position);
     	this.uri = "";
     }
     
-    public String getUri() {
+    public String getURI() {
         return uri;
     }
 
-    public ImportURI setUri(String uri) {
+    public RuleImport setURI(String uri) {
 
     	// sanity check
     	if(uri == null) 
@@ -55,7 +56,7 @@ public class ImportURIImpl extends AbstractRule<String> implements ImportURI {
     	return sb.toString();
 		
 	}
-
+	
     @Override
     public String toString() {
     	return toString(0);
@@ -81,9 +82,9 @@ public class ImportURIImpl extends AbstractRule<String> implements ImportURI {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (!(obj instanceof ImportURIImpl))
+		if (!(obj instanceof RuleImportImpl))
 			return false;
-		ImportURIImpl other = (ImportURIImpl) obj;
+		RuleImportImpl other = (RuleImportImpl) obj;
 		if (uri == null) {
 			if (other.uri != null)
 				return false;
@@ -92,6 +93,4 @@ public class ImportURIImpl extends AbstractRule<String> implements ImportURI {
 		return true;
 	}    
 
-    
-    
 }

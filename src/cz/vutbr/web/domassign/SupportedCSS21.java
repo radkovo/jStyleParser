@@ -1,6 +1,7 @@
 package cz.vutbr.web.domassign;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -154,6 +155,8 @@ public class SupportedCSS21 implements SupportedCSS {
 	private Map<String, Integer> ordinals;
 	private Map<Integer, String> ordinalsRev;
 
+	private Set<String> supportedAtKeywords;
+	
 	/**
 	 * Gets instance of SupportedCSS21
 	 * 
@@ -166,8 +169,16 @@ public class SupportedCSS21 implements SupportedCSS {
 	private SupportedCSS21() {
 		this.setSupportedCSS();
 		this.setOridinals();
+		this.setSupportedAtKeywords();
 	}
 
+	public boolean isSupportedAtKeyword(String keyword) {
+		if(keyword==null) return false;
+		
+		keyword = keyword.replaceAll("^@", "");
+		return supportedAtKeywords.contains(keyword);
+	}
+	
 	public final CSSProperty getDefaultProperty(String property) {
 		return defaultCSSproperties.get(property);
 	}
@@ -400,6 +411,17 @@ public class SupportedCSS21 implements SupportedCSS {
 		this.ordinals = ords;
 		this.ordinalsRev = ordsRev;
 
+	}
+	
+	private void setSupportedAtKeywords() {
+		Set<String> set = new HashSet<String>();
+		
+		set.add("charset");
+		set.add("import");
+		set.add("page");
+		set.add("font-face");
+		set.add("media");	
+		this.supportedAtKeywords = set;
 	}
 
 }

@@ -2,7 +2,7 @@ package cz.vutbr.web.csskit;
 
 import cz.vutbr.web.css.TermNumeric;
 
-public abstract class TermNumericImpl<T> extends TermImpl<T> implements TermNumeric<T> {
+public class TermNumericImpl<T> extends TermImpl<T> implements TermNumeric<T> {
 
 	protected Unit unit;
 	

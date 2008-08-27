@@ -523,11 +523,13 @@ public class Analyzer {
 		}
 
 		public boolean isEmpty() {
-			for(HolderItem hi: HolderItem.values())
-				if(!items.get(hi.type).isEmpty())
+			for(HolderItem hi: HolderItem.values()) {
+				if(hi == HolderItem.OTHER && others.isEmpty())
 					return false;
-			
-			return others.isEmpty();
+				else if(!items.get(hi.type).isEmpty())
+					return false;
+			}			
+			return true;
 		}
 		
 		
