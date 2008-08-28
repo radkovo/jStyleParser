@@ -36,6 +36,23 @@ public interface TermNumeric<T> extends Term<T> {
     		this.value = value;
     	}
     	public String value() { return value; }
+    	
+    	public boolean isAngle() {
+    		return this==deg || this==rad || this==grad;
+    	}
+    	
+    	public boolean isLength() {
+    		return this==px || this==ex || this==cm
+    		|| this==mm || this==pt || this==pc;
+    	}
+    	
+    	public boolean isTime() {
+    		return this==s || this==ms;    
+    	}
+    	
+    	public boolean isFrequency() {
+    		return this==hz || this==khz;
+    	}
     }
 	
 	/**

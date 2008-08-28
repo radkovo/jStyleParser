@@ -1,3 +1,7 @@
+body {
+	background: black; color: white;
+	}
+
 #bp {
 	background: center right; 
 }
@@ -6,10 +10,14 @@
 	font: 100px serif, Times New Roman;
 }
 
-#border { border-bottom-color: white !important}
+#border { border-bottom: dotted white ! important}
 
 #border {
 	border: blue solid 10px;
 	border-top-color: red;
 }
 
+#subzero {
+	margin-left: -15px;
+}
+	

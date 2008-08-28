@@ -65,20 +65,7 @@ public interface Selector extends Rule<Selector.SelectorPart> {
      * @param combinator Combinator between this and other selector
      * @return Modified instance
      */
-    public Selector setCombinator(Combinator combinator);
-
-    /**
-     * First item, that is elements name
-     * @return The first item
-     */
-    public SelectorPart getFirstItem();
-
-    /**
-     * Sets the first item
-     * @param firstItem
-     * @return Modified instance
-     */
-    public Selector setFirstItem(SelectorPart firstItem);    
+    public Selector setCombinator(Combinator combinator);  
     
     /**
      * Name of CSS class which is affected by this selector  

@@ -1,4 +1,4 @@
-package cz.vutbr.web.csskit.parser;
+package cz.vutbr.web.csskit.javacc;
 
 public class SimpleNode implements Node {
   protected Node parent;

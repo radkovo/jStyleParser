@@ -9,7 +9,7 @@ import cz.vutbr.web.css.CombinedSelector.Specificity.Level;
 
 /**
  * Encapsulates one selector for CSS declaration.
- * CombinedSelector can contain classes, attributes, ids, pseudoatrributes,
+ * CombinedSelector can contain classes, attributes, ids, pseudo attributes,
  * and element name, together with combinator according to next placed selectors
  * 
  * @author kapy
@@ -17,30 +17,8 @@ import cz.vutbr.web.css.CombinedSelector.Specificity.Level;
  */
 public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements Selector {
 
-	protected SelectorPart firstItem;
-	
-    protected Combinator combinator;
+	protected Combinator combinator;
     
-    protected SelectorImpl() {
-    	this.firstItem = null;
-    	this.combinator = null;
-    }  
-    
-	/**
-	 * @return the firstItem
-	 */
-	public SelectorPart getFirstItem() {
-		return firstItem;
-	}
-
-	/**
-	 * @param firstItem the firstItem to set
-	 */
-	public Selector setFirstItem(SelectorPart firstItem) {
-		this.firstItem = firstItem;
-		return this;
-	}
-
 	/**
 	 * @return the combinator
 	 */
@@ -61,8 +39,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	
     	StringBuilder sb = new StringBuilder();
     	
-    	if(combinator!=null) sb.append(combinator.value());
-    	if(firstItem!=null) sb.append(firstItem.getValue());
+    	if(combinator!=null) sb.append(combinator.value());    	
     	sb = OutputUtil.appendList(sb, list, OutputUtil.EMPTY_DELIM);
     	
     	return sb.toString();
@@ -90,9 +67,12 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     }
     
     public String getElementName() {
-        if(firstItem == null) 
-            return null;
-        return firstItem.getValue();
+    	String elementName = null;
+    	for(SelectorPart item : list) {
+    		if(item instanceof ElementName)
+    			elementName = item.getValue();
+    	}
+    	return elementName;
     }
     
     public boolean matches(Element e) {
@@ -114,19 +94,13 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     /**
      * Computes specificity of this selector
      */
-    public void computeSpecificity(CombinedSelector.Specificity spec) {
-    	
-    	if(getFirstItem()!=null)
-    		getFirstItem().computeSpecificity(spec);
-			spec.add(Level.D);
-		
+    public void computeSpecificity(CombinedSelector.Specificity spec) {   	
 		for(SelectorPart item: list) {
 			item.computeSpecificity(spec);
 		}
     }   
-    
-   
-    /* (non-Javadoc)
+       
+	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -135,8 +109,6 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		int result = super.hashCode();
 		result = prime * result
 				+ ((combinator == null) ? 0 : combinator.hashCode());
-		result = prime * result
-				+ ((firstItem == null) ? 0 : firstItem.hashCode());
 		return result;
 	}
 
@@ -157,11 +129,6 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 				return false;
 		} else if (!combinator.equals(other.combinator))
 			return false;
-		if (firstItem == null) {
-			if (other.firstItem != null)
-				return false;
-		} else if (!firstItem.equals(other.firstItem))
-			return false;
 		return true;
 	}
 
@@ -169,6 +136,8 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     // ============================================================
     // implementation of intern classes
 	
+
+
 
 	/**
 	 * Abstract class with shared functionality
@@ -187,10 +156,17 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		 */
 		public abstract SelectorPart setValue(String value);
 		
+		public abstract boolean matches(Element e);
+		
+		public abstract void computeSpecificity(Specificity spec);
+		
 		public String getValue() {
 			return value;
 		}
-
+		
+		@Override
+		public abstract String toString();
+		
 		/* (non-Javadoc)
 		 * @see java.lang.Object#hashCode()
 		 */
@@ -220,11 +196,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			} else if (!value.equals(other.value))
 				return false;
 			return true;
-		}
-		
-		@Override
-		public abstract String toString();
-			
+		}			
 	}
 	
 	
@@ -238,11 +210,13 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     		super(value);
     	}
     	
+    	@Override
 		public void computeSpecificity(CombinedSelector.Specificity spec) {
 			if(!WILDCARD.equals(value))
 				spec.add(Level.D);
 		}
 		
+    	@Override
 		public boolean matches(Element e) {
 			if(value!=null && WILDCARD.equals(value)) return true;
 			return ElementUtil.matchesName(e, value);
@@ -275,10 +249,12 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     		super(value);
     	}
     	
+    	@Override
     	public void computeSpecificity(Specificity spec) {
     		spec.add(Level.C);
     	}
     	
+    	@Override
     	public boolean matches(Element e) {
     		return ElementUtil.	matchesClass(e, value);
     	}
@@ -287,7 +263,8 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		public SelectorPart setValue(String value) {
 			if(value == null)
 				throw new IllegalArgumentException("Invalid SelectorPart value(null)");
-				
+			
+			value = value.replaceAll("^.", "");			
 			this.value = value;
 			return this;
 		}
@@ -338,6 +315,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			return this;
 		}
 		
+		@Override
 		public void computeSpecificity(Specificity spec) {
 
 			// pseudo-class
@@ -352,6 +330,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 
 		}		
 		
+		@Override
 		public boolean matches(Element e) {
 			return false;
 		}
@@ -427,10 +406,12 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     		super(value);
     	}
     	
+    	@Override
     	public void computeSpecificity(Specificity spec) {
     		spec.add(Level.B);
 		}    	
     	
+    	@Override
     	public boolean matches(Element e) {
     		return ElementUtil.matchesID(e, value);
     	}
@@ -507,10 +488,12 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			this.attribute = name;
 		}
 		
+		@Override
 		public void computeSpecificity(Specificity spec) {
 			spec.add(Level.C);
 		}
 		
+		@Override
 		public boolean matches(Element e) {
 			return ElementUtil.matchesAttribute(e, attribute, value, operator);
 		}

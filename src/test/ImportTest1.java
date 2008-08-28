@@ -99,11 +99,11 @@ public class ImportTest1 {
 	@Test
 	public void testMediaImport() throws StyleSheetNotValidException {
 
-		final RuleImport rule1 = (RuleImport) rf.createImport(0).replaceAll(new ArrayList<String>(1));
+		final RuleImport rule1 = (RuleImport) rf.createImport(0).unlock();
 		rule1.add("aural");
 		rule1.setURI("test.css");
 
-		final RuleImport rule2 = (RuleImport) rf.createImport(1).replaceAll(new ArrayList<String>(2));
+		final RuleImport rule2 = (RuleImport) rf.createImport(1).unlock();
 		rule2.add("print");
 		rule2.add("screen");
 		rule2.setURI("test-print.css");

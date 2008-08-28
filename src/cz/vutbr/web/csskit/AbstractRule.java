@@ -1,6 +1,7 @@
 package cz.vutbr.web.csskit;
 
 import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -11,16 +12,6 @@ public class AbstractRule<T> extends AbstractList<T> implements Rule<T> {
 	
 	protected List<T> list = Collections.emptyList();
 	
-	@Override
-	public int size() {
-		return list.size();
-	}
-	
-	@Override
-	public T get(int index) {
-		return list.get(index);
-	}
-	
 	public List<T> asList() {
 		return this.list;
 	}
@@ -30,10 +21,27 @@ public class AbstractRule<T> extends AbstractList<T> implements Rule<T> {
 		return this;
 	}
 	
+	public Rule<T> unlock() {
+		this.list = new ArrayList<T>();
+		return this;
+	}
+	
+	@Override
+	public int size() {
+		return list.size();
+	}
+	
+	@Override
+	public T get(int index) {
+		return list.get(index);
+	}	
+	
+	@Override
 	public T set(int index, T element) {
 		return list.set(index, element);
 	}
 	
+	@Override
 	public void add(int index, T element) {
 		list.add(index, element);
 	}
@@ -48,6 +56,10 @@ public class AbstractRule<T> extends AbstractList<T> implements Rule<T> {
 		return list.iterator();
 	}
 
+	public boolean add(T o) {
+		return list.add(o);
+	};
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */

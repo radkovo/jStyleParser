@@ -10,7 +10,7 @@ options {
 /* API definition */
 PARSER_BEGIN(CSSParser)
 
-package cz.vutbr.web.csskit.parser;
+package cz.vutbr.web.csskit.javacc;
 
 import java.io.Reader;
 import java.util.ArrayList;
@@ -60,35 +60,13 @@ public class CSSParser {
     private static final int FAST_SKIP = -10;
 
 
-	private Integer ruleNum;
+	private Integer ruleNum = 0;
 
 	/** Character set of given css */
 	private String charset;
 	
 	/** Rules gathered from input */
-	private List<RuleBlock<?>> rules;	
-
-
-	/**
-	 * Returns StyleSheet from input set by constructor.
-	 *   
-	 * @return StyleSheet according to the input
-	 * @throws StyleSheetNotValidException in case of error
-	 */
-	public StyleSheet parse() throws StyleSheetNotValidException {
-		try {
-			//ReInit(reader);
-			this.rules = new ArrayList<RuleBlock<?>>();
-			this.charset = null;
-			this.ruleNum = 0;
-			return this.start();
-		}
-		catch (ParseException e) {
-			log.error("Parse exception at top level, this should not happen!\n"
-				,e);
-			throw new StyleSheetNotValidException("Not a valid stylesheet!"); 
-		}
-	}
+	private List<RuleBlock<?>> rules = new ArrayList<RuleBlock<?>>();		
 		
 	/**
 	 * Error recovery.
@@ -240,20 +218,7 @@ TOKEN :
  * @return StyleSheet which contains rules gathered.
  * @see StyleSheet
  */
-StyleSheet start() :
-{}
-{
-	stylesheet() <EOF>
-  	{ 
-  		StyleSheet stylesheet = rf.createStyleSheet();
-  		stylesheet.setCharset(charset);
-  		stylesheet.replaceAll(rules);
-  
-  		return stylesheet; 
-  	}
-}
-
-void stylesheet() :
+StyleSheet stylesheet() :
 {}
 {
 	try {
@@ -270,7 +235,13 @@ void stylesheet() :
   	}
   	catch (ParseException e) {
   		errorRecover(e, "f: stylesheet()");
-  		throw e;
+  	}
+  	finally {
+  		StyleSheet stylesheet = rf.createStyleSheet();
+  		stylesheet.setCharset(charset);
+  		stylesheet.replaceAll(rules);
+  
+  		return stylesheet; 
   	}
 }
 
@@ -592,61 +563,62 @@ CombinedSelector combined_selector() :
  */
 Selector selector() :
 {
-	Selector selector = rf.createSelector();
+	Selector selector = (Selector) rf.createSelector().unlock();
 	String value = null;
 	Selector.SelectorPart item = null;
-	List<Selector.SelectorPart> items = new ArrayList<Selector.SelectorPart>();
 }
 {
 	try {
   		value = element_name()
   			{
-  				selector.setFirstItem(rf.createElement(value));
+  				selector.add(rf.createElement(value));
   			} 
   		( 
   			value = hash() 
   				{
   					item = rf.createID(value);
-  					if(item != null) items.add(item);
+  					if(item != null) selector.add(item);
   			 	} |
   			item = class_a() 
   				{
-  					if(item!=null) items.add(item);
+  					if(item!=null) selector.add(item);
   				} |	 
   			item = attrib() 
   				{
-  					if(item!=null) items.add(item);
+  					if(item!=null) selector.add(item);
   				} | 
   			item = pseudo()  
   				{
-  					if(item!=null) items.add(item);
+  					if(item!=null) selector.add(item);
   				}
   		)*| 
   		( 
   			value = hash()
   			 	{
   					item = rf.createID(value);
-  					if(item != null) items.add(item);
+  					if(item != null) selector.add(item);
   			 	} |
   			item = class_a() 
   				{
-  					if(item!=null) items.add(item);
+  					if(item!=null) selector.add(item);
   				} |	 
   			item = attrib() 
   				{
-  					if(item!=null) items.add(item);
+  					if(item!=null) selector.add(item);
   				} |	
   			item = pseudo() 
   				{
-  					if(item!=null) items.add(item);
+  					if(item!=null) selector.add(item);
   				}
   		)+
   	}
   	catch(ParseException e) {
   		errorRecover(e, "f: selector()", BLANK, LCURLY);
   	}
+  	catch(Exception e) {
+  		log.warn("f: selector(): ", e);
+  	}
   	finally {
-  		selector.replaceAll(items);  	
   		if(log.isTraceEnabled()) {
   			log.trace("Returning selector: " + selector);
   		}

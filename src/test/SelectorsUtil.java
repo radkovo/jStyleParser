@@ -9,6 +9,7 @@ import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.Selector;
+import cz.vutbr.web.css.Selector.SelectorPart;
 
 
 /**
@@ -31,7 +32,8 @@ public class SelectorsUtil {
 		CombinedSelector cs = rf.createCombinedSelector();
 		
 		List<Selector> list = new ArrayList<Selector>();
-		Selector ss = rf.createSelector().setFirstItem(rf.createElement(element));
+		Selector ss = (Selector) rf.createSelector().unlock();
+		ss.add(rf.createElement(element));
 		list.add(ss);
 		cs.replaceAll(list);
 		
@@ -75,15 +77,15 @@ public class SelectorsUtil {
 		
 		// list of selectors, create if empty
 		if(current.asList()==null || Collections.emptyList().equals(current.asList())) {
-			current.replaceAll(new ArrayList<Selector>());
+			current.unlock();
 		}
 		
 		// create new selector
-		Selector s = rf.createSelector();
+		Selector s = (Selector) rf.createSelector().unlock();
 		if(element!=null) // avoid inserting empty element
-			s.setFirstItem(rf.createElement(element));
+			s.add(rf.createElement(element));
 		s.setCombinator(c);
-		s.replaceAll(Arrays.asList(items));
+		s.addAll(Arrays.asList(items));
 		
 		// add
 		current.add(s);

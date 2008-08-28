@@ -26,6 +26,7 @@ import cz.vutbr.web.css.*;
 
 	private static RuleFactory rf = CSSFactory.getRuleFactory();
 	private static TermFactory tf = CSSFactory.getTermFactory();
+	private static SupportedCSS css = CSSFactory.getSupportedCSS();
 
 	private int ruleNum = 0;
 
@@ -54,7 +55,13 @@ import cz.vutbr.web.css.*;
     private String extractText(CommonTree token) {
         return token.getText();
     }
-    	
+    
+	public void emitErrorMessage(String msg) {
+		if(log.isInfoEnabled()) {
+		    log.info("ANTLR: " + msg);
+		}
+	}
+		
     private void logEnter(String entry) {
         if(log.isTraceEnabled()) {
     		log.debug("Entering '" + entry + "'");
@@ -79,8 +86,7 @@ scope {
 }
 @init {
 	logEnter("stylesheet");
-	$stylesheet::style=$sheet = rf.createStyleSheet();
-	$sheet.replaceAll(new ArrayList<RuleBlock<?>>());
+	$stylesheet::style=$sheet = (StyleSheet) rf.createStyleSheet().unlock();
 } 
 @after {
     if(log.isTraceEnabled()) {
@@ -115,7 +121,20 @@ scope {
  * Rule which begins with '@' character
  */
 atrule returns [RuleBlock<?> atblock]     
-    : ^(ATBLOCK ATKEYWORD any* block?)
+    : ^(ATBLOCK 
+        atk=ATKEYWORD {
+            String keyword = extractText(atk);
+            // invalidate if keyword not supported
+            if(!css.isSupportedAtKeyword(keyword)) {
+                $statement::invalid = true;
+            }
+            else {
+                log.debug("Atkeyword passed: " + keyword);
+            }
+        } 
+        any* 
+        block?
+       )
     ;
   
 block       
@@ -168,50 +187,7 @@ ruleset returns [RuleSet rs]
          }
         })*        
     )
-    ;
-  
-selector returns [CombinedSelector combinedSelector]
-scope {
-    CombinedSelector cs;
-    Selector s;
-    Selector.SelectorPart part;
-    boolean invalid; 
-}
-@init {
-    logEnter("selector");
-    $selector::cs = $combinedSelector = rf.createCombinedSelector();
-    $selector::cs.replaceAll(new ArrayList<Selector>());
-    $selector::s = rf.createSelector();
-    $selector::part = null;
-    $selector::invalid = false;    
-}
-@after {
-
-    // append last selector if appropriate
-    if(!$selector::invalid && !$statement::invalid) {
-        $selector::cs.add($selector::s);
-    }   
-
-    // entire ruleset is not valid when selector is not valid
-    // there is no need to parse selector's when already marked as invalid
-    if($statement::invalid || $selector::invalid) {        
-        $combinedSelector = null;
-        if(log.isDebugEnabled()) {
-            if($statement::invalid)
-                log.debug("Ommiting selector, whole statement discarded");
-            else
-                log.debug("Selector is invalid");               
-        }
-        // mark whole ruleset as invalid
-        $statement::invalid = true;
-    }
-    else if(log.isDebugEnabled()) {
-        log.debug("Returing combined selector: " + $selector::cs.toString()); 
-    }
-    logLeave("selector");
-}   
-  : ^(SELECTOR selpart+)
-  ;
+    ;  
 
 /**
  * CSS declaration
@@ -237,10 +213,15 @@ scope {
     logLeave("declaration");    
 }
   : ^(DECLARATION 
+	  (important { $decl.setImportant(true);})?
       property 
-      t=terms {$decl.replaceAll(t);}
+      t=terms {$decl.replaceAll(t);}      
      )
   ;
+
+important
+    : IMPORTANT
+    ;   
 
 /**
  * Setting property of declaration
@@ -290,7 +271,7 @@ term
        if(!$declaration::invalid && $terms::term!=null) {     
           $terms::term.setOperator($terms::op);
           $terms::list.add($terms::term);
-          // initialization
+          // reinitialization
           $terms::op = Term.Operator.SPACE;
           $terms::unary = 1;
           $terms::term = null;
@@ -324,12 +305,18 @@ valuepart
 }
     : i=IDENT   {$terms::term = tf.createIdent(extractText(i));}
     | IDKEYWORD {$declaration::invalid = true;}
-    | n=NUMBER    {$terms::term = tf.createNumeric(extractText(n), $terms::unary);}
-    | p=PERCENTAGE  { $terms::term = tf.createPercent(extractText(p), $terms::unary);}
-    | d=DIMENSION   
-    {$terms::term = tf.createDimension(extractText(d), $terms::unary);
-     if($terms::term==null)
+	| (MINUS {$terms::unary=-1;})? n=NUMBER    {$terms::term = tf.createNumeric(extractText(n), $terms::unary);}
+    | (MINUS {$terms::unary=-1;})? p=PERCENTAGE  { $terms::term = tf.createPercent(extractText(p), $terms::unary);}
+    | (MINUS {$terms::unary=-1;})? d=DIMENSION   
+	{String dim = extractText(d);
+	 $terms::term = tf.createDimension(dim, $terms::unary);
+     if($terms::term==null) {
+		 if(log.isDebugEnabled()) {
+		 	log.debug("Unable to create dimension from dim: " + dim + " unary: " +
+			$terms::unary);
+		 }
          $declaration::invalid = true;
+	 }
     }
     | s=STRING    {$terms::term = tf.createString(extractText(s));}
     | u=URI       {$terms::term = tf.createURI(extractText(u));}
@@ -345,6 +332,7 @@ valuepart
     | GREATER   {$declaration::invalid = true;}
     | EQUALS    {$declaration::invalid = true;}
     | SLASH     {$terms::op = Term.Operator.SLASH;}
+	| PLUS		{$declaration::invalid = true;}
     | ^(f=FUNCTION t=terms) {
         // create function
         TermFunction function = tf.createFunction();
@@ -360,6 +348,51 @@ valuepart
 /**
  * Construction of selector
  */
+selector returns [CombinedSelector combinedSelector]
+scope {
+    CombinedSelector cs;
+    Selector s;
+    Selector.SelectorPart part;
+    boolean invalid; 
+}
+@init {
+    logEnter("selector");
+    $selector::cs = $combinedSelector = 
+		(CombinedSelector) rf.createCombinedSelector().unlock();
+    $selector::s = (Selector) rf.createSelector().unlock();
+    $selector::part = null;
+    $selector::invalid = false;    
+}
+@after {
+
+    // append last selector if appropriate
+    if(!$selector::invalid && !$statement::invalid) {
+        $selector::cs.add($selector::s);
+    }   
+
+    // entire ruleset is not valid when selector is not valid
+    // there is no need to parse selector's when already marked as invalid
+    if($statement::invalid || $selector::invalid) {        
+        $combinedSelector = null;
+        if(log.isDebugEnabled()) {
+            if($statement::invalid)
+                log.debug("Ommiting selector, whole statement discarded");
+            else
+                log.debug("Selector is invalid");               
+        }
+        // mark whole ruleset as invalid
+        $statement::invalid = true;
+    }
+    else if(log.isDebugEnabled()) {
+        log.debug("Returing combined selector: " + $selector::cs.toString()); 
+    }
+    logLeave("selector");
+}   
+  : ^(SELECTOR selpart+)
+  ;
+ 
+ 
+ 
 selpart
 @init {
     logEnter("selpart");
@@ -368,7 +401,7 @@ selpart
     logLeave("selpart");
 }
   : i=IDENT {
-    $selector::s.setFirstItem(rf.createElement(extractText(i)));
+    $selector::s.add(rf.createElement(extractText(i)));
   }
   | IDKEYWORD
   | NUMBER
@@ -384,11 +417,16 @@ selpart
   | GREATER
   | EQUALS
   | SLASH
-  | ^(FUNCTION any*) 
+  | MINUS
+  | PLUS
+  | EXCLAMATION
+  | ^(FUNCTION selpart*) 
   | DASHMATCH
-  | ^(PARENBLOCK any*)
-  | ^(BRACEBLOCK any*)
+  | ^(PARENBLOCK selpart*)
+  | ^(BRACEBLOCK selpart*)
   ;
+
+
   
 any
   : IDENT
@@ -406,6 +444,7 @@ any
   | GREATER
   | EQUALS
   | SLASH
+  | EXCLAMATION
   | ^(FUNCTION any*) 
   | DASHMATCH
   | ^(PARENBLOCK any*)

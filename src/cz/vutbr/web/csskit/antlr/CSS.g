@@ -2,7 +2,7 @@ grammar CSS;
 
 options {
 	output = AST;
-	k = 4;
+	k = 2;
 }
 
 tokens {
@@ -15,19 +15,41 @@ tokens {
 	SELECTOR;
 	DECLARATION;	
 	VALUE;
+	IMPORTANT;
 }
 
 
 
 @parser::header { 
 package cz.vutbr.web.csskit.antlr;
+
+import org.apache.log4j.Logger;
 }
 
 @lexer::header {
 package cz.vutbr.web.csskit.antlr;
+
+import org.apache.log4j.Logger;
+}
+
+@lexer::members {
+    private static Logger log = Logger.getLogger(CSSLexer.class);
+	
+	public void emitErrorMessage(String msg) {
+		if(log.isInfoEnabled()) {
+		    log.info("ANTLR: " + msg);
+		}
+	}
 }
 
 @parser::members {
+    private static Logger log = Logger.getLogger(CSSParser.class);
+
+    public void emitErrorMessage(String msg) {
+		if(log.isInfoEnabled()) {
+		    log.info("ANTLR: " + msg);
+		}
+	}	
 
     public String toStringTree(CommonTree tree) {
         StringBuilder sb = new StringBuilder();
@@ -117,8 +139,12 @@ selector
 	;
 
 declaration 
-	: property COLON S* terms -> ^(DECLARATION property terms)
+	: property COLON S* terms important? -> ^(DECLARATION important? property terms)
 	;
+
+important
+    : EXCLAMATION S* 'important' S* -> IMPORTANT
+    ;	
 	
 property    
 	: IDENT S* -> IDENT
@@ -138,9 +164,9 @@ term
 valuepart
     : ( IDENT -> IDENT
       | IDKEYWORD -> IDKEYWORD
-      | NUMBER -> NUMBER
-      | PERCENTAGE ->PERCENTAGE
-      | DIMENSION -> DIMENSION
+      | MINUS? NUMBER -> MINUS? NUMBER
+      | MINUS? PERCENTAGE -> MINUS? PERCENTAGE
+      | MINUS? DIMENSION -> MINUS? DIMENSION
       | STRING -> STRING
       | URI    -> URI
       | HASH -> HASH
@@ -151,10 +177,11 @@ valuepart
       | GREATER -> GREATER
       | EQUALS -> EQUALS
       | SLASH -> SLASH
+	  | PLUS -> PLUS
       | FUNCTION S* terms RPAREN -> ^(FUNCTION terms) 
       | DASHMATCH -> DASHMATCH
-      | LPAREN any* RPAREN -> ^(PARENBLOCK any*)
-      | LBRACE any* RBRACE -> ^(BRACEBLOCK any*)
+      | LPAREN valuepart* RPAREN -> ^(PARENBLOCK valuepart*)
+      | LBRACE valuepart* RBRACE -> ^(BRACEBLOCK valuepart*)
     ) !S*
   ;
 
@@ -174,10 +201,13 @@ selpart
       | GREATER -> GREATER
       | EQUALS -> EQUALS
       | SLASH -> SLASH
-      | FUNCTION S* any* RPAREN -> ^(FUNCTION any*) 
+	  | MINUS -> MINUS
+	  | PLUS -> PLUS
+      | EXCLAMATION -> EXCLAMATION
+      | FUNCTION S* selpart* RPAREN -> ^(FUNCTION selpart*) 
       | DASHMATCH -> DASHMATCH
-      | LPAREN any* RPAREN -> ^(PARENBLOCK any*)
-      | LBRACE any* RBRACE -> ^(BRACEBLOCK any*)
+      | LPAREN selpart* RPAREN -> ^(PARENBLOCK selpart*)
+      | LBRACE selpart* RBRACE -> ^(BRACEBLOCK selpart*)
     ) !S*
   ;
 	
@@ -197,6 +227,9 @@ any
       | GREATER -> GREATER
       | EQUALS -> EQUALS
       | SLASH -> SLASH
+      | EXCLAMATION -> EXCLAMATION
+	  | MINUS -> MINUS
+	  | PLUS -> PLUS
       | FUNCTION S* any* RPAREN -> ^(FUNCTION any*) 
       | DASHMATCH -> DASHMATCH
       | LPAREN any* RPAREN -> ^(PARENBLOCK any*)
@@ -324,7 +357,19 @@ LBRACE
 
 RBRACE
 	: ']'
-	;	
+	;
+	
+EXCLAMATION
+    : '!'
+    ;	
+
+MINUS
+	: '-'
+	;
+
+PLUS
+	: '+'
+	;
 
 /** White character */		
 S

@@ -3,6 +3,7 @@ package test;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -38,6 +39,9 @@ public class AdvancedCSS {
 	@BeforeClass
 	public static void init() throws FileNotFoundException,
 			StyleSheetNotValidException {
+		
+		log.info("\n\n\n == AdvancedTest test == " + new Date() + " == \n\n\n");
+		
 		Tidy parser = new Tidy();
 		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
 

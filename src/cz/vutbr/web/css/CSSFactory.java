@@ -11,7 +11,7 @@ import org.w3c.dom.Element;
 import org.w3c.tidy.Tidy;
 
 import cz.vutbr.web.csskit.antlr.CSSTreeParser;
-import cz.vutbr.web.csskit.parser.CSSParser;
+import cz.vutbr.web.csskit.javacc.CSSParser;
 import cz.vutbr.web.domassign.Analyzer;
 
 /**
@@ -178,11 +178,7 @@ public final class CSSFactory {
 	
 	public static final StyleSheet parse(Reader source) {
 		try {
-			/*
-			CSSParser parser = new CSSParser(source);
-			return parser.parse();
-			*/
-			
+			//CSSParser parser = new CSSParser(source);			
 			CSSTreeParser parser = CSSTreeParser.createParser(source);
 			return parser.stylesheet();
 			
