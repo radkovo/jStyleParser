@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.SupportedCSS;
@@ -104,6 +106,7 @@ import cz.vutbr.web.css.CSSProperty.ZIndex;
  * 
  */
 public class SupportedCSS21 implements SupportedCSS {
+	private static Logger log = Logger.getLogger(SupportedCSS21.class);
 
 	private static final int TOTAL_SUPPORTED_DECLARATIONS = 116;
 
@@ -179,7 +182,15 @@ public class SupportedCSS21 implements SupportedCSS {
 		return supportedAtKeywords.contains(keyword);
 	}
 	
+	public final boolean isSupportedCSSProperty(String property) {
+		return defaultCSSproperties.get(property)!=null;
+	}
+	
 	public final CSSProperty getDefaultProperty(String property) {
+		if(log.isDebugEnabled()) {
+			log.debug("Asked for " + property 
+					+ "'s default: " + defaultCSSproperties.get(property));
+		}
 		return defaultCSSproperties.get(property);
 	}
 

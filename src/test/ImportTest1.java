@@ -3,7 +3,6 @@ package test;
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.log4j.Logger;

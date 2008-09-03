@@ -187,10 +187,8 @@ public class DeclarationTransformer {
 
 		String propertyName = d.getProperty().toLowerCase();
 
-		CSSProperty defaultValue = css.getDefaultProperty(propertyName);
-
 		// no such declaration is supported
-		if (defaultValue == null)
+		if (!css.isSupportedCSSProperty(propertyName))
 			return false;
 
 		try {

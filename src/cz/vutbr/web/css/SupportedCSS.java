@@ -32,6 +32,12 @@ public interface SupportedCSS {
 	 */
 	boolean isSupportedAtKeyword(String keyword);
 	
+	/**
+	 * Checks whether property is supported
+	 * @param property Name of CSS property
+	 * @return <code>true</code> if supported, <code>false</code> otherwise
+	 */
+	boolean isSupportedCSSProperty(String property);
 	
 	/**
 	 * Return default value of CSSProperty under given name

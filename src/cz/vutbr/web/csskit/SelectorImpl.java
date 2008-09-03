@@ -264,7 +264,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			if(value == null)
 				throw new IllegalArgumentException("Invalid SelectorPart value(null)");
 			
-			value = value.replaceAll("^.", "");			
+			value = value.replaceAll("^\\.", "");			
 			this.value = value;
 			return this;
 		}

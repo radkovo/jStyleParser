@@ -135,6 +135,8 @@ public class SingleMapNodeData implements NodeData {
 			Quadruple qp = nd.map.get(key);
 			Quadruple q = map.get(key);
 			
+			// create new quadruple if this do not contain one
+			// for this property
 			if(q==null) q = new Quadruple();
 			
 			if(qp.inhProp!=null && qp.inhProp.inherited()) {
@@ -146,7 +148,9 @@ public class SingleMapNodeData implements NodeData {
 				q.inhProp = qp.curProp;
 				q.inhValue = qp.inhValue;
 			}
-			map.put(key, q);
+			// insert/replace only if contains inherited/original 
+			// value			
+			if(!q.isEmpty()) map.put(key, q);
 		}
 		return this;
 	}
@@ -187,8 +191,12 @@ public class SingleMapNodeData implements NodeData {
 		Term<?> inhValue = null;
 		Term<?> curValue = null;
 		
-		public Quadruple() {
-			
+		public Quadruple() {			
+		}
+		
+		public boolean isEmpty() {
+			return inhProp==null && curProp==null &&
+			inhValue==null && curValue==null;
 		}
 	}
 

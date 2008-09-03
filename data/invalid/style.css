@@ -60,9 +60,9 @@ whichever comes first. For example, consider the following:
     azimuth: 30deg;
     elevation: 190deg;
   }
-  h2 { color: green }
+  h2 { color: green; text-decoration: blink }
 }
-
+h2 {color: blue}
 
 /*
 The '@three-dee' at-rule is not part of CSS 2.1. 
@@ -83,15 +83,13 @@ but then drop the construct (declaration or rule)
 in which the string was found. For example:
 */
 
-
       div {
         color: green;
         font-family: 'Courier New Times
         color: red;
-        color: green;
+        background-color: white;
 
 }
-
 
 /*
 ...would be treated the same as:
@@ -114,7 +112,6 @@ would be treated the same as:
 
 in a conformant UA.
 */
-
 
 @media screen {
     p:before { content: 'Hello

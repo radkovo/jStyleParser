@@ -9,7 +9,6 @@ import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.Selector.SelectorPart;
 
 
 /**

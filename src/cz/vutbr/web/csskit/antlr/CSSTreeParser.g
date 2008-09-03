@@ -36,6 +36,10 @@ import cz.vutbr.web.css.*;
 		CSSLexer lexer = new CSSLexer(new ANTLRReaderStream(reader));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         CSSParser parser = new CSSParser(tokens);
+		
+		// set tree adaptor
+		parser.setTreeAdaptor(new CSSAdaptor());
+		
         // Invoke the program rule in get return value
         CSSParser.stylesheet_return r = parser.stylesheet();
         CommonTree t = (CommonTree) r.getTree();
@@ -51,16 +55,18 @@ import cz.vutbr.web.css.*;
         // Create a tree Walker attached to the nodes stream
         return new CSSTreeParser(nodes);
     }
-    
-    private String extractText(CommonTree token) {
-        return token.getText();
-    }
-    
+       
+    @Override
 	public void emitErrorMessage(String msg) {
 		if(log.isInfoEnabled()) {
 		    log.info("ANTLR: " + msg);
 		}
 	}
+		
+	private String extractText(CommonTree token) {
+        return token.getText();
+    }
+    	
 		
     private void logEnter(String entry) {
         if(log.isTraceEnabled()) {
@@ -73,8 +79,6 @@ import cz.vutbr.web.css.*;
     		log.debug("Leaving '" + leaving + "'");
     	}
     }
-    	
-	
 }
 
 /**
@@ -121,6 +125,12 @@ scope {
  * Rule which begins with '@' character
  */
 atrule returns [RuleBlock<?> atblock]     
+@init {
+	logEnter("atrule");
+}
+@after{
+	logLeave("atrule");
+}
     : ^(ATBLOCK 
         atk=ATKEYWORD {
             String keyword = extractText(atk);
@@ -142,11 +152,17 @@ block
     ;
 
 blockpart
-  : any 
-  | block 
-  | ATKEYWORD 
-  | SEMICOLON
-  ;
+@init{
+	logEnter("blockpart");
+}
+@after {
+	logLeave("blockpart");
+}
+    : any 
+    | ^(CURLYBLOCK declaration*)
+    | ATKEYWORD { $statement::invalid=true; }
+    | SEMICOLON 
+    ; 
     
 /**
  * The most common block in CSS file,
@@ -174,9 +190,9 @@ ruleset returns [RuleSet rs]
     logLeave("ruleset");
 }    
     : ^(RULE 
-        (s=selector  
-        {if(s!=null && !s.isEmpty() && !$statement::invalid) {
-            cslist.add(s);
+        (cs=combined_selector  
+        {if(cs!=null && !cs.isEmpty() && !$statement::invalid) {
+            cslist.add(cs);
             log.debug("Inserted combined selector("+cslist.size()+") into ruleset");
          }   
         } )*
@@ -205,7 +221,7 @@ scope {
 @after {
     if($declaration::invalid) {
         $decl=null;
-        log.debug("Declaration was invalidated");
+        log.debug("Declaration was invalidated or already invalid");
     }
     else if(log.isDebugEnabled()) {
         log.debug("Returning declaration: " + $decl);
@@ -217,6 +233,7 @@ scope {
       property 
       t=terms {$decl.replaceAll(t);}      
      )
+	 | INVALID_DECLARATION { $declaration::invalid=true;}
   ;
 
 important
@@ -277,7 +294,7 @@ term
           $terms::term = null;
        }    
       }
-    | block { $declaration::invalid = true;}
+    | CURLYBLOCK { $declaration::invalid = true;}
     | ATKEYWORD { $declaration::invalid = true;}
     ;   
 
@@ -304,7 +321,7 @@ valuepart
     }
 }
     : i=IDENT   {$terms::term = tf.createIdent(extractText(i));}
-    | IDKEYWORD {$declaration::invalid = true;}
+    | CLASSKEYWORD {$declaration::invalid = true;}
 	| (MINUS {$terms::unary=-1;})? n=NUMBER    {$terms::term = tf.createNumeric(extractText(n), $terms::unary);}
     | (MINUS {$terms::unary=-1;})? p=PERCENTAGE  { $terms::term = tf.createPercent(extractText(p), $terms::unary);}
     | (MINUS {$terms::unary=-1;})? d=DIMENSION   
@@ -325,7 +342,7 @@ valuepart
      if($terms::term==null)
          $declaration::invalid = true;
     }
-    | UNIRANGE  // just ignore
+    | UNIRANGE  {$declaration::invalid = true;}
     | INCLUDES  {$declaration::invalid = true;}
     | COLON     {$declaration::invalid = true;}
     | COMMA     {$terms::op = Term.Operator.COMMA;}    
@@ -333,6 +350,7 @@ valuepart
     | EQUALS    {$declaration::invalid = true;}
     | SLASH     {$terms::op = Term.Operator.SLASH;}
 	| PLUS		{$declaration::invalid = true;}
+	| ASTERISK  {$declaration::invalid = true;}
     | ^(f=FUNCTION t=terms) {
         // create function
         TermFunction function = tf.createFunction();
@@ -342,95 +360,141 @@ valuepart
     }
     | DASHMATCH {$declaration::invalid = true;}
     | ^(PARENBLOCK any*) {$declaration::invalid = true;}
-    | ^(BRACEBLOCK any*) {$declaration::invalid = true;}     
+    | ^(BRACEBLOCK any*) {$declaration::invalid = true;}    
   ;
   
 /**
  * Construction of selector
  */
-selector returns [CombinedSelector combinedSelector]
+combined_selector returns [CombinedSelector combinedSelector]
 scope {
-    CombinedSelector cs;
-    Selector s;
-    Selector.SelectorPart part;
-    boolean invalid; 
+    boolean invalid;
 }
 @init {
-    logEnter("selector");
-    $selector::cs = $combinedSelector = 
-		(CombinedSelector) rf.createCombinedSelector().unlock();
-    $selector::s = (Selector) rf.createSelector().unlock();
-    $selector::part = null;
-    $selector::invalid = false;    
+	logEnter("combined_selector");	  
+	$combinedSelector = (CombinedSelector) rf.createCombinedSelector().unlock();
 }
-@after {
-
-    // append last selector if appropriate
-    if(!$selector::invalid && !$statement::invalid) {
-        $selector::cs.add($selector::s);
-    }   
-
+@after {  
     // entire ruleset is not valid when selector is not valid
     // there is no need to parse selector's when already marked as invalid
-    if($statement::invalid || $selector::invalid) {        
+    if($statement::invalid || $combined_selector::invalid) {        
         $combinedSelector = null;
         if(log.isDebugEnabled()) {
             if($statement::invalid)
-                log.debug("Ommiting selector, whole statement discarded");
+                log.debug("Ommiting combined selector, whole statement discarded");
             else
-                log.debug("Selector is invalid");               
+                log.debug("Combined selector is invalid");               
         }
         // mark whole ruleset as invalid
         $statement::invalid = true;
     }
     else if(log.isDebugEnabled()) {
-        log.debug("Returing combined selector: " + $selector::cs.toString()); 
+        log.debug("Returing combined selector: " + $combinedSelector.toString()); 
     }
-    logLeave("selector");
-}   
-  : ^(SELECTOR selpart+)
+    logLeave("combined_selector"); 
+}    
+	: s=selector {
+	     $combinedSelector.add(s);
+	  }
+	 (c=combinator s=selector {
+	     s.setCombinator(c);
+	     $combinedSelector.add(s);	
+	  }
+	 )*
+	;
+
+combinator returns [Selector.Combinator combinator]
+@init{ logEnter("combinator"); }
+@after{ logLeave("combinator"); }
+	: CHILD {$combinator=Selector.Combinator.CHILD;}
+	| ADJACENT {$combinator=Selector.Combinator.ADJACENT;}
+	| DESCENDANT {$combinator=Selector.Combinator.DESCENDANT;}
+	;
+
+
+selector returns [Selector sel]
+scope {
+	Selector s;
+}
+@init {
+	logEnter("selector");
+	$selector::s=$sel=(Selector)rf.createSelector().unlock();
+	Selector.ElementName en = rf.createElement(Selector.SelectorPart.WILDCARD);
+}
+@after {
+	logLeave("selector");
+}
+    : ^(SELECTOR 
+        ^(ELEMENT 
+          (i=IDENT { en.setValue(extractText(i)); }
+          )?         
+         ){
+		  if(log.isDebugEnabled()) {
+		      log.debug("Adding element name: " + en.getValue());
+		  }	  
+		  $selector::s.add(en);
+		 }
+         selpart*
+       )
+    | ^(SELECTOR 
+         selpart+
+       )
   ;
- 
- 
- 
+
 selpart
 @init {
-    logEnter("selpart");
+	logEnter("selpart");
 }
 @after {
     logLeave("selpart");
+}	
+    : PSEUDO i=IDENT { $selector::s.add(rf.createPseudoPage(extractText(i), null));}
+    | h=HASH { $selector::s.add(rf.createID(extractText(h))); }
+    | c=CLASSKEYWORD { $selector::s.add(rf.createClass(extractText(c))); }
+	| ^(ATTRIBUTE ea=attribute { $selector::s.add(ea);} )
+    | ^(fname=FUNCTION farg=IDENT {
+       $selector::s.add(rf.createPseudoPage(extractText(farg), extractText(fname)));
+       }
+      )
+    ;
+ 
+attribute returns [Selector.ElementAttribute elemAttr]
+@init {
+    logEnter("attribute");
+    String attribute = null;
+	String value = null;
+	Selector.Operator op = Selector.Operator.NO_OPERATOR;
+	boolean isStringValue = false;
 }
-  : i=IDENT {
-    $selector::s.add(rf.createElement(extractText(i)));
-  }
-  | IDKEYWORD
-  | NUMBER
-  | PERCENTAGE
-  | DIMENSION
-  | STRING
-  | URI
-  | HASH
-  | UNIRANGE
-  | INCLUDES
-  | COLON
-  | COMMA
-  | GREATER
-  | EQUALS
-  | SLASH
-  | MINUS
-  | PLUS
-  | EXCLAMATION
-  | ^(FUNCTION selpart*) 
-  | DASHMATCH
-  | ^(PARENBLOCK selpart*)
-  | ^(BRACEBLOCK selpart*)
-  ;
-
-
+@after{
+    if(attribute!=null) {
+		$elemAttr = rf.createAttribute(value, isStringValue, op, attribute);
+	}
+	else {
+	    log.debug("Invalid attribute element in selector");
+	    $combined_selector::invalid = true;
+	}
+    logLeave("attribute");
+}
+	: i=IDENT {attribute=extractText(i); }
+	  ((EQUALS {op=Selector.Operator.EQUALS; } 
+	   | INCLUDES {op=Selector.Operator.INCLUDES; } 
+	   | DASHMATCH {op=Selector.Operator.DASHMATCH; }
+	   ) 
+	   (i=IDENT {
+		value=extractText(i);
+		isStringValue=false;
+		}
+	   | s=STRING {
+		 value=extractText(s);
+		 isStringValue=true;
+		}
+	   ))?
+	; 
   
 any
   : IDENT
-  | IDKEYWORD
+  | CLASSKEYWORD
   | NUMBER
   | PERCENTAGE
   | DIMENSION

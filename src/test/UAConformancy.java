@@ -18,6 +18,7 @@ import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.CSSProperty.TextDecoration;
 
 public class UAConformancy {
 	private static Logger log = Logger.getLogger(UAConformancy.class);
@@ -51,7 +52,7 @@ public class UAConformancy {
 	}
 	
 	@Test 
-	public void testH1() {
+	public void unknownProperties() {
 
 		NodeData nd = retrieve("h1");
 		
@@ -63,14 +64,21 @@ public class UAConformancy {
 	}
 	
 	@Test 
-	public void testIMG() {
+	public void illegalValues() {
 		NodeData nd = retrieve("img");
 		
 		Assert.assertEquals("Float is left", CSSProperty.Float.LEFT, 
 				nd.getProperty(CSSProperty.Float.class, "float"));
 	}
 	
-	
+
+	@Test
+	public void malformedDeclaration() {
+		NodeData nd = retrieve("p");
+		
+		Assert.assertEquals("Color is green", tf.createColor("#008000"), 
+				nd.getValue(TermColor.class, "color"));
+	}
 	
 	private NodeData retrieve(String elementName) {
 		for(Element e: decl.keySet()) {
@@ -80,4 +88,30 @@ public class UAConformancy {
 		return null;
 	}
 	
+	@Test 
+	public void ignoreUnknownAtRule() {
+		NodeData nd = retrieve("h2");
+		
+		Assert.assertEquals("Color is blue", tf.createColor(0,0,0xff),
+				nd.getValue(TermColor.class, "color"));
+
+		Assert.assertNull("Text-decoration is not set", 
+				nd.getProperty(TextDecoration.class, "text-decoration"));
+				
+	}
+	
+	@Test
+	public void unclosedString() {
+		NodeData nd = retrieve("div");
+		
+		Assert.assertEquals("Color is green", tf.createColor(0, 0x80, 0),
+				nd.getValue(TermColor.class, "color"));
+		
+		Assert.assertEquals("Background-color is white", tf.createColor("#ffffff"),
+				nd.getValue(TermColor.class, "background-color"));
+	}
+	
+	public void unexpectedEOF() {
+		
+	}
 }

@@ -66,9 +66,11 @@ public class AdvancedCSS {
 
 		NodeData data = decl.get(bp);
 
+		Assert.assertNotNull("Data for #bp exist", data);
+		
 		log.debug(data.toString());
 
-		Assert.assertEquals("Background position is list two", 2, data
+		Assert.assertEquals("Background position is list of two", 2, data
 				.getValue(TermList.class, "background-position").size());
 
 		Assert.assertEquals(tf.createPercent(50.0f), data.getValue(

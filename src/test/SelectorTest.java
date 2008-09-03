@@ -6,7 +6,10 @@ import java.io.StringReader;
 import java.util.Date;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.apache.log4j.Logger;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -21,7 +24,7 @@ import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermNumeric;
 
-public class SelectorTest {
+public class SelectorTest extends TestCase {
 	private static Logger log = Logger.getLogger(SelectorTest.class);
 	
 	private static final TermFactory tf = CSSFactory.getTermFactory();
@@ -38,7 +41,7 @@ public class SelectorTest {
 		"DIV+P { color: blue;}"; 
 	
 	public static final String TEST_CHILD = 
-		"DIV>P, SPAN, A, FORM+DIV { color: white;}";	
+		"DIV >P, SPAN, A, FORM+DIV { color: white;}";	
 	
 	public static final String TEST_CLASS =
 		".fit { width: 80%;}";
@@ -71,9 +74,8 @@ public class SelectorTest {
 	@BeforeClass
 	public static void init()  {
 		log.info("\n\n\n == SelectorTest test == " + new Date() + " == \n\n\n");
-	}
-	
-	
+	}	
+
 	@Test
 	public void testMultiple() throws StyleSheetNotValidException {
 		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_MULTIPLE));

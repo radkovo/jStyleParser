@@ -13,9 +13,17 @@ tokens {
 	BRACEBLOCK;
 	RULE;	
 	SELECTOR;
+	ELEMENT;
+	PSEUDO;
+	ADJACENT;
+	CHILD;
+	DESCENDANT;
+	ATTRIBUTE;
 	DECLARATION;	
 	VALUE;
 	IMPORTANT;
+	
+	INVALID_DECLARATION;
 }
 
 
@@ -29,33 +37,107 @@ import org.apache.log4j.Logger;
 @lexer::header {
 package cz.vutbr.web.csskit.antlr;
 
+import java.util.Stack;
+
 import org.apache.log4j.Logger;
+
 }
 
 @lexer::members {
     private static Logger log = Logger.getLogger(CSSLexer.class);
-	
-	public void emitErrorMessage(String msg) {
-		if(log.isInfoEnabled()) {
-		    log.info("ANTLR: " + msg);
-		}
+    
+    // level of curly block nesting
+    private int curlyNest = 0;
+
+    private Stack<StreamPosition> imports = new Stack<StreamPosition>();
+
+    class StreamPosition {
+        public CharStream input;
+        public int mark;
+        
+    	public StreamPosition(CharStream input) {
+    	    this.input = input;
+    	    this.mark = input.mark();	
+    	}
+    }	
+    
+    /**
+     * Overrides next token to match includes and to 
+     * recover from EOF
+     */
+	@Override 
+    public Token nextToken(){
+       Token token = super.nextToken();
+
+       // recover from unexpected EOF
+       if(token==Token.EOF_TOKEN && curlyNest!=0) {
+           token = new CommonToken(input, RCURLY, state.channel, state.tokenStartCharIndex, getCharIndex()-1);
+           token.setLine(state.tokenStartLine);
+           token.setText("}");
+           token.setCharPositionInLine(state.tokenStartCharPositionInLine);
+           if(log.isDebugEnabled()) {
+           	log.debug("Recovering from unexpected EOF, " + token + ", nest: " + curlyNest);           	
+           }           		
+           curlyNest--;
+           return token;
+       }
+
+       if(token==Token.EOF_TOKEN && !imports.empty()){
+        // We've got EOF and have non empty stack.
+         StreamPosition ss = imports.pop();
+         setCharStream(ss.input);
+         input.rewind(ss.mark);
+         token = super.nextToken();
+       }       
+
+      // Skip first token after switching on another input.
+      // You need to use this rather than super as there may be nested include files
+       if(((CommonToken)token).getStartIndex() < 0)
+         token = this.nextToken();
+
+       return token;
+     }
+
+	@Override
+    public void emitErrorMessage(String msg) {
+	if(log.isInfoEnabled()) {
+	    log.info("ANTLR: " + msg);
 	}
+    }
 }
 
 @parser::members {
     private static Logger log = Logger.getLogger(CSSParser.class);
 
+    @Override
     public void emitErrorMessage(String msg) {
 		if(log.isInfoEnabled()) {
 		    log.info("ANTLR: " + msg);
 		}
-	}	
-
+	}
+	
+    /**
+     * Constructs pretty indented "lisp" representation of tree
+     * which was created by parser
+     */
     public String toStringTree(CommonTree tree) {
         StringBuilder sb = new StringBuilder();
         rec(tree, sb, 0);
         return sb.toString();       
     }
+
+	/**
+	 * Recovers and logs error, prepares tree part replacement
+	 */ 
+	private Object invalidFallback(int ttype, String ttext, RecognitionException re) {
+	    reportError(re);
+		recover(input, re);
+		Object retval = ((CSSAdaptor) adaptor).invalidFallback(ttype, ttext);
+		if(log.isTraceEnabled()) {
+			log.trace("Replacing in fallback with: " + toStringTree((CommonTree) retval));					 
+		}
+		return retval;
+	}
     
     private void rec(CommonTree tree, StringBuilder sb, int nest) {
         if(tree.getChildCount()==0) {
@@ -107,40 +189,39 @@ statement
 atrule     
 	: ATKEYWORD S* 
 	  any* 
-	  ( block | SEMICOLON S* )
+	  ( block | SEMICOLON )
 	  -> ^(ATBLOCK ATKEYWORD any* block?)
 	;
 	
 block       
 	: LCURLY S* 
 		blockpart* 
-	  RCURLY S*
+	  RCURLY 
 	  -> ^(CURLYBLOCK blockpart*)
 	;
 
 blockpart
     : any -> any 
-    | block -> block 
+    | LCURLY S* declaration? (SEMICOLON S* declaration? )* RCURLY S* -> ^(CURLYBLOCK declaration*)
     | (ATKEYWORD S*) -> ATKEYWORD 
     | (SEMICOLON S*) -> SEMICOLON
     ;
   	
 	
 ruleset     
-	: selector? 
+	: combined_selector (COMMA S* combined_selector)* 
 	  LCURLY S* 
 	  	declaration? (SEMICOLON S* declaration? )* 
-	  RCURLY S*
-	  -> ^(RULE selector* declaration*)
-	;
-	
-selector    
-	: selpart+ -> ^(SELECTOR selpart+)
+	  RCURLY
+	  -> ^(RULE combined_selector+ declaration*)
 	;
 
-declaration 
+declaration
 	: property COLON S* terms important? -> ^(DECLARATION important? property terms)
 	;
+	catch [RecognitionException re] {
+	  retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", re);									
+	}
 
 important
     : EXCLAMATION S* 'important' S* -> IMPORTANT
@@ -157,13 +238,13 @@ terms
 	
 term
     : valuepart -> valuepart
-    | block -> block
+    | LCURLY S* (any | SEMICOLON S*)* RCURLY -> CURLYBLOCK
     | ATKEYWORD S* -> ATKEYWORD
     ;	
 
 valuepart
     : ( IDENT -> IDENT
-      | IDKEYWORD -> IDKEYWORD
+      | CLASSKEYWORD -> CLASSKEYWORD
       | MINUS? NUMBER -> MINUS? NUMBER
       | MINUS? PERCENTAGE -> MINUS? PERCENTAGE
       | MINUS? DIMENSION -> MINUS? DIMENSION
@@ -178,6 +259,7 @@ valuepart
       | EQUALS -> EQUALS
       | SLASH -> SLASH
 	  | PLUS -> PLUS
+	  | ASTERISK -> ASTERISK		 
       | FUNCTION S* terms RPAREN -> ^(FUNCTION terms) 
       | DASHMATCH -> DASHMATCH
       | LPAREN valuepart* RPAREN -> ^(PARENBLOCK valuepart*)
@@ -185,35 +267,40 @@ valuepart
     ) !S*
   ;
 
-selpart
-    : ( IDENT -> IDENT
-      | IDKEYWORD -> IDKEYWORD
-      | NUMBER -> NUMBER
-      | PERCENTAGE ->PERCENTAGE
-      | DIMENSION -> DIMENSION
-      | STRING -> STRING
-      | URI    -> URI
-      | HASH -> HASH
-      | UNIRANGE -> UNIRANGE
-      | INCLUDES -> INCLUDES
-      | COLON -> COLON
-      | COMMA -> COMMA
-      | GREATER -> GREATER
-      | EQUALS -> EQUALS
-      | SLASH -> SLASH
-	  | MINUS -> MINUS
-	  | PLUS -> PLUS
-      | EXCLAMATION -> EXCLAMATION
-      | FUNCTION S* selpart* RPAREN -> ^(FUNCTION selpart*) 
-      | DASHMATCH -> DASHMATCH
-      | LPAREN selpart* RPAREN -> ^(PARENBLOCK selpart*)
-      | LBRACE selpart* RBRACE -> ^(BRACEBLOCK selpart*)
-    ) !S*
+combined_selector    
+	: selector ((combinator) selector)*
+	;
+
+combinator
+	: GREATER S* -> CHILD
+	| PLUS S* -> ADJACENT
+	| S -> DESCENDANT
+	;
+
+selector
+    : (IDENT | ASTERISK)  selpart* S*
+    	-> ^(SELECTOR ^(ELEMENT IDENT?) selpart*)
+    | selpart+ S*
+        -> ^(SELECTOR selpart+)
   ;
+
+selpart	
+    : COLON IDENT -> PSEUDO IDENT
+    | HASH
+    | CLASSKEYWORD
+	| LBRACE S* attribute RBRACE -> ^(ATTRIBUTE attribute)
+    | COLON FUNCTION S* IDENT RPAREN -> ^(FUNCTION IDENT)
+    ;
+	
+
+attribute
+	: IDENT S*
+	  ((EQUALS | INCLUDES | DASHMATCH) S* (IDENT | STRING) S*)?
+	;
 	
 any
 	: ( IDENT -> IDENT
-	  | IDKEYWORD -> IDKEYWORD
+	  | CLASSKEYWORD -> CLASSKEYWORD
 	  | NUMBER -> NUMBER
 	  | PERCENTAGE ->PERCENTAGE
 	  | DIMENSION -> DIMENSION
@@ -230,6 +317,7 @@ any
       | EXCLAMATION -> EXCLAMATION
 	  | MINUS -> MINUS
 	  | PLUS -> PLUS
+	  | ASTERISK -> ASTERISK		 
       | FUNCTION S* any* RPAREN -> ^(FUNCTION any*) 
       | DASHMATCH -> DASHMATCH
       | LPAREN any* RPAREN -> ^(PARENBLOCK any*)
@@ -251,7 +339,7 @@ ATKEYWORD
 	: '@' IDENT_MACR
 	;
 
-IDKEYWORD
+CLASSKEYWORD
     : '.' IDENT_MACR
     ;
 
@@ -336,11 +424,11 @@ GREATER
     ;    	
 
 LCURLY
-	: '{'
+	: '{'  {curlyNest++;}
 	;
 
 RCURLY	
-	: '}'
+	: '}'  {curlyNest--;}
 	;
 
 LPAREN
@@ -369,6 +457,10 @@ MINUS
 
 PLUS
 	: '+'
+	;
+
+ASTERISK
+	: '*'
 	;
 
 /** White character */		
