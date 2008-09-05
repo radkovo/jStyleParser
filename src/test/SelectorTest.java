@@ -1,7 +1,5 @@
 package test;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.StringReader;
 import java.util.Date;
 import java.util.List;
@@ -9,7 +7,6 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

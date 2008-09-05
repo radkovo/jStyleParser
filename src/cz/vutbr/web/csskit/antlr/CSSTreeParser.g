@@ -37,15 +37,12 @@ import cz.vutbr.web.css.*;
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         CSSParser parser = new CSSParser(tokens);
 		
-		// set tree adaptor
-		parser.setTreeAdaptor(new CSSAdaptor());
-		
         // Invoke the program rule in get return value
         CSSParser.stylesheet_return r = parser.stylesheet();
         CommonTree t = (CommonTree) r.getTree();
 
     	if(log.isTraceEnabled()) {
-        	log.trace("Tree: \n" + parser.toStringTree(t));
+        	log.trace("Tree: \n" + TreeUtil.toStringTree(t));
         }            	        	
             	
         // Walk resulting tree; create treenode stream first
@@ -118,34 +115,94 @@ scope {
 	logLeave("statement");
 }
 	: rs=ruleset {$stm=(RuleBlock<?>) rs;} 
-	| atr=atrule {$stm=(RuleBlock<?>) atr;}
+	| ats=atstatement {$stm=(RuleBlock<?>) ats;}
 	;	
 
-/**
- * Rule which begins with '@' character
- */
-atrule returns [RuleBlock<?> atblock]     
+atstatement returns [RuleBlock<?> stmnt]
+scope {
+	RuleBlock<?> stm;
+	String keyword;
+}
 @init {
-	logEnter("atrule");
+	logEnter("atstatement");
+	$atstatement::stm = $stmnt = null;
+	$atstatement::keyword = null;			 
 }
-@after{
-	logLeave("atrule");
+@after {		  
+	logLeave("atstatement");
 }
-    : ^(ATBLOCK 
-        atk=ATKEYWORD {
-            String keyword = extractText(atk);
+	: ^(atk=ATKEYWORD {
+			// store keyword			  
+	        String k = $atstatement::keyword = extractText(atk);
             // invalidate if keyword not supported
-            if(!css.isSupportedAtKeyword(keyword)) {
-                $statement::invalid = true;
+            if(!css.isSupportedAtKeyword(k)) {
+				$statement::invalid=true;
             }
             else {
-                log.debug("Atkeyword passed: " + keyword);
+                log.debug("Atkeyword passed: " + k);
             }
-        } 
-        any* 
-        block?
-       )
-    ;
+		} 
+	     (atrule)? 
+	     (atblock)?
+	   )
+	;
+
+/**
+ * Rule which begins with '@' character and contains no block
+ */
+atrule
+@init {
+   logEnter("atrule");
+   String string = null;
+   String uri = null;
+}
+@after {
+   if(!$statement::invalid) {
+	   // charset
+	   if("@charset".equalsIgnoreCase($atstatement::keyword) 
+	      && string!=null && uri==null && medialist==null) {
+		  
+		  $stylesheet::style.setCharset(string);											
+	   }
+	   else {
+			if(log.isDebugEnabled()) {
+			   log.debug("Charset rule not valid, ommited.");						 
+			}
+	   }
+   }		   
+   logLeave("atrule");		   
+}
+	:^(ATRULE 
+	  (s=STRING {string=extractText(s);})? 
+	   URI? 
+	   ^(MEDIA medialist=medias?)
+	  )
+	 | INVALID_ATRULE {$statement::invalid=true;} 
+	;
+
+atblock
+@init {
+    logEnter("atblock");
+}
+@after {
+    logLeave("atblock");		   
+}
+	: ^(ATBLOCK IDENT? ^(MEDIA medias?) block)
+	; 
+	
+medias returns [List<String> affected] 
+@init {
+   logEnter("medias");
+   $affected = new ArrayList<String>();
+}
+@after {
+   if(log.isDebugEnabled()) {
+       log.debug("Totally returned " + $affected.size() + " medias");							  
+   }		   
+   logLeave("medias");		   
+}
+	: (i=IDENT {$affected.add(extractText(i));} )+
+	;
   
 block       
     : ^(CURLYBLOCK blockpart*)
@@ -158,11 +215,10 @@ blockpart
 @after {
 	logLeave("blockpart");
 }
-    : any 
-    | ^(CURLYBLOCK declaration*)
+    : ruleset
+    | ^(CURLYBLOCK declaration*) 
     | ATKEYWORD { $statement::invalid=true; }
-    | SEMICOLON 
-    ; 
+    ;
     
 /**
  * The most common block in CSS file,

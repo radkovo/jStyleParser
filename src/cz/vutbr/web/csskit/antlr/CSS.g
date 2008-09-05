@@ -7,7 +7,9 @@ options {
 
 tokens {
 	STYLESHEET;
+	ATRULE;
 	ATBLOCK;
+	MEDIA;
 	CURLYBLOCK;
 	PARENBLOCK;
 	BRACEBLOCK;
@@ -24,6 +26,8 @@ tokens {
 	IMPORTANT;
 	
 	INVALID_DECLARATION;
+	INVALID_ATRULE;
+	INVALID_ATBLOCK;
 }
 
 
@@ -47,7 +51,7 @@ import org.apache.log4j.Logger;
     private static Logger log = Logger.getLogger(CSSLexer.class);
     
     // level of curly block nesting
-    private int curlyNest = 0;
+    private short curlyNest = 0;
 
     private Stack<StreamPosition> imports = new Stack<StreamPosition>();
 
@@ -98,6 +102,21 @@ import org.apache.log4j.Logger;
        return token;
      }
 
+    /**
+	 * Adds contextual information about nesting into token.
+	 */
+    @Override
+	public Token emit() {
+		CSSToken t = new CSSToken(input, state.type, state.channel,
+                        state.tokenStartCharIndex, getCharIndex()-1);
+        t.setLine(state.tokenStartLine);
+        t.setText(state.text);
+        t.setCharPositionInLine(state.tokenStartCharPositionInLine);
+        t.setCurlyNest(curlyNest);
+        emit(t);
+        return t;
+	}
+
 	@Override
     public void emitErrorMessage(String msg) {
 	if(log.isInfoEnabled()) {
@@ -114,17 +133,22 @@ import org.apache.log4j.Logger;
 		if(log.isInfoEnabled()) {
 		    log.info("ANTLR: " + msg);
 		}
+	}    
+
+	private Object invalidReplacement(int ttype, String ttext) {
+		
+		Object root = (Object) adaptor.nil();
+		Object node = (Object) adaptor.create(ttype, ttext);
+		
+		adaptor.addChild(root, node);	
+		
+		if(log.isDebugEnabled()) {
+			log.debug("Invalid fallback with: " +
+					TreeUtil.toStringTree((CommonTree) root));
+		}
+		
+		return root;	
 	}
-	
-    /**
-     * Constructs pretty indented "lisp" representation of tree
-     * which was created by parser
-     */
-    public String toStringTree(CommonTree tree) {
-        StringBuilder sb = new StringBuilder();
-        rec(tree, sb, 0);
-        return sb.toString();       
-    }
 
 	/**
 	 * Recovers and logs error, prepares tree part replacement
@@ -132,47 +156,47 @@ import org.apache.log4j.Logger;
 	private Object invalidFallback(int ttype, String ttext, RecognitionException re) {
 	    reportError(re);
 		recover(input, re);
-		Object retval = ((CSSAdaptor) adaptor).invalidFallback(ttype, ttext);
-		if(log.isTraceEnabled()) {
-			log.trace("Replacing in fallback with: " + toStringTree((CommonTree) retval));					 
-		}
-		return retval;
+		return invalidReplacement(ttype, ttext);
 	}
-    
-    private void rec(CommonTree tree, StringBuilder sb, int nest) {
-        if(tree.getChildCount()==0) {
-            addTree(sb, tree, nest);
-            return;
+	
+	/**
+	 * Recovers and logs error, using custom follow set,
+	 * prepares tree part replacement
+	 */ 
+	private Object invalidFallbackGreedy(int ttype, String ttext, BitSet follow, RecognitionException re) {
+		reportError(re);
+		if ( state.lastErrorIndex==input.index() ) {
+			// uh oh, another error at same token index; must be a case
+	 		// where LT(1) is in the recovery token set so nothing is
+            // consumed; consume a single token so at least to prevent
+            // an infinite loop; this is a failsafe.
+            input.consume();
         }
-            
-        if(!tree.isNil()) {
-            addTree(sb, tree, nest);
-        }
-       
-        for(int i=0; i < tree.getChildCount(); i++) {
-            CommonTree n = (CommonTree) tree.getChild(i);
-            rec(n, sb, nest+1);
-        }
-        if(!tree.isNil()) {
-            sb.append(")");
-        }
-    
+        state.lastErrorIndex = input.index();
+        beginResync();
+		consumeUntilGreedy(input, follow);
+        endResync();
+		return invalidReplacement(ttype, ttext);
+		
     }
-    
-    private StringBuilder addTree(StringBuilder sb, CommonTree tree, int nest) {
-        sb.append("\n");
-        for(int i=0; i< nest; i++) {
-            sb.append("  ");
-        }
-        
-        if(!tree.isNil())
-          sb.append("(");
-        
-        sb.append(tree.toString()).append(" |")
-          .append(tree.getType()).append("| ");
-        
-        return sb;
-    }
+	
+	/**
+	 * Consumes token until curlyNest is satisfied and
+	 * token from follow is matched. Matched token is also consumed
+	 */ 
+	private void consumeUntilGreedy(TokenStream input, BitSet follow) {
+		CSSToken t = null;
+		do{
+		  t= (CSSToken) input.LT(1);
+		  if(log.isTraceEnabled()) {
+			   log.trace("Skipped greedy/"+t.getCurlyNest()+"/: " 
+			   		+ t.toString());						
+		  }
+		  // consume token even if it will match
+		  input.consume();
+		}while(!(t.getCurlyNest()==0 && follow.member(t.getType())));
+		
+	} 
 
 }
 
@@ -183,15 +207,38 @@ stylesheet
 	;
 	
 statement   
-	: ruleset | atrule
+	: ruleset | atstatement
 	;
+
+atstatement
+	: ATKEYWORD S* (atrule | atblock)
+		-> ^(ATKEYWORD atrule? atblock?)
+	;
+
+atrule
+	: (STRING | URI) S* medias? SEMICOLON
+		-> ^(ATRULE STRING? URI? ^(MEDIA medias?))
+	;
+	catch [RecognitionException re] {
+	  final BitSet follow = BitSet.of(CSSLexer.RCURLY);								
+	  retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_ATRULE, 
+	  		"INVALID_ATRULE", follow, re);									
+	}
+
 	
-atrule     
-	: ATKEYWORD S* 
-	  any* 
-	  ( block | SEMICOLON )
-	  -> ^(ATBLOCK ATKEYWORD any* block?)
+atblock     
+	: (COLON IDENT S* | medias)? block
+	  -> ^(ATBLOCK IDENT? ^(MEDIA medias?) block)
 	;
+	catch [RecognitionException re] {
+										
+	  retval.tree = invalidFallback(CSSLexer.INVALID_ATBLOCK, "INVALID_ATBLOCK", re);									
+	}
+	
+medias
+	: IDENT S* (COMMA S* IDENT S*)* 
+		-> IDENT+
+	;		  	
 	
 block       
 	: LCURLY S* 
@@ -201,10 +248,9 @@ block
 	;
 
 blockpart
-    : any -> any 
+    : ruleset S* -> ruleset
     | LCURLY S* declaration? (SEMICOLON S* declaration? )* RCURLY S* -> ^(CURLYBLOCK declaration*)
-    | (ATKEYWORD S*) -> ATKEYWORD 
-    | (SEMICOLON S*) -> SEMICOLON
+    | (ATKEYWORD S*) -> ATKEYWORD
     ;
   	
 	
@@ -424,11 +470,11 @@ GREATER
     ;    	
 
 LCURLY
-	: '{'  {curlyNest++;}
+	: t='{'  {curlyNest++;}
 	;
 
 RCURLY	
-	: '}'  {curlyNest--;}
+	: t='}'  {curlyNest--;}
 	;
 
 LPAREN
