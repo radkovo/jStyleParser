@@ -17,13 +17,14 @@ public class TermURIImpl extends TermImpl<String> implements TermURI {
         if(uri == null) 
             throw new IllegalArgumentException("Invalid uri for TermURI(null)");
         
-        // sanity check
+        /* this shlould be done by parser
         uri = uri.replaceAll("^url\\(", "")
         	  .replaceAll("\\)$", "")
         	  .replaceAll("^'", "")
         	  .replaceAll("^\"", "")
         	  .replaceAll("'$", "")
         	  .replaceAll("\"$", "");
+        */
         
         this.value = uri;
         return this;

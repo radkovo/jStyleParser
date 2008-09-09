@@ -6,7 +6,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
@@ -106,7 +107,7 @@ import cz.vutbr.web.css.CSSProperty.ZIndex;
  * 
  */
 public class SupportedCSS21 implements SupportedCSS {
-	private static Logger log = Logger.getLogger(SupportedCSS21.class);
+	private static Logger log = LoggerFactory.getLogger(SupportedCSS21.class);
 
 	private static final int TOTAL_SUPPORTED_DECLARATIONS = 116;
 
@@ -120,12 +121,13 @@ public class SupportedCSS21 implements SupportedCSS {
 	private static final Term<?> DEFAULT_UA_PADDING = tf.createLength(0.0f);
 	private static final Term<?> DEFAULT_UA_MIN_WIDTH = tf.createLength(0.0f);
 	private static final Term<?> DEFAULT_UA_MIN_HEIGHT = tf.createLength(0.0f);
-	private static final TermList DEFAULT_UA_BACKGROUND_POSITION	= tf.createList(2);
+	private static final TermList DEFAULT_UA_BACKGROUND_POSITION = tf
+			.createList(2);
 	static {
 		DEFAULT_UA_BACKGROUND_POSITION.add(tf.createPercent(0.0f));
 		DEFAULT_UA_BACKGROUND_POSITION.add(tf.createPercent(0.0f));
 	}
-	private static final TermList DEFAULT_UA_BORDER_SPACING  = tf.createList(2);
+	private static final TermList DEFAULT_UA_BORDER_SPACING = tf.createList(2);
 	static {
 		DEFAULT_UA_BORDER_SPACING.add(tf.createLength(0.0f));
 		DEFAULT_UA_BORDER_SPACING.add(tf.createLength(0.0f));
@@ -135,16 +137,15 @@ public class SupportedCSS21 implements SupportedCSS {
 	private static final Term<?> DEFAULT_UA_PAUSE_BEFORE = tf.createTime(0.0f);
 	private static final Term<?> DEFAULT_UA_PAUSE_AFTER = tf.createTime(0.0f);
 	private static final Term<?> DEFAULT_UA_RICHNESS = tf.createNumber(50.0f);
-	private static final Term<?> DEFAULT_UA_PITCH_RANGE = tf.createNumber(50.0f);
+	private static final Term<?> DEFAULT_UA_PITCH_RANGE = tf
+			.createNumber(50.0f);
 	private static final Term<?> DEFAULT_UA_STRESS = tf.createNumber(50.0f);
 
 	private static final CSSProperty DEFAULT_UA_VOICE_FAMILY = VoiceFamily.MALE;;
 
-
 	private final static SupportedCSS21 instance;
 	static {
 		instance = new SupportedCSS21();
-		CSSFactory.registerSupportedCSS(instance);
 	}
 
 	/**
@@ -159,7 +160,7 @@ public class SupportedCSS21 implements SupportedCSS {
 	private Map<Integer, String> ordinalsRev;
 
 	private Set<String> supportedAtKeywords;
-	
+
 	/**
 	 * Gets instance of SupportedCSS21
 	 * 
@@ -176,22 +177,21 @@ public class SupportedCSS21 implements SupportedCSS {
 	}
 
 	public boolean isSupportedAtKeyword(String keyword) {
-		if(keyword==null) return false;
-		
+		if (keyword == null)
+			return false;
+
 		keyword = keyword.replaceAll("^@", "");
 		return supportedAtKeywords.contains(keyword);
 	}
-	
+
 	public final boolean isSupportedCSSProperty(String property) {
-		return defaultCSSproperties.get(property)!=null;
+		return defaultCSSproperties.get(property) != null;
 	}
-	
+
 	public final CSSProperty getDefaultProperty(String property) {
-		if(log.isDebugEnabled()) {
-			log.debug("Asked for " + property 
-					+ "'s default: " + defaultCSSproperties.get(property));
-		}
-		return defaultCSSproperties.get(property);
+		CSSProperty value = defaultCSSproperties.get(property);
+		log.debug("Asked for property {}'s default value: {}", property, value);
+		return value;
 	}
 
 	public final Term<?> getDefaultValue(String property) {
@@ -211,19 +211,19 @@ public class SupportedCSS21 implements SupportedCSS {
 		int o = generator.nextInt(getTotalProperties());
 		return getPropertyName(o);
 	}
-	
-	public int getOrdinal(String propertyName) {		
+
+	public int getOrdinal(String propertyName) {
 		Integer i = ordinals.get(propertyName);
 		return (i == null) ? -1 : i.intValue();
 	}
-	
+
 	public String getPropertyName(int o) {
 		return ordinalsRev.get(o);
 	}
-	
+
 	/**
-	 * Constructs maps of CSSProperties and its values (Term<?) according
-	 * to CSS 2.1 definition. Called during construction of object.
+	 * Constructs maps of CSSProperties and its values (Term<?) according to CSS
+	 * 2.1 definition. Called during construction of object.
 	 */
 	private void setSupportedCSS() {
 
@@ -423,15 +423,15 @@ public class SupportedCSS21 implements SupportedCSS {
 		this.ordinalsRev = ordsRev;
 
 	}
-	
+
 	private void setSupportedAtKeywords() {
 		Set<String> set = new HashSet<String>();
-		
+
 		set.add("charset");
 		set.add("import");
 		set.add("page");
 		set.add("font-face");
-		set.add("media");	
+		set.add("media");
 		this.supportedAtKeywords = set;
 	}
 

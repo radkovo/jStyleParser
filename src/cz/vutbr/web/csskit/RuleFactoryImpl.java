@@ -3,14 +3,13 @@
  */
 package cz.vutbr.web.csskit;
 
-import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
-import cz.vutbr.web.css.RuleImport;
 import cz.vutbr.web.css.RuleFactory;
+import cz.vutbr.web.css.RuleImport;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
 import cz.vutbr.web.css.RuleSet;
-import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.Selector.ElementAttribute;
@@ -30,10 +29,13 @@ public class RuleFactoryImpl implements RuleFactory {
 	
 	static {
 		instance = new RuleFactoryImpl();
-		CSSFactory.registerRuleFactory(instance);
 	}
 	
 	private RuleFactoryImpl() {
+	}
+	
+	public static final RuleFactory getInstance() {
+		return instance;
 	}
 	
 	/* (non-Javadoc)

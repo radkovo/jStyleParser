@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
@@ -106,7 +107,8 @@ import cz.vutbr.web.css.Term.Operator;
  */
 public class DeclarationTransformer {
 
-	private static Logger log = Logger.getLogger(DeclarationTransformer.class);
+	private static Logger log = LoggerFactory
+			.getLogger(DeclarationTransformer.class);
 
 	/**
 	 * Inherit acceptance flags
@@ -194,20 +196,19 @@ public class DeclarationTransformer {
 		try {
 			Method m = methods.get(propertyName);
 			if (m != null) {
-				boolean result = (Boolean) m.invoke(this, d, properties, values);
-				if(log.isDebugEnabled()) {
-					log.debug("Parsing: " + d + " with " + m.getName() + " => " + result);
-				}
+				boolean result = (Boolean) m
+						.invoke(this, d, properties, values);
+				log.debug("Parsing /{}/ {}", result, d);
 				return result;
-				
+
 			}
 		} catch (IllegalArgumentException e) {
-			log.warn("Illegal argument: ", e);
+			log.warn("Illegal argument", e);
 		} catch (IllegalAccessException e) {
-			log.warn("Illegal access: ", e);
+			log.warn("Illegal access", e);
 		} catch (InvocationTargetException e) {
-			log.warn("Invocation target: ", e);
-			log.warn(e.getCause());
+			log.warn("Invocation target", e);
+			log.warn("Invotation target cause", e.getCause());
 		}
 
 		return false;
@@ -232,12 +233,10 @@ public class DeclarationTransformer {
 						Declaration.class, Map.class, Map.class);
 				map.put(key, m);
 			} catch (Exception e) {
-				log.warn("Unable to find method for property: " + key);
+				log.warn("Unable to find method for property {}.", key);
 			}
 		}
-		if (log.isInfoEnabled()) {
-			log.info("Total methods found: " + map.size());
-		}
+		log.info("Totally found {} parsing methods", map.size());
 		return map;
 	}
 
@@ -258,7 +257,7 @@ public class DeclarationTransformer {
 	 *            used
 	 * @param term
 	 *            TermIdent to be transfered to property
-	 * @returns CSSProperty of type <T> or <code>null</code>            
+	 * @returns CSSProperty of type <T> or <code>null</code>
 	 */
 	public <T extends CSSProperty> T genericPropertyRaw(Class<T> type,
 			Set<T> intersection, TermIdent term) {
@@ -298,7 +297,7 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties, String propertyName) {
 
 		T property = genericPropertyRaw(type, null, term);
-		if (property==null || (avoidInherit && property.equalsInherit()))
+		if (property == null || (avoidInherit && property.equalsInherit()))
 			return false;
 
 		properties.put(propertyName, property);
@@ -538,7 +537,7 @@ public class DeclarationTransformer {
 		background.assignTermsFromDeclaration(d);
 		return background.vary(properties, values);
 	}
-	
+
 	@SuppressWarnings("unused")
 	private boolean processBackgroundAttachement(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
@@ -586,7 +585,7 @@ public class DeclarationTransformer {
 		border.assignTermsFromDeclaration(d);
 		return border.vary(properties, values);
 	}
-	
+
 	@SuppressWarnings("unused")
 	private boolean processBorderCollapse(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
@@ -1559,7 +1558,7 @@ public class DeclarationTransformer {
 
 			// we won't use multivalue functionallity
 			int i = iteration.get();
-			
+
 			switch (v) {
 			case IMAGE:
 				// list style image
@@ -1615,7 +1614,7 @@ public class DeclarationTransformer {
 
 			// we won't use multivalue functionallity
 			int i = iteration.get();
-			
+
 			switch (v) {
 			case COLOR:
 				// process color
@@ -1637,7 +1636,7 @@ public class DeclarationTransformer {
 			default:
 				return false;
 			}
-			
+
 		}
 	}
 
@@ -1674,7 +1673,7 @@ public class DeclarationTransformer {
 
 			// we won't use multivalue functionallity
 			int i = iteration.get();
-			
+
 			switch (v) {
 			case COLOR:
 				// process color
@@ -1745,10 +1744,10 @@ public class DeclarationTransformer {
 		protected boolean variant(int v, IntegerRef iteration,
 				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
-			// we will use multi value functionality in 
+			// we will use multi value functionality in
 			// FAMILY branch
 			int i = iteration.get();
-			
+
 			switch (v) {
 			case STYLE:
 				// process font style
@@ -1827,12 +1826,13 @@ public class DeclarationTransformer {
 				boolean composed = false;
 				for (Term<?> t : terms.subList(i, terms.size())) {
 					// first item
-					if (t instanceof TermIdent && sb.length()==0) {
+					if (t instanceof TermIdent && sb.length() == 0) {
 						sb.append(t.getValue());
 						composed = false;
 					}
 					// next item
-					else if (t instanceof TermIdent && sb.length()!=0 && t.getOperator()!=Operator.COMMA) {
+					else if (t instanceof TermIdent && sb.length() != 0
+							&& t.getOperator() != Operator.COMMA) {
 						sb.append(" ").append(t.getValue());
 						composed = true;
 					}
@@ -1886,7 +1886,7 @@ public class DeclarationTransformer {
 			case VARIANT:
 			case WEIGHT:
 				// must be within 3 first terms
-				return  iteration.get() < 3;
+				return iteration.get() < 3;
 			case SIZE:
 				// no condition
 				return true;
@@ -1934,11 +1934,12 @@ public class DeclarationTransformer {
 
 			// trim spaces
 			name = name.trim();
-			
+
 			// if composed, store directly as family name
 			if (composed) {
 				Term<?> term = tf.createString(name);
-				if(!storage.isEmpty()) term.setOperator(Operator.COMMA);
+				if (!storage.isEmpty())
+					term.setOperator(Operator.COMMA);
 				storage.add(term);
 			}
 			// try to find generic name
@@ -1950,14 +1951,16 @@ public class DeclarationTransformer {
 				// we have to append even operator
 				if (generic != null) {
 					Term<?> term = tf.createTerm(generic);
-					if(!storage.isEmpty()) term.setOperator(Operator.COMMA);
+					if (!storage.isEmpty())
+						term.setOperator(Operator.COMMA);
 					storage.add(term);
 				}
 				// generic name not found, store as family name
 				// we have to append even operator
 				else {
 					Term<?> term = tf.createString(name);
-					if(!storage.isEmpty()) term.setOperator(Operator.COMMA);
+					if (!storage.isEmpty())
+						term.setOperator(Operator.COMMA);
 					storage.add(term);
 				}
 			}
@@ -2004,10 +2007,10 @@ public class DeclarationTransformer {
 		protected boolean variant(int v, IntegerRef iteration,
 				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
-			// we will use multi value functionality in 
+			// we will use multi value functionality in
 			// POSITION branch
 			int i = iteration.get();
-			
+
 			switch (v) {
 			case COLOR:
 				return genericTermIdent(types.get(COLOR), terms.get(i),
@@ -2029,76 +2032,74 @@ public class DeclarationTransformer {
 			case POSITION:
 
 				final EnumSet<BackgroundPosition> allowedBackground = EnumSet
-						.complementOf(EnumSet
-								.of(BackgroundPosition.list_values, BackgroundPosition.INHERIT));
+						.complementOf(EnumSet.of(
+								BackgroundPosition.list_values,
+								BackgroundPosition.INHERIT));
 
 				// try this and next term, but consider terms size
 				BackgroundPosition bp = null;
 				TermList list = tf.createList(2);
-				for(; (i <= i+1) && (i < terms.size()) ; i++) {
+				for (; (i <= i + 1) && (i < terms.size()); i++) {
 					Term<?> term = terms.get(i);
-					if(term instanceof TermIdent) {
-						bp = genericPropertyRaw(
-								BackgroundPosition.class, allowedBackground,
-								(TermIdent) term);
-						if(bp!=null)
+					if (term instanceof TermIdent) {
+						bp = genericPropertyRaw(BackgroundPosition.class,
+								allowedBackground, (TermIdent) term);
+						if (bp != null)
 							storeBackgroundPosition(list, bp, term);
-					}
-					else if(term instanceof TermPercent) {
+					} else if (term instanceof TermPercent) {
 						storeBackgroundPosition(list, null, term);
-					}
-					else if(term instanceof TermLength)
+					} else if (term instanceof TermLength)
 						storeBackgroundPosition(list, null, term);
 				}
-				
-				if(list.isEmpty()) return false;
+
+				if (list.isEmpty())
+					return false;
 				// copy element if only one present
-				else if(list.size()==1) list.add(1, list.get(0));
-				// if used two elements, inform master 
-				else if(list.size()==2) iteration.inc();
+				else if (list.size() == 1)
+					list.add(1, list.get(0));
+				// if used two elements, inform master
+				else if (list.size() == 2)
+					iteration.inc();
 
 				// store list
-				properties.put(names.get(POSITION), BackgroundPosition.list_values);
+				properties.put(names.get(POSITION),
+						BackgroundPosition.list_values);
 				values.put(names.get(POSITION), list);
 				return true;
-				
+
 			default:
 				return false;
 			}
 		}
-		
-		private void storeBackgroundPosition(TermList storage, BackgroundPosition bp, Term<?> term) {
-			if(bp==BackgroundPosition.LEFT)
+
+		private void storeBackgroundPosition(TermList storage,
+				BackgroundPosition bp, Term<?> term) {
+			if (bp == BackgroundPosition.LEFT)
 				storage.add(tf.createPercent(0.0f));
-			else if(bp==BackgroundPosition.CENTER)
+			else if (bp == BackgroundPosition.CENTER)
 				storage.add(tf.createPercent(50.0f));
-			else if(bp==BackgroundPosition.RIGHT)
+			else if (bp == BackgroundPosition.RIGHT)
 				storage.add(tf.createPercent(100.0f));
 			else
 				storage.add(term);
 		}
 	}
-	
+
 	/**
-	 * Border variator.
-	 * Grammar:
-	 * [ <border-width> || 
-	 * 	 <border-style> || 
-	 *   <border-top-color> 
-	 * ] 
-	 * | inherit
+	 * Border variator. Grammar: [ <border-width> || <border-style> ||
+	 * <border-top-color> ] | inherit
 	 * 
 	 * @author kapy
-	 *
+	 * 
 	 */
 	private final class BorderVariator extends Variator {
-		
+
 		public static final int WIDTH = 0;
 		public static final int STYLE = 1;
 		public static final int COLOR = 2;
-		
+
 		private List<Repeater> repeaters;
-		
+
 		public BorderVariator() {
 			super(3);
 			types.add(BorderWidth.class);
@@ -2109,41 +2110,41 @@ public class DeclarationTransformer {
 			repeaters.add(new BorderStyleRepeater());
 			repeaters.add(new BorderColorRepeater());
 		}
-		
+
 		@Override
 		protected boolean variant(int variant, IntegerRef iteration,
 				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-			
+
 			// iteration is not modified in this function
 			int i = iteration.get();
 			Term<?> term = terms.get(i);
 			Repeater r;
-			
-			switch(variant) {
+
+			switch (variant) {
 			case WIDTH:
-				 r = repeaters.get(WIDTH);
-				 r.assignTerms(term, term, term, term);
-				 return r.repeat(properties, values);
+				r = repeaters.get(WIDTH);
+				r.assignTerms(term, term, term, term);
+				return r.repeat(properties, values);
 			case STYLE:
-				 r = repeaters.get(STYLE);
-				 r.assignTerms(term, term, term, term);
-				 return r.repeat(properties, values);
+				r = repeaters.get(STYLE);
+				r.assignTerms(term, term, term, term);
+				return r.repeat(properties, values);
 			case COLOR:
-				 r = repeaters.get(COLOR);
-				 r.assignTerms(term, term, term, term);
-				 return r.repeat(properties, values);
+				r = repeaters.get(COLOR);
+				r.assignTerms(term, term, term, term);
+				return r.repeat(properties, values);
 			default:
 				return false;
 			}
 		}
-		
+
 		/**
 		 * This method is overriden to use repeaters
 		 */
 		@Override
 		protected boolean checkInherit(int variant, Term<?> term,
 				Map<String, CSSProperty> properties) {
-			
+
 			// check whether term equals inherit
 			if (!(term instanceof TermIdent)
 					|| !CSSProperty.INHERIT_KEYWORD
@@ -2165,9 +2166,8 @@ public class DeclarationTransformer {
 			r.repeat(properties, null);
 			return true;
 		}
-		
+
 	}
-	
 
 	/**
 	 * Border style repeater

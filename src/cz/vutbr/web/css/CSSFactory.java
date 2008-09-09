@@ -2,16 +2,17 @@ package cz.vutbr.web.css;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.tidy.Tidy;
 
 import cz.vutbr.web.csskit.antlr.CSSTreeParser;
-import cz.vutbr.web.csskit.javacc.CSSParser;
 import cz.vutbr.web.domassign.Analyzer;
 
 /**
@@ -50,8 +51,8 @@ import cz.vutbr.web.domassign.Analyzer;
  * 
  */
 public final class CSSFactory {
-	private static Logger log = Logger.getLogger(CSSFactory.class);
-	
+	private static Logger log = LoggerFactory.getLogger(CSSFactory.class);
+
 	private static final String DEFAULT_TERM_FACTORY = "cz.vutbr.web.csskit.TermFactoryImpl";
 	private static final String DEFAULT_SUPPORTED_CSS = "cz.vutbr.web.domassign.SupportedCSS21";
 	private static final String DEFAULT_RULE_FACTORY = "cz.vutbr.web.csskit.RuleFactoryImpl";
@@ -89,17 +90,21 @@ public final class CSSFactory {
 	 * 
 	 * @return TermFactory registered
 	 */
+	@SuppressWarnings("unchecked")
 	public static final TermFactory getTermFactory() {
 		if (tf == null) {
 			try {
-				Class.forName(DEFAULT_TERM_FACTORY);
-				if (tf != null)
-					return tf;
+				Class<? extends TermFactory> clazz = (Class<? extends TermFactory>) Class
+						.forName(DEFAULT_TERM_FACTORY);
+				Method m = clazz.getMethod("getInstance");
+				registerTermFactory((TermFactory) m.invoke(null));
+				log.debug("Retrived {} as default TermFactory implementation.",
+						DEFAULT_TERM_FACTORY);
 			} catch (Exception e) {
+				log.error("Unable to get TermFactory from default", e);
+				throw new RuntimeException(
+						"No TermFactory implementation registered!");
 			}
-
-			throw new RuntimeException(
-					"No TermFactory implementation registered!");
 		}
 		return tf;
 	}
@@ -108,17 +113,22 @@ public final class CSSFactory {
 		css = newCSS;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static final SupportedCSS getSupportedCSS() {
 		if (css == null) {
 			try {
-				Class.forName(DEFAULT_SUPPORTED_CSS);
-				if (css != null)
-					return css;
+				Class<? extends SupportedCSS> clazz = (Class<? extends SupportedCSS>) Class
+						.forName(DEFAULT_SUPPORTED_CSS);
+				Method m = clazz.getMethod("getInstance");
+				registerSupportedCSS((SupportedCSS) m.invoke(null));
+				log.debug(
+						"Retrived {} as default SupportedCSS implementation.",
+						DEFAULT_SUPPORTED_CSS);
 			} catch (Exception e) {
+				log.error("Unable to get SupportedCSS from default", e);
+				throw new RuntimeException(
+						"No SupportedCSS implementation registered!");
 			}
-
-			throw new RuntimeException(
-					"No SupportedCSS implementation registered!");
 		}
 		return css;
 	}
@@ -127,17 +137,21 @@ public final class CSSFactory {
 		rf = newRuleFactory;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static final RuleFactory getRuleFactory() {
 		if (rf == null) {
 			try {
-				Class.forName(DEFAULT_RULE_FACTORY);
-				if (rf != null)
-					return rf;
+				Class<? extends RuleFactory> clazz = (Class<? extends RuleFactory>) Class
+						.forName(DEFAULT_RULE_FACTORY);
+				Method m = clazz.getMethod("getInstance");
+				registerRuleFactory((RuleFactory) m.invoke(null));
+				log.debug("Retrived {} as default RuleFactory implementation.",
+						DEFAULT_RULE_FACTORY);
 			} catch (Exception e) {
+				log.error("Unable to get RuleFactory from default", e);
+				throw new RuntimeException(
+						"No RuleFactory implementation registered!");
 			}
-
-			throw new RuntimeException(
-					"No RuleFactory implementation registered!");
 		}
 
 		return rf;
@@ -161,51 +175,52 @@ public final class CSSFactory {
 
 	@SuppressWarnings("unchecked")
 	public static final NodeData createNodeData() {
-		if(ndImpl==null) {
+		if (ndImpl == null) {
 			try {
-				registerNodeDataInstance((Class<? extends NodeData>)Class.forName(DEFAULT_NODE_DATA_IMPL));
-			} catch(Exception e) {
+				registerNodeDataInstance((Class<? extends NodeData>) Class
+						.forName(DEFAULT_NODE_DATA_IMPL));
+				log.debug("Registered {} as default NodeData instance.",
+						DEFAULT_NODE_DATA_IMPL);
+			} catch (Exception e) {
 			}
-		}	
-		
+		}
+
 		try {
 			return ndImpl.newInstance();
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException("No NodeData implementation registered");
 		}
 	}
-	
+
 	public static final StyleSheet parse(Reader source) {
 		try {
-			//CSSParser parser = new CSSParser(source);			
+			// CSSParser parser = new CSSParser(source);
 			CSSTreeParser parser = CSSTreeParser.createParser(source);
 			return parser.stylesheet();
-			
-		}
-		catch(Exception e) {
+
+		} catch (Exception e) {
 			log.error("While parsing CSS stylesheet", e);
 			return getRuleFactory().createStyleSheet();
 		}
 	}
 
-	public static final Map<Element, NodeData> parse(Reader stylesheet, InputStream html, String media, boolean inherit) {
-		
+	public static final Map<Element, NodeData> parse(Reader stylesheet,
+			InputStream html, String media, boolean inherit) {
+
 		try {
 			StyleSheet style = parse(stylesheet);
 			Tidy parser = new Tidy();
 			parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
 
 			Document doc = parser.parseDOM(html, null);
-			
+
 			Analyzer analyzer = new Analyzer(style);
 			return analyzer.evaluateDOM(doc, media, inherit);
-		}
-		catch(Exception e) {
-			log.error("While parsing document document", e);
+		} catch (Exception e) {
+			log.error("While parsing document", e);
 			return Collections.emptyMap();
 		}
-		
+
 	}
 
 }

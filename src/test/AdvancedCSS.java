@@ -6,10 +6,11 @@ import java.io.FileReader;
 import java.util.Date;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.tidy.Tidy;
@@ -26,7 +27,7 @@ import cz.vutbr.web.domassign.Analyzer;
 
 public class AdvancedCSS {
 
-	private static Logger log = Logger.getLogger(AdvancedCSS.class);
+	private static Logger log = LoggerFactory.getLogger(AdvancedCSS.class);
 
 	private static TermFactory tf = CSSFactory.getTermFactory();
 
@@ -40,7 +41,7 @@ public class AdvancedCSS {
 	public static void init() throws FileNotFoundException,
 			StyleSheetNotValidException {
 		
-		log.info("\n\n\n == AdvancedTest test == " + new Date() + " == \n\n\n");
+		log.info("\n\n\n == AdvancedTest test at {} == \n\n\n", new Date());
 		
 		Tidy parser = new Tidy();
 		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
@@ -68,7 +69,7 @@ public class AdvancedCSS {
 
 		Assert.assertNotNull("Data for #bp exist", data);
 		
-		log.debug(data.toString());
+		log.debug("{}", data);
 
 		Assert.assertEquals("Background position is list of two", 2, data
 				.getValue(TermList.class, "background-position").size());
@@ -85,7 +86,7 @@ public class AdvancedCSS {
 
 		NodeData data = decl.get(elements.getElementById("ff"));
 
-		log.debug(data.toString());
+		log.debug("{}", data);
 
 		Assert.assertEquals("Font family contains two fonts ", 2, data
 				.getValue(TermList.class, "font-family").size());
@@ -104,7 +105,7 @@ public class AdvancedCSS {
 
 		NodeData data = decl.get(elements.getElementById("border"));
 
-		log.debug(data.toString());
+		log.debug("{}", data);
 /*
 		Assert.assertEquals("Font family contains two fonts ", 2, data
 				.getValue(TermList.class, "font-family").size());

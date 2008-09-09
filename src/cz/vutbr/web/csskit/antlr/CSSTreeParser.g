@@ -11,7 +11,8 @@ package cz.vutbr.web.csskit.antlr;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.CSSFactory;
@@ -22,42 +23,54 @@ import cz.vutbr.web.css.*;
 }
 
 @members {
-	private static Logger log = Logger.getLogger(CSSTreeParser.class);
+	private static Logger log = LoggerFactory.getLogger(CSSTreeParser.class);
 
 	private static RuleFactory rf = CSSFactory.getRuleFactory();
 	private static TermFactory tf = CSSFactory.getTermFactory();
 	private static SupportedCSS css = CSSFactory.getSupportedCSS();
 
 	private int ruleNum = 0;
+	
+	private StyleSheet stylesheet;
 
 	public static CSSTreeParser createParser(Reader reader) 
 		throws StyleSheetNotValidException, IOException, RecognitionException {	
 		
+		StyleSheet stylesheet = (StyleSheet) rf.createStyleSheet().unlock();
+		
 		CSSLexer lexer = new CSSLexer(new ANTLRReaderStream(reader));
+		lexer.init(stylesheet);
+		
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         CSSParser parser = new CSSParser(tokens);
+		parser.init(stylesheet);
 		
         // Invoke the program rule in get return value
         CSSParser.stylesheet_return r = parser.stylesheet();
         CommonTree t = (CommonTree) r.getTree();
 
     	if(log.isTraceEnabled()) {
-        	log.trace("Tree: \n" + TreeUtil.toStringTree(t));
+        	log.trace("* CSSLexer Tree was:\n{}", TreeUtil.toStringTree(t));
         }            	        	
             	
         // Walk resulting tree; create treenode stream first
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(t);
-        // AST nodes have payloads that point into token stream
+        
+		// AST nodes have payloads that point into token stream
         nodes.setTokenStream(tokens);
-        // Create a tree Walker attached to the nodes stream
-        return new CSSTreeParser(nodes);
+        
+		// Create a tree Walker attached to the nodes stream
+        return (new CSSTreeParser(nodes)).init(stylesheet);
     }
+       
+    public CSSTreeParser init(StyleSheet sheet) {
+	    this.stylesheet = sheet;
+		return this;
+	}   
        
     @Override
 	public void emitErrorMessage(String msg) {
-		if(log.isInfoEnabled()) {
-		    log.info("ANTLR: " + msg);
-		}
+	    log.info("ANTLR: {}", msg);
 	}
 		
 	private String extractText(CommonTree token) {
@@ -66,15 +79,11 @@ import cz.vutbr.web.css.*;
     	
 		
     private void logEnter(String entry) {
-        if(log.isTraceEnabled()) {
-    		log.debug("Entering '" + entry + "'");
-    	}
+        log.trace("Entering '{}'", entry);
     }
     	
     private void logLeave(String leaving) {
-    	if(log.isTraceEnabled()) {
-    		log.debug("Leaving '" + leaving + "'");
-    	}
+	    log.trace("Leaving '{}'", leaving);
     }
 }
 
@@ -82,21 +91,16 @@ import cz.vutbr.web.css.*;
  * Stylesheet, main rule
  */
 stylesheet returns [StyleSheet sheet]
-scope {
-	StyleSheet style; 
-}
 @init {
 	logEnter("stylesheet");
-	$stylesheet::style=$sheet = (StyleSheet) rf.createStyleSheet().unlock();
+	$sheet = this.stylesheet;
 } 
 @after {
-    if(log.isTraceEnabled()) {
-        log.trace("\n\n***\n" + $sheet.toString() + "\n***\n\n");
-    }
+	log.debug("\n***\n{}\n***\n", $sheet);	   
 	logLeave("stylesheet");
 }
 	: ^(STYLESHEET 
-	    (s=statement { if(s!=null) $sheet.add(s);})*  
+		 (s=statement { if(s!=null) $sheet.add(s);})*  
 	   )
 	;
 
@@ -116,70 +120,36 @@ scope {
 }
 	: rs=ruleset {$stm=(RuleBlock<?>) rs;} 
 	| ats=atstatement {$stm=(RuleBlock<?>) ats;}
-	;	
+	;
+	
 
 atstatement returns [RuleBlock<?> stmnt]
 scope {
 	RuleBlock<?> stm;
-	String keyword;
 }
 @init {
-	logEnter("atstatement");
+    logEnter("atstatement");
 	$atstatement::stm = $stmnt = null;
-	$atstatement::keyword = null;			 
-}
-@after {		  
-	logLeave("atstatement");
-}
-	: ^(atk=ATKEYWORD {
-			// store keyword			  
-	        String k = $atstatement::keyword = extractText(atk);
-            // invalidate if keyword not supported
-            if(!css.isSupportedAtKeyword(k)) {
-				$statement::invalid=true;
-            }
-            else {
-                log.debug("Atkeyword passed: " + k);
-            }
-		} 
-	     (atrule)? 
-	     (atblock)?
-	   )
-	;
-
-/**
- * Rule which begins with '@' character and contains no block
- */
-atrule
-@init {
-   logEnter("atrule");
-   String string = null;
-   String uri = null;
 }
 @after {
-   if(!$statement::invalid) {
-	   // charset
-	   if("@charset".equalsIgnoreCase($atstatement::keyword) 
-	      && string!=null && uri==null && medialist==null) {
-		  
-		  $stylesheet::style.setCharset(string);											
-	   }
-	   else {
-			if(log.isDebugEnabled()) {
-			   log.debug("Charset rule not valid, ommited.");						 
-			}
-	   }
-   }		   
-   logLeave("atrule");		   
+    logLeave("atstatement");
 }
-	:^(ATRULE 
-	  (s=STRING {string=extractText(s);})? 
-	   URI? 
-	   ^(MEDIA medialist=medias?)
-	  )
-	 | INVALID_ATRULE {$statement::invalid=true;} 
+	: CHARSET
+	| IMPORT
+	| ^(PAGE IDENT block)
+	| ^(MEDIA medias? block)	
+	| ^(atk=ATKEYWORD atblock) {
+		  String keyword = extractText(atk);						   
+	      if(css.isSupportedAtKeyword(keyword)) {
+		     log.error("Parser can't handle {} @keyword", keyword);
+		  }
+		  else {
+			 log.info("Unsupported {} @keyword", keyword);  
+		  }
+		  $statement::invalid = true;
+	  }
 	;
-
+	
 atblock
 @init {
     logEnter("atblock");
@@ -187,8 +157,9 @@ atblock
 @after {
     logLeave("atblock");		   
 }
-	: ^(ATBLOCK IDENT? ^(MEDIA medias?) block)
-	; 
+	: ATBLOCK 
+	| INVALID_ATBLOCK 
+	;
 	
 medias returns [List<String> affected] 
 @init {
@@ -196,9 +167,7 @@ medias returns [List<String> affected]
    $affected = new ArrayList<String>();
 }
 @after {
-   if(log.isDebugEnabled()) {
-       log.debug("Totally returned " + $affected.size() + " medias");							  
-   }		   
+   log.debug("Totally returned {} medias.", $affected.size());							  
    logLeave("medias");		   
 }
 	: (i=IDENT {$affected.add(extractText(i));} )+
@@ -239,9 +208,7 @@ ruleset returns [RuleSet rs]
         $rs = rf.createSet(ruleNum++);
         $rs.setSelectors(cslist);
         $rs.replaceAll(declarations);
-        if(log.isInfoEnabled()) {
-            log.info("Created ruleset at: " + ruleNum + " of: \n" + $rs); 
-        }
+		log.info("Create ruleset as {}th with:\n{}", ruleNum, $rs);
     }
     logLeave("ruleset");
 }    
@@ -249,13 +216,15 @@ ruleset returns [RuleSet rs]
         (cs=combined_selector  
         {if(cs!=null && !cs.isEmpty() && !$statement::invalid) {
             cslist.add(cs);
-            log.debug("Inserted combined selector("+cslist.size()+") into ruleset");
+            log.debug("Inserted combined selector ({}) into ruleset", 
+				cslist.size());
          }   
         } )*
         (d=declaration 
         {if(d!=null && !d.isEmpty()) {
             declarations.add(d);
-            log.debug("Inserted declaration("+ declarations.size() +") into ruleset");
+            log.debug("Inserted declaration ({}) into ruleset",
+				declarations.size());
          }
         })*        
     )
@@ -279,8 +248,8 @@ scope {
         $decl=null;
         log.debug("Declaration was invalidated or already invalid");
     }
-    else if(log.isDebugEnabled()) {
-        log.debug("Returning declaration: " + $decl);
+    else {
+        log.debug("Returning declaration: {}.", $decl);
     }
     logLeave("declaration");    
 }
@@ -304,9 +273,7 @@ property
     logEnter("property");
 }
 @after {
-    if(log.isDebugEnabled()) {
-        log.debug("Set property: " + $declaration::d.getProperty());
-    }
+	log.debug("Setting property: {}", $declaration::d.getProperty());	   
     logLeave("property");
 }    
   : i = IDENT { $declaration::d.setProperty(extractText(i)); }
@@ -330,9 +297,7 @@ scope {
     $terms::unary = 1;
 }    
 @after {
-    if(log.isDebugEnabled()) {
-        log.debug("Totally added "  + $tlist.size() + " terms");
-    }
+	log.debug("Totally added {} terms", $tlist.size());	   
     logLeave("terms");
 }
     : ^(VALUE term+)
@@ -384,10 +349,7 @@ valuepart
 	{String dim = extractText(d);
 	 $terms::term = tf.createDimension(dim, $terms::unary);
      if($terms::term==null) {
-		 if(log.isDebugEnabled()) {
-		 	log.debug("Unable to create dimension from dim: " + dim + " unary: " +
-			$terms::unary);
-		 }
+		 log.info("Unable to create dimension from {}, unary {}", dim, $terms::unary);
          $declaration::invalid = true;
 	 }
     }
@@ -435,17 +397,17 @@ scope {
     // there is no need to parse selector's when already marked as invalid
     if($statement::invalid || $combined_selector::invalid) {        
         $combinedSelector = null;
-        if(log.isDebugEnabled()) {
-            if($statement::invalid)
-                log.debug("Ommiting combined selector, whole statement discarded");
-            else
-                log.debug("Combined selector is invalid");               
+        if($statement::invalid) { 
+			log.debug("Ommiting combined selector, whole statement discarded");
+		}	
+        else { 
+			log.debug("Combined selector is invalid");               
         }
-        // mark whole ruleset as invalid
+		// mark whole ruleset as invalid
         $statement::invalid = true;
     }
-    else if(log.isDebugEnabled()) {
-        log.debug("Returing combined selector: " + $combinedSelector.toString()); 
+    else {
+        log.debug("Returing combined selector: {}.", $combinedSelector); 
     }
     logLeave("combined_selector"); 
 }    
@@ -485,9 +447,7 @@ scope {
           (i=IDENT { en.setValue(extractText(i)); }
           )?         
          ){
-		  if(log.isDebugEnabled()) {
-		      log.debug("Adding element name: " + en.getValue());
-		  }	  
+		  log.debug("Adding element name: {}.", en.getValue());
 		  $selector::s.add(en);
 		 }
          selpart*

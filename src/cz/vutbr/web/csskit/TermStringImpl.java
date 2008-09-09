@@ -19,10 +19,12 @@ public class TermStringImpl extends TermImpl<String> implements TermString {
 			throw new IllegalArgumentException(
 					"Invalid value for TermString(null)");
 		}
+		/* This should be done by parser
 		value = value.replaceAll("^'", "")
 			.replaceAll("^\"", "")
 			.replaceAll("'$", "")
 			.replaceAll("\"$", "");
+		*/	
 		this.value = value;
 		return this;
 	}

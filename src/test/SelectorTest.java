@@ -6,9 +6,10 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
@@ -22,7 +23,7 @@ import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermNumeric;
 
 public class SelectorTest extends TestCase {
-	private static Logger log = Logger.getLogger(SelectorTest.class);
+	private static Logger log = LoggerFactory.getLogger(SelectorTest.class);
 	
 	private static final TermFactory tf = CSSFactory.getTermFactory();
 	private static final RuleFactory rf = CSSFactory.getRuleFactory();
@@ -70,7 +71,7 @@ public class SelectorTest extends TestCase {
 	
 	@BeforeClass
 	public static void init()  {
-		log.info("\n\n\n == SelectorTest test == " + new Date() + " == \n\n\n");
+		log.info("\n\n\n == SelectorTest test at {} == \n\n\n", new Date());
 	}	
 
 	@Test

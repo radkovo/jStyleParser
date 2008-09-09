@@ -1,6 +1,5 @@
 package cz.vutbr.web.csskit;
 
-import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermAngle;
 import cz.vutbr.web.css.TermColor;
@@ -24,13 +23,8 @@ public class TermFactoryImpl implements TermFactory {
 
 	private static final TermFactory instance;
 
-	/**
-	 * This automatically registers TermFactoryImpl as default TermFactory when
-	 * this class is loaded
-	 */
 	static {
 		instance = new TermFactoryImpl();
-		CSSFactory.registerTermFactory(instance);
 	}
 
 	public static final TermFactory getInstance() {

@@ -6,32 +6,68 @@ import org.antlr.runtime.CommonToken;
 public class CSSToken extends CommonToken {
 
 	/**
-	 * Basic version
+	 * Extended with EOF_TOKEN
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 3L;
 	
 	/**
 	 * Current nesting level
 	 */
-	protected short curlyNest;
+	protected CSSLexer.LexerState ls;
 	
-	public CSSToken(CharStream arg0, int arg1, int arg2, int arg3, int arg4) {
-		super(arg0, arg1, arg2, arg3, arg4);
+	public CSSToken(CharStream input, int type, int channel, int start, int stop) {
+		super(input, type, channel, start, stop);
+	}
+	
+	public CSSToken(int type, CSSLexer.LexerState state) {
+		super(type);
+		this.ls = state;
 	}
 
 	/**
-	 * @return the curlyNest
+	 * Sets lexer state for current token
+	 * @param state Current lexer state
+	 * @return Modified CSSToken
 	 */
-	public short getCurlyNest() {
-		return curlyNest;
+	public CSSToken setLexerState(CSSLexer.LexerState state) {
+		this.ls = state;
+		return this;
 	}
 
 	/**
-	 * @param curlyNest the curlyNest to set
+	 * @return the lexer state
 	 */
-	public void setCurlyNest(short curlyNest) {
-		this.curlyNest = curlyNest;
+	public CSSLexer.LexerState getLexerState() {
+		return ls;	
 	}
+
+	@Override
+	public String getText() {
+		
+		// sets text from input if not text directly available
+		text = super.getText();
+		
+		switch(type) {
+			case CSSLexer.FUNCTION:
+				return text.substring(0, text.length()-1);
+			case CSSLexer.URI:
+				return text.substring(3, text.length()-1);
+			case CSSLexer.STRING:
+				return text.substring(1, text.length()-1);
+			default:
+				return text;
+		}
+		
+	}
+    
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("/").append(ls).append("/")
+    		.append(super.toString());
+    	
+    	return sb.toString();
+    }
 	
 	
 

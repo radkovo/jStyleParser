@@ -19,7 +19,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
@@ -50,7 +51,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants/*@egen*
 
 /*@egen*/
 	
-	private static Logger log = Logger.getLogger(CSSParser.class);
+	private static Logger log = LoggerFactory.getLogger(CSSParser.class);
 
 	private static final TermFactory tf = CSSFactory.getTermFactory();
 	private static final RuleFactory rf = CSSFactory.getRuleFactory();

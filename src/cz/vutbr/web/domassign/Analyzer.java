@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -16,12 +17,12 @@ import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.TreeWalker;
 
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RuleSet;
-import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.csskit.ElementUtil;
@@ -37,7 +38,7 @@ import cz.vutbr.web.domassign.TidyTreeWalker.Traversal;
  */
 public class Analyzer {
 
-	private static final Logger log = Logger.getLogger(Analyzer.class);
+	private static final Logger log = LoggerFactory.getLogger(Analyzer.class);
 
 	private static final String UNIVERSAL_HOLDER = "all";
 	
@@ -162,8 +163,8 @@ public class Analyzer {
 			Map<Element, List<Declaration>> declarations, TreeWalker walker,
 			Element e, Holder holder) {
 
-		if (log.isDebugEnabled()) {
-			log.debug("Traversal " + e.getNodeName() + ":" + e.getNodeValue());
+		if(log.isDebugEnabled()) {
+			log.debug("Traversal of {} {}.", e.getNodeName(), e.getNodeValue());
 		}
 
 		// create set of possible candidates applicable to given element
@@ -177,10 +178,7 @@ public class Analyzer {
 			if (rules != null)
 				candidates.addAll(rules);
 		}
-
-		if (log.isTraceEnabled()) {
-			log.trace("After CLASSes total candidates: " + candidates.size());
-		}
+		log.trace("After CLASSes {} total candidates.", candidates.size());
 
 		// match IDs
 		String id = ElementUtil.elementID(e);
@@ -189,11 +187,8 @@ public class Analyzer {
 			if (rules != null)
 				candidates.addAll(rules);
 		}
-
-		if (log.isTraceEnabled()) {
-			log.trace("After IDs total candidates: " + candidates.size());
-		}
-
+		log.trace("After IDs {} total candidates.", candidates.size());
+		
 		// match elements
 		String name = ElementUtil.elementName(e);
 		if (name != null) {
@@ -201,10 +196,7 @@ public class Analyzer {
 			if (rules != null)
 				candidates.addAll(rules);
 		}
-
-		if (log.isTraceEnabled()) {
-			log.trace("After ELEMENTs total candidates: " + candidates.size());
-		}
+		log.trace("After ELEMENTs {} total candidates.", candidates.size());
 
 		// others
 		candidates.addAll(holder.get(HolderItem.OTHER, null));
@@ -214,12 +206,8 @@ public class Analyzer {
 		List<RuleSet> clist = new ArrayList<RuleSet>(candidates);
 		Collections.sort(clist);
 
-		if (log.isDebugEnabled()) {
-			log.debug("Total canditates (including OTHERs): " + clist.size());
-			if (log.isTraceEnabled()) {
-				log.trace("Condidates: " + clist);
-			}
-		}
+		log.debug("Totally {} candidates.", candidates.size());
+		log.trace("With values: {}", clist);
 
 		// resulting list of declaration for this element
 		List<Declaration> eldecl = new ArrayList<Declaration>();
@@ -244,13 +232,8 @@ public class Analyzer {
 
 		// sort declarations
 		Collections.sort(eldecl);
-
-		if (log.isDebugEnabled()) {
-			log.debug("Assorted " + eldecl.size() + "declarations");
-			if (log.isTraceEnabled()) {
-				log.trace(eldecl);
-			}
-		}
+		log.debug("Assorted {} declarations.", eldecl.size());
+		log.trace("With values: {}", eldecl);
 
 		declarations.put(e, eldecl);
 	}
@@ -266,11 +249,8 @@ public class Analyzer {
 		for (int i = sel.size() - 1; i >= 0; i--) {
 			// last simple selector
 			Selector s = sel.get(i);
-
-			if (log.isTraceEnabled()) {
-				log.trace("Iterating loop with sel: " + s + " combinator "
-						+ combinator);
-			}
+			log.trace("Iterating loop with selector {}, combinator {}",
+					s, combinator);
 
 			// decide according to combinator anti-pattern
 			if (combinator == null) {
@@ -356,34 +336,14 @@ public class Analyzer {
 
 		// logging
 		if (log.isDebugEnabled()) {
-			log.debug("Rules contains rules for " + rules.size()
-					+ " different medias:");
+			log.debug("Contains rules for {} medias.", rules.size());
 			for (String media : rules.keySet()) {
-				log.debug("For media: " + media);
-
-				log.debug("CLASS: "
-						+ rules.get(media).items.get(HolderItem.CLASS.type())
-								.size()
-						+ " ID: "
-						+ rules.get(media).items.get(HolderItem.ID.type())
-								.size()
-						+ " ELEMENT: "
-						+ rules.get(media).items.get(HolderItem.ELEMENT.type())
-								.size() + " OTHER: "
-						+ rules.get(media).others.size());
-
-				if (log.isTraceEnabled()) {
-					log.trace("CLASS: "
-							+ rules.get(media).items.get(HolderItem.CLASS
-									.type()));
-					log.trace("ID: "
-							+ rules.get(media).items.get(HolderItem.ID.type()));
-					log.trace("ELEMENT: "
-							+ rules.get(media).items.get(HolderItem.ELEMENT
-									.type()));
-					log.trace("OTHER:" + rules.get(media).others);
-				}
-
+				log.debug("For media {}, CLASS: {}, ID: {}, ELEMENT: {}, OTHER: {}",
+						new Object[] { media,
+						rules.get(media).items.get(HolderItem.CLASS.type()).size(),
+						rules.get(media).items.get(HolderItem.ID.type()).size(),
+						rules.get(media).items.get(HolderItem.ELEMENT.type()).size(),
+						rules.get(media).others.size()});
 			}
 		}
 

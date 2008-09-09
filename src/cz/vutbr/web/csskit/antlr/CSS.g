@@ -9,7 +9,6 @@ tokens {
 	STYLESHEET;
 	ATRULE;
 	ATBLOCK;
-	MEDIA;
 	CURLYBLOCK;
 	PARENBLOCK;
 	BRACEBLOCK;
@@ -30,40 +29,120 @@ tokens {
 	INVALID_ATBLOCK;
 }
 
-
-
-@parser::header { 
-package cz.vutbr.web.csskit.antlr;
-
-import org.apache.log4j.Logger;
-}
-
 @lexer::header {
 package cz.vutbr.web.csskit.antlr;
 
-import java.util.Stack;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.log4j.Logger;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+
+import cz.vutbr.web.css.StyleSheet;
+import cz.vutbr.web.css.StyleSheetNotValidException;
 
 }
 
 @lexer::members {
-    private static Logger log = Logger.getLogger(CSSLexer.class);
+    private static Logger log = LoggerFactory.getLogger(CSSLexer.class);
     
-    // level of curly block nesting
-    private short curlyNest = 0;
-
-    private Stack<StreamPosition> imports = new Stack<StreamPosition>();
-
-    class StreamPosition {
-        public CharStream input;
-        public int mark;
+    public static class LexerState {
+        public short curlyNest;
+        public boolean quotOpen;
+        public boolean aposOpen;
         
-    	public StreamPosition(CharStream input) {
+        public LexerState() {
+        	this.curlyNest = 0;
+        	this.quotOpen = false;
+        	this.aposOpen = false;
+        }
+        
+        public LexerState(LexerState clone) {
+        	this();
+            this.curlyNest = clone.curlyNest;
+            this.quotOpen = clone.quotOpen;
+            this.aposOpen = clone.aposOpen;
+        }
+        
+        /**
+         * Checks whether all pair characters (single and double quotatation marks,
+         * curly braces are balaneced.
+         */ 
+        public boolean isBalanced() {
+        	return aposOpen || quotOpen || curlyNest!=0;
+        }
+        
+        /**
+         * Recovers from unexpected EOF by preparing 
+         * new token
+         */ 
+        public CSSToken generateEOFRecover() {
+        	
+        	CSSToken t = null;
+        
+        	if(aposOpen) {
+        		this.aposOpen=false;
+        		t = new CSSToken(CSSLexer.APOS, this);
+        		t.setText("'");
+        	}
+        	else if(quotOpen) {
+        		this.quotOpen=false;
+        		t = new CSSToken(CSSLexer.QUOT, this);
+        		t.setText("\"");
+        	}
+        	else if(curlyNest!=0) {
+        		this.curlyNest--;
+        		t = new CSSToken(CSSLexer.RCURLY, this);
+        		t.setText("}");
+        	}
+        	
+        	log.debug("Recovering from EOF by {}", t);
+        	return t;
+        }
+        
+        @Override
+        public String toString() {
+        	StringBuilder sb = new StringBuilder();
+        	sb.append("{=").append(curlyNest)
+        	  .append(", '=").append(aposOpen ? "1" : "0")
+        	  .append(", \"=").append(quotOpen ? "1" :"0");
+        	 
+        	return sb.toString();  
+        }
+    }
+    
+    private class LexerStream {
+    
+    	public CharStream input;
+    	public int mark;
+    	public LexerState ls;
+    	
+    	public LexerStream(CharStream input) {
     	    this.input = input;
-    	    this.mark = input.mark();	
+    	    this.mark = input.mark();
+    	    this.ls = new LexerState();
     	}
-    }	
+    }
+    
+    // lexer states for imported files
+    private Stack<LexerStream> imports;
+    
+    // current lexer state
+    private LexerState ls;
+    
+    private StyleSheet stylesheet;
+    
+    /**
+     * This function must be called to initialize lexer's state.
+     * Because we can't change directly generated constructors.
+     * @param stylesheet CSS StyleSheet instance  
+     */
+    public CSSLexer init(StyleSheet stylesheet) {
+	    this.imports = new Stack<LexerStream>();
+		this.ls = new LexerState();
+		this.stylesheet = stylesheet;
+		return this;
+    }
     
     /**
      * Overrides next token to match includes and to 
@@ -74,23 +153,19 @@ import org.apache.log4j.Logger;
        Token token = super.nextToken();
 
        // recover from unexpected EOF
-       if(token==Token.EOF_TOKEN && curlyNest!=0) {
-           token = new CommonToken(input, RCURLY, state.channel, state.tokenStartCharIndex, getCharIndex()-1);
-           token.setLine(state.tokenStartLine);
-           token.setText("}");
-           token.setCharPositionInLine(state.tokenStartCharPositionInLine);
-           if(log.isDebugEnabled()) {
-           	log.debug("Recovering from unexpected EOF, " + token + ", nest: " + curlyNest);           	
-           }           		
-           curlyNest--;
-           return token;
+       if(token==Token.EOF_TOKEN && ls.isBalanced()) {
+           CSSToken t = ls.generateEOFRecover(); 
+           return (Token) t;
        }
 
+       // push back import stream
        if(token==Token.EOF_TOKEN && !imports.empty()){
         // We've got EOF and have non empty stack.
-         StreamPosition ss = imports.pop();
-         setCharStream(ss.input);
-         input.rewind(ss.mark);
+         LexerStream stream = imports.pop();
+         setCharStream(stream.input);
+         input.rewind(stream.mark);
+         this.ls = stream.ls;
+         
          token = super.nextToken();
        }       
 
@@ -98,12 +173,13 @@ import org.apache.log4j.Logger;
       // You need to use this rather than super as there may be nested include files
        if(((CommonToken)token).getStartIndex() < 0)
          token = this.nextToken();
-
+        
        return token;
      }
 
     /**
 	 * Adds contextual information about nesting into token.
+	 * Trims strings
 	 */
     @Override
 	public Token emit() {
@@ -112,27 +188,53 @@ import org.apache.log4j.Logger;
         t.setLine(state.tokenStartLine);
         t.setText(state.text);
         t.setCharPositionInLine(state.tokenStartCharPositionInLine);
-        t.setCurlyNest(curlyNest);
+        
+        // clone lexer state
+        t.setLexerState(new LexerState(ls));
         emit(t);
         return t;
 	}
 
 	@Override
     public void emitErrorMessage(String msg) {
-	if(log.isInfoEnabled()) {
-	    log.info("ANTLR: " + msg);
-	}
+    	log.info("ANTLR: {}", msg);
     }
 }
 
-@parser::members {
-    private static Logger log = Logger.getLogger(CSSParser.class);
+@lexer::rulecatch {
+	catch (RecognitionException re) {
+       reportError(re);
+       recover(input,re);
+    }
+}
 
+@parser::header { 
+package cz.vutbr.web.csskit.antlr;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cz.vutbr.web.css.StyleSheet;
+}
+
+@parser::members {
+    private static Logger log = LoggerFactory.getLogger(CSSParser.class);
+    
+    private StyleSheet stylesheet;
+    
+    /**
+     * This function must be called to initialize parser's state.
+     * Because we can't change directly generated constructors.
+     * @param stylesheet CSS StyleSheet instance  
+     */
+    public CSSParser init(StyleSheet stylesheet) {
+    	this.stylesheet = stylesheet;
+    	return this;
+    }
+    
     @Override
     public void emitErrorMessage(String msg) {
-		if(log.isInfoEnabled()) {
-		    log.info("ANTLR: " + msg);
-		}
+    	log.info("ANTLR: {}", msg);
 	}    
 
 	private Object invalidReplacement(int ttype, String ttext) {
@@ -143,8 +245,7 @@ import org.apache.log4j.Logger;
 		adaptor.addChild(root, node);	
 		
 		if(log.isDebugEnabled()) {
-			log.debug("Invalid fallback with: " +
-					TreeUtil.toStringTree((CommonTree) root));
+			log.debug("Invalid fallback with: {}", TreeUtil.toStringTree((CommonTree) root));
 		}
 		
 		return root;	
@@ -181,29 +282,26 @@ import org.apache.log4j.Logger;
     }
 	
 	/**
-	 * Consumes token until curlyNest is satisfied and
+	 * Consumes token until lexer state is balanced and
 	 * token from follow is matched. Matched token is also consumed
 	 */ 
 	private void consumeUntilGreedy(TokenStream input, BitSet follow) {
 		CSSToken t = null;
 		do{
 		  t= (CSSToken) input.LT(1);
-		  if(log.isTraceEnabled()) {
-			   log.trace("Skipped greedy/"+t.getCurlyNest()+"/: " 
-			   		+ t.toString());						
-		  }
+		  log.trace("Skipped greedy: {}", t);
 		  // consume token even if it will match
 		  input.consume();
-		}while(!(t.getCurlyNest()==0 && follow.member(t.getType())));
+		}while(!(t.getLexerState().isBalanced() && follow.member(t.getType())));
 		
 	} 
 
 }
 
 
-stylesheet  
+stylesheet
 	: ( CDO | CDC | S | statement )* 
-	-> ^(STYLESHEET statement*)
+		-> ^(STYLESHEET statement*)
 	;
 	
 statement   
@@ -211,28 +309,21 @@ statement
 	;
 
 atstatement
-	: ATKEYWORD S* (atrule | atblock)
-		-> ^(ATKEYWORD atrule? atblock?)
+	: CHARSET
+	| IMPORT
+	| PAGE S* COLON IDENT S* block -> ^(PAGE IDENT block)
+	| MEDIA S* medias? block -> ^(MEDIA medias? block)	
+	| ATKEYWORD S* atblock -> ^(ATKEYWORD atblock)
 	;
-
-atrule
-	: (STRING | URI) S* medias? SEMICOLON
-		-> ^(ATRULE STRING? URI? ^(MEDIA medias?))
-	;
-	catch [RecognitionException re] {
-	  final BitSet follow = BitSet.of(CSSLexer.RCURLY);								
-	  retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_ATRULE, 
-	  		"INVALID_ATRULE", follow, re);									
-	}
-
 	
-atblock     
-	: (COLON IDENT S* | medias)? block
-	  -> ^(ATBLOCK IDENT? ^(MEDIA medias?) block)
+atblock
+	: (COLON IDENT S* | medias)? (block | SEMICOLON)
+	  -> ATBLOCK
 	;
 	catch [RecognitionException re] {
-										
-	  retval.tree = invalidFallback(CSSLexer.INVALID_ATBLOCK, "INVALID_ATBLOCK", re);									
+      	final BitSet follow = BitSet.of(CSSLexer.RCURLY);								
+	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_ATBLOCK, 
+	  		"INVALID_ATBLOCK", follow, re);							
 	}
 	
 medias
@@ -254,7 +345,9 @@ blockpart
     ;
   	
 	
-ruleset     
+ruleset
+@after {
+}
 	: combined_selector (COMMA S* combined_selector)* 
 	  LCURLY S* 
 	  	declaration? (SEMICOLON S* declaration? )* 
@@ -380,6 +473,43 @@ IDENT
 	: IDENT_MACR
 	;	
 
+CHARSET
+	: '@charset' S* s=STRING S* SEMICOLON 
+	  {
+	    // we have to trim manually
+	    String enc = s.getText().substring(1, s.getText().length()-1);
+	    try {
+        	String defaultEnc = Charset.defaultCharset().name();
+            if(!enc.equalsIgnoreCase(defaultEnc) && Charset.isSupported(enc)) {
+            	log.warn("Should change encoding to \"{}\"", enc);
+              			
+              	// FIXME how to solve string and not file inputs?
+              	// we can't just easily create new stream
+              	// how to avoid infinite loop on changing stream
+            	//input = setCharStream(new ANTLFileStream(input.getSourceName(), enc));
+            }
+            // set's charset
+            stylesheet.setCharset(enc);
+        }
+        catch(IllegalCharsetNameException icne) {
+        	log.warn("Could not change to unsupported charset!", icne);
+        	throw new RuntimeException(new StyleSheetNotValidException("Unsupported charset: " + enc));
+        }
+	  }
+	;
+
+IMPORT
+	: '@import'
+	;
+
+MEDIA
+	: '@media'
+	;
+
+PAGE
+	: '@page'
+	;
+	
 /** Keyword beginning with '@' */
 ATKEYWORD
 	: '@' IDENT_MACR
@@ -470,13 +600,21 @@ GREATER
     ;    	
 
 LCURLY
-	: t='{'  {curlyNest++;}
+	: '{'  {ls.curlyNest++;}
 	;
 
 RCURLY	
-	: t='}'  {curlyNest--;}
+	: '}'  {ls.curlyNest--;}
 	;
 
+APOS
+	: '\'' { ls.aposOpen=!ls.aposOpen; }
+	;
+
+QUOT
+	: '"'  { ls.quotOpen=!ls.quotOpen; }
+	;
+	
 LPAREN
 	: '('
 	;
@@ -586,8 +724,8 @@ NUMBER_MACR
 
 fragment 
 STRING_MACR
-	: '"' (STRING_CHAR | '\'')* '"' 
-	| '\'' (STRING_CHAR | '"')* '\''
+	: QUOT (STRING_CHAR | APOS {ls.aposOpen=false;} )* QUOT 
+	| APOS (STRING_CHAR | QUOT {ls.quotOpen=false;} )* APOS
   	;
 
 fragment

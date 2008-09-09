@@ -4,13 +4,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.BitSet;
+import java.util.Date;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -33,7 +35,7 @@ import cz.vutbr.web.domassign.TidyTreeWalker.Traversal;
 @Ignore
 public class NodeDataVariant {
 
-	private static Logger log = Logger.getLogger(NodeDataVariant.class);
+	private static Logger log = LoggerFactory.getLogger(NodeDataVariant.class);
 
 	private static SupportedCSS css = CSSFactory.getSupportedCSS();
 
@@ -43,7 +45,8 @@ public class NodeDataVariant {
 	@BeforeClass
 	public static void init() throws FileNotFoundException,
 			StyleSheetNotValidException {
-
+		log.info("\n\n\n == NodeDataVariant test at {} == \n\n\n", new Date());
+		
 		Tidy parser = new Tidy();
 		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
 
@@ -60,33 +63,28 @@ public class NodeDataVariant {
 	@Ignore
 	public void testMemoryAllocationEmpty() throws Exception {
 
-		long sm, qm, enumArray;
+		long sm, qm, ea;
 
 		sm = memoryUsage(SingleMapNodeData.class);
 		qm = memoryUsage(QuadrupleMapNodeData.class);
-		enumArray = memoryUsage(NodeDataEnumArray.class);
+		ea = memoryUsage(NodeDataEnumArray.class);
 
-		log.debug("===\nMemory test:");
-		log.debug("SingleMap size: " + sm
-				+ " QuadrupleMap size: " + qm + " NodeDataEnumArray size: "
-				+ enumArray);
-
+		log.debug("===\nMemory test: SingleMap {}B, QuadrupleMap {}B, NodeDataEnumArray {}B",
+				new Object[] {sm, qm, ea});
 	}
 
 	@Test
 	//@Ignore
 	public void testTimeUsage() throws Exception {
 
-		long sm, qm, enumArray;
+		long sm, qm, ea;
 
 		sm = timeUsage(SingleMapNodeData.class);
 		qm = timeUsage(QuadrupleMapNodeData.class);
-		enumArray = timeUsage(NodeDataEnumArray.class);
+		ea = timeUsage(NodeDataEnumArray.class);
 
-		log.debug("===\nTime test:");
-		log.debug("QuadrupleMap time: " + qm + " SingleMap time: "
-				+ sm + " NodeDataEnumArray time: " + enumArray);
-
+		log.debug("===\nTime test: SingleMap {}ms, QuadrupleMap {}ms, NodeDataEnumArray {}ms",
+				new Object[] {sm, qm, ea});
 	}
 	
 	@Test
@@ -131,12 +129,8 @@ public class NodeDataVariant {
 		}
 		qmt = Math.round(qmt/((float) SAMPLE));
 		
-		
-		
-		log.debug("===\nInheritance test:");
-		log.debug("Quadruple map memory: " + qm + "B at " + qmt + 
-				"ms SingleMap memory: " + sm + "B at " + smt +"ms");
-		
+		log.debug("===\nInheritance tests Quadruple map {}B at {}ms, SingleMap {}B at {}ms",
+				new Object[]{qm, qmt, sm, smt});
 	}
 	
 

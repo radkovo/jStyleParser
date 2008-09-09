@@ -5,9 +5,10 @@ import static org.junit.Assert.assertEquals;
 import java.io.StringReader;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.RuleFactory;
@@ -16,7 +17,7 @@ import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
 
 public class ImportTest1 {
-	private static Logger log = Logger.getLogger(ImportTest1.class);
+	private static Logger log = LoggerFactory.getLogger(ImportTest1.class);
 	
 	private static final RuleFactory rf = CSSFactory.getRuleFactory();
 
@@ -34,7 +35,7 @@ public class ImportTest1 {
 
 	@BeforeClass
 	public static void init()  {
-		log.info("\n\n\n == Import1 test == " + new Date() + " == \n\n\n");
+		log.info("\n\n\n == ImportTest1 test at {} == \n\n\n", new Date());
 	}
 	
 	@Test

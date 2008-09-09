@@ -8,9 +8,10 @@ import java.io.FileReader;
 import java.io.StringReader;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.RuleSet;
@@ -18,7 +19,7 @@ import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermFactory;
 
 public class GrammarRecovery1 {
-	private static Logger log = Logger.getLogger(GrammarRecovery1.class);
+	private static Logger log = LoggerFactory.getLogger(GrammarRecovery1.class);
 
 	public static final TermFactory tf = CSSFactory.getTermFactory();
 
@@ -47,8 +48,7 @@ public class GrammarRecovery1 {
 
 	@BeforeClass
 	public static void init() {
-		log.info("\n\n\n == GrammarRecovery1 test == " + new Date()
-				+ " == \n\n\n");
+		log.info("\n\n\n == GrammarRecovery1 test at {} == \n\n\n", new Date());
 	}
 
 	@Test

@@ -6,12 +6,14 @@ import static org.junit.Assert.assertNotNull;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Date;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -39,7 +41,7 @@ import cz.vutbr.web.domassign.TidyTreeWalker.Traversal;
 
 public class AnalyzerTest {
 
-	private static Logger log = Logger.getLogger(AnalyzerTest.class);
+	private static Logger log = LoggerFactory.getLogger(AnalyzerTest.class);
 
 	private static final SupportedCSS css = CSSFactory.getSupportedCSS();
 
@@ -52,6 +54,8 @@ public class AnalyzerTest {
 	@BeforeClass
 	public static void init() throws FileNotFoundException,
 			StyleSheetNotValidException {
+		log.info("\n\n\n == AnalyzerTest test at {} == \n\n\n", new Date());
+		
 		Tidy parser = new Tidy();
 		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
 
@@ -221,9 +225,11 @@ public class AnalyzerTest {
 					if (inh == null && noinh == null)
 						continue;
 
-					if(log.isDebugEnabled()) {
-						log.debug(log(e, property, inh.toString(), noinh.toString()));
-					}
+					log.debug("{}#{} (INH: {} NOINH: {})",
+							new Object[] {
+							e.getNodeName(),
+							e.getAttribute("id"),
+							inh, noinh});
 
 					Term<?> tinh = ndInh.getValue(Term.class, property, false);
 					Term<?> tnoinh = nd.getValue(Term.class, property, true);
@@ -237,27 +243,15 @@ public class AnalyzerTest {
 					if (tinh == null && tnoinh == null)
 						continue;
 
-					if(log.isDebugEnabled()) {
-						log.debug(log(e, property, tinh.toString(), tnoinh.toString()));
-					}
+					log.debug("{}#{} (INH: {} NOINH: {})",
+							new Object[] {
+							e.getNodeName(),
+							e.getAttribute("id"),
+							tinh, tnoinh});
 
 				}
 
 			}
-			
-			private String log(Element element, String property, String inhVal, String noInhVal) {
-				StringBuilder sb = new StringBuilder();
-				
-				sb.append(element.getNodeName())
-					.append(" ").append(element.getAttribute("id")).append(" ")
-					.append("(").append(property).append(")")
-					.append(" INH: ").append(inhVal)
-					.append(" NOINH: ").append(noInhVal);
-					
-				return sb.toString();
-			}
-			
-
 		};
 
 		traversal.levelTraversal(null);

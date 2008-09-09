@@ -7,9 +7,10 @@ import java.io.FileReader;
 import java.io.StringReader;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.RuleSet;
@@ -17,7 +18,7 @@ import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermFactory;
 
 public class SimpleTest {
-	private static Logger log = Logger.getLogger(SimpleTest.class);
+	private static Logger log = LoggerFactory.getLogger(SimpleTest.class);
 	
 	public static final TermFactory tf = CSSFactory.getTermFactory();
 	
@@ -74,7 +75,7 @@ public class SimpleTest {
 	
 	@BeforeClass
 	public static void init()  {
-		log.info("\n\n\n == SimpleTest test == " + new Date() + " == \n\n\n");
+		log.info("\n\n\n == SimpleTest test at {} == \n\n\n", new Date());
 	}
 	
 	
@@ -214,7 +215,7 @@ public class SimpleTest {
 	public void testSimpleFile() throws FileNotFoundException {
 		StyleSheet ss = CSSFactory.parse(new FileReader("data/simple/data.css"));
 		
-		log.debug(ss.toString());
+		log.debug("{}", ss);
 		
 	}
 	

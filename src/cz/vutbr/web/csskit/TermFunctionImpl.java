@@ -33,7 +33,9 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
 		if(functionName==null)
 			throw new IllegalArgumentException("Invalid functionName in function (null)");
 		
-		functionName = functionName.replaceAll("\\($", "");
+		// this should be done by lexer/parser
+		// functionName = functionName.replaceAll("\\($", "");
+		
 		this.functionName = functionName;
 		return this;
 	}
