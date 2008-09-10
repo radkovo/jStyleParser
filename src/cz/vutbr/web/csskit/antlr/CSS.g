@@ -219,20 +219,31 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
     		case CHARSET:
     			final BitSet charsetFollow = BitSet.of((int) '}');
     			consumeUntilBalanced(charsetFollow);
-    			//state.token = (Token) new CSSToken(INVALID_CHARSET, new LexerState(ls));
     			break;
     		case STRING:
-    			// eat character which should be newline
-    			if(log.isTraceEnabled())
-    				log.trace("Lexer consumes '{}' while recovering in STRING", 
-    					Character.toString((char)input.LA(1)));
-    			input.consume();
-    			// set back to uninitialized state
-    			ls.quotOpen = false;
-    			ls.aposOpen = false;
-    			state.token = (Token) new CSSToken(INVALID_STRING, 
-        					"INVALID_STRING", new LexerState(ls), 
-        					state.tokenStartCharIndex, getCharIndex() -1);
+    			// eat character which should be newline but not EOF
+    			if(consumeAnyButEOF()) {
+    				// set back to uninitialized state
+    				ls.quotOpen = false;
+    				ls.aposOpen = false;
+    				// create invalid string token
+    				state.token = (Token) new CSSToken(INVALID_STRING, ls);
+        			state.token.setText("INVALID_STRING");
+    			}
+    			// we can't just let parser generate missing 
+    		    // single/double quot token
+    			// because we have not emitted content of string yet!
+    			// we will fake string token
+    			else {
+    				char enclosing = (ls.quotOpen) ? '"' : '\'';
+    				ls.quotOpen = false;
+    				ls.aposOpen = false;
+    				state.token = (Token) new CSSToken(STRING, ls, 
+    					state.tokenStartCharIndex, getCharIndex() -1);
+        			state.token.setText(
+        				input.substring(state.tokenStartCharIndex, getCharIndex() -1)
+        				+ enclosing);	
+    			}
     			break;
     		default:
     			super.recover(re);
@@ -271,7 +282,7 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
 					recover(re); 
 				}
 
-				// there can be token returned from recovery 
+				// there can be token returned from recovery
                 if(state.token!=null) {
                     state.token.setChannel(Token.INVALID_TOKEN_TYPE);
                   	state.token.setInputStream(input);
@@ -288,7 +299,7 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
      * Eats characters until on from follow is found and Lexer state 
      * is balanced at the moment
      */ 
-    public void consumeUntilBalanced(BitSet follow) {
+    private void consumeUntilBalanced(BitSet follow) {
 
     	log.debug("Lexer entered consumeUntilBalanced with {} and follow {}", 
     		ls, follow);
@@ -300,6 +311,7 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
     		if(c=='\'' && ls.quotOpen==false) {
     			ls.aposOpen = !ls.aposOpen;
     		}
+    		// change quot state
     		else if (c=='"' && ls.aposOpen==false) {
     			ls.quotOpen = !ls.quotOpen;
     		}
@@ -329,6 +341,27 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
     					ls});
     			
     	}while(!(ls.isBalanced() && follow.member(c)));
+    }
+    
+    /**
+     * Consumes arbitrary character but EOF
+     * @return <code>false</code> if EOF was matched,
+     *         <code>true</code> otherwise and that character was consumed
+     */
+    private boolean consumeAnyButEOF() {
+    
+    	int c = input.LA(1);
+    	
+    	if(c==CharStream.EOF)
+    		return false;
+    		
+    	if(log.isTraceEnabled())
+    		log.trace("Lexer consumes '{}' while consumeButEOF", 
+    					Character.toString((char)c));
+    	
+    	// consume character				
+    	input.consume();
+    	return true;
     }
 }
 

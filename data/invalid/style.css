@@ -114,5 +114,4 @@ in a conformant UA.
 */
 
 @media screen {
-    p { text-decoration: blink
-
+    p:before { content: 'Hello

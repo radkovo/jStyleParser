@@ -53,6 +53,11 @@ public class GrammarRecovery1 {
 
 	public static final String TEST_DECL5 = "p { color:red;   color{;color:maroon}; color:green }";
 
+	public static final String TEST_UNEXP_EOF =
+		"@media screen {\n" +
+	    "p:before { content: 'Hello";
+	
+	
 	@BeforeClass
 	public static void init() {
 		log.info("\n\n\n == GrammarRecovery1 test at {} == \n\n\n", new Date());
@@ -135,4 +140,11 @@ public class GrammarRecovery1 {
 						0x80, 0)), rule.get(rule.size() - 1));
 	}
 
+	@Test
+	public void unexpectedEOF() {
+		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_UNEXP_EOF));
+		
+		log.debug("Unexpected EOF stylesheet: {}", ss);
+	}
+	
 }
