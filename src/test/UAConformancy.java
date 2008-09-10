@@ -2,7 +2,6 @@ package test;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
@@ -12,14 +11,18 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.tidy.Tidy;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.NodeData;
+import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.CSSProperty.TextDecoration;
+import cz.vutbr.web.domassign.Analyzer;
 
 public class UAConformancy {
 	private static Logger log = LoggerFactory.getLogger(UAConformancy.class);
@@ -31,14 +34,17 @@ public class UAConformancy {
 	public static void init() throws FileNotFoundException {
 		log.info("\n\n\n == UAConformancy test at {} == \n\n\n", new Date());
 		
-		try {
-		decl = CSSFactory.parse(new FileReader("data/invalid/style.css"), 
-				new FileInputStream("data/invalid/style.html"), "screen", true);
-		}
-		catch(FileNotFoundException e) {
-			log.error("Thrown",e);
-			throw e;
-		}
+		Tidy parser = new Tidy();
+		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
+
+		Document doc = parser.parseDOM(new FileInputStream("data/invalid/style.html"),
+				null);
+
+		StyleSheet sheet = CSSFactory.parse("data/invalid/style.css", null);
+
+		Analyzer analyzer = new Analyzer(sheet);
+		decl = analyzer.evaluateDOM(doc, "screen", true);
+
 	}
 	
 	@Test

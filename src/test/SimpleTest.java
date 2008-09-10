@@ -3,8 +3,6 @@ package test;
 import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.StringReader;
 import java.util.Date;
 
 import org.junit.BeforeClass;
@@ -84,12 +82,12 @@ public class SimpleTest {
 		
 		StyleSheet ss;
 		
-		ss = CSSFactory.parse(new StringReader(TEST_CHARSET_STRING1));
+		ss = CSSFactory.parse(TEST_CHARSET_STRING1);
 		assertEquals("This should be UTF-8", "UTF-8", ss.getCharset());
 		
 		assertEquals("No rules are defined", 0, ss.size());
 
-		ss = CSSFactory.parse(new StringReader(TEST_CHARSET_STRING2));
+		ss = CSSFactory.parse(TEST_CHARSET_STRING2);
 		assertEquals("This should be ISO-8859-1", "ISO-8859-1", ss.getCharset());
 		
 		assertEquals("One rule is set", 1, ss.size());
@@ -110,7 +108,7 @@ public class SimpleTest {
 	@Test 
 	public void testString1()   {
 		
-		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_STRING1));
+		StyleSheet ss = CSSFactory.parse(TEST_STRING1);
 		
 		assertEquals("No charset is set", null, ss.getCharset());
 		assertEquals("One rule is set", 1, ss.size());
@@ -133,7 +131,7 @@ public class SimpleTest {
 	@Test 
 	public void testRGBFunction1()   {
 		
-		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_RGBFUNCTION1));
+		StyleSheet ss = CSSFactory.parse(TEST_RGBFUNCTION1);
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);				
@@ -152,7 +150,7 @@ public class SimpleTest {
 	@Test 
 	public void testRGBFunction2()   {
 		
-		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_RGBFUNCTION2));
+		StyleSheet ss = CSSFactory.parse(TEST_RGBFUNCTION2);
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);				
@@ -170,7 +168,7 @@ public class SimpleTest {
 	@Test
 	public void testHashColor1()   {
 
-		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_HASH_COLOR1));
+		StyleSheet ss = CSSFactory.parse(TEST_HASH_COLOR1);
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);				
@@ -189,7 +187,7 @@ public class SimpleTest {
 	@Test
 	public void testHashColor2()   {
 		
-		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_HASH_COLOR2));
+		StyleSheet ss = CSSFactory.parse(TEST_HASH_COLOR2);
 		assertEquals("One rule is set", 1, ss.size());
 		
 		final RuleSet rule = (RuleSet) ss.get(0);				
@@ -207,13 +205,13 @@ public class SimpleTest {
 	@Test
 	public void testString2()   {
 		
-		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_STRING2));
+		StyleSheet ss = CSSFactory.parse(TEST_STRING2);
 		assertEquals("Six rules are set", 6, ss.size());
 	}
 	
 	@Test
 	public void testSimpleFile() throws FileNotFoundException {
-		StyleSheet ss = CSSFactory.parse(new FileReader("data/simple/data.css"));
+		StyleSheet ss = CSSFactory.parse("data/simple/data.css");
 		
 		log.debug("{}", ss);
 		

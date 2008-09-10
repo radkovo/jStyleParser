@@ -3,9 +3,6 @@ package test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.StringReader;
 import java.util.Date;
 
 import org.junit.BeforeClass;
@@ -66,19 +63,16 @@ public class GrammarRecovery1 {
 	@Test
 	public void charsetCharsetWithoutSemicolon() {
 
-		StyleSheet ss = CSSFactory.parse(new StringReader(
-				TEST_CHARSET_WITHOUT_SEMICOLON1));
+		StyleSheet ss = CSSFactory.parse(TEST_CHARSET_WITHOUT_SEMICOLON1);
 		assertEquals("Charset should not be set", null, ss.getCharset());
 
 		assertEquals("No rules are defined", 0, ss.size());
 	}
 
 	@Test
-	public void charsetWithoutSemicolonAndDefinitinAfter()
-			throws FileNotFoundException {
+	public void charsetWithoutSemicolonAndDefinitinAfter() {
 
-		StyleSheet ss = CSSFactory.parse(new FileReader(
-				"data/invalid/recovery2.css"));
+		StyleSheet ss = CSSFactory.parse("data/invalid/recovery2.css", null);
 		assertEquals("Charset should not be set", null, ss.getCharset());
 
 		assertEquals("No rules are set", 0, ss.size());
@@ -88,8 +82,7 @@ public class GrammarRecovery1 {
 	@Test
 	public void charsetWithoutSemicolonAndDoubleDAfter() {
 
-		StyleSheet ss = CSSFactory.parse(new StringReader(
-				TEST_CHARSET_WITHOUT_SEMICOLON3));
+		StyleSheet ss = CSSFactory.parse(TEST_CHARSET_WITHOUT_SEMICOLON3);
 		assertEquals("Charset should not be set", null, ss.getCharset());
 
 		RuleSet rule = (RuleSet) ss.get(0);
@@ -105,8 +98,7 @@ public class GrammarRecovery1 {
 
 	@Test
 	public void unclosedString() {
-		StyleSheet ss = CSSFactory.parse(new StringReader(
-				TEST_NOT_CLOSED_STRING));
+		StyleSheet ss = CSSFactory.parse(TEST_NOT_CLOSED_STRING);
 		
 		assertEquals("Contains one ruleset", 1, ss.size());
 
@@ -120,8 +112,7 @@ public class GrammarRecovery1 {
 	
 	@Test
 	public void invalidAtKeyword() {
-		StyleSheet ss = CSSFactory.parse(new StringReader(
-				TEST_INVALID_ATKEYWORD));
+		StyleSheet ss = CSSFactory.parse(TEST_INVALID_ATKEYWORD);
 		assertTrue("Ruleset is empty", ss.isEmpty());
 
 	}
@@ -129,7 +120,7 @@ public class GrammarRecovery1 {
 	@Test
 	public void noTerms() {
 
-		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_DECL5));
+		StyleSheet ss = CSSFactory.parse(TEST_DECL5);
 
 		assertEquals("Contains one ruleset", 1, ss.size());
 
@@ -142,7 +133,7 @@ public class GrammarRecovery1 {
 
 	@Test
 	public void unexpectedEOF() {
-		StyleSheet ss = CSSFactory.parse(new StringReader(TEST_UNEXP_EOF));
+		StyleSheet ss = CSSFactory.parse(TEST_UNEXP_EOF);
 		
 		log.debug("Unexpected EOF stylesheet: {}", ss);
 	}

@@ -2,7 +2,6 @@ package test;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.BitSet;
 import java.util.Date;
 import java.util.Map;
@@ -24,7 +23,6 @@ import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.domassign.Analyzer;
@@ -43,8 +41,8 @@ public class NodeDataVariant {
 	private static Analyzer analyzer;
 
 	@BeforeClass
-	public static void init() throws FileNotFoundException,
-			StyleSheetNotValidException {
+	public static void init() throws FileNotFoundException {
+		
 		log.info("\n\n\n == NodeDataVariant test at {} == \n\n\n", new Date());
 		
 		Tidy parser = new Tidy();
@@ -53,8 +51,7 @@ public class NodeDataVariant {
 		doc = parser.parseDOM(new FileInputStream("data/simple/data.html"),
 				null);
 
-		StyleSheet style = CSSFactory.parse(new FileReader(
-				"data/simple/data.css"));
+		StyleSheet style = CSSFactory.parse("data/simple/data.css", null);
 
 		analyzer = new Analyzer(style);
 	}

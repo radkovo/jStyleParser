@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.Date;
 import java.util.Map;
 
@@ -62,7 +61,7 @@ public class AnalyzerTest {
 		doc = parser.parseDOM(new FileInputStream("data/simple/data.html"),
 				null);
 
-		sheet = CSSFactory.parse(new FileReader("data/simple/data.css"));
+		sheet = CSSFactory.parse("data/simple/data.css", null);
 
 		analyzer = new Analyzer(sheet);
 

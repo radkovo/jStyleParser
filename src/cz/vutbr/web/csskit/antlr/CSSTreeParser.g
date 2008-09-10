@@ -33,12 +33,12 @@ import cz.vutbr.web.css.*;
 	
 	private StyleSheet stylesheet;
 
-	public static CSSTreeParser createParser(Reader reader) 
+	public static CSSTreeParser createParser(CSSInputStream input) 
 		throws StyleSheetNotValidException, IOException, RecognitionException {	
 		
 		StyleSheet stylesheet = (StyleSheet) rf.createStyleSheet().unlock();
 		
-		CSSLexer lexer = new CSSLexer(new ANTLRReaderStream(reader));
+		CSSLexer lexer = new CSSLexer(input);
 		lexer.init(stylesheet);
 		
         CommonTokenStream tokens = new CommonTokenStream(lexer);

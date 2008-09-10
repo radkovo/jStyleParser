@@ -7,7 +7,6 @@ options {
 
 tokens {
 	STYLESHEET;
-	ATRULE;
 	ATBLOCK;
 	CURLYBLOCK;
 	PARENBLOCK;
@@ -24,10 +23,8 @@ tokens {
 	VALUE;
 	IMPORTANT;
 	
-	INVALID_CHARSET;
 	INVALID_STRING;
 	INVALID_DECLARATION;
-	INVALID_ATRULE;
 	INVALID_ATBLOCK;
 }
 
@@ -678,7 +675,17 @@ CHARSET
 	;
 
 IMPORT
-	: '@import'
+@init {
+	expectedToken.push(new Integer(IMPORT));
+}
+@after {
+	expectedToken.pop();
+}
+	: '@import' S* 
+	  (s=STRING_MACR { $s.setType(STRING);} 
+	  	| s=URI {$s.setType(URI);}) S*
+	    (m+=IDENT_MACR S* (',' S* m+=IDENT_MACR S*)*)?
+	  SEMICOLON 
 	;
 
 MEDIA

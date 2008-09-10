@@ -2,7 +2,6 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.StringReader;
 import java.util.Date;
 
 import org.junit.BeforeClass;
@@ -41,7 +40,7 @@ public class ImportTest1 {
 	@Test
 	public void testSimpleImport() throws StyleSheetNotValidException {
 
-		StyleSheet ss = CSSFactory.parse(new StringReader(SIMPLE_IMPORT));
+		StyleSheet ss = CSSFactory.parse(SIMPLE_IMPORT);
 
 		assertEquals("There should be one import", 1, ss.size());
 
@@ -55,7 +54,7 @@ public class ImportTest1 {
 	@Test
 	public void testQuotImport() throws StyleSheetNotValidException {
 
-		StyleSheet ss = CSSFactory.parse(new StringReader(QUOT_IMPORT));
+		StyleSheet ss = CSSFactory.parse(QUOT_IMPORT);
 
 		assertEquals("There should be one import", 1, ss.size());
 		
@@ -69,7 +68,7 @@ public class ImportTest1 {
 	@Test
 	public void testURLImport() throws StyleSheetNotValidException {
 
-		StyleSheet ss = CSSFactory.parse(new StringReader(URL_IMPORT));
+		StyleSheet ss = CSSFactory.parse(URL_IMPORT);
 
 		assertEquals("There should be one import", 1, ss.size());
 		
@@ -84,7 +83,7 @@ public class ImportTest1 {
 	@Test
 	public void testDoubleImport() throws StyleSheetNotValidException {
 
-		StyleSheet ss = CSSFactory.parse(new StringReader(DOUBLE_IMPORT));	
+		StyleSheet ss = CSSFactory.parse(DOUBLE_IMPORT);	
 
 		assertEquals("There should be two imports", 2, ss.size());
 		
@@ -108,7 +107,7 @@ public class ImportTest1 {
 		rule2.add("screen");
 		rule2.setURI("test-print.css");
 
-		StyleSheet ss = CSSFactory.parse(new StringReader(MEDIA_IMPORT));
+		StyleSheet ss = CSSFactory.parse(MEDIA_IMPORT);
 		
 		assertEquals("There should be two imports", 2, ss.size());
 

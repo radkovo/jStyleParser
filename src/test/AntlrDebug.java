@@ -1,14 +1,12 @@
 package test;
 
-import java.io.StringReader;
-
-import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.csskit.antlr.CSSTreeParser;
+import cz.vutbr.web.css.CSSFactory;
 
 /**
  * Remotely debugs antlr parser
  * Parser must be compiled with <code>-debug</code> option
  * Default debug port is 49153
+ * Expects instance of CSSTreeParser
  * @author kapy
  *
  */
@@ -19,14 +17,8 @@ public class AntlrDebug {
 	 */
 	public static void main(String[] args) {
 
-		try {
-			
-			CSSTreeParser parser = CSSTreeParser.createParser(new StringReader(
-					GrammarRecovery1.TEST_CHARSET_WITHOUT_SEMICOLON3));
-
-			StyleSheet style = parser.stylesheet();
-
-			System.out.println(style);
+		try {			
+			CSSFactory.parse(GrammarRecovery1.TEST_CHARSET_WITHOUT_SEMICOLON3);
 		} catch (Exception e) {
 			System.err.println(e);
 			e.printStackTrace();

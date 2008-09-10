@@ -2,7 +2,6 @@ package test;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.Date;
 import java.util.Map;
 
@@ -49,8 +48,7 @@ public class AdvancedCSS {
 		doc = parser.parseDOM(new FileInputStream("data/advanced/style.html"),
 				null);
 
-		sheet = CSSFactory.parse(new FileReader(
-				"data/advanced/style.css"));
+		sheet = CSSFactory.parse("data/advanced/style.css", null);
 
 		analyzer = new Analyzer(sheet);
 		decl = analyzer.evaluateDOM(doc, "all", true);
