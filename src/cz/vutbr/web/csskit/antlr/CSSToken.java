@@ -21,7 +21,14 @@ public class CSSToken extends CommonToken {
 	
 	public CSSToken(int type, CSSLexer.LexerState state) {
 		super(type);
-		this.ls = state;
+		this.ls = new CSSLexer.LexerState(state);
+	}
+	
+	public CSSToken(int type, String text, CSSLexer.LexerState state, int start, int stop) {
+		super(type,text);
+		this.ls = new CSSLexer.LexerState(state);
+		this.start = start;
+		this.stop = stop;
 	}
 
 	/**

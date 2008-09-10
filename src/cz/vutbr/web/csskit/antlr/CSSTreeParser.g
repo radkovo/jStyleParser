@@ -135,6 +135,7 @@ scope {
     logLeave("atstatement");
 }
 	: CHARSET
+	| INVALID_CHARSET
 	| IMPORT
 	| ^(PAGE IDENT block)
 	| ^(MEDIA medias? block)	
@@ -353,7 +354,10 @@ valuepart
          $declaration::invalid = true;
 	 }
     }
-    | s=STRING    {$terms::term = tf.createString(extractText(s));}
+    | s=string    
+	{ if(s!=null) $terms::term = tf.createString(s);
+	  else $declaration::invalid=true;
+	}
     | u=URI       {$terms::term = tf.createURI(extractText(u));}
     | h=HASH    
     {$terms::term = tf.createColor(extractText(h));
@@ -501,12 +505,22 @@ attribute returns [Selector.ElementAttribute elemAttr]
 		value=extractText(i);
 		isStringValue=false;
 		}
-	   | s=STRING {
-		 value=extractText(s);
-		 isStringValue=true;
+	   | s=string {
+		 if(s!=null)  { 
+			value=s;
+			isStringValue=true;
+		 }	
+		 else {
+			$combined_selector::invalid=true;
+		 }
 		}
 	   ))?
 	; 
+
+string returns [String s]
+	: st=STRING { $s= extractText(st);}
+	| INVALID_STRING {$s=null;}
+	;
   
 any
   : IDENT
@@ -514,7 +528,7 @@ any
   | NUMBER
   | PERCENTAGE
   | DIMENSION
-  | STRING
+  | string
   | URI
   | HASH
   | UNIRANGE

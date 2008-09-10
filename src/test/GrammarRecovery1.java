@@ -36,6 +36,13 @@ public class GrammarRecovery1 {
 			+ "    elevation: 190deg;\n" + "	  }\n" + "  h2 { color: green }\n"
 			+ "	}";
 
+	public static final String TEST_NOT_CLOSED_STRING = 
+			"@charset \"UTF-8\n" +
+		    "BODY { color: blue;}\n" +
+		    "p {color: white; quotes: '^' '^\n" +
+		    "color: red;" +
+		    "color: green}";
+	
 	public static final String TEST_DECL1 = "p { color:red;   color; color:green }";
 
 	public static final String TEST_DECL2 = "p { color:green; color: }";
@@ -91,6 +98,21 @@ public class GrammarRecovery1 {
 
 	}
 
+	@Test
+	public void unclosedString() {
+		StyleSheet ss = CSSFactory.parse(new StringReader(
+				TEST_NOT_CLOSED_STRING));
+		
+		assertEquals("Contains one ruleset", 1, ss.size());
+
+		RuleSet rule = (RuleSet) ss.get(0);
+
+		assertEquals("Rule contains last declaration { color: green;}",
+				DeclarationsUtil.createDeclaration("color", tf.createColor(0,
+						0x80, 0)), rule.get(rule.size() - 1));
+		
+	}
+	
 	@Test
 	public void invalidAtKeyword() {
 		StyleSheet ss = CSSFactory.parse(new StringReader(

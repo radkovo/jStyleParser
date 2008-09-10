@@ -1,2 +1,5 @@
-@charset "UTF-8"
-BODY { color: blue;};
+"@charset "UTF-8\
+BODY { color: blue;}
+p {color: white; quotes: '^' '^
+   color: red;
+   color: green}

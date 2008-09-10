@@ -24,6 +24,8 @@ tokens {
 	VALUE;
 	IMPORTANT;
 	
+	INVALID_CHARSET;
+	INVALID_STRING;
 	INVALID_DECLARATION;
 	INVALID_ATRULE;
 	INVALID_ATBLOCK;
@@ -69,7 +71,7 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
          * curly braces are balaneced.
          */ 
         public boolean isBalanced() {
-        	return aposOpen || quotOpen || curlyNest!=0;
+        	return aposOpen==false && quotOpen==false && curlyNest==0;
         }
         
         /**
@@ -130,7 +132,11 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
     // current lexer state
     private LexerState ls;
     
+    // stylesheet instance
     private StyleSheet stylesheet;
+    
+    // token recovery
+    private Stack<Integer> expectedToken;
     
     /**
      * This function must be called to initialize lexer's state.
@@ -139,6 +145,7 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
      */
     public CSSLexer init(StyleSheet stylesheet) {
 	    this.imports = new Stack<LexerStream>();
+	    this.expectedToken = new Stack<Integer>();
 		this.ls = new LexerState();
 		this.stylesheet = stylesheet;
 		return this;
@@ -150,10 +157,10 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
      */
 	@Override 
     public Token nextToken(){
-       Token token = super.nextToken();
+       Token token = nextTokenRecover();
 
        // recover from unexpected EOF
-       if(token==Token.EOF_TOKEN && ls.isBalanced()) {
+       if(token==Token.EOF_TOKEN && !ls.isBalanced()) {
            CSSToken t = ls.generateEOFRecover(); 
            return (Token) t;
        }
@@ -166,7 +173,7 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
          input.rewind(stream.mark);
          this.ls = stream.ls;
          
-         token = super.nextToken();
+         token = nextTokenRecover();
        }       
 
       // Skip first token after switching on another input.
@@ -179,7 +186,6 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
 
     /**
 	 * Adds contextual information about nesting into token.
-	 * Trims strings
 	 */
     @Override
 	public Token emit() {
@@ -199,14 +205,137 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
     public void emitErrorMessage(String msg) {
     	log.info("ANTLR: {}", msg);
     }
-}
+    
+    /**
+     * Does special token recovery for some cases
+     */ 
+    @Override
+    public void recover(RecognitionException re) {
+    	// there is no special recovery
+    	if(expectedToken.isEmpty())
+    		super.recover(re);
+    	else {
+    		switch(expectedToken.pop().intValue()) {
+    		case CHARSET:
+    			final BitSet charsetFollow = BitSet.of((int) '}');
+    			consumeUntilBalanced(charsetFollow);
+    			//state.token = (Token) new CSSToken(INVALID_CHARSET, new LexerState(ls));
+    			break;
+    		case STRING:
+    			// eat character which should be newline
+    			if(log.isTraceEnabled())
+    				log.trace("Lexer consumes '{}' while recovering in STRING", 
+    					Character.toString((char)input.LA(1)));
+    			input.consume();
+    			// set back to uninitialized state
+    			ls.quotOpen = false;
+    			ls.aposOpen = false;
+    			state.token = (Token) new CSSToken(INVALID_STRING, 
+        					"INVALID_STRING", new LexerState(ls), 
+        					state.tokenStartCharIndex, getCharIndex() -1);
+    			break;
+    		default:
+    			super.recover(re);
+    		}
+    	}	
+    }
+    
+    /**
+     * Implements Lexer's next token with extra token passing from
+     * recovery function 
+     */
+    private Token nextTokenRecover() {
+    	while (true) {
+			state.token = null;
+			state.channel = Token.DEFAULT_CHANNEL;
+			state.tokenStartCharIndex = input.index();
+			state.tokenStartCharPositionInLine = input.getCharPositionInLine();
+			state.tokenStartLine = input.getLine();
+			state.text = null;
+			if ( input.LA(1)==CharStream.EOF ) {
+				return CSSToken.EOF_TOKEN;
+			}
+			try {
+				mTokens();
+				if ( state.token==null ) {
+					emit();
+				}
+				else if ( state.token==Token.SKIP_TOKEN ) {
+					continue;
+				}
+				return state.token;
+			}
+			catch (RecognitionException re) {
+				reportError(re);
+				if ( re instanceof NoViableAltException ) {
+					recover(re); 
+				}
 
-@lexer::rulecatch {
-	catch (RecognitionException re) {
-       reportError(re);
-       recover(input,re);
+				// there can be token returned from recovery 
+                if(state.token!=null) {
+                    state.token.setChannel(Token.INVALID_TOKEN_TYPE);
+                  	state.token.setInputStream(input);
+                   	state.token.setLine(state.tokenStartLine);
+            		state.token.setCharPositionInLine(state.tokenStartCharPositionInLine);
+            		emit(state.token);
+            		return state.token;
+                }
+			}
+		}
+	}
+    
+    /**
+     * Eats characters until on from follow is found and Lexer state 
+     * is balanced at the moment
+     */ 
+    public void consumeUntilBalanced(BitSet follow) {
+
+    	log.debug("Lexer entered consumeUntilBalanced with {} and follow {}", 
+    		ls, follow);
+    
+    	int c;
+		do {
+    		c = input.LA(1);
+    		// change apostrophe state
+    		if(c=='\'' && ls.quotOpen==false) {
+    			ls.aposOpen = !ls.aposOpen;
+    		}
+    		else if (c=='"' && ls.aposOpen==false) {
+    			ls.quotOpen = !ls.quotOpen;
+    		}
+    		else if(c=='{') {
+    			ls.curlyNest++;
+    		}
+    		else if(c=='}' && ls.curlyNest>0) {
+    			ls.curlyNest--;
+    		}
+    		// handle end of line in string
+    		else if(c=='\n') {
+    			if(ls.quotOpen) ls.quotOpen=false;
+    			else if(ls.aposOpen) ls.aposOpen=false;
+    		} 
+    		else if(c==EOF) {
+    			log.warn("Unexpected EOF during consumeUntilBalanced, EOF not consumed");
+    			return;
+    		}
+    	
+    		input.consume();
+    		// log result
+    		if(log.isTraceEnabled())
+    			log.trace("Lexer consumes '{}'({}) until balanced ({}).", 
+    				new Object[] {
+    					Character.toString((char) c),
+    					Integer.toString(c),
+    					ls});
+    			
+    	}while(!(ls.isBalanced() && follow.member(c)));
     }
 }
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////// P A R S E R /////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 @parser::header { 
 package cz.vutbr.web.csskit.antlr;
@@ -387,7 +516,7 @@ valuepart
       | MINUS? NUMBER -> MINUS? NUMBER
       | MINUS? PERCENTAGE -> MINUS? PERCENTAGE
       | MINUS? DIMENSION -> MINUS? DIMENSION
-      | STRING -> STRING
+      | string -> string
       | URI    -> URI
       | HASH -> HASH
       | UNIRANGE -> UNIRANGE
@@ -434,8 +563,14 @@ selpart
 
 attribute
 	: IDENT S*
-	  ((EQUALS | INCLUDES | DASHMATCH) S* (IDENT | STRING) S*)?
+	  ((EQUALS | INCLUDES | DASHMATCH) S* (IDENT | string) S*)?
 	;
+
+string
+	: STRING
+	| INVALID_STRING
+	;
+	
 	
 any
 	: ( IDENT -> IDENT
@@ -443,7 +578,7 @@ any
 	  | NUMBER -> NUMBER
 	  | PERCENTAGE ->PERCENTAGE
 	  | DIMENSION -> DIMENSION
-	  | STRING -> STRING
+	  | string -> string
       | URI    -> URI
       | HASH -> HASH
       | UNIRANGE -> UNIRANGE
@@ -474,7 +609,14 @@ IDENT
 	;	
 
 CHARSET
-	: '@charset' S* s=STRING S* SEMICOLON 
+@init {
+	expectedToken.push(new Integer(CHARSET));
+}
+@after {
+	expectedToken.pop();
+}
+	
+	: '@charset' S* s=STRING_MACR S* SEMICOLON 
 	  {
 	    // we have to trim manually
 	    String enc = s.getText().substring(1, s.getText().length()-1);
@@ -488,7 +630,11 @@ CHARSET
               	// how to avoid infinite loop on changing stream
             	//input = setCharStream(new ANTLFileStream(input.getSourceName(), enc));
             }
-            // set's charset
+            // charset already set
+            else {
+            	log.info("Already using correct charset (\"{}\") for stylesheet", enc);
+            }
+            // set charset
             stylesheet.setCharset(enc);
         }
         catch(IllegalCharsetNameException icne) {
@@ -521,6 +667,12 @@ CLASSKEYWORD
 
 /** String including 'decorations' */
 STRING
+@init{
+	expectedToken.push(new Integer(STRING));
+}
+@after {
+	expectedToken.pop();
+}
 	: STRING_MACR
 	;
 
@@ -604,7 +756,7 @@ LCURLY
 	;
 
 RCURLY	
-	: '}'  {ls.curlyNest--;}
+	: '}'  { if(ls.curlyNest>0) ls.curlyNest--;}
 	;
 
 APOS
