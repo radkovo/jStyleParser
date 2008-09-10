@@ -1022,7 +1022,7 @@ String minus() :
  * Name of function
  */
 String function_begin() :  
-{ Token t; } { t=<FUNCTION>		{ return t.image; } }
+{ Token t; } { t=<FUNCTION>		{ return t.image.substring(0,t.image.length()-1); } }
 
 /**
  * Selector operator
@@ -1079,13 +1079,13 @@ String ident() :
  * String value
  */
 String string() :   
-{ Token t; } { t=<STRING>	{ return t.image; } }
+{ Token t; } { t=<STRING>	{ return t.image.substring(1,t.image.length()-1); } }
 
 /**
  * URI value
  */
 String uri() :      
-{ Token t; } { t=<URI>		{ return t.image; } }
+{ Token t; } { t=<URI>		{ return t.image.substring(3,t.image.length()-1); } }
 
 /**
  * String or URI value

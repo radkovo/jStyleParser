@@ -1844,7 +1844,7 @@ String function_begin() :
                                           jjtree.closeNodeScope(jjtn000, true);
                                           jjtc000 = false;
                                         }
-/*@egen*/		{ return t.image; }/*@bgen(jjtree)*/
+/*@egen*/		{ return t.image.substring(0,t.image.length()-1); }/*@bgen(jjtree)*/
                } finally {
                  if (jjtc000) {
                    jjtree.closeNodeScope(jjtn000, true);
@@ -2051,7 +2051,7 @@ String string() :
                                   jjtree.closeNodeScope(jjtn000, true);
                                   jjtc000 = false;
                                 }
-/*@egen*/	{ return t.image; }/*@bgen(jjtree)*/
+/*@egen*/	{ return t.image.substring(1,t.image.length()-1); }/*@bgen(jjtree)*/
                } finally {
                  if (jjtc000) {
                    jjtree.closeNodeScope(jjtn000, true);
@@ -2074,7 +2074,7 @@ String uri() :
                                   jjtree.closeNodeScope(jjtn000, true);
                                   jjtc000 = false;
                                 }
-/*@egen*/		{ return t.image; }/*@bgen(jjtree)*/
+/*@egen*/		{ return t.image.substring(3,t.image.length()-1); }/*@bgen(jjtree)*/
                } finally {
                  if (jjtc000) {
                    jjtree.closeNodeScope(jjtn000, true);

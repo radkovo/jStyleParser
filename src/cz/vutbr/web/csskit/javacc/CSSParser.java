@@ -2484,7 +2484,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
       t = jj_consume_token(FUNCTION);
                                           jjtree.closeNodeScope(jjtn000, true);
                                           jjtc000 = false;
-                                  {if (true) return t.image;}
+                                  {if (true) return t.image.substring(0,t.image.length()-1);}
     } finally {
                  if (jjtc000) {
                    jjtree.closeNodeScope(jjtn000, true);
@@ -2679,7 +2679,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
       t = jj_consume_token(STRING);
                                   jjtree.closeNodeScope(jjtn000, true);
                                   jjtc000 = false;
-                            {if (true) return t.image;}
+                            {if (true) return t.image.substring(1,t.image.length()-1);}
     } finally {
                  if (jjtc000) {
                    jjtree.closeNodeScope(jjtn000, true);
@@ -2700,7 +2700,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
       t = jj_consume_token(URI);
                                   jjtree.closeNodeScope(jjtn000, true);
                                   jjtc000 = false;
-                          {if (true) return t.image;}
+                          {if (true) return t.image.substring(3,t.image.length()-1);}
     } finally {
                  if (jjtc000) {
                    jjtree.closeNodeScope(jjtn000, true);
