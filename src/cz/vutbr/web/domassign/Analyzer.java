@@ -119,10 +119,15 @@ public class Analyzer {
 			Document doc, String media, final boolean inherit) {
 
 		// get holder
-		Holder holder = Holder.union(rules.get(UNIVERSAL_HOLDER),
-								     rules.get(media));
+		Holder holder;
+		if(UNIVERSAL_HOLDER.equals(media)) 
+			holder = rules.get(UNIVERSAL_HOLDER);
+		else 
+			holder = Holder.union(rules.get(UNIVERSAL_HOLDER), rules.get(media));
+		
 		// if holder is empty skip evaluation
-		if(holder.isEmpty()) return Collections.emptyMap();
+		if(holder==null || holder.isEmpty()) 
+			return Collections.emptyMap();
 		
 		// resulting map
 		Map<Element, List<Declaration>> declarations = new HashMap<Element, List<Declaration>>();
@@ -217,10 +222,12 @@ public class Analyzer {
 			// for all selectors inside
 			for (CombinedSelector s : rule.getSelectors()) {
 				// this method does automatic rewind of walker
-				if (!matchSelector(s, e, walker))
+				if (!matchSelector(s, e, walker)) {
+					log.trace("CombinedSelector \"{}\" NOT matched!", s);
 					continue;
+				}
 
-				log.trace("CombinedSelector matched, adding declarations");
+				log.trace("CombinedSelector \"{}\" matched", s);
 
 				// if match, add to declarations
 				CombinedSelector.Specificity spec = s.computeSpecificity();

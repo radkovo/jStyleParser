@@ -67,8 +67,8 @@ import cz.vutbr.web.css.*;
         CSSParser.stylesheet_return r = parser.stylesheet();
         CommonTree t = (CommonTree) r.getTree();
 
-    	if(log.isTraceEnabled()) {
-        	log.trace("* CSSLexer Tree was:\n{}", TreeUtil.toStringTree(t));
+    	if(log.isInfoEnabled()) {
+        	log.info("* CSSLexer Tree was:\n{}", TreeUtil.toStringTree(t));
         }            	        	
             	
         // Walk resulting tree; create treenode stream first
@@ -150,7 +150,9 @@ scope {
     logEnter("atstatement");
 	$atstatement::stm = $stmnt = null;
 	List<Declaration> declarations = null;
+	List<RuleSet> rules = null;
 	String pseudo = null;
+	int filePosition = ruleNum;
 }
 @after {
     logLeave("atstatement");
@@ -187,31 +189,37 @@ scope {
                 rp.setPseudo(pseudo);
                 $stmnt = rp;
                 log.info("Create @page as {}th with:\n{}", 
-                	ruleNum, stmnt);
+                	ruleNum, rp);
             }
         }
-	| ^(MEDIA medias? block)	
-	| ^(atk=ATKEYWORD atblock) {
-		  String keyword = extractText(atk);						   
-	      if(css.isSupportedAtKeyword(keyword)) {
-		     log.error("Parser can't handle {} @keyword", keyword);
-		  }
-		  else {
-			 log.warn("Unsupported {} @keyword", keyword);  
-		  }
-		  $statement::invalid = true;
-	  }
-	;
-	
-atblock
-@init {
-    logEnter("atblock");
-}
-@after {
-    logLeave("atblock");		   
-}
-	: ATBLOCK 
-	| INVALID_ATBLOCK 
+	| ^(MEDIA (mediaList=medias)? 
+			(rs=ruleset {
+			   if(rules==null) rules = new ArrayList<RuleSet>();				
+			   if(rs!=null) {
+				   // increment rule number
+				   rs.setFilePosition(rs.getFilePosition()+1);			
+			       rules.add(rs);
+				   log.debug("Inserted ruleset ({}) into @media",
+				   		rules.size());
+			   }
+		
+			})*
+	   )	
+	   {
+		   if(rules!=null && !rules.isEmpty()) {
+			  // create at begining, increment to match positions								   
+              RuleMedia rm = rf.createMedia(filePosition);
+			  ruleNum++;
+			  
+			  rm.replaceAll(rules);
+			  if(mediaList!=null) rm.setMedias(mediaList);
+			  $stmnt = rm;
+              log.info("Create @media as {}th with:\n{}", 
+                	rm.getFilePosition(), rm);
+			  
+		   }
+	   }
+	| INVALID_ATSTATEMENT {$statement::invalid=true;}
 	;
 	
 medias returns [List<String> affected] 
@@ -225,22 +233,6 @@ medias returns [List<String> affected]
 }
 	: (i=IDENT {$affected.add(extractText(i));} )+
 	;
-  
-block       
-    : ^(CURLYBLOCK blockpart*)
-    ;
-
-blockpart
-@init{
-	logEnter("blockpart");
-}
-@after {
-	logLeave("blockpart");
-}
-    : ruleset
-    | ^(CURLYBLOCK declaration*) 
-    | ATKEYWORD { $statement::invalid=true; }
-    ;
     
 /**
  * The most common block in CSS file,

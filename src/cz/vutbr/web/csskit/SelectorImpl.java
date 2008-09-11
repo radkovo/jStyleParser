@@ -77,10 +77,13 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     
     public boolean matches(Element e) {
     	
-		String elementName = getElementName();
-		if(elementName!=null && ! ElementUtil.matchesName(e, elementName))
-			return false;
+    	// this is obsolete as Element name is always present
+    	// at least in form of wildcard
+		//String elementName = getElementName();
+		//if(elementName!=null && !ElementUtil.matchesName(e, elementName))
+		//	return false;
 		
+    	
 		// check other items of simple selector
 		for(SelectorPart item : list) {
 			if(!item.matches(e))
@@ -305,12 +308,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		/**
 		 * @param functionName the functionName to set
 		 */
-		public PseudoPage setFunctionName(String functionName) {
-			
-			// sanity check
-			if(functionName!=null)
-				functionName = functionName.replaceAll("\\($", "");
-			
+		public PseudoPage setFunctionName(String functionName) {			
 			this.functionName = functionName;
 			return this;
 		}
@@ -332,6 +330,11 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		
 		@Override
 		public boolean matches(Element e) {
+			// pseudo-class
+			if((value!=null && value.matches(PSEUDO_ELEMENTS)) ||
+					(functionName!=null && functionName.matches(PSEUDO_ELEMENTS)))
+				return true;
+			
 			return false;
 		}
 		

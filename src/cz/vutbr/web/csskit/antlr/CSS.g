@@ -28,7 +28,7 @@ tokens {
 	INVALID_STRING;
 	INVALID_SELECTOR;
 	INVALID_DECLARATION;
-	INVALID_ATBLOCK;
+	INVALID_ATSTATEMENT;
 	INVALID_IMPORT;
 }
 
@@ -495,38 +495,20 @@ atstatement
 	| PAGE S* (COLON IDENT S*)? 
 		LCURLY S* declaration? (SEMICOLON S* declaration? )* 
 		RCURLY -> ^(PAGE IDENT? declaration*)
-	| MEDIA S* medias? block -> ^(MEDIA medias? block)	
-	| ATKEYWORD S* atblock -> ^(ATKEYWORD atblock)
-	;
-	
-atblock
-	: (COLON IDENT S* | medias)? (block | SEMICOLON)
-	  -> ATBLOCK
+	| MEDIA S* medias? 
+		LCURLY S* (ruleset S*)* RCURLY -> ^(MEDIA medias? ruleset*)	
+	| atk=ATKEYWORD S* LCURLY any* RCURLY -> INVALID_ATSTATEMENT[$atk]
 	;
 	catch [RecognitionException re] {
-      	final BitSet follow = BitSet.of(CSSLexer.RCURLY);								
-	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_ATBLOCK, 
-	  		"INVALID_ATBLOCK", follow, re);							
+      	final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
+	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_ATSTATEMENT, 
+	  		"INVALID_ATSTATEMENT", follow, re);							
 	}
 	
 medias
 	: IDENT S* (COMMA S* IDENT S*)* 
 		-> IDENT+
-	;		  	
-	
-block       
-	: LCURLY S* 
-		blockpart* 
-	  RCURLY 
-	  -> ^(CURLYBLOCK blockpart*)
-	;
-
-blockpart
-    : ruleset S* -> ruleset
-    | LCURLY S* declaration? (SEMICOLON S* declaration? )* RCURLY S* -> ^(CURLYBLOCK declaration*)
-    | (ATKEYWORD S*) -> ATKEYWORD
-    ;
-  	
+	;		
 	
 ruleset
 @after {
