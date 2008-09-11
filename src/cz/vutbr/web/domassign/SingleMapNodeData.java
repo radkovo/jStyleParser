@@ -88,6 +88,8 @@ public class SingleMapNodeData implements NodeData {
 			if(q==null) q = new Quadruple();
 			q.curProp = properties.get(key);
 			q.curValue = terms.get(key);
+			// remove operator
+			if(q.curValue!=null) q.curValue = q.curValue.setOperator(null);
 			map.put(key, q);
 		}
 		return this;
@@ -146,7 +148,7 @@ public class SingleMapNodeData implements NodeData {
 			
 			if(qp.curProp!=null && qp.curProp.inherited()) {
 				q.inhProp = qp.curProp;
-				q.inhValue = qp.inhValue;
+				q.inhValue = qp.curValue;
 			}
 			// insert/replace only if contains inherited/original 
 			// value			

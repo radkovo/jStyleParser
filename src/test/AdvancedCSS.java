@@ -18,6 +18,7 @@ import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
+import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.CSSProperty.FontFamily;
@@ -76,6 +77,8 @@ public class AdvancedCSS {
 				TermList.class, "background-position").get(0));
 		Assert.assertEquals(tf.createPercent(100.0f), data.getValue(
 				TermList.class, "background-position").get(1));
+		Assert.assertEquals(tf.createColor(255,255,255), 
+				data.getValue(TermColor.class, "color"));
 
 	}
 
