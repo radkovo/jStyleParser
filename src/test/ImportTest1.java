@@ -1,25 +1,35 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Date;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.tidy.Tidy;
 
 import cz.vutbr.web.css.CSSFactory;
-import cz.vutbr.web.css.RuleFactory;
-import cz.vutbr.web.css.RuleImport;
+import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
+import cz.vutbr.web.css.TermLength;
+import cz.vutbr.web.css.TermNumeric;
+import cz.vutbr.web.css.CSSProperty.Margin;
+import cz.vutbr.web.domassign.Analyzer;
 
 public class ImportTest1 {
 	private static Logger log = LoggerFactory.getLogger(ImportTest1.class);
 	
-	private static final RuleFactory rf = CSSFactory.getRuleFactory();
-
+	private static Document doc;
+	
 	public static final String SIMPLE_IMPORT = "@import 'bla.css';\n";
 
 	public static final String URL_IMPORT = "@import url('bla.css');\n";
@@ -33,85 +43,55 @@ public class ImportTest1 {
 			+ "@import 'test-print.css' print, screen\n;";
 
 	@BeforeClass
-	public static void init()  {
+	public static void init() throws FileNotFoundException  {
 		log.info("\n\n\n == ImportTest1 test at {} == \n\n\n", new Date());
+		
+		Tidy parser = new Tidy();
+		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
+
+		doc = parser.parseDOM(new FileInputStream("data/simple/data.html"),
+				null);
 	}
 	
+	@Test
+	public void importTokenization() throws StyleSheetNotValidException {
+		CSSFactory.parse(SIMPLE_IMPORT);
+		CSSFactory.parse(QUOT_IMPORT);
+		CSSFactory.parse(URL_IMPORT);
+		CSSFactory.parse(DOUBLE_IMPORT);
+		CSSFactory.parse(MEDIA_IMPORT);
+	}	
+
 	@Test
 	public void testSimpleImport() throws StyleSheetNotValidException {
 
 		StyleSheet ss = CSSFactory.parse("data/simple/imp.css", null);
 		
-	}
-	
-	/*
-	@Test
-	public void testQuotImport() throws StyleSheetNotValidException {
-
-		StyleSheet ss = CSSFactory.parse(QUOT_IMPORT);
-
-		assertEquals("There should be one import", 1, ss.size());
+		Analyzer analyzer = new Analyzer(ss);
 		
-		RuleImport i = (RuleImport) ss.get(0);
-
-		assertEquals("Import should be 'bla.css'", "bla.css", i.getURI());
-		assertEquals("Encapsulation into CSS element",
-				"@import url('bla.css');\n", i.toString());
-	}
-
-	@Test
-	public void testURLImport() throws StyleSheetNotValidException {
-
-		StyleSheet ss = CSSFactory.parse(URL_IMPORT);
-
-		assertEquals("There should be one import", 1, ss.size());
+		Map<Element, NodeData> decl = analyzer.evaluateDOM(doc, "all", true);
+		ElementMap elements = new ElementMap(doc);
 		
-		RuleImport i = (RuleImport) ss.get(0);
+		Element marginator = elements.getElementById("marginator");
 
-		assertEquals("Import should be 'bla.css'", "bla.css", i.getURI());
-		assertEquals("Encapsulation into CSS element",
-				"@import url('bla.css');\n", i.toString());
+		assertNotNull("Element marginator exists", marginator);
 
-	}
-
-	@Test
-	public void testDoubleImport() throws StyleSheetNotValidException {
-
-		StyleSheet ss = CSSFactory.parse(DOUBLE_IMPORT);	
-
-		assertEquals("There should be two imports", 2, ss.size());
-		
-		RuleImport i1 = (RuleImport) ss.get(0);
-		RuleImport i2 = (RuleImport) ss.get(1);
-
-		assertEquals("First import should be 'file1.css'", "file1.css", i1.getURI());
-		assertEquals("Second import should be 'file2.css'", "file2.css", i2.getURI());
-
-	}
-
-	@Test
-	public void testMediaImport() throws StyleSheetNotValidException {
-
-		final RuleImport rule1 = (RuleImport) rf.createImport(0).unlock();
-		rule1.add("aural");
-		rule1.setURI("test.css");
-
-		final RuleImport rule2 = (RuleImport) rf.createImport(1).unlock();
-		rule2.add("print");
-		rule2.add("screen");
-		rule2.setURI("test-print.css");
-
-		StyleSheet ss = CSSFactory.parse(MEDIA_IMPORT);
-		
-		assertEquals("There should be two imports", 2, ss.size());
+		NodeData data = decl.get(marginator);
 
 		assertEquals(
-				"Media rule 1 should be equal to @media 'test.css' aural;",
-				rule1, ss.get(0));
+				"<div id=\"marginator\"> contains margin with for same values",
+				Margin.length, data.getProperty(Margin.class, "margin-top"));
 		assertEquals(
-				"Media rule 2 should be equal to @media 'test-print.css' print, screen;",
-				rule2, ss.get(1));
+				"<div id=\"marginator\"> contains margin with for same values",
+				Margin.length, data.getProperty(Margin.class, "margin-bottom"));
+		assertEquals("Margin of 100px", new Float(100.0f), data.getValue(
+				TermLength.class, "margin-top").getValue());
+		assertEquals("Margin of 100px", TermNumeric.Unit.px, data.getValue(
+				TermLength.class, "margin-top").getUnit());
+		assertEquals("for all for both values", data.getValue(TermLength.class,
+				"margin-bottom"), data
+				.getValue(TermLength.class, "margin-left"));
 		
+
 	}
-	*/
 }

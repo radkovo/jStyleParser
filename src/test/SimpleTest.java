@@ -207,14 +207,5 @@ public class SimpleTest {
 		
 		StyleSheet ss = CSSFactory.parse(TEST_STRING2);
 		assertEquals("Six rules are set", 6, ss.size());
-	}
-	
-	@Test
-	public void testSimpleFile() throws FileNotFoundException {
-		StyleSheet ss = CSSFactory.parse("data/simple/data.css");
-		
-		log.debug("{}", ss);
-		
-	}
-	
+	}	
 }

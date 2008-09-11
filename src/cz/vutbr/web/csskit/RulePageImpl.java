@@ -15,7 +15,7 @@ public class RulePageImpl extends AbstractRuleBlock<Declaration> implements Rule
 	
 	protected RulePageImpl(int position) {
 		super(position);
-		this.pseudo = "";
+		this.pseudo = null;
 	}
 	
 	/**
@@ -43,8 +43,8 @@ public class RulePageImpl extends AbstractRuleBlock<Declaration> implements Rule
     	
     	StringBuilder sb = new StringBuilder();
     	
-    	sb.append(OutputUtil.PAGE_KEYWORD);
-    	if(pseudo != null || !"".equals(pseudo))
+    	sb.append(OutputUtil.PAGE_KEYWORD).append(OutputUtil.SPACE_DELIM);
+    	if(pseudo != null && !"".equals(pseudo))
     		sb.append(OutputUtil.PAGE_OPENING).append(pseudo);
     	
     	// append declarations

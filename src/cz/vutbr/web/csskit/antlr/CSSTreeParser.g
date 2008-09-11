@@ -145,11 +145,12 @@ scope {
 atstatement returns [RuleBlock<?> stmnt]
 scope {
 	RuleBlock<?> stm;
-	List<String> importMedias;
 }
 @init {
     logEnter("atstatement");
 	$atstatement::stm = $stmnt = null;
+	List<Declaration> declarations = null;
+	String pseudo = null;
 }
 @after {
     logLeave("atstatement");
@@ -168,7 +169,27 @@ scope {
 	    imports.pop();
 		log.info("Imported file was parsed, returing in nesting.");
 	  }
-	| ^(PAGE IDENT block)
+	| ^(PAGE (i=IDENT{ pseudo=extractText(i);})? (d=declaration
+			{
+				if(declarations==null)
+				    declarations=new ArrayList<Declaration>();
+				if(d!=null && !d.isEmpty()) {
+            		declarations.add(d);
+            	    log.debug("Inserted declaration ({}) into @page",
+					    declarations.size());
+				}
+			}	   
+		)*) 
+		{
+		   	if(declarations!=null && !declarations.isEmpty()) {	
+            	RulePage rp = rf.createPage(ruleNum++);
+                rp.replaceAll(declarations);
+                rp.setPseudo(pseudo);
+                $stmnt = rp;
+                log.info("Create @page as {}th with:\n{}", 
+                	ruleNum, stmnt);
+            }
+        }
 	| ^(MEDIA medias? block)	
 	| ^(atk=ATKEYWORD atblock) {
 		  String keyword = extractText(atk);						   
@@ -176,7 +197,7 @@ scope {
 		     log.error("Parser can't handle {} @keyword", keyword);
 		  }
 		  else {
-			 log.info("Unsupported {} @keyword", keyword);  
+			 log.warn("Unsupported {} @keyword", keyword);  
 		  }
 		  $statement::invalid = true;
 	  }

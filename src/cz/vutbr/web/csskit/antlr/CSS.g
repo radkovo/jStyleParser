@@ -492,7 +492,9 @@ atstatement
 	| IMPORT
 	| INVALID_IMPORT
 	| IMPORT_END
-	| PAGE S* COLON IDENT S* block -> ^(PAGE IDENT block)
+	| PAGE S* (COLON IDENT S*)? 
+		LCURLY S* declaration? (SEMICOLON S* declaration? )* 
+		RCURLY -> ^(PAGE IDENT? declaration*)
 	| MEDIA S* medias? block -> ^(MEDIA medias? block)	
 	| ATKEYWORD S* atblock -> ^(ATKEYWORD atblock)
 	;
@@ -714,7 +716,7 @@ IMPORT
 	    )?
 	  SEMICOLON 
 	  {
-  	
+  	    // FIXME consider URI as possibility
 	  	// do some funny work with file name to be imported
 	  	String fileName = $s.getText();
 	  	

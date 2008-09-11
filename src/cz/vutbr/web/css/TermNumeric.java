@@ -21,6 +21,7 @@ public interface TermNumeric<T> extends Term<T> {
     	cm("cm"),
     	mm("mm"),
     	pt("pt"),
+    	in("in"),
     	pc("pc"),
     	deg("deg"),
     	rad("rad"),
@@ -43,7 +44,7 @@ public interface TermNumeric<T> extends Term<T> {
     	
     	public boolean isLength() {
     		return this==px || this==ex || this==cm
-    		|| this==mm || this==pt || this==pc;
+    		|| this==mm || this==pt || this==pc || this==in;
     	}
     	
     	public boolean isTime() {

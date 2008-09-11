@@ -66,8 +66,7 @@ public class CSSInputStream implements CharStream {
 		this.fileName = fileName;
 		this.encoding = encoding;
 		
-		File file = new File(fileName);
-		this.relativeRoot = file.getParent() + File.separator;
+		this.relativeRoot = computeRelativeRoot(new File(fileName));
 		this.input = new ANTLRFileStream(fileName, encoding);
 	}
 	
@@ -206,6 +205,13 @@ public class CSSInputStream implements CharStream {
 		return relativeRoot;
 	}
 
+	private String computeRelativeRoot(File file) {
+		String parent = file.getParent();
+		if(parent==null || parent.length()==0)
+			return "";
+		
+		return parent + File.separator;
+	}
 	
 	
 }
