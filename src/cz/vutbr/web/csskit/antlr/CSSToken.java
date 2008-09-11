@@ -47,7 +47,24 @@ public class CSSToken extends CommonToken {
 	public CSSLexer.LexerState getLexerState() {
 		return ls;	
 	}
+	
+	public static String extractSTRING(String string) {
+		return string.substring(1, string.length()-1);
+	}
 
+	public static String extractURI(String uri) {
+		String ret = uri.substring(4, uri.length()-1);
+		// trim string
+		if(ret.charAt(0)=='\'' || ret.charAt(0)=='"')
+			ret = ret.substring(1, ret.length()-1);
+		
+		return ret;
+	}
+	
+	public static String extractFUNCTION(String function) {
+		return function.substring(0, function.length()-1);
+	}
+	
 	@Override
 	public String getText() {
 		
@@ -58,9 +75,9 @@ public class CSSToken extends CommonToken {
 			case CSSLexer.FUNCTION:
 				return text.substring(0, text.length()-1);
 			case CSSLexer.URI:
-				return text.substring(3, text.length()-1);
+				return extractURI(text);
 			case CSSLexer.STRING:
-				return text.substring(1, text.length()-1);
+				return extractSTRING(text);
 			default:
 				return text;
 		}

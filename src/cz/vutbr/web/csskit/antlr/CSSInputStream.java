@@ -5,6 +5,7 @@ package cz.vutbr.web.csskit.antlr;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
@@ -35,6 +36,22 @@ public class CSSInputStream implements CharStream {
 	protected String fileName;
 	
 	/**
+	 * Path to which others are relative.
+	 * Used for import, determined from fileName used to initialize
+	 * the input stream.
+	 * 
+	 * Example:
+	 * <p>
+	 * Local path: <code>data/simple/imp.css</code> is passed.
+	 * During initialization absolute path is determined, then
+	 * its parent is used as relativeRoot for all imports found 
+	 * in that resource.
+	 * </p>
+	 * 
+	 */
+	protected String relativeRoot;
+	
+	/**
 	 * Encoding of file or string. If <code>null</code>
 	 */
 	protected String encoding;
@@ -48,6 +65,9 @@ public class CSSInputStream implements CharStream {
 	public CSSInputStream(String fileName, String encoding) throws IOException {
 		this.fileName = fileName;
 		this.encoding = encoding;
+		
+		File file = new File(fileName);
+		this.relativeRoot = file.getParent() + File.separator;
 		this.input = new ANTLRFileStream(fileName, encoding);
 	}
 	
@@ -60,6 +80,7 @@ public class CSSInputStream implements CharStream {
 		this.rawData = css;
 		this.encoding = Charset.defaultCharset().name();
 		this.fileName = null;
+		this.relativeRoot = "";
 		
 		BufferedReader br = new BufferedReader(
 				new InputStreamReader(new ByteArrayInputStream(css.getBytes()), encoding));
@@ -178,4 +199,13 @@ public class CSSInputStream implements CharStream {
 		return input.size();
 	}
 
+	/**
+	 * @return the relativeRoot
+	 */
+	public String getRelativeRoot() {
+		return relativeRoot;
+	}
+
+	
+	
 }

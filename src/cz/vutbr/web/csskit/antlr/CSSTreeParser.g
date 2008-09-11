@@ -9,7 +9,8 @@ options {
 package cz.vutbr.web.csskit.antlr;
 
 import java.io.IOException;
-import java.io.Reader;
+
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +30,26 @@ import cz.vutbr.web.css.*;
 	private static TermFactory tf = CSSFactory.getTermFactory();
 	private static SupportedCSS css = CSSFactory.getSupportedCSS();
 
+
+	private static class TreeParserState {
+	    public List<String> medias;
+		
+		public TreeParserState(String medias) {
+		    this.medias = Arrays.asList(medias.split(","));
+		}
+		
+		@Override
+		public String toString() {
+		    return medias.toString();
+		}
+	}
+
+	// current number of rule
 	private int ruleNum = 0;
 	
 	private StyleSheet stylesheet;
+
+	private Stack<TreeParserState> imports;
 
 	public static CSSTreeParser createParser(CSSInputStream input) 
 		throws StyleSheetNotValidException, IOException, RecognitionException {	
@@ -65,6 +83,7 @@ import cz.vutbr.web.css.*;
        
     public CSSTreeParser init(StyleSheet sheet) {
 	    this.stylesheet = sheet;
+		this.imports = new Stack<TreeParserState>();
 		return this;
 	}   
        
@@ -126,6 +145,7 @@ scope {
 atstatement returns [RuleBlock<?> stmnt]
 scope {
 	RuleBlock<?> stm;
+	List<String> importMedias;
 }
 @init {
     logEnter("atstatement");
@@ -134,9 +154,20 @@ scope {
 @after {
     logLeave("atstatement");
 }
-	: CHARSET
-	| INVALID_CHARSET
-	| IMPORT
+	: CHARSET	// charset already set
+	| INVALID_IMPORT // already handled
+	| i=IMPORT 
+	  {
+	    String medias = extractText(i);
+		imports.push(new TreeParserState(medias));
+		
+		log.info("From imported file: Rules will use these medias: {}", 
+			imports.peek());
+	  }
+	| IMPORT_END {
+	    imports.pop();
+		log.info("Imported file was parsed, returing in nesting.");
+	  }
 	| ^(PAGE IDENT block)
 	| ^(MEDIA medias? block)	
 	| ^(atk=ATKEYWORD atblock) {

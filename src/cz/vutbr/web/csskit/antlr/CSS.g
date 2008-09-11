@@ -23,9 +23,13 @@ tokens {
 	VALUE;
 	IMPORTANT;
 	
+	IMPORT_END;
+	
 	INVALID_STRING;
+	INVALID_SELECTOR;
 	INVALID_DECLARATION;
 	INVALID_ATBLOCK;
+	INVALID_IMPORT;
 }
 
 @lexer::header {
@@ -34,6 +38,7 @@ package cz.vutbr.web.csskit.antlr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 
@@ -116,10 +121,10 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
     	public int mark;
     	public LexerState ls;
     	
-    	public LexerStream(CharStream input) {
+    	public LexerStream(CharStream input, LexerState ls) {
     	    this.input = input;
     	    this.mark = input.mark();
-    	    this.ls = new LexerState();
+    	    this.ls = new LexerState(ls);
     	}
     }
     
@@ -148,6 +153,12 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
 		return this;
     }
     
+    @Override
+    public void reset() {
+    	super.reset();
+    	this.ls = new LexerState();
+    }
+    
     /**
      * Overrides next token to match includes and to 
      * recover from EOF
@@ -163,23 +174,30 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
        }
 
        // push back import stream
+       // We've got EOF and have non empty stack
        if(token==Token.EOF_TOKEN && !imports.empty()){
-        // We've got EOF and have non empty stack.
+
+       	 // prepare end token 	
+       	 CSSToken t = new CSSToken(IMPORT_END, ls);
+       	 t.setText("IMPORT_END");
+       
+         // We've got EOF and have non empty stack.
          LexerStream stream = imports.pop();
          setCharStream(stream.input);
          input.rewind(stream.mark);
          this.ls = stream.ls;
          
-         token = nextTokenRecover();
+         // send created token
+         return (Token) t;
+         //token = nextTokenRecover();
        }       
 
-      // Skip first token after switching on another input.
-      // You need to use this rather than super as there may be nested include files
+       // Skip first token after switching on another input.
        if(((CommonToken)token).getStartIndex() < 0)
-         token = this.nextToken();
+         token = nextToken();
         
        return token;
-     }
+    }
 
     /**
 	 * Adds contextual information about nesting into token.
@@ -213,8 +231,10 @@ import cz.vutbr.web.css.StyleSheetNotValidException;
     		super.recover(re);
     	else {
     		switch(expectedToken.pop().intValue()) {
+    		
+    		case IMPORT:  // IMPORT share recovery rules with CHARSET
     		case CHARSET:
-    			final BitSet charsetFollow = BitSet.of((int) '}');
+    			final BitSet charsetFollow = BitSet.of((int) '}', (int) ';');
     			consumeUntilBalanced(charsetFollow);
     			break;
     		case STRING:
@@ -470,6 +490,8 @@ statement
 atstatement
 	: CHARSET
 	| IMPORT
+	| INVALID_IMPORT
+	| IMPORT_END
 	| PAGE S* COLON IDENT S* block -> ^(PAGE IDENT block)
 	| MEDIA S* medias? block -> ^(MEDIA medias? block)	
 	| ATKEYWORD S* atblock -> ^(ATKEYWORD atblock)
@@ -649,7 +671,7 @@ CHARSET
 	: '@charset' S* s=STRING_MACR S* SEMICOLON 
 	  {
 	    // we have to trim manually
-	    String enc = s.getText().substring(1, s.getText().length()-1);
+	    String enc = CSSToken.extractSTRING($s.getText());
 	    try {
         	String defaultEnc = Charset.defaultCharset().name();
             if(!enc.equalsIgnoreCase(defaultEnc) && Charset.isSupported(enc)) {
@@ -677,6 +699,7 @@ CHARSET
 IMPORT
 @init {
 	expectedToken.push(new Integer(IMPORT));
+	StringBuilder medias = new StringBuilder();
 }
 @after {
 	expectedToken.pop();
@@ -684,8 +707,53 @@ IMPORT
 	: '@import' S* 
 	  (s=STRING_MACR { $s.setType(STRING);} 
 	  	| s=URI {$s.setType(URI);}) S*
-	    (m+=IDENT_MACR S* (',' S* m+=IDENT_MACR S*)*)?
+	    (m=IDENT_MACR { medias.append($m.getText()); } 
+	     S* 
+	       (',' S* m=IDENT_MACR { medias.append(",").append($m.getText()); } 
+	       S* )*
+	    )?
 	  SEMICOLON 
+	  {
+  	
+	  	// do some funny work with file name to be imported
+	  	String fileName = $s.getText();
+	  	
+	  	if($s.getType()==STRING) 
+	  		fileName = CSSToken.extractSTRING(fileName);
+	  	else
+	  		fileName = CSSToken.extractURI(fileName);
+	  	
+	  	log.info("Will import file \"{}\" with medias: {}", 
+	  		fileName, medias.toString());
+	  	
+	  	fileName = ((CSSInputStream) input).getRelativeRoot() + fileName;	
+	  	log.debug("Actually, will try to import file \"{}\"", fileName);	
+	  	
+	  	// import file
+  		try {
+        	// save current lexer's stream
+        	LexerStream stream = new LexerStream(input, ls);
+        	imports.push(stream);
+        	
+        	CSSToken t = new CSSToken(IMPORT, ls);
+        	t.setText(medias.toString());
+        	
+        	// switch on new stream
+        	setCharStream(new CSSInputStream(fileName, null));
+        	reset();
+        	
+        	log.info("File \"{}\" was imported.", fileName);
+        	emit(t);
+         } 
+         catch(IOException fnf) {
+         	log.warn("File \"{}\" to import was not found!", fileName);
+         	// restore state
+         	imports.pop();
+         	// set type to invalid import
+         	$type = INVALID_IMPORT;
+         	setText("INVALID_IMPORT");
+	  	}
+	  }
 	;
 
 MEDIA
