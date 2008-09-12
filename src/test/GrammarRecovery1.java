@@ -3,17 +3,31 @@ package test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Date;
+import java.util.Map;
+
+import junit.framework.Assert;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.tidy.Tidy;
 
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.NodeData;
+import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermList;
+import cz.vutbr.web.css.CSSProperty.Color;
+import cz.vutbr.web.css.CSSProperty.FontFamily;
+import cz.vutbr.web.domassign.Analyzer;
 
 public class GrammarRecovery1 {
 	private static Logger log = LoggerFactory.getLogger(GrammarRecovery1.class);
@@ -53,6 +67,10 @@ public class GrammarRecovery1 {
 	public static final String TEST_UNEXP_EOF =
 		"@media screen {\n" +
 	    "p:before { content: 'Hello";
+	
+	public static final String TEST_INVALID_SELECTOR =
+		" h1, h2 & h3 {color: green;}\n " +
+		" h1 {font-family: Times New Roman}";
 	
 	
 	@BeforeClass
@@ -135,7 +153,38 @@ public class GrammarRecovery1 {
 	public void unexpectedEOF() {
 		StyleSheet ss = CSSFactory.parse(TEST_UNEXP_EOF);
 		
-		log.debug("Unexpected EOF stylesheet: {}", ss);
+		assertEquals("Contains one @media", 1, ss.size());
+		
+		RuleMedia rm = (RuleMedia) ss.get(0);
+		
+		assertEquals("Media is set for screen", "screen", rm.getMedias().get(0));
+	}
+	
+	@Test
+	public void invalidSelector() throws FileNotFoundException {
+		StyleSheet sheet = CSSFactory.parse(TEST_INVALID_SELECTOR);
+		
+		Tidy parser = new Tidy();
+		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
+
+		Document doc = parser.parseDOM(new FileInputStream("data/simple/h1.html"),
+				null);
+
+		Analyzer analyzer = new Analyzer(sheet);
+		Map<Element, NodeData> decl = analyzer.evaluateDOM(doc, "all", true);
+
+		ElementMap elements = new ElementMap(doc);
+		
+		NodeData nd = decl.get(elements.getLastElementByName("h1"));
+		
+		Assert.assertNull("There is no color", nd.getProperty(Color.class, "color"));
+		
+		Assert.assertEquals("There is font-family", 
+				FontFamily.list_values, nd.getProperty(FontFamily.class, "font-family"));
+		Assert.assertEquals("Font is 'Times New Roman'",
+				tf.createString("Times New Roman"),
+				nd.getValue(TermList.class, "font-family").get(0));
+		
 	}
 	
 }

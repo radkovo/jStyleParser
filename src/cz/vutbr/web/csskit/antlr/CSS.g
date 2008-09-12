@@ -28,7 +28,7 @@ tokens {
 	INVALID_STRING;
 	INVALID_SELECTOR;
 	INVALID_DECLARATION;
-	INVALID_ATSTATEMENT;
+	INVALID_STATEMENT;
 	INVALID_IMPORT;
 }
 
@@ -497,12 +497,12 @@ atstatement
 		RCURLY -> ^(PAGE IDENT? declaration*)
 	| MEDIA S* medias? 
 		LCURLY S* (ruleset S*)* RCURLY -> ^(MEDIA medias? ruleset*)	
-	| atk=ATKEYWORD S* LCURLY any* RCURLY -> INVALID_ATSTATEMENT[$atk]
+	| ATKEYWORD S* LCURLY any* RCURLY -> INVALID_STATEMENT
 	;
 	catch [RecognitionException re] {
       	final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
-	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_ATSTATEMENT, 
-	  		"INVALID_ATSTATEMENT", follow, re);							
+	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
+	  		"INVALID_STATEMENT", follow, re);							
 	}
 	
 medias
@@ -574,6 +574,11 @@ valuepart
 combined_selector    
 	: selector ((combinator) selector)*
 	;
+	catch [RecognitionException re] {
+	  log.warn("INVALID COMBINED SELECTOR");
+	  reportError(re);
+      recover(input,re);
+	}
 
 combinator
 	: GREATER S* -> CHILD
@@ -586,7 +591,10 @@ selector
     	-> ^(SELECTOR ^(ELEMENT IDENT?) selpart*)
     | selpart+ S*
         -> ^(SELECTOR selpart+)
-  ;
+    ;
+    catch [RecognitionException re] {
+      retval.tree = invalidFallback(CSSLexer.INVALID_SELECTOR, "INVALID_SELECTOR", re);
+	}
 
 selpart	
     : COLON IDENT -> PSEUDO IDENT
@@ -917,6 +925,10 @@ DASHMATCH
 	: '|='
 	;
 
+INVALID_TOKEN
+	: .
+	;
+	
 /*********************************************************************
  * FRAGMENTS *
  *********************************************************************/

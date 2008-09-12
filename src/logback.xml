@@ -38,12 +38,12 @@
     </logger>  
     
     <logger name="cz.vutbr.web.domassign" additivity="false">
-    	<level value="info" />
+    	<level value="debug" />
         <appender-ref ref="cssbox" />
     </logger>
 
 	<logger name="cz.vutbr.web.domassign.DeclarationTransformer" additivity="false">
-    	<level value="info" />
+    	<level value="trace" />
         <appender-ref ref="cssbox" />
     </logger>
 

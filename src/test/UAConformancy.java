@@ -30,6 +30,8 @@ public class UAConformancy {
 	private static TermFactory tf = CSSFactory.getTermFactory();
 	private static Map<Element, NodeData> decl;
 	
+	private static ElementMap em;
+	
 	@BeforeClass
 	public static void init() throws FileNotFoundException {
 		log.info("\n\n\n == UAConformancy test at {} == \n\n\n", new Date());
@@ -40,6 +42,8 @@ public class UAConformancy {
 		Document doc = parser.parseDOM(new FileInputStream("data/invalid/style.html"),
 				null);
 
+		em = new ElementMap(doc);
+		
 		StyleSheet sheet = CSSFactory.parse("data/invalid/style.css", null);
 
 		Analyzer analyzer = new Analyzer(sheet);
@@ -60,7 +64,7 @@ public class UAConformancy {
 	@Test 
 	public void unknownProperties() {
 
-		NodeData nd = retrieve("h1");
+		NodeData nd = decl.get(em.getLastElementByName("h1"));
 		
 		Assert.assertEquals("Color is red", tf.createColor("#ff0000"), 
 				nd.getValue(TermColor.class, "color"));
@@ -71,7 +75,7 @@ public class UAConformancy {
 	
 	@Test 
 	public void illegalValues() {
-		NodeData nd = retrieve("img");
+		NodeData nd = decl.get(em.getLastElementByName("img"));
 		
 		Assert.assertEquals("Float is left", CSSProperty.Float.LEFT, 
 				nd.getProperty(CSSProperty.Float.class, "float"));
@@ -80,23 +84,15 @@ public class UAConformancy {
 
 	@Test
 	public void malformedDeclaration() {
-		NodeData nd = retrieve("p");
+		NodeData nd = decl.get(em.getLastElementByName("p"));
 		
 		Assert.assertEquals("Color is green", tf.createColor("#008000"), 
 				nd.getValue(TermColor.class, "color"));
 	}
 	
-	private NodeData retrieve(String elementName) {
-		for(Element e: decl.keySet()) {
-			if(elementName.equalsIgnoreCase(e.getNodeName()))
-				return decl.get(e);
-		}
-		return null;
-	}
-	
 	@Test 
 	public void ignoreUnknownAtRule() {
-		NodeData nd = retrieve("h2");
+		NodeData nd = decl.get(em.getLastElementByName("h2"));
 		
 		Assert.assertEquals("Color is blue", tf.createColor(0,0,0xff),
 				nd.getValue(TermColor.class, "color"));
@@ -108,16 +104,13 @@ public class UAConformancy {
 	
 	@Test
 	public void unclosedString() {
-		NodeData nd = retrieve("div");
+		NodeData nd = decl.get(em.getLastElementByName("div"));
 		
 		Assert.assertEquals("Color is green", tf.createColor(0, 0x80, 0),
 				nd.getValue(TermColor.class, "color"));
 		
 		Assert.assertEquals("Background-color is white", tf.createColor("#ffffff"),
 				nd.getValue(TermColor.class, "background-color"));
-	}
-	
-	public void unexpectedEOF() {
-		
-	}
+	}	
+
 }

@@ -219,7 +219,7 @@ scope {
 			  
 		   }
 	   }
-	| INVALID_ATSTATEMENT {$statement::invalid=true;}
+	| INVALID_STATEMENT {$statement::invalid=true;}
 	;
 	
 medias returns [List<String> affected] 
@@ -503,6 +503,7 @@ scope {
     | ^(SELECTOR 
          selpart+
        )
+    | INVALID_SELECTOR { $statement::invalid = true; }	   
   ;
 
 selpart

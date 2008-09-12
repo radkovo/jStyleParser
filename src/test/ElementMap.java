@@ -12,21 +12,29 @@ import cz.vutbr.web.domassign.TidyTreeWalker;
 
 public class ElementMap {
 
-	private Map<String, Element> elements;
+	private Map<String, Element> elementIDs;
+	private Map<String, Element> elementNames;
 	
 	public ElementMap(Document doc) {
-		elements = new HashMap<String, Element>();
+		elementIDs = new HashMap<String, Element>();
+		elementNames = new HashMap<String, Element>();
 		TreeWalker w = new TidyTreeWalker(doc, NodeFilter.SHOW_ELEMENT);
 		Element current;
 		while ((current = (Element) w.nextNode()) != null) {
+			elementNames.put(current.getNodeName().toLowerCase(), current);
 			String id = current.getAttribute("id");
 			if(id!=null)
-				elements.put(id, current);
+				elementIDs.put(id, current);
 		}
 	}
 	
 	
 	public Element getElementById(String id) {
-		return elements.get(id);
+		return elementIDs.get(id);
 	}
+	
+	public Element getLastElementByName(String name) {
+		return elementNames.get(name.toLowerCase());
+	}
+
 }
