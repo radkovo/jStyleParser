@@ -67,8 +67,8 @@ import cz.vutbr.web.css.*;
         CSSParser.stylesheet_return r = parser.stylesheet();
         CommonTree t = (CommonTree) r.getTree();
 
-    	if(log.isInfoEnabled()) {
-        	log.info("* CSSLexer Tree was:\n{}", TreeUtil.toStringTree(t));
+    	if(log.isDebugEnabled()) {
+        	log.debug("* CSSLexer Tree was:\n{}", TreeUtil.toStringTree(t));
         }            	        	
             	
         // Walk resulting tree; create treenode stream first

@@ -43,7 +43,7 @@ public class UAConformancy {
 		StyleSheet sheet = CSSFactory.parse("data/invalid/style.css", null);
 
 		Analyzer analyzer = new Analyzer(sheet);
-		decl = analyzer.evaluateDOM(doc, "all", true);
+		decl = analyzer.evaluateDOM(doc, "screen", true);
 
 	}
 	

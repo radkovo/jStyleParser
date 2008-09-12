@@ -125,6 +125,11 @@ public class Analyzer {
 		else 
 			holder = Holder.union(rules.get(UNIVERSAL_HOLDER), rules.get(media));
 		
+		// log holder content
+		if(log.isTraceEnabled()) {
+			log.trace("For media \"{}\" constructed holder:\n {}", media, holder);
+		}
+		
 		// if holder is empty skip evaluation
 		if(holder==null || holder.isEmpty()) 
 			return Collections.emptyMap();
@@ -345,12 +350,10 @@ public class Analyzer {
 		if (log.isDebugEnabled()) {
 			log.debug("Contains rules for {} medias.", rules.size());
 			for (String media : rules.keySet()) {
-				log.debug("For media {}, CLASS: {}, ID: {}, ELEMENT: {}, OTHER: {}",
-						new Object[] { media,
-						rules.get(media).items.get(HolderItem.CLASS.type()).size(),
-						rules.get(media).items.get(HolderItem.ID.type()).size(),
-						rules.get(media).items.get(HolderItem.ELEMENT.type()).size(),
-						rules.get(media).others.size()});
+				log.debug("For media \"{}\" it is {}", media, rules.get(media).contentCount());
+				if(log.isTraceEnabled()) {
+					log.trace("Detailed view: \n{}", rules.get(media));
+				}
 			}
 		}
 
@@ -502,22 +505,37 @@ public class Analyzer {
 		
 		public static Holder union(Holder one, Holder two) {
 			
-			Holder h = new Holder();
+			Holder union = new Holder();
 			if(one==null) one = new Holder();
 			if(two==null) two = new Holder();
 			
 			for(HolderItem hi: HolderItem.values()) {
 				if(hi == HolderItem.OTHER) {
-					h.others.addAll(one.others);
-					h.others.addAll(two.others);
+					union.others.addAll(one.others);
+					union.others.addAll(two.others);
 				}
 				else {
-					h.items.get(hi.type).putAll(one.items.get(hi.type));
-					h.items.get(hi.type).putAll(two.items.get(hi.type));
+					
+					Map<String, List<RuleSet>> oneMap, twoMap, unionMap;
+					oneMap = one.items.get(hi.type);
+					twoMap = two.items.get(hi.type);
+					unionMap = union.items.get(hi.type);
+					
+					unionMap.putAll(oneMap);
+					for(String key: twoMap.keySet()) {
+						// map already contains this as key, append to list
+						if(unionMap.containsKey(key)) {
+							unionMap.get(key).addAll(twoMap.get(key));
+						}
+						// we could directly add elements
+						else {
+							unionMap.put(key, twoMap.get(key));
+						}
+					}
 				}
 				
 			}
-			return h;
+			return union;
 		}
 		
 		/**
@@ -568,6 +586,54 @@ public class Analyzer {
 				return others;
 
 			return items.get(item.type()).get(key);
+		}
+		
+		
+		public String contentCount(){
+			StringBuilder sb = new StringBuilder();
+			
+			for(HolderItem hi: HolderItem.values()) {
+				if(hi == HolderItem.OTHER) {
+					sb.append(hi.name())
+					  .append(": ")
+					  .append(others.size())
+					  .append(" ");
+				}
+				else {
+					sb.append(hi.name())
+					  .append(":")
+					  .append(items.get(hi.type).size())
+					  .append(" ");
+				}
+				
+			}
+			
+			return sb.toString();
+		}
+		
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			
+			for(HolderItem hi: HolderItem.values()) {
+				if(hi == HolderItem.OTHER) {
+					sb.append(hi.name())
+					  .append(" (")
+					  .append(others.size())
+					  .append("): ")
+					  .append(others).append("\n");	
+				}
+				else {
+					sb.append(hi.name())
+					  .append(" (")
+					  .append(items.get(hi.type).size())
+					  .append("): ")
+					  .append(items.get(hi.type)).append("\n");
+				}
+				
+			}
+			
+			return sb.toString();
 		}
 	}
 }

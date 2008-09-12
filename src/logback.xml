@@ -28,22 +28,22 @@
     </logger>
     
     <logger name="cz.vutbr.web.csskit.javacc" additivity="false">
-        <level value="warn" />
+        <level value="trace" />
         <appender-ref ref="cssbox" />
     </logger>    
     
     <logger name="cz.vutbr.web.csskit.antlr" additivity="false">
-        <level value="debug" />
+        <level value="trace" />
         <appender-ref ref="cssbox" />
     </logger>  
     
     <logger name="cz.vutbr.web.domassign" additivity="false">
-    	<level value="trace" />
+    	<level value="info" />
         <appender-ref ref="cssbox" />
     </logger>
 
 	<logger name="cz.vutbr.web.domassign.DeclarationTransformer" additivity="false">
-    	<level value="warn" />
+    	<level value="info" />
         <appender-ref ref="cssbox" />
     </logger>
 
