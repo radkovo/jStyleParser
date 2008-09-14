@@ -28,12 +28,12 @@ public class RuleMediaImpl extends AbstractRuleBlock<RuleSet> implements RuleMed
 		this.medias = Collections.emptyList();
 	}    
     
-    public List<String> getMedias() {
+    public List<String> getMedia() {
 		return medias;
 	}
 
 
-	public RuleMedia setMedias(List<String> medias) {
+	public RuleMedia setMedia(List<String> medias) {
 		this.medias = medias;
 		return this;
 	}

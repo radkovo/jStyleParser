@@ -1,0 +1,36 @@
+#ibm-vip .s_nadpis {
+	border-color: #C0C0C0;
+	background-color: black;
+	margin-bottom: 0;
+}
+
+#ibm-vip .s_nadpis img { margin-top: 1px; }
+#ibm-vip .s_nadpis a { color: white; }
+
+#ibm-vip .s_nadpis a:hover {
+	background-color: transparent;
+	color: blue;
+}
+
+#ibm-ds { border: 2px solid #336699;
+                font-size: small;
+                padding: 0.3em;
+                color: white;
+                background: black;
+                clear: right; }
+#ibm-ds a, #ibm-cl a { text-decoration: underline;
+                  color: white;
+                  font-weight: bold; }
+#ibm-ds a:hover { text-decoration: none;
+                        background-color: #336699;
+                        color: white; }
+
+#ibm-cl { border: 2px solid black;
+                font-size: small;
+                padding: 0.3em;
+                color: white;
+                background: #336699;
+                margin-bottom: 0.5em; }
+#ibm-cl a:hover { text-decoration: none;
+                        background-color: white;
+                        color: #336699; }

@@ -15,17 +15,17 @@ import java.util.List;
 public interface RuleMedia extends RuleBlock<RuleSet>, PrettyOutput {
 
 	/**
-	 * Returns list of all medias associated with this rule
+	 * Returns list of all media associated with this rule
 	 * @return List of media
 	 */
-	public List<String> getMedias();	
+	public List<String> getMedia();	
 	
 	/**
-	 * Sets medias associated with rules
-	 * @param medias Medias associated
+	 * Sets media associated with rules
+	 * @param media Media associated
 	 * @return Modified instance
 	 */
-	public RuleMedia setMedias(List<String> medias);	
+	public RuleMedia setMedia(List<String> media);	
 
 	
 }

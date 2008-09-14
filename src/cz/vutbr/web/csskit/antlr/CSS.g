@@ -27,6 +27,7 @@ tokens {
 	
 	INVALID_STRING;
 	INVALID_SELECTOR;
+	INVALID_SELPART;
 	INVALID_DECLARATION;
 	INVALID_STATEMENT;
 	INVALID_IMPORT;
@@ -44,11 +45,15 @@ import java.nio.charset.IllegalCharsetNameException;
 
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
+import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.SupportedCSS; 
 
 }
 
 @lexer::members {
     private static Logger log = LoggerFactory.getLogger(CSSLexer.class);
+    
+    private static SupportedCSS css = CSSFactory.getSupportedCSS();
     
     public static class LexerState {
         public short curlyNest;
@@ -394,10 +399,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.StyleSheet;
+import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.SupportedCSS;
 }
 
 @parser::members {
     private static Logger log = LoggerFactory.getLogger(CSSParser.class);
+    
+    private static SupportedCSS css = CSSFactory.getSupportedCSS();
     
     private StyleSheet stylesheet;
     
@@ -495,8 +504,8 @@ atstatement
 	| PAGE S* (COLON IDENT S*)? 
 		LCURLY S* declaration? (SEMICOLON S* declaration? )* 
 		RCURLY -> ^(PAGE IDENT? declaration*)
-	| MEDIA S* medias? 
-		LCURLY S* (ruleset S*)* RCURLY -> ^(MEDIA medias? ruleset*)	
+	| MEDIA S* media? 
+		LCURLY S* (ruleset S*)* RCURLY -> ^(MEDIA media? ruleset*)	
 	| ATKEYWORD S* LCURLY any* RCURLY -> INVALID_STATEMENT
 	;
 	catch [RecognitionException re] {
@@ -505,7 +514,7 @@ atstatement
 	  		"INVALID_STATEMENT", follow, re);							
 	}
 	
-medias
+media
 	: IDENT S* (COMMA S* IDENT S*)* 
 		-> IDENT+
 	;		
@@ -602,7 +611,11 @@ selpart
     | CLASSKEYWORD
 	| LBRACE S* attribute RBRACE -> ^(ATTRIBUTE attribute)
     | COLON FUNCTION S* IDENT RPAREN -> ^(FUNCTION IDENT)
+    | INVALID_SELPART
     ;
+    catch [RecognitionException re] {
+      retval.tree = invalidFallback(CSSLexer.INVALID_SELPART, "INVALID_SELPART", re);
+	}
 	
 
 attribute
@@ -691,7 +704,8 @@ CHARSET
 IMPORT
 @init {
 	expectedToken.push(new Integer(IMPORT));
-	StringBuilder medias = new StringBuilder();
+	StringBuilder media = new StringBuilder();
+	String mText = null;
 }
 @after {
 	expectedToken.pop();
@@ -699,9 +713,21 @@ IMPORT
 	: '@import' S* 
 	  (s=STRING_MACR { $s.setType(STRING);} 
 	  	| s=URI {$s.setType(URI);}) S*
-	    (m=IDENT_MACR { medias.append($m.getText()); } 
+	    (m=IDENT_MACR { 
+	        mText = $m.getText();
+	    	if(css.isSupportedMedia(mText)) 
+	    		media.append(mText); 
+	    	else
+	    	    log.debug("Invalid import media \"{}\"", mText);
+	     } 
 	     S* 
-	       (',' S* m=IDENT_MACR { medias.append(",").append($m.getText()); } 
+	       (',' S* m=IDENT_MACR { 
+	         mText = $m.getText();
+	       	 if(css.isSupportedMedia(mText)) 
+	       	 		media.append(",").append(mText);
+	       	 else
+	    	    log.debug("Invalid import media \"{}\"", mText);		
+	       	} 
 	       S* )*
 	    )?
 	  SEMICOLON 
@@ -715,8 +741,8 @@ IMPORT
 	  	else
 	  		fileName = CSSToken.extractURI(fileName);
 	  	
-	  	log.info("Will import file \"{}\" with medias: {}", 
-	  		fileName, medias.toString());
+	  	log.info("Will import file \"{}\" with media: {}", 
+	  		fileName, media.toString());
 	  	
 	  	fileName = ((CSSInputStream) input).getRelativeRoot() + fileName;	
 	  	log.debug("Actually, will try to import file \"{}\"", fileName);	
@@ -728,7 +754,7 @@ IMPORT
         	imports.push(stream);
         	
         	CSSToken t = new CSSToken(IMPORT, ls);
-        	t.setText(medias.toString());
+        	t.setText(media.toString());
         	
         	// switch on new stream
         	setCharStream(new CSSInputStream(fileName, null));
@@ -945,7 +971,7 @@ NAME_MACR
 
 fragment 
 NAME_START
-  	: ('a'..'z' | 'A'..'Z' | NON_ASCII | ESCAPE_CHAR)
+  	: ('a'..'z' | 'A'..'Z' | '_' | NON_ASCII | ESCAPE_CHAR)
   	;     
 
 fragment 
@@ -970,7 +996,7 @@ ESCAPE_CHAR
 
 fragment 
 NAME_CHAR
-  	: ('a'..'z' | 'A'..'Z' | '0'..'9' | '-' | NON_ASCII | ESCAPE_CHAR)
+  	: ('a'..'z' | 'A'..'Z' | '0'..'9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR)
   	;
 
 fragment 

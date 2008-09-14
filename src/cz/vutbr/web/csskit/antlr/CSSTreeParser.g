@@ -11,6 +11,7 @@ package cz.vutbr.web.csskit.antlr;
 import java.io.IOException;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,15 +33,22 @@ import cz.vutbr.web.css.*;
 
 
 	private static class TreeParserState {
-	    public List<String> medias;
+	    public List<String> media;
 		
-		public TreeParserState(String medias) {
-		    this.medias = Arrays.asList(medias.split(","));
+		public TreeParserState(String media) {
+			if(media==null || media.length()==0)
+			    this.media = Collections.emptyList();
+			else	
+		    	this.media = Arrays.asList(media.split(","));
+		}
+		
+		public boolean doWrap() {
+		   return !media.isEmpty();
 		}
 		
 		@Override
 		public String toString() {
-		    return medias.toString();
+		    return media.toString();
 		}
 	}
 
@@ -129,6 +137,11 @@ stylesheet returns [StyleSheet sheet]
 statement returns [RuleBlock<?> stm]
 scope {
     boolean invalid;
+	
+	// this flag allows us to encapsulate rulesets
+	// into media when media import is used
+	boolean insideAtstatement;	 
+	
 }
 @init {
 	logEnter("statement");
@@ -148,6 +161,7 @@ scope {
 }
 @init {
     logEnter("atstatement");
+	$statement::insideAtstatement=true;
 	$atstatement::stm = $stmnt = null;
 	List<Declaration> declarations = null;
 	List<RuleSet> rules = null;
@@ -161,10 +175,10 @@ scope {
 	| INVALID_IMPORT // already handled
 	| i=IMPORT 
 	  {
-	    String medias = extractText(i);
-		imports.push(new TreeParserState(medias));
+	    String media = extractText(i);
+		imports.push(new TreeParserState(media));
 		
-		log.info("From imported file: Rules will use these medias: {}", 
+		log.info("From imported file: Rules will use these media: {}", 
 			imports.peek());
 	  }
 	| IMPORT_END {
@@ -192,13 +206,17 @@ scope {
                 	ruleNum, rp);
             }
         }
-	| ^(MEDIA (mediaList=medias)? 
+	| ^(MEDIA (mediaList=media)? 
 			(rs=ruleset {
 			   if(rules==null) rules = new ArrayList<RuleSet>();				
 			   if(rs!=null) {
 				   // increment rule number
-				   rs.setFilePosition(rs.getFilePosition()+1);			
-			       rules.add(rs);
+				   rs.setFilePosition(rs.getFilePosition()+1);
+				   
+				   // this cast should be safe, because when 
+				   // inside of @statetement, oridinal ruleset
+				   // is returned
+			       rules.add((RuleSet)rs);
 				   log.debug("Inserted ruleset ({}) into @media",
 				   		rules.size());
 			   }
@@ -212,7 +230,9 @@ scope {
 			  ruleNum++;
 			  
 			  rm.replaceAll(rules);
-			  if(mediaList!=null) rm.setMedias(mediaList);
+			  if(mediaList!=null && !mediaList.isEmpty()) 
+			  	  rm.setMedia(mediaList);
+				
 			  $stmnt = rm;
               log.info("Create @media as {}th with:\n{}", 
                 	rm.getFilePosition(), rm);
@@ -222,23 +242,26 @@ scope {
 	| INVALID_STATEMENT {$statement::invalid=true;}
 	;
 	
-medias returns [List<String> affected] 
+media returns [List<String> affected] 
 @init {
-   logEnter("medias");
+   logEnter("media");
    $affected = new ArrayList<String>();
 }
 @after {
-   log.debug("Totally returned {} medias.", $affected.size());							  
-   logLeave("medias");		   
+   log.debug("Totally returned {} media.", $affected.size());							  
+   logLeave("media");		   
 }
-	: (i=IDENT {$affected.add(extractText(i));} )+
+	: (i=IDENT {
+				   String m = extractText(i);
+				   if(css.isSupportedMedia(m)) $affected.add(m);
+    } )+
 	;
     
 /**
  * The most common block in CSS file,
  * set of declarations with selector
  */  
-ruleset returns [RuleSet rs]
+ruleset returns [RuleBlock<?> stmnt]
 @init {
     logEnter("ruleset"); 
     List<CombinedSelector> cslist = new ArrayList<CombinedSelector>();
@@ -246,14 +269,38 @@ ruleset returns [RuleSet rs]
 }
 @after {
     if($statement::invalid || cslist.isEmpty() || declarations.isEmpty()) {
-        $rs = null;
+        $stmnt = null;
         log.debug("Ruleset not valid, so not created");
     }
     else {    
-        $rs = rf.createSet(ruleNum++);
-        $rs.setSelectors(cslist);
-        $rs.replaceAll(declarations);
-		log.info("Create ruleset as {}th with:\n{}", ruleNum, $rs);
+        RuleSet rs = rf.createSet(ruleNum++);
+        rs.setSelectors(cslist);
+        rs.replaceAll(declarations);
+		log.info("Create ruleset as {}th with:\n{}", ruleNum, rs);
+		
+		// check statement
+		if(!$statement::insideAtstatement && !imports.isEmpty() 
+			&& imports.peek().doWrap()) {
+			
+			// swap numbers, so RuleMedia is created before RuleSet
+			int filePosition = rs.getFilePosition();			
+			rs.setFilePosition(ruleNum++);
+			RuleMedia rm = rf.createMedia(filePosition);
+			List<String> media = imports.peek().media;
+			
+			log.debug("Wrapping ruleset {} into media: {}", rs, media);
+			
+			rm.unlock();
+			rm.add(rs);
+			rm.setMedia(media);
+			
+			$stmnt = (RuleBlock<?>) rm;
+			
+		}
+		// create oridinal ruleset
+		else {
+			$stmnt = (RuleBlock<?>) rs;
+		}
     }
     logLeave("ruleset");
 }    
@@ -521,6 +568,7 @@ selpart
        $selector::s.add(rf.createPseudoPage(extractText(farg), extractText(fname)));
        }
       )
+	| INVALID_SELPART { $combined_selector::invalid = true;}  
     ;
  
 attribute returns [Selector.ElementAttribute elemAttr]

@@ -1,0 +1,405 @@
+@import url("layout.css");
+
+body {
+	background-color: #F6F6F6;
+	color: black;
+}
+
+hr {
+	border-color: transparent;
+	border-top-color: #808080;
+}
+
+a,
+.s ul,
+.ramec ul,
+.boxy ul,
+.rozc ul,
+.s_odkaz,
+.ds_hlavicka_odkazy { color: #27648D; }
+
+a:hover {
+	color: black;
+	background-color: #FFF8C3;
+}
+
+.cerny { color: black; }
+.error { color: red; }
+.message { color: blue; }
+
+.obal {
+	border-color: gray;
+	background-color: white;
+}
+
+#zh-hledani input.text:hover,
+#zh-hledani input.text:focus {
+	background-color: white;
+}
+
+input, select, textarea, .button, .editTags {
+	background-color: #EEEEEE;
+	color: black;
+}
+
+#zh-hledani input.text,
+.s_sekce input.text {
+	border-color: gray;
+}
+
+/********************************************************/
+#zh-logo a {
+	background-image: url('/images/site2/abc-logo.gif');
+}
+
+#zh-logo a:hover {
+	background-color: transparent;
+}
+/********************************************************/
+
+.roh2 {
+	background-color: #E6E6E6;
+	border-left-color: gray;
+	border-right-color: gray;
+}
+
+.roh1 {
+	background-color: gray;
+}
+
+.menu-kont {
+	background-color: #E6E6E6;
+	border-color: gray;
+}
+
+.menu>li { border-top-color: gray; }
+.menu a { background-color: #E6E6E6; }
+.menu a:hover { background-color: #FFF8C3;}
+
+.menu>li>a {
+	border-left-color: #E6E6E6;
+	border-right-color: #E6E6E6;
+}
+
+.menu>li:hover>a {
+	background-color: #FFF8C3;
+	color:#27648D;
+	border-left-color: #C0C0C0;
+	border-right-color: #C0C0C0;
+}
+
+.menu>li:hover>a:hover { color: black; }
+.menu ul a { border-bottom-color: #CECECE; }
+.menu ul { border-color: gray; }
+
+/********************************************************/
+.hl {
+	background-color: #27648D;
+	color: silver;
+	border-bottom-color: gray;
+}
+
+.hl a,
+.dl a,
+.s_nadpis a {
+	color: white;
+}
+
+.hl a:hover,
+.dl a:hover,
+.s_nadpis a:hover {
+	background-color: transparent;
+	color: #FFF8C3;
+}
+
+.hl ul.menu-drop {
+	background-color: #27648d;
+	border-color: silver;
+}
+.hl ul.menu-drop li { border-top-color: gray; }
+
+.st {
+	background-color: white;
+	border-left-color: silver;
+}
+
+.st_nadpis a {
+	color: black;
+}
+
+.st_nadpis a:hover {
+	background-color: transparent;
+	color: black;
+}
+
+.st a:hover img {
+	background-color: white;
+}
+
+td.pad,code.kod,pre.kod {
+	border-color: silver;
+	background-color: #F0F0F0;
+}
+
+.meta-vypis,
+.treeview li span { color: gray; }
+
+.cl_highlight {
+	border-color: silver;
+	background-color: #BBCDFF;
+}
+
+.cl_perex,.perex,.host .spec,.souvisejici {
+	border-color: #27648D;
+	background-color: #F0F0F0;
+}
+
+.rating {
+	background-color: #F0F0F0;
+	border-color: silver;
+}
+
+.stupnice {
+	background-color: white;
+	border-color: gray;
+}
+
+.rtut, .cl-teplomer {
+	background-color: #27648D;
+}
+
+.uceb-nav span {
+	background-color: #ECECEC;
+	border-color: silver;
+}
+
+.ds,
+.hw,
+.sw,
+.bazar,
+.autor {
+	border-bottom-color: #27648D;
+}
+
+.ds thead td,
+.hw thead td,
+.sw thead td,
+.faq thead td,
+.bazar thead td,
+.autor thead td {
+	border-bottom-color: silver;
+	background-color: transparent;
+}
+
+.ds tbody tr:hover,
+.autor tbody tr:hover,
+.bazar table.bazar-polozky tbody tr:hover,
+.hw table.hw-polozky tbody tr:hover,
+.sw table.sw-polozky tbody tr:hover {
+	background-color: #F3F3F3
+}
+
+.ds tr:nth-child(even),
+.autor tr:nth-child(even),
+.bazar table.bazar-polozky tr:nth-child(even),
+.hw table.hw-polozky tr:nth-child(even),
+.sw table.sw-polozky tr:nth-child(even) {
+	background-color: #F9F9F9
+}
+
+a.thumb:hover,
+.cl-obrazky a:hover,
+.galerie a:hover,
+.sw h3 a:hover { background-color: transparent; }
+
+.prodej { color: #006400; }  /* darkgreen */
+.koupe { color: #8B0000; }  /* darkred */
+
+.ds_toolbox, .pwd-box, .tag-box {
+	background-color: #ECECEC;
+	border-color: silver;
+}
+
+.ds_hlavicka,
+.ds_attachments,
+.ds_hlavicka_novy { border-top-color: #E0E0E0; }
+
+.ds_hlavicka_blacklisted { color: gray; }
+.ds_hlavicka { background-color: #F0F0F0; }
+.ds_hlavicka_me { background-color: #E6F3FF; }
+.ds_hlavicka_novy { background-color: #FFF8C3; }
+
+.kt_citace, .cl_citace { color: #880000 }
+
+.s_nadpis {
+	border-color: #C0C0C0;
+	background-color: #27648D;
+	color: white;
+}
+
+a.info {
+	border-color: gray;
+	background-color: white;
+	color: gray;
+}
+
+a.info:hover {
+	background-color: #FFF8C3;
+	color: black;
+}
+
+a.info:hover span.tooltip {
+	border-color: gray;
+	background-color: white;
+	color: black;
+}
+
+.s ul span.regular-color,
+.ramec span, .s ul span { color: black }
+
+.ramec {
+	border-color: silver;
+	background-color: #F6F6F6;
+}
+
+.obal_ls,.obal_ps {
+	background-color: #ECECEC;
+	border-color: #C0C0C0;
+}
+
+#ls_prepinac {
+	border-color: #C0C0C0;
+	background-color: #27648D;
+	color: white;
+}
+
+.s_reklama a:hover,
+.s_logo a:hover { background-color: transparent; }
+
+.gg-sky { border-left-color: #C0C0C0; }
+
+.ank-sloup {
+	border-top-color: #81AECD;
+	border-bottom-color: #1B275E;
+	background-color: #27648d;
+}
+
+.ank-sloup-okraj { border-color: #C0C0C0; }
+.ank td,.ank-odpov { border-top-color: #D3D3D3; }
+
+.rozc a.server {
+	color: black;
+	border-bottom-color: #27648D;
+}
+
+.rozc a.server:hover { color: black; }
+
+.rozc td,.boxy td,.host .prehled td {
+	background-color: #F9F9F9;
+	border-color: #ECECEC;
+}
+
+.boxy td {
+	background-color: #F6F6F6;
+	border-color: silver;
+}
+
+.dl,
+.dl_vlevo,
+.dl_vpravo {
+	color: white;
+	background-color: #27648D;
+}
+
+.textad {
+	border-color: #D3D3D3;
+	background-color: #F6F6F6;
+}
+
+.form-edit a {
+	border-color: gray;
+	color: black;
+	background-color: white;
+}
+
+.form-edit a:hover {
+	background-color: #FFF8C3;
+	color: black;
+}
+
+.dict-abc a { background-color: #E6E6E6; }
+.dict-abc a:hover { background-color: #FFF8C3; }
+
+a.selected {
+	background-color: #FFF8C3;
+	color:#27648D;
+}
+a.selected:hover {
+	color: black;
+}
+
+.dict-item,
+.questionToFaq,
+.bazar-ad { background-color: #ECECEC; }
+
+.odd { background-color: #E6E6E6; }
+
+.game-results { background-color: #D3D3D3; }
+.game-wrong { color: #8B0000; } /* darkred */
+
+/*************** SF lista *****************/
+
+.sflista {
+	border-color: #E2E2E2 #909090 #909090 #E2E2E2;
+	background-color: #ECECEC;
+}
+
+.sflista a {
+	color: black;
+	border-color: #ECECEC;
+}
+
+.sflista a:hover {
+	color: black;
+	border-color: #909090 #FFFFFF #FFFFFF #909090;
+	background-color: #F0F0F0;
+}
+
+/*     treemenu     */
+.treeview li { background-image: url("/images/site2/menu-link.gif"); }
+.treeview li.submenu { background-image: url("/images/site2/menu-closed.gif"); }
+
+.skoleni table { border-bottom-color: black; }
+.skoleni table td { background-color: #E6E6E6; }
+
+.arbo-sky,
+.arbo-sq { background-color: white; }
+
+.ad_active { color: green; }
+.ad_inactive { color: red; }
+
+.itbiz { border-color: #cfe8ff;
+         background-image: url('/images/site2/itbiz-top-bg.gif'); }
+.itbiz a { color: black;
+           text-decoration: none; }
+.itbiz a:hover { text-decoration: underline;
+                 background-color: transparent; }
+.itbiz a.logo { background-image: url('/images/site2/itbiz-logo60x18.png'); }
+.itbiz .logo-it { color: #18286c; }
+.itbiz .logo-biz { color: #bc1d12; }
+.itbiz .header a:hover { text-decoration: none; }
+.itbiz a img:hover, a.stitek:hover { background-color: transparent; }
+
+.stitek:hover { text-decoration: line-through; }
+
+.eventCalendar td { border-color: transparent; }
+.eventCalendar #today { background-color: white; }
+.eventCalendar .selected,
+.event_time .selected,
+.event_type .selected { background-color: #FFF8C3; }
+.eventCalendar .event_day,
+#gg_map { border-color: silver; }
+.event_hdr {
+  border-color: silver;
+  background-color: #ececec;
+}

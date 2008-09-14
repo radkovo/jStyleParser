@@ -2,7 +2,6 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.FileNotFoundException;
 import java.util.Date;
 
 import org.junit.BeforeClass;
@@ -42,6 +41,9 @@ public class SimpleTest {
 	
 	public static final String TEST_RGBFUNCTION2 =
 		"BODY { color: rgb(50%,128,30%);} ";
+	
+	public static final String TEST_UNIT =
+		"BODY { margin: 5em; }";
 	
 	public static final String TEST_STRING2 = 
 		"BODY {\n" +
@@ -200,6 +202,14 @@ public class SimpleTest {
 				DeclarationsUtil.appendDeclaration(null, "color", 
 						tf.createColor(204,204,204)),
 				rule.asList());
+	}
+	
+	@Test
+	public void testUnit() {
+		StyleSheet ss = CSSFactory.parse(TEST_UNIT);
+		
+		assertEquals("There is one rule", 1, ss.size());
+		
 	}
 	
 	@Test

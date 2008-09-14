@@ -91,7 +91,17 @@ public class ImportTest1 {
 		assertEquals("for all for both values", data.getValue(TermLength.class,
 				"margin-bottom"), data
 				.getValue(TermLength.class, "margin-left"));
-		
 
 	}
+	
+	@Test
+	public void testMediaImport() throws StyleSheetNotValidException {
+		CSSFactory.parse("data/simple/impmedia.css", null);
+	}
+	 
+	@Test
+	public void testRealAndNested() throws StyleSheetNotValidException {
+		CSSFactory.parse("data/abclinuxu/styles.css", null);
+	}
+	
 }

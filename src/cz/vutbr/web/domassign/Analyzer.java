@@ -333,7 +333,16 @@ public class Analyzer {
 
 						List<HolderSelector> hs = classifySelector(s);
 						// insert into all medias
-						for (String media : rulemedia.getMedias()) {
+						
+						// if there are no medias, it equals all
+						if(rulemedia.getMedia()==null ||
+								rulemedia.getMedia().isEmpty()) {
+							
+							insertClassified(rules.get(UNIVERSAL_HOLDER), hs, ruleset);
+							continue;
+						}
+						
+						for (String media : rulemedia.getMedia()) {
 							Holder h = rules.get(media);
 							if (h == null) {
 								h = new Holder();

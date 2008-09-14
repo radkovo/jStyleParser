@@ -43,7 +43,7 @@ public interface TermNumeric<T> extends Term<T> {
     	}
     	
     	public boolean isLength() {
-    		return this==px || this==ex || this==cm
+    		return this==px || this==ex || this==em || this==cm
     		|| this==mm || this==pt || this==pc || this==in;
     	}
     	

@@ -26,11 +26,11 @@ public interface SupportedCSS {
 	
 	
 	/**
-	 * Checks whether keyword is supported
-	 * @param keyword Keyword, either with or without preceding '@' character
+	 * Checks whether media type is supported
+	 * @param media Name of media, such as <code>screen</code>
 	 * @return <code>true</code> if supported, <code>false</code> otherwise
 	 */
-	boolean isSupportedAtKeyword(String keyword);
+	boolean isSupportedMedia(String media);
 	
 	/**
 	 * Checks whether property is supported

@@ -54,6 +54,12 @@ public class GrammarRecovery1 {
 		    "color: red;" +
 		    "color: green}";
 	
+	public static final String TEST_INVALID_ATTRIBUTE_OPERATOR =
+		".st a[href^=\"/slovnik/\"]:after {\n" +
+			"content: url('/images/site2/slovnik.png');\n" +
+			"margin: 0 0.1em 0 0.2em;\n";
+		
+	
 	public static final String TEST_DECL1 = "p { color:red;   color; color:green }";
 
 	public static final String TEST_DECL2 = "p { color:green; color: }";
@@ -157,7 +163,15 @@ public class GrammarRecovery1 {
 		
 		RuleMedia rm = (RuleMedia) ss.get(0);
 		
-		assertEquals("Media is set for screen", "screen", rm.getMedias().get(0));
+		assertEquals("Media is set for screen", "screen", rm.getMedia().get(0));
+	}
+	
+	@Test
+	public void invalidAttributeOperator() {
+		StyleSheet ss = CSSFactory.parse(TEST_INVALID_ATTRIBUTE_OPERATOR);
+		
+		Assert.assertEquals("Stylesheet is empty", 0, ss.size());
+		
 	}
 	
 	@Test

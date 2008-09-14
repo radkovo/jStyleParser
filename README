@@ -1,0 +1,30 @@
+Usage:
+
+This is CSSParser which follows 2.1 CSS specification.
+
+Usage:
+
+CSSFactory.parse() to parse either file or string
+to generate StyleSheet 
+
+CSSFactory.assign() together with Document DOM, StyleSheet,
+and selected media type to create mapping between elements
+and their CSS declarations.
+
+Use ANT build file to generate jar. Libraries can be fetched from
+SVN. 
+
+Required libraries are:
+
+logging:
+slf4j as facade and an arbitrary implementation
+
+
+html parsing:
+Tidy-8.0.jar
+
+parser core:
+antlr-runtime 3.1
+
+optional testing:
+junit-4.4.jar

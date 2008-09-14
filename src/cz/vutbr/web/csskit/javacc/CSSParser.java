@@ -533,7 +533,7 @@ public class CSSParser/*@bgen(jjtree)*/implements CSSParserTreeConstants, CSSPar
                   jjtree.closeNodeScope(jjtn000, true);
                   jjtc000 = false;
                         RuleMedia media = rf.createMedia(ruleNum++);
-                        media.setMedias(medias);
+                        media.setMedia(medias);
                         media.replaceAll( (List<RuleSet>) mediarules);
                         rules.add(media);
       } catch (ParseException e) {

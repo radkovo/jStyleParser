@@ -1,5 +1,6 @@
 package cz.vutbr.web.domassign;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -159,7 +160,7 @@ public class SupportedCSS21 implements SupportedCSS {
 	private Map<String, Integer> ordinals;
 	private Map<Integer, String> ordinalsRev;
 
-	private Set<String> supportedAtKeywords;
+	private Set<String> supportedMedias;
 
 	/**
 	 * Gets instance of SupportedCSS21
@@ -176,12 +177,11 @@ public class SupportedCSS21 implements SupportedCSS {
 		this.setSupportedAtKeywords();
 	}
 
-	public boolean isSupportedAtKeyword(String keyword) {
-		if (keyword == null)
+	public boolean isSupportedMedia(String media) {
+		if (media == null)
 			return false;
 
-		keyword = keyword.replaceAll("^@", "");
-		return supportedAtKeywords.contains(keyword);
+		return supportedMedias.contains(media.toLowerCase());
 	}
 
 	public final boolean isSupportedCSSProperty(String property) {
@@ -425,14 +425,20 @@ public class SupportedCSS21 implements SupportedCSS {
 	}
 
 	private void setSupportedAtKeywords() {
-		Set<String> set = new HashSet<String>();
+		
+		Set<String> set = new HashSet<String>(Arrays.asList(
+				"all",
+				"braille",
+				"embossed",
+				"handheld",
+				"print",
+				"projection",
+				"screen",
+				"speech",
+				"tty",
+				"tv"));
 
-		set.add("charset");
-		set.add("import");
-		set.add("page");
-		set.add("font-face");
-		set.add("media");
-		this.supportedAtKeywords = set;
+		this.supportedMedias = set;
 	}
 
 }
