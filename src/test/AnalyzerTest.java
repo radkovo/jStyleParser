@@ -54,7 +54,7 @@ public class AnalyzerTest {
 	public static void init() throws FileNotFoundException,
 			StyleSheetNotValidException {
 		log.info("\n\n\n == AnalyzerTest test at {} == \n\n\n", new Date());
-		
+
 		Tidy parser = new Tidy();
 		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
 
@@ -82,14 +82,14 @@ public class AnalyzerTest {
 		NodeData data = decl.get(current);
 
 		assertEquals("<body> nodedata contains color", CSSProperty.Color.color,
-				data.getProperty(CSSProperty.Color.class, "color"));
+				data.getProperty("color"));
 		assertEquals("color declaration contains red color",
 				new java.awt.Color(255, 0, 0), data.getValue(TermColor.class,
 						"color").getValue());
 
 		assertEquals("<body> nodedata contains font-weight: 200",
-				CSSProperty.FontWeight.numeric_200, data.getProperty(
-						CSSProperty.FontWeight.class, "font-weight"));
+				CSSProperty.FontWeight.numeric_200, data
+						.getProperty("font-weight"));
 
 		walker.setCurrentNode(current);
 	}
@@ -106,10 +106,10 @@ public class AnalyzerTest {
 
 		assertEquals(
 				"<div id=\"marginator\"> contains margin with for same values",
-				Margin.length, data.getProperty(Margin.class, "margin-top"));
+				Margin.length, data.getProperty("margin-top"));
 		assertEquals(
 				"<div id=\"marginator\"> contains margin with for same values",
-				Margin.length, data.getProperty(Margin.class, "margin-bottom"));
+				Margin.length, data.getProperty("margin-bottom"));
 		assertEquals("Margin of 100px", new Float(100.0f), data.getValue(
 				TermLength.class, "margin-top").getValue());
 		assertEquals("Margin of 100px", TermNumeric.Unit.px, data.getValue(
@@ -131,7 +131,7 @@ public class AnalyzerTest {
 		NodeData data = decl.get(marginator);
 
 		assertEquals("border-top-style: dotted", BorderStyle.DOTTED, data
-				.getProperty(BorderStyle.class, "border-top-style"));
+				.getProperty("border-top-style"));
 	}
 
 	@Test
@@ -145,7 +145,7 @@ public class AnalyzerTest {
 		NodeData data = decl.get(fontoid);
 
 		assertEquals("font-family: monospace", FontFamily.MONOSPACE, data
-				.getProperty(FontFamily.class, "font-family"));
+				.getProperty("font-family"));
 	}
 
 	@Test
@@ -210,10 +210,8 @@ public class AnalyzerTest {
 				NodeData nd = pair.getSecond().get(e);
 
 				for (String property : css.getDefinedPropertyNames()) {
-					CSSProperty inh = ndInh.getProperty(CSSProperty.class,
-							property, false);
-					CSSProperty noinh = nd.getProperty(CSSProperty.class,
-							property, true);
+					CSSProperty inh = ndInh.getProperty(property, false);
+					CSSProperty noinh = nd.getProperty(property, true);
 
 					if ((inh != null && noinh == null)
 							|| (inh == null && noinh != null))
@@ -224,11 +222,10 @@ public class AnalyzerTest {
 					if (inh == null && noinh == null)
 						continue;
 
-					log.debug("{}#{} (INH: {} NOINH: {})",
-							new Object[] {
-							e.getNodeName(),
-							e.getAttribute("id"),
-							inh, noinh});
+					log
+							.debug("{}#{} (INH: {} NOINH: {})", new Object[] {
+									e.getNodeName(), e.getAttribute("id"), inh,
+									noinh });
 
 					Term<?> tinh = ndInh.getValue(Term.class, property, false);
 					Term<?> tnoinh = nd.getValue(Term.class, property, true);
@@ -243,10 +240,8 @@ public class AnalyzerTest {
 						continue;
 
 					log.debug("{}#{} (INH: {} NOINH: {})",
-							new Object[] {
-							e.getNodeName(),
-							e.getAttribute("id"),
-							tinh, tnoinh});
+							new Object[] { e.getNodeName(),
+									e.getAttribute("id"), tinh, tnoinh });
 
 				}
 

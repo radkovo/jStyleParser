@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
@@ -43,20 +44,28 @@ public class QuadrupleMapNodeData implements NodeData {
 		this.valuesInh = new HashMap<String, Term<?>>(css.getTotalProperties(), 1.0f);
 	}
 	
-	public <T extends CSSProperty> T getProperty(Class<T> clazz, String name, boolean includeInherited) {
-
-		T inherited = null;
-		
-		if(includeInherited) 
-			inherited = clazz.cast(propertiesInh.get(name));
-
-		T own = clazz.cast(propertiesOwn.get(name));
-		if(own==null) return inherited;
-		return own;
+	
+	public <T extends CSSProperty> T getProperty(String name) {
+		return getProperty(name, true);
 	}
 	
-	public <T extends CSSProperty> T getProperty(Class<T> clazz, String name) {
-		return getProperty(clazz, name, true);
+	public <T extends CSSProperty> T getProperty(String name, boolean includeInherited) {
+
+		CSSProperty inh = null, tmp = null;
+		
+		if(includeInherited) 
+			inh = propertiesInh.get(name);
+
+		tmp = propertiesOwn.get(name);
+		if(tmp==null) tmp = inh;
+		
+		// this will cast to inferred type
+		// if there is no inferred type, cast to CSSProperty is safe
+		// otherwise the possibility having wrong left side of assignment
+		// is roughly the same as use wrong dynamic class cast 
+		@SuppressWarnings("unchecked")
+		T retval = (T) tmp;
+		return retval;
 	}
 	
 	public <T extends Term<?>> T getValue(Class<T> clazz, String name, boolean includeInherited) {
@@ -88,7 +97,13 @@ public class QuadrupleMapNodeData implements NodeData {
 		if(!result) return this;
 		
 		this.propertiesOwn.putAll(properties);
-		this.valuesOwn.putAll(terms);
+		
+		// remove operators from terms
+		for(Entry<String,Term<?>> entry: terms.entrySet()) {
+			entry.getValue().setOperator(null);
+			valuesOwn.put(entry.getKey(), entry.getValue());
+		}
+		
 		return this;
 		
 	}

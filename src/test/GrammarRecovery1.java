@@ -25,7 +25,6 @@ import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermList;
-import cz.vutbr.web.css.CSSProperty.Color;
 import cz.vutbr.web.css.CSSProperty.FontFamily;
 import cz.vutbr.web.domassign.Analyzer;
 
@@ -47,19 +46,14 @@ public class GrammarRecovery1 {
 			+ "    elevation: 190deg;\n" + "	  }\n" + "  h2 { color: green }\n"
 			+ "	}";
 
-	public static final String TEST_NOT_CLOSED_STRING = 
-			"@charset \"UTF-8\n" +
-		    "BODY { color: blue;}\n" +
-		    "p {color: white; quotes: '^' '^\n" +
-		    "color: red;" +
-		    "color: green}";
-	
-	public static final String TEST_INVALID_ATTRIBUTE_OPERATOR =
-		".st a[href^=\"/slovnik/\"]:after {\n" +
-			"content: url('/images/site2/slovnik.png');\n" +
-			"margin: 0 0.1em 0 0.2em;\n";
-		
-	
+	public static final String TEST_NOT_CLOSED_STRING = "@charset \"UTF-8\n"
+			+ "BODY { color: blue;}\n" + "p {color: white; quotes: '^' '^\n"
+			+ "color: red;" + "color: green}";
+
+	public static final String TEST_INVALID_ATTRIBUTE_OPERATOR = ".st a[href^=\"/slovnik/\"]:after {\n"
+			+ "content: url('/images/site2/slovnik.png');\n"
+			+ "margin: 0 0.1em 0 0.2em;\n";
+
 	public static final String TEST_DECL1 = "p { color:red;   color; color:green }";
 
 	public static final String TEST_DECL2 = "p { color:green; color: }";
@@ -70,15 +64,12 @@ public class GrammarRecovery1 {
 
 	public static final String TEST_DECL5 = "p { color:red;   color{;color:maroon}; color:green }";
 
-	public static final String TEST_UNEXP_EOF =
-		"@media screen {\n" +
-	    "p:before { content: 'Hello";
-	
-	public static final String TEST_INVALID_SELECTOR =
-		" h1, h2 & h3 {color: green;}\n " +
-		" h1 {font-family: Times New Roman}";
-	
-	
+	public static final String TEST_UNEXP_EOF = "@media screen {\n"
+			+ "p:before { content: 'Hello";
+
+	public static final String TEST_INVALID_SELECTOR = " h1, h2 & h3 {color: green;}\n "
+			+ " h1 {font-family: Times New Roman}";
+
 	@BeforeClass
 	public static void init() {
 		log.info("\n\n\n == GrammarRecovery1 test at {} == \n\n\n", new Date());
@@ -123,7 +114,7 @@ public class GrammarRecovery1 {
 	@Test
 	public void unclosedString() {
 		StyleSheet ss = CSSFactory.parse(TEST_NOT_CLOSED_STRING);
-		
+
 		assertEquals("Contains one ruleset", 1, ss.size());
 
 		RuleSet rule = (RuleSet) ss.get(0);
@@ -131,9 +122,9 @@ public class GrammarRecovery1 {
 		assertEquals("Rule contains last declaration { color: green;}",
 				DeclarationsUtil.createDeclaration("color", tf.createColor(0,
 						0x80, 0)), rule.get(rule.size() - 1));
-		
+
 	}
-	
+
 	@Test
 	public void invalidAtKeyword() {
 		StyleSheet ss = CSSFactory.parse(TEST_INVALID_ATKEYWORD);
@@ -158,47 +149,47 @@ public class GrammarRecovery1 {
 	@Test
 	public void unexpectedEOF() {
 		StyleSheet ss = CSSFactory.parse(TEST_UNEXP_EOF);
-		
+
 		assertEquals("Contains one @media", 1, ss.size());
-		
+
 		RuleMedia rm = (RuleMedia) ss.get(0);
-		
+
 		assertEquals("Media is set for screen", "screen", rm.getMedia().get(0));
 	}
-	
+
 	@Test
 	public void invalidAttributeOperator() {
 		StyleSheet ss = CSSFactory.parse(TEST_INVALID_ATTRIBUTE_OPERATOR);
-		
+
 		Assert.assertEquals("Stylesheet is empty", 0, ss.size());
-		
+
 	}
-	
+
 	@Test
 	public void invalidSelector() throws FileNotFoundException {
 		StyleSheet sheet = CSSFactory.parse(TEST_INVALID_SELECTOR);
-		
+
 		Tidy parser = new Tidy();
 		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
 
-		Document doc = parser.parseDOM(new FileInputStream("data/simple/h1.html"),
-				null);
+		Document doc = parser.parseDOM(new FileInputStream(
+				"data/simple/h1.html"), null);
 
 		Analyzer analyzer = new Analyzer(sheet);
 		Map<Element, NodeData> decl = analyzer.evaluateDOM(doc, "all", true);
 
 		ElementMap elements = new ElementMap(doc);
-		
+
 		NodeData nd = decl.get(elements.getLastElementByName("h1"));
-		
-		Assert.assertNull("There is no color", nd.getProperty(Color.class, "color"));
-		
-		Assert.assertEquals("There is font-family", 
-				FontFamily.list_values, nd.getProperty(FontFamily.class, "font-family"));
-		Assert.assertEquals("Font is 'Times New Roman'",
-				tf.createString("Times New Roman"),
-				nd.getValue(TermList.class, "font-family").get(0));
-		
+
+		Assert.assertNull("There is no color", nd.getProperty("color"));
+
+		Assert.assertEquals("There is font-family", FontFamily.list_values, nd
+				.getProperty("font-family"));
+		Assert.assertEquals("Font is 'Times New Roman'", tf
+				.createString("Times New Roman"), nd.getValue(TermList.class,
+				"font-family").get(0));
+
 	}
-	
+
 }

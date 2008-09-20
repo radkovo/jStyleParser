@@ -26,6 +26,7 @@ import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermNumeric;
 
+@SuppressWarnings("all")
 public class CSSParserTokenManager implements CSSParserConstants
 {
   public  java.io.PrintStream debugStream = System.out;

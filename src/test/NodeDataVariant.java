@@ -251,11 +251,11 @@ public class NodeDataVariant {
 			this.inherited = new BitSet(css.getTotalProperties());
 		}
 
-		public <T extends CSSProperty> T getProperty(Class<T> clazz, String name) {
+		public <T extends CSSProperty> T getProperty(String name) {
 			return null;
 		}
 
-		public <T extends CSSProperty> T getProperty(Class<T> clazz,
+		public <T extends CSSProperty> T getProperty(
 				String name, boolean includeInherited) {
 			return null;
 		}

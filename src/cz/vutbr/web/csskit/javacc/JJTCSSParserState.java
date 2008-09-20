@@ -2,6 +2,7 @@
 
 package cz.vutbr.web.csskit.javacc;
 
+@SuppressWarnings("all")
 class JJTCSSParserState {
   private java.util.Stack nodes;
   private java.util.Stack marks;

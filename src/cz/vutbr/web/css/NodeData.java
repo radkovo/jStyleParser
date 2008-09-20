@@ -19,30 +19,28 @@ public interface NodeData {
 	 * are included.
 	 * 
 	 * @param <T>
-	 *            Type of property returned
-	 * @param clazz
-	 *            Class of property
+	 *            Type of property returned. Let compiler infer returning type 
+	 *            from left part of statement, otherwise return just CSSProperty
 	 * @param name
 	 *            Name of property
 	 * @return Value of property of type T or <code>null</code>
 	 */
-	public <T extends CSSProperty> T getProperty(Class<T> clazz, String name);
+	public <T extends CSSProperty> T getProperty(String name);
 
 	/**
 	 * Returns property of given name and supposed type. Inherited properties
 	 * can be avoided
 	 * 
 	 * @param <T>
-	 *            Type of property returned
-	 * @param clazz
-	 *            Class of property
+	 *            Type of property returned. Let compiler infer returning type 
+	 *            from left part of statement, otherwise return just CSSProperty
 	 * @param name
 	 *            Name of property
 	 * @param includeInherited
 	 *            Whether to include inherited properties or not
 	 * @return Value of property of type T or <code>null</code>
 	 */
-	public <T extends CSSProperty> T getProperty(Class<T> clazz, String name,
+	public <T extends CSSProperty> T getProperty(String name,
 			boolean includeInherited);
 
 	/**
@@ -64,7 +62,7 @@ public interface NodeData {
 	 * values can be avoided.
 	 * 
 	 * @param <T>
-	 *            Type of value returned
+	 *            Type of value returned 
 	 * @param clazz
 	 *            Class of type
 	 * @param name

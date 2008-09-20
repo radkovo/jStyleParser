@@ -1,5 +1,6 @@
 package cz.vutbr.web.csskit.javacc;
 
+@SuppressWarnings("all")
 public class SimpleNode implements Node {
   protected Node parent;
   protected Node[] children;

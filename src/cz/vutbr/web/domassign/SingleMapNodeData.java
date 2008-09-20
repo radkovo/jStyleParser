@@ -34,22 +34,33 @@ public class SingleMapNodeData implements NodeData {
 		this.map = new HashMap<String, Quadruple>(css.getTotalProperties(), 1.0f);
 	}
 	
-	public <T extends CSSProperty> T getProperty(Class<T> clazz, String name) {
-		return getProperty(clazz, name, true);
+	public <T extends CSSProperty> T getProperty(String name) {
+		return getProperty(name, true);
 	}
 
-	public <T extends CSSProperty> T getProperty(Class<T> clazz, String name,
+	public <T extends CSSProperty> T getProperty(String name,
 			boolean includeInherited) {
 		
 		Quadruple q = map.get(name);
 		if(q==null) return null;
 		
+		CSSProperty tmp;
+		
 		if(includeInherited) {
-			if(q.curProp!=null) return clazz.cast(q.curProp);
-			return clazz.cast(q.inhProp);
+			if(q.curProp!=null) tmp = q.curProp;
+			else tmp = q.inhProp;
+		}
+		else {
+			tmp = q.curProp;
 		}
 		
-		return clazz.cast(q.curProp);
+		// this will cast to inferred type
+		// if there is no inferred type, cast to CSSProperty is safe
+		// otherwise the possibility having wrong left side of assignment
+		// is roughly the same as use wrong dynamic class cast 
+		@SuppressWarnings("unchecked")
+		T retval = (T) tmp;
+		return retval;
 		
 	}
 

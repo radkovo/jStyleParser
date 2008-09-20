@@ -2,24 +2,30 @@
 
 package cz.vutbr.web.csskit.antlr;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
+import java.util.Stack;
 
+import org.antlr.runtime.BaseRecognizer;
+import org.antlr.runtime.BitSet;
+import org.antlr.runtime.CharStream;
+import org.antlr.runtime.CommonToken;
+import org.antlr.runtime.DFA;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.Lexer;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.RecognizerSharedState;
+import org.antlr.runtime.Token;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.StyleSheetNotValidException;
-import cz.vutbr.web.css.CSSFactory;
-import cz.vutbr.web.css.SupportedCSS; 
-
-
-
-import org.antlr.runtime.*;
-import java.util.Stack;
-import java.util.List;
-import java.util.ArrayList;
+import cz.vutbr.web.css.SupportedCSS;
 
 public class CSSLexer extends Lexer {
     public static final int COMMA=40;
