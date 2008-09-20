@@ -185,27 +185,16 @@ scope {
 	    imports.pop();
 		log.info("Imported file was parsed, returing in nesting.");
 	  }
-	| ^(PAGE (i=IDENT{ pseudo=extractText(i);})? (d=declaration
-			{
-				if(declarations==null)
-				    declarations=new ArrayList<Declaration>();
-				if(d!=null && !d.isEmpty()) {
-            		declarations.add(d);
-            	    log.debug("Inserted declaration ({}) into @page",
-					    declarations.size());
-				}
-			}	   
-		)*) 
+	| ^(PAGE (i=IDENT{ pseudo=extractText(i);})? decl=declarations
 		{
-		   	if(declarations!=null && !declarations.isEmpty()) {	
+		   	if(decl!=null && !decl.isEmpty()) {	
             	RulePage rp = rf.createPage(ruleNum++);
                 rp.replaceAll(declarations);
                 rp.setPseudo(pseudo);
                 $stmnt = rp;
-                log.info("Create @page as {}th with:\n{}", 
-                	ruleNum, rp);
+                log.info("Create @page as {}th with:\n{}",  ruleNum, rp);
             }
-        }
+		})
 	| ^(MEDIA (mediaList=media)? 
 			(rs=ruleset {
 			   if(rules==null) rules = new ArrayList<RuleSet>();				
@@ -265,17 +254,16 @@ ruleset returns [RuleBlock<?> stmnt]
 @init {
     logEnter("ruleset"); 
     List<CombinedSelector> cslist = new ArrayList<CombinedSelector>();
-    List<Declaration> declarations = new ArrayList<Declaration>();
 }
 @after {
-    if($statement::invalid || cslist.isEmpty() || declarations.isEmpty()) {
+    if($statement::invalid || cslist.isEmpty() || decl.isEmpty()) {
         $stmnt = null;
         log.debug("Ruleset not valid, so not created");
     }
     else {    
         RuleSet rs = rf.createSet(ruleNum++);
         rs.setSelectors(cslist);
-        rs.replaceAll(declarations);
+        rs.replaceAll(decl);
 		log.info("Create ruleset as {}th with:\n{}", ruleNum, rs);
 		
 		// check statement
@@ -312,15 +300,30 @@ ruleset returns [RuleBlock<?> stmnt]
 				cslist.size());
          }   
         } )*
-        (d=declaration 
-        {if(d!=null && !d.isEmpty()) {
-            declarations.add(d);
-            log.debug("Inserted declaration ({}) into ruleset",
-				declarations.size());
-         }
-        })*        
+		decl=declarations 
     )
     ;  
+
+/**
+ * Multiple CSS declarations
+ */ 
+declarations returns [List<Declaration> decl]
+@init {
+		  logEnter("declarations");
+		  $decl = new ArrayList<Declaration>();
+}
+@after {
+		   logLeave("declarations");
+}
+	: (d=declaration {
+	     if(d!=null) {
+            $decl.add(d);
+            log.debug("Inserted declaration #{} ", $decl.size()+1);
+		 }	
+	 }
+	  )*
+	;
+
 
 /**
  * CSS declaration
@@ -336,7 +339,7 @@ scope {
     $declaration::invalid = false;
 } 
 @after {
-    if($declaration::invalid) {
+    if($declaration::invalid || $declaration.isEmpty()) {
         $decl=null;
         log.debug("Declaration was invalidated or already invalid");
     }
@@ -559,15 +562,11 @@ selpart
 }
 @after {
     logLeave("selpart");
-}	
-    : PSEUDO i=IDENT { $selector::s.add(rf.createPseudoPage(extractText(i), null));}
-    | h=HASH { $selector::s.add(rf.createID(extractText(h))); }
+}
+    :  h=HASH { $selector::s.add(rf.createID(extractText(h))); }
     | c=CLASSKEYWORD { $selector::s.add(rf.createClass(extractText(c))); }
 	| ^(ATTRIBUTE ea=attribute { $selector::s.add(ea);} )
-    | ^(fname=FUNCTION farg=IDENT {
-       $selector::s.add(rf.createPseudoPage(extractText(farg), extractText(fname)));
-       }
-      )
+    | p=pseudo { $selector::s.add(p);}
 	| INVALID_SELPART { $combined_selector::invalid = true;}  
     ;
  
@@ -609,6 +608,20 @@ attribute returns [Selector.ElementAttribute elemAttr]
 		}
 	   ))?
 	; 
+	
+pseudo returns [Selector.PseudoPage pseudoPage]
+@init {
+		  logEnter("pseudo");
+		  String fname =null;
+		  String value = null;
+}
+	: ^(PSEUDO 
+	   			(f=FUNCTION {fname=extractText(f);})? 
+			     i=IDENT {value=extractText(i);})
+		{
+			$pseudoPage = rf.createPseudoPage(value, fname);
+		}
+	;	
 
 string returns [String s]
 	: st=STRING { $s= extractText(st);}

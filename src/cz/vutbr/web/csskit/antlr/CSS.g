@@ -7,6 +7,7 @@ options {
 
 tokens {
 	STYLESHEET;
+	INLINESTYLE;
 	ATBLOCK;
 	CURLYBLOCK;
 	PARENBLOCK;
@@ -75,8 +76,8 @@ import cz.vutbr.web.css.SupportedCSS;
         
         /**
          * Checks whether all pair characters (single and double quotatation marks,
-         * curly braces are balaneced.
-         */ 
+         * curly braces are balanced
+		*/ 
         public boolean isBalanced() {
         	return aposOpen==false && quotOpen==false && curlyNest==0;
         }
@@ -486,6 +487,11 @@ import cz.vutbr.web.css.SupportedCSS;
 
 }
 
+// since declarations can match empty string
+// force at least one inlineset to exist
+inlinestyle
+	: S*  (declarations | inlineset+)
+	;
 
 stylesheet
 	: ( CDO | CDC | S | statement )* 
@@ -502,8 +508,8 @@ atstatement
 	| INVALID_IMPORT
 	| IMPORT_END
 	| PAGE S* (COLON IDENT S*)? 
-		LCURLY S* declaration? (SEMICOLON S* declaration? )* 
-		RCURLY -> ^(PAGE IDENT? declaration*)
+		LCURLY S* declarations 
+		RCURLY -> ^(PAGE IDENT? declarations)
 	| MEDIA S* media? 
 		LCURLY S* (ruleset S*)* RCURLY -> ^(MEDIA media? ruleset*)	
 	| ATKEYWORD S* LCURLY any* RCURLY -> INVALID_STATEMENT
@@ -513,6 +519,13 @@ atstatement
 	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
 	  		"INVALID_STATEMENT", follow, re);							
 	}
+
+inlineset
+	: (pseudo S* (COMMA S* pseudo S*)*)?
+      LCURLY
+	  	declarations
+	  RCURLY	
+	;
 	
 media
 	: IDENT S* (COMMA S* IDENT S*)* 
@@ -524,9 +537,14 @@ ruleset
 }
 	: combined_selector (COMMA S* combined_selector)* 
 	  LCURLY S* 
-	  	declaration? (SEMICOLON S* declaration? )* 
+	  	declarations
 	  RCURLY
-	  -> ^(RULE combined_selector+ declaration*)
+	  -> ^(RULE combined_selector+ declarations)
+	;
+
+declarations
+	: declaration? (SEMICOLON S* declaration? )*
+	  -> declaration*
 	;
 
 declaration
@@ -606,11 +624,10 @@ selector
 	}
 
 selpart	
-    : COLON IDENT -> PSEUDO IDENT
-    | HASH
+    :  HASH
     | CLASSKEYWORD
 	| LBRACE S* attribute RBRACE -> ^(ATTRIBUTE attribute)
-    | COLON FUNCTION S* IDENT RPAREN -> ^(FUNCTION IDENT)
+    | pseudo
     | INVALID_SELPART
     ;
     catch [RecognitionException re] {
@@ -621,6 +638,11 @@ selpart
 attribute
 	: IDENT S*
 	  ((EQUALS | INCLUDES | DASHMATCH) S* (IDENT | string) S*)?
+	;
+
+pseudo
+	: COLON (IDENT | FUNCTION S*  IDENT S* RPAREN)
+	 -> ^(PSEUDO FUNCTION? IDENT)
 	;
 
 string
