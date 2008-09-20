@@ -20,6 +20,7 @@ tokens {
 	CHILD;
 	DESCENDANT;
 	ATTRIBUTE;
+	SET;
 	DECLARATION;	
 	VALUE;
 	IMPORTANT;
@@ -45,7 +46,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.StyleSheetNotValidException;
+import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.SupportedCSS; 
 
@@ -490,7 +491,9 @@ import cz.vutbr.web.css.SupportedCSS;
 // since declarations can match empty string
 // force at least one inlineset to exist
 inlinestyle
-	: S*  (declarations | inlineset+)
+	: S*  (declarations -> ^(INLINESTYLE declarations) 
+		     | inlineset+ -> ^(INLINESTYLE inlineset+)
+			)
 	;
 
 stylesheet
@@ -525,6 +528,7 @@ inlineset
       LCURLY
 	  	declarations
 	  RCURLY	
+	  -> ^(RULE pseudo* declarations)
 	;
 	
 media
@@ -544,7 +548,7 @@ ruleset
 
 declarations
 	: declaration? (SEMICOLON S* declaration? )*
-	  -> declaration*
+	  -> ^(SET declaration*)
 	;
 
 declaration
@@ -718,7 +722,7 @@ CHARSET
         }
         catch(IllegalCharsetNameException icne) {
         	log.warn("Could not change to unsupported charset!", icne);
-        	throw new RuntimeException(new StyleSheetNotValidException("Unsupported charset: " + enc));
+        	// throw new RuntimeException(new CSSException("Unsupported charset: " + enc));
         }
 	  }
 	;
@@ -779,7 +783,7 @@ IMPORT
         	t.setText(media.toString());
         	
         	// switch on new stream
-        	setCharStream(new CSSInputStream(fileName, null));
+        	setCharStream(CSSInputStream.fileStream(fileName));
         	reset();
         	
         	log.info("File \"{}\" was imported.", fileName);

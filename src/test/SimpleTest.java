@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.Date;
 
 import org.junit.BeforeClass;
@@ -9,6 +10,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
@@ -80,7 +82,7 @@ public class SimpleTest {
 	
 	
 	@Test
-	public void testCharsets()   {
+	public void testCharsets() throws IOException, CSSException   {
 		
 		StyleSheet ss;
 		
@@ -108,7 +110,7 @@ public class SimpleTest {
 	
 	
 	@Test 
-	public void testString1()   {
+	public void testString1() throws IOException, CSSException   {
 		
 		StyleSheet ss = CSSFactory.parse(TEST_STRING1);
 		
@@ -131,7 +133,7 @@ public class SimpleTest {
 	
 	
 	@Test 
-	public void testRGBFunction1()   {
+	public void testRGBFunction1() throws IOException, CSSException   {
 		
 		StyleSheet ss = CSSFactory.parse(TEST_RGBFUNCTION1);
 		assertEquals("One rule is set", 1, ss.size());
@@ -150,7 +152,7 @@ public class SimpleTest {
 	}
 	
 	@Test 
-	public void testRGBFunction2()   {
+	public void testRGBFunction2() throws IOException, CSSException   {
 		
 		StyleSheet ss = CSSFactory.parse(TEST_RGBFUNCTION2);
 		assertEquals("One rule is set", 1, ss.size());
@@ -168,7 +170,7 @@ public class SimpleTest {
 	}
 	
 	@Test
-	public void testHashColor1()   {
+	public void testHashColor1() throws IOException, CSSException   {
 
 		StyleSheet ss = CSSFactory.parse(TEST_HASH_COLOR1);
 		assertEquals("One rule is set", 1, ss.size());
@@ -187,7 +189,7 @@ public class SimpleTest {
 	}
 	
 	@Test
-	public void testHashColor2()   {
+	public void testHashColor2() throws IOException, CSSException   {
 		
 		StyleSheet ss = CSSFactory.parse(TEST_HASH_COLOR2);
 		assertEquals("One rule is set", 1, ss.size());
@@ -205,7 +207,7 @@ public class SimpleTest {
 	}
 	
 	@Test
-	public void testUnit() {
+	public void testUnit() throws IOException, CSSException {
 		StyleSheet ss = CSSFactory.parse(TEST_UNIT);
 		
 		assertEquals("There is one rule", 1, ss.size());
@@ -213,7 +215,7 @@ public class SimpleTest {
 	}
 	
 	@Test
-	public void testString2()   {
+	public void testString2() throws IOException, CSSException   {
 		
 		StyleSheet ss = CSSFactory.parse(TEST_STRING2);
 		assertEquals("Six rules are set", 6, ss.size());

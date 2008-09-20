@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
@@ -18,6 +18,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.tidy.Tidy;
 
+import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.RuleMedia;
@@ -76,7 +77,7 @@ public class GrammarRecovery1 {
 	}
 
 	@Test
-	public void charsetCharsetWithoutSemicolon() {
+	public void charsetCharsetWithoutSemicolon() throws IOException, CSSException {
 
 		StyleSheet ss = CSSFactory.parse(TEST_CHARSET_WITHOUT_SEMICOLON1);
 		assertEquals("Charset should not be set", null, ss.getCharset());
@@ -85,7 +86,7 @@ public class GrammarRecovery1 {
 	}
 
 	@Test
-	public void charsetWithoutSemicolonAndDefinitinAfter() {
+	public void charsetWithoutSemicolonAndDefinitinAfter() throws CSSException, IOException {
 
 		StyleSheet ss = CSSFactory.parse("data/invalid/recovery2.css", null);
 		assertEquals("Charset should not be set", null, ss.getCharset());
@@ -95,7 +96,7 @@ public class GrammarRecovery1 {
 	}
 
 	@Test
-	public void charsetWithoutSemicolonAndDoubleDAfter() {
+	public void charsetWithoutSemicolonAndDoubleDAfter() throws IOException, CSSException {
 
 		StyleSheet ss = CSSFactory.parse(TEST_CHARSET_WITHOUT_SEMICOLON3);
 		assertEquals("Charset should not be set", null, ss.getCharset());
@@ -112,7 +113,7 @@ public class GrammarRecovery1 {
 	}
 
 	@Test
-	public void unclosedString() {
+	public void unclosedString() throws IOException, CSSException {
 		StyleSheet ss = CSSFactory.parse(TEST_NOT_CLOSED_STRING);
 
 		assertEquals("Contains one ruleset", 1, ss.size());
@@ -126,14 +127,14 @@ public class GrammarRecovery1 {
 	}
 
 	@Test
-	public void invalidAtKeyword() {
+	public void invalidAtKeyword() throws IOException, CSSException {
 		StyleSheet ss = CSSFactory.parse(TEST_INVALID_ATKEYWORD);
 		assertTrue("Ruleset is empty", ss.isEmpty());
 
 	}
 
 	@Test
-	public void noTerms() {
+	public void noTerms() throws IOException, CSSException {
 
 		StyleSheet ss = CSSFactory.parse(TEST_DECL5);
 
@@ -147,7 +148,7 @@ public class GrammarRecovery1 {
 	}
 
 	@Test
-	public void unexpectedEOF() {
+	public void unexpectedEOF() throws IOException, CSSException {
 		StyleSheet ss = CSSFactory.parse(TEST_UNEXP_EOF);
 
 		assertEquals("Contains one @media", 1, ss.size());
@@ -158,7 +159,7 @@ public class GrammarRecovery1 {
 	}
 
 	@Test
-	public void invalidAttributeOperator() {
+	public void invalidAttributeOperator() throws IOException, CSSException {
 		StyleSheet ss = CSSFactory.parse(TEST_INVALID_ATTRIBUTE_OPERATOR);
 
 		Assert.assertEquals("Stylesheet is empty", 0, ss.size());
@@ -166,7 +167,7 @@ public class GrammarRecovery1 {
 	}
 
 	@Test
-	public void invalidSelector() throws FileNotFoundException {
+	public void invalidSelector() throws IOException, CSSException {
 		StyleSheet sheet = CSSFactory.parse(TEST_INVALID_SELECTOR);
 
 		Tidy parser = new Tidy();

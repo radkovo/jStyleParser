@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
@@ -16,10 +17,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.tidy.Tidy;
 
+import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.TermLength;
 import cz.vutbr.web.css.TermNumeric;
 import cz.vutbr.web.css.CSSProperty.Margin;
@@ -54,7 +55,7 @@ public class ImportTest1 {
 	}
 
 	@Test
-	public void importTokenization() throws StyleSheetNotValidException {
+	public void importTokenization() throws CSSException, IOException {
 		CSSFactory.parse(SIMPLE_IMPORT);
 		CSSFactory.parse(QUOT_IMPORT);
 		CSSFactory.parse(URL_IMPORT);
@@ -63,7 +64,7 @@ public class ImportTest1 {
 	}
 
 	@Test
-	public void testSimpleImport() throws StyleSheetNotValidException {
+	public void testSimpleImport() throws CSSException, IOException {
 
 		StyleSheet ss = CSSFactory.parse("data/simple/imp.css", null);
 
@@ -95,12 +96,12 @@ public class ImportTest1 {
 	}
 
 	@Test
-	public void testMediaImport() throws StyleSheetNotValidException {
+	public void testMediaImport() throws CSSException, IOException {
 		CSSFactory.parse("data/simple/impmedia.css", null);
 	}
 
 	@Test
-	public void testRealAndNested() throws StyleSheetNotValidException {
+	public void testRealAndNested() throws CSSException, IOException {
 		CSSFactory.parse("data/abclinuxu/styles.css", null);
 	}
 

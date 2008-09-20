@@ -8,8 +8,6 @@ options {
 @header {
 package cz.vutbr.web.csskit.antlr;
 
-import java.io.IOException;
-
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -19,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.RuleFactory;
-import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.*;
 
 }
@@ -57,37 +54,7 @@ import cz.vutbr.web.css.*;
 	
 	private StyleSheet stylesheet;
 
-	private Stack<TreeParserState> imports;
-
-	public static CSSTreeParser createParser(CSSInputStream input) 
-		throws StyleSheetNotValidException, IOException, RecognitionException {	
-		
-		StyleSheet stylesheet = (StyleSheet) rf.createStyleSheet().unlock();
-		
-		CSSLexer lexer = new CSSLexer(input);
-		lexer.init(stylesheet);
-		
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        CSSParser parser = new CSSParser(tokens);
-		parser.init(stylesheet);
-		
-        // Invoke the program rule in get return value
-        CSSParser.stylesheet_return r = parser.stylesheet();
-        CommonTree t = (CommonTree) r.getTree();
-
-    	if(log.isDebugEnabled()) {
-        	log.debug("* CSSLexer Tree was:\n{}", TreeUtil.toStringTree(t));
-        }            	        	
-            	
-        // Walk resulting tree; create treenode stream first
-        CommonTreeNodeStream nodes = new CommonTreeNodeStream(t);
-        
-		// AST nodes have payloads that point into token stream
-        nodes.setTokenStream(tokens);
-        
-		// Create a tree Walker attached to the nodes stream
-        return (new CSSTreeParser(nodes)).init(stylesheet);
-    }
+	private Stack<TreeParserState> imports;	
        
     public CSSTreeParser init(StyleSheet sheet) {
 	    this.stylesheet = sheet;
@@ -113,6 +80,20 @@ import cz.vutbr.web.css.*;
 	    log.trace("Leaving '{}'", leaving);
     }
 }
+
+inlinestyle returns [StyleSheet sheet]
+@init {
+	logEnter("inlinestyle");
+	$sheet = this.stylesheet;
+} 
+@after {
+	log.debug("\n***\n{}\n***\n", $sheet);	   
+	logLeave("inlinestyle");
+}
+	: 	^(INLINESTYLE declarations) 
+	|   ^(INLINESTYLE inlineset+)
+	;
+
 
 /**
  * Stylesheet, main rule
@@ -246,6 +227,11 @@ media returns [List<String> affected]
     } )+
 	;
     
+inlineset
+	: ^(RULE pseudo* declarations)
+	;
+    
+    
 /**
  * The most common block in CSS file,
  * set of declarations with selector
@@ -315,13 +301,13 @@ declarations returns [List<Declaration> decl]
 @after {
 		   logLeave("declarations");
 }
-	: (d=declaration {
+	: ^(SET (d=declaration {
 	     if(d!=null) {
             $decl.add(d);
             log.debug("Inserted declaration #{} ", $decl.size()+1);
 		 }	
-	 }
-	  )*
+	 })*
+	 )
 	;
 
 

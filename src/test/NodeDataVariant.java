@@ -2,6 +2,7 @@ package test;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.BitSet;
 import java.util.Date;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.tidy.Tidy;
 
+import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.Declaration;
@@ -41,7 +43,7 @@ public class NodeDataVariant {
 	private static Analyzer analyzer;
 
 	@BeforeClass
-	public static void init() throws FileNotFoundException {
+	public static void init() throws CSSException, IOException {
 		
 		log.info("\n\n\n == NodeDataVariant test at {} == \n\n\n", new Date());
 		

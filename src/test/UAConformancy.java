@@ -2,6 +2,7 @@ package test;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
@@ -15,6 +16,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.tidy.Tidy;
 
+import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.NodeData;
@@ -32,7 +34,7 @@ public class UAConformancy {
 	private static ElementMap em;
 
 	@BeforeClass
-	public static void init() throws FileNotFoundException {
+	public static void init() throws CSSException, IOException {
 		log.info("\n\n\n == UAConformancy test at {} == \n\n\n", new Date());
 
 		Tidy parser = new Tidy();

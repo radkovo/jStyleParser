@@ -1,5 +1,6 @@
 package cz.vutbr.web.css;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -8,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import cz.vutbr.web.csskit.antlr.CSSInputStream;
-import cz.vutbr.web.csskit.antlr.CSSTreeParser;
+import cz.vutbr.web.csskit.antlr.CSSParserFactory;
+import cz.vutbr.web.csskit.antlr.CSSParserFactory.SourceType;
 import cz.vutbr.web.domassign.Analyzer;
 
 /**
@@ -189,34 +190,21 @@ public final class CSSFactory {
 		}
 	}
 
-	public static final StyleSheet parse(String fileName, String encoding) {
-		try {
-			CSSTreeParser parser = CSSTreeParser
-					.createParser(new CSSInputStream(fileName, encoding));
-			return parser.stylesheet();
-
-		} catch (Exception e) {
-			log.error("While parsing CSS stylesheet", e);
-			return getRuleFactory().createStyleSheet();
-		}
+	public static final StyleSheet parse(String fileName, String encoding)
+			throws CSSException, IOException {
+		return CSSParserFactory.parse(fileName, SourceType.FILE);
 	}
 
-	public static final StyleSheet parse(String css) {
-		try {
-			CSSTreeParser parser = CSSTreeParser
-					.createParser(new CSSInputStream(css));
-			return parser.stylesheet();
-		} catch (Exception e) {
-			log.error("While parsing CSS stylesheet", e);
-			return getRuleFactory().createStyleSheet();
-		}
+	public static final StyleSheet parse(String css) throws IOException,
+			CSSException {
+		return CSSParserFactory.parse(css, SourceType.EMBEDDED);
 	}
 
 	public static final Map<Element, NodeData> assign(Document doc,
 			StyleSheet sheet, String media, boolean useInheritance) {
-		
+
 		Analyzer analyzer = new Analyzer(sheet);
 		return analyzer.evaluateDOM(doc, media, useInheritance);
 	}
-	
+
 }

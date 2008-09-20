@@ -1,23 +1,23 @@
 package cz.vutbr.web.css;
 
 /**
- * StyleSheetNotValidException
+ * CSSException
  * 
  * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
  */
-public final class StyleSheetNotValidException extends Exception {
+public final class CSSException extends Exception {
 
     /**
 	 * Serial
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public StyleSheetNotValidException(String message) {
+	public CSSException(String message) {
     	super(message);
     }
     
-    public StyleSheetNotValidException(String message, Throwable cause) {
+    public CSSException(String message, Throwable cause) {
     	super(message, cause);
     }
 }

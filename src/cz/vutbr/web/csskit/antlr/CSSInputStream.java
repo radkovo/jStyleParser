@@ -15,6 +15,8 @@ import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CharStream;
 
 /**
+ * Wraps ANTLR stream with useful decorations,
+ * mainly to allow switching encoding on lexer
  * @author kapy
  *
  */
@@ -23,17 +25,17 @@ public class CSSInputStream implements CharStream {
 	/**
 	 * ANTLR input
 	 */
-	protected CharStream input;	
+	private CharStream input;	
 	
 	/**
 	 * Raw data of string passed, if any
 	 */
-	protected String rawData;
+	private String rawData;
 	
 	/**
 	 * File name, if any
 	 */
-	protected String fileName;
+	private String fileName;
 	
 	/**
 	 * Path to which others are relative.
@@ -49,41 +51,44 @@ public class CSSInputStream implements CharStream {
 	 * </p>
 	 * 
 	 */
-	protected String relativeRoot;
+	private String relativeRoot;
 	
 	/**
 	 * Encoding of file or string. If <code>null</code>
 	 */
-	protected String encoding;
+	private String encoding;
 	
-	/**
-	 * Creates input stream from reading from file
-	 * @param fileName Name of file
-	 * @param encoding Encoding of file, if <code>null</code> default is used
-	 * @throws IOException If file not found
-	 */
-	public CSSInputStream(String fileName, String encoding) throws IOException {
-		this.fileName = fileName;
-		this.encoding = encoding;
+	
+	public static CSSInputStream stringStream(String source) throws IOException {
+		CSSInputStream stream = new CSSInputStream();
 		
-		this.relativeRoot = computeRelativeRoot(new File(fileName));
-		this.input = new ANTLRFileStream(fileName, encoding);
-	}
-	
-	/**
-	 * Creates input stream from string
-	 * @param css Data to be parsed
-	 * @throws IOException If any problem during read occurs
-	 */
-	public CSSInputStream(String css) throws IOException {
-		this.rawData = css;
-		this.encoding = Charset.defaultCharset().name();
-		this.fileName = null;
-		this.relativeRoot = "";
+		stream.rawData = source;
+		stream.encoding = Charset.defaultCharset().name();
+		stream.fileName = null;
+		stream.relativeRoot = "";
 		
 		BufferedReader br = new BufferedReader(
-				new InputStreamReader(new ByteArrayInputStream(css.getBytes()), encoding));
-		this.input = new ANTLRReaderStream(br);
+				new InputStreamReader(new ByteArrayInputStream(source.getBytes()), stream.encoding));
+		stream.input = new ANTLRReaderStream(br);
+		
+		return stream;
+	}
+	
+	public static CSSInputStream fileStream(String filename) throws IOException {
+		CSSInputStream stream = new CSSInputStream();
+		
+		stream.fileName = filename;
+		stream.encoding = Charset.defaultCharset().name();
+		
+		stream.relativeRoot = computeRelativeRoot(new File(filename));
+		stream.input = new ANTLRFileStream(filename, stream.encoding);
+		
+		return stream;
+	}
+
+	// Sole constructor
+	// force using factory methods
+	private CSSInputStream() {
 	}
 	
 	/* (non-Javadoc)
@@ -204,8 +209,17 @@ public class CSSInputStream implements CharStream {
 	public String getRelativeRoot() {
 		return relativeRoot;
 	}
+	
+	/**
+	 * 
+	 * @return the raw data
+	 */
+	public String getRawData() {
+		return rawData;
+	}
 
-	private String computeRelativeRoot(File file) {
+	// computes root relative to this file
+	private static String computeRelativeRoot(File file) {
 		String parent = file.getParent();
 		if(parent==null || parent.length()==0)
 			return "";

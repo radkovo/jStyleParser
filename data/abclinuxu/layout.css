@@ -1093,7 +1093,7 @@ p.documentHistory {
 */
 
 /* tag cloud */
-#tagcloud_container { }
+#tagcloud_container { e }
 #tagcloud { margin: 0; }
 #tagcloud>li { display: inline; }
 #tagcloud>li.class0 { font-size: 85%; }

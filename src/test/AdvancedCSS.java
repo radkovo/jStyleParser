@@ -1,7 +1,7 @@
 package test;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
@@ -14,10 +14,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.tidy.Tidy;
 
+import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermList;
@@ -38,11 +38,10 @@ public class AdvancedCSS {
 	private static Map<Element, NodeData> decl;
 
 	@BeforeClass
-	public static void init() throws FileNotFoundException,
-			StyleSheetNotValidException {
-		
+	public static void init() throws IOException, CSSException {
+
 		log.info("\n\n\n == AdvancedTest test at {} == \n\n\n", new Date());
-		
+
 		Tidy parser = new Tidy();
 		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
 
@@ -67,7 +66,7 @@ public class AdvancedCSS {
 		NodeData data = decl.get(bp);
 
 		Assert.assertNotNull("Data for #bp exist", data);
-		
+
 		log.debug("{}", data);
 
 		Assert.assertEquals("Background position is list of two", 2, data
@@ -77,8 +76,8 @@ public class AdvancedCSS {
 				TermList.class, "background-position").get(0));
 		Assert.assertEquals(tf.createPercent(100.0f), data.getValue(
 				TermList.class, "background-position").get(1));
-		Assert.assertEquals(tf.createColor(255,255,255), 
-				data.getValue(TermColor.class, "color"));
+		Assert.assertEquals(tf.createColor(255, 255, 255), data.getValue(
+				TermColor.class, "color"));
 
 	}
 
@@ -100,25 +99,25 @@ public class AdvancedCSS {
 				TermList.class, "font-family").get(1));
 
 	}
-	
+
 	@Test
 	public void testBorder() {
 
 		NodeData data = decl.get(elements.getElementById("border"));
 
 		log.debug("{}", data);
-/*
-		Assert.assertEquals("Font family contains two fonts ", 2, data
-				.getValue(TermList.class, "font-family").size());
-
-		Assert.assertEquals("Which is serif", tf.createTerm(FontFamily.SERIF),
-				data.getValue(TermList.class, "font-family").get(0));
-
-		Assert.assertEquals("Which is 'Times New Roman'", tf.createString(
-				"Times New Roman").setOperator(Operator.COMMA), data.getValue(
-				TermList.class, "font-family").get(1));
-*/
+		/*
+		 * Assert.assertEquals("Font family contains two fonts ", 2, data
+		 * .getValue(TermList.class, "font-family").size());
+		 * 
+		 * Assert.assertEquals("Which is serif",
+		 * tf.createTerm(FontFamily.SERIF), data.getValue(TermList.class,
+		 * "font-family").get(0));
+		 * 
+		 * Assert.assertEquals("Which is 'Times New Roman'", tf.createString(
+		 * "Times New Roman").setOperator(Operator.COMMA), data.getValue(
+		 * TermList.class, "font-family").get(1));
+		 */
 	}
-	
 
 }

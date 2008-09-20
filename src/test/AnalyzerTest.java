@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
@@ -21,11 +21,11 @@ import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.TreeWalker;
 import org.w3c.tidy.Tidy;
 
+import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.StyleSheetNotValidException;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermColor;
@@ -51,8 +51,7 @@ public class AnalyzerTest {
 	private static ElementMap elements;
 
 	@BeforeClass
-	public static void init() throws FileNotFoundException,
-			StyleSheetNotValidException {
+	public static void init() throws IOException, CSSException {
 		log.info("\n\n\n == AnalyzerTest test at {} == \n\n\n", new Date());
 
 		Tidy parser = new Tidy();
