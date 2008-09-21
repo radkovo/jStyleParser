@@ -25,6 +25,7 @@ import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.RuleBlock.Priority;
+import cz.vutbr.web.csskit.PriorityStrategy;
 
 
 

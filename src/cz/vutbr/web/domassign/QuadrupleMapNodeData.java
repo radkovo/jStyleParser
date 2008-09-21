@@ -46,7 +46,7 @@ public class QuadrupleMapNodeData implements NodeData {
 	
 	
 	public <T extends CSSProperty> T getProperty(String name) {
-		return getProperty(name, true);
+		return this.<T>getProperty(name, true);
 	}
 	
 	public <T extends CSSProperty> T getProperty(String name, boolean includeInherited) {

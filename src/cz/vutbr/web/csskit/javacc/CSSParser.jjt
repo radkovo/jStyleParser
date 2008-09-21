@@ -27,6 +27,7 @@ import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleImport;
 import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.RuleBlock;
+import cz.vutbr.web.css.RuleBlock.Priority;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
@@ -39,6 +40,8 @@ import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermNumeric;
+
+import cz.vutbr.web.csskit.PriorityStrategy;
 
 /**
  * Parser of CSS passed as InputStream, Reader or directly as String.
@@ -61,7 +64,33 @@ public class CSSParser {
     private static final int FAST_SKIP = -10;
 
 
-	private Integer ruleNum = 0;
+    // priority using integer value
+	private static final class PriorityImpl implements Priority {		
+		final int priority;
+		public PriorityImpl(int priority) { this.priority = priority; }
+		
+		public int compareTo(Priority o) {
+			if(!(o instanceof PriorityImpl))
+				throw new ClassCastException("Unable to compare with different instance of priority: " + o.getClass());
+			PriorityImpl other = (PriorityImpl) o;		
+			return this.priority - other.priority;
+		}
+		
+		@Override
+		public String toString() {
+			return String.valueOf(priority);
+		}
+	}
+
+	private PriorityStrategy ps = new PriorityStrategy() {
+		int counter = 0;
+	    public Priority getAndIncrement() {
+	    	return new PriorityImpl(counter++);
+	    }
+	    public Priority markAndIncrement() {
+	    	return new PriorityImpl(counter++);
+	    }
+   };	
 
 	/** Character set of given css */
 	private String charset;
@@ -239,7 +268,6 @@ StyleSheet stylesheet() :
   	}
   	finally {
   		StyleSheet stylesheet = rf.createStyleSheet();
-  		stylesheet.setCharset(charset);
   		stylesheet.replaceAll(rules);
   
   		return stylesheet; 
@@ -290,7 +318,7 @@ void import_a() :
   			<SEMICOLON> 
   		{	
   			if(currentUri!=null || !"".equals(currentUri)) {
-  				RuleImport uri = rf.createImport(ruleNum++);
+  				RuleImport uri = rf.createImport(ps.getAndIncrement());
   				uri.setURI(currentUri);
   				uri.replaceAll(medias);
   				this.rules.add(uri);	
@@ -325,8 +353,8 @@ void media() :
   		(ruleset( (List<RuleBlock<?>>) mediarules))* 
   		<RCURLY> 
   		{
-			RuleMedia media = rf.createMedia(ruleNum++);
-  			media.setMedias(medias);
+			RuleMedia media = rf.createMedia(ps.getAndIncrement());
+  			media.setMedia(medias);
   			media.replaceAll( (List<RuleSet>) mediarules);
   			rules.add(media);
   		}
@@ -403,7 +431,7 @@ void ruleset(List<RuleBlock<?>> rules) :
   	// be error graceful to unknown selectors and declarations
   	finally {
   		if(cslist.size() > 0 && declarations.size() > 0) {
-  			RuleSet rule = rf.createSet(ruleNum++);
+  			RuleSet rule = rf.createSet(ps.getAndIncrement());
   			rule.setSelectors(cslist);
   			rule.replaceAll(declarations);
   			rules.add(rule);
@@ -443,7 +471,7 @@ void page() :
     // be error graceful to unknown declarations
   	finally {
   		if(declarations.size() > 0) {
-  			RulePage page = rf.createPage(ruleNum++);
+  			RulePage page = rf.createPage(ps.getAndIncrement());
   			page.setPseudo(pseudo);
   			page.replaceAll(declarations);
     		this.rules.add(page);

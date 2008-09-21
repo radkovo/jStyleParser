@@ -14,6 +14,7 @@ import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.RuleBlock.Priority;
+import cz.vutbr.web.csskit.PriorityStrategy;
 
 /**
  * Handles construction of parser

@@ -1,4 +1,4 @@
-package cz.vutbr.web.csskit.antlr;
+package cz.vutbr.web.csskit;
 
 import cz.vutbr.web.css.RuleBlock.Priority;
 

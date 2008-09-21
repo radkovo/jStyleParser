@@ -13,6 +13,7 @@ import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleImport;
 import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.RuleBlock;
+import cz.vutbr.web.css.RuleBlock.Priority;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
@@ -25,8 +26,9 @@ import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermNumeric;
+import cz.vutbr.web.csskit.PriorityStrategy;
 
-@SuppressWarnings("all")
+@SuppressWarnings({"unused","deprecation"})
 public class CSSParserTokenManager implements CSSParserConstants
 {
   public  java.io.PrintStream debugStream = System.out;
