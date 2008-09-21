@@ -1,25 +1,25 @@
 package cz.vutbr.web.css;
 
+import cz.vutbr.web.css.RuleBlock.Priority;
+
 
 /**
- * Acts as collection of Rules with added character sets.
- * This is entry point to parsed stylesheet.
- * 
+ * Acts as collection of Rules. Remembers last priority used 
+ * in style sheet to allow incremental parsing.
+ *
  * @author kapy
- * @author Jan Svercl, VUT Brno, 2008
  */
 public interface StyleSheet extends Rule<RuleBlock<?>>{
   
-	/**
-	 * Charset defined in stylesheet
-	 * @return String identification of charset
-	 */
-    public String getCharset();
-
     /**
-     * Sets charset
-     * @param charset New charset
+     * Marks last priority used in this style-sheet
+     * @param last Priority mark
      */
-    public void setCharset(String charset);       
-
+    public void markLast(Priority last);
+    
+    /**
+     * Gets last mark priority
+     * @return Priority mark
+     */
+    public Priority getLastMark();
 }

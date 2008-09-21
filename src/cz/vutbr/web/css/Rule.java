@@ -4,8 +4,10 @@ import java.util.List;
 
 /**
  * Base class for elements of CSS definition.
- * All rules can be created as immutable object.
- * Rule is generally collection of other, finier grained object.
+ * All rules can be created as immutable objects, but
+ * this immutability can be changed by functions
+ * {@code unlock){} or {@code replaceAll()} 
+ * Rule is generally collection of other, finer grained object.
  * 
  * @author kapy
  */
@@ -28,7 +30,8 @@ public interface Rule<T> extends List<T> {
 	Rule<T> unlock();
 	
 	/**
-	 * Returns underlying collection as list
+	 * Returns underlying collection as list. This list is shared
+	 * with Rule, so can be directly modified
 	 * @return Underlying collection
 	 */
 	List<T> asList();

@@ -80,8 +80,6 @@ public class GrammarRecovery1 {
 	public void charsetCharsetWithoutSemicolon() throws IOException, CSSException {
 
 		StyleSheet ss = CSSFactory.parse(TEST_CHARSET_WITHOUT_SEMICOLON1);
-		assertEquals("Charset should not be set", null, ss.getCharset());
-
 		assertEquals("No rules are defined", 0, ss.size());
 	}
 
@@ -89,8 +87,6 @@ public class GrammarRecovery1 {
 	public void charsetWithoutSemicolonAndDefinitinAfter() throws CSSException, IOException {
 
 		StyleSheet ss = CSSFactory.parse("data/invalid/recovery2.css", null);
-		assertEquals("Charset should not be set", null, ss.getCharset());
-
 		assertEquals("No rules are set", 0, ss.size());
 
 	}
@@ -99,7 +95,6 @@ public class GrammarRecovery1 {
 	public void charsetWithoutSemicolonAndDoubleDAfter() throws IOException, CSSException {
 
 		StyleSheet ss = CSSFactory.parse(TEST_CHARSET_WITHOUT_SEMICOLON3);
-		assertEquals("Charset should not be set", null, ss.getCharset());
 
 		RuleSet rule = (RuleSet) ss.get(0);
 

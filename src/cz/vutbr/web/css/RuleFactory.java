@@ -1,5 +1,6 @@
 package cz.vutbr.web.css;
 
+import cz.vutbr.web.css.RuleBlock.Priority;
 import cz.vutbr.web.css.Selector.Operator;
 
 /**
@@ -25,10 +26,11 @@ public interface RuleFactory {
 
 	/**
 	 * Creates CSS import rule
-	 * @param position Position in CSS style sheet
+	 * @param priority Priority mark
 	 * @return New CSS import rule
 	 */
-	RuleImport createImport(int position);
+	@Deprecated
+	RuleImport createImport(Priority priority);
 
 	/**
 	 * Creates CSS rule set, that is collection of CSS declarations
@@ -39,24 +41,24 @@ public interface RuleFactory {
 	 * to their occurrence in CSS style sheet.
 	 * 
 	 * 
-	 * @param position Position in CSS style sheet
+	 * @param priority Priority mark
 	 * @return New CSS rule set
 	 */
-	RuleSet createSet(int position);
+	RuleSet createSet(Priority priority);
 
 	/**
 	 * Creates CSS media page
-	 * @param position Position in CSS style sheet
+	 * @param priority Priority mark
 	 * @return New CSS media page
 	 */
-	RuleMedia createMedia(int position);
+	RuleMedia createMedia(Priority priority);
 
 	/**
 	 * Creates CSS named page
-	 * @param position Position in CSS style sheet
+	 * @param priority Priority mark
 	 * @return New CSS page
 	 */
-	RulePage createPage(int position);
+	RulePage createPage(Priority priority);
 
 	/**
 	 * Creates CSS combined selector, collection of (simple) selectors

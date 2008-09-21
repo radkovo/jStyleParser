@@ -20,11 +20,11 @@ public class RuleMediaImpl extends AbstractRuleBlock<RuleSet> implements RuleMed
 	
 	/**
 	 * Creates empty object to be fulfilled by interface methods
-	 * @param position Position in CSS stylesheet 
+	 * @param priority Priority mark
 	 * @return New empty instance of RuleMedia
 	 */
-	protected RuleMediaImpl(int position) {
-		super(position);
+	protected RuleMediaImpl(Priority priority) {
+		super(priority);
 		this.medias = Collections.emptyList();
 	}    
     

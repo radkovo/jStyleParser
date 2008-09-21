@@ -4,23 +4,23 @@ import cz.vutbr.web.css.RuleBlock;
 
 public class AbstractRuleBlock<T> extends AbstractRule<T> implements RuleBlock<T> {
 	
-	protected int position;
+	protected Priority priority;
 	
-	protected AbstractRuleBlock(int position) {
-		this.position = position;
-	}
-	
-	public int getFilePosition() {
-		return position;
-	}
-	
-	public RuleBlock<T> setFilePosition(int position) {
-		this.position = position;
-		return this;
+	protected AbstractRuleBlock(Priority priority) {
+		this.priority = priority;
 	}
 
+	public RuleBlock<T> setPriority(Priority priority) {
+		this.priority = priority;
+		return this;
+	}
+	
+	public Priority getPriority() {
+		return priority;
+	}
+	
 	public int compareTo(RuleBlock<?> o) throws ClassCastException {
-		return this.getFilePosition() - o.getFilePosition();
+		return this.getPriority().compareTo(o.getPriority());
 	}
 
 	/* (non-Javadoc)
@@ -30,7 +30,8 @@ public class AbstractRuleBlock<T> extends AbstractRule<T> implements RuleBlock<T
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + position;
+		result = prime * result
+				+ ((priority == null) ? 0 : priority.hashCode());
 		return result;
 	}
 
@@ -44,11 +45,15 @@ public class AbstractRuleBlock<T> extends AbstractRule<T> implements RuleBlock<T
 		if (!super.equals(obj))
 			return false;
 		if (!(obj instanceof AbstractRuleBlock))
-			return false;		
+			return false;
 		AbstractRuleBlock<?> other = (AbstractRuleBlock<?>) obj;
-		if (position != other.position)
+		if (priority == null) {
+			if (other.priority != null)
+				return false;
+		} else if (!priority.equals(other.priority))
 			return false;
 		return true;
 	}
+
 	
 }

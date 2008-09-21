@@ -1,24 +1,10 @@
-// $ANTLR 3.1 CSSTreeParser.g 2008-09-21 00:07:47
+// $ANTLR 3.1 CSSTreeParser.g 2008-09-21 13:33:13
 
 package cz.vutbr.web.csskit.antlr;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.Stack;
 
-import org.antlr.runtime.BaseRecognizer;
-import org.antlr.runtime.BitSet;
-import org.antlr.runtime.DFA;
-import org.antlr.runtime.EarlyExitException;
-import org.antlr.runtime.NoViableAltException;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.RecognizerSharedState;
-import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
-import org.antlr.runtime.tree.TreeNodeStream;
-import org.antlr.runtime.tree.TreeParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +24,14 @@ import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
+import cz.vutbr.web.css.RuleBlock.Priority;
+
+
+
+import org.antlr.runtime.*;
+import org.antlr.runtime.tree.*;import java.util.Stack;
+import java.util.List;
+import java.util.ArrayList;
 
 @SuppressWarnings("unchecked")
 public class CSSTreeParser extends TreeParser {
@@ -172,14 +166,15 @@ public class CSSTreeParser extends TreeParser {
     	}
 
     	// current number of rule
-    	private int ruleNum = 0;
+    	private PriorityStrategy ps;
     	
     	private StyleSheet stylesheet;
 
     	private Stack<TreeParserState> imports;	
            
-        public CSSTreeParser init(StyleSheet sheet) {
+        public CSSTreeParser init(StyleSheet sheet, PriorityStrategy ps) {
     	    this.stylesheet = sheet;
+    		this.ps = ps;
     		this.imports = new Stack<TreeParserState>();
     		return this;
     	}   
@@ -205,7 +200,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "inlinestyle"
-    // CSSTreeParser.g:87:1: inlinestyle returns [StyleSheet sheet] : ( ^( INLINESTYLE declarations ) | ^( INLINESTYLE ( inlineset )+ ) );
+    // CSSTreeParser.g:98:1: inlinestyle returns [StyleSheet sheet] : ( ^( INLINESTYLE declarations ) | ^( INLINESTYLE ( inlineset )+ ) );
     public final StyleSheet inlinestyle() throws RecognitionException {
         StyleSheet sheet = null;
 
@@ -214,7 +209,7 @@ public class CSSTreeParser extends TreeParser {
         	sheet = this.stylesheet;
 
         try {
-            // CSSTreeParser.g:96:2: ( ^( INLINESTYLE declarations ) | ^( INLINESTYLE ( inlineset )+ ) )
+            // CSSTreeParser.g:109:2: ( ^( INLINESTYLE declarations ) | ^( INLINESTYLE ( inlineset )+ ) )
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -252,7 +247,7 @@ public class CSSTreeParser extends TreeParser {
             }
             switch (alt2) {
                 case 1 :
-                    // CSSTreeParser.g:96:5: ^( INLINESTYLE declarations )
+                    // CSSTreeParser.g:109:5: ^( INLINESTYLE declarations )
                     {
                     match(input,INLINESTYLE,FOLLOW_INLINESTYLE_in_inlinestyle59); 
 
@@ -268,12 +263,12 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:97:6: ^( INLINESTYLE ( inlineset )+ )
+                    // CSSTreeParser.g:110:6: ^( INLINESTYLE ( inlineset )+ )
                     {
                     match(input,INLINESTYLE,FOLLOW_INLINESTYLE_in_inlinestyle71); 
 
                     match(input, Token.DOWN, null); 
-                    // CSSTreeParser.g:97:20: ( inlineset )+
+                    // CSSTreeParser.g:110:20: ( inlineset )+
                     int cnt1=0;
                     loop1:
                     do {
@@ -287,7 +282,7 @@ public class CSSTreeParser extends TreeParser {
 
                         switch (alt1) {
                     	case 1 :
-                    	    // CSSTreeParser.g:97:20: inlineset
+                    	    // CSSTreeParser.g:110:20: inlineset
                     	    {
                     	    pushFollow(FOLLOW_inlineset_in_inlinestyle73);
                     	    inlineset();
@@ -316,6 +311,8 @@ public class CSSTreeParser extends TreeParser {
             }
 
             	log.debug("\n***\n{}\n***\n", sheet);	   
+            	// mark last usage
+            	sheet.markLast(ps.getAndIncrement());
             	logLeave("inlinestyle");
 
         }
@@ -331,7 +328,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "stylesheet"
-    // CSSTreeParser.g:101:1: stylesheet returns [StyleSheet sheet] : ^( STYLESHEET (s= statement )* ) ;
+    // CSSTreeParser.g:114:1: stylesheet returns [StyleSheet sheet] : ^( STYLESHEET (s= statement )* ) ;
     public final StyleSheet stylesheet() throws RecognitionException {
         StyleSheet sheet = null;
 
@@ -343,14 +340,14 @@ public class CSSTreeParser extends TreeParser {
         	sheet = this.stylesheet;
 
         try {
-            // CSSTreeParser.g:113:2: ( ^( STYLESHEET (s= statement )* ) )
-            // CSSTreeParser.g:113:4: ^( STYLESHEET (s= statement )* )
+            // CSSTreeParser.g:128:2: ( ^( STYLESHEET (s= statement )* ) )
+            // CSSTreeParser.g:128:4: ^( STYLESHEET (s= statement )* )
             {
             match(input,STYLESHEET,FOLLOW_STYLESHEET_in_stylesheet105); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // CSSTreeParser.g:114:4: (s= statement )*
+                // CSSTreeParser.g:129:4: (s= statement )*
                 loop3:
                 do {
                     int alt3=2;
@@ -363,7 +360,7 @@ public class CSSTreeParser extends TreeParser {
 
                     switch (alt3) {
                 	case 1 :
-                	    // CSSTreeParser.g:114:5: s= statement
+                	    // CSSTreeParser.g:129:5: s= statement
                 	    {
                 	    pushFollow(FOLLOW_statement_in_stylesheet114);
                 	    s=statement();
@@ -387,7 +384,9 @@ public class CSSTreeParser extends TreeParser {
             }
 
 
-            	log.debug("\n***\n{}\n***\n", sheet);	   
+            	log.debug("\n***\n{}\n***\n", sheet);
+            	// mark last usage
+            	sheet.markLast(ps.getAndIncrement());
             	logLeave("stylesheet");
 
         }
@@ -409,7 +408,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "statement"
-    // CSSTreeParser.g:118:1: statement returns [RuleBlock<?> stm] : (rs= ruleset | ats= atstatement );
+    // CSSTreeParser.g:133:1: statement returns [RuleBlock<?> stm] : (rs= ruleset | ats= atstatement );
     public final RuleBlock<?> statement() throws RecognitionException {
         statement_stack.push(new statement_scope());
         RuleBlock<?> stm = null;
@@ -424,7 +423,7 @@ public class CSSTreeParser extends TreeParser {
         	((statement_scope)statement_stack.peek()).invalid = false;
 
         try {
-            // CSSTreeParser.g:137:2: (rs= ruleset | ats= atstatement )
+            // CSSTreeParser.g:152:2: (rs= ruleset | ats= atstatement )
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -442,7 +441,7 @@ public class CSSTreeParser extends TreeParser {
             }
             switch (alt4) {
                 case 1 :
-                    // CSSTreeParser.g:137:4: rs= ruleset
+                    // CSSTreeParser.g:152:4: rs= ruleset
                     {
                     pushFollow(FOLLOW_ruleset_in_statement163);
                     rs=ruleset();
@@ -454,7 +453,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:138:4: ats= atstatement
+                    // CSSTreeParser.g:153:4: ats= atstatement
                     {
                     pushFollow(FOLLOW_atstatement_in_statement173);
                     ats=atstatement();
@@ -489,7 +488,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "atstatement"
-    // CSSTreeParser.g:142:1: atstatement returns [RuleBlock<?> stmnt] : ( CHARSET | INVALID_IMPORT | i= IMPORT | IMPORT_END | ^( PAGE (i= IDENT )? decl= declarations ) | ^( MEDIA (mediaList= media )? (rs= ruleset )* ) | INVALID_STATEMENT );
+    // CSSTreeParser.g:157:1: atstatement returns [RuleBlock<?> stmnt] : ( CHARSET | INVALID_IMPORT | i= IMPORT | IMPORT_END | ^( PAGE (i= IDENT )? decl= declarations ) | ^( MEDIA (mediaList= media )? (rs= ruleset )* ) | INVALID_STATEMENT );
     public final RuleBlock<?> atstatement() throws RecognitionException {
         atstatement_stack.push(new atstatement_scope());
         RuleBlock<?> stmnt = null;
@@ -509,10 +508,10 @@ public class CSSTreeParser extends TreeParser {
         	List<Declaration> declarations = null;
         	List<RuleSet> rules = null;
         	String pseudo = null;
-        	int filePosition = ruleNum;
+        	Priority mark = ps.markAndIncrement();
 
         try {
-            // CSSTreeParser.g:158:2: ( CHARSET | INVALID_IMPORT | i= IMPORT | IMPORT_END | ^( PAGE (i= IDENT )? decl= declarations ) | ^( MEDIA (mediaList= media )? (rs= ruleset )* ) | INVALID_STATEMENT )
+            // CSSTreeParser.g:173:2: ( CHARSET | INVALID_IMPORT | i= IMPORT | IMPORT_END | ^( PAGE (i= IDENT )? decl= declarations ) | ^( MEDIA (mediaList= media )? (rs= ruleset )* ) | INVALID_STATEMENT )
             int alt8=7;
             switch ( input.LA(1) ) {
             case CHARSET:
@@ -559,21 +558,21 @@ public class CSSTreeParser extends TreeParser {
 
             switch (alt8) {
                 case 1 :
-                    // CSSTreeParser.g:158:4: CHARSET
+                    // CSSTreeParser.g:173:4: CHARSET
                     {
                     match(input,CHARSET,FOLLOW_CHARSET_in_atstatement206); 
 
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:159:4: INVALID_IMPORT
+                    // CSSTreeParser.g:174:4: INVALID_IMPORT
                     {
                     match(input,INVALID_IMPORT,FOLLOW_INVALID_IMPORT_in_atstatement212); 
 
                     }
                     break;
                 case 3 :
-                    // CSSTreeParser.g:160:4: i= IMPORT
+                    // CSSTreeParser.g:175:4: i= IMPORT
                     {
                     i=(CommonTree)match(input,IMPORT,FOLLOW_IMPORT_in_atstatement220); 
 
@@ -587,7 +586,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 4 :
-                    // CSSTreeParser.g:168:4: IMPORT_END
+                    // CSSTreeParser.g:183:4: IMPORT_END
                     {
                     match(input,IMPORT_END,FOLLOW_IMPORT_END_in_atstatement231); 
 
@@ -598,12 +597,12 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 5 :
-                    // CSSTreeParser.g:172:4: ^( PAGE (i= IDENT )? decl= declarations )
+                    // CSSTreeParser.g:187:4: ^( PAGE (i= IDENT )? decl= declarations )
                     {
                     match(input,PAGE,FOLLOW_PAGE_in_atstatement239); 
 
                     match(input, Token.DOWN, null); 
-                    // CSSTreeParser.g:172:11: (i= IDENT )?
+                    // CSSTreeParser.g:187:11: (i= IDENT )?
                     int alt5=2;
                     int LA5_0 = input.LA(1);
 
@@ -612,7 +611,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     switch (alt5) {
                         case 1 :
-                            // CSSTreeParser.g:172:12: i= IDENT
+                            // CSSTreeParser.g:187:12: i= IDENT
                             {
                             i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_atstatement244); 
                              pseudo=extractText(i);
@@ -628,12 +627,13 @@ public class CSSTreeParser extends TreeParser {
                     state._fsp--;
 
 
-                    		   	if(decl!=null && !decl.isEmpty()) {	
-                                	RulePage rp = rf.createPage(ruleNum++);
+                    		   	if(decl!=null && !decl.isEmpty()) {
+                    				Priority prio = ps.getAndIncrement();							  
+                                	RulePage rp = rf.createPage(prio);
                                     rp.replaceAll(declarations);
                                     rp.setPseudo(pseudo);
                                     stmnt = rp;
-                                    log.info("Create @page as {}th with:\n{}",  ruleNum, rp);
+                                    log.info("Create @page as {}th with:\n{}",  prio, rp);
                                 }
                     		
 
@@ -642,13 +642,13 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 6 :
-                    // CSSTreeParser.g:182:4: ^( MEDIA (mediaList= media )? (rs= ruleset )* )
+                    // CSSTreeParser.g:198:4: ^( MEDIA (mediaList= media )? (rs= ruleset )* )
                     {
                     match(input,MEDIA,FOLLOW_MEDIA_in_atstatement262); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // CSSTreeParser.g:182:12: (mediaList= media )?
+                        // CSSTreeParser.g:198:12: (mediaList= media )?
                         int alt6=2;
                         int LA6_0 = input.LA(1);
 
@@ -657,7 +657,7 @@ public class CSSTreeParser extends TreeParser {
                         }
                         switch (alt6) {
                             case 1 :
-                                // CSSTreeParser.g:182:13: mediaList= media
+                                // CSSTreeParser.g:198:13: mediaList= media
                                 {
                                 pushFollow(FOLLOW_media_in_atstatement267);
                                 mediaList=media();
@@ -670,7 +670,7 @@ public class CSSTreeParser extends TreeParser {
 
                         }
 
-                        // CSSTreeParser.g:183:4: (rs= ruleset )*
+                        // CSSTreeParser.g:199:4: (rs= ruleset )*
                         loop7:
                         do {
                             int alt7=2;
@@ -683,7 +683,7 @@ public class CSSTreeParser extends TreeParser {
 
                             switch (alt7) {
                         	case 1 :
-                        	    // CSSTreeParser.g:183:5: rs= ruleset
+                        	    // CSSTreeParser.g:199:5: rs= ruleset
                         	    {
                         	    pushFollow(FOLLOW_ruleset_in_atstatement278);
                         	    rs=ruleset();
@@ -693,9 +693,6 @@ public class CSSTreeParser extends TreeParser {
 
                         	    			   if(rules==null) rules = new ArrayList<RuleSet>();				
                         	    			   if(rs!=null) {
-                        	    				   // increment rule number
-                        	    				   rs.setFilePosition(rs.getFilePosition()+1);
-                        	    				   
                         	    				   // this cast should be safe, because when 
                         	    				   // inside of @statetement, oridinal ruleset
                         	    				   // is returned
@@ -719,9 +716,8 @@ public class CSSTreeParser extends TreeParser {
                     }
 
                     		   if(rules!=null && !rules.isEmpty()) {
-                    			  // create at begining, increment to match positions								   
-                                  RuleMedia rm = rf.createMedia(filePosition);
-                    			  ruleNum++;
+                    			  // create at the beginning, increment to match positions								   
+                                  RuleMedia rm = rf.createMedia(mark);
                     			  
                     			  rm.replaceAll(rules);
                     			  if(mediaList!=null && !mediaList.isEmpty()) 
@@ -729,7 +725,7 @@ public class CSSTreeParser extends TreeParser {
                     				
                     			  stmnt = rm;
                                   log.info("Create @media as {}th with:\n{}", 
-                                    	rm.getFilePosition(), rm);
+                                    	mark, rm);
                     			  
                     		   }
                     	   
@@ -737,7 +733,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 7 :
-                    // CSSTreeParser.g:215:4: INVALID_STATEMENT
+                    // CSSTreeParser.g:227:4: INVALID_STATEMENT
                     {
                     match(input,INVALID_STATEMENT,FOLLOW_INVALID_STATEMENT_in_atstatement300); 
                     ((statement_scope)statement_stack.peek()).invalid =true;
@@ -763,7 +759,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "media"
-    // CSSTreeParser.g:218:1: media returns [List<String> affected] : (i= IDENT )+ ;
+    // CSSTreeParser.g:230:1: media returns [List<String> affected] : (i= IDENT )+ ;
     public final List<String> media() throws RecognitionException {
         List<String> affected = null;
 
@@ -774,10 +770,10 @@ public class CSSTreeParser extends TreeParser {
            affected = new ArrayList<String>();
 
         try {
-            // CSSTreeParser.g:227:2: ( (i= IDENT )+ )
-            // CSSTreeParser.g:227:4: (i= IDENT )+
+            // CSSTreeParser.g:239:2: ( (i= IDENT )+ )
+            // CSSTreeParser.g:239:4: (i= IDENT )+
             {
-            // CSSTreeParser.g:227:4: (i= IDENT )+
+            // CSSTreeParser.g:239:4: (i= IDENT )+
             int cnt9=0;
             loop9:
             do {
@@ -791,7 +787,7 @@ public class CSSTreeParser extends TreeParser {
 
                 switch (alt9) {
             	case 1 :
-            	    // CSSTreeParser.g:227:5: i= IDENT
+            	    // CSSTreeParser.g:239:5: i= IDENT
             	    {
             	    i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_media332); 
 
@@ -831,16 +827,16 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "inlineset"
-    // CSSTreeParser.g:233:1: inlineset : ^( RULE ( pseudo )* declarations ) ;
+    // CSSTreeParser.g:245:1: inlineset : ^( RULE ( pseudo )* declarations ) ;
     public final void inlineset() throws RecognitionException {
         try {
-            // CSSTreeParser.g:234:2: ( ^( RULE ( pseudo )* declarations ) )
-            // CSSTreeParser.g:234:4: ^( RULE ( pseudo )* declarations )
+            // CSSTreeParser.g:246:2: ( ^( RULE ( pseudo )* declarations ) )
+            // CSSTreeParser.g:246:4: ^( RULE ( pseudo )* declarations )
             {
             match(input,RULE,FOLLOW_RULE_in_inlineset353); 
 
             match(input, Token.DOWN, null); 
-            // CSSTreeParser.g:234:11: ( pseudo )*
+            // CSSTreeParser.g:246:11: ( pseudo )*
             loop10:
             do {
                 int alt10=2;
@@ -853,7 +849,7 @@ public class CSSTreeParser extends TreeParser {
 
                 switch (alt10) {
             	case 1 :
-            	    // CSSTreeParser.g:234:11: pseudo
+            	    // CSSTreeParser.g:246:11: pseudo
             	    {
             	    pushFollow(FOLLOW_pseudo_in_inlineset355);
             	    pseudo();
@@ -892,7 +888,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "ruleset"
-    // CSSTreeParser.g:238:1: ruleset returns [RuleBlock<?> stmnt] : ^( RULE (cs= combined_selector )* decl= declarations ) ;
+    // CSSTreeParser.g:250:1: ruleset returns [RuleBlock<?> stmnt] : ^( RULE (cs= combined_selector )* decl= declarations ) ;
     public final RuleBlock<?> ruleset() throws RecognitionException {
         RuleBlock<?> stmnt = null;
 
@@ -906,13 +902,13 @@ public class CSSTreeParser extends TreeParser {
             List<CombinedSelector> cslist = new ArrayList<CombinedSelector>();
 
         try {
-            // CSSTreeParser.g:284:5: ( ^( RULE (cs= combined_selector )* decl= declarations ) )
-            // CSSTreeParser.g:284:7: ^( RULE (cs= combined_selector )* decl= declarations )
+            // CSSTreeParser.g:297:5: ( ^( RULE (cs= combined_selector )* decl= declarations ) )
+            // CSSTreeParser.g:297:7: ^( RULE (cs= combined_selector )* decl= declarations )
             {
             match(input,RULE,FOLLOW_RULE_in_ruleset405); 
 
             match(input, Token.DOWN, null); 
-            // CSSTreeParser.g:285:9: (cs= combined_selector )*
+            // CSSTreeParser.g:298:9: (cs= combined_selector )*
             loop11:
             do {
                 int alt11=2;
@@ -925,7 +921,7 @@ public class CSSTreeParser extends TreeParser {
 
                 switch (alt11) {
             	case 1 :
-            	    // CSSTreeParser.g:285:10: cs= combined_selector
+            	    // CSSTreeParser.g:298:10: cs= combined_selector
             	    {
             	    pushFollow(FOLLOW_combined_selector_in_ruleset419);
             	    cs=combined_selector();
@@ -963,19 +959,20 @@ public class CSSTreeParser extends TreeParser {
                     log.debug("Ruleset not valid, so not created");
                 }
                 else {    
-                    RuleSet rs = rf.createSet(ruleNum++);
+            		Priority prio = ps.getAndIncrement(); 
+                    RuleSet rs = rf.createSet(prio);
                     rs.setSelectors(cslist);
                     rs.replaceAll(decl);
-            		log.info("Create ruleset as {}th with:\n{}", ruleNum, rs);
+            		log.info("Create ruleset as {}th with:\n{}", prio, rs);
             		
             		// check statement
             		if(!((statement_scope)statement_stack.peek()).insideAtstatement && !imports.isEmpty() 
             			&& imports.peek().doWrap()) {
             			
             			// swap numbers, so RuleMedia is created before RuleSet
-            			int filePosition = rs.getFilePosition();			
-            			rs.setFilePosition(ruleNum++);
-            			RuleMedia rm = rf.createMedia(filePosition);
+            			prio = rs.getPriority();			
+            			rs.setPriority(ps.getAndIncrement());
+            			RuleMedia rm = rf.createMedia(prio);
             			List<String> media = imports.peek().media;
             			
             			log.debug("Wrapping ruleset {} into media: {}", rs, media);
@@ -1007,7 +1004,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "declarations"
-    // CSSTreeParser.g:296:1: declarations returns [List<Declaration> decl] : ^( SET (d= declaration )* ) ;
+    // CSSTreeParser.g:309:1: declarations returns [List<Declaration> decl] : ^( SET (d= declaration )* ) ;
     public final List<Declaration> declarations() throws RecognitionException {
         List<Declaration> decl = null;
 
@@ -1019,14 +1016,14 @@ public class CSSTreeParser extends TreeParser {
         		  decl = new ArrayList<Declaration>();
 
         try {
-            // CSSTreeParser.g:307:2: ( ^( SET (d= declaration )* ) )
-            // CSSTreeParser.g:307:4: ^( SET (d= declaration )* )
+            // CSSTreeParser.g:320:2: ( ^( SET (d= declaration )* ) )
+            // CSSTreeParser.g:320:4: ^( SET (d= declaration )* )
             {
             match(input,SET,FOLLOW_SET_in_declarations481); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // CSSTreeParser.g:307:10: (d= declaration )*
+                // CSSTreeParser.g:320:10: (d= declaration )*
                 loop12:
                 do {
                     int alt12=2;
@@ -1039,7 +1036,7 @@ public class CSSTreeParser extends TreeParser {
 
                     switch (alt12) {
                 	case 1 :
-                	    // CSSTreeParser.g:307:11: d= declaration
+                	    // CSSTreeParser.g:320:11: d= declaration
                 	    {
                 	    pushFollow(FOLLOW_declaration_in_declarations486);
                 	    d=declaration();
@@ -1089,7 +1086,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "declaration"
-    // CSSTreeParser.g:317:1: declaration returns [Declaration decl] : ( ^( DECLARATION ( important )? property t= terms ) | INVALID_DECLARATION );
+    // CSSTreeParser.g:330:1: declaration returns [Declaration decl] : ( ^( DECLARATION ( important )? property t= terms ) | INVALID_DECLARATION );
     public final Declaration declaration() throws RecognitionException {
         declaration_stack.push(new declaration_scope());
         Declaration decl = null;
@@ -1103,7 +1100,7 @@ public class CSSTreeParser extends TreeParser {
             ((declaration_scope)declaration_stack.peek()).invalid = false;
 
         try {
-            // CSSTreeParser.g:340:3: ( ^( DECLARATION ( important )? property t= terms ) | INVALID_DECLARATION )
+            // CSSTreeParser.g:353:3: ( ^( DECLARATION ( important )? property t= terms ) | INVALID_DECLARATION )
             int alt14=2;
             int LA14_0 = input.LA(1);
 
@@ -1121,12 +1118,12 @@ public class CSSTreeParser extends TreeParser {
             }
             switch (alt14) {
                 case 1 :
-                    // CSSTreeParser.g:340:5: ^( DECLARATION ( important )? property t= terms )
+                    // CSSTreeParser.g:353:5: ^( DECLARATION ( important )? property t= terms )
                     {
                     match(input,DECLARATION,FOLLOW_DECLARATION_in_declaration530); 
 
                     match(input, Token.DOWN, null); 
-                    // CSSTreeParser.g:341:4: ( important )?
+                    // CSSTreeParser.g:354:4: ( important )?
                     int alt13=2;
                     int LA13_0 = input.LA(1);
 
@@ -1135,7 +1132,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     switch (alt13) {
                         case 1 :
-                            // CSSTreeParser.g:341:5: important
+                            // CSSTreeParser.g:354:5: important
                             {
                             pushFollow(FOLLOW_important_in_declaration537);
                             important();
@@ -1166,7 +1163,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:345:5: INVALID_DECLARATION
+                    // CSSTreeParser.g:358:5: INVALID_DECLARATION
                     {
                     match(input,INVALID_DECLARATION,FOLLOW_INVALID_DECLARATION_in_declaration581); 
                      ((declaration_scope)declaration_stack.peek()).invalid =true;
@@ -1199,11 +1196,11 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "important"
-    // CSSTreeParser.g:348:1: important : IMPORTANT ;
+    // CSSTreeParser.g:361:1: important : IMPORTANT ;
     public final void important() throws RecognitionException {
         try {
-            // CSSTreeParser.g:349:5: ( IMPORTANT )
-            // CSSTreeParser.g:349:7: IMPORTANT
+            // CSSTreeParser.g:362:5: ( IMPORTANT )
+            // CSSTreeParser.g:362:7: IMPORTANT
             {
             match(input,IMPORTANT,FOLLOW_IMPORTANT_in_important598); 
 
@@ -1222,7 +1219,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "property"
-    // CSSTreeParser.g:352:1: property : i= IDENT ;
+    // CSSTreeParser.g:365:1: property : i= IDENT ;
     public final void property() throws RecognitionException {
         CommonTree i=null;
 
@@ -1230,8 +1227,8 @@ public class CSSTreeParser extends TreeParser {
             logEnter("property");
 
         try {
-            // CSSTreeParser.g:363:3: (i= IDENT )
-            // CSSTreeParser.g:363:5: i= IDENT
+            // CSSTreeParser.g:376:3: (i= IDENT )
+            // CSSTreeParser.g:376:5: i= IDENT
             {
             i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_property638); 
              ((declaration_scope)declaration_stack.peek()).d.setProperty(extractText(i)); 
@@ -1263,7 +1260,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "terms"
-    // CSSTreeParser.g:366:1: terms returns [List<Term<?>> tlist] : ^( VALUE ( term )+ ) ;
+    // CSSTreeParser.g:379:1: terms returns [List<Term<?>> tlist] : ^( VALUE ( term )+ ) ;
     public final List<Term<?>> terms() throws RecognitionException {
         terms_stack.push(new terms_scope());
         List<Term<?>> tlist = null;
@@ -1276,13 +1273,13 @@ public class CSSTreeParser extends TreeParser {
             ((terms_scope)terms_stack.peek()).unary = 1;
 
         try {
-            // CSSTreeParser.g:387:5: ( ^( VALUE ( term )+ ) )
-            // CSSTreeParser.g:387:7: ^( VALUE ( term )+ )
+            // CSSTreeParser.g:400:5: ( ^( VALUE ( term )+ ) )
+            // CSSTreeParser.g:400:7: ^( VALUE ( term )+ )
             {
             match(input,VALUE,FOLLOW_VALUE_in_terms683); 
 
             match(input, Token.DOWN, null); 
-            // CSSTreeParser.g:387:15: ( term )+
+            // CSSTreeParser.g:400:15: ( term )+
             int cnt15=0;
             loop15:
             do {
@@ -1296,7 +1293,7 @@ public class CSSTreeParser extends TreeParser {
 
                 switch (alt15) {
             	case 1 :
-            	    // CSSTreeParser.g:387:15: term
+            	    // CSSTreeParser.g:400:15: term
             	    {
             	    pushFollow(FOLLOW_term_in_terms685);
             	    term();
@@ -1339,10 +1336,10 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "term"
-    // CSSTreeParser.g:390:1: term : ( valuepart | CURLYBLOCK | ATKEYWORD );
+    // CSSTreeParser.g:403:1: term : ( valuepart | CURLYBLOCK | ATKEYWORD );
     public final void term() throws RecognitionException {
         try {
-            // CSSTreeParser.g:391:5: ( valuepart | CURLYBLOCK | ATKEYWORD )
+            // CSSTreeParser.g:404:5: ( valuepart | CURLYBLOCK | ATKEYWORD )
             int alt16=3;
             switch ( input.LA(1) ) {
             case PARENBLOCK:
@@ -1391,7 +1388,7 @@ public class CSSTreeParser extends TreeParser {
 
             switch (alt16) {
                 case 1 :
-                    // CSSTreeParser.g:391:7: valuepart
+                    // CSSTreeParser.g:404:7: valuepart
                     {
                     pushFollow(FOLLOW_valuepart_in_term708);
                     valuepart();
@@ -1412,7 +1409,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:402:7: CURLYBLOCK
+                    // CSSTreeParser.g:415:7: CURLYBLOCK
                     {
                     match(input,CURLYBLOCK,FOLLOW_CURLYBLOCK_in_term725); 
                      ((declaration_scope)declaration_stack.peek()).invalid = true;
@@ -1420,7 +1417,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // CSSTreeParser.g:403:7: ATKEYWORD
+                    // CSSTreeParser.g:416:7: ATKEYWORD
                     {
                     match(input,ATKEYWORD,FOLLOW_ATKEYWORD_in_term735); 
                      ((declaration_scope)declaration_stack.peek()).invalid = true;
@@ -1442,7 +1439,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "valuepart"
-    // CSSTreeParser.g:406:1: valuepart : (i= IDENT | CLASSKEYWORD | ( MINUS )? n= NUMBER | ( MINUS )? p= PERCENTAGE | ( MINUS )? d= DIMENSION | s= string | u= URI | h= HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | PLUS | ASTERISK | ^(f= FUNCTION t= terms ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) );
+    // CSSTreeParser.g:419:1: valuepart : (i= IDENT | CLASSKEYWORD | ( MINUS )? n= NUMBER | ( MINUS )? p= PERCENTAGE | ( MINUS )? d= DIMENSION | s= string | u= URI | h= HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | PLUS | ASTERISK | ^(f= FUNCTION t= terms ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) );
     public final void valuepart() throws RecognitionException {
         CommonTree i=null;
         CommonTree n=null;
@@ -1457,12 +1454,12 @@ public class CSSTreeParser extends TreeParser {
 
 
         try {
-            // CSSTreeParser.g:428:5: (i= IDENT | CLASSKEYWORD | ( MINUS )? n= NUMBER | ( MINUS )? p= PERCENTAGE | ( MINUS )? d= DIMENSION | s= string | u= URI | h= HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | PLUS | ASTERISK | ^(f= FUNCTION t= terms ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) )
+            // CSSTreeParser.g:441:5: (i= IDENT | CLASSKEYWORD | ( MINUS )? n= NUMBER | ( MINUS )? p= PERCENTAGE | ( MINUS )? d= DIMENSION | s= string | u= URI | h= HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | PLUS | ASTERISK | ^(f= FUNCTION t= terms ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) )
             int alt22=21;
             alt22 = dfa22.predict(input);
             switch (alt22) {
                 case 1 :
-                    // CSSTreeParser.g:428:7: i= IDENT
+                    // CSSTreeParser.g:441:7: i= IDENT
                     {
                     i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_valuepart763); 
                     ((terms_scope)terms_stack.peek()).term = tf.createIdent(extractText(i));
@@ -1470,7 +1467,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:429:7: CLASSKEYWORD
+                    // CSSTreeParser.g:442:7: CLASSKEYWORD
                     {
                     match(input,CLASSKEYWORD,FOLLOW_CLASSKEYWORD_in_valuepart775); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
@@ -1478,9 +1475,9 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // CSSTreeParser.g:430:4: ( MINUS )? n= NUMBER
+                    // CSSTreeParser.g:443:4: ( MINUS )? n= NUMBER
                     {
-                    // CSSTreeParser.g:430:4: ( MINUS )?
+                    // CSSTreeParser.g:443:4: ( MINUS )?
                     int alt17=2;
                     int LA17_0 = input.LA(1);
 
@@ -1489,7 +1486,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     switch (alt17) {
                         case 1 :
-                            // CSSTreeParser.g:430:5: MINUS
+                            // CSSTreeParser.g:443:5: MINUS
                             {
                             match(input,MINUS,FOLLOW_MINUS_in_valuepart783); 
                             ((terms_scope)terms_stack.peek()).unary =-1;
@@ -1505,9 +1502,9 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 4 :
-                    // CSSTreeParser.g:431:7: ( MINUS )? p= PERCENTAGE
+                    // CSSTreeParser.g:444:7: ( MINUS )? p= PERCENTAGE
                     {
-                    // CSSTreeParser.g:431:7: ( MINUS )?
+                    // CSSTreeParser.g:444:7: ( MINUS )?
                     int alt18=2;
                     int LA18_0 = input.LA(1);
 
@@ -1516,7 +1513,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     switch (alt18) {
                         case 1 :
-                            // CSSTreeParser.g:431:8: MINUS
+                            // CSSTreeParser.g:444:8: MINUS
                             {
                             match(input,MINUS,FOLLOW_MINUS_in_valuepart805); 
                             ((terms_scope)terms_stack.peek()).unary =-1;
@@ -1532,9 +1529,9 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 5 :
-                    // CSSTreeParser.g:432:7: ( MINUS )? d= DIMENSION
+                    // CSSTreeParser.g:445:7: ( MINUS )? d= DIMENSION
                     {
-                    // CSSTreeParser.g:432:7: ( MINUS )?
+                    // CSSTreeParser.g:445:7: ( MINUS )?
                     int alt19=2;
                     int LA19_0 = input.LA(1);
 
@@ -1543,7 +1540,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     switch (alt19) {
                         case 1 :
-                            // CSSTreeParser.g:432:8: MINUS
+                            // CSSTreeParser.g:445:8: MINUS
                             {
                             match(input,MINUS,FOLLOW_MINUS_in_valuepart825); 
                             ((terms_scope)terms_stack.peek()).unary =-1;
@@ -1565,7 +1562,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 6 :
-                    // CSSTreeParser.g:440:7: s= string
+                    // CSSTreeParser.g:453:7: s= string
                     {
                     pushFollow(FOLLOW_string_in_valuepart849);
                     s=string();
@@ -1579,7 +1576,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 7 :
-                    // CSSTreeParser.g:444:7: u= URI
+                    // CSSTreeParser.g:457:7: u= URI
                     {
                     u=(CommonTree)match(input,URI,FOLLOW_URI_in_valuepart866); 
                     ((terms_scope)terms_stack.peek()).term = tf.createURI(extractText(u));
@@ -1587,7 +1584,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 8 :
-                    // CSSTreeParser.g:445:7: h= HASH
+                    // CSSTreeParser.g:458:7: h= HASH
                     {
                     h=(CommonTree)match(input,HASH,FOLLOW_HASH_in_valuepart884); 
                     ((terms_scope)terms_stack.peek()).term = tf.createColor(extractText(h));
@@ -1598,7 +1595,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 9 :
-                    // CSSTreeParser.g:450:7: UNIRANGE
+                    // CSSTreeParser.g:463:7: UNIRANGE
                     {
                     match(input,UNIRANGE,FOLLOW_UNIRANGE_in_valuepart902); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
@@ -1606,7 +1603,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 10 :
-                    // CSSTreeParser.g:451:7: INCLUDES
+                    // CSSTreeParser.g:464:7: INCLUDES
                     {
                     match(input,INCLUDES,FOLLOW_INCLUDES_in_valuepart913); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
@@ -1614,7 +1611,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 11 :
-                    // CSSTreeParser.g:452:7: COLON
+                    // CSSTreeParser.g:465:7: COLON
                     {
                     match(input,COLON,FOLLOW_COLON_in_valuepart924); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
@@ -1622,7 +1619,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 12 :
-                    // CSSTreeParser.g:453:7: COMMA
+                    // CSSTreeParser.g:466:7: COMMA
                     {
                     match(input,COMMA,FOLLOW_COMMA_in_valuepart938); 
                     ((terms_scope)terms_stack.peek()).op = Term.Operator.COMMA;
@@ -1630,7 +1627,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 13 :
-                    // CSSTreeParser.g:454:7: GREATER
+                    // CSSTreeParser.g:467:7: GREATER
                     {
                     match(input,GREATER,FOLLOW_GREATER_in_valuepart956); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
@@ -1638,7 +1635,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 14 :
-                    // CSSTreeParser.g:455:7: EQUALS
+                    // CSSTreeParser.g:468:7: EQUALS
                     {
                     match(input,EQUALS,FOLLOW_EQUALS_in_valuepart968); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
@@ -1646,7 +1643,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 15 :
-                    // CSSTreeParser.g:456:7: SLASH
+                    // CSSTreeParser.g:469:7: SLASH
                     {
                     match(input,SLASH,FOLLOW_SLASH_in_valuepart981); 
                     ((terms_scope)terms_stack.peek()).op = Term.Operator.SLASH;
@@ -1654,7 +1651,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 16 :
-                    // CSSTreeParser.g:457:4: PLUS
+                    // CSSTreeParser.g:470:4: PLUS
                     {
                     match(input,PLUS,FOLLOW_PLUS_in_valuepart992); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
@@ -1662,7 +1659,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 17 :
-                    // CSSTreeParser.g:458:4: ASTERISK
+                    // CSSTreeParser.g:471:4: ASTERISK
                     {
                     match(input,ASTERISK,FOLLOW_ASTERISK_in_valuepart1000); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
@@ -1670,7 +1667,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 18 :
-                    // CSSTreeParser.g:459:7: ^(f= FUNCTION t= terms )
+                    // CSSTreeParser.g:472:7: ^(f= FUNCTION t= terms )
                     {
                     f=(CommonTree)match(input,FUNCTION,FOLLOW_FUNCTION_in_valuepart1014); 
 
@@ -1693,7 +1690,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 19 :
-                    // CSSTreeParser.g:466:7: DASHMATCH
+                    // CSSTreeParser.g:479:7: DASHMATCH
                     {
                     match(input,DASHMATCH,FOLLOW_DASHMATCH_in_valuepart1029); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
@@ -1701,13 +1698,13 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 20 :
-                    // CSSTreeParser.g:467:7: ^( PARENBLOCK ( any )* )
+                    // CSSTreeParser.g:480:7: ^( PARENBLOCK ( any )* )
                     {
                     match(input,PARENBLOCK,FOLLOW_PARENBLOCK_in_valuepart1040); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // CSSTreeParser.g:467:20: ( any )*
+                        // CSSTreeParser.g:480:20: ( any )*
                         loop20:
                         do {
                             int alt20=2;
@@ -1720,7 +1717,7 @@ public class CSSTreeParser extends TreeParser {
 
                             switch (alt20) {
                         	case 1 :
-                        	    // CSSTreeParser.g:467:20: any
+                        	    // CSSTreeParser.g:480:20: any
                         	    {
                         	    pushFollow(FOLLOW_any_in_valuepart1042);
                         	    any();
@@ -1744,13 +1741,13 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 21 :
-                    // CSSTreeParser.g:468:7: ^( BRACEBLOCK ( any )* )
+                    // CSSTreeParser.g:481:7: ^( BRACEBLOCK ( any )* )
                     {
                     match(input,BRACEBLOCK,FOLLOW_BRACEBLOCK_in_valuepart1055); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // CSSTreeParser.g:468:20: ( any )*
+                        // CSSTreeParser.g:481:20: ( any )*
                         loop21:
                         do {
                             int alt21=2;
@@ -1763,7 +1760,7 @@ public class CSSTreeParser extends TreeParser {
 
                             switch (alt21) {
                         	case 1 :
-                        	    // CSSTreeParser.g:468:20: any
+                        	    // CSSTreeParser.g:481:20: any
                         	    {
                         	    pushFollow(FOLLOW_any_in_valuepart1057);
                         	    any();
@@ -1827,7 +1824,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "combined_selector"
-    // CSSTreeParser.g:471:1: combined_selector returns [CombinedSelector combinedSelector] : s= selector (c= combinator s= selector )* ;
+    // CSSTreeParser.g:484:1: combined_selector returns [CombinedSelector combinedSelector] : s= selector (c= combinator s= selector )* ;
     public final CombinedSelector combined_selector() throws RecognitionException {
         combined_selector_stack.push(new combined_selector_scope());
         CombinedSelector combinedSelector = null;
@@ -1842,8 +1839,8 @@ public class CSSTreeParser extends TreeParser {
         	combinedSelector = (CombinedSelector) rf.createCombinedSelector().unlock();
 
         try {
-            // CSSTreeParser.g:501:2: (s= selector (c= combinator s= selector )* )
-            // CSSTreeParser.g:501:4: s= selector (c= combinator s= selector )*
+            // CSSTreeParser.g:514:2: (s= selector (c= combinator s= selector )* )
+            // CSSTreeParser.g:514:4: s= selector (c= combinator s= selector )*
             {
             pushFollow(FOLLOW_selector_in_combined_selector1105);
             s=selector();
@@ -1853,7 +1850,7 @@ public class CSSTreeParser extends TreeParser {
 
             	     combinedSelector.add(s);
             	  
-            // CSSTreeParser.g:504:3: (c= combinator s= selector )*
+            // CSSTreeParser.g:517:3: (c= combinator s= selector )*
             loop23:
             do {
                 int alt23=2;
@@ -1866,7 +1863,7 @@ public class CSSTreeParser extends TreeParser {
 
                 switch (alt23) {
             	case 1 :
-            	    // CSSTreeParser.g:504:4: c= combinator s= selector
+            	    // CSSTreeParser.g:517:4: c= combinator s= selector
             	    {
             	    pushFollow(FOLLOW_combinator_in_combined_selector1114);
             	    c=combinator();
@@ -1927,13 +1924,13 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "combinator"
-    // CSSTreeParser.g:511:1: combinator returns [Selector.Combinator combinator] : ( CHILD | ADJACENT | DESCENDANT );
+    // CSSTreeParser.g:524:1: combinator returns [Selector.Combinator combinator] : ( CHILD | ADJACENT | DESCENDANT );
     public final Selector.Combinator combinator() throws RecognitionException {
         Selector.Combinator combinator = null;
 
          logEnter("combinator"); 
         try {
-            // CSSTreeParser.g:514:2: ( CHILD | ADJACENT | DESCENDANT )
+            // CSSTreeParser.g:527:2: ( CHILD | ADJACENT | DESCENDANT )
             int alt24=3;
             switch ( input.LA(1) ) {
             case CHILD:
@@ -1960,7 +1957,7 @@ public class CSSTreeParser extends TreeParser {
 
             switch (alt24) {
                 case 1 :
-                    // CSSTreeParser.g:514:4: CHILD
+                    // CSSTreeParser.g:527:4: CHILD
                     {
                     match(input,CHILD,FOLLOW_CHILD_in_combinator1148); 
                     combinator =Selector.Combinator.CHILD;
@@ -1968,7 +1965,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:515:4: ADJACENT
+                    // CSSTreeParser.g:528:4: ADJACENT
                     {
                     match(input,ADJACENT,FOLLOW_ADJACENT_in_combinator1155); 
                     combinator =Selector.Combinator.ADJACENT;
@@ -1976,7 +1973,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // CSSTreeParser.g:516:4: DESCENDANT
+                    // CSSTreeParser.g:529:4: DESCENDANT
                     {
                     match(input,DESCENDANT,FOLLOW_DESCENDANT_in_combinator1162); 
                     combinator =Selector.Combinator.DESCENDANT;
@@ -2004,7 +2001,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "selector"
-    // CSSTreeParser.g:520:1: selector returns [Selector sel] : ( ^( SELECTOR ^( ELEMENT (i= IDENT )? ) ( selpart )* ) | ^( SELECTOR ( selpart )+ ) | INVALID_SELECTOR );
+    // CSSTreeParser.g:533:1: selector returns [Selector sel] : ( ^( SELECTOR ^( ELEMENT (i= IDENT )? ) ( selpart )* ) | ^( SELECTOR ( selpart )+ ) | INVALID_SELECTOR );
     public final Selector selector() throws RecognitionException {
         selector_stack.push(new selector_scope());
         Selector sel = null;
@@ -2017,7 +2014,7 @@ public class CSSTreeParser extends TreeParser {
         	Selector.ElementName en = rf.createElement(Selector.SelectorPart.WILDCARD);
 
         try {
-            // CSSTreeParser.g:532:5: ( ^( SELECTOR ^( ELEMENT (i= IDENT )? ) ( selpart )* ) | ^( SELECTOR ( selpart )+ ) | INVALID_SELECTOR )
+            // CSSTreeParser.g:545:5: ( ^( SELECTOR ^( ELEMENT (i= IDENT )? ) ( selpart )* ) | ^( SELECTOR ( selpart )+ ) | INVALID_SELECTOR )
             int alt28=3;
             int LA28_0 = input.LA(1);
 
@@ -2058,7 +2055,7 @@ public class CSSTreeParser extends TreeParser {
             }
             switch (alt28) {
                 case 1 :
-                    // CSSTreeParser.g:532:7: ^( SELECTOR ^( ELEMENT (i= IDENT )? ) ( selpart )* )
+                    // CSSTreeParser.g:545:7: ^( SELECTOR ^( ELEMENT (i= IDENT )? ) ( selpart )* )
                     {
                     match(input,SELECTOR,FOLLOW_SELECTOR_in_selector1198); 
 
@@ -2067,7 +2064,7 @@ public class CSSTreeParser extends TreeParser {
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // CSSTreeParser.g:534:11: (i= IDENT )?
+                        // CSSTreeParser.g:547:11: (i= IDENT )?
                         int alt25=2;
                         int LA25_0 = input.LA(1);
 
@@ -2076,7 +2073,7 @@ public class CSSTreeParser extends TreeParser {
                         }
                         switch (alt25) {
                             case 1 :
-                                // CSSTreeParser.g:534:12: i= IDENT
+                                // CSSTreeParser.g:547:12: i= IDENT
                                 {
                                 i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_selector1226); 
                                  en.setValue(extractText(i)); 
@@ -2093,7 +2090,7 @@ public class CSSTreeParser extends TreeParser {
                     		  log.debug("Adding element name: {}.", en.getValue());
                     		  ((selector_scope)selector_stack.peek()).s.add(en);
                     		 
-                    // CSSTreeParser.g:540:10: ( selpart )*
+                    // CSSTreeParser.g:553:10: ( selpart )*
                     loop26:
                     do {
                         int alt26=2;
@@ -2106,7 +2103,7 @@ public class CSSTreeParser extends TreeParser {
 
                         switch (alt26) {
                     	case 1 :
-                    	    // CSSTreeParser.g:540:10: selpart
+                    	    // CSSTreeParser.g:553:10: selpart
                     	    {
                     	    pushFollow(FOLLOW_selpart_in_selector1273);
                     	    selpart();
@@ -2128,12 +2125,12 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:542:7: ^( SELECTOR ( selpart )+ )
+                    // CSSTreeParser.g:555:7: ^( SELECTOR ( selpart )+ )
                     {
                     match(input,SELECTOR,FOLLOW_SELECTOR_in_selector1292); 
 
                     match(input, Token.DOWN, null); 
-                    // CSSTreeParser.g:543:10: ( selpart )+
+                    // CSSTreeParser.g:556:10: ( selpart )+
                     int cnt27=0;
                     loop27:
                     do {
@@ -2147,7 +2144,7 @@ public class CSSTreeParser extends TreeParser {
 
                         switch (alt27) {
                     	case 1 :
-                    	    // CSSTreeParser.g:543:10: selpart
+                    	    // CSSTreeParser.g:556:10: selpart
                     	    {
                     	    pushFollow(FOLLOW_selpart_in_selector1304);
                     	    selpart();
@@ -2173,7 +2170,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // CSSTreeParser.g:545:7: INVALID_SELECTOR
+                    // CSSTreeParser.g:558:7: INVALID_SELECTOR
                     {
                     match(input,INVALID_SELECTOR,FOLLOW_INVALID_SELECTOR_in_selector1322); 
                      ((statement_scope)statement_stack.peek()).invalid = true; 
@@ -2199,7 +2196,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "selpart"
-    // CSSTreeParser.g:548:1: selpart : (h= HASH | c= CLASSKEYWORD | ^( ATTRIBUTE ea= attribute ) | p= pseudo | INVALID_SELPART );
+    // CSSTreeParser.g:561:1: selpart : (h= HASH | c= CLASSKEYWORD | ^( ATTRIBUTE ea= attribute ) | p= pseudo | INVALID_SELPART );
     public final void selpart() throws RecognitionException {
         CommonTree h=null;
         CommonTree c=null;
@@ -2212,7 +2209,7 @@ public class CSSTreeParser extends TreeParser {
         	logEnter("selpart");
 
         try {
-            // CSSTreeParser.g:555:5: (h= HASH | c= CLASSKEYWORD | ^( ATTRIBUTE ea= attribute ) | p= pseudo | INVALID_SELPART )
+            // CSSTreeParser.g:568:5: (h= HASH | c= CLASSKEYWORD | ^( ATTRIBUTE ea= attribute ) | p= pseudo | INVALID_SELPART )
             int alt29=5;
             switch ( input.LA(1) ) {
             case HASH:
@@ -2249,7 +2246,7 @@ public class CSSTreeParser extends TreeParser {
 
             switch (alt29) {
                 case 1 :
-                    // CSSTreeParser.g:555:8: h= HASH
+                    // CSSTreeParser.g:568:8: h= HASH
                     {
                     h=(CommonTree)match(input,HASH,FOLLOW_HASH_in_selpart1356); 
                      ((selector_scope)selector_stack.peek()).s.add(rf.createID(extractText(h))); 
@@ -2257,7 +2254,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:556:7: c= CLASSKEYWORD
+                    // CSSTreeParser.g:569:7: c= CLASSKEYWORD
                     {
                     c=(CommonTree)match(input,CLASSKEYWORD,FOLLOW_CLASSKEYWORD_in_selpart1368); 
                      ((selector_scope)selector_stack.peek()).s.add(rf.createClass(extractText(c))); 
@@ -2265,7 +2262,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // CSSTreeParser.g:557:4: ^( ATTRIBUTE ea= attribute )
+                    // CSSTreeParser.g:570:4: ^( ATTRIBUTE ea= attribute )
                     {
                     match(input,ATTRIBUTE,FOLLOW_ATTRIBUTE_in_selpart1376); 
 
@@ -2282,7 +2279,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 4 :
-                    // CSSTreeParser.g:558:7: p= pseudo
+                    // CSSTreeParser.g:571:7: p= pseudo
                     {
                     pushFollow(FOLLOW_pseudo_in_selpart1394);
                     p=pseudo();
@@ -2294,7 +2291,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 5 :
-                    // CSSTreeParser.g:559:4: INVALID_SELPART
+                    // CSSTreeParser.g:572:4: INVALID_SELPART
                     {
                     match(input,INVALID_SELPART,FOLLOW_INVALID_SELPART_in_selpart1401); 
                      ((combined_selector_scope)combined_selector_stack.peek()).invalid = true;
@@ -2319,7 +2316,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "attribute"
-    // CSSTreeParser.g:562:1: attribute returns [Selector.ElementAttribute elemAttr] : i= IDENT ( ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string ) )? ;
+    // CSSTreeParser.g:575:1: attribute returns [Selector.ElementAttribute elemAttr] : i= IDENT ( ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string ) )? ;
     public final Selector.ElementAttribute attribute() throws RecognitionException {
         Selector.ElementAttribute elemAttr = null;
 
@@ -2335,12 +2332,12 @@ public class CSSTreeParser extends TreeParser {
         	boolean isStringValue = false;
 
         try {
-            // CSSTreeParser.g:580:2: (i= IDENT ( ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string ) )? )
-            // CSSTreeParser.g:580:4: i= IDENT ( ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string ) )?
+            // CSSTreeParser.g:593:2: (i= IDENT ( ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string ) )? )
+            // CSSTreeParser.g:593:4: i= IDENT ( ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string ) )?
             {
             i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_attribute1435); 
             attribute=extractText(i); 
-            // CSSTreeParser.g:581:4: ( ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string ) )?
+            // CSSTreeParser.g:594:4: ( ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string ) )?
             int alt32=2;
             int LA32_0 = input.LA(1);
 
@@ -2349,9 +2346,9 @@ public class CSSTreeParser extends TreeParser {
             }
             switch (alt32) {
                 case 1 :
-                    // CSSTreeParser.g:581:5: ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string )
+                    // CSSTreeParser.g:594:5: ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string )
                     {
-                    // CSSTreeParser.g:581:5: ( EQUALS | INCLUDES | DASHMATCH )
+                    // CSSTreeParser.g:594:5: ( EQUALS | INCLUDES | DASHMATCH )
                     int alt30=3;
                     switch ( input.LA(1) ) {
                     case EQUALS:
@@ -2378,7 +2375,7 @@ public class CSSTreeParser extends TreeParser {
 
                     switch (alt30) {
                         case 1 :
-                            // CSSTreeParser.g:581:6: EQUALS
+                            // CSSTreeParser.g:594:6: EQUALS
                             {
                             match(input,EQUALS,FOLLOW_EQUALS_in_attribute1444); 
                             op=Selector.Operator.EQUALS; 
@@ -2386,7 +2383,7 @@ public class CSSTreeParser extends TreeParser {
                             }
                             break;
                         case 2 :
-                            // CSSTreeParser.g:582:7: INCLUDES
+                            // CSSTreeParser.g:595:7: INCLUDES
                             {
                             match(input,INCLUDES,FOLLOW_INCLUDES_in_attribute1455); 
                             op=Selector.Operator.INCLUDES; 
@@ -2394,7 +2391,7 @@ public class CSSTreeParser extends TreeParser {
                             }
                             break;
                         case 3 :
-                            // CSSTreeParser.g:583:7: DASHMATCH
+                            // CSSTreeParser.g:596:7: DASHMATCH
                             {
                             match(input,DASHMATCH,FOLLOW_DASHMATCH_in_attribute1466); 
                             op=Selector.Operator.DASHMATCH; 
@@ -2404,7 +2401,7 @@ public class CSSTreeParser extends TreeParser {
 
                     }
 
-                    // CSSTreeParser.g:585:5: (i= IDENT | s= string )
+                    // CSSTreeParser.g:598:5: (i= IDENT | s= string )
                     int alt31=2;
                     int LA31_0 = input.LA(1);
 
@@ -2422,7 +2419,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     switch (alt31) {
                         case 1 :
-                            // CSSTreeParser.g:585:6: i= IDENT
+                            // CSSTreeParser.g:598:6: i= IDENT
                             {
                             i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_attribute1484); 
 
@@ -2433,7 +2430,7 @@ public class CSSTreeParser extends TreeParser {
                             }
                             break;
                         case 2 :
-                            // CSSTreeParser.g:589:7: s= string
+                            // CSSTreeParser.g:602:7: s= string
                             {
                             pushFollow(FOLLOW_string_in_attribute1496);
                             s=string();
@@ -2487,7 +2484,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "pseudo"
-    // CSSTreeParser.g:601:1: pseudo returns [Selector.PseudoPage pseudoPage] : ^( PSEUDO (f= FUNCTION )? i= IDENT ) ;
+    // CSSTreeParser.g:614:1: pseudo returns [Selector.PseudoPage pseudoPage] : ^( PSEUDO (f= FUNCTION )? i= IDENT ) ;
     public final Selector.PseudoPage pseudo() throws RecognitionException {
         Selector.PseudoPage pseudoPage = null;
 
@@ -2500,13 +2497,13 @@ public class CSSTreeParser extends TreeParser {
         		  String value = null;
 
         try {
-            // CSSTreeParser.g:607:2: ( ^( PSEUDO (f= FUNCTION )? i= IDENT ) )
-            // CSSTreeParser.g:607:4: ^( PSEUDO (f= FUNCTION )? i= IDENT )
+            // CSSTreeParser.g:620:2: ( ^( PSEUDO (f= FUNCTION )? i= IDENT ) )
+            // CSSTreeParser.g:620:4: ^( PSEUDO (f= FUNCTION )? i= IDENT )
             {
             match(input,PSEUDO,FOLLOW_PSEUDO_in_pseudo1529); 
 
             match(input, Token.DOWN, null); 
-            // CSSTreeParser.g:608:8: (f= FUNCTION )?
+            // CSSTreeParser.g:621:8: (f= FUNCTION )?
             int alt33=2;
             int LA33_0 = input.LA(1);
 
@@ -2515,7 +2512,7 @@ public class CSSTreeParser extends TreeParser {
             }
             switch (alt33) {
                 case 1 :
-                    // CSSTreeParser.g:608:9: f= FUNCTION
+                    // CSSTreeParser.g:621:9: f= FUNCTION
                     {
                     f=(CommonTree)match(input,FUNCTION,FOLLOW_FUNCTION_in_pseudo1542); 
                     fname=extractText(f);
@@ -2548,14 +2545,14 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "string"
-    // CSSTreeParser.g:615:1: string returns [String s] : (st= STRING | INVALID_STRING );
+    // CSSTreeParser.g:628:1: string returns [String s] : (st= STRING | INVALID_STRING );
     public final String string() throws RecognitionException {
         String s = null;
 
         CommonTree st=null;
 
         try {
-            // CSSTreeParser.g:616:2: (st= STRING | INVALID_STRING )
+            // CSSTreeParser.g:629:2: (st= STRING | INVALID_STRING )
             int alt34=2;
             int LA34_0 = input.LA(1);
 
@@ -2573,7 +2570,7 @@ public class CSSTreeParser extends TreeParser {
             }
             switch (alt34) {
                 case 1 :
-                    // CSSTreeParser.g:616:4: st= STRING
+                    // CSSTreeParser.g:629:4: st= STRING
                     {
                     st=(CommonTree)match(input,STRING,FOLLOW_STRING_in_string1584); 
                      s = extractText(st);
@@ -2581,7 +2578,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:617:4: INVALID_STRING
+                    // CSSTreeParser.g:630:4: INVALID_STRING
                     {
                     match(input,INVALID_STRING,FOLLOW_INVALID_STRING_in_string1591); 
                     s =null;
@@ -2603,10 +2600,10 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "any"
-    // CSSTreeParser.g:620:1: any : ( IDENT | CLASSKEYWORD | NUMBER | PERCENTAGE | DIMENSION | string | URI | HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | EXCLAMATION | ^( FUNCTION ( any )* ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) );
+    // CSSTreeParser.g:633:1: any : ( IDENT | CLASSKEYWORD | NUMBER | PERCENTAGE | DIMENSION | string | URI | HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | EXCLAMATION | ^( FUNCTION ( any )* ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) );
     public final void any() throws RecognitionException {
         try {
-            // CSSTreeParser.g:621:3: ( IDENT | CLASSKEYWORD | NUMBER | PERCENTAGE | DIMENSION | string | URI | HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | EXCLAMATION | ^( FUNCTION ( any )* ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) )
+            // CSSTreeParser.g:634:3: ( IDENT | CLASSKEYWORD | NUMBER | PERCENTAGE | DIMENSION | string | URI | HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | EXCLAMATION | ^( FUNCTION ( any )* ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) )
             int alt38=20;
             switch ( input.LA(1) ) {
             case IDENT:
@@ -2719,42 +2716,42 @@ public class CSSTreeParser extends TreeParser {
 
             switch (alt38) {
                 case 1 :
-                    // CSSTreeParser.g:621:5: IDENT
+                    // CSSTreeParser.g:634:5: IDENT
                     {
                     match(input,IDENT,FOLLOW_IDENT_in_any1607); 
 
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:622:5: CLASSKEYWORD
+                    // CSSTreeParser.g:635:5: CLASSKEYWORD
                     {
                     match(input,CLASSKEYWORD,FOLLOW_CLASSKEYWORD_in_any1613); 
 
                     }
                     break;
                 case 3 :
-                    // CSSTreeParser.g:623:5: NUMBER
+                    // CSSTreeParser.g:636:5: NUMBER
                     {
                     match(input,NUMBER,FOLLOW_NUMBER_in_any1619); 
 
                     }
                     break;
                 case 4 :
-                    // CSSTreeParser.g:624:5: PERCENTAGE
+                    // CSSTreeParser.g:637:5: PERCENTAGE
                     {
                     match(input,PERCENTAGE,FOLLOW_PERCENTAGE_in_any1625); 
 
                     }
                     break;
                 case 5 :
-                    // CSSTreeParser.g:625:5: DIMENSION
+                    // CSSTreeParser.g:638:5: DIMENSION
                     {
                     match(input,DIMENSION,FOLLOW_DIMENSION_in_any1631); 
 
                     }
                     break;
                 case 6 :
-                    // CSSTreeParser.g:626:5: string
+                    // CSSTreeParser.g:639:5: string
                     {
                     pushFollow(FOLLOW_string_in_any1637);
                     string();
@@ -2765,83 +2762,83 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 7 :
-                    // CSSTreeParser.g:627:5: URI
+                    // CSSTreeParser.g:640:5: URI
                     {
                     match(input,URI,FOLLOW_URI_in_any1643); 
 
                     }
                     break;
                 case 8 :
-                    // CSSTreeParser.g:628:5: HASH
+                    // CSSTreeParser.g:641:5: HASH
                     {
                     match(input,HASH,FOLLOW_HASH_in_any1649); 
 
                     }
                     break;
                 case 9 :
-                    // CSSTreeParser.g:629:5: UNIRANGE
+                    // CSSTreeParser.g:642:5: UNIRANGE
                     {
                     match(input,UNIRANGE,FOLLOW_UNIRANGE_in_any1655); 
 
                     }
                     break;
                 case 10 :
-                    // CSSTreeParser.g:630:5: INCLUDES
+                    // CSSTreeParser.g:643:5: INCLUDES
                     {
                     match(input,INCLUDES,FOLLOW_INCLUDES_in_any1661); 
 
                     }
                     break;
                 case 11 :
-                    // CSSTreeParser.g:631:5: COLON
+                    // CSSTreeParser.g:644:5: COLON
                     {
                     match(input,COLON,FOLLOW_COLON_in_any1667); 
 
                     }
                     break;
                 case 12 :
-                    // CSSTreeParser.g:632:5: COMMA
+                    // CSSTreeParser.g:645:5: COMMA
                     {
                     match(input,COMMA,FOLLOW_COMMA_in_any1673); 
 
                     }
                     break;
                 case 13 :
-                    // CSSTreeParser.g:633:5: GREATER
+                    // CSSTreeParser.g:646:5: GREATER
                     {
                     match(input,GREATER,FOLLOW_GREATER_in_any1679); 
 
                     }
                     break;
                 case 14 :
-                    // CSSTreeParser.g:634:5: EQUALS
+                    // CSSTreeParser.g:647:5: EQUALS
                     {
                     match(input,EQUALS,FOLLOW_EQUALS_in_any1685); 
 
                     }
                     break;
                 case 15 :
-                    // CSSTreeParser.g:635:5: SLASH
+                    // CSSTreeParser.g:648:5: SLASH
                     {
                     match(input,SLASH,FOLLOW_SLASH_in_any1691); 
 
                     }
                     break;
                 case 16 :
-                    // CSSTreeParser.g:636:5: EXCLAMATION
+                    // CSSTreeParser.g:649:5: EXCLAMATION
                     {
                     match(input,EXCLAMATION,FOLLOW_EXCLAMATION_in_any1697); 
 
                     }
                     break;
                 case 17 :
-                    // CSSTreeParser.g:637:5: ^( FUNCTION ( any )* )
+                    // CSSTreeParser.g:650:5: ^( FUNCTION ( any )* )
                     {
                     match(input,FUNCTION,FOLLOW_FUNCTION_in_any1704); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // CSSTreeParser.g:637:16: ( any )*
+                        // CSSTreeParser.g:650:16: ( any )*
                         loop35:
                         do {
                             int alt35=2;
@@ -2854,7 +2851,7 @@ public class CSSTreeParser extends TreeParser {
 
                             switch (alt35) {
                         	case 1 :
-                        	    // CSSTreeParser.g:637:16: any
+                        	    // CSSTreeParser.g:650:16: any
                         	    {
                         	    pushFollow(FOLLOW_any_in_any1706);
                         	    any();
@@ -2877,20 +2874,20 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 18 :
-                    // CSSTreeParser.g:638:5: DASHMATCH
+                    // CSSTreeParser.g:651:5: DASHMATCH
                     {
                     match(input,DASHMATCH,FOLLOW_DASHMATCH_in_any1715); 
 
                     }
                     break;
                 case 19 :
-                    // CSSTreeParser.g:639:5: ^( PARENBLOCK ( any )* )
+                    // CSSTreeParser.g:652:5: ^( PARENBLOCK ( any )* )
                     {
                     match(input,PARENBLOCK,FOLLOW_PARENBLOCK_in_any1722); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // CSSTreeParser.g:639:18: ( any )*
+                        // CSSTreeParser.g:652:18: ( any )*
                         loop36:
                         do {
                             int alt36=2;
@@ -2903,7 +2900,7 @@ public class CSSTreeParser extends TreeParser {
 
                             switch (alt36) {
                         	case 1 :
-                        	    // CSSTreeParser.g:639:18: any
+                        	    // CSSTreeParser.g:652:18: any
                         	    {
                         	    pushFollow(FOLLOW_any_in_any1724);
                         	    any();
@@ -2926,13 +2923,13 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 20 :
-                    // CSSTreeParser.g:640:5: ^( BRACEBLOCK ( any )* )
+                    // CSSTreeParser.g:653:5: ^( BRACEBLOCK ( any )* )
                     {
                     match(input,BRACEBLOCK,FOLLOW_BRACEBLOCK_in_any1733); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // CSSTreeParser.g:640:18: ( any )*
+                        // CSSTreeParser.g:653:18: ( any )*
                         loop37:
                         do {
                             int alt37=2;
@@ -2945,7 +2942,7 @@ public class CSSTreeParser extends TreeParser {
 
                             switch (alt37) {
                         	case 1 :
-                        	    // CSSTreeParser.g:640:18: any
+                        	    // CSSTreeParser.g:653:18: any
                         	    {
                         	    pushFollow(FOLLOW_any_in_any1735);
                         	    any();
@@ -3055,7 +3052,7 @@ public class CSSTreeParser extends TreeParser {
             this.transition = DFA22_transition;
         }
         public String getDescription() {
-            return "406:1: valuepart : (i= IDENT | CLASSKEYWORD | ( MINUS )? n= NUMBER | ( MINUS )? p= PERCENTAGE | ( MINUS )? d= DIMENSION | s= string | u= URI | h= HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | PLUS | ASTERISK | ^(f= FUNCTION t= terms ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) );";
+            return "419:1: valuepart : (i= IDENT | CLASSKEYWORD | ( MINUS )? n= NUMBER | ( MINUS )? p= PERCENTAGE | ( MINUS )? d= DIMENSION | s= string | u= URI | h= HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | PLUS | ASTERISK | ^(f= FUNCTION t= terms ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) );";
         }
     }
  

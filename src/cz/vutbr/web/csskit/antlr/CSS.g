@@ -122,7 +122,7 @@ import cz.vutbr.web.css.SupportedCSS;
         }
     }
     
-    private class LexerStream {
+    private static class LexerStream {
     
     	public CharStream input;
     	public int mark;
@@ -141,7 +141,8 @@ import cz.vutbr.web.css.SupportedCSS;
     // current lexer state
     private LexerState ls;
     
-    // stylesheet instance
+    // this is for orthogonality
+    @SuppressWarnings("unused")
     private StyleSheet stylesheet;
     
     // token recovery
@@ -351,7 +352,7 @@ import cz.vutbr.web.css.SupportedCSS;
     			else if(ls.aposOpen) ls.aposOpen=false;
     		} 
     		else if(c==EOF) {
-    			log.warn("Unexpected EOF during consumeUntilBalanced, EOF not consumed");
+    			log.info("Unexpected EOF during consumeUntilBalanced, EOF not consumed");
     			return;
     		}
     	
@@ -717,12 +718,10 @@ CHARSET
             else {
             	log.info("Already using correct charset (\"{}\") for stylesheet", enc);
             }
-            // set charset
-            stylesheet.setCharset(enc);
         }
         catch(IllegalCharsetNameException icne) {
         	log.warn("Could not change to unsupported charset!", icne);
-        	// throw new RuntimeException(new CSSException("Unsupported charset: " + enc));
+        	throw new RuntimeException(new CSSException("Unsupported charset: " + enc));
         }
 	  }
 	;

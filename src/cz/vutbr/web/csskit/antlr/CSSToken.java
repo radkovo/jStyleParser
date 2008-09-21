@@ -3,6 +3,14 @@ package cz.vutbr.web.csskit.antlr;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonToken;
 
+/**
+ * Token with encapsulation of LexerState during parse.
+ * Models view at token text by removing syntactic sugar
+ * from tokens with contains it,
+ * e.g. STRING, URI, FUNCTION 
+ * @author kapy
+ *
+ */
 public class CSSToken extends CommonToken {
 
 	/**
@@ -11,19 +19,41 @@ public class CSSToken extends CommonToken {
 	private static final long serialVersionUID = 3L;
 	
 	/**
-	 * Current nesting level
+	 * Current lexer state
 	 */
 	protected CSSLexer.LexerState ls;
 	
+	/**
+	 * Creates CSSToken, this is base {@code emit()} constructor
+	 * @param input Input stream
+	 * @param type Type of token
+	 * @param channel Channel of token
+	 * @param start Start position in stream
+	 * @param stop End position in stream
+	 */
 	public CSSToken(CharStream input, int type, int channel, int start, int stop) {
 		super(input, type, channel, start, stop);
 	}
 	
+	/**
+	 * Creates CSSToken of given type with cloning lexer state
+	 * automatically
+	 * @param type Type of token
+	 * @param state State of lexer, which will be copied
+	 */
 	public CSSToken(int type, CSSLexer.LexerState state) {
 		super(type);
 		this.ls = new CSSLexer.LexerState(state);
 	}
 	
+	/**
+	 * Creates CSSToken of given type with cloning lexer state
+	 * automatically, allows to set text boundaries in input stream
+	 * @param type Type of token
+	 * @param state State of lexer, which will be copied
+	 * @param start Start position in stream
+	 * @param stop End position in stream
+	 */
 	public CSSToken(int type, CSSLexer.LexerState state, int start, int stop) {
 		super(type);
 		this.ls = new CSSLexer.LexerState(state);
@@ -42,16 +72,35 @@ public class CSSToken extends CommonToken {
 	}
 
 	/**
+	 * Gets lexer state at creation of token
 	 * @return the lexer state
 	 */
 	public CSSLexer.LexerState getLexerState() {
 		return ls;	
 	}
 	
+	/**
+	 * Considers text as content of STRING token,
+	 * and models view at this text as an common string,
+	 * that is one character removed from the both beginning
+	 * and the end.  
+	 * @param string Content of STRING token 
+	 * @return String with trimmed quotation marks
+	 */
 	public static String extractSTRING(String string) {
 		return string.substring(1, string.length()-1);
 	}
 
+	/**
+	 * Considers text as content of URI token,
+	 * and models view at this text as an common string,
+	 * that is removed {@code 'url('} from the beginning
+	 * and {@code ')'} from the and. If result of this operation
+	 * is STRING, remove even quotation marks
+	 * @param uri Content of URI token
+	 * @return String with trimmed URI syntax sugar and
+	 * optionally quotation marks 
+	 */
 	public static String extractURI(String uri) {
 		String ret = uri.substring(4, uri.length()-1);
 		// trim string
@@ -61,10 +110,21 @@ public class CSSToken extends CommonToken {
 		return ret;
 	}
 	
+	/**
+	 * Considers text as content of FUNCTION token,
+	 * and models view at this text as an common string,
+	 * that is removed {@code '('} from the end of string
+	 * @param function Content of FUNCTION token
+	 * @return String with trimmed FUNCTION open parenthesis
+	 */
 	public static String extractFUNCTION(String function) {
 		return function.substring(0, function.length()-1);
 	}
 	
+	/**
+	 * Returns common text stored in token. Content is not modified.
+	 * @return Model view of text in token
+	 */
 	@Override
 	public String getText() {
 		

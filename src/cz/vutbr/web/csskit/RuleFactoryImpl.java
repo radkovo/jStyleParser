@@ -12,6 +12,7 @@ import cz.vutbr.web.css.RulePage;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.StyleSheet;
+import cz.vutbr.web.css.RuleBlock.Priority;
 import cz.vutbr.web.css.Selector.ElementAttribute;
 import cz.vutbr.web.css.Selector.ElementClass;
 import cz.vutbr.web.css.Selector.ElementID;
@@ -23,6 +24,7 @@ import cz.vutbr.web.css.Selector.PseudoPage;
  * @author kapy
  *
  */
+@SuppressWarnings("deprecation")
 public class RuleFactoryImpl implements RuleFactory {
 
 	private static RuleFactory instance;
@@ -55,22 +57,23 @@ public class RuleFactoryImpl implements RuleFactory {
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createImport()
 	 */
-	public RuleImport createImport(int position) {
-		return new RuleImportImpl(position);
+	@Deprecated
+	public RuleImport createImport(Priority priority) {
+		return new RuleImportImpl(priority);
 	}
 
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createMedia()
 	 */
-	public RuleMedia createMedia(int position) {
-		return new RuleMediaImpl(position);
+	public RuleMedia createMedia(Priority priority) {
+		return new RuleMediaImpl(priority);
 	}
 
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createPage()
 	 */
-	public RulePage createPage(int position) {
-		return new RulePageImpl(position);
+	public RulePage createPage(Priority priority) {
+		return new RulePageImpl(priority);
 	}
 
 	/* (non-Javadoc)
@@ -83,8 +86,8 @@ public class RuleFactoryImpl implements RuleFactory {
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createSet()
 	 */
-	public RuleSet createSet(int position) {
-		return new RuleSetImpl(position);
+	public RuleSet createSet(Priority priority) {
+		return new RuleSetImpl(priority);
 	}
 
 	/* (non-Javadoc)

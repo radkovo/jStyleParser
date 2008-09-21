@@ -14,10 +14,23 @@ import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.CombinedSelector;
+import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
-import cz.vutbr.web.css.*;
+import cz.vutbr.web.css.RuleMedia;
+import cz.vutbr.web.css.RulePage;
+import cz.vutbr.web.css.RuleSet;
+import cz.vutbr.web.css.Selector;
+import cz.vutbr.web.css.StyleSheet;
+import cz.vutbr.web.css.SupportedCSS;
+import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.TermColor;
+import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermFunction;
+import cz.vutbr.web.css.TermIdent;
+import cz.vutbr.web.css.RuleBlock.Priority;
 
 }
 
@@ -50,14 +63,15 @@ import cz.vutbr.web.css.*;
 	}
 
 	// current number of rule
-	private int ruleNum = 0;
+	private PriorityStrategy ps;
 	
 	private StyleSheet stylesheet;
 
 	private Stack<TreeParserState> imports;	
        
-    public CSSTreeParser init(StyleSheet sheet) {
+    public CSSTreeParser init(StyleSheet sheet, PriorityStrategy ps) {
 	    this.stylesheet = sheet;
+		this.ps = ps;
 		this.imports = new Stack<TreeParserState>();
 		return this;
 	}   
@@ -88,6 +102,8 @@ inlinestyle returns [StyleSheet sheet]
 } 
 @after {
 	log.debug("\n***\n{}\n***\n", $sheet);	   
+	// mark last usage
+	$sheet.markLast(ps.getAndIncrement());
 	logLeave("inlinestyle");
 }
 	: 	^(INLINESTYLE declarations) 
@@ -104,7 +120,9 @@ stylesheet returns [StyleSheet sheet]
 	$sheet = this.stylesheet;
 } 
 @after {
-	log.debug("\n***\n{}\n***\n", $sheet);	   
+	log.debug("\n***\n{}\n***\n", $sheet);
+	// mark last usage
+	$sheet.markLast(ps.getAndIncrement());
 	logLeave("stylesheet");
 }
 	: ^(STYLESHEET 
@@ -147,7 +165,7 @@ scope {
 	List<Declaration> declarations = null;
 	List<RuleSet> rules = null;
 	String pseudo = null;
-	int filePosition = ruleNum;
+	Priority mark = ps.markAndIncrement();
 }
 @after {
     logLeave("atstatement");
@@ -168,21 +186,19 @@ scope {
 	  }
 	| ^(PAGE (i=IDENT{ pseudo=extractText(i);})? decl=declarations
 		{
-		   	if(decl!=null && !decl.isEmpty()) {	
-            	RulePage rp = rf.createPage(ruleNum++);
+		   	if(decl!=null && !decl.isEmpty()) {
+				Priority prio = ps.getAndIncrement();							  
+            	RulePage rp = rf.createPage(prio);
                 rp.replaceAll(declarations);
                 rp.setPseudo(pseudo);
                 $stmnt = rp;
-                log.info("Create @page as {}th with:\n{}",  ruleNum, rp);
+                log.info("Create @page as {}th with:\n{}",  prio, rp);
             }
 		})
 	| ^(MEDIA (mediaList=media)? 
 			(rs=ruleset {
 			   if(rules==null) rules = new ArrayList<RuleSet>();				
 			   if(rs!=null) {
-				   // increment rule number
-				   rs.setFilePosition(rs.getFilePosition()+1);
-				   
 				   // this cast should be safe, because when 
 				   // inside of @statetement, oridinal ruleset
 				   // is returned
@@ -195,9 +211,8 @@ scope {
 	   )	
 	   {
 		   if(rules!=null && !rules.isEmpty()) {
-			  // create at begining, increment to match positions								   
-              RuleMedia rm = rf.createMedia(filePosition);
-			  ruleNum++;
+			  // create at the beginning, increment to match positions								   
+              RuleMedia rm = rf.createMedia(mark);
 			  
 			  rm.replaceAll(rules);
 			  if(mediaList!=null && !mediaList.isEmpty()) 
@@ -205,7 +220,7 @@ scope {
 				
 			  $stmnt = rm;
               log.info("Create @media as {}th with:\n{}", 
-                	rm.getFilePosition(), rm);
+                	mark, rm);
 			  
 		   }
 	   }
@@ -247,19 +262,20 @@ ruleset returns [RuleBlock<?> stmnt]
         log.debug("Ruleset not valid, so not created");
     }
     else {    
-        RuleSet rs = rf.createSet(ruleNum++);
+		Priority prio = ps.getAndIncrement(); 
+        RuleSet rs = rf.createSet(prio);
         rs.setSelectors(cslist);
         rs.replaceAll(decl);
-		log.info("Create ruleset as {}th with:\n{}", ruleNum, rs);
+		log.info("Create ruleset as {}th with:\n{}", prio, rs);
 		
 		// check statement
 		if(!$statement::insideAtstatement && !imports.isEmpty() 
 			&& imports.peek().doWrap()) {
 			
 			// swap numbers, so RuleMedia is created before RuleSet
-			int filePosition = rs.getFilePosition();			
-			rs.setFilePosition(ruleNum++);
-			RuleMedia rm = rf.createMedia(filePosition);
+			prio = rs.getPriority();			
+			rs.setPriority(ps.getAndIncrement());
+			RuleMedia rm = rf.createMedia(prio);
 			List<String> media = imports.peek().media;
 			
 			log.debug("Wrapping ruleset {} into media: {}", rs, media);

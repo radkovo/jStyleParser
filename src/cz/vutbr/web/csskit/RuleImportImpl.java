@@ -3,11 +3,14 @@ package cz.vutbr.web.csskit;
 import cz.vutbr.web.css.RuleImport;
 
 /**
- * URI with stylesheet to be imported
+ * URI with style sheet to be imported.
+ * Since this is never used in new parser where imports 
+ * are directly included, this is obsolete
  * 
  * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
  */
+@Deprecated
 public class RuleImportImpl extends AbstractRuleBlock<String> implements RuleImport {
   
 	/** URI of file to be imported */
@@ -15,10 +18,10 @@ public class RuleImportImpl extends AbstractRuleBlock<String> implements RuleImp
     
     /** 
      * Creates empty RuleImport instance 
-     * 
+     * @param priority Priority mark
      */
-    protected RuleImportImpl(int position) {
-    	super(position);
+    protected RuleImportImpl(Priority priority) {
+    	super(priority);
     	this.uri = "";
     }
     

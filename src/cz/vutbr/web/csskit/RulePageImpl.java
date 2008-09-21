@@ -13,8 +13,8 @@ public class RulePageImpl extends AbstractRuleBlock<Declaration> implements Rule
 
 	protected String pseudo;
 	
-	protected RulePageImpl(int position) {
-		super(position);
+	protected RulePageImpl(Priority priority) {
+		super(priority);
 		this.pseudo = null;
 	}
 	

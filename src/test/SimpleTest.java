@@ -87,12 +87,10 @@ public class SimpleTest {
 		StyleSheet ss;
 		
 		ss = CSSFactory.parse(TEST_CHARSET_STRING1);
-		assertEquals("This should be UTF-8", "UTF-8", ss.getCharset());
 		
 		assertEquals("No rules are defined", 0, ss.size());
 
 		ss = CSSFactory.parse(TEST_CHARSET_STRING2);
-		assertEquals("This should be ISO-8859-1", "ISO-8859-1", ss.getCharset());
 		
 		assertEquals("One rule is set", 1, ss.size());
 		
@@ -114,7 +112,6 @@ public class SimpleTest {
 		
 		StyleSheet ss = CSSFactory.parse(TEST_STRING1);
 		
-		assertEquals("No charset is set", null, ss.getCharset());
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);				

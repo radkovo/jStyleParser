@@ -7,6 +7,7 @@ package cz.vutbr.web.css;
  * 
  * @author kapy
  */
+@Deprecated
 public interface RuleImport extends RuleBlock<String>, PrettyOutput {
   
 	/**
