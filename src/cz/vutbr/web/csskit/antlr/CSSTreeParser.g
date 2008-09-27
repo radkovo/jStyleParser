@@ -31,8 +31,8 @@ import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.RuleBlock.Priority;
-import cz.vutbr.web.csskit.PriorityStrategy;
 
+// @SuppressWarnings("unchecked")
 }
 
 @members {
@@ -41,7 +41,6 @@ import cz.vutbr.web.csskit.PriorityStrategy;
 	private static RuleFactory rf = CSSFactory.getRuleFactory();
 	private static TermFactory tf = CSSFactory.getTermFactory();
 	private static SupportedCSS css = CSSFactory.getSupportedCSS();
-
 
 	private static class TreeParserState {
 	    public List<String> media;
@@ -63,16 +62,16 @@ import cz.vutbr.web.csskit.PriorityStrategy;
 		}
 	}
 
-	// current number of rule
-	private PriorityStrategy ps;
+    // block preparator
+	private Preparator preparator;
 	
 	private StyleSheet stylesheet;
 
 	private Stack<TreeParserState> imports;	
        
-    public CSSTreeParser init(StyleSheet sheet, PriorityStrategy ps) {
+    public CSSTreeParser init(StyleSheet sheet, Preparator preparator) {
 	    this.stylesheet = sheet;
-		this.ps = ps;
+		this.preparator = preparator;
 		this.imports = new Stack<TreeParserState>();
 		return this;
 	}   
@@ -104,11 +103,18 @@ inlinestyle returns [StyleSheet sheet]
 @after {
 	log.debug("\n***\n{}\n***\n", $sheet);	   
 	// mark last usage
-	$sheet.markLast(ps.getAndIncrement());
+	$sheet.markLast(preparator.markPriority());
 	logLeave("inlinestyle");
 }
-	: 	^(INLINESTYLE declarations) 
-	|   ^(INLINESTYLE inlineset+)
+	: 	^(INLINESTYLE decl=declarations) 
+		{
+			RuleBlock<?> rb = preparator.prepareInlineRuleSet(decl, null);
+			if(rb!=null) {
+			     $sheet.add(rb);
+			}
+		} 
+	|   ^(INLINESTYLE 
+		 	(irs=inlineset {if(irs!=null) $sheet.add(irs);} )+ )
 	;
 
 
@@ -123,7 +129,7 @@ stylesheet returns [StyleSheet sheet]
 @after {
 	log.debug("\n***\n{}\n***\n", $sheet);
 	// mark last usage
-	$sheet.markLast(ps.getAndIncrement());
+	$sheet.markLast(preparator.markPriority());
 	logLeave("stylesheet");
 }
 	: ^(STYLESHEET 
@@ -163,10 +169,9 @@ scope {
     logEnter("atstatement");
 	$statement::insideAtstatement=true;
 	$atstatement::stm = $stmnt = null;
-	List<Declaration> declarations = null;
 	List<RuleSet> rules = null;
 	String pseudo = null;
-	Priority mark = ps.markAndIncrement();
+	Priority mark = preparator.markPriority();
 }
 @after {
     logLeave("atstatement");
@@ -185,45 +190,22 @@ scope {
 	    imports.pop();
 		log.info("Imported file was parsed, returing in nesting.");
 	  }
-	| ^(PAGE (i=IDENT{ pseudo=extractText(i);})? decl=declarations
-		{
-		   	if(decl!=null && !decl.isEmpty()) {
-				Priority prio = ps.getAndIncrement();							  
-            	RulePage rp = rf.createPage(prio);
-                rp.replaceAll(declarations);
-                rp.setPseudo(pseudo);
-                $stmnt = rp;
-                log.info("Create @page as {}th with:\n{}",  prio, rp);
-            }
-		})
+	| ^(PAGE (i=IDENT{ pseudo=extractText(i);})? decl=declarations)
+		{ $stmnt = preparator.prepareRulePage(decl, pseudo); }
 	| ^(MEDIA (mediaList=media)? 
 			(rs=ruleset {
 			   if(rules==null) rules = new ArrayList<RuleSet>();				
 			   if(rs!=null) {
-				   // this cast should be safe, because when 
-				   // inside of @statetement, oridinal ruleset
+				   // this cast should be safe, because when inside of @statetement, oridinal ruleset
 				   // is returned
 			       rules.add((RuleSet)rs);
-				   log.debug("Inserted ruleset ({}) into @media",
-				   		rules.size());
+				   log.debug("Inserted ruleset ({}) into @media", rules.size());
 			   }
 		
 			})*
 	   )	
 	   {
-		   if(rules!=null && !rules.isEmpty()) {
-			  // create at the beginning, increment to match positions								   
-              RuleMedia rm = rf.createMedia(mark);
-			  
-			  rm.replaceAll(rules);
-			  if(mediaList!=null && !mediaList.isEmpty()) 
-			  	  rm.setMedia(mediaList);
-				
-			  $stmnt = rm;
-              log.info("Create @media as {}th with:\n{}", 
-                	mark, rm);
-			  
-		   }
+		   $stmnt = preparator.prepareRuleMedia(mark, rules, mediaList);
 	   }
 	| INVALID_STATEMENT {$statement::invalid=true;}
 	;
@@ -243,8 +225,16 @@ media returns [List<String> affected]
     } )+
 	;
     
-inlineset
-	: ^(RULE pseudo* declarations)
+inlineset returns [RuleBlock<?> is]
+@init {
+     logEnter("inlineset");
+	 List<Selector.PseudoPage> pplist = new ArrayList<Selector.PseudoPage>();
+}
+@after {
+     logLeave("inlineset");   
+}
+	: ^(RULE (p=pseudo {pplist.add(p);})* decl=declarations)
+	  	{ $is = preparator.prepareInlineRuleSet(decl, pplist); }
 	;
     
     
@@ -258,49 +248,22 @@ ruleset returns [RuleBlock<?> stmnt]
     List<CombinedSelector> cslist = new ArrayList<CombinedSelector>();
 }
 @after {
-    if($statement::invalid || cslist.isEmpty() || decl.isEmpty()) {
+    if($statement::invalid) {
         $stmnt = null;
         log.debug("Ruleset not valid, so not created");
     }
     else {    
-		Priority prio = ps.getAndIncrement(); 
-        RuleSet rs = rf.createSet(prio);
-        rs.setSelectors(cslist);
-        rs.replaceAll(decl);
-		log.info("Create ruleset as {}th with:\n{}", prio, rs);
-		
-		// check statement
-		if(!$statement::insideAtstatement && !imports.isEmpty() 
-			&& imports.peek().doWrap()) {
-			
-			// swap numbers, so RuleMedia is created before RuleSet
-			prio = rs.getPriority();			
-			rs.setPriority(ps.getAndIncrement());
-			RuleMedia rm = rf.createMedia(prio);
-			List<String> media = imports.peek().media;
-			
-			log.debug("Wrapping ruleset {} into media: {}", rs, media);
-			
-			rm.unlock();
-			rm.add(rs);
-			rm.setMedia(media);
-			
-			$stmnt = (RuleBlock<?>) rm;
-			
-		}
-		// create oridinal ruleset
-		else {
-			$stmnt = (RuleBlock<?>) rs;
-		}
-    }
+		 $stmnt = preparator.prepareRuleSet(cslist, decl, 
+		 	!$statement::insideAtstatement && !imports.isEmpty() && imports.peek().doWrap(), 
+			imports.isEmpty() ? null : imports.peek().media);
+        }		
     logLeave("ruleset");
 }    
     : ^(RULE 
         (cs=combined_selector  
         {if(cs!=null && !cs.isEmpty() && !$statement::invalid) {
             cslist.add(cs);
-            log.debug("Inserted combined selector ({}) into ruleset", 
-				cslist.size());
+            log.debug("Inserted combined selector ({}) into ruleset",  cslist.size());
          }   
         } )*
 		decl=declarations 

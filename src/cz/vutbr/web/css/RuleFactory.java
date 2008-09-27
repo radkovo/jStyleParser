@@ -1,5 +1,7 @@
 package cz.vutbr.web.css;
 
+import org.w3c.dom.Element;
+
 import cz.vutbr.web.css.RuleBlock.Priority;
 import cz.vutbr.web.css.Selector.Operator;
 
@@ -72,6 +74,13 @@ public interface RuleFactory {
 	 */
 	Selector createSelector();
 
+	/**
+	 * Creates CSS selector part, element DOM node
+	 * @param e Element node
+	 * @return New CSS element DOM selector part
+	 */
+	Selector.ElementDOM createElementDOM(Element e);
+	
 	/**
 	 * Creates CSS selector part, element name
 	 * @param elementName Name of element

@@ -9,6 +9,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
@@ -199,33 +200,65 @@ public class CSSParserFactory {
 	 *            Source, interpretation depends on {@code type}
 	 * @param type
 	 *            Type of source provided
+	 * @param inline
+	 *            InlineElement
 	 * @return Created StyleSheet
 	 * @throws IOException
 	 *             When problem with input stream occurs
 	 * @throws CSSException
 	 *             When unrecoverable exception during parsing occurs
 	 */
-	public static StyleSheet parse(String source, SourceType type)
-			throws IOException, CSSException {
+	public static StyleSheet parse(String source, SourceType type,
+			Element inline) throws IOException, CSSException {
 
 		StyleSheet sheet = (StyleSheet) CSSFactory.getRuleFactory()
 				.createStyleSheet().unlock();
 
 		PriorityStrategy ps = new AtomicPriorityStrategy();
+		Preparator preparator = new SimplePreparator(ps, inline);
 
-		CSSTreeParser parser = createParser(source, type, ps, sheet);
+		CSSTreeParser parser = createParser(source, type, preparator, sheet);
 		return type.parse(parser);
 	}
 
 	/**
-	 * Appends parsed source to passed style sheet. This style sheet
-	 * must be IMPERATIVELY parsed by this factory to guarantee 
-	 * proper appending
+	 * Parses source of given type. Uses no element.
+	 * 
 	 * @param source
 	 *            Source, interpretation depends on {@code type}
 	 * @param type
 	 *            Type of source provided
-	 * @param sheet StyleSheet to be modified           
+	 * @param inline
+	 *            InlineElement
+	 * @return Created StyleSheet
+	 * @throws IOException
+	 *             When problem with input stream occurs
+	 * @throws CSSException
+	 *             When unrecoverable exception during parsing occurs
+	 * @throws IllegalArgumentException
+	 *             When type of source is INLINE
+	 */
+	public static StyleSheet parse(String source, SourceType type)
+			throws IOException, CSSException {
+		if (type == SourceType.INLINE)
+			throw new IllegalArgumentException(
+					"Missing element for INLINE input");
+
+		return parse(source, type, null);
+	}
+
+	/**
+	 * Appends parsed source to passed style sheet. This style sheet must be
+	 * IMPERATIVELY parsed by this factory to guarantee proper appending
+	 * 
+	 * @param source
+	 *            Source, interpretation depends on {@code type}
+	 * @param type
+	 *            Type of source provided
+	 * @param inline
+	 *            Inline element
+	 * @param sheet
+	 *            StyleSheet to be modified
 	 * @return Modified StyleSheet
 	 * @throws IOException
 	 *             When problem with input stream occurs
@@ -233,23 +266,54 @@ public class CSSParserFactory {
 	 *             When unrecoverable exception during parsing occurs
 	 */
 	public static StyleSheet append(String source, SourceType type,
-			StyleSheet sheet) throws IOException, CSSException {
+			Element inline, StyleSheet sheet) throws IOException, CSSException {
 
 		PriorityStrategy ps = new AtomicPriorityStrategy(sheet.getLastMark());
+		Preparator preparator = new SimplePreparator(ps, inline);
 
-		CSSTreeParser parser = createParser(source, type, ps, sheet);
+		CSSTreeParser parser = createParser(source, type, preparator, sheet);
 		return type.parse(parser);
+	}
+
+	/**
+	 * Appends parsed source to passed style sheet. This style sheet must be
+	 * IMPERATIVELY parsed by this factory to guarantee proper appending. Uses
+	 * no inline element
+	 * 
+	 * @param source
+	 *            Source, interpretation depends on {@code type}
+	 * @param type
+	 *            Type of source provided
+	 * @param inline
+	 *            Inline element
+	 * @param sheet
+	 *            StyleSheet to be modified
+	 * @return Modified StyleSheet
+	 * @throws IOException
+	 *             When problem with input stream occurs
+	 * @throws CSSException
+	 *             When unrecoverable exception during parsing occurs
+	 * @throws IllegalArgumentException
+	 *             When type of source is INLINE
+	 */
+	public static StyleSheet append(String source, SourceType type,
+			StyleSheet sheet) throws IOException, CSSException {
+		if (type == SourceType.INLINE)
+			throw new IllegalArgumentException(
+					"Missing element for INLINE input");
+
+		return append(source, type, null);
 	}
 
 	// creates parser
 	private static CSSTreeParser createParser(String source, SourceType type,
-			PriorityStrategy priorityStrategy, StyleSheet stylesheet)
-			throws IOException, CSSException {
+			Preparator preparator, StyleSheet stylesheet) throws IOException,
+			CSSException {
 
 		CSSInputStream input = type.getInput(source);
 		CommonTokenStream tokens = feedLexer(input, stylesheet);
 		CommonTree ast = feedParser(tokens, type, stylesheet);
-		return feedAST(tokens, ast, priorityStrategy, stylesheet);
+		return feedAST(tokens, ast, preparator, stylesheet);
 	}
 
 	// initializer lexer
@@ -286,8 +350,7 @@ public class CSSParserFactory {
 
 	// initializes tree parser
 	private static CSSTreeParser feedAST(CommonTokenStream source,
-			CommonTree ast, PriorityStrategy priorityStrategy,
-			StyleSheet stylesheet) {
+			CommonTree ast, Preparator preparator, StyleSheet stylesheet) {
 
 		if (log.isTraceEnabled()) {
 			log.trace("Feeding tree parser with AST:\n{}", TreeUtil
@@ -302,81 +365,87 @@ public class CSSParserFactory {
 
 		CSSTreeParser parser = new CSSTreeParser(nodes);
 
-		return parser.init(stylesheet, priorityStrategy);
+		return parser.init(stylesheet, preparator);
 	}
 
-	// priority strategy using atomic incrementing 
-	private static final class AtomicPriorityStrategy implements PriorityStrategy {
+	// priority strategy using atomic incrementing
+	private static final class AtomicPriorityStrategy implements
+			PriorityStrategy {
 
 		private final AtomicInteger counter;
-		
+
 		public AtomicPriorityStrategy() {
 			this.counter = new AtomicInteger(0);
 		}
-		
+
 		public AtomicPriorityStrategy(Priority last) {
-			if(!(last instanceof PriorityImpl))
-				throw new ClassCastException("Unable to continue with priority class provided: " + last.getClass());
-			
-			this.counter = new AtomicInteger(((PriorityImpl)last).priority);
+			if (!(last instanceof PriorityImpl))
+				throw new ClassCastException(
+						"Unable to continue with priority class provided: "
+								+ last.getClass());
+
+			this.counter = new AtomicInteger(((PriorityImpl) last).priority);
 		}
-		
+
 		public Priority getAndIncrement() {
 			return new PriorityImpl(counter.incrementAndGet());
 		}
-		
+
 		public Priority markAndIncrement() {
 			return new PriorityImpl(counter.incrementAndGet());
 		}
-		
+
 	}
-	
-	
+
 	// not atomic priority strategy
 	@SuppressWarnings("unused")
-	private static final class SimplePriorityStrategy implements PriorityStrategy {
-		
+	private static final class SimplePriorityStrategy implements
+			PriorityStrategy {
+
 		private int counter;
-		
+
 		public SimplePriorityStrategy() {
 			this.counter = 0;
 		}
-		
+
 		public SimplePriorityStrategy(Priority last) {
-			if(!(last instanceof PriorityImpl))
-				throw new ClassCastException("Unable to continue with priority class provided: " + last.getClass());
-			
-			this.counter = ((PriorityImpl)last).priority;
+			if (!(last instanceof PriorityImpl))
+				throw new ClassCastException(
+						"Unable to continue with priority class provided: "
+								+ last.getClass());
+
+			this.counter = ((PriorityImpl) last).priority;
 		}
-		
+
 		public Priority getAndIncrement() {
 			return new PriorityImpl(counter++);
 		}
-		
+
 		public Priority markAndIncrement() {
 			return new PriorityImpl(counter++);
 		}
 	}
 
-	
 	// priority using integer value
 	private static final class PriorityImpl implements Priority {
-		
+
 		final int priority;
 
 		public PriorityImpl(int priority) {
 			this.priority = priority;
 		}
-		
+
 		public int compareTo(Priority o) {
-			if(!(o instanceof PriorityImpl))
-				throw new ClassCastException("Unable to compare with different instance of priority: " + o.getClass());
-			
+			if (!(o instanceof PriorityImpl))
+				throw new ClassCastException(
+						"Unable to compare with different instance of priority: "
+								+ o.getClass());
+
 			PriorityImpl other = (PriorityImpl) o;
-		
+
 			return this.priority - other.priority;
 		}
-		
+
 		@Override
 		public String toString() {
 			return String.valueOf(priority);
