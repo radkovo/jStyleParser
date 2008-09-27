@@ -302,7 +302,7 @@ public class CSSParserFactory {
 			throw new IllegalArgumentException(
 					"Missing element for INLINE input");
 
-		return append(source, type, null);
+		return append(source, type, null, sheet);
 	}
 
 	// creates parser
@@ -379,12 +379,14 @@ public class CSSParserFactory {
 		}
 
 		public AtomicPriorityStrategy(Priority last) {
-			if (!(last instanceof PriorityImpl))
+			if (last == null)
+				this.counter = new AtomicInteger(0);
+			else if (!(last instanceof PriorityImpl))
 				throw new ClassCastException(
 						"Unable to continue with priority class provided: "
 								+ last.getClass());
-
-			this.counter = new AtomicInteger(((PriorityImpl) last).priority);
+			else
+				this.counter = new AtomicInteger(((PriorityImpl) last).priority);
 		}
 
 		public Priority getAndIncrement() {

@@ -8,10 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
+import org.w3c.dom.traversal.NodeFilter;
 
 import cz.vutbr.web.csskit.antlr.CSSParserFactory;
 import cz.vutbr.web.csskit.antlr.CSSParserFactory.SourceType;
 import cz.vutbr.web.domassign.Analyzer;
+import cz.vutbr.web.domassign.TidyTreeWalker.Traversal;
 
 /**
  * This class is abstract factory for other factories used during CSS parsing.
@@ -200,11 +204,126 @@ public final class CSSFactory {
 		return CSSParserFactory.parse(css, SourceType.EMBEDDED);
 	}
 
-	public static final Map<Element, NodeData> assign(Document doc,
-			StyleSheet sheet, String media, boolean useInheritance) {
+	public static final Map<Element, NodeData> assignDOM(Document doc,
+			String media, boolean useInheritance) {
 
-		Analyzer analyzer = new Analyzer(sheet);
+		StyleSheet style = (StyleSheet) getRuleFactory().createStyleSheet()
+				.unlock();
+		
+		Traversal<StyleSheet> traversal = new CSSAssignTraversal(doc,
+				(Object) media, NodeFilter.SHOW_ELEMENT);
+
+		traversal.listTraversal(style);
+
+		Analyzer analyzer = new Analyzer(style);
 		return analyzer.evaluateDOM(doc, media, useInheritance);
+	}
+
+	/**
+	 * Walks (X)HTML document and collects style information
+	 * 
+	 * @author kapy
+	 * 
+	 */
+	private static final class CSSAssignTraversal extends Traversal<StyleSheet> {
+
+		public CSSAssignTraversal(Document doc, Object source, int whatToShow) {
+			super(doc, source, whatToShow);
+		}
+
+		@Override
+		protected void processNode(StyleSheet result, Node current,
+				Object source) {
+
+			// allowed media
+			String media = (String) source;
+			Element elem = (Element) current;
+
+			// embedded style-sheet
+			if (isEmbeddedStyleSheet(elem, media)) {
+				try {
+					result = CSSParserFactory.append(extractElementText(elem),
+							SourceType.EMBEDDED, result);
+					log.debug("Matched embedded CSS style");
+				} catch (IOException e) {
+					log.warn("Embedded THROWN:", e);
+				} catch (CSSException e) {
+					log.warn("Embedded THROWN:", e);
+				}
+			}
+			// linked style-sheet
+			else if (isLinkedStyleSheet(elem, media)) {
+				try {
+					result = CSSParserFactory.append(elem.getAttribute("href"),
+							SourceType.FILE, result);
+					log.debug("Matched linked CSS style");
+				} catch (IOException e) {
+					log.warn("Linked THROWN:", e);
+				} catch (CSSException e) {
+					log.warn("Linked THROWN:", e);
+				}
+			}
+			// inline style
+			else if (elem.getAttribute("style") != null &&
+					elem.getAttribute("style").length()>0) {
+				try {
+					result = CSSParserFactory.append(
+							elem.getAttribute("style"), SourceType.INLINE,
+							elem, result);
+					log.debug("Matched inline CSS style");
+				} catch (IOException e) {
+					log.warn("Inline THROWN:", e);
+				} catch (CSSException e) {
+					log.warn("Inline THROWN:", e);
+				}
+			}
+
+		}
+
+		private static boolean isEmbeddedStyleSheet(Element e, String media) {
+			return "style".equalsIgnoreCase(e.getNodeName())
+					&& isAllowedMedia(e, media);
+		}
+
+		private static boolean isLinkedStyleSheet(Element e, String media) {
+			return e.getNodeName().equals("link")
+					&& "stylesheet".equalsIgnoreCase(e.getAttribute("rel"))
+					&& "text/css".equalsIgnoreCase(e.getAttribute("type"))
+					&& isAllowedMedia(e, media);
+		}
+
+		/**
+		 * Extracts element's text, if any
+		 * 
+		 * @param e
+		 *            Element
+		 * @return Element's text or {@code null}
+		 */
+		private static String extractElementText(Element e) {
+			Node text = e.getFirstChild();
+			if (text != null && text.getNodeType() == Node.TEXT_NODE)
+				return ((Text) text).getData();
+			return null;
+		}
+
+		/**
+		 * Checks allowed media by searching for {@code media} attribute on
+		 * element and its content
+		 * 
+		 * @param e
+		 *            (STYLE) Element
+		 * @param media
+		 *            Media used for parsing
+		 * @return {@code true} if allowed, {@code false} otherwise
+		 */
+		private static boolean isAllowedMedia(Element e, String media) {
+			String mediaList = e.getAttribute("media");
+			if (mediaList == null || mediaList.length() == 0
+					|| mediaList.indexOf(media) != -1)
+				return true;
+
+			return false;
+		}
 	}
 
 }
