@@ -387,7 +387,7 @@ public class Analyzer {
 			String element = last.getElementName();
 			if (element != null) {
 				// wildcard
-				if (Selector.SelectorPart.WILDCARD.equals(element))
+				if (Selector.ElementName.WILDCARD.equals(element))
 					hs.add(new HolderSelector(HolderItem.OTHER, null));
 				// element
 				else

@@ -122,6 +122,28 @@ public class CSSToken extends CommonToken {
 	}
 	
 	/**
+	 * Considers text as content of HASH token,
+	 * and models view at this text as an common string,
+	 * that is removed {@code '#'} from the beginning of string
+	 * @param className Content of HASH token
+	 * @return String with trimmed HASH # character
+	 */
+	public static String extractHASH(String hash) {
+		return hash.substring(1,hash.length());
+	}
+	
+	/**
+	 * Considers text as content of CLASSKEYWORD token,
+	 * and models view at this text as an common string,
+	 * that is removed {@code '.'} from the beginning of string
+	 * @param className Content of CLASSKEYWORD token
+	 * @return String with trimmed CLASSKEYWORD dot
+	 */
+	public static String extractCLASSKEYWORD(String className) {
+		return className.substring(1,className.length());
+	}
+	
+	/**
 	 * Returns common text stored in token. Content is not modified.
 	 * @return Model view of text in token
 	 */
@@ -138,6 +160,10 @@ public class CSSToken extends CommonToken {
 				return extractURI(text);
 			case CSSLexer.STRING:
 				return extractSTRING(text);
+			case CSSLexer.CLASSKEYWORD:
+				return extractCLASSKEYWORD(text);
+			case CSSLexer.HASH:
+				return extractHASH(text);	
 			default:
 				return text;
 		}

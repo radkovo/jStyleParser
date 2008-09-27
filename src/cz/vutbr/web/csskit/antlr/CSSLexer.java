@@ -1,4 +1,4 @@
-// $ANTLR 3.1 CSS.g 2008-09-21 13:33:11
+// $ANTLR 3.1 CSS.g 2008-09-27 14:25:06
 
 package cz.vutbr.web.csskit.antlr;
 
@@ -199,7 +199,6 @@ public class CSSLexer extends Lexer {
         // current lexer state
         private LexerState ls;
         
-        // style sheet instance
         // this is for orthogonality
         @SuppressWarnings("unused")
         private StyleSheet stylesheet;
@@ -467,8 +466,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = T__84;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:356:7: ( 'important' )
-            // CSS.g:356:9: 'important'
+            // CSS.g:357:7: ( 'important' )
+            // CSS.g:357:9: 'important'
             {
             match("important"); 
 
@@ -488,8 +487,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = IDENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:691:2: ( IDENT_MACR )
-            // CSS.g:691:4: IDENT_MACR
+            // CSS.g:692:2: ( IDENT_MACR )
+            // CSS.g:692:4: IDENT_MACR
             {
             mIDENT_MACR(); 
 
@@ -513,12 +512,12 @@ public class CSSLexer extends Lexer {
 
             	expectedToken.push(new Integer(CHARSET));
 
-            // CSS.g:702:2: ( '@charset' ( S )* s= STRING_MACR ( S )* SEMICOLON )
-            // CSS.g:702:4: '@charset' ( S )* s= STRING_MACR ( S )* SEMICOLON
+            // CSS.g:703:2: ( '@charset' ( S )* s= STRING_MACR ( S )* SEMICOLON )
+            // CSS.g:703:4: '@charset' ( S )* s= STRING_MACR ( S )* SEMICOLON
             {
             match("@charset"); 
 
-            // CSS.g:702:15: ( S )*
+            // CSS.g:703:15: ( S )*
             loop1:
             do {
                 int alt1=2;
@@ -531,7 +530,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt1) {
             	case 1 :
-            	    // CSS.g:702:15: S
+            	    // CSS.g:703:15: S
             	    {
             	    mS(); 
 
@@ -546,7 +545,7 @@ public class CSSLexer extends Lexer {
             int sStart69 = getCharIndex();
             mSTRING_MACR(); 
             s = new CommonToken(input, Token.INVALID_TOKEN_TYPE, Token.DEFAULT_CHANNEL, sStart69, getCharIndex()-1);
-            // CSS.g:702:32: ( S )*
+            // CSS.g:703:32: ( S )*
             loop2:
             do {
                 int alt2=2;
@@ -559,7 +558,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt2) {
             	case 1 :
-            	    // CSS.g:702:32: S
+            	    // CSS.g:703:32: S
             	    {
             	    mS(); 
 
@@ -621,12 +620,12 @@ public class CSSLexer extends Lexer {
             	StringBuilder media = new StringBuilder();
             	String mText = null;
 
-            // CSS.g:737:2: ( '@import' ( S )* (s= STRING_MACR | s= URI ) ( S )* (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )? SEMICOLON )
-            // CSS.g:737:4: '@import' ( S )* (s= STRING_MACR | s= URI ) ( S )* (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )? SEMICOLON
+            // CSS.g:738:2: ( '@import' ( S )* (s= STRING_MACR | s= URI ) ( S )* (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )? SEMICOLON )
+            // CSS.g:738:4: '@import' ( S )* (s= STRING_MACR | s= URI ) ( S )* (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )? SEMICOLON
             {
             match("@import"); 
 
-            // CSS.g:737:14: ( S )*
+            // CSS.g:738:14: ( S )*
             loop3:
             do {
                 int alt3=2;
@@ -639,7 +638,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // CSS.g:737:14: S
+            	    // CSS.g:738:14: S
             	    {
             	    mS(); 
 
@@ -651,7 +650,7 @@ public class CSSLexer extends Lexer {
                 }
             } while (true);
 
-            // CSS.g:738:4: (s= STRING_MACR | s= URI )
+            // CSS.g:739:4: (s= STRING_MACR | s= URI )
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -669,7 +668,7 @@ public class CSSLexer extends Lexer {
             }
             switch (alt4) {
                 case 1 :
-                    // CSS.g:738:5: s= STRING_MACR
+                    // CSS.g:739:5: s= STRING_MACR
                     {
                     int sStart114 = getCharIndex();
                     mSTRING_MACR(); 
@@ -679,7 +678,7 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // CSS.g:739:7: s= URI
+                    // CSS.g:740:7: s= URI
                     {
                     int sStart127 = getCharIndex();
                     mURI(); 
@@ -691,7 +690,7 @@ public class CSSLexer extends Lexer {
 
             }
 
-            // CSS.g:739:33: ( S )*
+            // CSS.g:740:33: ( S )*
             loop5:
             do {
                 int alt5=2;
@@ -704,7 +703,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt5) {
             	case 1 :
-            	    // CSS.g:739:33: S
+            	    // CSS.g:740:33: S
             	    {
             	    mS(); 
 
@@ -716,7 +715,7 @@ public class CSSLexer extends Lexer {
                 }
             } while (true);
 
-            // CSS.g:740:6: (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )?
+            // CSS.g:741:6: (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )?
             int alt10=2;
             int LA10_0 = input.LA(1);
 
@@ -725,7 +724,7 @@ public class CSSLexer extends Lexer {
             }
             switch (alt10) {
                 case 1 :
-                    // CSS.g:740:7: m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )*
+                    // CSS.g:741:7: m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )*
                     {
                     int mStart143 = getCharIndex();
                     mIDENT_MACR(); 
@@ -737,7 +736,7 @@ public class CSSLexer extends Lexer {
                     	    	else
                     	    	    log.debug("Invalid import media \"{}\"", mText);
                     	     
-                    // CSS.g:747:7: ( S )*
+                    // CSS.g:748:7: ( S )*
                     loop6:
                     do {
                         int alt6=2;
@@ -750,7 +749,7 @@ public class CSSLexer extends Lexer {
 
                         switch (alt6) {
                     	case 1 :
-                    	    // CSS.g:747:7: S
+                    	    // CSS.g:748:7: S
                     	    {
                     	    mS(); 
 
@@ -762,7 +761,7 @@ public class CSSLexer extends Lexer {
                         }
                     } while (true);
 
-                    // CSS.g:748:9: ( ',' ( S )* m= IDENT_MACR ( S )* )*
+                    // CSS.g:749:9: ( ',' ( S )* m= IDENT_MACR ( S )* )*
                     loop9:
                     do {
                         int alt9=2;
@@ -775,10 +774,10 @@ public class CSSLexer extends Lexer {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // CSS.g:748:10: ',' ( S )* m= IDENT_MACR ( S )*
+                    	    // CSS.g:749:10: ',' ( S )* m= IDENT_MACR ( S )*
                     	    {
                     	    match(','); 
-                    	    // CSS.g:748:14: ( S )*
+                    	    // CSS.g:749:14: ( S )*
                     	    loop7:
                     	    do {
                     	        int alt7=2;
@@ -791,7 +790,7 @@ public class CSSLexer extends Lexer {
 
                     	        switch (alt7) {
                     	    	case 1 :
-                    	    	    // CSS.g:748:14: S
+                    	    	    // CSS.g:749:14: S
                     	    	    {
                     	    	    mS(); 
 
@@ -813,7 +812,7 @@ public class CSSLexer extends Lexer {
                     	    	       	 else
                     	    	    	    log.debug("Invalid import media \"{}\"", mText);		
                     	    	       	
-                    	    // CSS.g:755:9: ( S )*
+                    	    // CSS.g:756:9: ( S )*
                     	    loop8:
                     	    do {
                     	        int alt8=2;
@@ -826,7 +825,7 @@ public class CSSLexer extends Lexer {
 
                     	        switch (alt8) {
                     	    	case 1 :
-                    	    	    // CSS.g:755:9: S
+                    	    	    // CSS.g:756:9: S
                     	    	    {
                     	    	    mS(); 
 
@@ -913,8 +912,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = MEDIA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:802:2: ( '@media' )
-            // CSS.g:802:4: '@media'
+            // CSS.g:803:2: ( '@media' )
+            // CSS.g:803:4: '@media'
             {
             match("@media"); 
 
@@ -934,8 +933,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = PAGE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:806:2: ( '@page' )
-            // CSS.g:806:4: '@page'
+            // CSS.g:807:2: ( '@page' )
+            // CSS.g:807:4: '@page'
             {
             match("@page"); 
 
@@ -955,8 +954,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = ATKEYWORD;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:811:2: ( '@' IDENT_MACR )
-            // CSS.g:811:4: '@' IDENT_MACR
+            // CSS.g:812:2: ( '@' IDENT_MACR )
+            // CSS.g:812:4: '@' IDENT_MACR
             {
             match('@'); 
             mIDENT_MACR(); 
@@ -976,8 +975,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = CLASSKEYWORD;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:815:5: ( '.' IDENT_MACR )
-            // CSS.g:815:7: '.' IDENT_MACR
+            // CSS.g:816:5: ( '.' IDENT_MACR )
+            // CSS.g:816:7: '.' IDENT_MACR
             {
             match('.'); 
             mIDENT_MACR(); 
@@ -1000,8 +999,8 @@ public class CSSLexer extends Lexer {
 
             	expectedToken.push(new Integer(STRING));
 
-            // CSS.g:826:2: ( STRING_MACR )
-            // CSS.g:826:4: STRING_MACR
+            // CSS.g:827:2: ( STRING_MACR )
+            // CSS.g:827:4: STRING_MACR
             {
             mSTRING_MACR(); 
 
@@ -1022,8 +1021,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = HASH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:831:2: ( '#' NAME_MACR )
-            // CSS.g:831:4: '#' NAME_MACR
+            // CSS.g:832:2: ( '#' NAME_MACR )
+            // CSS.g:832:4: '#' NAME_MACR
             {
             match('#'); 
             mNAME_MACR(); 
@@ -1043,8 +1042,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = NUMBER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:836:2: ( NUMBER_MACR )
-            // CSS.g:836:4: NUMBER_MACR
+            // CSS.g:837:2: ( NUMBER_MACR )
+            // CSS.g:837:4: NUMBER_MACR
             {
             mNUMBER_MACR(); 
 
@@ -1063,8 +1062,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = PERCENTAGE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:841:2: ( NUMBER_MACR '%' )
-            // CSS.g:841:4: NUMBER_MACR '%'
+            // CSS.g:842:2: ( NUMBER_MACR '%' )
+            // CSS.g:842:4: NUMBER_MACR '%'
             {
             mNUMBER_MACR(); 
             match('%'); 
@@ -1084,8 +1083,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = DIMENSION;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:846:2: ( NUMBER_MACR IDENT_MACR )
-            // CSS.g:846:4: NUMBER_MACR IDENT_MACR
+            // CSS.g:847:2: ( NUMBER_MACR IDENT_MACR )
+            // CSS.g:847:4: NUMBER_MACR IDENT_MACR
             {
             mNUMBER_MACR(); 
             mIDENT_MACR(); 
@@ -1105,13 +1104,13 @@ public class CSSLexer extends Lexer {
         try {
             int _type = URI;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:851:2: ( 'url(' W_MACR ( STRING_MACR | URI_MACR ) W_MACR ')' )
-            // CSS.g:851:4: 'url(' W_MACR ( STRING_MACR | URI_MACR ) W_MACR ')'
+            // CSS.g:852:2: ( 'url(' W_MACR ( STRING_MACR | URI_MACR ) W_MACR ')' )
+            // CSS.g:852:4: 'url(' W_MACR ( STRING_MACR | URI_MACR ) W_MACR ')'
             {
             match("url("); 
 
             mW_MACR(); 
-            // CSS.g:851:18: ( STRING_MACR | URI_MACR )
+            // CSS.g:852:18: ( STRING_MACR | URI_MACR )
             int alt11=2;
             int LA11_0 = input.LA(1);
 
@@ -1129,14 +1128,14 @@ public class CSSLexer extends Lexer {
             }
             switch (alt11) {
                 case 1 :
-                    // CSS.g:851:19: STRING_MACR
+                    // CSS.g:852:19: STRING_MACR
                     {
                     mSTRING_MACR(); 
 
                     }
                     break;
                 case 2 :
-                    // CSS.g:851:33: URI_MACR
+                    // CSS.g:852:33: URI_MACR
                     {
                     mURI_MACR(); 
 
@@ -1163,8 +1162,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = UNIRANGE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:855:9: ( 'U+' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )? ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )? )
-            // CSS.g:856:2: 'U+' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )? ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )?
+            // CSS.g:856:9: ( 'U+' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )? ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )? )
+            // CSS.g:857:2: 'U+' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )? ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )?
             {
             match("U+"); 
 
@@ -1204,7 +1203,7 @@ public class CSSLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // CSS.g:860:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )?
+            // CSS.g:861:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )?
             int alt12=2;
             int LA12_0 = input.LA(1);
 
@@ -1213,7 +1212,7 @@ public class CSSLexer extends Lexer {
             }
             switch (alt12) {
                 case 1 :
-                    // CSS.g:860:8: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' )
+                    // CSS.g:861:8: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' )
                     {
                     if ( (input.LA(1)>='0' && input.LA(1)<='9')||input.LA(1)=='?'||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                         input.consume();
@@ -1239,7 +1238,7 @@ public class CSSLexer extends Lexer {
 
             }
 
-            // CSS.g:861:2: ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )?
+            // CSS.g:862:2: ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )?
             int alt14=2;
             int LA14_0 = input.LA(1);
 
@@ -1248,7 +1247,7 @@ public class CSSLexer extends Lexer {
             }
             switch (alt14) {
                 case 1 :
-                    // CSS.g:861:3: '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
+                    // CSS.g:862:3: '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
                     {
                     match('-'); 
                     if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
@@ -1287,7 +1286,7 @@ public class CSSLexer extends Lexer {
                         recover(mse);
                         throw mse;}
 
-                    // CSS.g:866:14: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
+                    // CSS.g:867:14: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
                     int alt13=2;
                     int LA13_0 = input.LA(1);
 
@@ -1296,7 +1295,7 @@ public class CSSLexer extends Lexer {
                     }
                     switch (alt13) {
                         case 1 :
-                            // CSS.g:866:15: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+                            // CSS.g:867:15: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
                             {
                             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                                 input.consume();
@@ -1344,8 +1343,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = CDO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:872:2: ( '<!--' )
-            // CSS.g:872:4: '<!--'
+            // CSS.g:873:2: ( '<!--' )
+            // CSS.g:873:4: '<!--'
             {
             match("<!--"); 
 
@@ -1365,8 +1364,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = CDC;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:877:2: ( '-->' )
-            // CSS.g:877:4: '-->'
+            // CSS.g:878:2: ( '-->' )
+            // CSS.g:878:4: '-->'
             {
             match("-->"); 
 
@@ -1386,8 +1385,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = SEMICOLON;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:881:2: ( ';' )
-            // CSS.g:881:4: ';'
+            // CSS.g:882:2: ( ';' )
+            // CSS.g:882:4: ';'
             {
             match(';'); 
 
@@ -1406,8 +1405,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = COLON;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:885:2: ( ':' )
-            // CSS.g:885:4: ':'
+            // CSS.g:886:2: ( ':' )
+            // CSS.g:886:4: ':'
             {
             match(':'); 
 
@@ -1426,8 +1425,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = COMMA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:889:5: ( ',' )
-            // CSS.g:889:7: ','
+            // CSS.g:890:5: ( ',' )
+            // CSS.g:890:7: ','
             {
             match(','); 
 
@@ -1446,8 +1445,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = EQUALS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:893:5: ( '=' )
-            // CSS.g:893:7: '='
+            // CSS.g:894:5: ( '=' )
+            // CSS.g:894:7: '='
             {
             match('='); 
 
@@ -1466,8 +1465,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = SLASH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:897:5: ( '/' )
-            // CSS.g:897:7: '/'
+            // CSS.g:898:5: ( '/' )
+            // CSS.g:898:7: '/'
             {
             match('/'); 
 
@@ -1486,8 +1485,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = GREATER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:901:5: ( '>' )
-            // CSS.g:901:7: '>'
+            // CSS.g:902:5: ( '>' )
+            // CSS.g:902:7: '>'
             {
             match('>'); 
 
@@ -1506,8 +1505,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = LCURLY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:905:2: ( '{' )
-            // CSS.g:905:4: '{'
+            // CSS.g:906:2: ( '{' )
+            // CSS.g:906:4: '{'
             {
             match('{'); 
             ls.curlyNest++;
@@ -1527,8 +1526,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = RCURLY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:909:2: ( '}' )
-            // CSS.g:909:4: '}'
+            // CSS.g:910:2: ( '}' )
+            // CSS.g:910:4: '}'
             {
             match('}'); 
              if(ls.curlyNest>0) ls.curlyNest--;
@@ -1548,8 +1547,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = APOS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:913:2: ( '\\'' )
-            // CSS.g:913:4: '\\''
+            // CSS.g:914:2: ( '\\'' )
+            // CSS.g:914:4: '\\''
             {
             match('\''); 
              ls.aposOpen=!ls.aposOpen; 
@@ -1569,8 +1568,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = QUOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:917:2: ( '\"' )
-            // CSS.g:917:4: '\"'
+            // CSS.g:918:2: ( '\"' )
+            // CSS.g:918:4: '\"'
             {
             match('\"'); 
              ls.quotOpen=!ls.quotOpen; 
@@ -1590,8 +1589,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = LPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:921:2: ( '(' )
-            // CSS.g:921:4: '('
+            // CSS.g:922:2: ( '(' )
+            // CSS.g:922:4: '('
             {
             match('('); 
 
@@ -1610,8 +1609,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = RPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:925:2: ( ')' )
-            // CSS.g:925:4: ')'
+            // CSS.g:926:2: ( ')' )
+            // CSS.g:926:4: ')'
             {
             match(')'); 
 
@@ -1630,8 +1629,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = LBRACE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:929:2: ( '[' )
-            // CSS.g:929:4: '['
+            // CSS.g:930:2: ( '[' )
+            // CSS.g:930:4: '['
             {
             match('['); 
 
@@ -1650,8 +1649,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = RBRACE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:933:2: ( ']' )
-            // CSS.g:933:4: ']'
+            // CSS.g:934:2: ( ']' )
+            // CSS.g:934:4: ']'
             {
             match(']'); 
 
@@ -1670,8 +1669,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = EXCLAMATION;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:937:5: ( '!' )
-            // CSS.g:937:7: '!'
+            // CSS.g:938:5: ( '!' )
+            // CSS.g:938:7: '!'
             {
             match('!'); 
 
@@ -1690,8 +1689,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = MINUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:941:2: ( '-' )
-            // CSS.g:941:4: '-'
+            // CSS.g:942:2: ( '-' )
+            // CSS.g:942:4: '-'
             {
             match('-'); 
 
@@ -1710,8 +1709,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = PLUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:945:2: ( '+' )
-            // CSS.g:945:4: '+'
+            // CSS.g:946:2: ( '+' )
+            // CSS.g:946:4: '+'
             {
             match('+'); 
 
@@ -1730,8 +1729,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = ASTERISK;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:949:2: ( '*' )
-            // CSS.g:949:4: '*'
+            // CSS.g:950:2: ( '*' )
+            // CSS.g:950:4: '*'
             {
             match('*'); 
 
@@ -1750,10 +1749,10 @@ public class CSSLexer extends Lexer {
         try {
             int _type = S;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:954:2: ( ( W_CHAR )+ )
-            // CSS.g:954:4: ( W_CHAR )+
+            // CSS.g:955:2: ( ( W_CHAR )+ )
+            // CSS.g:955:4: ( W_CHAR )+
             {
-            // CSS.g:954:4: ( W_CHAR )+
+            // CSS.g:955:4: ( W_CHAR )+
             int cnt15=0;
             loop15:
             do {
@@ -1767,7 +1766,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt15) {
             	case 1 :
-            	    // CSS.g:954:4: W_CHAR
+            	    // CSS.g:955:4: W_CHAR
             	    {
             	    mW_CHAR(); 
 
@@ -1799,12 +1798,12 @@ public class CSSLexer extends Lexer {
         try {
             int _type = COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:958:2: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // CSS.g:958:4: '/*' ( options {greedy=false; } : . )* '*/'
+            // CSS.g:959:2: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // CSS.g:959:4: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // CSS.g:958:9: ( options {greedy=false; } : . )*
+            // CSS.g:959:9: ( options {greedy=false; } : . )*
             loop16:
             do {
                 int alt16=2;
@@ -1829,7 +1828,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt16) {
             	case 1 :
-            	    // CSS.g:958:37: .
+            	    // CSS.g:959:37: .
             	    {
             	    matchAny(); 
 
@@ -1860,12 +1859,12 @@ public class CSSLexer extends Lexer {
         try {
             int _type = SL_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:962:2: ( '//' ( options {greedy=false; } : . )* ( '\\n' | '\\r' ) )
-            // CSS.g:962:4: '//' ( options {greedy=false; } : . )* ( '\\n' | '\\r' )
+            // CSS.g:963:2: ( '//' ( options {greedy=false; } : . )* ( '\\n' | '\\r' ) )
+            // CSS.g:963:4: '//' ( options {greedy=false; } : . )* ( '\\n' | '\\r' )
             {
             match("//"); 
 
-            // CSS.g:962:9: ( options {greedy=false; } : . )*
+            // CSS.g:963:9: ( options {greedy=false; } : . )*
             loop17:
             do {
                 int alt17=2;
@@ -1881,7 +1880,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt17) {
             	case 1 :
-            	    // CSS.g:962:37: .
+            	    // CSS.g:963:37: .
             	    {
             	    matchAny(); 
 
@@ -1919,8 +1918,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = FUNCTION;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:967:2: ( IDENT_MACR '(' )
-            // CSS.g:967:4: IDENT_MACR '('
+            // CSS.g:968:2: ( IDENT_MACR '(' )
+            // CSS.g:968:4: IDENT_MACR '('
             {
             mIDENT_MACR(); 
             match('('); 
@@ -1940,8 +1939,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = INCLUDES;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:971:2: ( '~=' )
-            // CSS.g:971:4: '~='
+            // CSS.g:972:2: ( '~=' )
+            // CSS.g:972:4: '~='
             {
             match("~="); 
 
@@ -1961,8 +1960,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = DASHMATCH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:975:2: ( '|=' )
-            // CSS.g:975:4: '|='
+            // CSS.g:976:2: ( '|=' )
+            // CSS.g:976:4: '|='
             {
             match("|="); 
 
@@ -1982,8 +1981,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = INVALID_TOKEN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:979:2: ( . )
-            // CSS.g:979:4: .
+            // CSS.g:980:2: ( . )
+            // CSS.g:980:4: .
             {
             matchAny(); 
 
@@ -2000,11 +1999,11 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "IDENT_MACR"
     public final void mIDENT_MACR() throws RecognitionException {
         try {
-            // CSS.g:988:4: ( NAME_START ( NAME_CHAR )* )
-            // CSS.g:988:6: NAME_START ( NAME_CHAR )*
+            // CSS.g:989:4: ( NAME_START ( NAME_CHAR )* )
+            // CSS.g:989:6: NAME_START ( NAME_CHAR )*
             {
             mNAME_START(); 
-            // CSS.g:988:17: ( NAME_CHAR )*
+            // CSS.g:989:17: ( NAME_CHAR )*
             loop18:
             do {
                 int alt18=2;
@@ -2017,7 +2016,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt18) {
             	case 1 :
-            	    // CSS.g:988:17: NAME_CHAR
+            	    // CSS.g:989:17: NAME_CHAR
             	    {
             	    mNAME_CHAR(); 
 
@@ -2041,10 +2040,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NAME_MACR"
     public final void mNAME_MACR() throws RecognitionException {
         try {
-            // CSS.g:993:3: ( ( NAME_CHAR )+ )
-            // CSS.g:993:5: ( NAME_CHAR )+
+            // CSS.g:994:3: ( ( NAME_CHAR )+ )
+            // CSS.g:994:5: ( NAME_CHAR )+
             {
-            // CSS.g:993:5: ( NAME_CHAR )+
+            // CSS.g:994:5: ( NAME_CHAR )+
             int cnt19=0;
             loop19:
             do {
@@ -2058,7 +2057,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt19) {
             	case 1 :
-            	    // CSS.g:993:5: NAME_CHAR
+            	    // CSS.g:994:5: NAME_CHAR
             	    {
             	    mNAME_CHAR(); 
 
@@ -2086,10 +2085,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NAME_START"
     public final void mNAME_START() throws RecognitionException {
         try {
-            // CSS.g:998:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR ) )
-            // CSS.g:998:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR )
+            // CSS.g:999:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR ) )
+            // CSS.g:999:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR )
             {
-            // CSS.g:998:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR )
+            // CSS.g:999:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR )
             int alt20=5;
             int LA20_0 = input.LA(1);
 
@@ -2116,35 +2115,35 @@ public class CSSLexer extends Lexer {
             }
             switch (alt20) {
                 case 1 :
-                    // CSS.g:998:7: 'a' .. 'z'
+                    // CSS.g:999:7: 'a' .. 'z'
                     {
                     matchRange('a','z'); 
 
                     }
                     break;
                 case 2 :
-                    // CSS.g:998:18: 'A' .. 'Z'
+                    // CSS.g:999:18: 'A' .. 'Z'
                     {
                     matchRange('A','Z'); 
 
                     }
                     break;
                 case 3 :
-                    // CSS.g:998:29: '_'
+                    // CSS.g:999:29: '_'
                     {
                     match('_'); 
 
                     }
                     break;
                 case 4 :
-                    // CSS.g:998:35: NON_ASCII
+                    // CSS.g:999:35: NON_ASCII
                     {
                     mNON_ASCII(); 
 
                     }
                     break;
                 case 5 :
-                    // CSS.g:998:47: ESCAPE_CHAR
+                    // CSS.g:999:47: ESCAPE_CHAR
                     {
                     mESCAPE_CHAR(); 
 
@@ -2165,8 +2164,8 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NON_ASCII"
     public final void mNON_ASCII() throws RecognitionException {
         try {
-            // CSS.g:1003:4: ( ( '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
-            // CSS.g:1003:6: ( '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' )
+            // CSS.g:1004:4: ( ( '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
+            // CSS.g:1004:6: ( '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' )
             {
             if ( (input.LA(1)>='\u0080' && input.LA(1)<='\uD7FF')||(input.LA(1)>='\uE000' && input.LA(1)<='\uFFFD') ) {
                 input.consume();
@@ -2189,17 +2188,17 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "ESCAPE_CHAR"
     public final void mESCAPE_CHAR() throws RecognitionException {
         try {
-            // CSS.g:1008:3: ( ( '\\\\' ) ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) ) )
-            // CSS.g:1008:5: ( '\\\\' ) ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
+            // CSS.g:1009:3: ( ( '\\\\' ) ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) ) )
+            // CSS.g:1009:5: ( '\\\\' ) ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
             {
-            // CSS.g:1008:5: ( '\\\\' )
-            // CSS.g:1008:6: '\\\\'
+            // CSS.g:1009:5: ( '\\\\' )
+            // CSS.g:1009:6: '\\\\'
             {
             match('\\'); 
 
             }
 
-            // CSS.g:1009:5: ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
+            // CSS.g:1010:5: ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
             int alt22=2;
             int LA22_0 = input.LA(1);
 
@@ -2223,10 +2222,10 @@ public class CSSLexer extends Lexer {
             }
             switch (alt22) {
                 case 1 :
-                    // CSS.g:1010:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )
+                    // CSS.g:1011:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )
                     {
-                    // CSS.g:1010:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )
-                    // CSS.g:1010:8: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
+                    // CSS.g:1011:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )
+                    // CSS.g:1011:8: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
                     {
                     if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                         input.consume();
@@ -2264,7 +2263,7 @@ public class CSSLexer extends Lexer {
                         recover(mse);
                         throw mse;}
 
-                    // CSS.g:1014:8: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
+                    // CSS.g:1015:8: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
                     int alt21=2;
                     int LA21_0 = input.LA(1);
 
@@ -2273,7 +2272,7 @@ public class CSSLexer extends Lexer {
                     }
                     switch (alt21) {
                         case 1 :
-                            // CSS.g:1014:9: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+                            // CSS.g:1015:9: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
                             {
                             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                                 input.consume();
@@ -2306,7 +2305,7 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // CSS.g:1017:7: ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' )
+                    // CSS.g:1018:7: ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' )
                     {
                     if ( (input.LA(1)>=' ' && input.LA(1)<='~')||(input.LA(1)>='\u0080' && input.LA(1)<='\uD7FF')||(input.LA(1)>='\uE000' && input.LA(1)<='\uFFFD') ) {
                         input.consume();
@@ -2335,10 +2334,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NAME_CHAR"
     public final void mNAME_CHAR() throws RecognitionException {
         try {
-            // CSS.g:1023:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR ) )
-            // CSS.g:1023:6: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR )
+            // CSS.g:1024:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR ) )
+            // CSS.g:1024:6: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR )
             {
-            // CSS.g:1023:6: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR )
+            // CSS.g:1024:6: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR )
             int alt23=7;
             int LA23_0 = input.LA(1);
 
@@ -2371,49 +2370,49 @@ public class CSSLexer extends Lexer {
             }
             switch (alt23) {
                 case 1 :
-                    // CSS.g:1023:7: 'a' .. 'z'
+                    // CSS.g:1024:7: 'a' .. 'z'
                     {
                     matchRange('a','z'); 
 
                     }
                     break;
                 case 2 :
-                    // CSS.g:1023:18: 'A' .. 'Z'
+                    // CSS.g:1024:18: 'A' .. 'Z'
                     {
                     matchRange('A','Z'); 
 
                     }
                     break;
                 case 3 :
-                    // CSS.g:1023:29: '0' .. '9'
+                    // CSS.g:1024:29: '0' .. '9'
                     {
                     matchRange('0','9'); 
 
                     }
                     break;
                 case 4 :
-                    // CSS.g:1023:40: '-'
+                    // CSS.g:1024:40: '-'
                     {
                     match('-'); 
 
                     }
                     break;
                 case 5 :
-                    // CSS.g:1023:46: '_'
+                    // CSS.g:1024:46: '_'
                     {
                     match('_'); 
 
                     }
                     break;
                 case 6 :
-                    // CSS.g:1023:52: NON_ASCII
+                    // CSS.g:1024:52: NON_ASCII
                     {
                     mNON_ASCII(); 
 
                     }
                     break;
                 case 7 :
-                    // CSS.g:1023:64: ESCAPE_CHAR
+                    // CSS.g:1024:64: ESCAPE_CHAR
                     {
                     mESCAPE_CHAR(); 
 
@@ -2434,14 +2433,14 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NUMBER_MACR"
     public final void mNUMBER_MACR() throws RecognitionException {
         try {
-            // CSS.g:1028:4: ( ( '0' .. '9' )+ | ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ ) )
+            // CSS.g:1029:4: ( ( '0' .. '9' )+ | ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ ) )
             int alt27=2;
             alt27 = dfa27.predict(input);
             switch (alt27) {
                 case 1 :
-                    // CSS.g:1028:6: ( '0' .. '9' )+
+                    // CSS.g:1029:6: ( '0' .. '9' )+
                     {
-                    // CSS.g:1028:6: ( '0' .. '9' )+
+                    // CSS.g:1029:6: ( '0' .. '9' )+
                     int cnt24=0;
                     loop24:
                     do {
@@ -2455,7 +2454,7 @@ public class CSSLexer extends Lexer {
 
                         switch (alt24) {
                     	case 1 :
-                    	    // CSS.g:1028:7: '0' .. '9'
+                    	    // CSS.g:1029:7: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2475,12 +2474,12 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // CSS.g:1028:20: ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ )
+                    // CSS.g:1029:20: ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ )
                     {
-                    // CSS.g:1028:20: ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ )
-                    // CSS.g:1028:21: ( '0' .. '9' )* '.' ( '0' .. '9' )+
+                    // CSS.g:1029:20: ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ )
+                    // CSS.g:1029:21: ( '0' .. '9' )* '.' ( '0' .. '9' )+
                     {
-                    // CSS.g:1028:21: ( '0' .. '9' )*
+                    // CSS.g:1029:21: ( '0' .. '9' )*
                     loop25:
                     do {
                         int alt25=2;
@@ -2493,7 +2492,7 @@ public class CSSLexer extends Lexer {
 
                         switch (alt25) {
                     	case 1 :
-                    	    // CSS.g:1028:22: '0' .. '9'
+                    	    // CSS.g:1029:22: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2506,7 +2505,7 @@ public class CSSLexer extends Lexer {
                     } while (true);
 
                     match('.'); 
-                    // CSS.g:1028:37: ( '0' .. '9' )+
+                    // CSS.g:1029:37: ( '0' .. '9' )+
                     int cnt26=0;
                     loop26:
                     do {
@@ -2520,7 +2519,7 @@ public class CSSLexer extends Lexer {
 
                         switch (alt26) {
                     	case 1 :
-                    	    // CSS.g:1028:38: '0' .. '9'
+                    	    // CSS.g:1029:38: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2553,7 +2552,7 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "STRING_MACR"
     public final void mSTRING_MACR() throws RecognitionException {
         try {
-            // CSS.g:1033:2: ( QUOT ( STRING_CHAR | APOS )* QUOT | APOS ( STRING_CHAR | QUOT )* APOS )
+            // CSS.g:1034:2: ( QUOT ( STRING_CHAR | APOS )* QUOT | APOS ( STRING_CHAR | QUOT )* APOS )
             int alt30=2;
             int LA30_0 = input.LA(1);
 
@@ -2571,10 +2570,10 @@ public class CSSLexer extends Lexer {
             }
             switch (alt30) {
                 case 1 :
-                    // CSS.g:1033:4: QUOT ( STRING_CHAR | APOS )* QUOT
+                    // CSS.g:1034:4: QUOT ( STRING_CHAR | APOS )* QUOT
                     {
                     mQUOT(); 
-                    // CSS.g:1033:9: ( STRING_CHAR | APOS )*
+                    // CSS.g:1034:9: ( STRING_CHAR | APOS )*
                     loop28:
                     do {
                         int alt28=3;
@@ -2590,14 +2589,14 @@ public class CSSLexer extends Lexer {
 
                         switch (alt28) {
                     	case 1 :
-                    	    // CSS.g:1033:10: STRING_CHAR
+                    	    // CSS.g:1034:10: STRING_CHAR
                     	    {
                     	    mSTRING_CHAR(); 
 
                     	    }
                     	    break;
                     	case 2 :
-                    	    // CSS.g:1033:24: APOS
+                    	    // CSS.g:1034:24: APOS
                     	    {
                     	    mAPOS(); 
                     	    ls.aposOpen=false;
@@ -2615,10 +2614,10 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // CSS.g:1034:4: APOS ( STRING_CHAR | QUOT )* APOS
+                    // CSS.g:1035:4: APOS ( STRING_CHAR | QUOT )* APOS
                     {
                     mAPOS(); 
-                    // CSS.g:1034:9: ( STRING_CHAR | QUOT )*
+                    // CSS.g:1035:9: ( STRING_CHAR | QUOT )*
                     loop29:
                     do {
                         int alt29=3;
@@ -2634,14 +2633,14 @@ public class CSSLexer extends Lexer {
 
                         switch (alt29) {
                     	case 1 :
-                    	    // CSS.g:1034:10: STRING_CHAR
+                    	    // CSS.g:1035:10: STRING_CHAR
                     	    {
                     	    mSTRING_CHAR(); 
 
                     	    }
                     	    break;
                     	case 2 :
-                    	    // CSS.g:1034:24: QUOT
+                    	    // CSS.g:1035:24: QUOT
                     	    {
                     	    mQUOT(); 
                     	    ls.quotOpen=false;
@@ -2669,10 +2668,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "STRING_CHAR"
     public final void mSTRING_CHAR() throws RecognitionException {
         try {
-            // CSS.g:1039:2: ( ( URI_CHAR | ' ' | ( '\\\\' NL_CHAR ) ) )
-            // CSS.g:1039:5: ( URI_CHAR | ' ' | ( '\\\\' NL_CHAR ) )
+            // CSS.g:1040:2: ( ( URI_CHAR | ' ' | ( '\\\\' NL_CHAR ) ) )
+            // CSS.g:1040:5: ( URI_CHAR | ' ' | ( '\\\\' NL_CHAR ) )
             {
-            // CSS.g:1039:5: ( URI_CHAR | ' ' | ( '\\\\' NL_CHAR ) )
+            // CSS.g:1040:5: ( URI_CHAR | ' ' | ( '\\\\' NL_CHAR ) )
             int alt31=3;
             int LA31_0 = input.LA(1);
 
@@ -2699,24 +2698,24 @@ public class CSSLexer extends Lexer {
             }
             switch (alt31) {
                 case 1 :
-                    // CSS.g:1039:6: URI_CHAR
+                    // CSS.g:1040:6: URI_CHAR
                     {
                     mURI_CHAR(); 
 
                     }
                     break;
                 case 2 :
-                    // CSS.g:1039:17: ' '
+                    // CSS.g:1040:17: ' '
                     {
                     match(' '); 
 
                     }
                     break;
                 case 3 :
-                    // CSS.g:1039:23: ( '\\\\' NL_CHAR )
+                    // CSS.g:1040:23: ( '\\\\' NL_CHAR )
                     {
-                    // CSS.g:1039:23: ( '\\\\' NL_CHAR )
-                    // CSS.g:1039:24: '\\\\' NL_CHAR
+                    // CSS.g:1040:23: ( '\\\\' NL_CHAR )
+                    // CSS.g:1040:24: '\\\\' NL_CHAR
                     {
                     match('\\'); 
                     mNL_CHAR(); 
@@ -2741,10 +2740,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "URI_MACR"
     public final void mURI_MACR() throws RecognitionException {
         try {
-            // CSS.g:1044:2: ( ( URI_CHAR )* )
-            // CSS.g:1044:4: ( URI_CHAR )*
+            // CSS.g:1045:2: ( ( URI_CHAR )* )
+            // CSS.g:1045:4: ( URI_CHAR )*
             {
-            // CSS.g:1044:4: ( URI_CHAR )*
+            // CSS.g:1045:4: ( URI_CHAR )*
             loop32:
             do {
                 int alt32=2;
@@ -2757,7 +2756,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt32) {
             	case 1 :
-            	    // CSS.g:1044:4: URI_CHAR
+            	    // CSS.g:1045:4: URI_CHAR
             	    {
             	    mURI_CHAR(); 
 
@@ -2781,7 +2780,7 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "URI_CHAR"
     public final void mURI_CHAR() throws RecognitionException {
         try {
-            // CSS.g:1049:2: ( ( '\\u0009' | '\\u0021' | '\\u0023' .. '\\u0026' | '\\u0028' .. '\\u007E' ) | NON_ASCII | ESCAPE_CHAR )
+            // CSS.g:1050:2: ( ( '\\u0009' | '\\u0021' | '\\u0023' .. '\\u0026' | '\\u0028' .. '\\u007E' ) | NON_ASCII | ESCAPE_CHAR )
             int alt33=3;
             int LA33_0 = input.LA(1);
 
@@ -2808,7 +2807,7 @@ public class CSSLexer extends Lexer {
             }
             switch (alt33) {
                 case 1 :
-                    // CSS.g:1049:4: ( '\\u0009' | '\\u0021' | '\\u0023' .. '\\u0026' | '\\u0028' .. '\\u007E' )
+                    // CSS.g:1050:4: ( '\\u0009' | '\\u0021' | '\\u0023' .. '\\u0026' | '\\u0028' .. '\\u007E' )
                     {
                     if ( input.LA(1)=='\t'||input.LA(1)=='!'||(input.LA(1)>='#' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='~') ) {
                         input.consume();
@@ -2823,14 +2822,14 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // CSS.g:1050:6: NON_ASCII
+                    // CSS.g:1051:6: NON_ASCII
                     {
                     mNON_ASCII(); 
 
                     }
                     break;
                 case 3 :
-                    // CSS.g:1050:18: ESCAPE_CHAR
+                    // CSS.g:1051:18: ESCAPE_CHAR
                     {
                     mESCAPE_CHAR(); 
 
@@ -2847,7 +2846,7 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NL_CHAR"
     public final void mNL_CHAR() throws RecognitionException {
         try {
-            // CSS.g:1055:4: ( '\\u000A' | '\\u000D' '\\u000A' | '\\u000D' | '\\u000C' )
+            // CSS.g:1056:4: ( '\\u000A' | '\\u000D' '\\u000A' | '\\u000D' | '\\u000C' )
             int alt34=4;
             switch ( input.LA(1) ) {
             case '\n':
@@ -2880,14 +2879,14 @@ public class CSSLexer extends Lexer {
 
             switch (alt34) {
                 case 1 :
-                    // CSS.g:1055:6: '\\u000A'
+                    // CSS.g:1056:6: '\\u000A'
                     {
                     match('\n'); 
 
                     }
                     break;
                 case 2 :
-                    // CSS.g:1055:17: '\\u000D' '\\u000A'
+                    // CSS.g:1056:17: '\\u000D' '\\u000A'
                     {
                     match('\r'); 
                     match('\n'); 
@@ -2895,14 +2894,14 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // CSS.g:1055:37: '\\u000D'
+                    // CSS.g:1056:37: '\\u000D'
                     {
                     match('\r'); 
 
                     }
                     break;
                 case 4 :
-                    // CSS.g:1055:48: '\\u000C'
+                    // CSS.g:1056:48: '\\u000C'
                     {
                     match('\f'); 
 
@@ -2919,10 +2918,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "W_MACR"
     public final void mW_MACR() throws RecognitionException {
         try {
-            // CSS.g:1060:2: ( ( W_CHAR )* )
-            // CSS.g:1060:4: ( W_CHAR )*
+            // CSS.g:1061:2: ( ( W_CHAR )* )
+            // CSS.g:1061:4: ( W_CHAR )*
             {
-            // CSS.g:1060:4: ( W_CHAR )*
+            // CSS.g:1061:4: ( W_CHAR )*
             loop35:
             do {
                 int alt35=2;
@@ -2935,7 +2934,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt35) {
             	case 1 :
-            	    // CSS.g:1060:4: W_CHAR
+            	    // CSS.g:1061:4: W_CHAR
             	    {
             	    mW_CHAR(); 
 
@@ -2959,7 +2958,7 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "W_CHAR"
     public final void mW_CHAR() throws RecognitionException {
         try {
-            // CSS.g:1065:4: ( '\\u0009' | '\\u000A' | '\\u000C' | '\\u000D' | '\\u0020' )
+            // CSS.g:1066:4: ( '\\u0009' | '\\u000A' | '\\u000C' | '\\u000D' | '\\u0020' )
             // CSS.g:
             {
             if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||(input.LA(1)>='\f' && input.LA(1)<='\r')||input.LA(1)==' ' ) {
@@ -3336,7 +3335,7 @@ public class CSSLexer extends Lexer {
             this.transition = DFA27_transition;
         }
         public String getDescription() {
-            return "1026:1: fragment NUMBER_MACR : ( ( '0' .. '9' )+ | ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ ) );";
+            return "1027:1: fragment NUMBER_MACR : ( ( '0' .. '9' )+ | ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ ) );";
         }
     }
     static final String DFA36_eotS =

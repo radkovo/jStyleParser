@@ -107,11 +107,6 @@ public interface Selector extends Rule<Selector.SelectorPart> {
      *
      */
     public interface SelectorPart {
-    	
-    	public static final String WILDCARD = "*";
-    	
-    	public String getValue();
-    	public SelectorPart setValue(String value);
     	public int hashCode();
     	public boolean equals(Object obj);
     	
@@ -125,7 +120,9 @@ public interface Selector extends Rule<Selector.SelectorPart> {
      *
      */
     public interface ElementName extends SelectorPart {
-    	
+    	public static final String WILDCARD = "*";    	
+    	public String getName();
+    	public ElementName setName(String name);
     }
     
     /**
@@ -135,8 +132,11 @@ public interface Selector extends Rule<Selector.SelectorPart> {
      */
     public interface ElementAttribute extends SelectorPart {
     	
-    	public String getName();
-    	public void setName(String name);
+    	public String getAttribute();
+    	public ElementAttribute setAttribute(String attribute);
+    	
+    	public String getValue();
+    	public ElementAttribute setValue(String value);
     	
     	public Operator getOperator();
     	public void setOperator(Operator operator);
@@ -148,7 +148,8 @@ public interface Selector extends Rule<Selector.SelectorPart> {
      *
      */
     public interface ElementClass extends SelectorPart {
-    	
+    	public String getClassName();
+    	public ElementClass setClassName(String name);
     }
     
     /**
@@ -157,7 +158,13 @@ public interface Selector extends Rule<Selector.SelectorPart> {
      *
      */
     public interface ElementID extends SelectorPart {
-    	
+    	public String getID();
+    	public ElementID setID(String id);
+    }
+    
+    public interface ElementDOM extends SelectorPart {
+    	public Element getElement();
+    	public ElementDOM setElement(Element e);
     }
     
     /**
@@ -168,6 +175,9 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     public interface PseudoPage extends SelectorPart {
     	public String getFunctionName();
     	public PseudoPage setFunctionName(String functionName);
+    	
+    	public String getValue();
+    	public PseudoPage setValue(String value);
     }
        
    

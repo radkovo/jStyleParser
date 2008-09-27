@@ -7,6 +7,8 @@
 	<property name="build.dir" value="${basedir}/ant/build"/>
 	<property name="dist.dir" value="${basedir}/ant/dist"/>
 	
+	<property name="version" value="0.2"/>
+	
 	<property name="compile.debug" value="false" />
 	<property name="compile.deprecation" value="true" />
 	<property name="compile.source" value="1.5" />
@@ -44,7 +46,7 @@
 	<target name="jar" depends="compile">
 
 		<!-- make files -->
-    	<jar destfile="${dist.dir}/cssParser.jar">
+    	<jar destfile="${dist.dir}/css-parser-${version}.jar">
 			 <fileset dir="${build.dir}">
 			 	<exclude name="test/*"/>
 			 </fileset>

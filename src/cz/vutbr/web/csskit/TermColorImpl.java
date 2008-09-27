@@ -59,8 +59,9 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
     }
     
     /**
-     * Creates color from string in form #ABC or #AABBCC,
-     * where A, B, C are hexadecimal digits.
+     * Creates color from string in form #ABC or #AABBCC, or
+     * just simply ABC and AABBCC.
+     * where A, B, C are hexadecimal digits. 
      * @param hash Hash string
      * @return Created color or <code>null</code> in case of error
      */
@@ -69,20 +70,21 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
     	if(hash==null)
     		throw new IllegalArgumentException("Invalid hash value (null) for color construction");
     	
-    	hash = hash.toLowerCase();
+    	// lowercase and remove hash character, if any
+    	hash = hash.toLowerCase().replaceAll("^#", "");
     	
     	// color written in #ABC format
-        if(hash.matches("^#[0-9a-f]{3}$")) {
-            String r = hash.substring(1, 2);
-            String g = hash.substring(2, 3);
-            String b = hash.substring(3, 4);
+        if(hash.matches("^[0-9a-f]{3}$")) {
+            String r = hash.substring(0, 1);
+            String g = hash.substring(1, 2);
+            String b = hash.substring(2, 3);
             return new TermColorImpl(Integer.parseInt(r+r, 16), Integer.parseInt(g+g, 16), Integer.parseInt(b+b, 16));
         }
         // color written in #AABBCC format
-        else if(hash.matches("^#[0-9a-f]{6}$")) {
-            String r = hash.substring(1, 3);
-            String g = hash.substring(3, 5);
-            String b = hash.substring(5, 7);
+        else if(hash.matches("^[0-9a-f]{6}$")) {
+            String r = hash.substring(0, 2);
+            String g = hash.substring(2, 4);
+            String b = hash.substring(4, 6);
             return new TermColorImpl(Integer.parseInt(r, 16), Integer.parseInt(g, 16), Integer.parseInt(b, 16));
         }
         // invalid hash

@@ -31,6 +31,7 @@ import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.RuleBlock.Priority;
+import cz.vutbr.web.csskit.PriorityStrategy;
 
 }
 
@@ -537,17 +538,17 @@ scope {
 @init {
 	logEnter("selector");
 	$selector::s=$sel=(Selector)rf.createSelector().unlock();
-	Selector.ElementName en = rf.createElement(Selector.SelectorPart.WILDCARD);
+	Selector.ElementName en = rf.createElement(Selector.ElementName.WILDCARD);
 }
 @after {
 	logLeave("selector");
 }
     : ^(SELECTOR 
         ^(ELEMENT 
-          (i=IDENT { en.setValue(extractText(i)); }
+          (i=IDENT { en.setName(extractText(i)); }
           )?         
          ){
-		  log.debug("Adding element name: {}.", en.getValue());
+		  log.debug("Adding element name: {}.", en.getName());
 		  $selector::s.add(en);
 		 }
          selpart*

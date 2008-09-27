@@ -50,7 +50,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
         String className = null;
         for(SelectorPart item : list) {
             if(item instanceof ElementClass) {
-                className = item.getValue();
+                className = ((ElementClass)item).getClassName();
             }
         }
         return className;
@@ -61,7 +61,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
         String idName = null;
         for(SelectorPart item : list) {
             if(item instanceof ElementID)
-            	idName = item.getValue();
+            	idName = ((ElementID)item).getID();
         }
         return idName;
     }
@@ -70,7 +70,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	String elementName = null;
     	for(SelectorPart item : list) {
     		if(item instanceof ElementName)
-    			elementName = item.getValue();
+    			elementName = ((ElementName)item).getName();
     	}
     	return elementName;
     }
@@ -137,39 +137,47 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 
 	 
     // ============================================================
-    // implementation of intern classes
-	
-
-
+    // implementation of intern classes	
 
 	/**
-	 * Abstract class with shared functionality
-	 */
-	public static abstract class AbstractSelectorPart implements SelectorPart {
+     * Element name
+     * @author kapy
+     */
+    public static class ElementNameImpl implements ElementName {    	 
 		
-		/** content */
-		protected String value;
-		
-		protected AbstractSelectorPart(String value) {
-			setValue(value);
+    	private String name; 
+    	
+    	protected ElementNameImpl(String name) {
+    		setName(name);
+    	}
+    	
+		public void computeSpecificity(CombinedSelector.Specificity spec) {
+			if(!WILDCARD.equals(name))
+				spec.add(Level.D);
 		}
 		
-		/**
-		 * @param value the value to set
-		 */
-		public abstract SelectorPart setValue(String value);
+		public boolean matches(Element e) {
+			if(name!=null && WILDCARD.equals(name)) return true;
+			return ElementUtil.matchesName(e, name);
+		}	
 		
-		public abstract boolean matches(Element e);
+		public String getName() {
+			return name;
+		}
 		
-		public abstract void computeSpecificity(Specificity spec);
-		
-		public String getValue() {
-			return value;
+		public ElementName setName(String name) {
+			if(name == null)
+				throw new IllegalArgumentException("Invalid element name (null)");
+				
+			this.name = name;
+			return this;
 		}
 		
 		@Override
-		public abstract String toString();
-		
+		public String toString() {
+			return name;
+		}
+
 		/* (non-Javadoc)
 		 * @see java.lang.Object#hashCode()
 		 */
@@ -177,7 +185,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + ((value == null) ? 0 : value.hashCode());
+			result = prime * result + ((name == null) ? 0 : name.hashCode());
 			return result;
 		}
 
@@ -190,53 +198,15 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 				return true;
 			if (obj == null)
 				return false;
-			if (!(obj instanceof AbstractSelectorPart))
+			if (!(obj instanceof ElementNameImpl))
 				return false;
-			AbstractSelectorPart other = (AbstractSelectorPart) obj;
-			if (value == null) {
-				if (other.value != null)
+			ElementNameImpl other = (ElementNameImpl) obj;
+			if (name == null) {
+				if (other.name != null)
 					return false;
-			} else if (!value.equals(other.value))
+			} else if (!name.equals(other.name))
 				return false;
 			return true;
-		}			
-	}
-	
-	
-	/**
-     * Element name
-     * @author kapy
-     */
-    public static class ElementNameImpl extends AbstractSelectorPart implements ElementName {    	 
-		    	
-    	protected ElementNameImpl(String value) {
-    		super(value);
-    	}
-    	
-    	@Override
-		public void computeSpecificity(CombinedSelector.Specificity spec) {
-			if(!WILDCARD.equals(value))
-				spec.add(Level.D);
-		}
-		
-    	@Override
-		public boolean matches(Element e) {
-			if(value!=null && WILDCARD.equals(value)) return true;
-			return ElementUtil.matchesName(e, value);
-		}	
-		
-		@Override
-		public SelectorPart setValue(String value) {
-			if(value == null)
-				throw new IllegalArgumentException("Invalid SelectorPart value(null)");
-				
-			this.value = value;
-			return this;
-		}
-		
-		@Override
-		public String toString() {
-			return value;
 		}
     	
     }
@@ -246,36 +216,70 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
      * @author kapy
      *
      */
-    public static class ElementClassImpl extends AbstractSelectorPart implements ElementClass {
+    public static class ElementClassImpl implements ElementClass {
+
+    	private String className;
     	
-    	protected ElementClassImpl(String value) {
-    		super(value);
+    	protected ElementClassImpl(String className) {
+    		setClassName(className);
     	}
     	
-    	@Override
     	public void computeSpecificity(Specificity spec) {
     		spec.add(Level.C);
     	}
     	
-    	@Override
     	public boolean matches(Element e) {
-    		return ElementUtil.	matchesClass(e, value);
+    		return ElementUtil.	matchesClass(e, className);
     	}
     	
-    	@Override
-		public SelectorPart setValue(String value) {
-			if(value == null)
-				throw new IllegalArgumentException("Invalid SelectorPart value(null)");
+		public String getClassName() {
+			return className;
+		}
+    	
+		public ElementClass setClassName(String className) {
+			if(className == null)
+				throw new IllegalArgumentException("Invalid element class (null)");
 			
-			value = value.replaceAll("^\\.", "");			
-			this.value = value;
+			this.className = className;
 			return this;
 		}
     	
     	@Override
     	public String toString() {
-    		return "." + value;
+    		return "." + className;
     	}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((className == null) ? 0 : className.hashCode());
+			return result;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (!(obj instanceof ElementClassImpl))
+				return false;
+			ElementClassImpl other = (ElementClassImpl) obj;
+			if (className == null) {
+				if (other.className != null)
+					return false;
+			} else if (!className.equals(other.className))
+				return false;
+			return true;
+		}    	
     }
     
     /**
@@ -283,18 +287,19 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
      * @author kapy
      *
      */
-    public static class PseudoPageImpl extends AbstractSelectorPart implements PseudoPage {
+    public static class PseudoPageImpl implements PseudoPage {
     	
-    	protected static final String PSEUDO_CLASSES = 
+    	private static final String PSEUDO_CLASSES = 
     		"active|focus|hover|link|visited|first-child|lang";
     	
-    	protected static final String PSEUDO_ELEMENTS =
+    	private static final String PSEUDO_ELEMENTS =
     		"first-letter|first-line|before|after";
     	
-    	protected String functionName;
+    	private String functionName;
+    	private String value;
     	
     	protected PseudoPageImpl(String value, String functionName) {
-    		super(value);
+    		setValue(value);
     		setFunctionName(functionName);
     	}
 
@@ -313,7 +318,6 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			return this;
 		}
 		
-		@Override
 		public void computeSpecificity(Specificity spec) {
 
 			// pseudo-class
@@ -328,7 +332,6 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 
 		}		
 		
-		@Override
 		public boolean matches(Element e) {
 			// pseudo-class
 			if((value!=null && value.matches(PSEUDO_ELEMENTS)) ||
@@ -342,10 +345,14 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		 * Sets value of pseudo. Could be even <code>null</code>
 		 * @param value New value
 		 */
-		@Override
 		public PseudoPage setValue(String value) {
 			this.value = value;
 			return this;
+		}
+		
+
+		public String getValue() {
+			return value;
 		}
 				
 		@Override
@@ -370,9 +377,10 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		@Override
 		public int hashCode() {
 			final int prime = 31;
-			int result = super.hashCode();
+			int result = 1;
 			result = prime * result
 					+ ((functionName == null) ? 0 : functionName.hashCode());
+			result = prime * result + ((value == null) ? 0 : value.hashCode());
 			return result;
 		}
 
@@ -383,7 +391,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		public boolean equals(Object obj) {
 			if (this == obj)
 				return true;
-			if (!super.equals(obj))
+			if (obj == null)
 				return false;
 			if (!(obj instanceof PseudoPageImpl))
 				return false;
@@ -392,6 +400,11 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 				if (other.functionName != null)
 					return false;
 			} else if (!functionName.equals(other.functionName))
+				return false;
+			if (value == null) {
+				if (other.value != null)
+					return false;
+			} else if (!value.equals(other.value))
 				return false;
 			return true;
 		}
@@ -403,36 +416,71 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
      * @author kapy
      *
      */
-    public static class ElementIDImpl extends AbstractSelectorPart implements ElementID {
+    public static class ElementIDImpl implements ElementID {
+    	
+    	private String id;
     	
     	protected ElementIDImpl(String value) {
-    		super(value);
+    		setID(value);
     	}
     	
-    	@Override
     	public void computeSpecificity(Specificity spec) {
     		spec.add(Level.B);
 		}    	
     	
-    	@Override
     	public boolean matches(Element e) {
-    		return ElementUtil.matchesID(e, value);
+    		return ElementUtil.matchesID(e, id);
     	}
     	
-    	@Override
-    	public ElementID setValue(String value) {
-    		if(value==null)
-    			throw new IllegalArgumentException("Invalid value for ElementID(null)");
+    	public ElementID setID(String id) {
+    		if(id==null)
+    			throw new IllegalArgumentException("Invalid element ID (null)");
     		
-    		value = value.replaceAll("^#", "");
-    		this.value = value;
+    		this.id = id;
     		return this;
+    	}
+    	
+    	public String getID() {
+    		return id;
     	}
     	    	
     	@Override
     	public String toString() {
-    		return "#" + value;
+    		return "#" + id;
     	}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((id == null) ? 0 : id.hashCode());
+			return result;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (!(obj instanceof ElementIDImpl))
+				return false;
+			ElementIDImpl other = (ElementIDImpl) obj;
+			if (id == null) {
+				if (other.id != null)
+					return false;
+			} else if (!id.equals(other.id))
+				return false;
+			return true;
+		}
+    	
+    	
     }
     
     /**
@@ -440,17 +488,16 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
      * @author kapy
      *
      */
-    public static class ElementAttributeImpl extends AbstractSelectorPart implements ElementAttribute {
+    public static class ElementAttributeImpl implements ElementAttribute {
     	
     	/** Operator between attribute and value */
-    	protected Operator operator;
+    	private Operator operator;
     	
-    	protected String attribute;
-    	
+    	private String attribute;
+    	private String value;
     	private boolean isStringValue;
     	
     	protected ElementAttributeImpl(String value, boolean isStringValue, Operator operator, String attribute) {
-    		super(value);
     		this.isStringValue = isStringValue;
     		this.operator = operator;
     		this.attribute = attribute;
@@ -464,8 +511,6 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			return operator;
 		}
 
-
-
 		/**
 		 * @param operator the operator to set
 		 */
@@ -478,7 +523,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		/**
 		 * @return the attribute
 		 */
-		public String getName() {
+		public String getAttribute() {
 			return attribute;
 		}
 
@@ -487,36 +532,24 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		/**
 		 * @param attribute the attribute to set
 		 */
-		public void setName(String name) {
+		public ElementAttribute setAttribute(String name) {
 			this.attribute = name;
+			return this;
 		}
 		
-		@Override
 		public void computeSpecificity(Specificity spec) {
 			spec.add(Level.C);
 		}
 		
-		@Override
 		public boolean matches(Element e) {
 			return ElementUtil.matchesAttribute(e, attribute, value, operator);
 		}
     	
-    	@Override
+		public String getValue() {
+			return value;
+		}
+		
     	public ElementAttribute setValue(String value) {
-    		
-    		// sanity check
-    		if(value == null) {
-    			this.value = null;
-    			return this;
-    		}
-    		
-    		// create form string token
-    		if(isStringValue)
-    			value = value.replaceAll("^'", "")
-    			.replaceAll("^\"", "")
-    			.replaceAll("'$", "")
-    			.replaceAll("\"$", "");
-    		
     		this.value = value;
     		return this;
     	}
@@ -528,12 +561,12 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     		sb.append(OutputUtil.ATTRIBUTE_OPENING).append(attribute);
     		sb.append(operator.value());
 
-    		if(isStringValue)
+    		if(isStringValue && value!=null)
     			sb.append(OutputUtil.STRING_OPENING);
     		
     		if(value != null) sb.append(value);
     		
-    		if(isStringValue)
+    		if(isStringValue && value!=null)
     			sb.append(OutputUtil.STRING_CLOSING);
 
     		sb.append(OutputUtil.ATTRIBUTE_CLOSING);
@@ -547,12 +580,13 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		@Override
 		public int hashCode() {
 			final int prime = 31;
-			int result = super.hashCode();
+			int result = 1;
 			result = prime * result
 					+ ((attribute == null) ? 0 : attribute.hashCode());
 			result = prime * result + (isStringValue ? 1231 : 1237);
 			result = prime * result
 					+ ((operator == null) ? 0 : operator.hashCode());
+			result = prime * result + ((value == null) ? 0 : value.hashCode());
 			return result;
 		}
 
@@ -563,7 +597,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		public boolean equals(Object obj) {
 			if (this == obj)
 				return true;
-			if (!super.equals(obj))
+			if (obj == null)
 				return false;
 			if (!(obj instanceof ElementAttributeImpl))
 				return false;
@@ -580,9 +614,74 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 					return false;
 			} else if (!operator.equals(other.operator))
 				return false;
+			if (value == null) {
+				if (other.value != null)
+					return false;
+			} else if (!value.equals(other.value))
+				return false;
 			return true;
 		}
-				
 		
-    }	
+    }
+    
+    public static class ElementDOMImpl implements ElementDOM {
+ 
+    	private Element elem;
+    	
+    	protected ElementDOMImpl(Element e) {
+    		this.elem = e;
+    	}
+
+		public Element getElement() {
+			return elem;
+		}
+
+		public ElementDOM setElement(Element e) {
+			this.elem = e;
+			return this;
+		}
+
+		public void computeSpecificity(Specificity spec) {
+			spec.add(Level.A);
+		}
+
+		public boolean matches(Element e) {
+			return elem.equals(e);
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((elem == null) ? 0 : elem.hashCode());
+			return result;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (!(obj instanceof ElementDOMImpl))
+				return false;
+			ElementDOMImpl other = (ElementDOMImpl) obj;
+			if (elem == null) {
+				if (other.elem != null)
+					return false;
+			} else if (!elem.equals(other.elem))
+				return false;
+			return true;
+		}
+		
+		
+    	
+    }
+    
 }
