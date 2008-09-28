@@ -4,8 +4,11 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 import java.util.Map;
 
@@ -35,28 +38,42 @@ public class DOMAssign {
 	public static void init() throws FileNotFoundException {
 		log.info("\n\n\n == DOMAssign test at {} == \n\n\n", new Date());
 		Tidy parser = new Tidy();
+		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
 		doc = parser.parseDOM(new FileInputStream("data/advanced/domassign.html"),
 				null);
 		elements = new ElementMap(doc);
 	}
 	
 	@Test
-	public void test() {		
-		Tidy parser = new Tidy();
-		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
-
-		Map<Element, NodeData> decl = CSSFactory.assignDOM(doc, "screen", true);
+	public void test() throws MalformedURLException {	
+		
+		Map<Element, NodeData> decl = CSSFactory.assignDOM(doc, 
+				createBaseFromFilename("data/advanced/domassign.html"),"screen", true);
 		
 		NodeData data = decl.get(elements.getElementById("bp"));
 		assertNotNull("Data for #bp exist", data);
 		
-		assertThat(2, is(data.getValue(TermList.class, "background-position").size()));
+		assertThat(data.getValue(TermList.class, "background-position").size(), is(2));
 		
-		assertThat(tf.createColor(255, 255, 0), is(data.getValue(TermColor.class, "color")));
+		assertThat(data.getValue(TermColor.class, "color"), is(tf.createColor(255, 255, 255)));
 		
 		data = decl.get(elements.getElementById("battlecruiser"));
-		assertNotNull("Data for #battlecruiser exist", data);
+		
 		assertThat(tf.createColor(255, 255, 0), is(data.getValue(TermColor.class, "color")));
 		
+		data = decl.get(elements.getElementById("border"));
+		assertNotNull("Data for #border exist", data);
+		assertThat(data.getValue(TermColor.class, "border-bottom-color"),
+				is(tf.createColor(255,255,255)));
+		
+	}
+	
+	private static URL createBaseFromFilename(String filename) {
+		try {
+			File f = new File(filename);
+			return f.toURI().toURL();
+		} catch (MalformedURLException e) {
+			return null;
+		}
 	}
 }

@@ -105,19 +105,8 @@ public class AdvancedCSS {
 
 		NodeData data = decl.get(elements.getElementById("border"));
 
-		log.debug("{}", data);
-		/*
-		 * Assert.assertEquals("Font family contains two fonts ", 2, data
-		 * .getValue(TermList.class, "font-family").size());
-		 * 
-		 * Assert.assertEquals("Which is serif",
-		 * tf.createTerm(FontFamily.SERIF), data.getValue(TermList.class,
-		 * "font-family").get(0));
-		 * 
-		 * Assert.assertEquals("Which is 'Times New Roman'", tf.createString(
-		 * "Times New Roman").setOperator(Operator.COMMA), data.getValue(
-		 * TermList.class, "font-family").get(1));
-		 */
+		Assert.assertEquals("", tf.createColor(255,255,255),
+				data.getValue(TermColor.class, "border-bottom-color"));
 	}
 
 }

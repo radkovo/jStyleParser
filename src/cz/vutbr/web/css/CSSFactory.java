@@ -2,6 +2,7 @@ package cz.vutbr.web.css;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -22,32 +23,18 @@ import cz.vutbr.web.domassign.TidyTreeWalker.Traversal;
  * Use it, for example, to retrieve current(default) TermFactory,
  * current(default) SupportedCSS implementation and so on.
  * 
- * Factories need to be registered first. This can be done using Java static
- * block initialization together with Java classloader.
- * 
- * By default, factory searches automatically for implementations:
+ * Factories need to be registered first. By default, CSSFactory uses
+ * automatically for implementations:
  * <code>cz.vutbr.web.csskit.TermFactoryImpl</code>
  * <code>cz.vutbr.web.domassign.SupportedCSS21</code>
  * <code>cz.vutbr.web.csskit.RuleFactoryImpl</code>
  * <code>cz.vutbr.web.domassign.SingleMapNodeData</code>
  * 
- * Example:
+ * Other usage of this factory is to parse either string or file into
+ * StyleSheet.
  * 
- * <pre>
- * public class TermFactoryImpl implemenent TermFactory {
- * 		static {
- * 			CSSFactory.registerTermFactory(new TermFactoryImpl());
- * 		}
- * 		...
- * }
- * 
- * That, default factory is set when this class is loaded by class loader.
- * 
- * <pre>
- * Class.forName(&quot;xx.package.TermFactoryImpl&quot;)
- * </pre>
- * 
- * </pre>
+ * Whole conversion between DOM tree and mapping of CSS to DOM tree elements
+ * could be done by invoking method {@code assignDOM()}
  * 
  * @author kapy
  * 
@@ -92,10 +79,10 @@ public final class CSSFactory {
 	 * 
 	 * @return TermFactory registered
 	 */
-	@SuppressWarnings("unchecked")
 	public static final TermFactory getTermFactory() {
 		if (tf == null) {
 			try {
+				@SuppressWarnings("unchecked")
 				Class<? extends TermFactory> clazz = (Class<? extends TermFactory>) Class
 						.forName(DEFAULT_TERM_FACTORY);
 				Method m = clazz.getMethod("getInstance");
@@ -111,14 +98,25 @@ public final class CSSFactory {
 		return tf;
 	}
 
+	/**
+	 * Registers new SupportedCSS instance
+	 * 
+	 * @param newCSS
+	 *            new SupportedCSS
+	 */
 	public static final void registerSupportedCSS(SupportedCSS newCSS) {
 		css = newCSS;
 	}
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * Returns registered SupportedCSS
+	 * 
+	 * @return SupportedCSS instance
+	 */
 	public static final SupportedCSS getSupportedCSS() {
 		if (css == null) {
 			try {
+				@SuppressWarnings("unchecked")
 				Class<? extends SupportedCSS> clazz = (Class<? extends SupportedCSS>) Class
 						.forName(DEFAULT_SUPPORTED_CSS);
 				Method m = clazz.getMethod("getInstance");
@@ -135,14 +133,25 @@ public final class CSSFactory {
 		return css;
 	}
 
+	/**
+	 * Registers new RuleFactory
+	 * 
+	 * @param newRuleFactory
+	 *            New RuleFactory instance
+	 */
 	public static final void registerRuleFactory(RuleFactory newRuleFactory) {
 		rf = newRuleFactory;
 	}
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * Returns registered RuleFactory
+	 * 
+	 * @return RuleFactory instance
+	 */
 	public static final RuleFactory getRuleFactory() {
 		if (rf == null) {
 			try {
+				@SuppressWarnings("unchecked")
 				Class<? extends RuleFactory> clazz = (Class<? extends RuleFactory>) Class
 						.forName(DEFAULT_RULE_FACTORY);
 				Method m = clazz.getMethod("getInstance");
@@ -159,6 +168,11 @@ public final class CSSFactory {
 		return rf;
 	}
 
+	/**
+	 * Registers node data instance. Instance must provide no-argument
+	 * Constructor
+	 * @param clazz Instance class
+	 */
 	public static final void registerNodeDataInstance(
 			Class<? extends NodeData> clazz) {
 		try {
@@ -175,12 +189,17 @@ public final class CSSFactory {
 
 	}
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * Creates instance of NodeData
+	 * @return Instance of NodeData
+	 */
 	public static final NodeData createNodeData() {
 		if (ndImpl == null) {
 			try {
-				registerNodeDataInstance((Class<? extends NodeData>) Class
-						.forName(DEFAULT_NODE_DATA_IMPL));
+				@SuppressWarnings("unchecked")
+				Class<? extends NodeData> clazz = (Class<? extends NodeData>) Class
+						.forName(DEFAULT_NODE_DATA_IMPL);
+				registerNodeDataInstance(clazz);
 				log.debug("Registered {} as default NodeData instance.",
 						DEFAULT_NODE_DATA_IMPL);
 			} catch (Exception e) {
@@ -194,30 +213,62 @@ public final class CSSFactory {
 		}
 	}
 
+	/**
+	 * Parses file into StyleSheet
+	 * @param fileName Name of file
+	 * @param encoding Encoding of file
+	 * @return Parsed StyleSheet
+	 * @throws CSSException When exception during parse occurs
+	 * @throws IOException When file not found
+	 */
 	public static final StyleSheet parse(String fileName, String encoding)
 			throws CSSException, IOException {
 		return CSSParserFactory.parse(fileName, SourceType.FILE);
 	}
 
+	/**
+	 * Parses text into StyleSheet
+	 * @param css Text with CSS declarations
+	 * @return Parsed StyleSheet
+	 * @throws IOException When exception during read occurs
+	 * @throws CSSException When exception during parse occurs
+	 */
 	public static final StyleSheet parse(String css) throws IOException,
 			CSSException {
 		return CSSParserFactory.parse(css, SourceType.EMBEDDED);
 	}
 
+	/**
+	 * Uses DOM document and uses CSS declaration
+	 * 
+	 * @param doc
+	 *            DOM tree
+	 * @param base
+	 *            Base URL against which all files are searched
+	 * @param media
+	 *            Selected media for style sheet
+	 * @param useInheritance
+	 *            Whether inheritance will be used to determine values
+	 * @return Map between DOM element nodes and data structure containing CSS
+	 *         information
+	 */
 	public static final Map<Element, NodeData> assignDOM(Document doc,
-			String media, boolean useInheritance) {
+			URL base, String media, boolean useInheritance) {
+
+		Pair pair = new Pair(base, media);
+
+		Traversal<StyleSheet> traversal = new CSSAssignTraversal(doc,
+				(Object) pair, NodeFilter.SHOW_ELEMENT);
 
 		StyleSheet style = (StyleSheet) getRuleFactory().createStyleSheet()
 				.unlock();
-		
-		Traversal<StyleSheet> traversal = new CSSAssignTraversal(doc,
-				(Object) media, NodeFilter.SHOW_ELEMENT);
-
 		traversal.listTraversal(style);
 
 		Analyzer analyzer = new Analyzer(style);
 		return analyzer.evaluateDOM(doc, media, useInheritance);
 	}
+
+	// ========================================================================
 
 	/**
 	 * Walks (X)HTML document and collects style information
@@ -235,47 +286,38 @@ public final class CSSFactory {
 		protected void processNode(StyleSheet result, Node current,
 				Object source) {
 
+			// base uri
+			URL base = ((Pair) source).base;
 			// allowed media
-			String media = (String) source;
+			String media = ((Pair) source).media;
 			Element elem = (Element) current;
 
-			// embedded style-sheet
-			if (isEmbeddedStyleSheet(elem, media)) {
-				try {
+			try {
+				// embedded style-sheet
+				if (isEmbeddedStyleSheet(elem, media)) {
 					result = CSSParserFactory.append(extractElementText(elem),
 							SourceType.EMBEDDED, result);
 					log.debug("Matched embedded CSS style");
-				} catch (IOException e) {
-					log.warn("Embedded THROWN:", e);
-				} catch (CSSException e) {
-					log.warn("Embedded THROWN:", e);
 				}
-			}
-			// linked style-sheet
-			else if (isLinkedStyleSheet(elem, media)) {
-				try {
-					result = CSSParserFactory.append(elem.getAttribute("href"),
+				// linked style-sheet
+				else if (isLinkedStyleSheet(elem, media)) {
+					URL uri = new URL(base, elem.getAttribute("href"));
+					result = CSSParserFactory.append(uri.getFile(),
 							SourceType.FILE, result);
 					log.debug("Matched linked CSS style");
-				} catch (IOException e) {
-					log.warn("Linked THROWN:", e);
-				} catch (CSSException e) {
-					log.warn("Linked THROWN:", e);
 				}
-			}
-			// inline style
-			else if (elem.getAttribute("style") != null &&
-					elem.getAttribute("style").length()>0) {
-				try {
+				// in-line style
+				else if (elem.getAttribute("style") != null
+						&& elem.getAttribute("style").length() > 0) {
 					result = CSSParserFactory.append(
 							elem.getAttribute("style"), SourceType.INLINE,
 							elem, result);
 					log.debug("Matched inline CSS style");
-				} catch (IOException e) {
-					log.warn("Inline THROWN:", e);
-				} catch (CSSException e) {
-					log.warn("Inline THROWN:", e);
 				}
+			} catch (CSSException ce) {
+				log.error("THROWN:", ce);
+			} catch (IOException ioe) {
+				log.error("THROWN:", ioe);
 			}
 
 		}
@@ -323,6 +365,17 @@ public final class CSSFactory {
 				return true;
 
 			return false;
+		}
+	}
+
+	// holds pair with URL base and allowed media
+	private static final class Pair {
+		public URL base;
+		public String media;
+
+		public Pair(URL base, String media) {
+			this.base = base;
+			this.media = media;
 		}
 	}
 
