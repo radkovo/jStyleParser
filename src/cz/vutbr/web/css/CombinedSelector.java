@@ -57,9 +57,6 @@ public interface CombinedSelector extends Rule<Selector> {
 		 * @param level
 		 */
 		public void add(Level level);
-		
-		public int hashCode();
-		public boolean equals(Object obj);
 	}	
     
     

@@ -106,10 +106,7 @@ public interface Selector extends Rule<Selector.SelectorPart> {
      * @author kapy
      *
      */
-    public interface SelectorPart {
-    	public int hashCode();
-    	public boolean equals(Object obj);
-    	
+    public interface SelectorPart { 	
     	public boolean matches(Element e);
     	public void computeSpecificity(CombinedSelector.Specificity spec);
     }

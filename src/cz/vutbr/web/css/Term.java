@@ -66,8 +66,4 @@ public interface Term<T> {
      */
     public Term<T> setOperator(Operator operator);
     
-    public int hashCode();
-    public boolean equals(Object obj);
-
-    
 }

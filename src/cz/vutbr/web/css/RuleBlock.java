@@ -15,10 +15,6 @@ public interface RuleBlock<T> extends Rule<T>, Comparable<RuleBlock<?>>{
 	 *
 	 */
 	public static interface Priority extends Comparable<Priority> {
-		@Override
-		public boolean equals(Object obj);
-		@Override
-		public int hashCode();
 	}
 	
 	/**
