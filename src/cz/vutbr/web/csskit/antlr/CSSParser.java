@@ -1,4 +1,4 @@
-// $ANTLR 3.1 CSS.g 2008-09-27 16:33:13
+// $ANTLR 3.1 CSS.g 2008-11-01 16:46:31
  
 package cz.vutbr.web.csskit.antlr;
 
@@ -32,88 +32,88 @@ public class CSSParser extends Parser {
     public static final String[] tokenNames = new String[] {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "STYLESHEET", "INLINESTYLE", "ATBLOCK", "CURLYBLOCK", "PARENBLOCK", "BRACEBLOCK", "RULE", "SELECTOR", "ELEMENT", "PSEUDO", "ADJACENT", "CHILD", "DESCENDANT", "ATTRIBUTE", "SET", "DECLARATION", "VALUE", "IMPORTANT", "IMPORT_END", "INVALID_STRING", "INVALID_SELECTOR", "INVALID_SELPART", "INVALID_DECLARATION", "INVALID_STATEMENT", "INVALID_IMPORT", "S", "CDO", "CDC", "CHARSET", "IMPORT", "PAGE", "COLON", "IDENT", "LCURLY", "RCURLY", "MEDIA", "ATKEYWORD", "COMMA", "SEMICOLON", "EXCLAMATION", "CLASSKEYWORD", "MINUS", "NUMBER", "PERCENTAGE", "DIMENSION", "URI", "HASH", "UNIRANGE", "INCLUDES", "GREATER", "EQUALS", "SLASH", "PLUS", "ASTERISK", "FUNCTION", "RPAREN", "DASHMATCH", "LPAREN", "LBRACE", "RBRACE", "STRING", "IDENT_MACR", "STRING_MACR", "NAME_MACR", "NUMBER_MACR", "W_MACR", "URI_MACR", "APOS", "QUOT", "W_CHAR", "COMMENT", "SL_COMMENT", "INVALID_TOKEN", "NAME_START", "NAME_CHAR", "NON_ASCII", "ESCAPE_CHAR", "STRING_CHAR", "URI_CHAR", "NL_CHAR", "'important'"
     };
-    public static final int COMMA=41;
-    public static final int ELEMENT=12;
-    public static final int INVALID_IMPORT=28;
-    public static final int CHARSET=32;
-    public static final int MINUS=45;
-    public static final int BRACEBLOCK=9;
-    public static final int HASH=50;
-    public static final int PARENBLOCK=8;
-    public static final int DASHMATCH=60;
-    public static final int NUMBER=46;
-    public static final int SELECTOR=11;
-    public static final int IMPORT_END=22;
-    public static final int PAGE=34;
-    public static final int INVALID_TOKEN=76;
-    public static final int URI_CHAR=82;
-    public static final int NAME_MACR=67;
-    public static final int RULE=10;
-    public static final int CLASSKEYWORD=44;
-    public static final int INCLUDES=52;
-    public static final int MEDIA=39;
-    public static final int DESCENDANT=16;
-    public static final int VALUE=20;
-    public static final int PSEUDO=13;
-    public static final int STYLESHEET=4;
-    public static final int URI=49;
-    public static final int IMPORT=33;
-    public static final int LBRACE=62;
-    public static final int RBRACE=63;
-    public static final int INVALID_SELECTOR=24;
-    public static final int S=29;
-    public static final int RCURLY=38;
-    public static final int DECLARATION=19;
-    public static final int LCURLY=37;
-    public static final int ESCAPE_CHAR=80;
     public static final int FUNCTION=58;
-    public static final int W_MACR=69;
-    public static final int RPAREN=59;
-    public static final int IDENT_MACR=65;
-    public static final int NAME_CHAR=78;
-    public static final int NAME_START=77;
-    public static final int LPAREN=61;
-    public static final int GREATER=53;
-    public static final int W_CHAR=73;
-    public static final int NON_ASCII=79;
-    public static final int PLUS=56;
-    public static final int SL_COMMENT=75;
     public static final int APOS=71;
-    public static final int ATKEYWORD=40;
-    public static final int STRING_CHAR=81;
-    public static final int URI_MACR=70;
-    public static final int IDENT=36;
-    public static final int SLASH=55;
-    public static final int UNIRANGE=51;
-    public static final int IMPORTANT=21;
-    public static final int STRING=64;
-    public static final int EXCLAMATION=43;
-    public static final int NL_CHAR=83;
-    public static final int INVALID_STRING=23;
-    public static final int COMMENT=74;
-    public static final int CDC=31;
-    public static final int ADJACENT=14;
-    public static final int NUMBER_MACR=68;
-    public static final int INVALID_DECLARATION=26;
-    public static final int EQUALS=54;
-    public static final int T__84=84;
-    public static final int CURLYBLOCK=7;
-    public static final int DIMENSION=48;
-    public static final int INLINESTYLE=5;
+    public static final int NAME_CHAR=78;
+    public static final int CLASSKEYWORD=44;
+    public static final int PSEUDO=13;
+    public static final int LBRACE=62;
     public static final int INVALID_STATEMENT=27;
-    public static final int STRING_MACR=66;
-    public static final int SEMICOLON=42;
-    public static final int EOF=-1;
-    public static final int ASTERISK=57;
-    public static final int COLON=35;
-    public static final int CDO=30;
-    public static final int SET=18;
     public static final int ATTRIBUTE=17;
-    public static final int CHILD=15;
-    public static final int PERCENTAGE=47;
-    public static final int INVALID_SELPART=25;
-    public static final int QUOT=72;
+    public static final int INVALID_TOKEN=76;
+    public static final int EQUALS=54;
+    public static final int NAME_START=77;
+    public static final int NUMBER_MACR=68;
+    public static final int MEDIA=39;
+    public static final int NL_CHAR=83;
+    public static final int CHARSET=32;
+    public static final int NON_ASCII=79;
+    public static final int EOF=-1;
+    public static final int DECLARATION=19;
+    public static final int STYLESHEET=4;
+    public static final int LPAREN=61;
+    public static final int ASTERISK=57;
+    public static final int BRACEBLOCK=9;
+    public static final int INCLUDES=52;
+    public static final int RPAREN=59;
+    public static final int IMPORT=33;
+    public static final int SLASH=55;
+    public static final int GREATER=53;
+    public static final int SELECTOR=11;
+    public static final int EXCLAMATION=43;
     public static final int ATBLOCK=6;
+    public static final int COMMA=41;
+    public static final int INVALID_SELPART=25;
+    public static final int INVALID_DECLARATION=26;
+    public static final int ELEMENT=12;
+    public static final int IDENT=36;
+    public static final int PLUS=56;
+    public static final int UNIRANGE=51;
+    public static final int DIMENSION=48;
+    public static final int COMMENT=74;
+    public static final int CURLYBLOCK=7;
+    public static final int CHILD=15;
+    public static final int ATKEYWORD=40;
+    public static final int INVALID_STRING=23;
+    public static final int RBRACE=63;
+    public static final int RULE=10;
+    public static final int W_CHAR=73;
+    public static final int PARENBLOCK=8;
+    public static final int STRING_MACR=66;
+    public static final int QUOT=72;
+    public static final int W_MACR=69;
+    public static final int URI_CHAR=82;
+    public static final int NUMBER=46;
+    public static final int DESCENDANT=16;
+    public static final int HASH=50;
+    public static final int SET=18;
+    public static final int LCURLY=37;
+    public static final int NAME_MACR=67;
+    public static final int SEMICOLON=42;
+    public static final int S=29;
+    public static final int MINUS=45;
+    public static final int VALUE=20;
+    public static final int CDO=30;
+    public static final int T__84=84;
+    public static final int CDC=31;
+    public static final int PERCENTAGE=47;
+    public static final int IMPORTANT=21;
+    public static final int INVALID_SELECTOR=24;
+    public static final int ESCAPE_CHAR=80;
+    public static final int URI=49;
+    public static final int COLON=35;
+    public static final int STRING_CHAR=81;
+    public static final int PAGE=34;
+    public static final int DASHMATCH=60;
+    public static final int ADJACENT=14;
+    public static final int IMPORT_END=22;
+    public static final int INVALID_IMPORT=28;
+    public static final int INLINESTYLE=5;
+    public static final int SL_COMMENT=75;
+    public static final int RCURLY=38;
+    public static final int IDENT_MACR=65;
+    public static final int STRING=64;
+    public static final int URI_MACR=70;
 
     // delegates
     // delegators
@@ -228,7 +228,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "inlinestyle"
-    // CSS.g:494:1: inlinestyle : ( S )* ( declarations -> ^( INLINESTYLE declarations ) | ( inlineset )+ -> ^( INLINESTYLE ( inlineset )+ ) ) ;
+    // CSS.g:496:1: inlinestyle : ( S )* ( declarations -> ^( INLINESTYLE declarations ) | ( inlineset )+ -> ^( INLINESTYLE ( inlineset )+ ) ) ;
     public final CSSParser.inlinestyle_return inlinestyle() throws RecognitionException {
         CSSParser.inlinestyle_return retval = new CSSParser.inlinestyle_return();
         retval.start = input.LT(1);
@@ -246,10 +246,10 @@ public class CSSParser extends Parser {
         RewriteRuleSubtreeStream stream_inlineset=new RewriteRuleSubtreeStream(adaptor,"rule inlineset");
         RewriteRuleSubtreeStream stream_declarations=new RewriteRuleSubtreeStream(adaptor,"rule declarations");
         try {
-            // CSS.g:495:2: ( ( S )* ( declarations -> ^( INLINESTYLE declarations ) | ( inlineset )+ -> ^( INLINESTYLE ( inlineset )+ ) ) )
-            // CSS.g:495:4: ( S )* ( declarations -> ^( INLINESTYLE declarations ) | ( inlineset )+ -> ^( INLINESTYLE ( inlineset )+ ) )
+            // CSS.g:497:2: ( ( S )* ( declarations -> ^( INLINESTYLE declarations ) | ( inlineset )+ -> ^( INLINESTYLE ( inlineset )+ ) ) )
+            // CSS.g:497:4: ( S )* ( declarations -> ^( INLINESTYLE declarations ) | ( inlineset )+ -> ^( INLINESTYLE ( inlineset )+ ) )
             {
-            // CSS.g:495:4: ( S )*
+            // CSS.g:497:4: ( S )*
             loop1:
             do {
                 int alt1=2;
@@ -262,7 +262,7 @@ public class CSSParser extends Parser {
 
                 switch (alt1) {
             	case 1 :
-            	    // CSS.g:495:4: S
+            	    // CSS.g:497:4: S
             	    {
             	    S1=(Token)match(input,S,FOLLOW_S_in_inlinestyle186);  
             	    stream_S.add(S1);
@@ -276,7 +276,7 @@ public class CSSParser extends Parser {
                 }
             } while (true);
 
-            // CSS.g:495:8: ( declarations -> ^( INLINESTYLE declarations ) | ( inlineset )+ -> ^( INLINESTYLE ( inlineset )+ ) )
+            // CSS.g:497:8: ( declarations -> ^( INLINESTYLE declarations ) | ( inlineset )+ -> ^( INLINESTYLE ( inlineset )+ ) )
             int alt3=2;
             int LA3_0 = input.LA(1);
 
@@ -294,7 +294,7 @@ public class CSSParser extends Parser {
             }
             switch (alt3) {
                 case 1 :
-                    // CSS.g:495:9: declarations
+                    // CSS.g:497:9: declarations
                     {
                     pushFollow(FOLLOW_declarations_in_inlinestyle191);
                     declarations2=declarations();
@@ -314,9 +314,9 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 495:22: -> ^( INLINESTYLE declarations )
+                    // 497:22: -> ^( INLINESTYLE declarations )
                     {
-                        // CSS.g:495:25: ^( INLINESTYLE declarations )
+                        // CSS.g:497:25: ^( INLINESTYLE declarations )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(INLINESTYLE, "INLINESTYLE"), root_1);
@@ -332,9 +332,9 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // CSS.g:496:10: ( inlineset )+
+                    // CSS.g:498:10: ( inlineset )+
                     {
-                    // CSS.g:496:10: ( inlineset )+
+                    // CSS.g:498:10: ( inlineset )+
                     int cnt2=0;
                     loop2:
                     do {
@@ -348,7 +348,7 @@ public class CSSParser extends Parser {
 
                         switch (alt2) {
                     	case 1 :
-                    	    // CSS.g:496:10: inlineset
+                    	    // CSS.g:498:10: inlineset
                     	    {
                     	    pushFollow(FOLLOW_inlineset_in_inlinestyle211);
                     	    inlineset3=inlineset();
@@ -381,9 +381,9 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 496:21: -> ^( INLINESTYLE ( inlineset )+ )
+                    // 498:21: -> ^( INLINESTYLE ( inlineset )+ )
                     {
-                        // CSS.g:496:24: ^( INLINESTYLE ( inlineset )+ )
+                        // CSS.g:498:24: ^( INLINESTYLE ( inlineset )+ )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(INLINESTYLE, "INLINESTYLE"), root_1);
@@ -435,7 +435,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "stylesheet"
-    // CSS.g:500:1: stylesheet : ( CDO | CDC | S | statement )* -> ^( STYLESHEET ( statement )* ) ;
+    // CSS.g:502:1: stylesheet : ( CDO | CDC | S | statement )* -> ^( STYLESHEET ( statement )* ) ;
     public final CSSParser.stylesheet_return stylesheet() throws RecognitionException {
         CSSParser.stylesheet_return retval = new CSSParser.stylesheet_return();
         retval.start = input.LT(1);
@@ -456,17 +456,17 @@ public class CSSParser extends Parser {
         RewriteRuleTokenStream stream_CDC=new RewriteRuleTokenStream(adaptor,"token CDC");
         RewriteRuleSubtreeStream stream_statement=new RewriteRuleSubtreeStream(adaptor,"rule statement");
         try {
-            // CSS.g:501:2: ( ( CDO | CDC | S | statement )* -> ^( STYLESHEET ( statement )* ) )
-            // CSS.g:501:4: ( CDO | CDC | S | statement )*
+            // CSS.g:503:2: ( ( CDO | CDC | S | statement )* -> ^( STYLESHEET ( statement )* ) )
+            // CSS.g:503:4: ( CDO | CDC | S | statement )*
             {
-            // CSS.g:501:4: ( CDO | CDC | S | statement )*
+            // CSS.g:503:4: ( CDO | CDC | S | statement )*
             loop4:
             do {
                 int alt4=5;
                 alt4 = dfa4.predict(input);
                 switch (alt4) {
             	case 1 :
-            	    // CSS.g:501:6: CDO
+            	    // CSS.g:503:6: CDO
             	    {
             	    CDO4=(Token)match(input,CDO,FOLLOW_CDO_in_stylesheet239);  
             	    stream_CDO.add(CDO4);
@@ -475,7 +475,7 @@ public class CSSParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // CSS.g:501:12: CDC
+            	    // CSS.g:503:12: CDC
             	    {
             	    CDC5=(Token)match(input,CDC,FOLLOW_CDC_in_stylesheet243);  
             	    stream_CDC.add(CDC5);
@@ -484,7 +484,7 @@ public class CSSParser extends Parser {
             	    }
             	    break;
             	case 3 :
-            	    // CSS.g:501:18: S
+            	    // CSS.g:503:18: S
             	    {
             	    S6=(Token)match(input,S,FOLLOW_S_in_stylesheet247);  
             	    stream_S.add(S6);
@@ -493,7 +493,7 @@ public class CSSParser extends Parser {
             	    }
             	    break;
             	case 4 :
-            	    // CSS.g:501:22: statement
+            	    // CSS.g:503:22: statement
             	    {
             	    pushFollow(FOLLOW_statement_in_stylesheet251);
             	    statement7=statement();
@@ -522,14 +522,14 @@ public class CSSParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 502:3: -> ^( STYLESHEET ( statement )* )
+            // 504:3: -> ^( STYLESHEET ( statement )* )
             {
-                // CSS.g:502:6: ^( STYLESHEET ( statement )* )
+                // CSS.g:504:6: ^( STYLESHEET ( statement )* )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(STYLESHEET, "STYLESHEET"), root_1);
 
-                // CSS.g:502:19: ( statement )*
+                // CSS.g:504:19: ( statement )*
                 while ( stream_statement.hasNext() ) {
                     adaptor.addChild(root_1, stream_statement.nextTree());
 
@@ -568,7 +568,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "statement"
-    // CSS.g:505:1: statement : ( ruleset | atstatement );
+    // CSS.g:507:1: statement : ( ruleset | atstatement );
     public final CSSParser.statement_return statement() throws RecognitionException {
         CSSParser.statement_return retval = new CSSParser.statement_return();
         retval.start = input.LT(1);
@@ -582,12 +582,12 @@ public class CSSParser extends Parser {
 
 
         try {
-            // CSS.g:506:2: ( ruleset | atstatement )
+            // CSS.g:508:2: ( ruleset | atstatement )
             int alt5=2;
             alt5 = dfa5.predict(input);
             switch (alt5) {
                 case 1 :
-                    // CSS.g:506:4: ruleset
+                    // CSS.g:508:4: ruleset
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -601,7 +601,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // CSS.g:506:14: atstatement
+                    // CSS.g:508:14: atstatement
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -640,7 +640,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "atstatement"
-    // CSS.g:509:1: atstatement : ( CHARSET | IMPORT | INVALID_IMPORT | IMPORT_END | PAGE ( S )* ( COLON IDENT ( S )* )? LCURLY ( S )* declarations RCURLY -> ^( PAGE ( IDENT )? declarations ) | MEDIA ( S )* ( media )? LCURLY ( S )* ( ruleset ( S )* )* RCURLY -> ^( MEDIA ( media )? ( ruleset )* ) | ATKEYWORD ( S )* LCURLY ( any )* RCURLY -> INVALID_STATEMENT );
+    // CSS.g:511:1: atstatement : ( CHARSET | IMPORT | INVALID_IMPORT | IMPORT_END | PAGE ( S )* ( COLON IDENT ( S )* )? LCURLY ( S )* declarations RCURLY -> ^( PAGE ( IDENT )? declarations ) | MEDIA ( S )* ( media )? LCURLY ( S )* ( ruleset ( S )* )* RCURLY -> ^( MEDIA ( media )? ( ruleset )* ) | ATKEYWORD ( S )* LCURLY ( any )* RCURLY -> INVALID_STATEMENT );
     public final CSSParser.atstatement_return atstatement() throws RecognitionException {
         CSSParser.atstatement_return retval = new CSSParser.atstatement_return();
         retval.start = input.LT(1);
@@ -700,20 +700,20 @@ public class CSSParser extends Parser {
         Object S32_tree=null;
         Object LCURLY33_tree=null;
         Object RCURLY35_tree=null;
-        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
         RewriteRuleTokenStream stream_ATKEYWORD=new RewriteRuleTokenStream(adaptor,"token ATKEYWORD");
         RewriteRuleTokenStream stream_COLON=new RewriteRuleTokenStream(adaptor,"token COLON");
-        RewriteRuleTokenStream stream_RCURLY=new RewriteRuleTokenStream(adaptor,"token RCURLY");
-        RewriteRuleTokenStream stream_LCURLY=new RewriteRuleTokenStream(adaptor,"token LCURLY");
         RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
-        RewriteRuleTokenStream stream_MEDIA=new RewriteRuleTokenStream(adaptor,"token MEDIA");
+        RewriteRuleTokenStream stream_LCURLY=new RewriteRuleTokenStream(adaptor,"token LCURLY");
         RewriteRuleTokenStream stream_PAGE=new RewriteRuleTokenStream(adaptor,"token PAGE");
+        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
+        RewriteRuleTokenStream stream_MEDIA=new RewriteRuleTokenStream(adaptor,"token MEDIA");
+        RewriteRuleTokenStream stream_RCURLY=new RewriteRuleTokenStream(adaptor,"token RCURLY");
         RewriteRuleSubtreeStream stream_ruleset=new RewriteRuleSubtreeStream(adaptor,"rule ruleset");
+        RewriteRuleSubtreeStream stream_any=new RewriteRuleSubtreeStream(adaptor,"rule any");
         RewriteRuleSubtreeStream stream_media=new RewriteRuleSubtreeStream(adaptor,"rule media");
         RewriteRuleSubtreeStream stream_declarations=new RewriteRuleSubtreeStream(adaptor,"rule declarations");
-        RewriteRuleSubtreeStream stream_any=new RewriteRuleSubtreeStream(adaptor,"rule any");
         try {
-            // CSS.g:510:2: ( CHARSET | IMPORT | INVALID_IMPORT | IMPORT_END | PAGE ( S )* ( COLON IDENT ( S )* )? LCURLY ( S )* declarations RCURLY -> ^( PAGE ( IDENT )? declarations ) | MEDIA ( S )* ( media )? LCURLY ( S )* ( ruleset ( S )* )* RCURLY -> ^( MEDIA ( media )? ( ruleset )* ) | ATKEYWORD ( S )* LCURLY ( any )* RCURLY -> INVALID_STATEMENT )
+            // CSS.g:512:2: ( CHARSET | IMPORT | INVALID_IMPORT | IMPORT_END | PAGE ( S )* ( COLON IDENT ( S )* )? LCURLY ( S )* declarations RCURLY -> ^( PAGE ( IDENT )? declarations ) | MEDIA ( S )* ( media )? LCURLY ( S )* ( ruleset ( S )* )* RCURLY -> ^( MEDIA ( media )? ( ruleset )* ) | ATKEYWORD ( S )* LCURLY ( any )* RCURLY -> INVALID_STATEMENT )
             int alt17=7;
             switch ( input.LA(1) ) {
             case CHARSET:
@@ -760,7 +760,7 @@ public class CSSParser extends Parser {
 
             switch (alt17) {
                 case 1 :
-                    // CSS.g:510:4: CHARSET
+                    // CSS.g:512:4: CHARSET
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -772,7 +772,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // CSS.g:511:4: IMPORT
+                    // CSS.g:513:4: IMPORT
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -784,7 +784,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // CSS.g:512:4: INVALID_IMPORT
+                    // CSS.g:514:4: INVALID_IMPORT
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -796,7 +796,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // CSS.g:513:4: IMPORT_END
+                    // CSS.g:515:4: IMPORT_END
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -808,12 +808,12 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // CSS.g:514:4: PAGE ( S )* ( COLON IDENT ( S )* )? LCURLY ( S )* declarations RCURLY
+                    // CSS.g:516:4: PAGE ( S )* ( COLON IDENT ( S )* )? LCURLY ( S )* declarations RCURLY
                     {
                     PAGE14=(Token)match(input,PAGE,FOLLOW_PAGE_in_atstatement316);  
                     stream_PAGE.add(PAGE14);
 
-                    // CSS.g:514:9: ( S )*
+                    // CSS.g:516:9: ( S )*
                     loop6:
                     do {
                         int alt6=2;
@@ -826,7 +826,7 @@ public class CSSParser extends Parser {
 
                         switch (alt6) {
                     	case 1 :
-                    	    // CSS.g:514:9: S
+                    	    // CSS.g:516:9: S
                     	    {
                     	    S15=(Token)match(input,S,FOLLOW_S_in_atstatement318);  
                     	    stream_S.add(S15);
@@ -840,7 +840,7 @@ public class CSSParser extends Parser {
                         }
                     } while (true);
 
-                    // CSS.g:514:12: ( COLON IDENT ( S )* )?
+                    // CSS.g:516:12: ( COLON IDENT ( S )* )?
                     int alt8=2;
                     int LA8_0 = input.LA(1);
 
@@ -849,7 +849,7 @@ public class CSSParser extends Parser {
                     }
                     switch (alt8) {
                         case 1 :
-                            // CSS.g:514:13: COLON IDENT ( S )*
+                            // CSS.g:516:13: COLON IDENT ( S )*
                             {
                             COLON16=(Token)match(input,COLON,FOLLOW_COLON_in_atstatement322);  
                             stream_COLON.add(COLON16);
@@ -857,7 +857,7 @@ public class CSSParser extends Parser {
                             IDENT17=(Token)match(input,IDENT,FOLLOW_IDENT_in_atstatement324);  
                             stream_IDENT.add(IDENT17);
 
-                            // CSS.g:514:25: ( S )*
+                            // CSS.g:516:25: ( S )*
                             loop7:
                             do {
                                 int alt7=2;
@@ -870,7 +870,7 @@ public class CSSParser extends Parser {
 
                                 switch (alt7) {
                             	case 1 :
-                            	    // CSS.g:514:25: S
+                            	    // CSS.g:516:25: S
                             	    {
                             	    S18=(Token)match(input,S,FOLLOW_S_in_atstatement326);  
                             	    stream_S.add(S18);
@@ -893,7 +893,7 @@ public class CSSParser extends Parser {
                     LCURLY19=(Token)match(input,LCURLY,FOLLOW_LCURLY_in_atstatement334);  
                     stream_LCURLY.add(LCURLY19);
 
-                    // CSS.g:515:10: ( S )*
+                    // CSS.g:517:10: ( S )*
                     loop9:
                     do {
                         int alt9=2;
@@ -906,7 +906,7 @@ public class CSSParser extends Parser {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // CSS.g:515:10: S
+                    	    // CSS.g:517:10: S
                     	    {
                     	    S20=(Token)match(input,S,FOLLOW_S_in_atstatement336);  
                     	    stream_S.add(S20);
@@ -932,7 +932,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: PAGE, declarations, IDENT
+                    // elements: declarations, PAGE, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -941,14 +941,14 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 516:10: -> ^( PAGE ( IDENT )? declarations )
+                    // 518:10: -> ^( PAGE ( IDENT )? declarations )
                     {
-                        // CSS.g:516:13: ^( PAGE ( IDENT )? declarations )
+                        // CSS.g:518:13: ^( PAGE ( IDENT )? declarations )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(stream_PAGE.nextNode(), root_1);
 
-                        // CSS.g:516:20: ( IDENT )?
+                        // CSS.g:518:20: ( IDENT )?
                         if ( stream_IDENT.hasNext() ) {
                             adaptor.addChild(root_1, stream_IDENT.nextNode());
 
@@ -965,12 +965,12 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // CSS.g:517:4: MEDIA ( S )* ( media )? LCURLY ( S )* ( ruleset ( S )* )* RCURLY
+                    // CSS.g:519:4: MEDIA ( S )* ( media )? LCURLY ( S )* ( ruleset ( S )* )* RCURLY
                     {
                     MEDIA23=(Token)match(input,MEDIA,FOLLOW_MEDIA_in_atstatement360);  
                     stream_MEDIA.add(MEDIA23);
 
-                    // CSS.g:517:10: ( S )*
+                    // CSS.g:519:10: ( S )*
                     loop10:
                     do {
                         int alt10=2;
@@ -983,7 +983,7 @@ public class CSSParser extends Parser {
 
                         switch (alt10) {
                     	case 1 :
-                    	    // CSS.g:517:10: S
+                    	    // CSS.g:519:10: S
                     	    {
                     	    S24=(Token)match(input,S,FOLLOW_S_in_atstatement362);  
                     	    stream_S.add(S24);
@@ -997,7 +997,7 @@ public class CSSParser extends Parser {
                         }
                     } while (true);
 
-                    // CSS.g:517:13: ( media )?
+                    // CSS.g:519:13: ( media )?
                     int alt11=2;
                     int LA11_0 = input.LA(1);
 
@@ -1006,7 +1006,7 @@ public class CSSParser extends Parser {
                     }
                     switch (alt11) {
                         case 1 :
-                            // CSS.g:517:13: media
+                            // CSS.g:519:13: media
                             {
                             pushFollow(FOLLOW_media_in_atstatement365);
                             media25=media();
@@ -1023,14 +1023,14 @@ public class CSSParser extends Parser {
                     LCURLY26=(Token)match(input,LCURLY,FOLLOW_LCURLY_in_atstatement371);  
                     stream_LCURLY.add(LCURLY26);
 
-                    // CSS.g:518:10: ( S )*
+                    // CSS.g:520:10: ( S )*
                     loop12:
                     do {
                         int alt12=2;
                         alt12 = dfa12.predict(input);
                         switch (alt12) {
                     	case 1 :
-                    	    // CSS.g:518:10: S
+                    	    // CSS.g:520:10: S
                     	    {
                     	    S27=(Token)match(input,S,FOLLOW_S_in_atstatement373);  
                     	    stream_S.add(S27);
@@ -1044,7 +1044,7 @@ public class CSSParser extends Parser {
                         }
                     } while (true);
 
-                    // CSS.g:518:13: ( ruleset ( S )* )*
+                    // CSS.g:520:13: ( ruleset ( S )* )*
                     loop14:
                     do {
                         int alt14=2;
@@ -1057,7 +1057,7 @@ public class CSSParser extends Parser {
 
                         switch (alt14) {
                     	case 1 :
-                    	    // CSS.g:518:14: ruleset ( S )*
+                    	    // CSS.g:520:14: ruleset ( S )*
                     	    {
                     	    pushFollow(FOLLOW_ruleset_in_atstatement377);
                     	    ruleset28=ruleset();
@@ -1065,14 +1065,14 @@ public class CSSParser extends Parser {
                     	    state._fsp--;
 
                     	    stream_ruleset.add(ruleset28.getTree());
-                    	    // CSS.g:518:22: ( S )*
+                    	    // CSS.g:520:22: ( S )*
                     	    loop13:
                     	    do {
                     	        int alt13=2;
                     	        alt13 = dfa13.predict(input);
                     	        switch (alt13) {
                     	    	case 1 :
-                    	    	    // CSS.g:518:22: S
+                    	    	    // CSS.g:520:22: S
                     	    	    {
                     	    	    S29=(Token)match(input,S,FOLLOW_S_in_atstatement379);  
                     	    	    stream_S.add(S29);
@@ -1101,7 +1101,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: MEDIA, media, ruleset
+                    // elements: media, ruleset, MEDIA
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1110,20 +1110,20 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 518:34: -> ^( MEDIA ( media )? ( ruleset )* )
+                    // 520:34: -> ^( MEDIA ( media )? ( ruleset )* )
                     {
-                        // CSS.g:518:37: ^( MEDIA ( media )? ( ruleset )* )
+                        // CSS.g:520:37: ^( MEDIA ( media )? ( ruleset )* )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(stream_MEDIA.nextNode(), root_1);
 
-                        // CSS.g:518:45: ( media )?
+                        // CSS.g:520:45: ( media )?
                         if ( stream_media.hasNext() ) {
                             adaptor.addChild(root_1, stream_media.nextTree());
 
                         }
                         stream_media.reset();
-                        // CSS.g:518:52: ( ruleset )*
+                        // CSS.g:520:52: ( ruleset )*
                         while ( stream_ruleset.hasNext() ) {
                             adaptor.addChild(root_1, stream_ruleset.nextTree());
 
@@ -1139,12 +1139,12 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // CSS.g:519:4: ATKEYWORD ( S )* LCURLY ( any )* RCURLY
+                    // CSS.g:521:4: ATKEYWORD ( S )* LCURLY ( any )* RCURLY
                     {
                     ATKEYWORD31=(Token)match(input,ATKEYWORD,FOLLOW_ATKEYWORD_in_atstatement402);  
                     stream_ATKEYWORD.add(ATKEYWORD31);
 
-                    // CSS.g:519:14: ( S )*
+                    // CSS.g:521:14: ( S )*
                     loop15:
                     do {
                         int alt15=2;
@@ -1157,7 +1157,7 @@ public class CSSParser extends Parser {
 
                         switch (alt15) {
                     	case 1 :
-                    	    // CSS.g:519:14: S
+                    	    // CSS.g:521:14: S
                     	    {
                     	    S32=(Token)match(input,S,FOLLOW_S_in_atstatement404);  
                     	    stream_S.add(S32);
@@ -1174,14 +1174,14 @@ public class CSSParser extends Parser {
                     LCURLY33=(Token)match(input,LCURLY,FOLLOW_LCURLY_in_atstatement407);  
                     stream_LCURLY.add(LCURLY33);
 
-                    // CSS.g:519:24: ( any )*
+                    // CSS.g:521:24: ( any )*
                     loop16:
                     do {
                         int alt16=2;
                         alt16 = dfa16.predict(input);
                         switch (alt16) {
                     	case 1 :
-                    	    // CSS.g:519:24: any
+                    	    // CSS.g:521:24: any
                     	    {
                     	    pushFollow(FOLLOW_any_in_atstatement409);
                     	    any34=any();
@@ -1213,7 +1213,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 519:36: -> INVALID_STATEMENT
+                    // 521:36: -> INVALID_STATEMENT
                     {
                         adaptor.addChild(root_0, (Object)adaptor.create(INVALID_STATEMENT, "INVALID_STATEMENT"));
 
@@ -1249,7 +1249,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "inlineset"
-    // CSS.g:527:1: inlineset : ( pseudo ( S )* ( COMMA ( S )* pseudo ( S )* )* )? LCURLY declarations RCURLY -> ^( RULE ( pseudo )* declarations ) ;
+    // CSS.g:529:1: inlineset : ( pseudo ( S )* ( COMMA ( S )* pseudo ( S )* )* )? LCURLY declarations RCURLY -> ^( RULE ( pseudo )* declarations ) ;
     public final CSSParser.inlineset_return inlineset() throws RecognitionException {
         CSSParser.inlineset_return retval = new CSSParser.inlineset_return();
         retval.start = input.LT(1);
@@ -1275,17 +1275,17 @@ public class CSSParser extends Parser {
         Object S41_tree=null;
         Object LCURLY42_tree=null;
         Object RCURLY44_tree=null;
+        RewriteRuleTokenStream stream_LCURLY=new RewriteRuleTokenStream(adaptor,"token LCURLY");
         RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
         RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
         RewriteRuleTokenStream stream_RCURLY=new RewriteRuleTokenStream(adaptor,"token RCURLY");
-        RewriteRuleTokenStream stream_LCURLY=new RewriteRuleTokenStream(adaptor,"token LCURLY");
         RewriteRuleSubtreeStream stream_pseudo=new RewriteRuleSubtreeStream(adaptor,"rule pseudo");
         RewriteRuleSubtreeStream stream_declarations=new RewriteRuleSubtreeStream(adaptor,"rule declarations");
         try {
-            // CSS.g:528:2: ( ( pseudo ( S )* ( COMMA ( S )* pseudo ( S )* )* )? LCURLY declarations RCURLY -> ^( RULE ( pseudo )* declarations ) )
-            // CSS.g:528:4: ( pseudo ( S )* ( COMMA ( S )* pseudo ( S )* )* )? LCURLY declarations RCURLY
+            // CSS.g:530:2: ( ( pseudo ( S )* ( COMMA ( S )* pseudo ( S )* )* )? LCURLY declarations RCURLY -> ^( RULE ( pseudo )* declarations ) )
+            // CSS.g:530:4: ( pseudo ( S )* ( COMMA ( S )* pseudo ( S )* )* )? LCURLY declarations RCURLY
             {
-            // CSS.g:528:4: ( pseudo ( S )* ( COMMA ( S )* pseudo ( S )* )* )?
+            // CSS.g:530:4: ( pseudo ( S )* ( COMMA ( S )* pseudo ( S )* )* )?
             int alt22=2;
             int LA22_0 = input.LA(1);
 
@@ -1294,7 +1294,7 @@ public class CSSParser extends Parser {
             }
             switch (alt22) {
                 case 1 :
-                    // CSS.g:528:5: pseudo ( S )* ( COMMA ( S )* pseudo ( S )* )*
+                    // CSS.g:530:5: pseudo ( S )* ( COMMA ( S )* pseudo ( S )* )*
                     {
                     pushFollow(FOLLOW_pseudo_in_inlineset435);
                     pseudo36=pseudo();
@@ -1302,7 +1302,7 @@ public class CSSParser extends Parser {
                     state._fsp--;
 
                     stream_pseudo.add(pseudo36.getTree());
-                    // CSS.g:528:12: ( S )*
+                    // CSS.g:530:12: ( S )*
                     loop18:
                     do {
                         int alt18=2;
@@ -1315,7 +1315,7 @@ public class CSSParser extends Parser {
 
                         switch (alt18) {
                     	case 1 :
-                    	    // CSS.g:528:12: S
+                    	    // CSS.g:530:12: S
                     	    {
                     	    S37=(Token)match(input,S,FOLLOW_S_in_inlineset437);  
                     	    stream_S.add(S37);
@@ -1329,7 +1329,7 @@ public class CSSParser extends Parser {
                         }
                     } while (true);
 
-                    // CSS.g:528:15: ( COMMA ( S )* pseudo ( S )* )*
+                    // CSS.g:530:15: ( COMMA ( S )* pseudo ( S )* )*
                     loop21:
                     do {
                         int alt21=2;
@@ -1342,12 +1342,12 @@ public class CSSParser extends Parser {
 
                         switch (alt21) {
                     	case 1 :
-                    	    // CSS.g:528:16: COMMA ( S )* pseudo ( S )*
+                    	    // CSS.g:530:16: COMMA ( S )* pseudo ( S )*
                     	    {
                     	    COMMA38=(Token)match(input,COMMA,FOLLOW_COMMA_in_inlineset441);  
                     	    stream_COMMA.add(COMMA38);
 
-                    	    // CSS.g:528:22: ( S )*
+                    	    // CSS.g:530:22: ( S )*
                     	    loop19:
                     	    do {
                     	        int alt19=2;
@@ -1360,7 +1360,7 @@ public class CSSParser extends Parser {
 
                     	        switch (alt19) {
                     	    	case 1 :
-                    	    	    // CSS.g:528:22: S
+                    	    	    // CSS.g:530:22: S
                     	    	    {
                     	    	    S39=(Token)match(input,S,FOLLOW_S_in_inlineset443);  
                     	    	    stream_S.add(S39);
@@ -1380,7 +1380,7 @@ public class CSSParser extends Parser {
                     	    state._fsp--;
 
                     	    stream_pseudo.add(pseudo40.getTree());
-                    	    // CSS.g:528:32: ( S )*
+                    	    // CSS.g:530:32: ( S )*
                     	    loop20:
                     	    do {
                     	        int alt20=2;
@@ -1393,7 +1393,7 @@ public class CSSParser extends Parser {
 
                     	        switch (alt20) {
                     	    	case 1 :
-                    	    	    // CSS.g:528:32: S
+                    	    	    // CSS.g:530:32: S
                     	    	    {
                     	    	    S41=(Token)match(input,S,FOLLOW_S_in_inlineset448);  
                     	    	    stream_S.add(S41);
@@ -1437,7 +1437,7 @@ public class CSSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: declarations, pseudo
+            // elements: pseudo, declarations
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -1446,14 +1446,14 @@ public class CSSParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 532:4: -> ^( RULE ( pseudo )* declarations )
+            // 534:4: -> ^( RULE ( pseudo )* declarations )
             {
-                // CSS.g:532:7: ^( RULE ( pseudo )* declarations )
+                // CSS.g:534:7: ^( RULE ( pseudo )* declarations )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(RULE, "RULE"), root_1);
 
-                // CSS.g:532:14: ( pseudo )*
+                // CSS.g:534:14: ( pseudo )*
                 while ( stream_pseudo.hasNext() ) {
                     adaptor.addChild(root_1, stream_pseudo.nextTree());
 
@@ -1493,7 +1493,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "media"
-    // CSS.g:535:1: media : IDENT ( S )* ( COMMA ( S )* IDENT ( S )* )* -> ( IDENT )+ ;
+    // CSS.g:537:1: media : IDENT ( S )* ( COMMA ( S )* IDENT ( S )* )* -> ( IDENT )+ ;
     public final CSSParser.media_return media() throws RecognitionException {
         CSSParser.media_return retval = new CSSParser.media_return();
         retval.start = input.LT(1);
@@ -1513,18 +1513,18 @@ public class CSSParser extends Parser {
         Object S48_tree=null;
         Object IDENT49_tree=null;
         Object S50_tree=null;
+        RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
         RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
         RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
-        RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
 
         try {
-            // CSS.g:536:2: ( IDENT ( S )* ( COMMA ( S )* IDENT ( S )* )* -> ( IDENT )+ )
-            // CSS.g:536:4: IDENT ( S )* ( COMMA ( S )* IDENT ( S )* )*
+            // CSS.g:538:2: ( IDENT ( S )* ( COMMA ( S )* IDENT ( S )* )* -> ( IDENT )+ )
+            // CSS.g:538:4: IDENT ( S )* ( COMMA ( S )* IDENT ( S )* )*
             {
             IDENT45=(Token)match(input,IDENT,FOLLOW_IDENT_in_media499);  
             stream_IDENT.add(IDENT45);
 
-            // CSS.g:536:10: ( S )*
+            // CSS.g:538:10: ( S )*
             loop23:
             do {
                 int alt23=2;
@@ -1537,7 +1537,7 @@ public class CSSParser extends Parser {
 
                 switch (alt23) {
             	case 1 :
-            	    // CSS.g:536:10: S
+            	    // CSS.g:538:10: S
             	    {
             	    S46=(Token)match(input,S,FOLLOW_S_in_media501);  
             	    stream_S.add(S46);
@@ -1551,7 +1551,7 @@ public class CSSParser extends Parser {
                 }
             } while (true);
 
-            // CSS.g:536:13: ( COMMA ( S )* IDENT ( S )* )*
+            // CSS.g:538:13: ( COMMA ( S )* IDENT ( S )* )*
             loop26:
             do {
                 int alt26=2;
@@ -1564,12 +1564,12 @@ public class CSSParser extends Parser {
 
                 switch (alt26) {
             	case 1 :
-            	    // CSS.g:536:14: COMMA ( S )* IDENT ( S )*
+            	    // CSS.g:538:14: COMMA ( S )* IDENT ( S )*
             	    {
             	    COMMA47=(Token)match(input,COMMA,FOLLOW_COMMA_in_media505);  
             	    stream_COMMA.add(COMMA47);
 
-            	    // CSS.g:536:20: ( S )*
+            	    // CSS.g:538:20: ( S )*
             	    loop24:
             	    do {
             	        int alt24=2;
@@ -1582,7 +1582,7 @@ public class CSSParser extends Parser {
 
             	        switch (alt24) {
             	    	case 1 :
-            	    	    // CSS.g:536:20: S
+            	    	    // CSS.g:538:20: S
             	    	    {
             	    	    S48=(Token)match(input,S,FOLLOW_S_in_media507);  
             	    	    stream_S.add(S48);
@@ -1599,7 +1599,7 @@ public class CSSParser extends Parser {
             	    IDENT49=(Token)match(input,IDENT,FOLLOW_IDENT_in_media510);  
             	    stream_IDENT.add(IDENT49);
 
-            	    // CSS.g:536:29: ( S )*
+            	    // CSS.g:538:29: ( S )*
             	    loop25:
             	    do {
             	        int alt25=2;
@@ -1612,7 +1612,7 @@ public class CSSParser extends Parser {
 
             	        switch (alt25) {
             	    	case 1 :
-            	    	    // CSS.g:536:29: S
+            	    	    // CSS.g:538:29: S
             	    	    {
             	    	    S50=(Token)match(input,S,FOLLOW_S_in_media512);  
             	    	    stream_S.add(S50);
@@ -1647,7 +1647,7 @@ public class CSSParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 537:3: -> ( IDENT )+
+            // 539:3: -> ( IDENT )+
             {
                 if ( !(stream_IDENT.hasNext()) ) {
                     throw new RewriteEarlyExitException();
@@ -1687,7 +1687,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "ruleset"
-    // CSS.g:540:1: ruleset : combined_selector ( COMMA ( S )* combined_selector )* LCURLY ( S )* declarations RCURLY -> ^( RULE ( combined_selector )+ declarations ) ;
+    // CSS.g:542:1: ruleset : combined_selector ( COMMA ( S )* combined_selector )* LCURLY ( S )* declarations RCURLY -> ^( RULE ( combined_selector )+ declarations ) ;
     public final CSSParser.ruleset_return ruleset() throws RecognitionException {
         CSSParser.ruleset_return retval = new CSSParser.ruleset_return();
         retval.start = input.LT(1);
@@ -1711,15 +1711,15 @@ public class CSSParser extends Parser {
         Object LCURLY55_tree=null;
         Object S56_tree=null;
         Object RCURLY58_tree=null;
-        RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
-        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
-        RewriteRuleTokenStream stream_RCURLY=new RewriteRuleTokenStream(adaptor,"token RCURLY");
         RewriteRuleTokenStream stream_LCURLY=new RewriteRuleTokenStream(adaptor,"token LCURLY");
-        RewriteRuleSubtreeStream stream_declarations=new RewriteRuleSubtreeStream(adaptor,"rule declarations");
+        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
+        RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
+        RewriteRuleTokenStream stream_RCURLY=new RewriteRuleTokenStream(adaptor,"token RCURLY");
         RewriteRuleSubtreeStream stream_combined_selector=new RewriteRuleSubtreeStream(adaptor,"rule combined_selector");
+        RewriteRuleSubtreeStream stream_declarations=new RewriteRuleSubtreeStream(adaptor,"rule declarations");
         try {
-            // CSS.g:543:2: ( combined_selector ( COMMA ( S )* combined_selector )* LCURLY ( S )* declarations RCURLY -> ^( RULE ( combined_selector )+ declarations ) )
-            // CSS.g:543:4: combined_selector ( COMMA ( S )* combined_selector )* LCURLY ( S )* declarations RCURLY
+            // CSS.g:545:2: ( combined_selector ( COMMA ( S )* combined_selector )* LCURLY ( S )* declarations RCURLY -> ^( RULE ( combined_selector )+ declarations ) )
+            // CSS.g:545:4: combined_selector ( COMMA ( S )* combined_selector )* LCURLY ( S )* declarations RCURLY
             {
             pushFollow(FOLLOW_combined_selector_in_ruleset542);
             combined_selector51=combined_selector();
@@ -1727,7 +1727,7 @@ public class CSSParser extends Parser {
             state._fsp--;
 
             stream_combined_selector.add(combined_selector51.getTree());
-            // CSS.g:543:22: ( COMMA ( S )* combined_selector )*
+            // CSS.g:545:22: ( COMMA ( S )* combined_selector )*
             loop28:
             do {
                 int alt28=2;
@@ -1740,12 +1740,12 @@ public class CSSParser extends Parser {
 
                 switch (alt28) {
             	case 1 :
-            	    // CSS.g:543:23: COMMA ( S )* combined_selector
+            	    // CSS.g:545:23: COMMA ( S )* combined_selector
             	    {
             	    COMMA52=(Token)match(input,COMMA,FOLLOW_COMMA_in_ruleset545);  
             	    stream_COMMA.add(COMMA52);
 
-            	    // CSS.g:543:29: ( S )*
+            	    // CSS.g:545:29: ( S )*
             	    loop27:
             	    do {
             	        int alt27=2;
@@ -1758,7 +1758,7 @@ public class CSSParser extends Parser {
 
             	        switch (alt27) {
             	    	case 1 :
-            	    	    // CSS.g:543:29: S
+            	    	    // CSS.g:545:29: S
             	    	    {
             	    	    S53=(Token)match(input,S,FOLLOW_S_in_ruleset547);  
             	    	    stream_S.add(S53);
@@ -1790,7 +1790,7 @@ public class CSSParser extends Parser {
             LCURLY55=(Token)match(input,LCURLY,FOLLOW_LCURLY_in_ruleset558);  
             stream_LCURLY.add(LCURLY55);
 
-            // CSS.g:544:11: ( S )*
+            // CSS.g:546:11: ( S )*
             loop29:
             do {
                 int alt29=2;
@@ -1803,7 +1803,7 @@ public class CSSParser extends Parser {
 
                 switch (alt29) {
             	case 1 :
-            	    // CSS.g:544:11: S
+            	    // CSS.g:546:11: S
             	    {
             	    S56=(Token)match(input,S,FOLLOW_S_in_ruleset560);  
             	    stream_S.add(S56);
@@ -1838,9 +1838,9 @@ public class CSSParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 547:4: -> ^( RULE ( combined_selector )+ declarations )
+            // 549:4: -> ^( RULE ( combined_selector )+ declarations )
             {
-                // CSS.g:547:7: ^( RULE ( combined_selector )+ declarations )
+                // CSS.g:549:7: ^( RULE ( combined_selector )+ declarations )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(RULE, "RULE"), root_1);
@@ -1889,7 +1889,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "declarations"
-    // CSS.g:550:1: declarations : ( declaration )? ( SEMICOLON ( S )* ( declaration )? )* -> ^( SET ( declaration )* ) ;
+    // CSS.g:552:1: declarations : ( declaration )? ( SEMICOLON ( S )* ( declaration )? )* -> ^( SET ( declaration )* ) ;
     public final CSSParser.declarations_return declarations() throws RecognitionException {
         CSSParser.declarations_return retval = new CSSParser.declarations_return();
         retval.start = input.LT(1);
@@ -1905,14 +1905,14 @@ public class CSSParser extends Parser {
 
         Object SEMICOLON60_tree=null;
         Object S61_tree=null;
-        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
         RewriteRuleTokenStream stream_SEMICOLON=new RewriteRuleTokenStream(adaptor,"token SEMICOLON");
+        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
         RewriteRuleSubtreeStream stream_declaration=new RewriteRuleSubtreeStream(adaptor,"rule declaration");
         try {
-            // CSS.g:551:2: ( ( declaration )? ( SEMICOLON ( S )* ( declaration )? )* -> ^( SET ( declaration )* ) )
-            // CSS.g:551:4: ( declaration )? ( SEMICOLON ( S )* ( declaration )? )*
+            // CSS.g:553:2: ( ( declaration )? ( SEMICOLON ( S )* ( declaration )? )* -> ^( SET ( declaration )* ) )
+            // CSS.g:553:4: ( declaration )? ( SEMICOLON ( S )* ( declaration )? )*
             {
-            // CSS.g:551:4: ( declaration )?
+            // CSS.g:553:4: ( declaration )?
             int alt30=2;
             int LA30_0 = input.LA(1);
 
@@ -1921,7 +1921,7 @@ public class CSSParser extends Parser {
             }
             switch (alt30) {
                 case 1 :
-                    // CSS.g:551:4: declaration
+                    // CSS.g:553:4: declaration
                     {
                     pushFollow(FOLLOW_declaration_in_declarations598);
                     declaration59=declaration();
@@ -1935,7 +1935,7 @@ public class CSSParser extends Parser {
 
             }
 
-            // CSS.g:551:17: ( SEMICOLON ( S )* ( declaration )? )*
+            // CSS.g:553:17: ( SEMICOLON ( S )* ( declaration )? )*
             loop33:
             do {
                 int alt33=2;
@@ -1948,12 +1948,12 @@ public class CSSParser extends Parser {
 
                 switch (alt33) {
             	case 1 :
-            	    // CSS.g:551:18: SEMICOLON ( S )* ( declaration )?
+            	    // CSS.g:553:18: SEMICOLON ( S )* ( declaration )?
             	    {
             	    SEMICOLON60=(Token)match(input,SEMICOLON,FOLLOW_SEMICOLON_in_declarations602);  
             	    stream_SEMICOLON.add(SEMICOLON60);
 
-            	    // CSS.g:551:28: ( S )*
+            	    // CSS.g:553:28: ( S )*
             	    loop31:
             	    do {
             	        int alt31=2;
@@ -1966,7 +1966,7 @@ public class CSSParser extends Parser {
 
             	        switch (alt31) {
             	    	case 1 :
-            	    	    // CSS.g:551:28: S
+            	    	    // CSS.g:553:28: S
             	    	    {
             	    	    S61=(Token)match(input,S,FOLLOW_S_in_declarations604);  
             	    	    stream_S.add(S61);
@@ -1980,7 +1980,7 @@ public class CSSParser extends Parser {
             	        }
             	    } while (true);
 
-            	    // CSS.g:551:31: ( declaration )?
+            	    // CSS.g:553:31: ( declaration )?
             	    int alt32=2;
             	    int LA32_0 = input.LA(1);
 
@@ -1989,7 +1989,7 @@ public class CSSParser extends Parser {
             	    }
             	    switch (alt32) {
             	        case 1 :
-            	            // CSS.g:551:31: declaration
+            	            // CSS.g:553:31: declaration
             	            {
             	            pushFollow(FOLLOW_declaration_in_declarations607);
             	            declaration62=declaration();
@@ -2024,14 +2024,14 @@ public class CSSParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 552:4: -> ^( SET ( declaration )* )
+            // 554:4: -> ^( SET ( declaration )* )
             {
-                // CSS.g:552:7: ^( SET ( declaration )* )
+                // CSS.g:554:7: ^( SET ( declaration )* )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(SET, "SET"), root_1);
 
-                // CSS.g:552:13: ( declaration )*
+                // CSS.g:554:13: ( declaration )*
                 while ( stream_declaration.hasNext() ) {
                     adaptor.addChild(root_1, stream_declaration.nextTree());
 
@@ -2070,7 +2070,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "declaration"
-    // CSS.g:555:1: declaration : property COLON ( S )* terms ( important )? -> ^( DECLARATION ( important )? property terms ) ;
+    // CSS.g:557:1: declaration : property COLON ( S )* terms ( important )? -> ^( DECLARATION ( important )? property terms ) ;
     public final CSSParser.declaration_return declaration() throws RecognitionException {
         CSSParser.declaration_return retval = new CSSParser.declaration_return();
         retval.start = input.LT(1);
@@ -2088,14 +2088,14 @@ public class CSSParser extends Parser {
 
         Object COLON64_tree=null;
         Object S65_tree=null;
-        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
         RewriteRuleTokenStream stream_COLON=new RewriteRuleTokenStream(adaptor,"token COLON");
+        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
         RewriteRuleSubtreeStream stream_important=new RewriteRuleSubtreeStream(adaptor,"rule important");
         RewriteRuleSubtreeStream stream_terms=new RewriteRuleSubtreeStream(adaptor,"rule terms");
         RewriteRuleSubtreeStream stream_property=new RewriteRuleSubtreeStream(adaptor,"rule property");
         try {
-            // CSS.g:556:2: ( property COLON ( S )* terms ( important )? -> ^( DECLARATION ( important )? property terms ) )
-            // CSS.g:556:4: property COLON ( S )* terms ( important )?
+            // CSS.g:558:2: ( property COLON ( S )* terms ( important )? -> ^( DECLARATION ( important )? property terms ) )
+            // CSS.g:558:4: property COLON ( S )* terms ( important )?
             {
             pushFollow(FOLLOW_property_in_declaration634);
             property63=property();
@@ -2106,14 +2106,14 @@ public class CSSParser extends Parser {
             COLON64=(Token)match(input,COLON,FOLLOW_COLON_in_declaration636);  
             stream_COLON.add(COLON64);
 
-            // CSS.g:556:19: ( S )*
+            // CSS.g:558:19: ( S )*
             loop34:
             do {
                 int alt34=2;
                 alt34 = dfa34.predict(input);
                 switch (alt34) {
             	case 1 :
-            	    // CSS.g:556:19: S
+            	    // CSS.g:558:19: S
             	    {
             	    S65=(Token)match(input,S,FOLLOW_S_in_declaration638);  
             	    stream_S.add(S65);
@@ -2133,7 +2133,7 @@ public class CSSParser extends Parser {
             state._fsp--;
 
             stream_terms.add(terms66.getTree());
-            // CSS.g:556:28: ( important )?
+            // CSS.g:558:28: ( important )?
             int alt35=2;
             int LA35_0 = input.LA(1);
 
@@ -2142,7 +2142,7 @@ public class CSSParser extends Parser {
             }
             switch (alt35) {
                 case 1 :
-                    // CSS.g:556:28: important
+                    // CSS.g:558:28: important
                     {
                     pushFollow(FOLLOW_important_in_declaration643);
                     important67=important();
@@ -2159,7 +2159,7 @@ public class CSSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: property, important, terms
+            // elements: important, terms, property
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2168,14 +2168,14 @@ public class CSSParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 556:39: -> ^( DECLARATION ( important )? property terms )
+            // 558:39: -> ^( DECLARATION ( important )? property terms )
             {
-                // CSS.g:556:42: ^( DECLARATION ( important )? property terms )
+                // CSS.g:558:42: ^( DECLARATION ( important )? property terms )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(DECLARATION, "DECLARATION"), root_1);
 
-                // CSS.g:556:56: ( important )?
+                // CSS.g:558:56: ( important )?
                 if ( stream_important.hasNext() ) {
                     adaptor.addChild(root_1, stream_important.nextTree());
 
@@ -2215,7 +2215,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "important"
-    // CSS.g:562:1: important : EXCLAMATION ( S )* 'important' ( S )* -> IMPORTANT ;
+    // CSS.g:564:1: important : EXCLAMATION ( S )* 'important' ( S )* -> IMPORTANT ;
     public final CSSParser.important_return important() throws RecognitionException {
         CSSParser.important_return retval = new CSSParser.important_return();
         retval.start = input.LT(1);
@@ -2231,18 +2231,18 @@ public class CSSParser extends Parser {
         Object S69_tree=null;
         Object string_literal70_tree=null;
         Object S71_tree=null;
+        RewriteRuleTokenStream stream_EXCLAMATION=new RewriteRuleTokenStream(adaptor,"token EXCLAMATION");
         RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
         RewriteRuleTokenStream stream_84=new RewriteRuleTokenStream(adaptor,"token 84");
-        RewriteRuleTokenStream stream_EXCLAMATION=new RewriteRuleTokenStream(adaptor,"token EXCLAMATION");
 
         try {
-            // CSS.g:563:5: ( EXCLAMATION ( S )* 'important' ( S )* -> IMPORTANT )
-            // CSS.g:563:7: EXCLAMATION ( S )* 'important' ( S )*
+            // CSS.g:565:5: ( EXCLAMATION ( S )* 'important' ( S )* -> IMPORTANT )
+            // CSS.g:565:7: EXCLAMATION ( S )* 'important' ( S )*
             {
             EXCLAMATION68=(Token)match(input,EXCLAMATION,FOLLOW_EXCLAMATION_in_important678);  
             stream_EXCLAMATION.add(EXCLAMATION68);
 
-            // CSS.g:563:19: ( S )*
+            // CSS.g:565:19: ( S )*
             loop36:
             do {
                 int alt36=2;
@@ -2255,7 +2255,7 @@ public class CSSParser extends Parser {
 
                 switch (alt36) {
             	case 1 :
-            	    // CSS.g:563:19: S
+            	    // CSS.g:565:19: S
             	    {
             	    S69=(Token)match(input,S,FOLLOW_S_in_important680);  
             	    stream_S.add(S69);
@@ -2272,7 +2272,7 @@ public class CSSParser extends Parser {
             string_literal70=(Token)match(input,84,FOLLOW_84_in_important683);  
             stream_84.add(string_literal70);
 
-            // CSS.g:563:34: ( S )*
+            // CSS.g:565:34: ( S )*
             loop37:
             do {
                 int alt37=2;
@@ -2285,7 +2285,7 @@ public class CSSParser extends Parser {
 
                 switch (alt37) {
             	case 1 :
-            	    // CSS.g:563:34: S
+            	    // CSS.g:565:34: S
             	    {
             	    S71=(Token)match(input,S,FOLLOW_S_in_important685);  
             	    stream_S.add(S71);
@@ -2311,7 +2311,7 @@ public class CSSParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 563:37: -> IMPORTANT
+            // 565:37: -> IMPORTANT
             {
                 adaptor.addChild(root_0, (Object)adaptor.create(IMPORTANT, "IMPORTANT"));
 
@@ -2344,7 +2344,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "property"
-    // CSS.g:566:1: property : IDENT ( S )* -> IDENT ;
+    // CSS.g:568:1: property : IDENT ( S )* -> IDENT ;
     public final CSSParser.property_return property() throws RecognitionException {
         CSSParser.property_return retval = new CSSParser.property_return();
         retval.start = input.LT(1);
@@ -2356,17 +2356,17 @@ public class CSSParser extends Parser {
 
         Object IDENT72_tree=null;
         Object S73_tree=null;
-        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
         RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
+        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
 
         try {
-            // CSS.g:567:2: ( IDENT ( S )* -> IDENT )
-            // CSS.g:567:4: IDENT ( S )*
+            // CSS.g:569:2: ( IDENT ( S )* -> IDENT )
+            // CSS.g:569:4: IDENT ( S )*
             {
             IDENT72=(Token)match(input,IDENT,FOLLOW_IDENT_in_property710);  
             stream_IDENT.add(IDENT72);
 
-            // CSS.g:567:10: ( S )*
+            // CSS.g:569:10: ( S )*
             loop38:
             do {
                 int alt38=2;
@@ -2379,7 +2379,7 @@ public class CSSParser extends Parser {
 
                 switch (alt38) {
             	case 1 :
-            	    // CSS.g:567:10: S
+            	    // CSS.g:569:10: S
             	    {
             	    S73=(Token)match(input,S,FOLLOW_S_in_property712);  
             	    stream_S.add(S73);
@@ -2405,7 +2405,7 @@ public class CSSParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 567:13: -> IDENT
+            // 569:13: -> IDENT
             {
                 adaptor.addChild(root_0, stream_IDENT.nextNode());
 
@@ -2438,7 +2438,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "terms"
-    // CSS.g:570:1: terms : ( term )+ -> ^( VALUE ( term )+ ) ;
+    // CSS.g:572:1: terms : ( term )+ -> ^( VALUE ( term )+ ) ;
     public final CSSParser.terms_return terms() throws RecognitionException {
         CSSParser.terms_return retval = new CSSParser.terms_return();
         retval.start = input.LT(1);
@@ -2450,10 +2450,10 @@ public class CSSParser extends Parser {
 
         RewriteRuleSubtreeStream stream_term=new RewriteRuleSubtreeStream(adaptor,"rule term");
         try {
-            // CSS.g:571:2: ( ( term )+ -> ^( VALUE ( term )+ ) )
-            // CSS.g:571:4: ( term )+
+            // CSS.g:573:2: ( ( term )+ -> ^( VALUE ( term )+ ) )
+            // CSS.g:573:4: ( term )+
             {
-            // CSS.g:571:4: ( term )+
+            // CSS.g:573:4: ( term )+
             int cnt39=0;
             loop39:
             do {
@@ -2461,7 +2461,7 @@ public class CSSParser extends Parser {
                 alt39 = dfa39.predict(input);
                 switch (alt39) {
             	case 1 :
-            	    // CSS.g:571:4: term
+            	    // CSS.g:573:4: term
             	    {
             	    pushFollow(FOLLOW_term_in_terms737);
             	    term74=term();
@@ -2494,9 +2494,9 @@ public class CSSParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 572:2: -> ^( VALUE ( term )+ )
+            // 574:2: -> ^( VALUE ( term )+ )
             {
-                // CSS.g:572:5: ^( VALUE ( term )+ )
+                // CSS.g:574:5: ^( VALUE ( term )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VALUE, "VALUE"), root_1);
@@ -2542,7 +2542,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "term"
-    // CSS.g:575:1: term : ( valuepart -> valuepart | LCURLY ( S )* ( any | SEMICOLON ( S )* )* RCURLY -> CURLYBLOCK | ATKEYWORD ( S )* -> ATKEYWORD );
+    // CSS.g:577:1: term : ( valuepart -> valuepart | LCURLY ( S )* ( any | SEMICOLON ( S )* )* RCURLY -> CURLYBLOCK | ATKEYWORD ( S )* -> ATKEYWORD );
     public final CSSParser.term_return term() throws RecognitionException {
         CSSParser.term_return retval = new CSSParser.term_return();
         retval.start = input.LT(1);
@@ -2568,20 +2568,20 @@ public class CSSParser extends Parser {
         Object RCURLY81_tree=null;
         Object ATKEYWORD82_tree=null;
         Object S83_tree=null;
-        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
         RewriteRuleTokenStream stream_ATKEYWORD=new RewriteRuleTokenStream(adaptor,"token ATKEYWORD");
-        RewriteRuleTokenStream stream_RCURLY=new RewriteRuleTokenStream(adaptor,"token RCURLY");
         RewriteRuleTokenStream stream_LCURLY=new RewriteRuleTokenStream(adaptor,"token LCURLY");
         RewriteRuleTokenStream stream_SEMICOLON=new RewriteRuleTokenStream(adaptor,"token SEMICOLON");
+        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
+        RewriteRuleTokenStream stream_RCURLY=new RewriteRuleTokenStream(adaptor,"token RCURLY");
         RewriteRuleSubtreeStream stream_valuepart=new RewriteRuleSubtreeStream(adaptor,"rule valuepart");
         RewriteRuleSubtreeStream stream_any=new RewriteRuleSubtreeStream(adaptor,"rule any");
         try {
-            // CSS.g:576:5: ( valuepart -> valuepart | LCURLY ( S )* ( any | SEMICOLON ( S )* )* RCURLY -> CURLYBLOCK | ATKEYWORD ( S )* -> ATKEYWORD )
+            // CSS.g:578:5: ( valuepart -> valuepart | LCURLY ( S )* ( any | SEMICOLON ( S )* )* RCURLY -> CURLYBLOCK | ATKEYWORD ( S )* -> ATKEYWORD )
             int alt44=3;
             alt44 = dfa44.predict(input);
             switch (alt44) {
                 case 1 :
-                    // CSS.g:576:7: valuepart
+                    // CSS.g:578:7: valuepart
                     {
                     pushFollow(FOLLOW_valuepart_in_term763);
                     valuepart75=valuepart();
@@ -2601,7 +2601,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 576:17: -> valuepart
+                    // 578:17: -> valuepart
                     {
                         adaptor.addChild(root_0, stream_valuepart.nextTree());
 
@@ -2611,19 +2611,19 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // CSS.g:577:7: LCURLY ( S )* ( any | SEMICOLON ( S )* )* RCURLY
+                    // CSS.g:579:7: LCURLY ( S )* ( any | SEMICOLON ( S )* )* RCURLY
                     {
                     LCURLY76=(Token)match(input,LCURLY,FOLLOW_LCURLY_in_term775);  
                     stream_LCURLY.add(LCURLY76);
 
-                    // CSS.g:577:14: ( S )*
+                    // CSS.g:579:14: ( S )*
                     loop40:
                     do {
                         int alt40=2;
                         alt40 = dfa40.predict(input);
                         switch (alt40) {
                     	case 1 :
-                    	    // CSS.g:577:14: S
+                    	    // CSS.g:579:14: S
                     	    {
                     	    S77=(Token)match(input,S,FOLLOW_S_in_term777);  
                     	    stream_S.add(S77);
@@ -2637,14 +2637,14 @@ public class CSSParser extends Parser {
                         }
                     } while (true);
 
-                    // CSS.g:577:17: ( any | SEMICOLON ( S )* )*
+                    // CSS.g:579:17: ( any | SEMICOLON ( S )* )*
                     loop42:
                     do {
                         int alt42=3;
                         alt42 = dfa42.predict(input);
                         switch (alt42) {
                     	case 1 :
-                    	    // CSS.g:577:18: any
+                    	    // CSS.g:579:18: any
                     	    {
                     	    pushFollow(FOLLOW_any_in_term781);
                     	    any78=any();
@@ -2656,19 +2656,19 @@ public class CSSParser extends Parser {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // CSS.g:577:24: SEMICOLON ( S )*
+                    	    // CSS.g:579:24: SEMICOLON ( S )*
                     	    {
                     	    SEMICOLON79=(Token)match(input,SEMICOLON,FOLLOW_SEMICOLON_in_term785);  
                     	    stream_SEMICOLON.add(SEMICOLON79);
 
-                    	    // CSS.g:577:34: ( S )*
+                    	    // CSS.g:579:34: ( S )*
                     	    loop41:
                     	    do {
                     	        int alt41=2;
                     	        alt41 = dfa41.predict(input);
                     	        switch (alt41) {
                     	    	case 1 :
-                    	    	    // CSS.g:577:34: S
+                    	    	    // CSS.g:579:34: S
                     	    	    {
                     	    	    S80=(Token)match(input,S,FOLLOW_S_in_term787);  
                     	    	    stream_S.add(S80);
@@ -2706,7 +2706,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 577:46: -> CURLYBLOCK
+                    // 579:46: -> CURLYBLOCK
                     {
                         adaptor.addChild(root_0, (Object)adaptor.create(CURLYBLOCK, "CURLYBLOCK"));
 
@@ -2716,19 +2716,19 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // CSS.g:578:7: ATKEYWORD ( S )*
+                    // CSS.g:580:7: ATKEYWORD ( S )*
                     {
                     ATKEYWORD82=(Token)match(input,ATKEYWORD,FOLLOW_ATKEYWORD_in_term804);  
                     stream_ATKEYWORD.add(ATKEYWORD82);
 
-                    // CSS.g:578:17: ( S )*
+                    // CSS.g:580:17: ( S )*
                     loop43:
                     do {
                         int alt43=2;
                         alt43 = dfa43.predict(input);
                         switch (alt43) {
                     	case 1 :
-                    	    // CSS.g:578:17: S
+                    	    // CSS.g:580:17: S
                     	    {
                     	    S83=(Token)match(input,S,FOLLOW_S_in_term806);  
                     	    stream_S.add(S83);
@@ -2754,7 +2754,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 578:20: -> ATKEYWORD
+                    // 580:20: -> ATKEYWORD
                     {
                         adaptor.addChild(root_0, stream_ATKEYWORD.nextNode());
 
@@ -2789,7 +2789,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "valuepart"
-    // CSS.g:581:1: valuepart : ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | ( MINUS )? NUMBER -> ( MINUS )? NUMBER | ( MINUS )? PERCENTAGE -> ( MINUS )? PERCENTAGE | ( MINUS )? DIMENSION -> ( MINUS )? DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* terms RPAREN -> ^( FUNCTION terms ) | DASHMATCH -> DASHMATCH | LPAREN ( valuepart )* RPAREN -> ^( PARENBLOCK ( valuepart )* ) | LBRACE ( valuepart )* RBRACE -> ^( BRACEBLOCK ( valuepart )* ) ) ( S )* ;
+    // CSS.g:583:1: valuepart : ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | ( MINUS )? NUMBER -> ( MINUS )? NUMBER | ( MINUS )? PERCENTAGE -> ( MINUS )? PERCENTAGE | ( MINUS )? DIMENSION -> ( MINUS )? DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* terms RPAREN -> ^( FUNCTION terms ) | DASHMATCH -> DASHMATCH | LPAREN ( valuepart )* RPAREN -> ^( PARENBLOCK ( valuepart )* ) | LBRACE ( valuepart )* RBRACE -> ^( BRACEBLOCK ( valuepart )* ) ) ( S )* ;
     public final CSSParser.valuepart_return valuepart() throws RecognitionException {
         CSSParser.valuepart_return retval = new CSSParser.valuepart_return();
         retval.start = input.LT(1);
@@ -2861,43 +2861,43 @@ public class CSSParser extends Parser {
         Object LBRACE112_tree=null;
         Object RBRACE114_tree=null;
         Object S115_tree=null;
-        RewriteRuleTokenStream stream_RBRACE=new RewriteRuleTokenStream(adaptor,"token RBRACE");
-        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
-        RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
-        RewriteRuleTokenStream stream_EQUALS=new RewriteRuleTokenStream(adaptor,"token EQUALS");
-        RewriteRuleTokenStream stream_MINUS=new RewriteRuleTokenStream(adaptor,"token MINUS");
-        RewriteRuleTokenStream stream_DIMENSION=new RewriteRuleTokenStream(adaptor,"token DIMENSION");
         RewriteRuleTokenStream stream_FUNCTION=new RewriteRuleTokenStream(adaptor,"token FUNCTION");
-        RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
-        RewriteRuleTokenStream stream_HASH=new RewriteRuleTokenStream(adaptor,"token HASH");
-        RewriteRuleTokenStream stream_SLASH=new RewriteRuleTokenStream(adaptor,"token SLASH");
-        RewriteRuleTokenStream stream_DASHMATCH=new RewriteRuleTokenStream(adaptor,"token DASHMATCH");
-        RewriteRuleTokenStream stream_UNIRANGE=new RewriteRuleTokenStream(adaptor,"token UNIRANGE");
-        RewriteRuleTokenStream stream_NUMBER=new RewriteRuleTokenStream(adaptor,"token NUMBER");
-        RewriteRuleTokenStream stream_ASTERISK=new RewriteRuleTokenStream(adaptor,"token ASTERISK");
-        RewriteRuleTokenStream stream_RPAREN=new RewriteRuleTokenStream(adaptor,"token RPAREN");
-        RewriteRuleTokenStream stream_COLON=new RewriteRuleTokenStream(adaptor,"token COLON");
-        RewriteRuleTokenStream stream_GREATER=new RewriteRuleTokenStream(adaptor,"token GREATER");
-        RewriteRuleTokenStream stream_LPAREN=new RewriteRuleTokenStream(adaptor,"token LPAREN");
-        RewriteRuleTokenStream stream_CLASSKEYWORD=new RewriteRuleTokenStream(adaptor,"token CLASSKEYWORD");
-        RewriteRuleTokenStream stream_PLUS=new RewriteRuleTokenStream(adaptor,"token PLUS");
         RewriteRuleTokenStream stream_INCLUDES=new RewriteRuleTokenStream(adaptor,"token INCLUDES");
-        RewriteRuleTokenStream stream_PERCENTAGE=new RewriteRuleTokenStream(adaptor,"token PERCENTAGE");
-        RewriteRuleTokenStream stream_URI=new RewriteRuleTokenStream(adaptor,"token URI");
+        RewriteRuleTokenStream stream_COLON=new RewriteRuleTokenStream(adaptor,"token COLON");
+        RewriteRuleTokenStream stream_RPAREN=new RewriteRuleTokenStream(adaptor,"token RPAREN");
+        RewriteRuleTokenStream stream_SLASH=new RewriteRuleTokenStream(adaptor,"token SLASH");
+        RewriteRuleTokenStream stream_GREATER=new RewriteRuleTokenStream(adaptor,"token GREATER");
+        RewriteRuleTokenStream stream_DASHMATCH=new RewriteRuleTokenStream(adaptor,"token DASHMATCH");
+        RewriteRuleTokenStream stream_RBRACE=new RewriteRuleTokenStream(adaptor,"token RBRACE");
+        RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
+        RewriteRuleTokenStream stream_CLASSKEYWORD=new RewriteRuleTokenStream(adaptor,"token CLASSKEYWORD");
         RewriteRuleTokenStream stream_LBRACE=new RewriteRuleTokenStream(adaptor,"token LBRACE");
+        RewriteRuleTokenStream stream_NUMBER=new RewriteRuleTokenStream(adaptor,"token NUMBER");
+        RewriteRuleTokenStream stream_HASH=new RewriteRuleTokenStream(adaptor,"token HASH");
+        RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
+        RewriteRuleTokenStream stream_UNIRANGE=new RewriteRuleTokenStream(adaptor,"token UNIRANGE");
+        RewriteRuleTokenStream stream_DIMENSION=new RewriteRuleTokenStream(adaptor,"token DIMENSION");
+        RewriteRuleTokenStream stream_PLUS=new RewriteRuleTokenStream(adaptor,"token PLUS");
+        RewriteRuleTokenStream stream_EQUALS=new RewriteRuleTokenStream(adaptor,"token EQUALS");
+        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
+        RewriteRuleTokenStream stream_MINUS=new RewriteRuleTokenStream(adaptor,"token MINUS");
+        RewriteRuleTokenStream stream_PERCENTAGE=new RewriteRuleTokenStream(adaptor,"token PERCENTAGE");
+        RewriteRuleTokenStream stream_ASTERISK=new RewriteRuleTokenStream(adaptor,"token ASTERISK");
+        RewriteRuleTokenStream stream_LPAREN=new RewriteRuleTokenStream(adaptor,"token LPAREN");
+        RewriteRuleTokenStream stream_URI=new RewriteRuleTokenStream(adaptor,"token URI");
+        RewriteRuleSubtreeStream stream_valuepart=new RewriteRuleSubtreeStream(adaptor,"rule valuepart");
         RewriteRuleSubtreeStream stream_string=new RewriteRuleSubtreeStream(adaptor,"rule string");
         RewriteRuleSubtreeStream stream_terms=new RewriteRuleSubtreeStream(adaptor,"rule terms");
-        RewriteRuleSubtreeStream stream_valuepart=new RewriteRuleSubtreeStream(adaptor,"rule valuepart");
         try {
-            // CSS.g:582:5: ( ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | ( MINUS )? NUMBER -> ( MINUS )? NUMBER | ( MINUS )? PERCENTAGE -> ( MINUS )? PERCENTAGE | ( MINUS )? DIMENSION -> ( MINUS )? DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* terms RPAREN -> ^( FUNCTION terms ) | DASHMATCH -> DASHMATCH | LPAREN ( valuepart )* RPAREN -> ^( PARENBLOCK ( valuepart )* ) | LBRACE ( valuepart )* RBRACE -> ^( BRACEBLOCK ( valuepart )* ) ) ( S )* )
-            // CSS.g:582:7: ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | ( MINUS )? NUMBER -> ( MINUS )? NUMBER | ( MINUS )? PERCENTAGE -> ( MINUS )? PERCENTAGE | ( MINUS )? DIMENSION -> ( MINUS )? DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* terms RPAREN -> ^( FUNCTION terms ) | DASHMATCH -> DASHMATCH | LPAREN ( valuepart )* RPAREN -> ^( PARENBLOCK ( valuepart )* ) | LBRACE ( valuepart )* RBRACE -> ^( BRACEBLOCK ( valuepart )* ) ) ( S )*
+            // CSS.g:584:5: ( ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | ( MINUS )? NUMBER -> ( MINUS )? NUMBER | ( MINUS )? PERCENTAGE -> ( MINUS )? PERCENTAGE | ( MINUS )? DIMENSION -> ( MINUS )? DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* terms RPAREN -> ^( FUNCTION terms ) | DASHMATCH -> DASHMATCH | LPAREN ( valuepart )* RPAREN -> ^( PARENBLOCK ( valuepart )* ) | LBRACE ( valuepart )* RBRACE -> ^( BRACEBLOCK ( valuepart )* ) ) ( S )* )
+            // CSS.g:584:7: ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | ( MINUS )? NUMBER -> ( MINUS )? NUMBER | ( MINUS )? PERCENTAGE -> ( MINUS )? PERCENTAGE | ( MINUS )? DIMENSION -> ( MINUS )? DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* terms RPAREN -> ^( FUNCTION terms ) | DASHMATCH -> DASHMATCH | LPAREN ( valuepart )* RPAREN -> ^( PARENBLOCK ( valuepart )* ) | LBRACE ( valuepart )* RBRACE -> ^( BRACEBLOCK ( valuepart )* ) ) ( S )*
             {
-            // CSS.g:582:7: ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | ( MINUS )? NUMBER -> ( MINUS )? NUMBER | ( MINUS )? PERCENTAGE -> ( MINUS )? PERCENTAGE | ( MINUS )? DIMENSION -> ( MINUS )? DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* terms RPAREN -> ^( FUNCTION terms ) | DASHMATCH -> DASHMATCH | LPAREN ( valuepart )* RPAREN -> ^( PARENBLOCK ( valuepart )* ) | LBRACE ( valuepart )* RBRACE -> ^( BRACEBLOCK ( valuepart )* ) )
+            // CSS.g:584:7: ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | ( MINUS )? NUMBER -> ( MINUS )? NUMBER | ( MINUS )? PERCENTAGE -> ( MINUS )? PERCENTAGE | ( MINUS )? DIMENSION -> ( MINUS )? DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* terms RPAREN -> ^( FUNCTION terms ) | DASHMATCH -> DASHMATCH | LPAREN ( valuepart )* RPAREN -> ^( PARENBLOCK ( valuepart )* ) | LBRACE ( valuepart )* RBRACE -> ^( BRACEBLOCK ( valuepart )* ) )
             int alt51=21;
             alt51 = dfa51.predict(input);
             switch (alt51) {
                 case 1 :
-                    // CSS.g:582:9: IDENT
+                    // CSS.g:584:9: IDENT
                     {
                     IDENT84=(Token)match(input,IDENT,FOLLOW_IDENT_in_valuepart831);  
                     stream_IDENT.add(IDENT84);
@@ -2914,7 +2914,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 582:15: -> IDENT
+                    // 584:15: -> IDENT
                     {
                         adaptor.addChild(root_0, stream_IDENT.nextNode());
 
@@ -2924,7 +2924,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // CSS.g:583:9: CLASSKEYWORD
+                    // CSS.g:585:9: CLASSKEYWORD
                     {
                     CLASSKEYWORD85=(Token)match(input,CLASSKEYWORD,FOLLOW_CLASSKEYWORD_in_valuepart845);  
                     stream_CLASSKEYWORD.add(CLASSKEYWORD85);
@@ -2941,7 +2941,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 583:22: -> CLASSKEYWORD
+                    // 585:22: -> CLASSKEYWORD
                     {
                         adaptor.addChild(root_0, stream_CLASSKEYWORD.nextNode());
 
@@ -2951,9 +2951,9 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // CSS.g:584:9: ( MINUS )? NUMBER
+                    // CSS.g:586:9: ( MINUS )? NUMBER
                     {
-                    // CSS.g:584:9: ( MINUS )?
+                    // CSS.g:586:9: ( MINUS )?
                     int alt45=2;
                     int LA45_0 = input.LA(1);
 
@@ -2962,7 +2962,7 @@ public class CSSParser extends Parser {
                     }
                     switch (alt45) {
                         case 1 :
-                            // CSS.g:584:9: MINUS
+                            // CSS.g:586:9: MINUS
                             {
                             MINUS86=(Token)match(input,MINUS,FOLLOW_MINUS_in_valuepart859);  
                             stream_MINUS.add(MINUS86);
@@ -2988,9 +2988,9 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 584:23: -> ( MINUS )? NUMBER
+                    // 586:23: -> ( MINUS )? NUMBER
                     {
-                        // CSS.g:584:26: ( MINUS )?
+                        // CSS.g:586:26: ( MINUS )?
                         if ( stream_MINUS.hasNext() ) {
                             adaptor.addChild(root_0, stream_MINUS.nextNode());
 
@@ -3004,9 +3004,9 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // CSS.g:585:9: ( MINUS )? PERCENTAGE
+                    // CSS.g:587:9: ( MINUS )? PERCENTAGE
                     {
-                    // CSS.g:585:9: ( MINUS )?
+                    // CSS.g:587:9: ( MINUS )?
                     int alt46=2;
                     int LA46_0 = input.LA(1);
 
@@ -3015,7 +3015,7 @@ public class CSSParser extends Parser {
                     }
                     switch (alt46) {
                         case 1 :
-                            // CSS.g:585:9: MINUS
+                            // CSS.g:587:9: MINUS
                             {
                             MINUS88=(Token)match(input,MINUS,FOLLOW_MINUS_in_valuepart879);  
                             stream_MINUS.add(MINUS88);
@@ -3032,7 +3032,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: PERCENTAGE, MINUS
+                    // elements: MINUS, PERCENTAGE
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -3041,9 +3041,9 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 585:27: -> ( MINUS )? PERCENTAGE
+                    // 587:27: -> ( MINUS )? PERCENTAGE
                     {
-                        // CSS.g:585:30: ( MINUS )?
+                        // CSS.g:587:30: ( MINUS )?
                         if ( stream_MINUS.hasNext() ) {
                             adaptor.addChild(root_0, stream_MINUS.nextNode());
 
@@ -3057,9 +3057,9 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // CSS.g:586:9: ( MINUS )? DIMENSION
+                    // CSS.g:588:9: ( MINUS )? DIMENSION
                     {
-                    // CSS.g:586:9: ( MINUS )?
+                    // CSS.g:588:9: ( MINUS )?
                     int alt47=2;
                     int LA47_0 = input.LA(1);
 
@@ -3068,7 +3068,7 @@ public class CSSParser extends Parser {
                     }
                     switch (alt47) {
                         case 1 :
-                            // CSS.g:586:9: MINUS
+                            // CSS.g:588:9: MINUS
                             {
                             MINUS90=(Token)match(input,MINUS,FOLLOW_MINUS_in_valuepart899);  
                             stream_MINUS.add(MINUS90);
@@ -3085,7 +3085,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: DIMENSION, MINUS
+                    // elements: MINUS, DIMENSION
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -3094,9 +3094,9 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 586:26: -> ( MINUS )? DIMENSION
+                    // 588:26: -> ( MINUS )? DIMENSION
                     {
-                        // CSS.g:586:29: ( MINUS )?
+                        // CSS.g:588:29: ( MINUS )?
                         if ( stream_MINUS.hasNext() ) {
                             adaptor.addChild(root_0, stream_MINUS.nextNode());
 
@@ -3110,7 +3110,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // CSS.g:587:9: string
+                    // CSS.g:589:9: string
                     {
                     pushFollow(FOLLOW_string_in_valuepart919);
                     string92=string();
@@ -3130,7 +3130,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 587:16: -> string
+                    // 589:16: -> string
                     {
                         adaptor.addChild(root_0, stream_string.nextTree());
 
@@ -3140,7 +3140,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // CSS.g:588:9: URI
+                    // CSS.g:590:9: URI
                     {
                     URI93=(Token)match(input,URI,FOLLOW_URI_in_valuepart933);  
                     stream_URI.add(URI93);
@@ -3157,7 +3157,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 588:16: -> URI
+                    // 590:16: -> URI
                     {
                         adaptor.addChild(root_0, stream_URI.nextNode());
 
@@ -3167,7 +3167,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // CSS.g:589:9: HASH
+                    // CSS.g:591:9: HASH
                     {
                     HASH94=(Token)match(input,HASH,FOLLOW_HASH_in_valuepart950);  
                     stream_HASH.add(HASH94);
@@ -3184,7 +3184,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 589:14: -> HASH
+                    // 591:14: -> HASH
                     {
                         adaptor.addChild(root_0, stream_HASH.nextNode());
 
@@ -3194,7 +3194,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 9 :
-                    // CSS.g:590:9: UNIRANGE
+                    // CSS.g:592:9: UNIRANGE
                     {
                     UNIRANGE95=(Token)match(input,UNIRANGE,FOLLOW_UNIRANGE_in_valuepart964);  
                     stream_UNIRANGE.add(UNIRANGE95);
@@ -3211,7 +3211,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 590:18: -> UNIRANGE
+                    // 592:18: -> UNIRANGE
                     {
                         adaptor.addChild(root_0, stream_UNIRANGE.nextNode());
 
@@ -3221,7 +3221,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 10 :
-                    // CSS.g:591:9: INCLUDES
+                    // CSS.g:593:9: INCLUDES
                     {
                     INCLUDES96=(Token)match(input,INCLUDES,FOLLOW_INCLUDES_in_valuepart978);  
                     stream_INCLUDES.add(INCLUDES96);
@@ -3238,7 +3238,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 591:18: -> INCLUDES
+                    // 593:18: -> INCLUDES
                     {
                         adaptor.addChild(root_0, stream_INCLUDES.nextNode());
 
@@ -3248,7 +3248,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 11 :
-                    // CSS.g:592:9: COLON
+                    // CSS.g:594:9: COLON
                     {
                     COLON97=(Token)match(input,COLON,FOLLOW_COLON_in_valuepart992);  
                     stream_COLON.add(COLON97);
@@ -3265,7 +3265,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 592:15: -> COLON
+                    // 594:15: -> COLON
                     {
                         adaptor.addChild(root_0, stream_COLON.nextNode());
 
@@ -3275,7 +3275,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 12 :
-                    // CSS.g:593:9: COMMA
+                    // CSS.g:595:9: COMMA
                     {
                     COMMA98=(Token)match(input,COMMA,FOLLOW_COMMA_in_valuepart1006);  
                     stream_COMMA.add(COMMA98);
@@ -3292,7 +3292,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 593:15: -> COMMA
+                    // 595:15: -> COMMA
                     {
                         adaptor.addChild(root_0, stream_COMMA.nextNode());
 
@@ -3302,7 +3302,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 13 :
-                    // CSS.g:594:9: GREATER
+                    // CSS.g:596:9: GREATER
                     {
                     GREATER99=(Token)match(input,GREATER,FOLLOW_GREATER_in_valuepart1020);  
                     stream_GREATER.add(GREATER99);
@@ -3319,7 +3319,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 594:17: -> GREATER
+                    // 596:17: -> GREATER
                     {
                         adaptor.addChild(root_0, stream_GREATER.nextNode());
 
@@ -3329,7 +3329,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 14 :
-                    // CSS.g:595:9: EQUALS
+                    // CSS.g:597:9: EQUALS
                     {
                     EQUALS100=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_valuepart1034);  
                     stream_EQUALS.add(EQUALS100);
@@ -3346,7 +3346,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 595:16: -> EQUALS
+                    // 597:16: -> EQUALS
                     {
                         adaptor.addChild(root_0, stream_EQUALS.nextNode());
 
@@ -3356,7 +3356,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 15 :
-                    // CSS.g:596:9: SLASH
+                    // CSS.g:598:9: SLASH
                     {
                     SLASH101=(Token)match(input,SLASH,FOLLOW_SLASH_in_valuepart1048);  
                     stream_SLASH.add(SLASH101);
@@ -3373,7 +3373,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 596:15: -> SLASH
+                    // 598:15: -> SLASH
                     {
                         adaptor.addChild(root_0, stream_SLASH.nextNode());
 
@@ -3383,7 +3383,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 16 :
-                    // CSS.g:597:6: PLUS
+                    // CSS.g:599:6: PLUS
                     {
                     PLUS102=(Token)match(input,PLUS,FOLLOW_PLUS_in_valuepart1059);  
                     stream_PLUS.add(PLUS102);
@@ -3400,7 +3400,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 597:11: -> PLUS
+                    // 599:11: -> PLUS
                     {
                         adaptor.addChild(root_0, stream_PLUS.nextNode());
 
@@ -3410,7 +3410,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 17 :
-                    // CSS.g:598:6: ASTERISK
+                    // CSS.g:600:6: ASTERISK
                     {
                     ASTERISK103=(Token)match(input,ASTERISK,FOLLOW_ASTERISK_in_valuepart1070);  
                     stream_ASTERISK.add(ASTERISK103);
@@ -3427,7 +3427,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 598:15: -> ASTERISK
+                    // 600:15: -> ASTERISK
                     {
                         adaptor.addChild(root_0, stream_ASTERISK.nextNode());
 
@@ -3437,19 +3437,19 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 18 :
-                    // CSS.g:599:9: FUNCTION ( S )* terms RPAREN
+                    // CSS.g:601:9: FUNCTION ( S )* terms RPAREN
                     {
                     FUNCTION104=(Token)match(input,FUNCTION,FOLLOW_FUNCTION_in_valuepart1087);  
                     stream_FUNCTION.add(FUNCTION104);
 
-                    // CSS.g:599:18: ( S )*
+                    // CSS.g:601:18: ( S )*
                     loop48:
                     do {
                         int alt48=2;
                         alt48 = dfa48.predict(input);
                         switch (alt48) {
                     	case 1 :
-                    	    // CSS.g:599:18: S
+                    	    // CSS.g:601:18: S
                     	    {
                     	    S105=(Token)match(input,S,FOLLOW_S_in_valuepart1089);  
                     	    stream_S.add(S105);
@@ -3484,9 +3484,9 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 599:34: -> ^( FUNCTION terms )
+                    // 601:34: -> ^( FUNCTION terms )
                     {
-                        // CSS.g:599:37: ^( FUNCTION terms )
+                        // CSS.g:601:37: ^( FUNCTION terms )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(stream_FUNCTION.nextNode(), root_1);
@@ -3502,7 +3502,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 19 :
-                    // CSS.g:600:9: DASHMATCH
+                    // CSS.g:602:9: DASHMATCH
                     {
                     DASHMATCH108=(Token)match(input,DASHMATCH,FOLLOW_DASHMATCH_in_valuepart1113);  
                     stream_DASHMATCH.add(DASHMATCH108);
@@ -3519,7 +3519,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 600:19: -> DASHMATCH
+                    // 602:19: -> DASHMATCH
                     {
                         adaptor.addChild(root_0, stream_DASHMATCH.nextNode());
 
@@ -3529,19 +3529,19 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 20 :
-                    // CSS.g:601:9: LPAREN ( valuepart )* RPAREN
+                    // CSS.g:603:9: LPAREN ( valuepart )* RPAREN
                     {
                     LPAREN109=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_valuepart1127);  
                     stream_LPAREN.add(LPAREN109);
 
-                    // CSS.g:601:16: ( valuepart )*
+                    // CSS.g:603:16: ( valuepart )*
                     loop49:
                     do {
                         int alt49=2;
                         alt49 = dfa49.predict(input);
                         switch (alt49) {
                     	case 1 :
-                    	    // CSS.g:601:16: valuepart
+                    	    // CSS.g:603:16: valuepart
                     	    {
                     	    pushFollow(FOLLOW_valuepart_in_valuepart1129);
                     	    valuepart110=valuepart();
@@ -3573,14 +3573,14 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 601:34: -> ^( PARENBLOCK ( valuepart )* )
+                    // 603:34: -> ^( PARENBLOCK ( valuepart )* )
                     {
-                        // CSS.g:601:37: ^( PARENBLOCK ( valuepart )* )
+                        // CSS.g:603:37: ^( PARENBLOCK ( valuepart )* )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PARENBLOCK, "PARENBLOCK"), root_1);
 
-                        // CSS.g:601:50: ( valuepart )*
+                        // CSS.g:603:50: ( valuepart )*
                         while ( stream_valuepart.hasNext() ) {
                             adaptor.addChild(root_1, stream_valuepart.nextTree());
 
@@ -3596,19 +3596,19 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 21 :
-                    // CSS.g:602:9: LBRACE ( valuepart )* RBRACE
+                    // CSS.g:604:9: LBRACE ( valuepart )* RBRACE
                     {
                     LBRACE112=(Token)match(input,LBRACE,FOLLOW_LBRACE_in_valuepart1151);  
                     stream_LBRACE.add(LBRACE112);
 
-                    // CSS.g:602:16: ( valuepart )*
+                    // CSS.g:604:16: ( valuepart )*
                     loop50:
                     do {
                         int alt50=2;
                         alt50 = dfa50.predict(input);
                         switch (alt50) {
                     	case 1 :
-                    	    // CSS.g:602:16: valuepart
+                    	    // CSS.g:604:16: valuepart
                     	    {
                     	    pushFollow(FOLLOW_valuepart_in_valuepart1153);
                     	    valuepart113=valuepart();
@@ -3640,14 +3640,14 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 602:34: -> ^( BRACEBLOCK ( valuepart )* )
+                    // 604:34: -> ^( BRACEBLOCK ( valuepart )* )
                     {
-                        // CSS.g:602:37: ^( BRACEBLOCK ( valuepart )* )
+                        // CSS.g:604:37: ^( BRACEBLOCK ( valuepart )* )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(BRACEBLOCK, "BRACEBLOCK"), root_1);
 
-                        // CSS.g:602:50: ( valuepart )*
+                        // CSS.g:604:50: ( valuepart )*
                         while ( stream_valuepart.hasNext() ) {
                             adaptor.addChild(root_1, stream_valuepart.nextTree());
 
@@ -3665,14 +3665,14 @@ public class CSSParser extends Parser {
 
             }
 
-            // CSS.g:603:8: ( S )*
+            // CSS.g:605:8: ( S )*
             loop52:
             do {
                 int alt52=2;
                 alt52 = dfa52.predict(input);
                 switch (alt52) {
             	case 1 :
-            	    // CSS.g:603:8: S
+            	    // CSS.g:605:8: S
             	    {
             	    S115=(Token)match(input,S,FOLLOW_S_in_valuepart1174);  
             	    stream_S.add(S115);
@@ -3713,7 +3713,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "combined_selector"
-    // CSS.g:606:1: combined_selector : selector ( ( combinator ) selector )* ;
+    // CSS.g:608:1: combined_selector : selector ( ( combinator ) selector )* ;
     public final CSSParser.combined_selector_return combined_selector() throws RecognitionException {
         CSSParser.combined_selector_return retval = new CSSParser.combined_selector_return();
         retval.start = input.LT(1);
@@ -3729,8 +3729,8 @@ public class CSSParser extends Parser {
 
 
         try {
-            // CSS.g:607:2: ( selector ( ( combinator ) selector )* )
-            // CSS.g:607:4: selector ( ( combinator ) selector )*
+            // CSS.g:609:2: ( selector ( ( combinator ) selector )* )
+            // CSS.g:609:4: selector ( ( combinator ) selector )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -3740,7 +3740,7 @@ public class CSSParser extends Parser {
             state._fsp--;
 
             adaptor.addChild(root_0, selector116.getTree());
-            // CSS.g:607:13: ( ( combinator ) selector )*
+            // CSS.g:609:13: ( ( combinator ) selector )*
             loop53:
             do {
                 int alt53=2;
@@ -3753,10 +3753,10 @@ public class CSSParser extends Parser {
 
                 switch (alt53) {
             	case 1 :
-            	    // CSS.g:607:14: ( combinator ) selector
+            	    // CSS.g:609:14: ( combinator ) selector
             	    {
-            	    // CSS.g:607:14: ( combinator )
-            	    // CSS.g:607:15: combinator
+            	    // CSS.g:609:14: ( combinator )
+            	    // CSS.g:609:15: combinator
             	    {
             	    pushFollow(FOLLOW_combinator_in_combined_selector1195);
             	    combinator117=combinator();
@@ -3810,7 +3810,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "combinator"
-    // CSS.g:615:1: combinator : ( GREATER ( S )* -> CHILD | PLUS ( S )* -> ADJACENT | S -> DESCENDANT );
+    // CSS.g:617:1: combinator : ( GREATER ( S )* -> CHILD | PLUS ( S )* -> ADJACENT | S -> DESCENDANT );
     public final CSSParser.combinator_return combinator() throws RecognitionException {
         CSSParser.combinator_return retval = new CSSParser.combinator_return();
         retval.start = input.LT(1);
@@ -3828,12 +3828,12 @@ public class CSSParser extends Parser {
         Object PLUS121_tree=null;
         Object S122_tree=null;
         Object S123_tree=null;
-        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
-        RewriteRuleTokenStream stream_GREATER=new RewriteRuleTokenStream(adaptor,"token GREATER");
         RewriteRuleTokenStream stream_PLUS=new RewriteRuleTokenStream(adaptor,"token PLUS");
+        RewriteRuleTokenStream stream_GREATER=new RewriteRuleTokenStream(adaptor,"token GREATER");
+        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
 
         try {
-            // CSS.g:616:2: ( GREATER ( S )* -> CHILD | PLUS ( S )* -> ADJACENT | S -> DESCENDANT )
+            // CSS.g:618:2: ( GREATER ( S )* -> CHILD | PLUS ( S )* -> ADJACENT | S -> DESCENDANT )
             int alt56=3;
             switch ( input.LA(1) ) {
             case GREATER:
@@ -3860,12 +3860,12 @@ public class CSSParser extends Parser {
 
             switch (alt56) {
                 case 1 :
-                    // CSS.g:616:4: GREATER ( S )*
+                    // CSS.g:618:4: GREATER ( S )*
                     {
                     GREATER119=(Token)match(input,GREATER,FOLLOW_GREATER_in_combinator1218);  
                     stream_GREATER.add(GREATER119);
 
-                    // CSS.g:616:12: ( S )*
+                    // CSS.g:618:12: ( S )*
                     loop54:
                     do {
                         int alt54=2;
@@ -3878,7 +3878,7 @@ public class CSSParser extends Parser {
 
                         switch (alt54) {
                     	case 1 :
-                    	    // CSS.g:616:12: S
+                    	    // CSS.g:618:12: S
                     	    {
                     	    S120=(Token)match(input,S,FOLLOW_S_in_combinator1220);  
                     	    stream_S.add(S120);
@@ -3904,7 +3904,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 616:15: -> CHILD
+                    // 618:15: -> CHILD
                     {
                         adaptor.addChild(root_0, (Object)adaptor.create(CHILD, "CHILD"));
 
@@ -3914,12 +3914,12 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // CSS.g:617:4: PLUS ( S )*
+                    // CSS.g:619:4: PLUS ( S )*
                     {
                     PLUS121=(Token)match(input,PLUS,FOLLOW_PLUS_in_combinator1230);  
                     stream_PLUS.add(PLUS121);
 
-                    // CSS.g:617:9: ( S )*
+                    // CSS.g:619:9: ( S )*
                     loop55:
                     do {
                         int alt55=2;
@@ -3932,7 +3932,7 @@ public class CSSParser extends Parser {
 
                         switch (alt55) {
                     	case 1 :
-                    	    // CSS.g:617:9: S
+                    	    // CSS.g:619:9: S
                     	    {
                     	    S122=(Token)match(input,S,FOLLOW_S_in_combinator1232);  
                     	    stream_S.add(S122);
@@ -3958,7 +3958,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 617:12: -> ADJACENT
+                    // 619:12: -> ADJACENT
                     {
                         adaptor.addChild(root_0, (Object)adaptor.create(ADJACENT, "ADJACENT"));
 
@@ -3968,7 +3968,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // CSS.g:618:4: S
+                    // CSS.g:620:4: S
                     {
                     S123=(Token)match(input,S,FOLLOW_S_in_combinator1242);  
                     stream_S.add(S123);
@@ -3985,7 +3985,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 618:6: -> DESCENDANT
+                    // 620:6: -> DESCENDANT
                     {
                         adaptor.addChild(root_0, (Object)adaptor.create(DESCENDANT, "DESCENDANT"));
 
@@ -4020,7 +4020,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "selector"
-    // CSS.g:621:1: selector : ( ( IDENT | ASTERISK ) ( selpart )* ( S )* -> ^( SELECTOR ^( ELEMENT ( IDENT )? ) ( selpart )* ) | ( selpart )+ ( S )* -> ^( SELECTOR ( selpart )+ ) );
+    // CSS.g:623:1: selector : ( ( IDENT | ASTERISK ) ( selpart )* ( S )* -> ^( SELECTOR ^( ELEMENT ( IDENT )? ) ( selpart )* ) | ( selpart )+ ( S )* -> ^( SELECTOR ( selpart )+ ) );
     public final CSSParser.selector_return selector() throws RecognitionException {
         CSSParser.selector_return retval = new CSSParser.selector_return();
         retval.start = input.LT(1);
@@ -4040,12 +4040,12 @@ public class CSSParser extends Parser {
         Object ASTERISK125_tree=null;
         Object S127_tree=null;
         Object S129_tree=null;
-        RewriteRuleTokenStream stream_ASTERISK=new RewriteRuleTokenStream(adaptor,"token ASTERISK");
-        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
         RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
+        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
+        RewriteRuleTokenStream stream_ASTERISK=new RewriteRuleTokenStream(adaptor,"token ASTERISK");
         RewriteRuleSubtreeStream stream_selpart=new RewriteRuleSubtreeStream(adaptor,"rule selpart");
         try {
-            // CSS.g:622:5: ( ( IDENT | ASTERISK ) ( selpart )* ( S )* -> ^( SELECTOR ^( ELEMENT ( IDENT )? ) ( selpart )* ) | ( selpart )+ ( S )* -> ^( SELECTOR ( selpart )+ ) )
+            // CSS.g:624:5: ( ( IDENT | ASTERISK ) ( selpart )* ( S )* -> ^( SELECTOR ^( ELEMENT ( IDENT )? ) ( selpart )* ) | ( selpart )+ ( S )* -> ^( SELECTOR ( selpart )+ ) )
             int alt62=2;
             int LA62_0 = input.LA(1);
 
@@ -4063,9 +4063,9 @@ public class CSSParser extends Parser {
             }
             switch (alt62) {
                 case 1 :
-                    // CSS.g:622:7: ( IDENT | ASTERISK ) ( selpart )* ( S )*
+                    // CSS.g:624:7: ( IDENT | ASTERISK ) ( selpart )* ( S )*
                     {
-                    // CSS.g:622:7: ( IDENT | ASTERISK )
+                    // CSS.g:624:7: ( IDENT | ASTERISK )
                     int alt57=2;
                     int LA57_0 = input.LA(1);
 
@@ -4083,7 +4083,7 @@ public class CSSParser extends Parser {
                     }
                     switch (alt57) {
                         case 1 :
-                            // CSS.g:622:8: IDENT
+                            // CSS.g:624:8: IDENT
                             {
                             IDENT124=(Token)match(input,IDENT,FOLLOW_IDENT_in_selector1261);  
                             stream_IDENT.add(IDENT124);
@@ -4092,7 +4092,7 @@ public class CSSParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // CSS.g:622:16: ASTERISK
+                            // CSS.g:624:16: ASTERISK
                             {
                             ASTERISK125=(Token)match(input,ASTERISK,FOLLOW_ASTERISK_in_selector1265);  
                             stream_ASTERISK.add(ASTERISK125);
@@ -4103,14 +4103,14 @@ public class CSSParser extends Parser {
 
                     }
 
-                    // CSS.g:622:27: ( selpart )*
+                    // CSS.g:624:27: ( selpart )*
                     loop58:
                     do {
                         int alt58=2;
                         alt58 = dfa58.predict(input);
                         switch (alt58) {
                     	case 1 :
-                    	    // CSS.g:622:27: selpart
+                    	    // CSS.g:624:27: selpart
                     	    {
                     	    pushFollow(FOLLOW_selpart_in_selector1269);
                     	    selpart126=selpart();
@@ -4127,14 +4127,14 @@ public class CSSParser extends Parser {
                         }
                     } while (true);
 
-                    // CSS.g:622:36: ( S )*
+                    // CSS.g:624:36: ( S )*
                     loop59:
                     do {
                         int alt59=2;
                         alt59 = dfa59.predict(input);
                         switch (alt59) {
                     	case 1 :
-                    	    // CSS.g:622:36: S
+                    	    // CSS.g:624:36: S
                     	    {
                     	    S127=(Token)match(input,S,FOLLOW_S_in_selector1272);  
                     	    stream_S.add(S127);
@@ -4151,7 +4151,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: selpart, IDENT
+                    // elements: IDENT, selpart
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -4160,19 +4160,19 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 623:6: -> ^( SELECTOR ^( ELEMENT ( IDENT )? ) ( selpart )* )
+                    // 625:6: -> ^( SELECTOR ^( ELEMENT ( IDENT )? ) ( selpart )* )
                     {
-                        // CSS.g:623:9: ^( SELECTOR ^( ELEMENT ( IDENT )? ) ( selpart )* )
+                        // CSS.g:625:9: ^( SELECTOR ^( ELEMENT ( IDENT )? ) ( selpart )* )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(SELECTOR, "SELECTOR"), root_1);
 
-                        // CSS.g:623:20: ^( ELEMENT ( IDENT )? )
+                        // CSS.g:625:20: ^( ELEMENT ( IDENT )? )
                         {
                         Object root_2 = (Object)adaptor.nil();
                         root_2 = (Object)adaptor.becomeRoot((Object)adaptor.create(ELEMENT, "ELEMENT"), root_2);
 
-                        // CSS.g:623:30: ( IDENT )?
+                        // CSS.g:625:30: ( IDENT )?
                         if ( stream_IDENT.hasNext() ) {
                             adaptor.addChild(root_2, stream_IDENT.nextNode());
 
@@ -4181,7 +4181,7 @@ public class CSSParser extends Parser {
 
                         adaptor.addChild(root_1, root_2);
                         }
-                        // CSS.g:623:38: ( selpart )*
+                        // CSS.g:625:38: ( selpart )*
                         while ( stream_selpart.hasNext() ) {
                             adaptor.addChild(root_1, stream_selpart.nextTree());
 
@@ -4197,9 +4197,9 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // CSS.g:624:7: ( selpart )+ ( S )*
+                    // CSS.g:626:7: ( selpart )+ ( S )*
                     {
-                    // CSS.g:624:7: ( selpart )+
+                    // CSS.g:626:7: ( selpart )+
                     int cnt60=0;
                     loop60:
                     do {
@@ -4207,7 +4207,7 @@ public class CSSParser extends Parser {
                         alt60 = dfa60.predict(input);
                         switch (alt60) {
                     	case 1 :
-                    	    // CSS.g:624:7: selpart
+                    	    // CSS.g:626:7: selpart
                     	    {
                     	    pushFollow(FOLLOW_selpart_in_selector1302);
                     	    selpart128=selpart();
@@ -4228,14 +4228,14 @@ public class CSSParser extends Parser {
                         cnt60++;
                     } while (true);
 
-                    // CSS.g:624:16: ( S )*
+                    // CSS.g:626:16: ( S )*
                     loop61:
                     do {
                         int alt61=2;
                         alt61 = dfa61.predict(input);
                         switch (alt61) {
                     	case 1 :
-                    	    // CSS.g:624:16: S
+                    	    // CSS.g:626:16: S
                     	    {
                     	    S129=(Token)match(input,S,FOLLOW_S_in_selector1305);  
                     	    stream_S.add(S129);
@@ -4261,9 +4261,9 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 625:9: -> ^( SELECTOR ( selpart )+ )
+                    // 627:9: -> ^( SELECTOR ( selpart )+ )
                     {
-                        // CSS.g:625:12: ^( SELECTOR ( selpart )+ )
+                        // CSS.g:627:12: ^( SELECTOR ( selpart )+ )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(SELECTOR, "SELECTOR"), root_1);
@@ -4310,7 +4310,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "selpart"
-    // CSS.g:631:1: selpart : ( HASH | CLASSKEYWORD | LBRACE ( S )* attribute RBRACE -> ^( ATTRIBUTE attribute ) | pseudo | INVALID_SELPART );
+    // CSS.g:633:1: selpart : ( HASH | CLASSKEYWORD | LBRACE ( S )* attribute RBRACE -> ^( ATTRIBUTE attribute ) | pseudo | INVALID_SELPART );
     public final CSSParser.selpart_return selpart() throws RecognitionException {
         CSSParser.selpart_return retval = new CSSParser.selpart_return();
         retval.start = input.LT(1);
@@ -4339,7 +4339,7 @@ public class CSSParser extends Parser {
         RewriteRuleTokenStream stream_LBRACE=new RewriteRuleTokenStream(adaptor,"token LBRACE");
         RewriteRuleSubtreeStream stream_attribute=new RewriteRuleSubtreeStream(adaptor,"rule attribute");
         try {
-            // CSS.g:632:5: ( HASH | CLASSKEYWORD | LBRACE ( S )* attribute RBRACE -> ^( ATTRIBUTE attribute ) | pseudo | INVALID_SELPART )
+            // CSS.g:634:5: ( HASH | CLASSKEYWORD | LBRACE ( S )* attribute RBRACE -> ^( ATTRIBUTE attribute ) | pseudo | INVALID_SELPART )
             int alt64=5;
             switch ( input.LA(1) ) {
             case HASH:
@@ -4376,7 +4376,7 @@ public class CSSParser extends Parser {
 
             switch (alt64) {
                 case 1 :
-                    // CSS.g:632:8: HASH
+                    // CSS.g:634:8: HASH
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -4388,7 +4388,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // CSS.g:633:7: CLASSKEYWORD
+                    // CSS.g:635:7: CLASSKEYWORD
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -4400,12 +4400,12 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // CSS.g:634:4: LBRACE ( S )* attribute RBRACE
+                    // CSS.g:636:4: LBRACE ( S )* attribute RBRACE
                     {
                     LBRACE132=(Token)match(input,LBRACE,FOLLOW_LBRACE_in_selpart1365);  
                     stream_LBRACE.add(LBRACE132);
 
-                    // CSS.g:634:11: ( S )*
+                    // CSS.g:636:11: ( S )*
                     loop63:
                     do {
                         int alt63=2;
@@ -4418,7 +4418,7 @@ public class CSSParser extends Parser {
 
                         switch (alt63) {
                     	case 1 :
-                    	    // CSS.g:634:11: S
+                    	    // CSS.g:636:11: S
                     	    {
                     	    S133=(Token)match(input,S,FOLLOW_S_in_selpart1367);  
                     	    stream_S.add(S133);
@@ -4453,9 +4453,9 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 634:31: -> ^( ATTRIBUTE attribute )
+                    // 636:31: -> ^( ATTRIBUTE attribute )
                     {
-                        // CSS.g:634:34: ^( ATTRIBUTE attribute )
+                        // CSS.g:636:34: ^( ATTRIBUTE attribute )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(ATTRIBUTE, "ATTRIBUTE"), root_1);
@@ -4471,7 +4471,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // CSS.g:635:7: pseudo
+                    // CSS.g:637:7: pseudo
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -4485,7 +4485,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // CSS.g:636:7: INVALID_SELPART
+                    // CSS.g:638:7: INVALID_SELPART
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -4521,7 +4521,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "attribute"
-    // CSS.g:643:1: attribute : IDENT ( S )* ( ( EQUALS | INCLUDES | DASHMATCH ) ( S )* ( IDENT | string ) ( S )* )? ;
+    // CSS.g:645:1: attribute : IDENT ( S )* ( ( EQUALS | INCLUDES | DASHMATCH ) ( S )* ( IDENT | string ) ( S )* )? ;
     public final CSSParser.attribute_return attribute() throws RecognitionException {
         CSSParser.attribute_return retval = new CSSParser.attribute_return();
         retval.start = input.LT(1);
@@ -4545,8 +4545,8 @@ public class CSSParser extends Parser {
         Object S144_tree=null;
 
         try {
-            // CSS.g:644:2: ( IDENT ( S )* ( ( EQUALS | INCLUDES | DASHMATCH ) ( S )* ( IDENT | string ) ( S )* )? )
-            // CSS.g:644:4: IDENT ( S )* ( ( EQUALS | INCLUDES | DASHMATCH ) ( S )* ( IDENT | string ) ( S )* )?
+            // CSS.g:646:2: ( IDENT ( S )* ( ( EQUALS | INCLUDES | DASHMATCH ) ( S )* ( IDENT | string ) ( S )* )? )
+            // CSS.g:646:4: IDENT ( S )* ( ( EQUALS | INCLUDES | DASHMATCH ) ( S )* ( IDENT | string ) ( S )* )?
             {
             root_0 = (Object)adaptor.nil();
 
@@ -4554,7 +4554,7 @@ public class CSSParser extends Parser {
             IDENT138_tree = (Object)adaptor.create(IDENT138);
             adaptor.addChild(root_0, IDENT138_tree);
 
-            // CSS.g:644:10: ( S )*
+            // CSS.g:646:10: ( S )*
             loop65:
             do {
                 int alt65=2;
@@ -4567,7 +4567,7 @@ public class CSSParser extends Parser {
 
                 switch (alt65) {
             	case 1 :
-            	    // CSS.g:644:10: S
+            	    // CSS.g:646:10: S
             	    {
             	    S139=(Token)match(input,S,FOLLOW_S_in_attribute1424); 
             	    S139_tree = (Object)adaptor.create(S139);
@@ -4582,7 +4582,7 @@ public class CSSParser extends Parser {
                 }
             } while (true);
 
-            // CSS.g:645:4: ( ( EQUALS | INCLUDES | DASHMATCH ) ( S )* ( IDENT | string ) ( S )* )?
+            // CSS.g:647:4: ( ( EQUALS | INCLUDES | DASHMATCH ) ( S )* ( IDENT | string ) ( S )* )?
             int alt69=2;
             int LA69_0 = input.LA(1);
 
@@ -4591,7 +4591,7 @@ public class CSSParser extends Parser {
             }
             switch (alt69) {
                 case 1 :
-                    // CSS.g:645:5: ( EQUALS | INCLUDES | DASHMATCH ) ( S )* ( IDENT | string ) ( S )*
+                    // CSS.g:647:5: ( EQUALS | INCLUDES | DASHMATCH ) ( S )* ( IDENT | string ) ( S )*
                     {
                     set140=(Token)input.LT(1);
                     if ( input.LA(1)==INCLUDES||input.LA(1)==EQUALS||input.LA(1)==DASHMATCH ) {
@@ -4604,7 +4604,7 @@ public class CSSParser extends Parser {
                         throw mse;
                     }
 
-                    // CSS.g:645:37: ( S )*
+                    // CSS.g:647:37: ( S )*
                     loop66:
                     do {
                         int alt66=2;
@@ -4617,7 +4617,7 @@ public class CSSParser extends Parser {
 
                         switch (alt66) {
                     	case 1 :
-                    	    // CSS.g:645:37: S
+                    	    // CSS.g:647:37: S
                     	    {
                     	    S141=(Token)match(input,S,FOLLOW_S_in_attribute1443); 
                     	    S141_tree = (Object)adaptor.create(S141);
@@ -4632,7 +4632,7 @@ public class CSSParser extends Parser {
                         }
                     } while (true);
 
-                    // CSS.g:645:40: ( IDENT | string )
+                    // CSS.g:647:40: ( IDENT | string )
                     int alt67=2;
                     int LA67_0 = input.LA(1);
 
@@ -4650,7 +4650,7 @@ public class CSSParser extends Parser {
                     }
                     switch (alt67) {
                         case 1 :
-                            // CSS.g:645:41: IDENT
+                            // CSS.g:647:41: IDENT
                             {
                             IDENT142=(Token)match(input,IDENT,FOLLOW_IDENT_in_attribute1447); 
                             IDENT142_tree = (Object)adaptor.create(IDENT142);
@@ -4660,7 +4660,7 @@ public class CSSParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // CSS.g:645:49: string
+                            // CSS.g:647:49: string
                             {
                             pushFollow(FOLLOW_string_in_attribute1451);
                             string143=string();
@@ -4674,7 +4674,7 @@ public class CSSParser extends Parser {
 
                     }
 
-                    // CSS.g:645:57: ( S )*
+                    // CSS.g:647:57: ( S )*
                     loop68:
                     do {
                         int alt68=2;
@@ -4687,7 +4687,7 @@ public class CSSParser extends Parser {
 
                         switch (alt68) {
                     	case 1 :
-                    	    // CSS.g:645:57: S
+                    	    // CSS.g:647:57: S
                     	    {
                     	    S144=(Token)match(input,S,FOLLOW_S_in_attribute1454); 
                     	    S144_tree = (Object)adaptor.create(S144);
@@ -4735,7 +4735,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "pseudo"
-    // CSS.g:648:1: pseudo : COLON ( IDENT | FUNCTION ( S )* IDENT ( S )* RPAREN ) -> ^( PSEUDO ( FUNCTION )? IDENT ) ;
+    // CSS.g:650:1: pseudo : COLON ( IDENT | FUNCTION ( S )* IDENT ( S )* RPAREN ) -> ^( PSEUDO ( FUNCTION )? IDENT ) ;
     public final CSSParser.pseudo_return pseudo() throws RecognitionException {
         CSSParser.pseudo_return retval = new CSSParser.pseudo_return();
         retval.start = input.LT(1);
@@ -4757,20 +4757,20 @@ public class CSSParser extends Parser {
         Object IDENT149_tree=null;
         Object S150_tree=null;
         Object RPAREN151_tree=null;
-        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
-        RewriteRuleTokenStream stream_RPAREN=new RewriteRuleTokenStream(adaptor,"token RPAREN");
         RewriteRuleTokenStream stream_COLON=new RewriteRuleTokenStream(adaptor,"token COLON");
-        RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
         RewriteRuleTokenStream stream_FUNCTION=new RewriteRuleTokenStream(adaptor,"token FUNCTION");
+        RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
+        RewriteRuleTokenStream stream_RPAREN=new RewriteRuleTokenStream(adaptor,"token RPAREN");
+        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
 
         try {
-            // CSS.g:649:2: ( COLON ( IDENT | FUNCTION ( S )* IDENT ( S )* RPAREN ) -> ^( PSEUDO ( FUNCTION )? IDENT ) )
-            // CSS.g:649:4: COLON ( IDENT | FUNCTION ( S )* IDENT ( S )* RPAREN )
+            // CSS.g:651:2: ( COLON ( IDENT | FUNCTION ( S )* IDENT ( S )* RPAREN ) -> ^( PSEUDO ( FUNCTION )? IDENT ) )
+            // CSS.g:651:4: COLON ( IDENT | FUNCTION ( S )* IDENT ( S )* RPAREN )
             {
             COLON145=(Token)match(input,COLON,FOLLOW_COLON_in_pseudo1468);  
             stream_COLON.add(COLON145);
 
-            // CSS.g:649:10: ( IDENT | FUNCTION ( S )* IDENT ( S )* RPAREN )
+            // CSS.g:651:10: ( IDENT | FUNCTION ( S )* IDENT ( S )* RPAREN )
             int alt72=2;
             int LA72_0 = input.LA(1);
 
@@ -4788,7 +4788,7 @@ public class CSSParser extends Parser {
             }
             switch (alt72) {
                 case 1 :
-                    // CSS.g:649:11: IDENT
+                    // CSS.g:651:11: IDENT
                     {
                     IDENT146=(Token)match(input,IDENT,FOLLOW_IDENT_in_pseudo1471);  
                     stream_IDENT.add(IDENT146);
@@ -4797,12 +4797,12 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // CSS.g:649:19: FUNCTION ( S )* IDENT ( S )* RPAREN
+                    // CSS.g:651:19: FUNCTION ( S )* IDENT ( S )* RPAREN
                     {
                     FUNCTION147=(Token)match(input,FUNCTION,FOLLOW_FUNCTION_in_pseudo1475);  
                     stream_FUNCTION.add(FUNCTION147);
 
-                    // CSS.g:649:28: ( S )*
+                    // CSS.g:651:28: ( S )*
                     loop70:
                     do {
                         int alt70=2;
@@ -4815,7 +4815,7 @@ public class CSSParser extends Parser {
 
                         switch (alt70) {
                     	case 1 :
-                    	    // CSS.g:649:28: S
+                    	    // CSS.g:651:28: S
                     	    {
                     	    S148=(Token)match(input,S,FOLLOW_S_in_pseudo1477);  
                     	    stream_S.add(S148);
@@ -4832,7 +4832,7 @@ public class CSSParser extends Parser {
                     IDENT149=(Token)match(input,IDENT,FOLLOW_IDENT_in_pseudo1481);  
                     stream_IDENT.add(IDENT149);
 
-                    // CSS.g:649:38: ( S )*
+                    // CSS.g:651:38: ( S )*
                     loop71:
                     do {
                         int alt71=2;
@@ -4845,7 +4845,7 @@ public class CSSParser extends Parser {
 
                         switch (alt71) {
                     	case 1 :
-                    	    // CSS.g:649:38: S
+                    	    // CSS.g:651:38: S
                     	    {
                     	    S150=(Token)match(input,S,FOLLOW_S_in_pseudo1483);  
                     	    stream_S.add(S150);
@@ -4871,7 +4871,7 @@ public class CSSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: IDENT, FUNCTION
+            // elements: FUNCTION, IDENT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -4880,14 +4880,14 @@ public class CSSParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 650:3: -> ^( PSEUDO ( FUNCTION )? IDENT )
+            // 652:3: -> ^( PSEUDO ( FUNCTION )? IDENT )
             {
-                // CSS.g:650:6: ^( PSEUDO ( FUNCTION )? IDENT )
+                // CSS.g:652:6: ^( PSEUDO ( FUNCTION )? IDENT )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PSEUDO, "PSEUDO"), root_1);
 
-                // CSS.g:650:15: ( FUNCTION )?
+                // CSS.g:652:15: ( FUNCTION )?
                 if ( stream_FUNCTION.hasNext() ) {
                     adaptor.addChild(root_1, stream_FUNCTION.nextNode());
 
@@ -4927,7 +4927,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "string"
-    // CSS.g:653:1: string : ( STRING | INVALID_STRING );
+    // CSS.g:655:1: string : ( STRING | INVALID_STRING );
     public final CSSParser.string_return string() throws RecognitionException {
         CSSParser.string_return retval = new CSSParser.string_return();
         retval.start = input.LT(1);
@@ -4939,7 +4939,7 @@ public class CSSParser extends Parser {
         Object set152_tree=null;
 
         try {
-            // CSS.g:654:2: ( STRING | INVALID_STRING )
+            // CSS.g:656:2: ( STRING | INVALID_STRING )
             // CSS.g:
             {
             root_0 = (Object)adaptor.nil();
@@ -4982,7 +4982,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "any"
-    // CSS.g:659:1: any : ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* ( any )* RPAREN -> ^( FUNCTION ( any )* ) | DASHMATCH -> DASHMATCH | LPAREN ( any )* RPAREN -> ^( PARENBLOCK ( any )* ) | LBRACE ( any )* RBRACE -> ^( BRACEBLOCK ( any )* ) ) ( S )* ;
+    // CSS.g:661:1: any : ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* ( any )* RPAREN -> ^( FUNCTION ( any )* ) | DASHMATCH -> DASHMATCH | LPAREN ( any )* RPAREN -> ^( PARENBLOCK ( any )* ) | LBRACE ( any )* RBRACE -> ^( BRACEBLOCK ( any )* ) ) ( S )* ;
     public final CSSParser.any_return any() throws RecognitionException {
         CSSParser.any_return retval = new CSSParser.any_return();
         retval.start = input.LT(1);
@@ -5052,43 +5052,43 @@ public class CSSParser extends Parser {
         Object LBRACE180_tree=null;
         Object RBRACE182_tree=null;
         Object S183_tree=null;
-        RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
-        RewriteRuleTokenStream stream_MINUS=new RewriteRuleTokenStream(adaptor,"token MINUS");
-        RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
+        RewriteRuleTokenStream stream_FUNCTION=new RewriteRuleTokenStream(adaptor,"token FUNCTION");
+        RewriteRuleTokenStream stream_RBRACE=new RewriteRuleTokenStream(adaptor,"token RBRACE");
+        RewriteRuleTokenStream stream_CLASSKEYWORD=new RewriteRuleTokenStream(adaptor,"token CLASSKEYWORD");
+        RewriteRuleTokenStream stream_LBRACE=new RewriteRuleTokenStream(adaptor,"token LBRACE");
+        RewriteRuleTokenStream stream_NUMBER=new RewriteRuleTokenStream(adaptor,"token NUMBER");
         RewriteRuleTokenStream stream_HASH=new RewriteRuleTokenStream(adaptor,"token HASH");
+        RewriteRuleTokenStream stream_EQUALS=new RewriteRuleTokenStream(adaptor,"token EQUALS");
+        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
+        RewriteRuleTokenStream stream_MINUS=new RewriteRuleTokenStream(adaptor,"token MINUS");
+        RewriteRuleTokenStream stream_PERCENTAGE=new RewriteRuleTokenStream(adaptor,"token PERCENTAGE");
+        RewriteRuleTokenStream stream_LPAREN=new RewriteRuleTokenStream(adaptor,"token LPAREN");
+        RewriteRuleTokenStream stream_ASTERISK=new RewriteRuleTokenStream(adaptor,"token ASTERISK");
+        RewriteRuleTokenStream stream_URI=new RewriteRuleTokenStream(adaptor,"token URI");
+        RewriteRuleTokenStream stream_COLON=new RewriteRuleTokenStream(adaptor,"token COLON");
+        RewriteRuleTokenStream stream_INCLUDES=new RewriteRuleTokenStream(adaptor,"token INCLUDES");
+        RewriteRuleTokenStream stream_RPAREN=new RewriteRuleTokenStream(adaptor,"token RPAREN");
+        RewriteRuleTokenStream stream_GREATER=new RewriteRuleTokenStream(adaptor,"token GREATER");
         RewriteRuleTokenStream stream_SLASH=new RewriteRuleTokenStream(adaptor,"token SLASH");
         RewriteRuleTokenStream stream_DASHMATCH=new RewriteRuleTokenStream(adaptor,"token DASHMATCH");
-        RewriteRuleTokenStream stream_UNIRANGE=new RewriteRuleTokenStream(adaptor,"token UNIRANGE");
-        RewriteRuleTokenStream stream_NUMBER=new RewriteRuleTokenStream(adaptor,"token NUMBER");
         RewriteRuleTokenStream stream_EXCLAMATION=new RewriteRuleTokenStream(adaptor,"token EXCLAMATION");
-        RewriteRuleTokenStream stream_CLASSKEYWORD=new RewriteRuleTokenStream(adaptor,"token CLASSKEYWORD");
-        RewriteRuleTokenStream stream_INCLUDES=new RewriteRuleTokenStream(adaptor,"token INCLUDES");
-        RewriteRuleTokenStream stream_URI=new RewriteRuleTokenStream(adaptor,"token URI");
-        RewriteRuleTokenStream stream_LBRACE=new RewriteRuleTokenStream(adaptor,"token LBRACE");
-        RewriteRuleTokenStream stream_S=new RewriteRuleTokenStream(adaptor,"token S");
-        RewriteRuleTokenStream stream_RBRACE=new RewriteRuleTokenStream(adaptor,"token RBRACE");
-        RewriteRuleTokenStream stream_EQUALS=new RewriteRuleTokenStream(adaptor,"token EQUALS");
+        RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
+        RewriteRuleTokenStream stream_IDENT=new RewriteRuleTokenStream(adaptor,"token IDENT");
+        RewriteRuleTokenStream stream_UNIRANGE=new RewriteRuleTokenStream(adaptor,"token UNIRANGE");
         RewriteRuleTokenStream stream_DIMENSION=new RewriteRuleTokenStream(adaptor,"token DIMENSION");
-        RewriteRuleTokenStream stream_FUNCTION=new RewriteRuleTokenStream(adaptor,"token FUNCTION");
-        RewriteRuleTokenStream stream_ASTERISK=new RewriteRuleTokenStream(adaptor,"token ASTERISK");
-        RewriteRuleTokenStream stream_RPAREN=new RewriteRuleTokenStream(adaptor,"token RPAREN");
-        RewriteRuleTokenStream stream_COLON=new RewriteRuleTokenStream(adaptor,"token COLON");
-        RewriteRuleTokenStream stream_GREATER=new RewriteRuleTokenStream(adaptor,"token GREATER");
-        RewriteRuleTokenStream stream_LPAREN=new RewriteRuleTokenStream(adaptor,"token LPAREN");
         RewriteRuleTokenStream stream_PLUS=new RewriteRuleTokenStream(adaptor,"token PLUS");
-        RewriteRuleTokenStream stream_PERCENTAGE=new RewriteRuleTokenStream(adaptor,"token PERCENTAGE");
         RewriteRuleSubtreeStream stream_string=new RewriteRuleSubtreeStream(adaptor,"rule string");
         RewriteRuleSubtreeStream stream_any=new RewriteRuleSubtreeStream(adaptor,"rule any");
         try {
-            // CSS.g:660:2: ( ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* ( any )* RPAREN -> ^( FUNCTION ( any )* ) | DASHMATCH -> DASHMATCH | LPAREN ( any )* RPAREN -> ^( PARENBLOCK ( any )* ) | LBRACE ( any )* RBRACE -> ^( BRACEBLOCK ( any )* ) ) ( S )* )
-            // CSS.g:660:4: ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* ( any )* RPAREN -> ^( FUNCTION ( any )* ) | DASHMATCH -> DASHMATCH | LPAREN ( any )* RPAREN -> ^( PARENBLOCK ( any )* ) | LBRACE ( any )* RBRACE -> ^( BRACEBLOCK ( any )* ) ) ( S )*
+            // CSS.g:662:2: ( ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* ( any )* RPAREN -> ^( FUNCTION ( any )* ) | DASHMATCH -> DASHMATCH | LPAREN ( any )* RPAREN -> ^( PARENBLOCK ( any )* ) | LBRACE ( any )* RBRACE -> ^( BRACEBLOCK ( any )* ) ) ( S )* )
+            // CSS.g:662:4: ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* ( any )* RPAREN -> ^( FUNCTION ( any )* ) | DASHMATCH -> DASHMATCH | LPAREN ( any )* RPAREN -> ^( PARENBLOCK ( any )* ) | LBRACE ( any )* RBRACE -> ^( BRACEBLOCK ( any )* ) ) ( S )*
             {
-            // CSS.g:660:4: ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* ( any )* RPAREN -> ^( FUNCTION ( any )* ) | DASHMATCH -> DASHMATCH | LPAREN ( any )* RPAREN -> ^( PARENBLOCK ( any )* ) | LBRACE ( any )* RBRACE -> ^( BRACEBLOCK ( any )* ) )
+            // CSS.g:662:4: ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* ( any )* RPAREN -> ^( FUNCTION ( any )* ) | DASHMATCH -> DASHMATCH | LPAREN ( any )* RPAREN -> ^( PARENBLOCK ( any )* ) | LBRACE ( any )* RBRACE -> ^( BRACEBLOCK ( any )* ) )
             int alt77=23;
             alt77 = dfa77.predict(input);
             switch (alt77) {
                 case 1 :
-                    // CSS.g:660:6: IDENT
+                    // CSS.g:662:6: IDENT
                     {
                     IDENT153=(Token)match(input,IDENT,FOLLOW_IDENT_in_any1532);  
                     stream_IDENT.add(IDENT153);
@@ -5105,7 +5105,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 660:12: -> IDENT
+                    // 662:12: -> IDENT
                     {
                         adaptor.addChild(root_0, stream_IDENT.nextNode());
 
@@ -5115,7 +5115,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // CSS.g:661:6: CLASSKEYWORD
+                    // CSS.g:663:6: CLASSKEYWORD
                     {
                     CLASSKEYWORD154=(Token)match(input,CLASSKEYWORD,FOLLOW_CLASSKEYWORD_in_any1543);  
                     stream_CLASSKEYWORD.add(CLASSKEYWORD154);
@@ -5132,7 +5132,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 661:19: -> CLASSKEYWORD
+                    // 663:19: -> CLASSKEYWORD
                     {
                         adaptor.addChild(root_0, stream_CLASSKEYWORD.nextNode());
 
@@ -5142,7 +5142,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // CSS.g:662:6: NUMBER
+                    // CSS.g:664:6: NUMBER
                     {
                     NUMBER155=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_any1554);  
                     stream_NUMBER.add(NUMBER155);
@@ -5159,7 +5159,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 662:13: -> NUMBER
+                    // 664:13: -> NUMBER
                     {
                         adaptor.addChild(root_0, stream_NUMBER.nextNode());
 
@@ -5169,7 +5169,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // CSS.g:663:6: PERCENTAGE
+                    // CSS.g:665:6: PERCENTAGE
                     {
                     PERCENTAGE156=(Token)match(input,PERCENTAGE,FOLLOW_PERCENTAGE_in_any1565);  
                     stream_PERCENTAGE.add(PERCENTAGE156);
@@ -5186,7 +5186,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 663:17: -> PERCENTAGE
+                    // 665:17: -> PERCENTAGE
                     {
                         adaptor.addChild(root_0, stream_PERCENTAGE.nextNode());
 
@@ -5196,7 +5196,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // CSS.g:664:6: DIMENSION
+                    // CSS.g:666:6: DIMENSION
                     {
                     DIMENSION157=(Token)match(input,DIMENSION,FOLLOW_DIMENSION_in_any1575);  
                     stream_DIMENSION.add(DIMENSION157);
@@ -5213,7 +5213,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 664:16: -> DIMENSION
+                    // 666:16: -> DIMENSION
                     {
                         adaptor.addChild(root_0, stream_DIMENSION.nextNode());
 
@@ -5223,7 +5223,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // CSS.g:665:6: string
+                    // CSS.g:667:6: string
                     {
                     pushFollow(FOLLOW_string_in_any1586);
                     string158=string();
@@ -5243,7 +5243,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 665:13: -> string
+                    // 667:13: -> string
                     {
                         adaptor.addChild(root_0, stream_string.nextTree());
 
@@ -5253,7 +5253,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // CSS.g:666:9: URI
+                    // CSS.g:668:9: URI
                     {
                     URI159=(Token)match(input,URI,FOLLOW_URI_in_any1600);  
                     stream_URI.add(URI159);
@@ -5270,7 +5270,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 666:16: -> URI
+                    // 668:16: -> URI
                     {
                         adaptor.addChild(root_0, stream_URI.nextNode());
 
@@ -5280,7 +5280,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // CSS.g:667:9: HASH
+                    // CSS.g:669:9: HASH
                     {
                     HASH160=(Token)match(input,HASH,FOLLOW_HASH_in_any1617);  
                     stream_HASH.add(HASH160);
@@ -5297,7 +5297,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 667:14: -> HASH
+                    // 669:14: -> HASH
                     {
                         adaptor.addChild(root_0, stream_HASH.nextNode());
 
@@ -5307,7 +5307,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 9 :
-                    // CSS.g:668:9: UNIRANGE
+                    // CSS.g:670:9: UNIRANGE
                     {
                     UNIRANGE161=(Token)match(input,UNIRANGE,FOLLOW_UNIRANGE_in_any1631);  
                     stream_UNIRANGE.add(UNIRANGE161);
@@ -5324,7 +5324,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 668:18: -> UNIRANGE
+                    // 670:18: -> UNIRANGE
                     {
                         adaptor.addChild(root_0, stream_UNIRANGE.nextNode());
 
@@ -5334,7 +5334,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 10 :
-                    // CSS.g:669:9: INCLUDES
+                    // CSS.g:671:9: INCLUDES
                     {
                     INCLUDES162=(Token)match(input,INCLUDES,FOLLOW_INCLUDES_in_any1645);  
                     stream_INCLUDES.add(INCLUDES162);
@@ -5351,7 +5351,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 669:18: -> INCLUDES
+                    // 671:18: -> INCLUDES
                     {
                         adaptor.addChild(root_0, stream_INCLUDES.nextNode());
 
@@ -5361,7 +5361,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 11 :
-                    // CSS.g:670:9: COLON
+                    // CSS.g:672:9: COLON
                     {
                     COLON163=(Token)match(input,COLON,FOLLOW_COLON_in_any1659);  
                     stream_COLON.add(COLON163);
@@ -5378,7 +5378,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 670:15: -> COLON
+                    // 672:15: -> COLON
                     {
                         adaptor.addChild(root_0, stream_COLON.nextNode());
 
@@ -5388,7 +5388,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 12 :
-                    // CSS.g:671:9: COMMA
+                    // CSS.g:673:9: COMMA
                     {
                     COMMA164=(Token)match(input,COMMA,FOLLOW_COMMA_in_any1673);  
                     stream_COMMA.add(COMMA164);
@@ -5405,7 +5405,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 671:15: -> COMMA
+                    // 673:15: -> COMMA
                     {
                         adaptor.addChild(root_0, stream_COMMA.nextNode());
 
@@ -5415,7 +5415,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 13 :
-                    // CSS.g:672:9: GREATER
+                    // CSS.g:674:9: GREATER
                     {
                     GREATER165=(Token)match(input,GREATER,FOLLOW_GREATER_in_any1687);  
                     stream_GREATER.add(GREATER165);
@@ -5432,7 +5432,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 672:17: -> GREATER
+                    // 674:17: -> GREATER
                     {
                         adaptor.addChild(root_0, stream_GREATER.nextNode());
 
@@ -5442,7 +5442,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 14 :
-                    // CSS.g:673:9: EQUALS
+                    // CSS.g:675:9: EQUALS
                     {
                     EQUALS166=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_any1701);  
                     stream_EQUALS.add(EQUALS166);
@@ -5459,7 +5459,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 673:16: -> EQUALS
+                    // 675:16: -> EQUALS
                     {
                         adaptor.addChild(root_0, stream_EQUALS.nextNode());
 
@@ -5469,7 +5469,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 15 :
-                    // CSS.g:674:9: SLASH
+                    // CSS.g:676:9: SLASH
                     {
                     SLASH167=(Token)match(input,SLASH,FOLLOW_SLASH_in_any1715);  
                     stream_SLASH.add(SLASH167);
@@ -5486,7 +5486,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 674:15: -> SLASH
+                    // 676:15: -> SLASH
                     {
                         adaptor.addChild(root_0, stream_SLASH.nextNode());
 
@@ -5496,7 +5496,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 16 :
-                    // CSS.g:675:9: EXCLAMATION
+                    // CSS.g:677:9: EXCLAMATION
                     {
                     EXCLAMATION168=(Token)match(input,EXCLAMATION,FOLLOW_EXCLAMATION_in_any1729);  
                     stream_EXCLAMATION.add(EXCLAMATION168);
@@ -5513,7 +5513,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 675:21: -> EXCLAMATION
+                    // 677:21: -> EXCLAMATION
                     {
                         adaptor.addChild(root_0, stream_EXCLAMATION.nextNode());
 
@@ -5523,7 +5523,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 17 :
-                    // CSS.g:676:6: MINUS
+                    // CSS.g:678:6: MINUS
                     {
                     MINUS169=(Token)match(input,MINUS,FOLLOW_MINUS_in_any1740);  
                     stream_MINUS.add(MINUS169);
@@ -5540,7 +5540,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 676:12: -> MINUS
+                    // 678:12: -> MINUS
                     {
                         adaptor.addChild(root_0, stream_MINUS.nextNode());
 
@@ -5550,7 +5550,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 18 :
-                    // CSS.g:677:6: PLUS
+                    // CSS.g:679:6: PLUS
                     {
                     PLUS170=(Token)match(input,PLUS,FOLLOW_PLUS_in_any1751);  
                     stream_PLUS.add(PLUS170);
@@ -5567,7 +5567,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 677:11: -> PLUS
+                    // 679:11: -> PLUS
                     {
                         adaptor.addChild(root_0, stream_PLUS.nextNode());
 
@@ -5577,7 +5577,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 19 :
-                    // CSS.g:678:6: ASTERISK
+                    // CSS.g:680:6: ASTERISK
                     {
                     ASTERISK171=(Token)match(input,ASTERISK,FOLLOW_ASTERISK_in_any1762);  
                     stream_ASTERISK.add(ASTERISK171);
@@ -5594,7 +5594,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 678:15: -> ASTERISK
+                    // 680:15: -> ASTERISK
                     {
                         adaptor.addChild(root_0, stream_ASTERISK.nextNode());
 
@@ -5604,19 +5604,19 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 20 :
-                    // CSS.g:679:9: FUNCTION ( S )* ( any )* RPAREN
+                    // CSS.g:681:9: FUNCTION ( S )* ( any )* RPAREN
                     {
                     FUNCTION172=(Token)match(input,FUNCTION,FOLLOW_FUNCTION_in_any1779);  
                     stream_FUNCTION.add(FUNCTION172);
 
-                    // CSS.g:679:18: ( S )*
+                    // CSS.g:681:18: ( S )*
                     loop73:
                     do {
                         int alt73=2;
                         alt73 = dfa73.predict(input);
                         switch (alt73) {
                     	case 1 :
-                    	    // CSS.g:679:18: S
+                    	    // CSS.g:681:18: S
                     	    {
                     	    S173=(Token)match(input,S,FOLLOW_S_in_any1781);  
                     	    stream_S.add(S173);
@@ -5630,14 +5630,14 @@ public class CSSParser extends Parser {
                         }
                     } while (true);
 
-                    // CSS.g:679:21: ( any )*
+                    // CSS.g:681:21: ( any )*
                     loop74:
                     do {
                         int alt74=2;
                         alt74 = dfa74.predict(input);
                         switch (alt74) {
                     	case 1 :
-                    	    // CSS.g:679:21: any
+                    	    // CSS.g:681:21: any
                     	    {
                     	    pushFollow(FOLLOW_any_in_any1784);
                     	    any174=any();
@@ -5660,7 +5660,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: any, FUNCTION
+                    // elements: FUNCTION, any
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -5669,14 +5669,14 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 679:33: -> ^( FUNCTION ( any )* )
+                    // 681:33: -> ^( FUNCTION ( any )* )
                     {
-                        // CSS.g:679:36: ^( FUNCTION ( any )* )
+                        // CSS.g:681:36: ^( FUNCTION ( any )* )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(stream_FUNCTION.nextNode(), root_1);
 
-                        // CSS.g:679:47: ( any )*
+                        // CSS.g:681:47: ( any )*
                         while ( stream_any.hasNext() ) {
                             adaptor.addChild(root_1, stream_any.nextTree());
 
@@ -5692,7 +5692,7 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 21 :
-                    // CSS.g:680:9: DASHMATCH
+                    // CSS.g:682:9: DASHMATCH
                     {
                     DASHMATCH176=(Token)match(input,DASHMATCH,FOLLOW_DASHMATCH_in_any1807);  
                     stream_DASHMATCH.add(DASHMATCH176);
@@ -5709,7 +5709,7 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 680:19: -> DASHMATCH
+                    // 682:19: -> DASHMATCH
                     {
                         adaptor.addChild(root_0, stream_DASHMATCH.nextNode());
 
@@ -5719,19 +5719,19 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 22 :
-                    // CSS.g:681:9: LPAREN ( any )* RPAREN
+                    // CSS.g:683:9: LPAREN ( any )* RPAREN
                     {
                     LPAREN177=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_any1821);  
                     stream_LPAREN.add(LPAREN177);
 
-                    // CSS.g:681:16: ( any )*
+                    // CSS.g:683:16: ( any )*
                     loop75:
                     do {
                         int alt75=2;
                         alt75 = dfa75.predict(input);
                         switch (alt75) {
                     	case 1 :
-                    	    // CSS.g:681:16: any
+                    	    // CSS.g:683:16: any
                     	    {
                     	    pushFollow(FOLLOW_any_in_any1823);
                     	    any178=any();
@@ -5763,14 +5763,14 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 681:28: -> ^( PARENBLOCK ( any )* )
+                    // 683:28: -> ^( PARENBLOCK ( any )* )
                     {
-                        // CSS.g:681:31: ^( PARENBLOCK ( any )* )
+                        // CSS.g:683:31: ^( PARENBLOCK ( any )* )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(PARENBLOCK, "PARENBLOCK"), root_1);
 
-                        // CSS.g:681:44: ( any )*
+                        // CSS.g:683:44: ( any )*
                         while ( stream_any.hasNext() ) {
                             adaptor.addChild(root_1, stream_any.nextTree());
 
@@ -5786,19 +5786,19 @@ public class CSSParser extends Parser {
                     }
                     break;
                 case 23 :
-                    // CSS.g:682:9: LBRACE ( any )* RBRACE
+                    // CSS.g:684:9: LBRACE ( any )* RBRACE
                     {
                     LBRACE180=(Token)match(input,LBRACE,FOLLOW_LBRACE_in_any1845);  
                     stream_LBRACE.add(LBRACE180);
 
-                    // CSS.g:682:16: ( any )*
+                    // CSS.g:684:16: ( any )*
                     loop76:
                     do {
                         int alt76=2;
                         alt76 = dfa76.predict(input);
                         switch (alt76) {
                     	case 1 :
-                    	    // CSS.g:682:16: any
+                    	    // CSS.g:684:16: any
                     	    {
                     	    pushFollow(FOLLOW_any_in_any1847);
                     	    any181=any();
@@ -5830,14 +5830,14 @@ public class CSSParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 682:28: -> ^( BRACEBLOCK ( any )* )
+                    // 684:28: -> ^( BRACEBLOCK ( any )* )
                     {
-                        // CSS.g:682:31: ^( BRACEBLOCK ( any )* )
+                        // CSS.g:684:31: ^( BRACEBLOCK ( any )* )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(BRACEBLOCK, "BRACEBLOCK"), root_1);
 
-                        // CSS.g:682:44: ( any )*
+                        // CSS.g:684:44: ( any )*
                         while ( stream_any.hasNext() ) {
                             adaptor.addChild(root_1, stream_any.nextTree());
 
@@ -5855,14 +5855,14 @@ public class CSSParser extends Parser {
 
             }
 
-            // CSS.g:683:8: ( S )*
+            // CSS.g:685:8: ( S )*
             loop78:
             do {
                 int alt78=2;
                 alt78 = dfa78.predict(input);
                 switch (alt78) {
             	case 1 :
-            	    // CSS.g:683:8: S
+            	    // CSS.g:685:8: S
             	    {
             	    S183=(Token)match(input,S,FOLLOW_S_in_any1868);  
             	    stream_S.add(S183);
@@ -5992,7 +5992,7 @@ public class CSSParser extends Parser {
             this.transition = DFA4_transition;
         }
         public String getDescription() {
-            return "()* loopback of 501:4: ( CDO | CDC | S | statement )*";
+            return "()* loopback of 503:4: ( CDO | CDC | S | statement )*";
         }
     }
     static final String DFA5_eotS =
@@ -6056,7 +6056,7 @@ public class CSSParser extends Parser {
             this.transition = DFA5_transition;
         }
         public String getDescription() {
-            return "505:1: statement : ( ruleset | atstatement );";
+            return "507:1: statement : ( ruleset | atstatement );";
         }
     }
     static final String DFA12_eotS =
@@ -6115,7 +6115,7 @@ public class CSSParser extends Parser {
             this.transition = DFA12_transition;
         }
         public String getDescription() {
-            return "()* loopback of 518:10: ( S )*";
+            return "()* loopback of 520:10: ( S )*";
         }
     }
     static final String DFA13_eotS =
@@ -6174,7 +6174,7 @@ public class CSSParser extends Parser {
             this.transition = DFA13_transition;
         }
         public String getDescription() {
-            return "()* loopback of 518:22: ( S )*";
+            return "()* loopback of 520:22: ( S )*";
         }
     }
     static final String DFA16_eotS =
@@ -6248,7 +6248,7 @@ public class CSSParser extends Parser {
             this.transition = DFA16_transition;
         }
         public String getDescription() {
-            return "()* loopback of 519:24: ( any )*";
+            return "()* loopback of 521:24: ( any )*";
         }
     }
     static final String DFA34_eotS =
@@ -6323,7 +6323,7 @@ public class CSSParser extends Parser {
             this.transition = DFA34_transition;
         }
         public String getDescription() {
-            return "()* loopback of 556:19: ( S )*";
+            return "()* loopback of 558:19: ( S )*";
         }
     }
     static final String DFA39_eotS =
@@ -6402,7 +6402,7 @@ public class CSSParser extends Parser {
             this.transition = DFA39_transition;
         }
         public String getDescription() {
-            return "()+ loopback of 571:4: ( term )+";
+            return "()+ loopback of 573:4: ( term )+";
         }
     }
     static final String DFA44_eotS =
@@ -6476,7 +6476,7 @@ public class CSSParser extends Parser {
             this.transition = DFA44_transition;
         }
         public String getDescription() {
-            return "575:1: term : ( valuepart -> valuepart | LCURLY ( S )* ( any | SEMICOLON ( S )* )* RCURLY -> CURLYBLOCK | ATKEYWORD ( S )* -> ATKEYWORD );";
+            return "577:1: term : ( valuepart -> valuepart | LCURLY ( S )* ( any | SEMICOLON ( S )* )* RCURLY -> CURLYBLOCK | ATKEYWORD ( S )* -> ATKEYWORD );";
         }
     }
     static final String DFA40_eotS =
@@ -6552,7 +6552,7 @@ public class CSSParser extends Parser {
             this.transition = DFA40_transition;
         }
         public String getDescription() {
-            return "()* loopback of 577:14: ( S )*";
+            return "()* loopback of 579:14: ( S )*";
         }
     }
     static final String DFA42_eotS =
@@ -6627,7 +6627,7 @@ public class CSSParser extends Parser {
             this.transition = DFA42_transition;
         }
         public String getDescription() {
-            return "()* loopback of 577:17: ( any | SEMICOLON ( S )* )*";
+            return "()* loopback of 579:17: ( any | SEMICOLON ( S )* )*";
         }
     }
     static final String DFA41_eotS =
@@ -6703,7 +6703,7 @@ public class CSSParser extends Parser {
             this.transition = DFA41_transition;
         }
         public String getDescription() {
-            return "()* loopback of 577:34: ( S )*";
+            return "()* loopback of 579:34: ( S )*";
         }
     }
     static final String DFA43_eotS =
@@ -6782,7 +6782,7 @@ public class CSSParser extends Parser {
             this.transition = DFA43_transition;
         }
         public String getDescription() {
-            return "()* loopback of 578:17: ( S )*";
+            return "()* loopback of 580:17: ( S )*";
         }
     }
     static final String DFA51_eotS =
@@ -6859,7 +6859,7 @@ public class CSSParser extends Parser {
             this.transition = DFA51_transition;
         }
         public String getDescription() {
-            return "582:7: ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | ( MINUS )? NUMBER -> ( MINUS )? NUMBER | ( MINUS )? PERCENTAGE -> ( MINUS )? PERCENTAGE | ( MINUS )? DIMENSION -> ( MINUS )? DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* terms RPAREN -> ^( FUNCTION terms ) | DASHMATCH -> DASHMATCH | LPAREN ( valuepart )* RPAREN -> ^( PARENBLOCK ( valuepart )* ) | LBRACE ( valuepart )* RBRACE -> ^( BRACEBLOCK ( valuepart )* ) )";
+            return "584:7: ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | ( MINUS )? NUMBER -> ( MINUS )? NUMBER | ( MINUS )? PERCENTAGE -> ( MINUS )? PERCENTAGE | ( MINUS )? DIMENSION -> ( MINUS )? DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* terms RPAREN -> ^( FUNCTION terms ) | DASHMATCH -> DASHMATCH | LPAREN ( valuepart )* RPAREN -> ^( PARENBLOCK ( valuepart )* ) | LBRACE ( valuepart )* RBRACE -> ^( BRACEBLOCK ( valuepart )* ) )";
         }
     }
     static final String DFA48_eotS =
@@ -6934,7 +6934,7 @@ public class CSSParser extends Parser {
             this.transition = DFA48_transition;
         }
         public String getDescription() {
-            return "()* loopback of 599:18: ( S )*";
+            return "()* loopback of 601:18: ( S )*";
         }
     }
     static final String DFA49_eotS =
@@ -7007,7 +7007,7 @@ public class CSSParser extends Parser {
             this.transition = DFA49_transition;
         }
         public String getDescription() {
-            return "()* loopback of 601:16: ( valuepart )*";
+            return "()* loopback of 603:16: ( valuepart )*";
         }
     }
     static final String DFA50_eotS =
@@ -7080,7 +7080,7 @@ public class CSSParser extends Parser {
             this.transition = DFA50_transition;
         }
         public String getDescription() {
-            return "()* loopback of 602:16: ( valuepart )*";
+            return "()* loopback of 604:16: ( valuepart )*";
         }
     }
     static final String DFA52_eotS =
@@ -7160,7 +7160,7 @@ public class CSSParser extends Parser {
             this.transition = DFA52_transition;
         }
         public String getDescription() {
-            return "()* loopback of 603:8: ( S )*";
+            return "()* loopback of 605:8: ( S )*";
         }
     }
     static final String DFA58_eotS =
@@ -7220,7 +7220,7 @@ public class CSSParser extends Parser {
             this.transition = DFA58_transition;
         }
         public String getDescription() {
-            return "()* loopback of 622:27: ( selpart )*";
+            return "()* loopback of 624:27: ( selpart )*";
         }
     }
     static final String DFA59_eotS =
@@ -7232,15 +7232,15 @@ public class CSSParser extends Parser {
     static final String DFA59_maxS =
         "\1\70\2\uffff\1\76\16\uffff";
     static final String DFA59_acceptS =
-        "\1\uffff\1\2\4\uffff\1\1\13\uffff";
+        "\1\uffff\1\2\13\uffff\1\1\4\uffff";
     static final String DFA59_specialS =
         "\22\uffff}>";
     static final String[] DFA59_transitionS = {
             "\1\3\7\uffff\1\1\3\uffff\1\1\13\uffff\1\1\2\uffff\1\1",
             "",
             "",
-            "\1\1\3\uffff\1\6\5\uffff\2\1\1\6\3\uffff\1\6\2\uffff\1\1\5"+
-            "\uffff\1\1\2\uffff\1\6\2\uffff\1\6\1\1\4\uffff\1\1",
+            "\1\1\3\uffff\1\15\5\uffff\2\1\1\15\3\uffff\1\15\2\uffff\1\1"+
+            "\5\uffff\1\1\2\uffff\1\15\2\uffff\1\15\1\1\4\uffff\1\1",
             "",
             "",
             "",
@@ -7287,7 +7287,7 @@ public class CSSParser extends Parser {
             this.transition = DFA59_transition;
         }
         public String getDescription() {
-            return "()* loopback of 622:36: ( S )*";
+            return "()* loopback of 624:36: ( S )*";
         }
     }
     static final String DFA60_eotS =
@@ -7347,7 +7347,7 @@ public class CSSParser extends Parser {
             this.transition = DFA60_transition;
         }
         public String getDescription() {
-            return "()+ loopback of 624:7: ( selpart )+";
+            return "()+ loopback of 626:7: ( selpart )+";
         }
     }
     static final String DFA61_eotS =
@@ -7414,7 +7414,7 @@ public class CSSParser extends Parser {
             this.transition = DFA61_transition;
         }
         public String getDescription() {
-            return "()* loopback of 624:16: ( S )*";
+            return "()* loopback of 626:16: ( S )*";
         }
     }
     static final String DFA77_eotS =
@@ -7489,7 +7489,7 @@ public class CSSParser extends Parser {
             this.transition = DFA77_transition;
         }
         public String getDescription() {
-            return "660:4: ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* ( any )* RPAREN -> ^( FUNCTION ( any )* ) | DASHMATCH -> DASHMATCH | LPAREN ( any )* RPAREN -> ^( PARENBLOCK ( any )* ) | LBRACE ( any )* RBRACE -> ^( BRACEBLOCK ( any )* ) )";
+            return "662:4: ( IDENT -> IDENT | CLASSKEYWORD -> CLASSKEYWORD | NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | HASH -> HASH | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COLON -> COLON | COMMA -> COMMA | GREATER -> GREATER | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | ASTERISK -> ASTERISK | FUNCTION ( S )* ( any )* RPAREN -> ^( FUNCTION ( any )* ) | DASHMATCH -> DASHMATCH | LPAREN ( any )* RPAREN -> ^( PARENBLOCK ( any )* ) | LBRACE ( any )* RBRACE -> ^( BRACEBLOCK ( any )* ) )";
         }
     }
     static final String DFA73_eotS =
@@ -7564,7 +7564,7 @@ public class CSSParser extends Parser {
             this.transition = DFA73_transition;
         }
         public String getDescription() {
-            return "()* loopback of 679:18: ( S )*";
+            return "()* loopback of 681:18: ( S )*";
         }
     }
     static final String DFA74_eotS =
@@ -7638,7 +7638,7 @@ public class CSSParser extends Parser {
             this.transition = DFA74_transition;
         }
         public String getDescription() {
-            return "()* loopback of 679:21: ( any )*";
+            return "()* loopback of 681:21: ( any )*";
         }
     }
     static final String DFA75_eotS =
@@ -7712,7 +7712,7 @@ public class CSSParser extends Parser {
             this.transition = DFA75_transition;
         }
         public String getDescription() {
-            return "()* loopback of 681:16: ( any )*";
+            return "()* loopback of 683:16: ( any )*";
         }
     }
     static final String DFA76_eotS =
@@ -7786,7 +7786,7 @@ public class CSSParser extends Parser {
             this.transition = DFA76_transition;
         }
         public String getDescription() {
-            return "()* loopback of 682:16: ( any )*";
+            return "()* loopback of 684:16: ( any )*";
         }
     }
     static final String DFA78_eotS =
@@ -7863,7 +7863,7 @@ public class CSSParser extends Parser {
             this.transition = DFA78_transition;
         }
         public String getDescription() {
-            return "()* loopback of 683:8: ( S )*";
+            return "()* loopback of 685:8: ( S )*";
         }
     }
  

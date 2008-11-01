@@ -42,6 +42,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 
@@ -757,46 +759,53 @@ IMPORT
 	    )?
 	  SEMICOLON 
 	  {
-  	    // FIXME consider URI as possibility
-	  	// do some funny work with file name to be imported
-	  	String fileName = $s.getText();
-	  	
-	  	if($s.getType()==STRING) 
-	  		fileName = CSSToken.extractSTRING(fileName);
-	  	else
-	  		fileName = CSSToken.extractURI(fileName);
-	  	
-	  	log.info("Will import file \"{}\" with media: {}", 
-	  		fileName, media.toString());
-	  	
-	  	fileName = ((CSSInputStream) input).getRelativeRoot() + fileName;	
-	  	log.debug("Actually, will try to import file \"{}\"", fileName);	
-	  	
-	  	// import file
-  		try {
-        	// save current lexer's stream
-        	LexerStream stream = new LexerStream(input, ls);
-        	imports.push(stream);
-        	
-        	CSSToken t = new CSSToken(IMPORT, ls);
-        	t.setText(media.toString());
-        	
-        	// switch on new stream
-        	setCharStream(CSSInputStream.fileStream(fileName));
-        	reset();
-        	
-        	log.info("File \"{}\" was imported.", fileName);
-        	emit(t);
-         } 
+		// do some funny work with file name to be imported
+        String fileName = s.getText();
+            	  	
+        if(s.getType()==STRING) 
+        	fileName = CSSToken.extractSTRING(fileName);
+        else
+        	fileName = CSSToken.extractURI(fileName);
+            	  	
+        log.info("Will import file \"{}\" with media: {}", 
+          		fileName, media.toString());           	  	
+            	  	
+        // import file
+        URL url = null;
+        try {
+        		// construct URL
+              	url = new URL(((CSSInputStream) input).getBase(), fileName);              			
+              	log.debug("Actually, will try to import file \"{}\"", url.toString());	
+              			
+                // save current lexer's stream
+                LexerStream stream = new LexerStream(input, ls);
+                imports.push(stream);
+                    	
+                CSSToken t = new CSSToken(IMPORT, ls);
+                t.setText(media.toString());
+                    	
+                // switch on new stream
+                setCharStream(CSSInputStream.urlStream(url));
+                reset();
+                    	
+                log.info("File \"{}\" was imported.", url.toString());
+                emit(t);
+         }
+         catch(MalformedURLException mue) {
+         		log.warn("Unable to construct URL for fileName", fileName); 
+              	// set type to invalid import
+                _type = INVALID_IMPORT;
+                setText("INVALID_IMPORT");
+         }              		 
          catch(IOException fnf) {
-         	log.warn("File \"{}\" to import was not found!", fileName);
-         	// restore state
-         	imports.pop();
-         	// set type to invalid import
-         	$type = INVALID_IMPORT;
-         	setText("INVALID_IMPORT");
-	  	}
-	  }
+         		log.warn("File \"{}\" to import was not found!", fileName);
+                // restore state
+                imports.pop();
+                // set type to invalid import
+                _type = INVALID_IMPORT;
+                setText("INVALID_IMPORT");
+          }
+	}
 	;
 
 MEDIA
