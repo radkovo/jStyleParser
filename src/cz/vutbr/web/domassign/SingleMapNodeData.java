@@ -35,6 +35,8 @@ public class SingleMapNodeData implements NodeData {
 	}
 	
 	public <T extends CSSProperty> T getProperty(String name) {
+		// until java 7 compiler is not able to infer correct type 
+		// this is an ugly workaround
 		return this.<T>getProperty(name, true);
 	}
 
