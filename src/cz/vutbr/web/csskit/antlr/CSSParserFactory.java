@@ -1,6 +1,7 @@
 package cz.vutbr.web.csskit.antlr;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.antlr.runtime.CommonTokenStream;
@@ -63,8 +64,8 @@ public class CSSParserFactory {
 			}
 
 			@Override
-			public CSSInputStream getInput(String source) throws IOException {
-				return CSSInputStream.stringStream(source);
+			public CSSInputStream getInput(Object source) throws IOException {
+				return CSSInputStream.stringStream((String) source);
 			}
 
 		},
@@ -97,11 +98,11 @@ public class CSSParserFactory {
 			}
 
 			@Override
-			public CSSInputStream getInput(String source) throws IOException {
-				return CSSInputStream.stringStream(source);
+			public CSSInputStream getInput(Object source) throws IOException {
+				return CSSInputStream.stringStream((String) source);
 			}
 		},
-		FILE {
+		URL {
 			@Override
 			public CommonTree getAST(CSSParser parser) throws CSSException {
 				try {
@@ -109,10 +110,10 @@ public class CSSParserFactory {
 					return (CommonTree) retval.getTree();
 				} catch (RecognitionException re) {
 					throw encapsulateException(re,
-							"Unable to parse file CSS style");
+							"Unable to parse URL CSS style");
 				} catch (RuntimeException re) {
 					throw encapsulateException(re,
-							"Unable to parse file CSS style");
+							"Unable to parse URL CSS style");
 				}
 			}
 
@@ -130,8 +131,8 @@ public class CSSParserFactory {
 			}
 
 			@Override
-			public CSSInputStream getInput(String source) throws IOException {
-				return CSSInputStream.fileStream(source);
+			public CSSInputStream getInput(Object source) throws IOException {
+				return CSSInputStream.urlStream((URL) source);
 			}
 
 		};
@@ -140,12 +141,12 @@ public class CSSParserFactory {
 		 * Creates input for CSSLexer
 		 * 
 		 * @param source
-		 *            Source, either raw data or name of file
+		 *            Source, either raw data (String) or URL 
 		 * @return Created stream
 		 * @throws IOException
 		 *             When file is not found or other IO exception occurs
 		 */
-		public abstract CSSInputStream getInput(String source)
+		public abstract CSSInputStream getInput(Object source)
 				throws IOException;
 
 		/**
@@ -208,7 +209,7 @@ public class CSSParserFactory {
 	 * @throws CSSException
 	 *             When unrecoverable exception during parsing occurs
 	 */
-	public static StyleSheet parse(String source, SourceType type,
+	public static StyleSheet parse(Object source, SourceType type,
 			Element inline) throws IOException, CSSException {
 
 		StyleSheet sheet = (StyleSheet) CSSFactory.getRuleFactory()
@@ -238,7 +239,7 @@ public class CSSParserFactory {
 	 * @throws IllegalArgumentException
 	 *             When type of source is INLINE
 	 */
-	public static StyleSheet parse(String source, SourceType type)
+	public static StyleSheet parse(Object source, SourceType type)
 			throws IOException, CSSException {
 		if (type == SourceType.INLINE)
 			throw new IllegalArgumentException(
@@ -265,7 +266,7 @@ public class CSSParserFactory {
 	 * @throws CSSException
 	 *             When unrecoverable exception during parsing occurs
 	 */
-	public static StyleSheet append(String source, SourceType type,
+	public static StyleSheet append(Object source, SourceType type,
 			Element inline, StyleSheet sheet) throws IOException, CSSException {
 
 		PriorityStrategy ps = new AtomicPriorityStrategy(sheet.getLastMark());
@@ -296,7 +297,7 @@ public class CSSParserFactory {
 	 * @throws IllegalArgumentException
 	 *             When type of source is INLINE
 	 */
-	public static StyleSheet append(String source, SourceType type,
+	public static StyleSheet append(Object source, SourceType type,
 			StyleSheet sheet) throws IOException, CSSException {
 		if (type == SourceType.INLINE)
 			throw new IllegalArgumentException(
@@ -306,7 +307,7 @@ public class CSSParserFactory {
 	}
 
 	// creates parser
-	private static CSSTreeParser createParser(String source, SourceType type,
+	private static CSSTreeParser createParser(Object source, SourceType type,
 			Preparator preparator, StyleSheet stylesheet) throws IOException,
 			CSSException {
 

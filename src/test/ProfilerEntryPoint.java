@@ -9,7 +9,7 @@ public class ProfilerEntryPoint {
 	public static void main(String[] args) throws Exception {
 
 		StyleSheet sheet = CSSParserFactory.parse("data/abclinuxu/styles.css",
-				SourceType.FILE);
+				SourceType.URL);
 
 		System.out.println("Total rules: " + sheet.size());
 

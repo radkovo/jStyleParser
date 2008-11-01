@@ -1,7 +1,10 @@
 package cz.vutbr.web.css;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
@@ -171,7 +174,9 @@ public final class CSSFactory {
 	/**
 	 * Registers node data instance. Instance must provide no-argument
 	 * Constructor
-	 * @param clazz Instance class
+	 * 
+	 * @param clazz
+	 *            Instance class
 	 */
 	public static final void registerNodeDataInstance(
 			Class<? extends NodeData> clazz) {
@@ -191,6 +196,7 @@ public final class CSSFactory {
 
 	/**
 	 * Creates instance of NodeData
+	 * 
 	 * @return Instance of NodeData
 	 */
 	public static final NodeData createNodeData() {
@@ -214,24 +220,56 @@ public final class CSSFactory {
 	}
 
 	/**
-	 * Parses file into StyleSheet
-	 * @param fileName Name of file
-	 * @param encoding Encoding of file
+	 * Parses URL into StyleSheet
+	 * 
+	 * @param url
+	 *            URL of file to be parsed
+	 * @param encoding
+	 *            Encoding of file
 	 * @return Parsed StyleSheet
-	 * @throws CSSException When exception during parse occurs
-	 * @throws IOException When file not found
+	 * @throws CSSException
+	 *             When exception during parse occurs
+	 * @throws IOException
+	 *             When file not found
+	 */
+	public static final StyleSheet parse(URL url, String encoding)
+			throws CSSException, IOException {
+		return CSSParserFactory.parse((Object) url, SourceType.URL);
+	}
+
+	/**
+	 * Parses file into StyleSheet. Internally transforms file to URL
+	 * @param fileName Name of file
+	 * @param encoding Encoding used to parse input
+	 * @return Parsed style sheet
+	 * @throws CSSException In case that parsing error occurs 
+	 * @throws IOException If file is not found or not readable
 	 */
 	public static final StyleSheet parse(String fileName, String encoding)
 			throws CSSException, IOException {
-		return CSSParserFactory.parse(fileName, SourceType.FILE);
+
+		try {
+			File f = new File(fileName);
+			URL url = f.toURI().toURL();
+			return parse(url, encoding);
+		} catch (MalformedURLException e) {
+			String message = "Unable to construct URL from fileName: "
+					+ fileName;
+			log.error(message);
+			throw new FileNotFoundException(message);
+		}
 	}
 
 	/**
 	 * Parses text into StyleSheet
-	 * @param css Text with CSS declarations
+	 * 
+	 * @param css
+	 *            Text with CSS declarations
 	 * @return Parsed StyleSheet
-	 * @throws IOException When exception during read occurs
-	 * @throws CSSException When exception during parse occurs
+	 * @throws IOException
+	 *             When exception during read occurs
+	 * @throws CSSException
+	 *             When exception during parse occurs
 	 */
 	public static final StyleSheet parse(String css) throws IOException,
 			CSSException {
@@ -302,8 +340,8 @@ public final class CSSFactory {
 				// linked style-sheet
 				else if (isLinkedStyleSheet(elem, media)) {
 					URL uri = new URL(base, elem.getAttribute("href"));
-					result = CSSParserFactory.append(uri.getFile(),
-							SourceType.FILE, result);
+					result = CSSParserFactory.append(uri, SourceType.URL,
+							result);
 					log.debug("Matched linked CSS style");
 				}
 				// in-line style

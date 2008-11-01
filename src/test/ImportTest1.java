@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Date;
 import java.util.Map;
 
@@ -42,6 +43,9 @@ public class ImportTest1 {
 
 	public static final String MEDIA_IMPORT = "@import 'test.css' aural;"
 			+ "@import 'test-print.css' print, screen\n;";
+	
+	public static final String EXTERN_IMPORT = 
+		"@import url('http://www.abclinuxu.cz/styles.css');\n";
 
 	@BeforeClass
 	public static void init() throws FileNotFoundException {
@@ -105,4 +109,14 @@ public class ImportTest1 {
 		CSSFactory.parse("data/abclinuxu/styles.css", null);
 	}
 
+	@Test
+	public void testExternAndNested() throws CSSException, IOException {
+		CSSFactory.parse(new URL("http://www.abclinuxu.cz/styles.css"), null);
+	}
+	
+	@Test
+	public void testURLImport() throws CSSException, IOException {
+		CSSFactory.parse(EXTERN_IMPORT);
+	}
+	
 }

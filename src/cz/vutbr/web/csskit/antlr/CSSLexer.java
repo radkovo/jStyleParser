@@ -3,6 +3,8 @@
 package cz.vutbr.web.csskit.antlr;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.util.Stack;
@@ -854,7 +856,6 @@ public class CSSLexer extends Lexer {
 
             mSEMICOLON(); 
 
-              	    // FIXME consider URI as possibility
             	  	// do some funny work with file name to be imported
             	  	String fileName = s.getText();
             	  	
@@ -865,12 +866,16 @@ public class CSSLexer extends Lexer {
             	  	
             	  	log.info("Will import file \"{}\" with media: {}", 
             	  		fileName, media.toString());
+            	  		
             	  	
-            	  	fileName = ((CSSInputStream) input).getRelativeRoot() + fileName;	
-            	  	log.debug("Actually, will try to import file \"{}\"", fileName);	
             	  	
             	  	// import file
+            	  	URL url = null;
               		try {
+              			// construct URL
+              			url = new URL(((CSSInputStream) input).getBase(), fileName);              			
+              			log.debug("Actually, will try to import file \"{}\"", url.toString());	
+              			
                     	// save current lexer's stream
                     	LexerStream stream = new LexerStream(input, ls);
                     	imports.push(stream);
@@ -879,12 +884,18 @@ public class CSSLexer extends Lexer {
                     	t.setText(media.toString());
                     	
                     	// switch on new stream
-                    	setCharStream(CSSInputStream.fileStream(fileName));
+                    	setCharStream(CSSInputStream.urlStream(url));
                     	reset();
                     	
-                    	log.info("File \"{}\" was imported.", fileName);
+                    	log.info("File \"{}\" was imported.", url.toString());
                     	emit(t);
-                     } 
+                     }
+              		 catch(MalformedURLException mue) {
+              			log.warn("Unable to construct URL for fileName", fileName); 
+              			// set type to invalid import
+                      	_type = INVALID_IMPORT;
+                      	setText("INVALID_IMPORT");
+              		 }              		 
                      catch(IOException fnf) {
                      	log.warn("File \"{}\" to import was not found!", fileName);
                      	// restore state

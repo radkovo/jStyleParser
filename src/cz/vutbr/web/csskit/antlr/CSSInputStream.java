@@ -8,9 +8,10 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.Charset;
 
-import org.antlr.runtime.ANTLRFileStream;
+import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CharStream;
 
@@ -33,25 +34,9 @@ public class CSSInputStream implements CharStream {
 	private String rawData;
 	
 	/**
-	 * File name, if any
+	 * Base location of this input stream
 	 */
-	private String fileName;
-	
-	/**
-	 * Path to which others are relative.
-	 * Used for import, determined from fileName used to initialize
-	 * the input stream.
-	 * 
-	 * Example:
-	 * <p>
-	 * Local path: <code>data/simple/imp.css</code> is passed.
-	 * During initialization absolute path is determined, then
-	 * its parent is used as relativeRoot for all imports found 
-	 * in that resource.
-	 * </p>
-	 * 
-	 */
-	private String relativeRoot;
+	private URL base;
 	
 	/**
 	 * Encoding of file or string. If <code>null</code>
@@ -64,8 +49,7 @@ public class CSSInputStream implements CharStream {
 		
 		stream.rawData = source;
 		stream.encoding = Charset.defaultCharset().name();
-		stream.fileName = null;
-		stream.relativeRoot = "";
+		stream.base = (new File(".")).toURL();		
 		
 		BufferedReader br = new BufferedReader(
 				new InputStreamReader(new ByteArrayInputStream(source.getBytes()), stream.encoding));
@@ -74,14 +58,13 @@ public class CSSInputStream implements CharStream {
 		return stream;
 	}
 	
-	public static CSSInputStream fileStream(String filename) throws IOException {
+	public static CSSInputStream urlStream(URL source) throws IOException {
 		CSSInputStream stream = new CSSInputStream();
 		
-		stream.fileName = filename;
+		stream.base = source;
 		stream.encoding = Charset.defaultCharset().name();
-		
-		stream.relativeRoot = computeRelativeRoot(new File(filename));
-		stream.input = new ANTLRFileStream(filename, stream.encoding);
+				
+		stream.input = new ANTLRInputStream(source.openStream(), stream.encoding);
 		
 		return stream;
 	}
@@ -146,14 +129,7 @@ public class CSSInputStream implements CharStream {
 	public void consume() {
 		input.consume();
 	}
-
-	/* (non-Javadoc)
-	 * @see org.antlr.runtime.IntStream#getSourceName()
-	 */
-	public String getSourceName() {
-		return fileName;
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.antlr.runtime.IntStream#index()
 	 */
@@ -202,29 +178,26 @@ public class CSSInputStream implements CharStream {
 	public int size() {
 		return input.size();
 	}
-
-	/**
-	 * @return the relativeRoot
-	 */
-	public String getRelativeRoot() {
-		return relativeRoot;
-	}
 	
+	/* (non-Javadoc)
+	 * @see org.antlr.runtime.CharStream#getSourceName()
+	 */
+	public String getSourceName() {
+		return base!=null ? base.toString() : "";
+	}	
+	
+	/**
+	 * @return URL base
+	 */
+	public URL getBase() {
+		return base;
+	}
 	/**
 	 * 
 	 * @return the raw data
 	 */
 	public String getRawData() {
 		return rawData;
-	}
-
-	// computes root relative to this file
-	private static String computeRelativeRoot(File file) {
-		String parent = file.getParent();
-		if(parent==null || parent.length()==0)
-			return "";
-		
-		return parent + File.separator;
 	}
 	
 	
