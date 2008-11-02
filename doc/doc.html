@@ -2,9 +2,207 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>User documentation for CSSParser</title>
 </head>
 <body>
+<h1>CSSParser</h1>
+<p>
+CSSParser is Java library, which implements parsing of CSS documents and HTML document
+including CSS declarations according to CSS 2.1 specification of W3C. Final result of this parse
+is mapping between DOM elements and their CSS declarations. This mapping can be used either to 
+display HTML document or to perform some semantic analysis on document CSS structure.
+</p>
+ 
+<h2>Internal structure of library</h2>
+Code is divided into following packages:
+<ol>
+	<li><code>cz.vutbr.web.css<code>,</li>
+	<li><code>cz.vutbr.web.csskit</code>,</li>
+	<li><code>cz.vutbr.web.domassign</code> and</li>
+	<li><code>test</code>.
+</ol>
+<p>
+The first package provides in general contracts used in other applications,
+the second one its implementation. The third package is about assigning
+CSS style-sheet to HTML elements. The last one contains test units.  
+</p> 
 
+<h3>Package <code>cz.vutbr.web.css</h3>
+<p>
+This among interfaces for implementation provides general entry-point 
+into CSSParser library. This is in class <code>CSSFactory</code>.
+By default, this uses implementation provided by <code>cz.vutbr.csskit</code> package.
+</p>
+<p>
+Next remarkable class in this package is interface <code>CSSProperty</code>, which provides 
+contract for CSS properties and by implementing this interface new CSS properties
+can be added.
+</p>
+
+<h3>Package <code>cz.vutbr.web.csskit</code></h3>
+<p>
+Provides default implementation of <code>cz.vutbr.web.css</code>. This can be changed by
+registering other implementation by calling appropriate methods of <code>CSSFactory</code>. 
+</p>
+<p>
+Internally uses <a href="http://www.antlr.org"">ANTLR</a> to parse CSS input into structures 
+defined by contracts in package <code>cz.vutbr.web.css</code>.
+</p>
+
+<h3>Package <code>cz.vutbr.web.domassign</code></h3>
+<p>
+This package provides among others class <code>Analyzer</code>,
+which is able sort CSS declaration, to classify them according to CSS medium and
+finally to assign them to DOM elements.
+</p> 
+<p>
+The transformation core is done in <code>DeclarationTransformer</code> class.
+</p>
+<p>
+Additionally, this package provides TreeWalker and TreeWalker traversals to simply 
+traversing DOM tree obtained by DOM parser, such as <code>Tidy</code> used in 
+this implementation.
+
+<h2>Usage guide</h2>
+<h3>Retrieving style-sheet structure (<code>StyleSheet</code>)</h3>
+<p> 
+This functionality should be used only if some advanced work, such as caching of 
+result for different medium is desired.
+<br/>
+Three methods are defined:
+<ul>
+	<li><code><b>StyleSheet parse(URL url, String encoding)
+			throws CSSException, IOException</b></code>, the most general method. 
+			Transforms data available at given <code>url</code>, expecting given <code>encoding</code>,
+			or taking default one if it is not provided into <code>StyleSheet</code>,			
+	</li>
+	<li><code><b>StyleSheet parse(String fileName, String encoding)
+			throws CSSException, IOException</b></code>, which internally transforms
+			<code>fileName</code> into URL and		
+	</li>
+	<li><code><b>StyleSheet parse(String css) throws IOException,
+			CSSException</b></code>, which can be used to parse embedded CSS declarations, 
+			that is declarations between &lt;style&gt; tags.
+	</li>
+</ul>
+The resulting <code>StyleSheet</code> is to about be used in <code>Analyzer</code>.
+</p>
+
+<h3>Analyzing style-sheet</h3>
+When <code>StyleSheet</code> instance is retrieved by previous step, it can be passed to <code>Analyzer</code>.
+This object classifies rules into groups by CSS medium and according to their CSS selectors. This operation is done
+only once during construction of <code>Analyzer</code> and all subsequent requests are executed on maps created 
+during this classification.
+<br/>
+This will lead to light overhead when only single CSS medium type is used, but greatly improves performance
+when one CSS style-sheet has to be analyzer from to point of view of different media.  
+</p>
+<p>
+<code>Analyzer</code> basically provides this function:
+<ul>
+	<li><code><b>Map&lt;Element, NodeData&gt; evaluateDOM(Document doc, String medium,
+			final boolean inherit)</b></code>, which according to give <code>medium</code> and
+			allowed/disabled inheritance of declarations constructs map between DOM elements 
+			and their CSS declarations. 
+	</li>
+</ul>  
+</p>
+
+<h3>Retrieving values for DOM element</h3>
+<p> 
+When analyzing part is done for style-sheet, mapping between DOM elements and structure <code>NodeData</code>
+is available.
+</p>
+<p>
+<code>NodeData</code> provides in general two methods:
+<ul>
+	<li><code><b>public &lt;T extends CSSProperty&gt; T getProperty(String name,
+			boolean includeInherited)</b></code>, which returns <code>CSSProperty</code>.
+		Basically, these properties are implementations of <code>CSSProperty</code> by specialized <code>enums</code>.
+		To distinguish between constants values and variable values the following contract is used:
+		<ul>
+			<li>UPPERCASE, that are constant values and</li>
+			<li>lowercase, that are values which contains additional information, 
+				which can be retrieved by following function.</li> 
+		</ul> 
+	</li>
+	<li><code><b>public &lt;T extends Term&lt;?&gt;&gt; T getValue(Class&lt;T&gt; clazz, String name,
+			boolean includeInherited);</b></code>
+		which retrieves value of type <code>Term</code>, determined in package <code>cz.vutbr.web.css</code>. 		
+	</li>
+</ul>
+<p>
+For both of this methods, there are defined equivalent ones with automatic inclusion of 
+inherited properties/terms.
+</p>
+</p>
+<p>Example of enum values for <code>CSSProperty</code> <code>max-height</code>:</p>
+<pre>length, percentage, NONE, INHERIT</pre>
+<p>
+Value <code>INHERIT</code> is present for all properties, <code>length</code> and <code>percentage</code> determine
+type of token which is about to be retrieved to get exact information about style
+</p>
+<p>
+For determining type of <code>CSSProperty</code> compiler inference is used. Strictly speaking,
+that means, that type of L-value(expression at the left side of equal-sign) is used to determine
+type to which result is casted. This could lead in <code>ClassCastException</code> in cases when
+user uses invalid combination of L-value type and name of property.
+<br/>
+When there is no L-value, supertype, which is <code>CSSProperty</code>, is used to cast resulting
+expression, which is always valid cast. 
+</p>
+
+<h2>Simplified and direct usage method</h2>
+<p>To provide simpler approach while parsing (X)HTML document, <code>CSSFactory</code>
+provides method:</p>
+<ul>
+	<li><code><b>Map&lt;Element, NodeData&gt; assignDOM(Document doc,
+			URL base, String medium, boolean useInheritance)</b></code>,
+		which directly creates and assigns <code>NodeData</code> to each element in
+		DOM document <code>doc</code> for given medium <code>medium</code>. While searching for 
+		externally stored CSS style-sheets, base URL <code>base</code> is used.
+		<br/>
+		This method traverses DOM tree, collecting all linked, embedded (&lt;style&gt;) and in-line
+		 (attribute style=&quot;&quot;) CSS declaration, and assign them to DOM elements.		 
+	</li>
+</ul>
+
+<h2>Extending current version</h2>
+<p>
+An extra work was done to simplify implementation of new CSS standards.
+Implementation is defined by interface contracts.
+To implement another CSS parsing level, additional work must be done:
+<ul>
+	<li><code>SupportedCSS</code>, which determines names of supported CSS properties,
+	and their default values must be replaced with new implementation. See current
+	implementation in <code>cz.vutbr.web.domassign.SupportedCSS21</code> for details.
+	That new implementation must be registered at CSSFactory.</li>
+	<li>If new CSS properties were added, their implementations of <code>CSSProperty</code>
+	must be added, preferably by enum. <code>DeclarationTransformer</code> must be then informed
+	that there are new properties and their conversion methods must be written.
+	<br/>
+	Please note, that in current implementation there are conversion methods defined 
+	for all visual CSS 2.1 properties, but they are missing for aural ones, even if
+	<code>CSSProperty</code> implementations  for aural properties are well defined.   
+	</li>
+	<li>
+	If syntax of CSS significantly changes, grammar files <code>CSS.g</code> and 
+	<code>CSSTreeParser.g</code> should be rewritten. In current version they are written
+	in way which should simplify future migration to grammar of CSS 3.0 (as seen at specification draft).
+	Then new parser should be generated. 
+	</li>
+	<li>If any changes are done in CSS selectors, <code>Analyzer</code> must be made aware 
+	of this changes while determining classification of DOM elements according to their selectors.
+	</li>
+</ul>  
+<h3>Extending performance</h3>
+During implementation some additional storage method were tested for storage
+<code>NodeData</code> considering time and spatial complexity. Current implementation is
+a compromise, specialized to lower memory usage.
+All parts of program can be changed to use different one by changing it in 
+<code>CSSFactory</code>. Other factories, which can be replaced are factory for
+creating terms (<code>TermFactory</code>) and factory for creating CSS rule parts
+(<code>RuleFactory</code>). 
+</p>
 </body>
 </html>

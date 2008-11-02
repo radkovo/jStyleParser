@@ -1,30 +1,21 @@
-Usage:
+CSSParser parses CSS 2.1 into structures which can be assigned to DOM elements.
+While handling errors, it is user agent conforming according to specification.
 
-This is CSSParser which follows 2.1 CSS specification.
+Compilation prerequisites
+=========================
 
-Usage:
+- ANTLR 3.1 to generate Lexer and Parser from grammar files. Generated output is part 
+of project to make compilation easier
 
-CSSFactory.parse() to parse either file or string
-to generate StyleSheet 
+- ANT to compile classes into jar package by using provided build file
 
-CSSFactory.assign() together with Document DOM, StyleSheet,
-and selected media type to create mapping between elements
-and their CSS declarations.
+Required Libraries
+==================
+- antlr-runtime for parsing CSS (version 3.1)
+- Tidy for HTML parsing
+- slf4j and arbitrary implementation for logging subsystem
+* (Optionally) JUnit with Hamcrest core extension (4.4) for JUnit tests
 
-Use ANT build file to generate jar. Libraries can be fetched from
-SVN. 
+All required libraries are provided within SVN repository.
 
-Required libraries are:
-
-logging:
-slf4j as facade and an arbitrary implementation
-
-
-html parsing:
-Tidy-8.0.jar
-
-parser core:
-antlr-runtime 3.1
-
-optional testing:
-junit-4.4.jar
+Additional information can be found in doc directory.

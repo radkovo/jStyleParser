@@ -2,9 +2,31 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>CSSParser README</title>
 </head>
 <body>
+<h1>CSSParser project</h1>
+<h2>What is CSSParser?</h2>
+<p>
+CSSParser parses CSS 2.1 into structures which can be assigned to DOM elements.
+While handling errors, it is user agent conforming according to specification.
+</p>
+<h2>Compilation prerequisites</h2>
+<ul>
+<li>ANTLR 3.1 to generate Lexer and Parser from grammar files. Generated output is part 
+of project to make compilation easier.</li>
+<li>ANT to compile classes into jar package by using provided build file</li>
+<li>Libraries
+	<ul>
+		<li>antlr-runtime for parsing CSS</li>
+		<li>tidy for HTML parsing</li>
+		<li>slf4j and arbitrary implementation for logging subsystem</li>
+		<li> (Optionally) JUnit with Hamcrest core extension (4.4) for JUnit tests</li> 
+	</ul>
+	All required libraries are provided within SVN repository.
+</li>
+
+</ul>
 
 </body>
 </html>
