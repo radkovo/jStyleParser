@@ -2,12 +2,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>User documentation for CSSParser</title>
+<title>User documentation for jStyleParser</title>
 </head>
 <body>
-<h1>CSSParser</h1>
+<h1>jStyleParser</h1>
 <p>
-CSSParser is Java library, which implements parsing of CSS documents and HTML document
+jStyleParser is Java library, which implements parsing of CSS documents and HTML document
 including CSS declarations according to CSS 2.1 specification of W3C. Final result of this parse
 is mapping between DOM elements and their CSS declarations. This mapping can be used either to 
 display HTML document or to perform some semantic analysis on document CSS structure.
@@ -16,7 +16,7 @@ display HTML document or to perform some semantic analysis on document CSS struc
 <h2>Internal structure of library</h2>
 Code is divided into following packages:
 <ol>
-	<li><code>cz.vutbr.web.css<code>,</li>
+	<li><code>cz.vutbr.web.css</code>,</li>
 	<li><code>cz.vutbr.web.csskit</code>,</li>
 	<li><code>cz.vutbr.web.domassign</code> and</li>
 	<li><code>test</code>.
@@ -27,10 +27,10 @@ the second one its implementation. The third package is about assigning
 CSS style-sheet to HTML elements. The last one contains test units.  
 </p> 
 
-<h3>Package <code>cz.vutbr.web.css</h3>
+<h3>Package <code>cz.vutbr.web.css</code></h3>
 <p>
 This among interfaces for implementation provides general entry-point 
-into CSSParser library. This is in class <code>CSSFactory</code>.
+into jStyleParser library. This is in class <code>CSSFactory</code>.
 By default, this uses implementation provided by <code>cz.vutbr.csskit</code> package.
 </p>
 <p>
