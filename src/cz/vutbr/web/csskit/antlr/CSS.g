@@ -61,11 +61,13 @@ import cz.vutbr.web.css.SupportedCSS;
     
     public static class LexerState {
         public short curlyNest;
+        public short parenNest;
         public boolean quotOpen;
         public boolean aposOpen;
         
         public LexerState() {
         	this.curlyNest = 0;
+        	this.parenNest = 0;
         	this.quotOpen = false;
         	this.aposOpen = false;
         }
@@ -73,6 +75,7 @@ import cz.vutbr.web.css.SupportedCSS;
         public LexerState(LexerState clone) {
         	this();
             this.curlyNest = clone.curlyNest;
+            this.parenNest = clone.parenNest;
             this.quotOpen = clone.quotOpen;
             this.aposOpen = clone.aposOpen;
         }
@@ -82,7 +85,11 @@ import cz.vutbr.web.css.SupportedCSS;
          * curly braces are balanced
 		*/ 
         public boolean isBalanced() {
-        	return aposOpen==false && quotOpen==false && curlyNest==0;
+        	return aposOpen==false && quotOpen==false && curlyNest==0 && parenNest==0;
+        }
+        
+        public boolean isFunctionBalanced() {
+        	return parenNest==0;
         }
         
         /**
@@ -103,6 +110,11 @@ import cz.vutbr.web.css.SupportedCSS;
         		t = new CSSToken(CSSLexer.QUOT, this);
         		t.setText("\"");
         	}
+        	else if(parenNest!=0) {
+        		this.parenNest--;
+        		t = new CSSToken(CSSLexer.RPAREN, this);
+        		t.setText(")");
+        	}
         	else if(curlyNest!=0) {
         		this.curlyNest--;
         		t = new CSSToken(CSSLexer.RCURLY, this);
@@ -117,6 +129,7 @@ import cz.vutbr.web.css.SupportedCSS;
         public String toString() {
         	StringBuilder sb = new StringBuilder();
         	sb.append("{=").append(curlyNest)
+        	  .append(", (=").append(parenNest)
         	  .append(", '=").append(aposOpen ? "1" : "0")
         	  .append(", \"=").append(quotOpen ? "1" :"0");
         	 
@@ -342,6 +355,12 @@ import cz.vutbr.web.css.SupportedCSS;
     		else if (c=='"' && ls.aposOpen==false) {
     			ls.quotOpen = !ls.quotOpen;
     		}
+    		else if(c=='(') {
+    			ls.parenNest++;
+    		}
+    		else if(c==')' && ls.parenNest>0) {
+    			ls.parenNest--;
+    		}
     		else if(c=='{') {
     			ls.curlyNest++;
     		}
@@ -415,6 +434,8 @@ import cz.vutbr.web.css.SupportedCSS;
     
     private StyleSheet stylesheet;
     
+    private int functLevel = 0;
+    
     /**
      * This function must be called to initialize parser's state.
      * Because we can't change directly generated constructors.
@@ -466,10 +487,10 @@ import cz.vutbr.web.css.SupportedCSS;
             // an infinite loop; this is a failsafe.
             input.consume();
         }
-        state.lastErrorIndex = input.index();
-        beginResync();
+    state.lastErrorIndex = input.index();
+    beginResync();
 		consumeUntilGreedy(input, follow);
-        endResync();
+    endResync();
 		return invalidReplacement(ttype, ttext);
 		
     }
@@ -481,14 +502,55 @@ import cz.vutbr.web.css.SupportedCSS;
 	private void consumeUntilGreedy(TokenStream input, BitSet follow) {
 		CSSToken t = null;
 		do{
-		  t= (CSSToken) input.LT(1);
+		  Token next = input.LT(1);
+		  if (next instanceof CSSToken)
+		      t= (CSSToken) input.LT(1);
+		  else
+		      break; /* not a CSSToken, probably EOF */
 		  log.trace("Skipped greedy: {}", t);
 		  // consume token even if it will match
 		  input.consume();
 		}while(!(t.getLexerState().isBalanced() && follow.member(t.getType())));
-		
 	} 
 
+  /**
+   * Recovers and logs error inside a function, using custom follow set,
+   * prepares tree part replacement
+   */ 
+  private Object invalidFallbackGreedyFunction(int ttype, String ttext, BitSet follow, RecognitionException re) {
+    reportError(re);
+    if ( state.lastErrorIndex==input.index() ) {
+      // uh oh, another error at same token index; must be a case
+      // where LT(1) is in the recovery token set so nothing is
+            // consumed; consume a single token so at least to prevent
+            // an infinite loop; this is a failsafe.
+            input.consume();
+        }
+    state.lastErrorIndex = input.index();
+    beginResync();
+    consumeUntilGreedyFunction(input, follow);
+    endResync();
+    return invalidReplacement(ttype, ttext);
+    
+    }
+  
+  /**
+   * Consumes token until lexer state is function-balanced and
+   * token from follow is matched. Matched token is also consumed
+   */ 
+  private void consumeUntilGreedyFunction(TokenStream input, BitSet follow) {
+    CSSToken t = null;
+    do{
+      Token next = input.LT(1);
+      if (next instanceof CSSToken)
+          t= (CSSToken) input.LT(1);
+      else
+          break; /* not a CSSToken, probably EOF */
+      log.trace("Skipped greedy: {}", t);
+      // consume token even if it will match
+      input.consume();
+    }while(!(t.getLexerState().isFunctionBalanced() && follow.member(t.getType())));
+  } 
 }
 
 // since declarations can match empty string
@@ -540,14 +602,17 @@ media
 	;		
 	
 ruleset
-@after {
-}
 	: combined_selector (COMMA S* combined_selector)* 
 	  LCURLY S* 
 	  	declarations
 	  RCURLY
 	  -> ^(RULE combined_selector+ declarations)
 	;
+	catch [RecognitionException re] {
+      	final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
+	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
+	  		"INVALID_STATEMENT", follow, re);							
+	}
 
 declarations
 	: declaration? (SEMICOLON S* declaration? )*
@@ -556,6 +621,7 @@ declarations
 
 declaration
 	: property COLON S* terms important? -> ^(DECLARATION important? property terms)
+	| noprop any* -> INVALID_DECLARATION
 	;
 	catch [RecognitionException re] {
 	  retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", re);									
@@ -573,12 +639,36 @@ terms
 	: term+
 	-> ^(VALUE term+)
 	;
+	catch [RecognitionException re] {
+		if (functLevel == 0)
+		{
+	      final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
+		    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
+		  		"INVALID_STATEMENT", follow, re);
+		}
+		else
+		{
+        final BitSet follow = BitSet.of(CSSLexer.RPAREN, CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
+        retval.tree = invalidFallbackGreedyFunction(CSSLexer.INVALID_STATEMENT, 
+          "INVALID_STATEMENT", follow, re);
+		}
+	}
 	
 term
     : valuepart -> valuepart
     | LCURLY S* (any | SEMICOLON S*)* RCURLY -> CURLYBLOCK
     | ATKEYWORD S* -> ATKEYWORD
     ;	
+
+funct
+@init {
+	functLevel++;
+}
+@after {
+	functLevel--;
+}
+	: FUNCTION S* terms? RPAREN -> ^(FUNCTION terms?)
+	;
 
 valuepart
     : ( IDENT -> IDENT
@@ -594,11 +684,14 @@ valuepart
       | COLON -> COLON
       | COMMA -> COMMA
       | GREATER -> GREATER
+      | LESS -> LESS
+      |	QUESTION -> QUESTION
+      | PERCENT -> PERCENT
       | EQUALS -> EQUALS
       | SLASH -> SLASH
-	  | PLUS -> PLUS
-	  | ASTERISK -> ASTERISK		 
-      | FUNCTION S* terms RPAREN -> ^(FUNCTION terms) 
+	    | PLUS -> PLUS
+	    | ASTERISK -> ASTERISK		 
+      | funct -> funct 
       | DASHMATCH -> DASHMATCH
       | LPAREN valuepart* RPAREN -> ^(PARENBLOCK valuepart*)
       | LBRACE valuepart* RBRACE -> ^(BRACEBLOCK valuepart*)
@@ -633,7 +726,7 @@ selector
 selpart	
     :  HASH
     | CLASSKEYWORD
-	| LBRACE S* attribute RBRACE -> ^(ATTRIBUTE attribute)
+	  | LBRACE S* attribute RBRACE -> ^(ATTRIBUTE attribute)
     | pseudo
     | INVALID_SELPART
     ;
@@ -672,6 +765,9 @@ any
       | COLON -> COLON
       | COMMA -> COMMA
       | GREATER -> GREATER
+      | LESS -> LESS
+      |	QUESTION -> QUESTION
+      | PERCENT -> PERCENT
       | EQUALS -> EQUALS
       | SLASH -> SLASH
       | EXCLAMATION -> EXCLAMATION
@@ -684,6 +780,25 @@ any
       | LBRACE any* RBRACE -> ^(BRACEBLOCK any*)
     ) !S*;
 
+noprop
+	: ( CLASSKEYWORD -> CLASSKEYWORD
+	  | NUMBER -> NUMBER
+      | COMMA -> COMMA
+      | GREATER -> GREATER
+      | LESS -> LESS
+      |	QUESTION -> QUESTION
+      | PERCENT -> PERCENT
+      | EQUALS -> EQUALS
+      | SLASH -> SLASH
+      | EXCLAMATION -> EXCLAMATION
+	  | MINUS -> MINUS
+	  | PLUS -> PLUS
+	  | ASTERISK -> ASTERISK		 
+      | DASHMATCH -> DASHMATCH
+      | INCLUDES -> INCLUDES
+      | STRING_CHAR -> STRING_CHAR
+      | INVALID_TOKEN -> INVALID_TOKEN
+    ) !S*;
 
 /////////////////////////////////////////////////////////////////////////////////
 // TOKENS //
@@ -759,8 +874,9 @@ IMPORT
 	    )?
 	  SEMICOLON 
 	  {
-		// do some funny work with file name to be imported
+		    // do some funny work with file name to be imported
         String fileName = s.getText();
+        log.debug("FILE: " + fileName);
             	  	
         if(s.getType()==STRING) 
         	fileName = CSSToken.extractSTRING(fileName);
@@ -773,8 +889,17 @@ IMPORT
         // import file
         URL url = null;
         try {
-        		// construct URL
-              	url = new URL(((CSSInputStream) input).getBase(), fileName);              			
+        		    // construct URL
+        		    log.debug("BASE: " + ((CSSInputStream) input).getBase());
+        		    URL base = ((CSSInputStream) input).getBase();
+        		    if (base != null)
+              	    url = new URL(base, fileName);
+              	else
+              	{
+              	    log.warn("Base URL is unknown");
+              	    url = new URL(fileName);
+              	}
+              	               			
               	log.debug("Actually, will try to import file \"{}\"", url.toString());	
               			
                 // save current lexer's stream
@@ -798,7 +923,7 @@ IMPORT
                 setText("INVALID_IMPORT");
          }              		 
          catch(IOException fnf) {
-         		log.warn("File \"{}\" to import was not found!", fileName);
+         		log.warn("Cannot read \"{}\" to import: {}", fileName, fnf.getMessage());
                 // restore state
                 imports.pop();
                 // set type to invalid import
@@ -899,6 +1024,14 @@ COMMA
     : ','
     ;
 
+QUESTION
+	: '?'
+	;
+	
+PERCENT
+	: '%'
+	;
+
 EQUALS
     : '='
     ;
@@ -909,6 +1042,10 @@ SLASH
 
 GREATER
     : '>'
+    ;    	
+
+LESS
+    : '<'
     ;    	
 
 LCURLY
@@ -928,11 +1065,11 @@ QUOT
 	;
 	
 LPAREN
-	: '('
+	: '('  {ls.parenNest++; log.debug("ON");}
 	;
 
 RPAREN
-	: ')'
+	: ')'  { if(ls.parenNest>0) ls.parenNest--;  log.debug("OFF");}
 	;		
 
 LBRACE
@@ -1056,7 +1193,7 @@ URI_MACR
   	
 fragment
 URI_CHAR
-	: ('\u0009' | '\u0021' | '\u0023'..'\u0026' | '\u0028'..'\u007E')
+	: ('\u0009' | '\u0021' | '\u0023'..'\u0026' | '\u002A'..'\u007E')
 	  | NON_ASCII | ESCAPE_CHAR
 	;	
 

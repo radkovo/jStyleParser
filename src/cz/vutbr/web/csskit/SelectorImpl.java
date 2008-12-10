@@ -86,7 +86,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	
 		// check other items of simple selector
 		for(SelectorPart item : list) {
-			if(!item.matches(e))
+			if(item == null || !item.matches(e)) //null in case of syntax error (missing term)
 				return false;
 		}
 		
@@ -334,9 +334,11 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		
 		public boolean matches(Element e) {
 			// pseudo-class
-			if((value!=null && value.matches(PSEUDO_ELEMENTS)) ||
+			/*if((value!=null && value.matches(PSEUDO_ELEMENTS)) ||
 					(functionName!=null && functionName.matches(PSEUDO_ELEMENTS)))
-				return true;
+				return true;*/
+		    if (e.getTagName().equalsIgnoreCase("a") && value.equals("link"))
+		        return true;
 			
 			return false;
 		}

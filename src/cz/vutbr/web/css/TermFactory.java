@@ -23,6 +23,7 @@ public interface TermFactory {
 	TermInteger createInteger(String value, int unary);
 	
 	TermLength createLength(Float value);
+    TermLength createLength(Float value, Unit unit);
 	TermLength createLength(String value, Unit unit, int unary);
 	
 	TermList createList();

@@ -5,7 +5,6 @@ package cz.vutbr.web.csskit.antlr;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -36,7 +35,7 @@ public class CSSInputStream implements CharStream {
 	/**
 	 * Base location of this input stream
 	 */
-	private URL base;
+	private URL base = null;
 	
 	/**
 	 * Encoding of file or string. If <code>null</code>
@@ -49,7 +48,6 @@ public class CSSInputStream implements CharStream {
 		
 		stream.rawData = source;
 		stream.encoding = Charset.defaultCharset().name();
-		stream.base = (new File(".")).toURL();		
 		
 		BufferedReader br = new BufferedReader(
 				new InputStreamReader(new ByteArrayInputStream(source.getBytes()), stream.encoding));
@@ -192,6 +190,11 @@ public class CSSInputStream implements CharStream {
 	public URL getBase() {
 		return base;
 	}
+	
+	public void setBase(URL base) {
+	    this.base = base;
+	}
+	
 	/**
 	 * 
 	 * @return the raw data

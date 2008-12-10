@@ -80,7 +80,7 @@ public class Analyzer {
 			protected void processNode(Map<Element, NodeData> result,
 					Node current, Object source) {
 
-				NodeData data = CSSFactory.createNodeData();
+			    NodeData data = CSSFactory.createNodeData();
 
 				// for all declarations available
 				List<Declaration> declarations = ((Map<Element, List<Declaration>>) source)
@@ -176,7 +176,7 @@ public class Analyzer {
 		if(log.isDebugEnabled()) {
 			log.debug("Traversal of {} {}.", e.getNodeName(), e.getNodeValue());
 		}
-
+		
 		// create set of possible candidates applicable to given element
 		// set is automatically filtered to not contain duplicates
 		Set<RuleSet> candidates = new HashSet<RuleSet>();
@@ -184,7 +184,7 @@ public class Analyzer {
 		// match element classes
 		for (String cname : ElementUtil.elementClasses(e)) {
 			// holder contains rule with given class
-			List<RuleSet> rules = holder.get(HolderItem.CLASS, cname);
+			List<RuleSet> rules = holder.get(HolderItem.CLASS, cname.toLowerCase());
 			if (rules != null)
 				candidates.addAll(rules);
 		}
@@ -193,7 +193,7 @@ public class Analyzer {
 		// match IDs
 		String id = ElementUtil.elementID(e);
 		if (id != null) {
-			List<RuleSet> rules = holder.get(HolderItem.ID, id);
+			List<RuleSet> rules = holder.get(HolderItem.ID, id.toLowerCase());
 			if (rules != null)
 				candidates.addAll(rules);
 		}
@@ -202,7 +202,7 @@ public class Analyzer {
 		// match elements
 		String name = ElementUtil.elementName(e);
 		if (name != null) {
-			List<RuleSet> rules = holder.get(HolderItem.ELEMENT, name);
+			List<RuleSet> rules = holder.get(HolderItem.ELEMENT, name.toLowerCase());
 			if (rules != null)
 				candidates.addAll(rules);
 		}
@@ -273,24 +273,20 @@ public class Analyzer {
 				if (adjacent != null)
 					retval = s.matches(adjacent);
 			} else if (combinator == Selector.Combinator.DESCENDANT) {
-				Element parent = (Element) w.parentNode();
-				retval = false;
-				if (parent != null)
-					retval = s.matches(parent);
+                Element ancestor;
+                retval = false;
+                while (!retval && (ancestor = (Element) w.parentNode()) != null) {
+                    retval = s.matches(ancestor);
+                }
 			} else if (combinator == Selector.Combinator.CHILD) {
-				Element ancestor;
-				retval = false;
-				while ((ancestor = (Element) w.parentNode()) != null
-						&& retval == false) {
-					retval = s.matches(ancestor);
-				}
+                Element parent = (Element) w.parentNode();
+                retval = false;
+                if (parent != null)
+                    retval = s.matches(parent);
 			}
 
 			// set combinator for next loop
 			combinator = s.getCombinator();
-
-			// set walker for next loop
-			w.setCurrentNode(current);
 
 			// leave loop if not matched
 			if (retval == false)

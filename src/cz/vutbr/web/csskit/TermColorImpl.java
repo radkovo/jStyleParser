@@ -107,7 +107,7 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
     		for(Term<?> term: func) {
     			// term is number and numeric
     			if(term instanceof TermInteger ) {
-    				rgb[i] = ((TermInteger)term).getValue();
+    				rgb[i] = ((TermInteger)term).getIntValue();
     			}
     			// term is percent
     			else if(term instanceof TermPercent) {

@@ -1,6 +1,7 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.Date;
@@ -12,9 +13,11 @@ import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermURI;
 
 public class SimpleTest {
 	private static Logger log = LoggerFactory.getLogger(SimpleTest.class);
@@ -74,6 +77,8 @@ public class SimpleTest {
 		"	color: #0F0;}\n" +
 		"\n";
 	
+	public static String TEST_URI1 = "BODY { background-image: url(image.jpg); } ";
+
 	
 	@BeforeClass
 	public static void init()  {
@@ -216,5 +221,21 @@ public class SimpleTest {
 		
 		StyleSheet ss = CSSFactory.parse(TEST_STRING2);
 		assertEquals("Six rules are set", 6, ss.size());
+	}
+	
+	@Test
+	public void testURI1() throws IOException, CSSException   {
+		
+		StyleSheet ss = CSSFactory.parse(TEST_URI1);
+		assertEquals("There is one rule", 1, ss.size());
+		
+		Declaration dec = (Declaration) ss.get(0).get(0);
+		assertEquals("There is one declaration", 1, ss.get(0).size());
+		
+		Object term = dec.get(0);
+		assertTrue("Term value is URI", term instanceof TermURI);
+		
+		TermURI uri = (TermURI) term;
+		assertEquals("URI has proper value", "image.jpg", uri.getValue());
 	}	
 }

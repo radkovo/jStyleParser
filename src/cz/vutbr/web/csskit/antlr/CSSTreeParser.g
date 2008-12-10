@@ -365,9 +365,12 @@ scope {
     ;
     
 term
+@init {
+  logEnter("term");
+}
     : valuepart 
       {// set operator, store and create next 
-       if(!$declaration::invalid && $terms::term!=null) {     
+       if(!$declaration::invalid && $terms::term!=null) {
           $terms::term.setOperator($terms::op);
           $terms::list.add($terms::term);
           // reinitialization
@@ -404,40 +407,44 @@ valuepart
 }
     : i=IDENT   {$terms::term = tf.createIdent(extractText(i));}
     | CLASSKEYWORD {$declaration::invalid = true;}
-	| (MINUS {$terms::unary=-1;})? n=NUMBER    {$terms::term = tf.createNumeric(extractText(n), $terms::unary);}
+	  | (MINUS {$terms::unary=-1;})? n=NUMBER    {$terms::term = tf.createNumeric(extractText(n), $terms::unary);}
     | (MINUS {$terms::unary=-1;})? p=PERCENTAGE  { $terms::term = tf.createPercent(extractText(p), $terms::unary);}
     | (MINUS {$terms::unary=-1;})? d=DIMENSION   
-	{String dim = extractText(d);
-	 $terms::term = tf.createDimension(dim, $terms::unary);
-     if($terms::term==null) {
-		 log.info("Unable to create dimension from {}, unary {}", dim, $terms::unary);
-         $declaration::invalid = true;
-	 }
-    }
+			{String dim = extractText(d);
+				 $terms::term = tf.createDimension(dim, $terms::unary);
+			     if($terms::term==null) {
+					 log.info("Unable to create dimension from {}, unary {}", dim, $terms::unary);
+			         $declaration::invalid = true;
+				 }
+	    }
     | s=string    
-	{ if(s!=null) $terms::term = tf.createString(s);
-	  else $declaration::invalid=true;
-	}
+			{ if(s!=null) $terms::term = tf.createString(s);
+			  else $declaration::invalid=true;
+			}
     | u=URI       {$terms::term = tf.createURI(extractText(u));}
     | h=HASH    
-    {$terms::term = tf.createColor(extractText(h));
-     if($terms::term==null)
-         $declaration::invalid = true;
-    }
+	    {$terms::term = tf.createColor(extractText(h));
+	     if($terms::term==null)
+	         $declaration::invalid = true;
+	    }
     | UNIRANGE  {$declaration::invalid = true;}
     | INCLUDES  {$declaration::invalid = true;}
     | COLON     {$declaration::invalid = true;}
     | COMMA     {$terms::op = Term.Operator.COMMA;}    
     | GREATER   {$declaration::invalid = true;}
+    | LESS      {$declaration::invalid = true;}
+    | QUESTION  {$declaration::invalid = true;}
+    | PERCENT   {$declaration::invalid = true;}
     | EQUALS    {$declaration::invalid = true;}
     | SLASH     {$terms::op = Term.Operator.SLASH;}
-	| PLUS		{$declaration::invalid = true;}
-	| ASTERISK  {$declaration::invalid = true;}
-    | ^(f=FUNCTION t=terms) {
+		| PLUS		  {$declaration::invalid = true;}
+		| ASTERISK  {$declaration::invalid = true;}
+    | ^(f=FUNCTION t=terms?) {
         // create function
         TermFunction function = tf.createFunction();
         function.setFunctionName(extractText(f));
-        function.setValue(t);
+        if (t != null)
+        	function.setValue(t);
         $terms::term = function;
     }
     | DASHMATCH {$declaration::invalid = true;}

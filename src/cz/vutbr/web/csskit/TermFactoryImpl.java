@@ -89,6 +89,10 @@ public class TermFactoryImpl implements TermFactory {
 		return (TermLength) (new TermLengthImpl()).setValue(value);
 	}
 
+    public TermLength createLength(Float value, Unit unit) {
+        return (TermLength) (new TermLengthImpl()).setUnit(unit).setValue(value);
+    }
+
 	public TermLength createLength(String value, Unit unit, int unary) {
 		return (TermLength) (new TermLengthImpl()).setUnit(unit).setValue(
 				convertFloat(value, unit.value(), unary));

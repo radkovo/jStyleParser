@@ -15,6 +15,7 @@ public interface TermNumeric<T> extends Term<T> {
 	 *
 	 */
 	public enum Unit {
+	    none(""),
     	px("px"),
     	em("em"),
     	ex("ex"),

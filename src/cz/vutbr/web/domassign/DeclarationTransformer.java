@@ -1534,9 +1534,9 @@ public class DeclarationTransformer {
 	 */
 	private final class ListStyleVariator extends Variator {
 
-		public static final int IMAGE = 0;
-		public static final int TYPE = 1;
-		public static final int POSITION = 2;
+		public static final int TYPE = 0;
+		public static final int POSITION = 1;
+        public static final int IMAGE = 2;
 
 		/*
 		 * protected String[] names = { "list-style-image", "list-style-type",
@@ -1544,12 +1544,12 @@ public class DeclarationTransformer {
 		 */
 		public ListStyleVariator() {
 			super(3);
-			names.add("list-style-image");
-			types.add(ListStyleImage.class);
 			names.add("list-style-type");
 			types.add(ListStyleType.class);
 			names.add("list-style-position");
 			types.add(ListStylePosition.class);
+			names.add("list-style-image");
+			types.add(ListStyleImage.class);
 		}
 
 		@Override
@@ -1560,13 +1560,6 @@ public class DeclarationTransformer {
 			int i = iteration.get();
 
 			switch (v) {
-			case IMAGE:
-				// list style image
-				return genericTermIdent(types.get(IMAGE), terms.get(i),
-						AVOID_INH, names.get(IMAGE), properties)
-						|| genericTerm(TermURI.class, terms.get(i), names
-								.get(IMAGE), ListStyleImage.uri, false,
-								properties, values);
 			case TYPE:
 				// list style type
 				return genericTermIdent(ListStyleType.class, terms.get(i),
@@ -1575,6 +1568,13 @@ public class DeclarationTransformer {
 				// list style position
 				return genericTermIdent(ListStylePosition.class, terms.get(i),
 						AVOID_INH, names.get(POSITION), properties);
+            case IMAGE:
+                // list style image
+                return genericTermIdent(types.get(IMAGE), terms.get(i),
+                        AVOID_INH, names.get(IMAGE), properties)
+                        || genericTerm(TermURI.class, terms.get(i), names
+                                .get(IMAGE), ListStyleImage.uri, false,
+                                properties, values);
 			default:
 				return false;
 			}
@@ -1770,7 +1770,7 @@ public class DeclarationTransformer {
 							AVOID_INH, properties, names.get(WEIGHT));
 				} else if (term instanceof TermInteger) {
 
-					Integer value = ((TermInteger) term).getValue();
+					Integer value = ((TermInteger) term).getIntValue();
 					for (Integer test : fontWeight) {
 						int result = value.compareTo(test);
 						// not found if value is smaller than currently compared

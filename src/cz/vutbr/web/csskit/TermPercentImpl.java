@@ -4,6 +4,7 @@ import cz.vutbr.web.css.TermPercent;
 
 /**
  * TermPercent
+ * @author burgetr
  * @author Jan Svercl, VUT Brno, 2008
  * 			modified by Karel Piwko
  * @version 1.0 * Construction moved to parser
@@ -23,4 +24,10 @@ public class TermPercentImpl extends TermNumericImpl<Float> implements TermPerce
 
 		return sb.toString();
 	}
+
+    public boolean isPercentage()
+    {
+        return true;
+    }
+	
 }

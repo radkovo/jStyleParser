@@ -5,6 +5,10 @@ package cz.vutbr.web.css;
  * @author kapy
  *
  */
-public interface TermInteger extends TermNumeric<Integer> {
-
+public interface TermInteger extends TermLength {
+    
+    public int getIntValue();
+    
+    public TermInteger setValue(int value);
+    
 }

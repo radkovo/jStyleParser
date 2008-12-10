@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import cz.vutbr.web.css.Selector;
 
@@ -33,7 +34,7 @@ public class ElementUtil {
 	}
 	
 	public static boolean matchesClass(Element e, String className) {
-		return elementClasses(e).contains(className);
+		return elementClasses(e).contains(className.toLowerCase());
 	}
 	
 	
@@ -42,11 +43,11 @@ public class ElementUtil {
 		
 		if(id==null) return null;
 		
-		return id.toLowerCase();
+		return id;
 	}
 	
 	public static boolean matchesID(Element e, String id) {
-		return id.equals(elementID(e));
+		return id.equalsIgnoreCase(elementID(e));
 	}
 	
 	public static String elementName(Element e) {
@@ -54,7 +55,7 @@ public class ElementUtil {
 		
 		if(name==null) return null;
 		
-		return name.toLowerCase();
+		return name;
 	}
 	
 	public static boolean matchesName(Element e, String name) {
@@ -67,15 +68,11 @@ public class ElementUtil {
 	
 	public static boolean matchesAttribute(Element e, String name, String value, Selector.Operator o) {
 		
-		String attributeValue = e.getAttribute(name);
+	    Node attributeNode = e.getAttributeNode(name);
+	    String attributeValue = attributeNode == null ? null : attributeNode.getNodeValue();
 		
-		if(value==null && attributeValue==null) return true;
-		else if(attributeValue==null) return false;
-		else if(o==null) return false;
-		
-		// make both lowercase
-		attributeValue = attributeValue.toLowerCase();
-		value = value.toLowerCase();
+	    if (attributeValue == null) return false; //attribute not present, everything fails
+		if (o==null) return false;
 		
 		switch(o) {
 		case EQUALS:
@@ -86,7 +83,7 @@ public class ElementUtil {
 		case DASHMATCH:
 			return attributeValue.matches("^" + value + "(\\|.*)*");
 		default:
-			return false;
+			return true;
 		}
 	}
 	

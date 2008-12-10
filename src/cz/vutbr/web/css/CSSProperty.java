@@ -38,6 +38,13 @@ public interface CSSProperty {
 	 */
 	public static final String INHERIT_KEYWORD = "INHERIT";
 
+    public static final String FONT_SERIF = java.awt.Font.SERIF;
+    public static final String FONT_SANS_SERIF = java.awt.Font.SANS_SERIF;
+    public static final String FONT_MONOSPACED = java.awt.Font.MONOSPACED;
+    public static final String FONT_CURSIVE = "Zapf-Chancery";
+    public static final String FONT_FANTASY = "Western";
+    
+    
 	/**
 	 * Allows declarations of properties to inherit or to be inherited
 	 * 
@@ -526,14 +533,16 @@ public interface CSSProperty {
 	}
 
 	public enum FontFamily implements CSSProperty {
-		list_values(""), SERIF("serif"), SANS_SERIF("sans-serif"), CURSIVE(
-				"cursive"), FANTASY("fantasy"), MONOSPACE("monospace"), INHERIT(
-				"inherit");
-
+		list_values("", ""), SERIF("serif", FONT_SERIF), SANS_SERIF("sans-serif", FONT_SANS_SERIF),
+		CURSIVE("cursive", FONT_CURSIVE), FANTASY("fantasy", FONT_FANTASY), MONOSPACE("monospace", FONT_MONOSPACED), 
+		INHERIT("inherit", "");
+		
 		private String text;
-
-		private FontFamily(String text) {
+		private String awtval;
+		
+		private FontFamily(String text, String awtval) {
 			this.text = text;
+			this.awtval = awtval;
 		}
 
 		public boolean inherited() {
@@ -547,6 +556,10 @@ public interface CSSProperty {
 		@Override
 		public String toString() {
 			return text;
+		}
+		
+		public String getAWTValue() {
+		    return awtval;
 		}
 	}
 
@@ -563,7 +576,7 @@ public interface CSSProperty {
 		}
 
 		public boolean inherited() {
-			return true;
+			return false;
 		}
 
 		public boolean equalsInherit() {

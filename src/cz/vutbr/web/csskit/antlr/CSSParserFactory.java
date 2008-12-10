@@ -29,6 +29,11 @@ public class CSSParserFactory {
 			.getLogger(CSSParserFactory.class);
 
 	/**
+	 * Last priority obtained from parsing. Next stylesheet will be started with this priority
+	 */
+	private static Priority lastPriority = null;
+	
+	/**
 	 * Encapsulates functionality associated with different source types.
 	 * 
 	 * @author kapy
@@ -101,6 +106,7 @@ public class CSSParserFactory {
 			public CSSInputStream getInput(Object source) throws IOException {
 				return CSSInputStream.stringStream((String) source);
 			}
+
 		},
 		URL {
 			@Override
@@ -210,16 +216,18 @@ public class CSSParserFactory {
 	 *             When unrecoverable exception during parsing occurs
 	 */
 	public static StyleSheet parse(Object source, SourceType type,
-			Element inline) throws IOException, CSSException {
+			Element inline, URL base) throws IOException, CSSException {
 
 		StyleSheet sheet = (StyleSheet) CSSFactory.getRuleFactory()
 				.createStyleSheet().unlock();
 
-		PriorityStrategy ps = new AtomicPriorityStrategy();
+		PriorityStrategy ps = new AtomicPriorityStrategy(lastPriority);
 		Preparator preparator = new SimplePreparator(ps, inline);
 
-		CSSTreeParser parser = createParser(source, type, preparator, sheet);
-		return type.parse(parser);
+		CSSTreeParser parser = createParser(source, type, preparator, sheet, base);
+		StyleSheet ret = type.parse(parser);
+		lastPriority = ret.getLastMark();
+		return ret;
 	}
 
 	/**
@@ -239,13 +247,13 @@ public class CSSParserFactory {
 	 * @throws IllegalArgumentException
 	 *             When type of source is INLINE
 	 */
-	public static StyleSheet parse(Object source, SourceType type)
+	public static StyleSheet parse(Object source, SourceType type, URL base)
 			throws IOException, CSSException {
 		if (type == SourceType.INLINE)
 			throw new IllegalArgumentException(
 					"Missing element for INLINE input");
 
-		return parse(source, type, null);
+		return parse(source, type, null, base);
 	}
 
 	/**
@@ -267,13 +275,18 @@ public class CSSParserFactory {
 	 *             When unrecoverable exception during parsing occurs
 	 */
 	public static StyleSheet append(Object source, SourceType type,
-			Element inline, StyleSheet sheet) throws IOException, CSSException {
+			Element inline, StyleSheet sheet, URL base) throws IOException, CSSException {
 
-		PriorityStrategy ps = new AtomicPriorityStrategy(sheet.getLastMark());
+	    Priority start = sheet.getLastMark();
+	    if (start == null)
+	        start = lastPriority;
+		PriorityStrategy ps = new AtomicPriorityStrategy(start);
 		Preparator preparator = new SimplePreparator(ps, inline);
 
-		CSSTreeParser parser = createParser(source, type, preparator, sheet);
-		return type.parse(parser);
+		CSSTreeParser parser = createParser(source, type, preparator, sheet, base);
+		StyleSheet ret = type.parse(parser);
+		lastPriority = ret.getLastMark();
+		return ret;
 	}
 
 	/**
@@ -298,20 +311,29 @@ public class CSSParserFactory {
 	 *             When type of source is INLINE
 	 */
 	public static StyleSheet append(Object source, SourceType type,
-			StyleSheet sheet) throws IOException, CSSException {
+			StyleSheet sheet, URL base) throws IOException, CSSException {
 		if (type == SourceType.INLINE)
 			throw new IllegalArgumentException(
 					"Missing element for INLINE input");
 
-		return append(source, type, null, sheet);
+		return append(source, type, null, sheet, base);
+	}
+	
+	/**
+	 * Resets the rule priority to the initial state (completely new parsing)
+	 */
+	public static void resetPriority()
+	{
+	    lastPriority = null;
 	}
 
 	// creates parser
 	private static CSSTreeParser createParser(Object source, SourceType type,
-			Preparator preparator, StyleSheet stylesheet) throws IOException,
+			Preparator preparator, StyleSheet stylesheet, URL base) throws IOException,
 			CSSException {
 
 		CSSInputStream input = type.getInput(source);
+		input.setBase(base);
 		CommonTokenStream tokens = feedLexer(input, stylesheet);
 		CommonTree ast = feedParser(tokens, type, stylesheet);
 		return feedAST(tokens, ast, preparator, stylesheet);

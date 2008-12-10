@@ -56,6 +56,7 @@ public class AbstractRule<T> extends AbstractList<T> implements Rule<T> {
 		return list.iterator();
 	}
 
+	@Override
 	public boolean add(T o) {
 		return list.add(o);
 	};

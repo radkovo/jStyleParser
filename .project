@@ -20,5 +20,6 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>net.certiv.antlrdt.core.nature</nature>
 		<nature>net.certiv.antlrdt.stg.core.nature</nature>
+		<nature>org.deved.antlride.core.nature</nature>
 	</natures>
 </projectDescription>

@@ -234,7 +234,7 @@ public final class CSSFactory {
 	 */
 	public static final StyleSheet parse(URL url, String encoding)
 			throws CSSException, IOException {
-		return CSSParserFactory.parse((Object) url, SourceType.URL);
+		return CSSParserFactory.parse((Object) url, SourceType.URL, url);
 	}
 
 	/**
@@ -273,9 +273,34 @@ public final class CSSFactory {
 	 */
 	public static final StyleSheet parse(String css) throws IOException,
 			CSSException {
-		return CSSParserFactory.parse(css, SourceType.EMBEDDED);
+		return CSSParserFactory.parse(css, SourceType.EMBEDDED, null);
 	}
 
+    /**
+     * Loads all the style sheets used from the specified DOM tree including the inline styles
+     * 
+     * @param doc
+     *            DOM tree
+     * @param base
+     *            Base URL against which all files are searched
+     * @param media
+     *            Selected media for style sheet
+     * @param useInheritance
+     *            Whether inheritance will be used to determine values
+     * @return the rules of all the style sheets used in the document including the inline styles
+     */
+    public static final StyleSheet getUsedStyles(Document doc, URL base, String media)
+    {
+        Pair pair = new Pair(base, media);
+
+        Traversal<StyleSheet> traversal = new CSSAssignTraversal(doc,
+                (Object) pair, NodeFilter.SHOW_ELEMENT);
+
+        StyleSheet style = (StyleSheet) getRuleFactory().createStyleSheet().unlock();
+        traversal.listTraversal(style);
+        return style;
+    }
+    
 	/**
 	 * Uses DOM document and uses CSS declaration
 	 * 
@@ -334,14 +359,14 @@ public final class CSSFactory {
 				// embedded style-sheet
 				if (isEmbeddedStyleSheet(elem, media)) {
 					result = CSSParserFactory.append(extractElementText(elem),
-							SourceType.EMBEDDED, result);
+							SourceType.EMBEDDED, result, base);
 					log.debug("Matched embedded CSS style");
 				}
 				// linked style-sheet
 				else if (isLinkedStyleSheet(elem, media)) {
 					URL uri = new URL(base, elem.getAttribute("href"));
 					result = CSSParserFactory.append(uri, SourceType.URL,
-							result);
+							result, base);
 					log.debug("Matched linked CSS style");
 				}
 				// in-line style
@@ -349,7 +374,7 @@ public final class CSSFactory {
 						&& elem.getAttribute("style").length() > 0) {
 					result = CSSParserFactory.append(
 							elem.getAttribute("style"), SourceType.INLINE,
-							elem, result);
+							elem, result, base);
 					log.debug("Matched inline CSS style");
 				}
 			} catch (CSSException ce) {
@@ -399,7 +424,7 @@ public final class CSSFactory {
 		private static boolean isAllowedMedia(Element e, String media) {
 			String mediaList = e.getAttribute("media");
 			if (mediaList == null || mediaList.length() == 0
-					|| mediaList.indexOf(media) != -1)
+				|| mediaList.contains(media) || mediaList.contains("all"))
 				return true;
 
 			return false;
