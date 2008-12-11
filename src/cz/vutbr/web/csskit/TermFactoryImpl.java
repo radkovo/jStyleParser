@@ -72,8 +72,15 @@ public class TermFactoryImpl implements TermFactory {
 		return new TermFunctionImpl();
 	}
 
-	public TermIdent createIdent(String value) {
-		return (TermIdent) (new TermIdentImpl()).setValue(value);
+    public TermIdent createIdent(String value) {
+        return (TermIdent) (new TermIdentImpl()).setValue(value);
+    }
+    
+	public TermIdent createIdent(String value, boolean dash) {
+	    if (!dash)
+	        return (TermIdent) (new TermIdentImpl()).setValue(value);
+	    else
+            return (TermIdent) (new TermIdentImpl()).setValue("-" + value);
 	}
 
 	public TermInteger createInteger(Integer value) {

@@ -18,6 +18,7 @@ public interface TermFactory {
 	TermFunction createFunction();
 	
 	TermIdent createIdent(String value);
+    TermIdent createIdent(String value, boolean dash);
 	
 	TermInteger createInteger(Integer value);
 	TermInteger createInteger(String value, int unary);

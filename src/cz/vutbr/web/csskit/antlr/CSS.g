@@ -671,7 +671,7 @@ funct
 	;
 
 valuepart
-    : ( IDENT -> IDENT
+    : ( MINUS? IDENT -> MINUS? IDENT
       | CLASSKEYWORD -> CLASSKEYWORD
       | MINUS? NUMBER -> MINUS? NUMBER
       | MINUS? PERCENTAGE -> MINUS? PERCENTAGE

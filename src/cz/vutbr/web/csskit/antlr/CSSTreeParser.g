@@ -349,6 +349,7 @@ scope {
     Term<?> term;
     Term.Operator op;
     int unary;
+    boolean dash;
 }   
 @init {
     logEnter("terms");
@@ -356,6 +357,7 @@ scope {
     $terms::term = null;
     $terms::op = null;
     $terms::unary = 1;
+    $terms::dash = false;
 }    
 @after {
 	log.debug("Totally added {} terms", $tlist.size());	   
@@ -376,6 +378,7 @@ term
           // reinitialization
           $terms::op = Term.Operator.SPACE;
           $terms::unary = 1;
+          $terms::dash = false;
           $terms::term = null;
        }    
       }
@@ -405,7 +408,7 @@ valuepart
         }                    
     }
 }
-    : i=IDENT   {$terms::term = tf.createIdent(extractText(i));}
+    : (MINUS {$terms::dash=true;})? i=IDENT   {$terms::term = tf.createIdent(extractText(i), $terms::dash);}
     | CLASSKEYWORD {$declaration::invalid = true;}
 	  | (MINUS {$terms::unary=-1;})? n=NUMBER    {$terms::term = tf.createNumeric(extractText(n), $terms::unary);}
     | (MINUS {$terms::unary=-1;})? p=PERCENTAGE  { $terms::term = tf.createPercent(extractText(p), $terms::unary);}
