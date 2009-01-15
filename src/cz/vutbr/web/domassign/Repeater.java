@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.LoggerFactory;
+
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.Term;
@@ -141,17 +143,19 @@ public abstract class Repeater {
 			Term<?> term33 = d.get(2);
 			assignTerms(term31, term32, term33, term32);
 			return repeat(properties, values);
-		case 4:
-			// four individual terms
+		default:
+			// four individual terms (or more - omitted)
+		    if (d.size() > 4)
+		        LoggerFactory.getLogger(Repeater.class).warn("Omitting additional terms in four-term declaration");
 			Term<?> term41 = d.get(0);
 			Term<?> term42 = d.get(1);
 			Term<?> term43 = d.get(2);
 			Term<?> term44 = d.get(3);
 			assignTerms(term41, term42, term43, term44);
 			return repeat(properties, values);
-		default:
+		/*default:
 			throw new IllegalArgumentException(
-					"Invalid length of terms in Repeater.");
+					"Invalid length of terms in Repeater.");*/
 		}
 	}
 
