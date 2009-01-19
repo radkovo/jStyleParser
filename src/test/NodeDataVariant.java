@@ -47,7 +47,7 @@ public class NodeDataVariant {
 		log.info("\n\n\n == NodeDataVariant test at {} == \n\n\n", new Date());
 		
 		Tidy parser = new Tidy();
-		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
+        parser.setInputEncoding("utf-8");
 
 		doc = parser.parseDOM(new FileInputStream("data/simple/data.html"),
 				null);

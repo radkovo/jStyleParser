@@ -38,7 +38,7 @@ public class DOMAssign {
 	public static void init() throws FileNotFoundException {
 		log.info("\n\n\n == DOMAssign test at {} == \n\n\n", new Date());
 		Tidy parser = new Tidy();
-		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
+        parser.setInputEncoding("utf-8");
 		doc = parser.parseDOM(new FileInputStream("data/advanced/domassign.html"),
 				null);
 		elements = new ElementMap(doc);

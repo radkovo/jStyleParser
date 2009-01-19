@@ -31,7 +31,7 @@ public class Test
     {
         try {
             Tidy parser = new Tidy();
-            parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
+            parser.setInputEncoding("utf-8");
             URL url = new URL("file:///home/burgetr/workspace/Layout/test/csstest.html");
             InputStream in = url.openStream();
             Document doc = parser.parseDOM(in, null);

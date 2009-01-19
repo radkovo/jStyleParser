@@ -166,7 +166,7 @@ public class GrammarRecovery1 {
 		StyleSheet sheet = CSSFactory.parse(TEST_INVALID_SELECTOR);
 
 		Tidy parser = new Tidy();
-		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
+        parser.setInputEncoding("utf-8");
 
 		Document doc = parser.parseDOM(new FileInputStream(
 				"data/simple/h1.html"), null);

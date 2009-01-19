@@ -37,7 +37,7 @@ public class UAConformancy {
 		log.info("\n\n\n == UAConformancy test at {} == \n\n\n", new Date());
 
 		Tidy parser = new Tidy();
-		parser.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
+        parser.setInputEncoding("utf-8");
 
 		Document doc = parser.parseDOM(new FileInputStream(
 				"data/invalid/style.html"), null);
