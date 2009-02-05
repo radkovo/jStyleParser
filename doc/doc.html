@@ -66,11 +66,9 @@ this implementation.
 
 <h2>User Guide</h2>
 <h3>Retrieving a style sheet structure (<code>StyleSheet</code>)</h3>
-<p> 
-This functionality should be used only if some advanced work is desired, such as caching 
-results for different media.
-<br/>
-Three methods are defined:
+<p>This functionality should be used only if some advanced work is desired, such as caching 
+results for different media.</p>
+<p>Three methods are defined:</p>
 <ul>
 	<li><code><b>StyleSheet parse(URL url, String encoding)
 			throws CSSException, IOException</b></code>, the most general method. 
@@ -86,8 +84,7 @@ Three methods are defined:
 			that is declarations between the &lt;style&gt; tags.
 	</li>
 </ul>
-The resulting <code>StyleSheet</code> cen be used as the input for <code>Analyzer</code>.
-</p>
+<p>The resulting <code>StyleSheet</code> cen be used as the input for <code>Analyzer</code>.</p>
 
 <h3>Analyzing a Style Sheet</h3>
 <p>When a <code>StyleSheet</code> instance is retrieved in the previous step, it can be passed to an <code>Analyzer</code>.
@@ -97,8 +94,7 @@ during this classification.
 This will lead to light overhead when only a single CSS medium type is used, but it greatly improves the performance
 when one CSS style-sheet has to be analyzer from to point of view of different media.  
 </p>
-<p>
-The <code>Analyzer</code> basically provides following method:
+<p>The <code>Analyzer</code> basically provides following method:</p>
 <ul>
 	<li><code><b>Map&lt;Element, NodeData&gt; evaluateDOM(Document doc, String medium,
 			final boolean inherit)</b></code>, which constructs a map between DOM elements 
@@ -106,7 +102,6 @@ The <code>Analyzer</code> basically provides following method:
 			allowed/disabled inheritance of declarations. 
 	</li>
 </ul>  
-</p>
 
 <h3>Retrieving the Values of DOM Elements</h3>
 <p> 
@@ -131,10 +126,7 @@ The <code>NodeData</code> structure provides two basic methods:
 		retrieves a value of type <code>Term</code>, determined in package <code>cz.vutbr.web.css</code>. 		
 	</li>
 </ul>
-<p>
-For both these methods, there are equivalent ones defined with automatic inclusion of inherited properties/terms.
-</p>
-</p>
+<p>For both these methods, there are equivalent ones defined with automatic inclusion of inherited properties/terms.</p>
 <p>Example of enum values for the <code>CSSProperty</code> <code>max-height</code>:</p>
 <pre>length, percentage, NONE, INHERIT</pre>
 <p>
@@ -193,15 +185,16 @@ To implement another CSS parsing level, additional work must be done:
 	<li>If any changes are done in CSS selectors, the <code>Analyzer</code> must be made aware 
 	of these changes for the classification of DOM elements according to their selectors.
 	</li>
-</ul>  
+</ul>
+
 <h3>Extending Performance</h3>
-During the implementation, some additional storage methods have been tested for
+<p>During the implementation, some additional storage methods have been tested for
 <code>NodeData</code> storage considering time and spatial complexity. Current implementation is
 a compromise, specialized to lower memory usage.
 All parts of the library can be changed to use a different implementation by changing the 
 <code>CSSFactory</code>. Other factories that can be replaced are factory for
 creating terms (<code>TermFactory</code>) and factory for creating CSS rule parts
-(<code>RuleFactory</code>). 
-</p>
+(<code>RuleFactory</code>).</p>
+
 </body>
 </html>
