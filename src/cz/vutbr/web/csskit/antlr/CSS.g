@@ -588,6 +588,8 @@ atstatement
 	  		"INVALID_STATEMENT", follow, re);							
 	}
 
+/** A ruleset in the inline style according to
+    http://www.w3.org/TR/css-style-attr */
 inlineset
 	: (pseudo S* (COMMA S* pseudo S*)*)?
       LCURLY
@@ -796,6 +798,7 @@ noprop
 	  | ASTERISK -> ASTERISK		 
       | DASHMATCH -> DASHMATCH
       | INCLUDES -> INCLUDES
+      | COLON -> COLON
       | STRING_CHAR -> STRING_CHAR
       | INVALID_TOKEN -> INVALID_TOKEN
     ) !S*;
