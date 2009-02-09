@@ -1,3 +1,27 @@
+/*
+ * BoxBrowser.java 
+ * Copyright (c) 2008 Karel Piwko
+ * Copyright (c) 2008-2009 Radek Burget
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * 
+ */
+ 
+/**
+ * A basic CSS grammar.
+ */
 grammar CSS;
 
 options {
@@ -553,8 +577,12 @@ import cz.vutbr.web.css.SupportedCSS;
   } 
 }
 
+/** Inline style contained in the 'style' attribute */
 // since declarations can match empty string
 // force at least one inlineset to exist
+//TODO: The COLON in the possible pseudo class selector of inlineset (a CSS3 thing) conflicts with the
+//colon recognized as the start of an invalid property (noprop) which is used in some nasty CSS hacks.
+//For now, the CSS3 feature is broken in favor of the hack recovery 
 inlinestyle
 	: S*  (declarations -> ^(INLINESTYLE declarations) 
 		     | inlineset+ -> ^(INLINESTYLE inlineset+)
@@ -623,7 +651,7 @@ declarations
 
 declaration
 	: property COLON S* terms important? -> ^(DECLARATION important? property terms)
-	| noprop any* -> INVALID_DECLARATION
+	| noprop any* -> INVALID_DECLARATION /* if first character in the declaration is invalid (various dirty hacks) */
 	;
 	catch [RecognitionException re] {
 	  retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", re);									
@@ -634,7 +662,7 @@ important
     ;	
 	
 property    
-	: IDENT S* -> IDENT
+	: MINUS? IDENT S* -> MINUS? IDENT
 	;
 	
 terms	       
@@ -672,6 +700,7 @@ funct
 	: FUNCTION S* terms? RPAREN -> ^(FUNCTION terms?)
 	;
 
+/** a part of a property value */
 valuepart
     : ( MINUS? IDENT -> MINUS? IDENT
       | CLASSKEYWORD -> CLASSKEYWORD
@@ -735,7 +764,6 @@ selpart
     catch [RecognitionException re] {
       retval.tree = invalidFallback(CSSLexer.INVALID_SELPART, "INVALID_SELPART", re);
 	}
-	
 
 attribute
 	: IDENT S*
@@ -782,25 +810,25 @@ any
       | LBRACE any* RBRACE -> ^(BRACEBLOCK any*)
     ) !S*;
 
+/** invalid start of a property */
 noprop
 	: ( CLASSKEYWORD -> CLASSKEYWORD
-	  | NUMBER -> NUMBER
-      | COMMA -> COMMA
-      | GREATER -> GREATER
-      | LESS -> LESS
-      |	QUESTION -> QUESTION
-      | PERCENT -> PERCENT
-      | EQUALS -> EQUALS
-      | SLASH -> SLASH
-      | EXCLAMATION -> EXCLAMATION
-	  | MINUS -> MINUS
-	  | PLUS -> PLUS
-	  | ASTERISK -> ASTERISK		 
-      | DASHMATCH -> DASHMATCH
-      | INCLUDES -> INCLUDES
-      | COLON -> COLON
-      | STRING_CHAR -> STRING_CHAR
-      | INVALID_TOKEN -> INVALID_TOKEN
+     | NUMBER -> NUMBER
+	   | COMMA -> COMMA
+	   | GREATER -> GREATER
+	   | LESS -> LESS
+	   | QUESTION -> QUESTION
+	   | PERCENT -> PERCENT
+	   | EQUALS -> EQUALS
+	   | SLASH -> SLASH
+	   | EXCLAMATION -> EXCLAMATION
+	   | PLUS -> PLUS
+	   | ASTERISK -> ASTERISK		 
+	   | DASHMATCH -> DASHMATCH
+	   | INCLUDES -> INCLUDES
+	   | COLON -> COLON
+	   | STRING_CHAR -> STRING_CHAR
+	   | INVALID_TOKEN -> INVALID_TOKEN
     ) !S*;
 
 /////////////////////////////////////////////////////////////////////////////////

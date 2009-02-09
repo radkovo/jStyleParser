@@ -338,6 +338,7 @@ property
     logLeave("property");
 }    
   : i = IDENT { $declaration::d.setProperty(extractText(i)); }
+  | MINUS i = IDENT { $declaration::d.setProperty("-" + extractText(i)); }
   ;
 
 /**
