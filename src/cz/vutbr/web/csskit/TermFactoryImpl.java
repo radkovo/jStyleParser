@@ -3,6 +3,7 @@ package cz.vutbr.web.csskit;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermAngle;
 import cz.vutbr.web.css.TermColor;
+import cz.vutbr.web.css.TermExpression;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermFrequency;
 import cz.vutbr.web.css.TermFunction;
@@ -68,6 +69,10 @@ public class TermFactoryImpl implements TermFactory {
 				.setValue(convertFloat(value, unit.value(), unary));
 	}
 
+    public TermExpression createExpression(String expr) {
+        return (new TermExpressionImpl()).setValue(expr);
+    }
+    
 	public TermFunction createFunction() {
 		return new TermFunctionImpl();
 	}

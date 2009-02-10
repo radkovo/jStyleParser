@@ -433,6 +433,59 @@ import cz.vutbr.web.css.SupportedCSS;
     	input.consume();
     	return true;
     }
+    
+    /**
+     * Reads all the contents of an expression. Parenthesis are matched but not in strings.
+     */ 
+    private String readExpressionContents() 
+    {
+      log.debug("readExpressionContents"); 
+    
+      StringBuffer ret = new StringBuffer(); 
+      int parenN = 1; /* one already open */
+      boolean inApos = false;
+      boolean inQuot = false;
+      boolean esc = false;
+      boolean finished = false;
+      int c;
+	    while (!finished)
+	    {
+	        c = input.LA(1);
+	        if(c=='\'' && !inQuot && !(inApos && esc)) {
+	            inApos = !inApos;
+	        }
+	        else if (c=='"' && !inApos && !(inQuot && esc)) {
+	            inQuot = !inQuot;
+	        }
+	        else if(c=='(' && !inApos && !inQuot) {
+	            parenN++;
+	        }
+	        else if(c==')' && parenN>0  && !inApos && !inQuot) {
+	            parenN--;
+	            if (parenN == 0) finished = true;
+	        }
+	        // handle end of line in string
+	        else if (c=='\n') {
+	           inQuot = false;
+	           inApos = false;
+	        } 
+	        else if(c==EOF) {
+	          log.info("Unexpected EOF during consumeUntilBalanced, EOF not consumed");
+	          return ret.toString();
+	        }
+	        
+	        esc = (c == '\\') && !esc;
+	        
+	        if (!finished) ret.append((char) c);
+	        
+	        input.consume();
+	          
+	    }
+	    
+	    log.debug("Expr: " + ret.toString());
+      return ret.toString();
+    }
+    
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -690,6 +743,7 @@ term
     | ATKEYWORD S* -> ATKEYWORD
     ;	
 
+/** other functions than expression */
 funct
 @init {
 	functLevel++;
@@ -697,7 +751,8 @@ funct
 @after {
 	functLevel--;
 }
-	: FUNCTION S* terms? RPAREN -> ^(FUNCTION terms?)
+  : EXPRESSION -> EXPRESSION
+	| FUNCTION S* terms? RPAREN -> ^(FUNCTION terms?)
 	;
 
 /** a part of a property value */
@@ -1096,11 +1151,11 @@ QUOT
 	;
 	
 LPAREN
-	: '('  {ls.parenNest++; log.debug("ON");}
+	: '('  {ls.parenNest++; }
 	;
 
 RPAREN
-	: ')'  { if(ls.parenNest>0) ls.parenNest--;  log.debug("OFF");}
+	: ')'  { if(ls.parenNest>0) ls.parenNest--; }
 	;		
 
 LBRACE
@@ -1139,8 +1194,13 @@ COMMENT
 SL_COMMENT
 	: '//' ( options {greedy=false;} : .)* ('\n' | '\r' ) { $channel=HIDDEN; }
 	;		
-	
-/** Function beginning */	
+
+/** Expression function */
+EXPRESSION
+  : 'expression(' { readExpressionContents(); }
+  ;
+  
+/** Other Function beginning */	
 FUNCTION
 	: IDENT_MACR '('
 	;

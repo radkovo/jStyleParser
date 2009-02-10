@@ -28,6 +28,7 @@ import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermExpression;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.RuleBlock.Priority;
@@ -443,6 +444,11 @@ valuepart
     | SLASH     {$terms::op = Term.Operator.SLASH;}
 		| PLUS		  {$declaration::invalid = true;}
 		| ASTERISK  {$declaration::invalid = true;}
+		| e=EXPRESSION {
+		    String exprval = extractText(e);
+        TermExpression expr = tf.createExpression(exprval.substring(11,exprval.length()-1)); //strip the 'expression()'
+        $terms::term = expr;
+		}
     | ^(f=FUNCTION t=terms?) {
         // create function
         TermFunction function = tf.createFunction();
