@@ -227,13 +227,13 @@ public abstract class Variator {
 				// variantPassed
 				if (!variantCondition(v, i))
 					continue;
+				//if this variant already passed, do not try again
+				//TODO: check if we shouldn't try better combination of terms
+				if (variantPassed[v])
+				    continue;
+				//check if this term corresponds to this variant
 				passed = variant(v, i, properties, values);
 				if (passed) {
-					// failed on term, because this variant already passed in
-					// past
-					if (variantPassed[v])
-						return false;
-
 					// mark occurrence of variant
 					variantPassed[v] = true;
 					// we have found, skip evaluation
