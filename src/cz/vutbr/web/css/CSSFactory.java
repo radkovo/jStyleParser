@@ -358,7 +358,6 @@ public final class CSSFactory {
 			try {
 				// embedded style-sheet
 				if (isEmbeddedStyleSheet(elem, media)) {
-				    String s = extractElementText(elem);
 					result = CSSParserFactory.append(extractElementText(elem),
 							SourceType.EMBEDDED, result, base);
 					log.debug("Matched embedded CSS style");

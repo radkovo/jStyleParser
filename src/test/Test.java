@@ -32,7 +32,7 @@ public class Test
         try {
             Tidy parser = new Tidy();
             parser.setInputEncoding("utf-8");
-            URL url = new URL("file:///home/radek/workspace/Layout/test/csstest.html");
+            URL url = new URL("file:///home/burgetr/workspace/Layout/test/csstest.html");
             InputStream in = url.openStream();
             Document doc = parser.parseDOM(in, null);
             ElementMap elements = new ElementMap(doc);
