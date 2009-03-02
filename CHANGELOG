@@ -1,1 +1,6 @@
+Version 1.1 - Mar 02, 2009
+- any contents in expression() supported
+- correct handling of various CSS hacks
+- vendor-specific properties supported
+
 Version 1.0 - Dec 11, 2008 - First public release
