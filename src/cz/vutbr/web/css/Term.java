@@ -42,7 +42,7 @@ public interface Term<T> {
     
     /**
      * Getter for value
-     * @return
+     * @return the value of the term
      */
     public T getValue();
     
@@ -55,7 +55,7 @@ public interface Term<T> {
     
     /**
      * Operator between two terms. The first term is having <code>null</code>
-     * @return
+     * @return the operator
      */
     public Operator getOperator();
 

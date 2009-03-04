@@ -95,7 +95,7 @@ public class OutputUtil {
 	 * @param delimiter Delimeter between elements
 	 * @param depth Depth of each element
 	 * @return Modified <code>sb</code> to allow chaining
-	 * @see Rule
+	 * @see cz.vutbr.web.csskit.Rule
 	 */
 	public static <T extends PrettyOutput> StringBuilder appendList(
 			StringBuilder sb, List<T> list, 

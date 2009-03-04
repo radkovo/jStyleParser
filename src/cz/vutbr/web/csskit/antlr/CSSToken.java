@@ -125,7 +125,7 @@ public class CSSToken extends CommonToken {
 	 * Considers text as content of HASH token,
 	 * and models view at this text as an common string,
 	 * that is removed {@code '#'} from the beginning of string
-	 * @param className Content of HASH token
+	 * @param hash Content of HASH token
 	 * @return String with trimmed HASH # character
 	 */
 	public static String extractHASH(String hash) {

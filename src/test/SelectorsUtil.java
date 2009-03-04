@@ -23,8 +23,8 @@ public class SelectorsUtil {
 	
 	/**
 	 * Create basic selector of HTML element
-	 * @param element
-	 * @return
+	 * @param element the element name
+	 * @return the created selector
 	 */
 	public static CombinedSelector createCS(String element) {
 		
@@ -41,8 +41,8 @@ public class SelectorsUtil {
 	
 	/**
 	 * Create list of combined selectors
-	 * @param elements
-	 * @return
+	 * @param elements list of element names
+	 * @return a list of selectors
 	 */
 	public static List<CombinedSelector> createSelectors(String...elements) {
 		

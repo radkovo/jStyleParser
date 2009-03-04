@@ -21,8 +21,8 @@ public interface CombinedSelector extends Rule<Selector> {
     public Selector getLastSelector() throws UnsupportedOperationException;
     
     /**
-     * Computes specificity according to CSS rules
-     * @return
+     * Computes specificity according to the CSS rules
+     * @return the computed specificity
      */
     public Specificity computeSpecificity();
     

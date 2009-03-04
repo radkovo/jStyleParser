@@ -201,9 +201,6 @@ public abstract class Variator {
 	/**
 	 * Test all terms
 	 * 
-	 * @param properties
-	 * @param values
-	 * @return
 	 */
 	public boolean vary(Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values) {
@@ -253,8 +250,8 @@ public abstract class Variator {
 	 * 
 	 * @param variant
 	 *            Which variant will be tested
-	 * @param term
-	 *            Term on which variant will be tested
+	 * @param d
+	 *            The declaration on which variant will be tested
 	 * @param properties
 	 *            Properties map where to store property type
 	 * @param values
@@ -313,8 +310,8 @@ public abstract class Variator {
 	/**
 	 * Assigns property names for each variant
 	 * 
-	 * @param names
-	 *            Array of property names
+	 * @param variantPropertyNames
+	 *            List of property names
 	 */
 	public void assignVariantPropertyNames(String... variantPropertyNames) {
 		this.names = Arrays.asList(variantPropertyNames);

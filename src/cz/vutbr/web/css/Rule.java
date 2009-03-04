@@ -6,7 +6,7 @@ import java.util.List;
  * Base class for elements of CSS definition.
  * All rules can be created as immutable objects, but
  * this immutability can be changed by functions
- * {@code unlock){} or {@code replaceAll()} 
+ * {@code unlock()} or {@code replaceAll()} 
  * Rule is generally collection of other, finer grained object.
  * 
  * @author kapy

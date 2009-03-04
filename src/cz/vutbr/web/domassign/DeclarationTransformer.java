@@ -257,7 +257,7 @@ public class DeclarationTransformer {
 	 *            used
 	 * @param term
 	 *            TermIdent to be transfered to property
-	 * @returns CSSProperty of type <T> or <code>null</code>
+	 * @return CSSProperty of type <T> or <code>null</code>
 	 */
 	public <T extends CSSProperty> T genericPropertyRaw(Class<T> type,
 			Set<T> intersection, TermIdent term) {

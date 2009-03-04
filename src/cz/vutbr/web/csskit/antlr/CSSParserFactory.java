@@ -237,8 +237,8 @@ public class CSSParserFactory {
 	 *            Source, interpretation depends on {@code type}
 	 * @param type
 	 *            Type of source provided
-	 * @param inline
-	 *            InlineElement
+	 * @param base
+	 *            The base URL
 	 * @return Created StyleSheet
 	 * @throws IOException
 	 *             When problem with input stream occurs
@@ -298,8 +298,8 @@ public class CSSParserFactory {
 	 *            Source, interpretation depends on {@code type}
 	 * @param type
 	 *            Type of source provided
-	 * @param inline
-	 *            Inline element
+	 * @param base
+	 *            Base url
 	 * @param sheet
 	 *            StyleSheet to be modified
 	 * @return Modified StyleSheet

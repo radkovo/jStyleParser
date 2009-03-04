@@ -532,7 +532,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 
 
 		/**
-		 * @param attribute the attribute to set
+		 * @param name the attribute to set
 		 */
 		public ElementAttribute setAttribute(String name) {
 			this.attribute = name;
