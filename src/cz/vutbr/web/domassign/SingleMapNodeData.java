@@ -66,6 +66,19 @@ public class SingleMapNodeData implements NodeData {
 		
 	}
 
+    public Term<?> getValue(String name, boolean includeInherited) {
+        
+        Quadruple q = map.get(name);
+        if(q==null) return null;
+        
+        if(includeInherited) {
+            if(q.curValue!=null) return q.curValue;
+            return q.inhValue;
+        }
+        
+        return q.curValue;
+    }
+    
 	public <T extends Term<?>> T getValue(Class<T> clazz, String name) {
 		return getValue(clazz, name, true);
 	}

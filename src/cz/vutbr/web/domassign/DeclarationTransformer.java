@@ -1811,6 +1811,9 @@ public class DeclarationTransformer {
 						|| genericTerm(TermNumber.class, terms.get(i), names
 								.get(LINE_HEIGHT), LineHeight.number, true,
 								properties, values)
+                        || genericTerm(TermInteger.class, terms.get(i), names
+                                .get(LINE_HEIGHT), LineHeight.number, true,
+                                properties, values)
 						|| genericTerm(TermPercent.class, terms.get(i), names
 								.get(LINE_HEIGHT), LineHeight.percentage, true,
 								properties, values)

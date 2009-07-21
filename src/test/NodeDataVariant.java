@@ -261,6 +261,10 @@ public class NodeDataVariant {
 			return null;
 		}
 
+        public Term<?> getValue(String name, boolean includeInherited) {
+            return null;
+        }
+        
 		public <T extends Term<?>> T getValue(Class<T> clazz, String name) {
 			return null;
 		}

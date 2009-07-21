@@ -23,10 +23,18 @@ import cz.vutbr.web.css.*;
  */
 public class Test
 {
+    
+    public static void main2(String[] args)
+    {
+        try {
+            StyleSheet ss = CSSFactory.parse("h1 { line-height: 1; }");
+            System.out.println("Style:");
+            System.out.println(ss);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-    /**
-     * @param args
-     */
     public static void main(String[] args)
     {
         try {

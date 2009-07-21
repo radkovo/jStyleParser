@@ -68,6 +68,18 @@ public class QuadrupleMapNodeData implements NodeData {
 		return retval;
 	}
 	
+    public Term<?> getValue(String name, boolean includeInherited) {
+        
+        Term<?> inherited = null;
+        
+        if(includeInherited) 
+            inherited = valuesInh.get(name);
+
+        Term<?> own = valuesOwn.get(name);
+        if(own==null) return inherited;
+        return own;
+    }
+    
 	public <T extends Term<?>> T getValue(Class<T> clazz, String name, boolean includeInherited) {
 		
 		T inherited = null;

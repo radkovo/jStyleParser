@@ -43,6 +43,18 @@ public interface NodeData {
 	public <T extends CSSProperty> T getProperty(String name,
 			boolean includeInherited);
 
+    /**
+     * Returns value of property of given name as a generic type. Inherited
+     * values can be avoided.
+     * 
+     * @param name
+     *            Name of property
+     * @param includeInherited
+     *            Whether to include inherited properties or not
+     * @return Value of property or <code>null</code>
+     */
+    public Term<?> getValue(String name, boolean includeInherited);
+    
 	/**
 	 * Returns value of property of given name and supposed type. Inherited
 	 * values are included.
