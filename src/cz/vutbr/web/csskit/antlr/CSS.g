@@ -627,7 +627,15 @@ import cz.vutbr.web.css.SupportedCSS;
       // consume token even if it will match
       input.consume();
     }while(!(t.getLexerState().isFunctionBalanced() && follow.member(t.getType())));
-  } 
+  }
+  
+  //this switches the single token insertion / deletion off
+  protected Object recoverFromMismatchedToken(IntStream input, int ttype, BitSet follow)
+      throws RecognitionException
+  {
+      throw new MismatchedTokenException(ttype, input);
+  }   
+   
 }
 
 /** Inline style contained in the 'style' attribute */
