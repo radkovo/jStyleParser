@@ -629,7 +629,7 @@ import cz.vutbr.web.css.SupportedCSS;
     }while(!(t.getLexerState().isFunctionBalanced() && follow.member(t.getType())));
   }
   
-  //this switches the single token insertion / deletion off
+  //this switches the single token insertion / deletion off because it interferes with our own error recovery
   protected Object recoverFromMismatchedToken(IntStream input, int ttype, BitSet follow)
       throws RecognitionException
   {
@@ -698,6 +698,7 @@ ruleset
 	  	declarations
 	  RCURLY
 	  -> ^(RULE combined_selector+ declarations)
+	| norule -> INVALID_STATEMENT
 	;
 	catch [RecognitionException re] {
       	final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
@@ -894,6 +895,28 @@ noprop
 	   | INVALID_TOKEN -> INVALID_TOKEN
     ) !S*;
 
+/** invalid start of a rule */
+norule
+  : ( NUMBER -> NUMBER
+	    | PERCENTAGE ->PERCENTAGE
+	    | DIMENSION -> DIMENSION
+	    | string -> string
+      | URI    -> URI
+      | UNIRANGE -> UNIRANGE
+      | INCLUDES -> INCLUDES
+      | COMMA -> COMMA
+      | GREATER -> GREATER
+      | LESS -> LESS
+      | QUESTION -> QUESTION
+      | PERCENT -> PERCENT
+      | EQUALS -> EQUALS
+      | SLASH -> SLASH
+      | EXCLAMATION -> EXCLAMATION
+	    | MINUS -> MINUS
+	    | PLUS -> PLUS
+      | DASHMATCH -> DASHMATCH
+    );
+    
 /////////////////////////////////////////////////////////////////////////////////
 // TOKENS //
 /////////////////////////////////////////////////////////////////////////////////
