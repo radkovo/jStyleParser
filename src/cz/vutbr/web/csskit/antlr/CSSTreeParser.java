@@ -1,24 +1,10 @@
-// $ANTLR 3.1 CSSTreeParser.g 2008-11-01 16:46:35
+// $ANTLR 3.1.2 /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g 2009-09-16 17:38:04
 
 package cz.vutbr.web.csskit.antlr;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.Stack;
 
-import org.antlr.runtime.BaseRecognizer;
-import org.antlr.runtime.BitSet;
-import org.antlr.runtime.DFA;
-import org.antlr.runtime.EarlyExitException;
-import org.antlr.runtime.NoViableAltException;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.RecognizerSharedState;
-import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
-import org.antlr.runtime.tree.TreeNodeStream;
-import org.antlr.runtime.tree.TreeParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +13,8 @@ import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
+import cz.vutbr.web.css.RuleMedia;
+import cz.vutbr.web.css.RulePage;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.StyleSheet;
@@ -34,97 +22,109 @@ import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermExpression;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.RuleBlock.Priority;
 
-@SuppressWarnings("unchecked")
+// @SuppressWarnings("unchecked")
+
+
+import org.antlr.runtime.*;
+import org.antlr.runtime.tree.*;import java.util.Stack;
+import java.util.List;
+import java.util.ArrayList;
+
 public class CSSTreeParser extends TreeParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "STYLESHEET", "INLINESTYLE", "ATBLOCK", "CURLYBLOCK", "PARENBLOCK", "BRACEBLOCK", "RULE", "SELECTOR", "ELEMENT", "PSEUDO", "ADJACENT", "CHILD", "DESCENDANT", "ATTRIBUTE", "SET", "DECLARATION", "VALUE", "IMPORTANT", "IMPORT_END", "INVALID_STRING", "INVALID_SELECTOR", "INVALID_SELPART", "INVALID_DECLARATION", "INVALID_STATEMENT", "INVALID_IMPORT", "S", "CDO", "CDC", "CHARSET", "IMPORT", "PAGE", "COLON", "IDENT", "LCURLY", "RCURLY", "MEDIA", "ATKEYWORD", "COMMA", "SEMICOLON", "EXCLAMATION", "CLASSKEYWORD", "MINUS", "NUMBER", "PERCENTAGE", "DIMENSION", "URI", "HASH", "UNIRANGE", "INCLUDES", "GREATER", "EQUALS", "SLASH", "PLUS", "ASTERISK", "FUNCTION", "RPAREN", "DASHMATCH", "LPAREN", "LBRACE", "RBRACE", "STRING", "IDENT_MACR", "STRING_MACR", "NAME_MACR", "NUMBER_MACR", "W_MACR", "URI_MACR", "APOS", "QUOT", "W_CHAR", "COMMENT", "SL_COMMENT", "INVALID_TOKEN", "NAME_START", "NAME_CHAR", "NON_ASCII", "ESCAPE_CHAR", "STRING_CHAR", "URI_CHAR", "NL_CHAR", "'important'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "STYLESHEET", "INLINESTYLE", "ATBLOCK", "CURLYBLOCK", "PARENBLOCK", "BRACEBLOCK", "RULE", "SELECTOR", "ELEMENT", "PSEUDO", "ADJACENT", "CHILD", "DESCENDANT", "ATTRIBUTE", "SET", "DECLARATION", "VALUE", "IMPORTANT", "IMPORT_END", "INVALID_STRING", "INVALID_SELECTOR", "INVALID_SELPART", "INVALID_DECLARATION", "INVALID_STATEMENT", "INVALID_IMPORT", "S", "CDO", "CDC", "CHARSET", "IMPORT", "PAGE", "COLON", "IDENT", "LCURLY", "RCURLY", "MEDIA", "ATKEYWORD", "COMMA", "SEMICOLON", "EXCLAMATION", "MINUS", "EXPRESSION", "FUNCTION", "RPAREN", "CLASSKEYWORD", "NUMBER", "PERCENTAGE", "DIMENSION", "URI", "HASH", "UNIRANGE", "INCLUDES", "GREATER", "LESS", "QUESTION", "PERCENT", "EQUALS", "SLASH", "PLUS", "ASTERISK", "DASHMATCH", "LPAREN", "LBRACE", "RBRACE", "STRING", "STRING_CHAR", "INVALID_TOKEN", "IDENT_MACR", "STRING_MACR", "NAME_MACR", "NUMBER_MACR", "W_MACR", "URI_MACR", "APOS", "QUOT", "W_CHAR", "COMMENT", "SL_COMMENT", "NAME_START", "NAME_CHAR", "NON_ASCII", "ESCAPE_CHAR", "URI_CHAR", "NL_CHAR", "'important'"
     };
-    public static final int FUNCTION=58;
-    public static final int APOS=71;
-    public static final int NAME_CHAR=78;
-    public static final int CLASSKEYWORD=44;
+    public static final int FUNCTION=46;
+    public static final int APOS=77;
+    public static final int NAME_CHAR=83;
+    public static final int CLASSKEYWORD=48;
     public static final int PSEUDO=13;
     public static final int INVALID_STATEMENT=27;
-    public static final int LBRACE=62;
+    public static final int LBRACE=66;
     public static final int ATTRIBUTE=17;
-    public static final int INVALID_TOKEN=76;
-    public static final int EQUALS=54;
-    public static final int NAME_START=77;
-    public static final int NUMBER_MACR=68;
+    public static final int INVALID_TOKEN=70;
+    public static final int EQUALS=60;
+    public static final int NAME_START=82;
+    public static final int NUMBER_MACR=74;
     public static final int MEDIA=39;
     public static final int CHARSET=32;
-    public static final int NL_CHAR=83;
-    public static final int NON_ASCII=79;
+    public static final int NL_CHAR=87;
+    public static final int NON_ASCII=84;
     public static final int EOF=-1;
     public static final int DECLARATION=19;
     public static final int STYLESHEET=4;
-    public static final int LPAREN=61;
-    public static final int ASTERISK=57;
+    public static final int LPAREN=65;
+    public static final int ASTERISK=63;
     public static final int BRACEBLOCK=9;
-    public static final int INCLUDES=52;
-    public static final int RPAREN=59;
+    public static final int INCLUDES=55;
+    public static final int RPAREN=47;
     public static final int IMPORT=33;
-    public static final int SLASH=55;
-    public static final int GREATER=53;
+    public static final int SLASH=61;
+    public static final int GREATER=56;
     public static final int SELECTOR=11;
     public static final int EXCLAMATION=43;
     public static final int ATBLOCK=6;
     public static final int COMMA=41;
     public static final int INVALID_SELPART=25;
+    public static final int LESS=57;
     public static final int INVALID_DECLARATION=26;
     public static final int ELEMENT=12;
     public static final int IDENT=36;
-    public static final int PLUS=56;
-    public static final int UNIRANGE=51;
-    public static final int DIMENSION=48;
-    public static final int COMMENT=74;
+    public static final int PLUS=62;
+    public static final int UNIRANGE=54;
+    public static final int DIMENSION=51;
+    public static final int COMMENT=80;
+    public static final int EXPRESSION=45;
     public static final int CURLYBLOCK=7;
     public static final int ATKEYWORD=40;
     public static final int CHILD=15;
     public static final int INVALID_STRING=23;
     public static final int RULE=10;
-    public static final int RBRACE=63;
-    public static final int W_CHAR=73;
+    public static final int PERCENT=59;
+    public static final int RBRACE=67;
+    public static final int W_CHAR=79;
     public static final int PARENBLOCK=8;
-    public static final int STRING_MACR=66;
-    public static final int W_MACR=69;
-    public static final int QUOT=72;
+    public static final int STRING_MACR=72;
+    public static final int W_MACR=75;
+    public static final int QUOT=78;
     public static final int DESCENDANT=16;
-    public static final int NUMBER=46;
-    public static final int URI_CHAR=82;
-    public static final int HASH=50;
+    public static final int NUMBER=49;
+    public static final int URI_CHAR=86;
+    public static final int HASH=53;
     public static final int LCURLY=37;
     public static final int SET=18;
     public static final int SEMICOLON=42;
-    public static final int NAME_MACR=67;
+    public static final int NAME_MACR=73;
     public static final int S=29;
     public static final int CDO=30;
     public static final int VALUE=20;
-    public static final int MINUS=45;
-    public static final int T__84=84;
+    public static final int MINUS=44;
     public static final int CDC=31;
-    public static final int PERCENTAGE=47;
+    public static final int PERCENTAGE=50;
+    public static final int T__88=88;
     public static final int INVALID_SELECTOR=24;
     public static final int IMPORTANT=21;
-    public static final int URI=49;
-    public static final int ESCAPE_CHAR=80;
+    public static final int URI=52;
+    public static final int ESCAPE_CHAR=85;
     public static final int COLON=35;
     public static final int PAGE=34;
-    public static final int STRING_CHAR=81;
-    public static final int DASHMATCH=60;
+    public static final int STRING_CHAR=69;
+    public static final int DASHMATCH=64;
     public static final int ADJACENT=14;
+    public static final int QUESTION=58;
     public static final int IMPORT_END=22;
     public static final int INVALID_IMPORT=28;
     public static final int INLINESTYLE=5;
     public static final int RCURLY=38;
-    public static final int SL_COMMENT=75;
-    public static final int IDENT_MACR=65;
-    public static final int STRING=64;
-    public static final int URI_MACR=70;
+    public static final int SL_COMMENT=81;
+    public static final int IDENT_MACR=71;
+    public static final int STRING=68;
+    public static final int URI_MACR=76;
 
     // delegates
     // delegators
@@ -140,7 +140,7 @@ public class CSSTreeParser extends TreeParser {
         
 
     public String[] getTokenNames() { return CSSTreeParser.tokenNames; }
-    public String getGrammarFileName() { return "CSSTreeParser.g"; }
+    public String getGrammarFileName() { return "/home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g"; }
 
 
     	private static Logger log = LoggerFactory.getLogger(CSSTreeParser.class);
@@ -204,7 +204,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "inlinestyle"
-    // CSSTreeParser.g:98:1: inlinestyle returns [StyleSheet sheet] : ( ^( INLINESTYLE decl= declarations ) | ^( INLINESTYLE (irs= inlineset )+ ) );
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:99:1: inlinestyle returns [StyleSheet sheet] : ( ^( INLINESTYLE decl= declarations ) | ^( INLINESTYLE (irs= inlineset )+ ) );
     public final StyleSheet inlinestyle() throws RecognitionException {
         StyleSheet sheet = null;
 
@@ -218,7 +218,7 @@ public class CSSTreeParser extends TreeParser {
         	sheet = this.stylesheet;
 
         try {
-            // CSSTreeParser.g:109:2: ( ^( INLINESTYLE decl= declarations ) | ^( INLINESTYLE (irs= inlineset )+ ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:110:2: ( ^( INLINESTYLE decl= declarations ) | ^( INLINESTYLE (irs= inlineset )+ ) )
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -256,7 +256,7 @@ public class CSSTreeParser extends TreeParser {
             }
             switch (alt2) {
                 case 1 :
-                    // CSSTreeParser.g:109:5: ^( INLINESTYLE decl= declarations )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:110:5: ^( INLINESTYLE decl= declarations )
                     {
                     match(input,INLINESTYLE,FOLLOW_INLINESTYLE_in_inlinestyle59); 
 
@@ -278,12 +278,12 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:116:6: ^( INLINESTYLE (irs= inlineset )+ )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:117:6: ^( INLINESTYLE (irs= inlineset )+ )
                     {
                     match(input,INLINESTYLE,FOLLOW_INLINESTYLE_in_inlinestyle78); 
 
                     match(input, Token.DOWN, null); 
-                    // CSSTreeParser.g:117:5: (irs= inlineset )+
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:118:5: (irs= inlineset )+
                     int cnt1=0;
                     loop1:
                     do {
@@ -297,7 +297,7 @@ public class CSSTreeParser extends TreeParser {
 
                         switch (alt1) {
                     	case 1 :
-                    	    // CSSTreeParser.g:117:6: irs= inlineset
+                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:118:6: irs= inlineset
                     	    {
                     	    pushFollow(FOLLOW_inlineset_in_inlinestyle88);
                     	    irs=inlineset();
@@ -344,7 +344,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "stylesheet"
-    // CSSTreeParser.g:121:1: stylesheet returns [StyleSheet sheet] : ^( STYLESHEET (s= statement )* ) ;
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:122:1: stylesheet returns [StyleSheet sheet] : ^( STYLESHEET (s= statement )* ) ;
     public final StyleSheet stylesheet() throws RecognitionException {
         StyleSheet sheet = null;
 
@@ -356,14 +356,14 @@ public class CSSTreeParser extends TreeParser {
         	sheet = this.stylesheet;
 
         try {
-            // CSSTreeParser.g:135:2: ( ^( STYLESHEET (s= statement )* ) )
-            // CSSTreeParser.g:135:4: ^( STYLESHEET (s= statement )* )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:136:2: ( ^( STYLESHEET (s= statement )* ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:136:4: ^( STYLESHEET (s= statement )* )
             {
             match(input,STYLESHEET,FOLLOW_STYLESHEET_in_stylesheet125); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // CSSTreeParser.g:136:4: (s= statement )*
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:137:4: (s= statement )*
                 loop3:
                 do {
                     int alt3=2;
@@ -376,7 +376,7 @@ public class CSSTreeParser extends TreeParser {
 
                     switch (alt3) {
                 	case 1 :
-                	    // CSSTreeParser.g:136:5: s= statement
+                	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:137:5: s= statement
                 	    {
                 	    pushFollow(FOLLOW_statement_in_stylesheet134);
                 	    s=statement();
@@ -424,7 +424,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "statement"
-    // CSSTreeParser.g:140:1: statement returns [RuleBlock<?> stm] : (rs= ruleset | ats= atstatement );
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:141:1: statement returns [RuleBlock<?> stm] : (rs= ruleset | ats= atstatement );
     public final RuleBlock<?> statement() throws RecognitionException {
         statement_stack.push(new statement_scope());
         RuleBlock<?> stm = null;
@@ -439,7 +439,7 @@ public class CSSTreeParser extends TreeParser {
         	((statement_scope)statement_stack.peek()).invalid = false;
 
         try {
-            // CSSTreeParser.g:159:2: (rs= ruleset | ats= atstatement )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:160:2: (rs= ruleset | ats= atstatement )
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -457,7 +457,7 @@ public class CSSTreeParser extends TreeParser {
             }
             switch (alt4) {
                 case 1 :
-                    // CSSTreeParser.g:159:4: rs= ruleset
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:160:4: rs= ruleset
                     {
                     pushFollow(FOLLOW_ruleset_in_statement183);
                     rs=ruleset();
@@ -469,7 +469,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:160:4: ats= atstatement
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:161:4: ats= atstatement
                     {
                     pushFollow(FOLLOW_atstatement_in_statement193);
                     ats=atstatement();
@@ -504,7 +504,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "atstatement"
-    // CSSTreeParser.g:164:1: atstatement returns [RuleBlock<?> stmnt] : ( CHARSET | INVALID_IMPORT | i= IMPORT | IMPORT_END | ^( PAGE (i= IDENT )? decl= declarations ) | ^( MEDIA (mediaList= media )? (rs= ruleset )* ) | INVALID_STATEMENT );
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:165:1: atstatement returns [RuleBlock<?> stmnt] : ( CHARSET | INVALID_IMPORT | i= IMPORT | IMPORT_END | ^( PAGE (i= IDENT )? decl= declarations ) | ^( MEDIA (mediaList= media )? (rs= ruleset )* ) | INVALID_STATEMENT );
     public final RuleBlock<?> atstatement() throws RecognitionException {
         atstatement_stack.push(new atstatement_scope());
         RuleBlock<?> stmnt = null;
@@ -526,7 +526,7 @@ public class CSSTreeParser extends TreeParser {
         	Priority mark = preparator.markPriority();
 
         try {
-            // CSSTreeParser.g:179:2: ( CHARSET | INVALID_IMPORT | i= IMPORT | IMPORT_END | ^( PAGE (i= IDENT )? decl= declarations ) | ^( MEDIA (mediaList= media )? (rs= ruleset )* ) | INVALID_STATEMENT )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:180:2: ( CHARSET | INVALID_IMPORT | i= IMPORT | IMPORT_END | ^( PAGE (i= IDENT )? decl= declarations ) | ^( MEDIA (mediaList= media )? (rs= ruleset )* ) | INVALID_STATEMENT )
             int alt8=7;
             switch ( input.LA(1) ) {
             case CHARSET:
@@ -573,21 +573,21 @@ public class CSSTreeParser extends TreeParser {
 
             switch (alt8) {
                 case 1 :
-                    // CSSTreeParser.g:179:4: CHARSET
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:180:4: CHARSET
                     {
                     match(input,CHARSET,FOLLOW_CHARSET_in_atstatement226); 
 
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:180:4: INVALID_IMPORT
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:181:4: INVALID_IMPORT
                     {
                     match(input,INVALID_IMPORT,FOLLOW_INVALID_IMPORT_in_atstatement232); 
 
                     }
                     break;
                 case 3 :
-                    // CSSTreeParser.g:181:4: i= IMPORT
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:182:4: i= IMPORT
                     {
                     i=(CommonTree)match(input,IMPORT,FOLLOW_IMPORT_in_atstatement240); 
 
@@ -601,7 +601,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 4 :
-                    // CSSTreeParser.g:189:4: IMPORT_END
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:190:4: IMPORT_END
                     {
                     match(input,IMPORT_END,FOLLOW_IMPORT_END_in_atstatement251); 
 
@@ -612,12 +612,12 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 5 :
-                    // CSSTreeParser.g:193:4: ^( PAGE (i= IDENT )? decl= declarations )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:194:4: ^( PAGE (i= IDENT )? decl= declarations )
                     {
                     match(input,PAGE,FOLLOW_PAGE_in_atstatement259); 
 
                     match(input, Token.DOWN, null); 
-                    // CSSTreeParser.g:193:11: (i= IDENT )?
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:194:11: (i= IDENT )?
                     int alt5=2;
                     int LA5_0 = input.LA(1);
 
@@ -626,7 +626,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     switch (alt5) {
                         case 1 :
-                            // CSSTreeParser.g:193:12: i= IDENT
+                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:194:12: i= IDENT
                             {
                             i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_atstatement264); 
                              pseudo=extractText(i);
@@ -648,13 +648,13 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 6 :
-                    // CSSTreeParser.g:195:4: ^( MEDIA (mediaList= media )? (rs= ruleset )* )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:196:4: ^( MEDIA (mediaList= media )? (rs= ruleset )* )
                     {
                     match(input,MEDIA,FOLLOW_MEDIA_in_atstatement282); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // CSSTreeParser.g:195:12: (mediaList= media )?
+                        // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:196:12: (mediaList= media )?
                         int alt6=2;
                         int LA6_0 = input.LA(1);
 
@@ -663,7 +663,7 @@ public class CSSTreeParser extends TreeParser {
                         }
                         switch (alt6) {
                             case 1 :
-                                // CSSTreeParser.g:195:13: mediaList= media
+                                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:196:13: mediaList= media
                                 {
                                 pushFollow(FOLLOW_media_in_atstatement287);
                                 mediaList=media();
@@ -676,7 +676,7 @@ public class CSSTreeParser extends TreeParser {
 
                         }
 
-                        // CSSTreeParser.g:196:4: (rs= ruleset )*
+                        // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:197:4: (rs= ruleset )*
                         loop7:
                         do {
                             int alt7=2;
@@ -689,7 +689,7 @@ public class CSSTreeParser extends TreeParser {
 
                             switch (alt7) {
                         	case 1 :
-                        	    // CSSTreeParser.g:196:5: rs= ruleset
+                        	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:197:5: rs= ruleset
                         	    {
                         	    pushFollow(FOLLOW_ruleset_in_atstatement298);
                         	    rs=ruleset();
@@ -725,7 +725,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 7 :
-                    // CSSTreeParser.g:210:4: INVALID_STATEMENT
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:211:4: INVALID_STATEMENT
                     {
                     match(input,INVALID_STATEMENT,FOLLOW_INVALID_STATEMENT_in_atstatement320); 
                     ((statement_scope)statement_stack.peek()).invalid =true;
@@ -751,7 +751,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "media"
-    // CSSTreeParser.g:213:1: media returns [List<String> affected] : (i= IDENT )+ ;
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:214:1: media returns [List<String> affected] : (i= IDENT )+ ;
     public final List<String> media() throws RecognitionException {
         List<String> affected = null;
 
@@ -762,10 +762,10 @@ public class CSSTreeParser extends TreeParser {
            affected = new ArrayList<String>();
 
         try {
-            // CSSTreeParser.g:222:2: ( (i= IDENT )+ )
-            // CSSTreeParser.g:222:4: (i= IDENT )+
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:223:2: ( (i= IDENT )+ )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:223:4: (i= IDENT )+
             {
-            // CSSTreeParser.g:222:4: (i= IDENT )+
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:223:4: (i= IDENT )+
             int cnt9=0;
             loop9:
             do {
@@ -779,7 +779,7 @@ public class CSSTreeParser extends TreeParser {
 
                 switch (alt9) {
             	case 1 :
-            	    // CSSTreeParser.g:222:5: i= IDENT
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:223:5: i= IDENT
             	    {
             	    i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_media352); 
 
@@ -819,7 +819,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "inlineset"
-    // CSSTreeParser.g:228:1: inlineset returns [RuleBlock<?> is] : ^( RULE (p= pseudo )* decl= declarations ) ;
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:229:1: inlineset returns [RuleBlock<?> is] : ^( RULE (p= pseudo )* decl= declarations ) ;
     public final RuleBlock<?> inlineset() throws RecognitionException {
         RuleBlock<?> is = null;
 
@@ -833,13 +833,13 @@ public class CSSTreeParser extends TreeParser {
         	 List<Selector.PseudoPage> pplist = new ArrayList<Selector.PseudoPage>();
 
         try {
-            // CSSTreeParser.g:236:2: ( ^( RULE (p= pseudo )* decl= declarations ) )
-            // CSSTreeParser.g:236:4: ^( RULE (p= pseudo )* decl= declarations )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:237:2: ( ^( RULE (p= pseudo )* decl= declarations ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:237:4: ^( RULE (p= pseudo )* decl= declarations )
             {
             match(input,RULE,FOLLOW_RULE_in_inlineset387); 
 
             match(input, Token.DOWN, null); 
-            // CSSTreeParser.g:236:11: (p= pseudo )*
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:237:11: (p= pseudo )*
             loop10:
             do {
                 int alt10=2;
@@ -852,7 +852,7 @@ public class CSSTreeParser extends TreeParser {
 
                 switch (alt10) {
             	case 1 :
-            	    // CSSTreeParser.g:236:12: p= pseudo
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:237:12: p= pseudo
             	    {
             	    pushFollow(FOLLOW_pseudo_in_inlineset392);
             	    p=pseudo();
@@ -896,7 +896,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "ruleset"
-    // CSSTreeParser.g:241:1: ruleset returns [RuleBlock<?> stmnt] : ^( RULE (cs= combined_selector )* decl= declarations ) ;
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:242:1: ruleset returns [RuleBlock<?> stmnt] : ^( RULE (cs= combined_selector )* decl= declarations ) ;
     public final RuleBlock<?> ruleset() throws RecognitionException {
         RuleBlock<?> stmnt = null;
 
@@ -910,13 +910,13 @@ public class CSSTreeParser extends TreeParser {
             List<CombinedSelector> cslist = new ArrayList<CombinedSelector>();
 
         try {
-            // CSSTreeParser.g:262:5: ( ^( RULE (cs= combined_selector )* decl= declarations ) )
-            // CSSTreeParser.g:262:7: ^( RULE (cs= combined_selector )* decl= declarations )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:263:5: ( ^( RULE (cs= combined_selector )* decl= declarations ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:263:7: ^( RULE (cs= combined_selector )* decl= declarations )
             {
             match(input,RULE,FOLLOW_RULE_in_ruleset453); 
 
             match(input, Token.DOWN, null); 
-            // CSSTreeParser.g:263:9: (cs= combined_selector )*
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:264:9: (cs= combined_selector )*
             loop11:
             do {
                 int alt11=2;
@@ -929,7 +929,7 @@ public class CSSTreeParser extends TreeParser {
 
                 switch (alt11) {
             	case 1 :
-            	    // CSSTreeParser.g:263:10: cs= combined_selector
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:264:10: cs= combined_selector
             	    {
             	    pushFollow(FOLLOW_combined_selector_in_ruleset467);
             	    cs=combined_selector();
@@ -985,7 +985,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "declarations"
-    // CSSTreeParser.g:273:1: declarations returns [List<Declaration> decl] : ^( SET (d= declaration )* ) ;
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:274:1: declarations returns [List<Declaration> decl] : ^( SET (d= declaration )* ) ;
     public final List<Declaration> declarations() throws RecognitionException {
         List<Declaration> decl = null;
 
@@ -997,14 +997,14 @@ public class CSSTreeParser extends TreeParser {
         		  decl = new ArrayList<Declaration>();
 
         try {
-            // CSSTreeParser.g:284:2: ( ^( SET (d= declaration )* ) )
-            // CSSTreeParser.g:284:4: ^( SET (d= declaration )* )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:285:2: ( ^( SET (d= declaration )* ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:285:4: ^( SET (d= declaration )* )
             {
             match(input,SET,FOLLOW_SET_in_declarations529); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // CSSTreeParser.g:284:10: (d= declaration )*
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:285:10: (d= declaration )*
                 loop12:
                 do {
                     int alt12=2;
@@ -1017,7 +1017,7 @@ public class CSSTreeParser extends TreeParser {
 
                     switch (alt12) {
                 	case 1 :
-                	    // CSSTreeParser.g:284:11: d= declaration
+                	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:285:11: d= declaration
                 	    {
                 	    pushFollow(FOLLOW_declaration_in_declarations534);
                 	    d=declaration();
@@ -1067,7 +1067,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "declaration"
-    // CSSTreeParser.g:294:1: declaration returns [Declaration decl] : ( ^( DECLARATION ( important )? property t= terms ) | INVALID_DECLARATION );
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:295:1: declaration returns [Declaration decl] : ( ^( DECLARATION ( important )? property t= terms ) | INVALID_DECLARATION );
     public final Declaration declaration() throws RecognitionException {
         declaration_stack.push(new declaration_scope());
         Declaration decl = null;
@@ -1081,7 +1081,7 @@ public class CSSTreeParser extends TreeParser {
             ((declaration_scope)declaration_stack.peek()).invalid = false;
 
         try {
-            // CSSTreeParser.g:317:3: ( ^( DECLARATION ( important )? property t= terms ) | INVALID_DECLARATION )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:318:3: ( ^( DECLARATION ( important )? property t= terms ) | INVALID_DECLARATION )
             int alt14=2;
             int LA14_0 = input.LA(1);
 
@@ -1099,12 +1099,12 @@ public class CSSTreeParser extends TreeParser {
             }
             switch (alt14) {
                 case 1 :
-                    // CSSTreeParser.g:317:5: ^( DECLARATION ( important )? property t= terms )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:318:5: ^( DECLARATION ( important )? property t= terms )
                     {
                     match(input,DECLARATION,FOLLOW_DECLARATION_in_declaration578); 
 
                     match(input, Token.DOWN, null); 
-                    // CSSTreeParser.g:318:4: ( important )?
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:319:4: ( important )?
                     int alt13=2;
                     int LA13_0 = input.LA(1);
 
@@ -1113,7 +1113,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     switch (alt13) {
                         case 1 :
-                            // CSSTreeParser.g:318:5: important
+                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:319:5: important
                             {
                             pushFollow(FOLLOW_important_in_declaration585);
                             important();
@@ -1144,7 +1144,7 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:322:5: INVALID_DECLARATION
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:323:5: INVALID_DECLARATION
                     {
                     match(input,INVALID_DECLARATION,FOLLOW_INVALID_DECLARATION_in_declaration629); 
                      ((declaration_scope)declaration_stack.peek()).invalid =true;
@@ -1177,11 +1177,11 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "important"
-    // CSSTreeParser.g:325:1: important : IMPORTANT ;
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:326:1: important : IMPORTANT ;
     public final void important() throws RecognitionException {
         try {
-            // CSSTreeParser.g:326:5: ( IMPORTANT )
-            // CSSTreeParser.g:326:7: IMPORTANT
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:327:5: ( IMPORTANT )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:327:7: IMPORTANT
             {
             match(input,IMPORTANT,FOLLOW_IMPORTANT_in_important646); 
 
@@ -1200,7 +1200,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "property"
-    // CSSTreeParser.g:329:1: property : i= IDENT ;
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:330:1: property : (i= IDENT | MINUS i= IDENT );
     public final void property() throws RecognitionException {
         CommonTree i=null;
 
@@ -1208,14 +1208,42 @@ public class CSSTreeParser extends TreeParser {
             logEnter("property");
 
         try {
-            // CSSTreeParser.g:340:3: (i= IDENT )
-            // CSSTreeParser.g:340:5: i= IDENT
-            {
-            i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_property686); 
-             ((declaration_scope)declaration_stack.peek()).d.setProperty(extractText(i)); 
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:341:3: (i= IDENT | MINUS i= IDENT )
+            int alt15=2;
+            int LA15_0 = input.LA(1);
+
+            if ( (LA15_0==IDENT) ) {
+                alt15=1;
+            }
+            else if ( (LA15_0==MINUS) ) {
+                alt15=2;
+            }
+            else {
+                NoViableAltException nvae =
+                    new NoViableAltException("", 15, 0, input);
+
+                throw nvae;
+            }
+            switch (alt15) {
+                case 1 :
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:341:5: i= IDENT
+                    {
+                    i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_property686); 
+                     ((declaration_scope)declaration_stack.peek()).d.setProperty(extractText(i)); 
+
+                    }
+                    break;
+                case 2 :
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:342:5: MINUS i= IDENT
+                    {
+                    match(input,MINUS,FOLLOW_MINUS_in_property694); 
+                    i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_property700); 
+                     ((declaration_scope)declaration_stack.peek()).d.setProperty("-" + extractText(i)); 
+
+                    }
+                    break;
 
             }
-
 
             	log.debug("Setting property: {}", ((declaration_scope)declaration_stack.peek()).d.getProperty());	   
                 logLeave("property");
@@ -1236,12 +1264,13 @@ public class CSSTreeParser extends TreeParser {
         Term<?> term;
         Term.Operator op;
         int unary;
+        boolean dash;
     }
     protected Stack terms_stack = new Stack();
 
 
     // $ANTLR start "terms"
-    // CSSTreeParser.g:343:1: terms returns [List<Term<?>> tlist] : ^( VALUE ( term )+ ) ;
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:345:1: terms returns [List<Term<?>> tlist] : ^( VALUE ( term )+ ) ;
     public final List<Term<?>> terms() throws RecognitionException {
         terms_stack.push(new terms_scope());
         List<Term<?>> tlist = null;
@@ -1252,31 +1281,32 @@ public class CSSTreeParser extends TreeParser {
             ((terms_scope)terms_stack.peek()).term = null;
             ((terms_scope)terms_stack.peek()).op = null;
             ((terms_scope)terms_stack.peek()).unary = 1;
+            ((terms_scope)terms_stack.peek()).dash = false;
 
         try {
-            // CSSTreeParser.g:364:5: ( ^( VALUE ( term )+ ) )
-            // CSSTreeParser.g:364:7: ^( VALUE ( term )+ )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:368:5: ( ^( VALUE ( term )+ ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:368:7: ^( VALUE ( term )+ )
             {
-            match(input,VALUE,FOLLOW_VALUE_in_terms731); 
+            match(input,VALUE,FOLLOW_VALUE_in_terms745); 
 
             match(input, Token.DOWN, null); 
-            // CSSTreeParser.g:364:15: ( term )+
-            int cnt15=0;
-            loop15:
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:368:15: ( term )+
+            int cnt16=0;
+            loop16:
             do {
-                int alt15=2;
-                int LA15_0 = input.LA(1);
+                int alt16=2;
+                int LA16_0 = input.LA(1);
 
-                if ( ((LA15_0>=CURLYBLOCK && LA15_0<=BRACEBLOCK)||LA15_0==INVALID_STRING||(LA15_0>=COLON && LA15_0<=IDENT)||(LA15_0>=ATKEYWORD && LA15_0<=COMMA)||(LA15_0>=CLASSKEYWORD && LA15_0<=FUNCTION)||LA15_0==DASHMATCH||LA15_0==STRING) ) {
-                    alt15=1;
+                if ( ((LA16_0>=CURLYBLOCK && LA16_0<=BRACEBLOCK)||LA16_0==INVALID_STRING||(LA16_0>=COLON && LA16_0<=IDENT)||(LA16_0>=ATKEYWORD && LA16_0<=COMMA)||(LA16_0>=MINUS && LA16_0<=FUNCTION)||(LA16_0>=CLASSKEYWORD && LA16_0<=DASHMATCH)||LA16_0==STRING) ) {
+                    alt16=1;
                 }
 
 
-                switch (alt15) {
+                switch (alt16) {
             	case 1 :
-            	    // CSSTreeParser.g:364:15: term
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:368:15: term
             	    {
-            	    pushFollow(FOLLOW_term_in_terms733);
+            	    pushFollow(FOLLOW_term_in_terms747);
             	    term();
 
             	    state._fsp--;
@@ -1286,12 +1316,12 @@ public class CSSTreeParser extends TreeParser {
             	    break;
 
             	default :
-            	    if ( cnt15 >= 1 ) break loop15;
+            	    if ( cnt16 >= 1 ) break loop16;
                         EarlyExitException eee =
-                            new EarlyExitException(15, input);
+                            new EarlyExitException(16, input);
                         throw eee;
                 }
-                cnt15++;
+                cnt16++;
             } while (true);
 
 
@@ -1317,11 +1347,14 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "term"
-    // CSSTreeParser.g:367:1: term : ( valuepart | CURLYBLOCK | ATKEYWORD );
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:371:1: term : ( valuepart | CURLYBLOCK | ATKEYWORD );
     public final void term() throws RecognitionException {
+
+          logEnter("term");
+
         try {
-            // CSSTreeParser.g:368:5: ( valuepart | CURLYBLOCK | ATKEYWORD )
-            int alt16=3;
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:375:5: ( valuepart | CURLYBLOCK | ATKEYWORD )
+            int alt17=3;
             switch ( input.LA(1) ) {
             case PARENBLOCK:
             case BRACEBLOCK:
@@ -1329,8 +1362,10 @@ public class CSSTreeParser extends TreeParser {
             case COLON:
             case IDENT:
             case COMMA:
-            case CLASSKEYWORD:
             case MINUS:
+            case EXPRESSION:
+            case FUNCTION:
+            case CLASSKEYWORD:
             case NUMBER:
             case PERCENTAGE:
             case DIMENSION:
@@ -1339,50 +1374,53 @@ public class CSSTreeParser extends TreeParser {
             case UNIRANGE:
             case INCLUDES:
             case GREATER:
+            case LESS:
+            case QUESTION:
+            case PERCENT:
             case EQUALS:
             case SLASH:
             case PLUS:
             case ASTERISK:
-            case FUNCTION:
             case DASHMATCH:
             case STRING:
                 {
-                alt16=1;
+                alt17=1;
                 }
                 break;
             case CURLYBLOCK:
                 {
-                alt16=2;
+                alt17=2;
                 }
                 break;
             case ATKEYWORD:
                 {
-                alt16=3;
+                alt17=3;
                 }
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("", 16, 0, input);
+                    new NoViableAltException("", 17, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt16) {
+            switch (alt17) {
                 case 1 :
-                    // CSSTreeParser.g:368:7: valuepart
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:375:7: valuepart
                     {
-                    pushFollow(FOLLOW_valuepart_in_term756);
+                    pushFollow(FOLLOW_valuepart_in_term775);
                     valuepart();
 
                     state._fsp--;
 
                     // set operator, store and create next 
-                           if(!((declaration_scope)declaration_stack.peek()).invalid && ((terms_scope)terms_stack.peek()).term!=null) {     
+                           if(!((declaration_scope)declaration_stack.peek()).invalid && ((terms_scope)terms_stack.peek()).term!=null) {
                               ((terms_scope)terms_stack.peek()).term.setOperator(((terms_scope)terms_stack.peek()).op);
                               ((terms_scope)terms_stack.peek()).list.add(((terms_scope)terms_stack.peek()).term);
                               // reinitialization
                               ((terms_scope)terms_stack.peek()).op = Term.Operator.SPACE;
                               ((terms_scope)terms_stack.peek()).unary = 1;
+                              ((terms_scope)terms_stack.peek()).dash = false;
                               ((terms_scope)terms_stack.peek()).term = null;
                            }    
                           
@@ -1390,17 +1428,17 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:379:7: CURLYBLOCK
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:387:7: CURLYBLOCK
                     {
-                    match(input,CURLYBLOCK,FOLLOW_CURLYBLOCK_in_term773); 
+                    match(input,CURLYBLOCK,FOLLOW_CURLYBLOCK_in_term792); 
                      ((declaration_scope)declaration_stack.peek()).invalid = true;
 
                     }
                     break;
                 case 3 :
-                    // CSSTreeParser.g:380:7: ATKEYWORD
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:388:7: ATKEYWORD
                     {
-                    match(input,ATKEYWORD,FOLLOW_ATKEYWORD_in_term783); 
+                    match(input,ATKEYWORD,FOLLOW_ATKEYWORD_in_term802); 
                      ((declaration_scope)declaration_stack.peek()).invalid = true;
 
                     }
@@ -1420,7 +1458,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "valuepart"
-    // CSSTreeParser.g:383:1: valuepart : (i= IDENT | CLASSKEYWORD | ( MINUS )? n= NUMBER | ( MINUS )? p= PERCENTAGE | ( MINUS )? d= DIMENSION | s= string | u= URI | h= HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | PLUS | ASTERISK | ^(f= FUNCTION t= terms ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) );
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:391:1: valuepart : ( ( MINUS )? i= IDENT | CLASSKEYWORD | ( MINUS )? n= NUMBER | ( MINUS )? p= PERCENTAGE | ( MINUS )? d= DIMENSION | s= string | u= URI | h= HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | LESS | QUESTION | PERCENT | EQUALS | SLASH | PLUS | ASTERISK | e= EXPRESSION | ^(f= FUNCTION (t= terms )? ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) );
     public final void valuepart() throws RecognitionException {
         CommonTree i=null;
         CommonTree n=null;
@@ -1428,6 +1466,7 @@ public class CSSTreeParser extends TreeParser {
         CommonTree d=null;
         CommonTree u=null;
         CommonTree h=null;
+        CommonTree e=null;
         CommonTree f=null;
         String s = null;
 
@@ -1435,57 +1474,14 @@ public class CSSTreeParser extends TreeParser {
 
 
         try {
-            // CSSTreeParser.g:405:5: (i= IDENT | CLASSKEYWORD | ( MINUS )? n= NUMBER | ( MINUS )? p= PERCENTAGE | ( MINUS )? d= DIMENSION | s= string | u= URI | h= HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | PLUS | ASTERISK | ^(f= FUNCTION t= terms ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) )
-            int alt22=21;
-            alt22 = dfa22.predict(input);
-            switch (alt22) {
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:413:5: ( ( MINUS )? i= IDENT | CLASSKEYWORD | ( MINUS )? n= NUMBER | ( MINUS )? p= PERCENTAGE | ( MINUS )? d= DIMENSION | s= string | u= URI | h= HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | LESS | QUESTION | PERCENT | EQUALS | SLASH | PLUS | ASTERISK | e= EXPRESSION | ^(f= FUNCTION (t= terms )? ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) )
+            int alt25=25;
+            alt25 = dfa25.predict(input);
+            switch (alt25) {
                 case 1 :
-                    // CSSTreeParser.g:405:7: i= IDENT
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:413:7: ( MINUS )? i= IDENT
                     {
-                    i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_valuepart811); 
-                    ((terms_scope)terms_stack.peek()).term = tf.createIdent(extractText(i));
-
-                    }
-                    break;
-                case 2 :
-                    // CSSTreeParser.g:406:7: CLASSKEYWORD
-                    {
-                    match(input,CLASSKEYWORD,FOLLOW_CLASSKEYWORD_in_valuepart823); 
-                    ((declaration_scope)declaration_stack.peek()).invalid = true;
-
-                    }
-                    break;
-                case 3 :
-                    // CSSTreeParser.g:407:4: ( MINUS )? n= NUMBER
-                    {
-                    // CSSTreeParser.g:407:4: ( MINUS )?
-                    int alt17=2;
-                    int LA17_0 = input.LA(1);
-
-                    if ( (LA17_0==MINUS) ) {
-                        alt17=1;
-                    }
-                    switch (alt17) {
-                        case 1 :
-                            // CSSTreeParser.g:407:5: MINUS
-                            {
-                            match(input,MINUS,FOLLOW_MINUS_in_valuepart831); 
-                            ((terms_scope)terms_stack.peek()).unary =-1;
-
-                            }
-                            break;
-
-                    }
-
-                    n=(CommonTree)match(input,NUMBER,FOLLOW_NUMBER_in_valuepart839); 
-                    ((terms_scope)terms_stack.peek()).term = tf.createNumeric(extractText(n), ((terms_scope)terms_stack.peek()).unary);
-
-                    }
-                    break;
-                case 4 :
-                    // CSSTreeParser.g:408:7: ( MINUS )? p= PERCENTAGE
-                    {
-                    // CSSTreeParser.g:408:7: ( MINUS )?
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:413:7: ( MINUS )?
                     int alt18=2;
                     int LA18_0 = input.LA(1);
 
@@ -1494,25 +1490,33 @@ public class CSSTreeParser extends TreeParser {
                     }
                     switch (alt18) {
                         case 1 :
-                            // CSSTreeParser.g:408:8: MINUS
+                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:413:8: MINUS
                             {
-                            match(input,MINUS,FOLLOW_MINUS_in_valuepart853); 
-                            ((terms_scope)terms_stack.peek()).unary =-1;
+                            match(input,MINUS,FOLLOW_MINUS_in_valuepart829); 
+                            ((terms_scope)terms_stack.peek()).dash =true;
 
                             }
                             break;
 
                     }
 
-                    p=(CommonTree)match(input,PERCENTAGE,FOLLOW_PERCENTAGE_in_valuepart861); 
-                     ((terms_scope)terms_stack.peek()).term = tf.createPercent(extractText(p), ((terms_scope)terms_stack.peek()).unary);
+                    i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_valuepart837); 
+                    ((terms_scope)terms_stack.peek()).term = tf.createIdent(extractText(i), ((terms_scope)terms_stack.peek()).dash);
 
                     }
                     break;
-                case 5 :
-                    // CSSTreeParser.g:409:7: ( MINUS )? d= DIMENSION
+                case 2 :
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:414:7: CLASSKEYWORD
                     {
-                    // CSSTreeParser.g:409:7: ( MINUS )?
+                    match(input,CLASSKEYWORD,FOLLOW_CLASSKEYWORD_in_valuepart849); 
+                    ((declaration_scope)declaration_stack.peek()).invalid = true;
+
+                    }
+                    break;
+                case 3 :
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:415:6: ( MINUS )? n= NUMBER
+                    {
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:415:6: ( MINUS )?
                     int alt19=2;
                     int LA19_0 = input.LA(1);
 
@@ -1521,9 +1525,9 @@ public class CSSTreeParser extends TreeParser {
                     }
                     switch (alt19) {
                         case 1 :
-                            // CSSTreeParser.g:409:8: MINUS
+                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:415:7: MINUS
                             {
-                            match(input,MINUS,FOLLOW_MINUS_in_valuepart873); 
+                            match(input,MINUS,FOLLOW_MINUS_in_valuepart859); 
                             ((terms_scope)terms_stack.peek()).unary =-1;
 
                             }
@@ -1531,176 +1535,286 @@ public class CSSTreeParser extends TreeParser {
 
                     }
 
-                    d=(CommonTree)match(input,DIMENSION,FOLLOW_DIMENSION_in_valuepart881); 
+                    n=(CommonTree)match(input,NUMBER,FOLLOW_NUMBER_in_valuepart867); 
+                    ((terms_scope)terms_stack.peek()).term = tf.createNumeric(extractText(n), ((terms_scope)terms_stack.peek()).unary);
+
+                    }
+                    break;
+                case 4 :
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:416:7: ( MINUS )? p= PERCENTAGE
+                    {
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:416:7: ( MINUS )?
+                    int alt20=2;
+                    int LA20_0 = input.LA(1);
+
+                    if ( (LA20_0==MINUS) ) {
+                        alt20=1;
+                    }
+                    switch (alt20) {
+                        case 1 :
+                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:416:8: MINUS
+                            {
+                            match(input,MINUS,FOLLOW_MINUS_in_valuepart881); 
+                            ((terms_scope)terms_stack.peek()).unary =-1;
+
+                            }
+                            break;
+
+                    }
+
+                    p=(CommonTree)match(input,PERCENTAGE,FOLLOW_PERCENTAGE_in_valuepart889); 
+                     ((terms_scope)terms_stack.peek()).term = tf.createPercent(extractText(p), ((terms_scope)terms_stack.peek()).unary);
+
+                    }
+                    break;
+                case 5 :
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:417:7: ( MINUS )? d= DIMENSION
+                    {
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:417:7: ( MINUS )?
+                    int alt21=2;
+                    int LA21_0 = input.LA(1);
+
+                    if ( (LA21_0==MINUS) ) {
+                        alt21=1;
+                    }
+                    switch (alt21) {
+                        case 1 :
+                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:417:8: MINUS
+                            {
+                            match(input,MINUS,FOLLOW_MINUS_in_valuepart901); 
+                            ((terms_scope)terms_stack.peek()).unary =-1;
+
+                            }
+                            break;
+
+                    }
+
+                    d=(CommonTree)match(input,DIMENSION,FOLLOW_DIMENSION_in_valuepart909); 
                     String dim = extractText(d);
-                    	 ((terms_scope)terms_stack.peek()).term = tf.createDimension(dim, ((terms_scope)terms_stack.peek()).unary);
-                         if(((terms_scope)terms_stack.peek()).term==null) {
-                    		 log.info("Unable to create dimension from {}, unary {}", dim, ((terms_scope)terms_stack.peek()).unary);
-                             ((declaration_scope)declaration_stack.peek()).invalid = true;
-                    	 }
-                        
+                    				 ((terms_scope)terms_stack.peek()).term = tf.createDimension(dim, ((terms_scope)terms_stack.peek()).unary);
+                    			     if(((terms_scope)terms_stack.peek()).term==null) {
+                    					 log.info("Unable to create dimension from {}, unary {}", dim, ((terms_scope)terms_stack.peek()).unary);
+                    			         ((declaration_scope)declaration_stack.peek()).invalid = true;
+                    				 }
+                    	    
 
                     }
                     break;
                 case 6 :
-                    // CSSTreeParser.g:417:7: s= string
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:425:7: s= string
                     {
-                    pushFollow(FOLLOW_string_in_valuepart897);
+                    pushFollow(FOLLOW_string_in_valuepart927);
                     s=string();
 
                     state._fsp--;
 
                      if(s!=null) ((terms_scope)terms_stack.peek()).term = tf.createString(s);
-                    	  else ((declaration_scope)declaration_stack.peek()).invalid =true;
-                    	
+                    			  else ((declaration_scope)declaration_stack.peek()).invalid =true;
+                    			
 
                     }
                     break;
                 case 7 :
-                    // CSSTreeParser.g:421:7: u= URI
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:429:7: u= URI
                     {
-                    u=(CommonTree)match(input,URI,FOLLOW_URI_in_valuepart914); 
+                    u=(CommonTree)match(input,URI,FOLLOW_URI_in_valuepart946); 
                     ((terms_scope)terms_stack.peek()).term = tf.createURI(extractText(u));
 
                     }
                     break;
                 case 8 :
-                    // CSSTreeParser.g:422:7: h= HASH
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:430:7: h= HASH
                     {
-                    h=(CommonTree)match(input,HASH,FOLLOW_HASH_in_valuepart932); 
+                    h=(CommonTree)match(input,HASH,FOLLOW_HASH_in_valuepart964); 
                     ((terms_scope)terms_stack.peek()).term = tf.createColor(extractText(h));
-                         if(((terms_scope)terms_stack.peek()).term==null)
-                             ((declaration_scope)declaration_stack.peek()).invalid = true;
-                        
+                    	     if(((terms_scope)terms_stack.peek()).term==null)
+                    	         ((declaration_scope)declaration_stack.peek()).invalid = true;
+                    	    
 
                     }
                     break;
                 case 9 :
-                    // CSSTreeParser.g:427:7: UNIRANGE
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:435:7: UNIRANGE
                     {
-                    match(input,UNIRANGE,FOLLOW_UNIRANGE_in_valuepart950); 
+                    match(input,UNIRANGE,FOLLOW_UNIRANGE_in_valuepart983); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
 
                     }
                     break;
                 case 10 :
-                    // CSSTreeParser.g:428:7: INCLUDES
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:436:7: INCLUDES
                     {
-                    match(input,INCLUDES,FOLLOW_INCLUDES_in_valuepart961); 
+                    match(input,INCLUDES,FOLLOW_INCLUDES_in_valuepart994); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
 
                     }
                     break;
                 case 11 :
-                    // CSSTreeParser.g:429:7: COLON
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:437:7: COLON
                     {
-                    match(input,COLON,FOLLOW_COLON_in_valuepart972); 
+                    match(input,COLON,FOLLOW_COLON_in_valuepart1005); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
 
                     }
                     break;
                 case 12 :
-                    // CSSTreeParser.g:430:7: COMMA
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:438:7: COMMA
                     {
-                    match(input,COMMA,FOLLOW_COMMA_in_valuepart986); 
+                    match(input,COMMA,FOLLOW_COMMA_in_valuepart1019); 
                     ((terms_scope)terms_stack.peek()).op = Term.Operator.COMMA;
 
                     }
                     break;
                 case 13 :
-                    // CSSTreeParser.g:431:7: GREATER
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:439:7: GREATER
                     {
-                    match(input,GREATER,FOLLOW_GREATER_in_valuepart1004); 
+                    match(input,GREATER,FOLLOW_GREATER_in_valuepart1037); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
 
                     }
                     break;
                 case 14 :
-                    // CSSTreeParser.g:432:7: EQUALS
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:440:7: LESS
                     {
-                    match(input,EQUALS,FOLLOW_EQUALS_in_valuepart1016); 
+                    match(input,LESS,FOLLOW_LESS_in_valuepart1049); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
 
                     }
                     break;
                 case 15 :
-                    // CSSTreeParser.g:433:7: SLASH
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:441:7: QUESTION
                     {
-                    match(input,SLASH,FOLLOW_SLASH_in_valuepart1029); 
-                    ((terms_scope)terms_stack.peek()).op = Term.Operator.SLASH;
+                    match(input,QUESTION,FOLLOW_QUESTION_in_valuepart1064); 
+                    ((declaration_scope)declaration_stack.peek()).invalid = true;
 
                     }
                     break;
                 case 16 :
-                    // CSSTreeParser.g:434:4: PLUS
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:442:7: PERCENT
                     {
-                    match(input,PLUS,FOLLOW_PLUS_in_valuepart1040); 
+                    match(input,PERCENT,FOLLOW_PERCENT_in_valuepart1075); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
 
                     }
                     break;
                 case 17 :
-                    // CSSTreeParser.g:435:4: ASTERISK
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:443:7: EQUALS
                     {
-                    match(input,ASTERISK,FOLLOW_ASTERISK_in_valuepart1048); 
+                    match(input,EQUALS,FOLLOW_EQUALS_in_valuepart1087); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
 
                     }
                     break;
                 case 18 :
-                    // CSSTreeParser.g:436:7: ^(f= FUNCTION t= terms )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:444:7: SLASH
                     {
-                    f=(CommonTree)match(input,FUNCTION,FOLLOW_FUNCTION_in_valuepart1062); 
-
-                    match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_terms_in_valuepart1066);
-                    t=terms();
-
-                    state._fsp--;
-
-
-                    match(input, Token.UP, null); 
-
-                            // create function
-                            TermFunction function = tf.createFunction();
-                            function.setFunctionName(extractText(f));
-                            function.setValue(t);
-                            ((terms_scope)terms_stack.peek()).term = function;
-                        
+                    match(input,SLASH,FOLLOW_SLASH_in_valuepart1100); 
+                    ((terms_scope)terms_stack.peek()).op = Term.Operator.SLASH;
 
                     }
                     break;
                 case 19 :
-                    // CSSTreeParser.g:443:7: DASHMATCH
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:445:5: PLUS
                     {
-                    match(input,DASHMATCH,FOLLOW_DASHMATCH_in_valuepart1077); 
+                    match(input,PLUS,FOLLOW_PLUS_in_valuepart1112); 
                     ((declaration_scope)declaration_stack.peek()).invalid = true;
 
                     }
                     break;
                 case 20 :
-                    // CSSTreeParser.g:444:7: ^( PARENBLOCK ( any )* )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:446:5: ASTERISK
                     {
-                    match(input,PARENBLOCK,FOLLOW_PARENBLOCK_in_valuepart1088); 
+                    match(input,ASTERISK,FOLLOW_ASTERISK_in_valuepart1123); 
+                    ((declaration_scope)declaration_stack.peek()).invalid = true;
+
+                    }
+                    break;
+                case 21 :
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:447:5: e= EXPRESSION
+                    {
+                    e=(CommonTree)match(input,EXPRESSION,FOLLOW_EXPRESSION_in_valuepart1134); 
+
+                    		    String exprval = extractText(e);
+                            TermExpression expr = tf.createExpression(exprval.substring(11,exprval.length()-1)); //strip the 'expression()'
+                            ((terms_scope)terms_stack.peek()).term = expr;
+                    		
+
+                    }
+                    break;
+                case 22 :
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:452:7: ^(f= FUNCTION (t= terms )? )
+                    {
+                    f=(CommonTree)match(input,FUNCTION,FOLLOW_FUNCTION_in_valuepart1147); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // CSSTreeParser.g:444:20: ( any )*
-                        loop20:
-                        do {
-                            int alt20=2;
-                            int LA20_0 = input.LA(1);
+                        // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:452:21: (t= terms )?
+                        int alt22=2;
+                        int LA22_0 = input.LA(1);
 
-                            if ( ((LA20_0>=PARENBLOCK && LA20_0<=BRACEBLOCK)||LA20_0==INVALID_STRING||(LA20_0>=COLON && LA20_0<=IDENT)||LA20_0==COMMA||(LA20_0>=EXCLAMATION && LA20_0<=CLASSKEYWORD)||(LA20_0>=NUMBER && LA20_0<=SLASH)||LA20_0==FUNCTION||LA20_0==DASHMATCH||LA20_0==STRING) ) {
-                                alt20=1;
+                        if ( (LA22_0==VALUE) ) {
+                            alt22=1;
+                        }
+                        switch (alt22) {
+                            case 1 :
+                                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:452:21: t= terms
+                                {
+                                pushFollow(FOLLOW_terms_in_valuepart1151);
+                                t=terms();
+
+                                state._fsp--;
+
+
+                                }
+                                break;
+
+                        }
+
+
+                        match(input, Token.UP, null); 
+                    }
+
+                            // create function
+                            TermFunction function = tf.createFunction();
+                            function.setFunctionName(extractText(f));
+                            if (t != null)
+                            	function.setValue(t);
+                            ((terms_scope)terms_stack.peek()).term = function;
+                        
+
+                    }
+                    break;
+                case 23 :
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:460:7: DASHMATCH
+                    {
+                    match(input,DASHMATCH,FOLLOW_DASHMATCH_in_valuepart1163); 
+                    ((declaration_scope)declaration_stack.peek()).invalid = true;
+
+                    }
+                    break;
+                case 24 :
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:461:7: ^( PARENBLOCK ( any )* )
+                    {
+                    match(input,PARENBLOCK,FOLLOW_PARENBLOCK_in_valuepart1174); 
+
+                    if ( input.LA(1)==Token.DOWN ) {
+                        match(input, Token.DOWN, null); 
+                        // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:461:20: ( any )*
+                        loop23:
+                        do {
+                            int alt23=2;
+                            int LA23_0 = input.LA(1);
+
+                            if ( ((LA23_0>=PARENBLOCK && LA23_0<=BRACEBLOCK)||LA23_0==INVALID_STRING||(LA23_0>=COLON && LA23_0<=IDENT)||LA23_0==COMMA||LA23_0==EXCLAMATION||LA23_0==FUNCTION||(LA23_0>=CLASSKEYWORD && LA23_0<=GREATER)||(LA23_0>=EQUALS && LA23_0<=SLASH)||LA23_0==DASHMATCH||LA23_0==STRING) ) {
+                                alt23=1;
                             }
 
 
-                            switch (alt20) {
+                            switch (alt23) {
                         	case 1 :
-                        	    // CSSTreeParser.g:444:20: any
+                        	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:461:20: any
                         	    {
-                        	    pushFollow(FOLLOW_any_in_valuepart1090);
+                        	    pushFollow(FOLLOW_any_in_valuepart1176);
                         	    any();
 
                         	    state._fsp--;
@@ -1710,7 +1824,7 @@ public class CSSTreeParser extends TreeParser {
                         	    break;
 
                         	default :
-                        	    break loop20;
+                        	    break loop23;
                             }
                         } while (true);
 
@@ -1721,29 +1835,29 @@ public class CSSTreeParser extends TreeParser {
 
                     }
                     break;
-                case 21 :
-                    // CSSTreeParser.g:445:7: ^( BRACEBLOCK ( any )* )
+                case 25 :
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:462:7: ^( BRACEBLOCK ( any )* )
                     {
-                    match(input,BRACEBLOCK,FOLLOW_BRACEBLOCK_in_valuepart1103); 
+                    match(input,BRACEBLOCK,FOLLOW_BRACEBLOCK_in_valuepart1189); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // CSSTreeParser.g:445:20: ( any )*
-                        loop21:
+                        // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:462:20: ( any )*
+                        loop24:
                         do {
-                            int alt21=2;
-                            int LA21_0 = input.LA(1);
+                            int alt24=2;
+                            int LA24_0 = input.LA(1);
 
-                            if ( ((LA21_0>=PARENBLOCK && LA21_0<=BRACEBLOCK)||LA21_0==INVALID_STRING||(LA21_0>=COLON && LA21_0<=IDENT)||LA21_0==COMMA||(LA21_0>=EXCLAMATION && LA21_0<=CLASSKEYWORD)||(LA21_0>=NUMBER && LA21_0<=SLASH)||LA21_0==FUNCTION||LA21_0==DASHMATCH||LA21_0==STRING) ) {
-                                alt21=1;
+                            if ( ((LA24_0>=PARENBLOCK && LA24_0<=BRACEBLOCK)||LA24_0==INVALID_STRING||(LA24_0>=COLON && LA24_0<=IDENT)||LA24_0==COMMA||LA24_0==EXCLAMATION||LA24_0==FUNCTION||(LA24_0>=CLASSKEYWORD && LA24_0<=GREATER)||(LA24_0>=EQUALS && LA24_0<=SLASH)||LA24_0==DASHMATCH||LA24_0==STRING) ) {
+                                alt24=1;
                             }
 
 
-                            switch (alt21) {
+                            switch (alt24) {
                         	case 1 :
-                        	    // CSSTreeParser.g:445:20: any
+                        	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:462:20: any
                         	    {
-                        	    pushFollow(FOLLOW_any_in_valuepart1105);
+                        	    pushFollow(FOLLOW_any_in_valuepart1191);
                         	    any();
 
                         	    state._fsp--;
@@ -1753,7 +1867,7 @@ public class CSSTreeParser extends TreeParser {
                         	    break;
 
                         	default :
-                        	    break loop21;
+                        	    break loop24;
                             }
                         } while (true);
 
@@ -1805,7 +1919,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "combined_selector"
-    // CSSTreeParser.g:448:1: combined_selector returns [CombinedSelector combinedSelector] : s= selector (c= combinator s= selector )* ;
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:465:1: combined_selector returns [CombinedSelector combinedSelector] : s= selector (c= combinator s= selector )* ;
     public final CombinedSelector combined_selector() throws RecognitionException {
         combined_selector_stack.push(new combined_selector_scope());
         CombinedSelector combinedSelector = null;
@@ -1820,10 +1934,10 @@ public class CSSTreeParser extends TreeParser {
         	combinedSelector = (CombinedSelector) rf.createCombinedSelector().unlock();
 
         try {
-            // CSSTreeParser.g:478:2: (s= selector (c= combinator s= selector )* )
-            // CSSTreeParser.g:478:4: s= selector (c= combinator s= selector )*
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:495:2: (s= selector (c= combinator s= selector )* )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:495:4: s= selector (c= combinator s= selector )*
             {
-            pushFollow(FOLLOW_selector_in_combined_selector1153);
+            pushFollow(FOLLOW_selector_in_combined_selector1239);
             s=selector();
 
             state._fsp--;
@@ -1831,27 +1945,27 @@ public class CSSTreeParser extends TreeParser {
 
             	     combinedSelector.add(s);
             	  
-            // CSSTreeParser.g:481:3: (c= combinator s= selector )*
-            loop23:
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:498:3: (c= combinator s= selector )*
+            loop26:
             do {
-                int alt23=2;
-                int LA23_0 = input.LA(1);
+                int alt26=2;
+                int LA26_0 = input.LA(1);
 
-                if ( ((LA23_0>=ADJACENT && LA23_0<=DESCENDANT)) ) {
-                    alt23=1;
+                if ( ((LA26_0>=ADJACENT && LA26_0<=DESCENDANT)) ) {
+                    alt26=1;
                 }
 
 
-                switch (alt23) {
+                switch (alt26) {
             	case 1 :
-            	    // CSSTreeParser.g:481:4: c= combinator s= selector
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:498:4: c= combinator s= selector
             	    {
-            	    pushFollow(FOLLOW_combinator_in_combined_selector1162);
+            	    pushFollow(FOLLOW_combinator_in_combined_selector1248);
             	    c=combinator();
 
             	    state._fsp--;
 
-            	    pushFollow(FOLLOW_selector_in_combined_selector1166);
+            	    pushFollow(FOLLOW_selector_in_combined_selector1252);
             	    s=selector();
 
             	    state._fsp--;
@@ -1865,7 +1979,7 @@ public class CSSTreeParser extends TreeParser {
             	    break;
 
             	default :
-            	    break loop23;
+            	    break loop26;
                 }
             } while (true);
 
@@ -1905,58 +2019,58 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "combinator"
-    // CSSTreeParser.g:488:1: combinator returns [Selector.Combinator combinator] : ( CHILD | ADJACENT | DESCENDANT );
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:505:1: combinator returns [Selector.Combinator combinator] : ( CHILD | ADJACENT | DESCENDANT );
     public final Selector.Combinator combinator() throws RecognitionException {
         Selector.Combinator combinator = null;
 
          logEnter("combinator"); 
         try {
-            // CSSTreeParser.g:491:2: ( CHILD | ADJACENT | DESCENDANT )
-            int alt24=3;
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:508:2: ( CHILD | ADJACENT | DESCENDANT )
+            int alt27=3;
             switch ( input.LA(1) ) {
             case CHILD:
                 {
-                alt24=1;
+                alt27=1;
                 }
                 break;
             case ADJACENT:
                 {
-                alt24=2;
+                alt27=2;
                 }
                 break;
             case DESCENDANT:
                 {
-                alt24=3;
+                alt27=3;
                 }
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("", 24, 0, input);
+                    new NoViableAltException("", 27, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt24) {
+            switch (alt27) {
                 case 1 :
-                    // CSSTreeParser.g:491:4: CHILD
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:508:4: CHILD
                     {
-                    match(input,CHILD,FOLLOW_CHILD_in_combinator1196); 
+                    match(input,CHILD,FOLLOW_CHILD_in_combinator1282); 
                     combinator =Selector.Combinator.CHILD;
 
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:492:4: ADJACENT
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:509:4: ADJACENT
                     {
-                    match(input,ADJACENT,FOLLOW_ADJACENT_in_combinator1203); 
+                    match(input,ADJACENT,FOLLOW_ADJACENT_in_combinator1289); 
                     combinator =Selector.Combinator.ADJACENT;
 
                     }
                     break;
                 case 3 :
-                    // CSSTreeParser.g:493:4: DESCENDANT
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:510:4: DESCENDANT
                     {
-                    match(input,DESCENDANT,FOLLOW_DESCENDANT_in_combinator1210); 
+                    match(input,DESCENDANT,FOLLOW_DESCENDANT_in_combinator1296); 
                     combinator =Selector.Combinator.DESCENDANT;
 
                     }
@@ -1982,7 +2096,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "selector"
-    // CSSTreeParser.g:497:1: selector returns [Selector sel] : ( ^( SELECTOR ^( ELEMENT (i= IDENT )? ) ( selpart )* ) | ^( SELECTOR ( selpart )+ ) | INVALID_SELECTOR );
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:514:1: selector returns [Selector sel] : ( ^( SELECTOR ^( ELEMENT (i= IDENT )? ) ( selpart )* ) | ^( SELECTOR ( selpart )+ ) | INVALID_SELECTOR );
     public final Selector selector() throws RecognitionException {
         selector_stack.push(new selector_scope());
         Selector sel = null;
@@ -1995,68 +2109,68 @@ public class CSSTreeParser extends TreeParser {
         	Selector.ElementName en = rf.createElement(Selector.ElementName.WILDCARD);
 
         try {
-            // CSSTreeParser.g:509:5: ( ^( SELECTOR ^( ELEMENT (i= IDENT )? ) ( selpart )* ) | ^( SELECTOR ( selpart )+ ) | INVALID_SELECTOR )
-            int alt28=3;
-            int LA28_0 = input.LA(1);
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:526:5: ( ^( SELECTOR ^( ELEMENT (i= IDENT )? ) ( selpart )* ) | ^( SELECTOR ( selpart )+ ) | INVALID_SELECTOR )
+            int alt31=3;
+            int LA31_0 = input.LA(1);
 
-            if ( (LA28_0==SELECTOR) ) {
-                int LA28_1 = input.LA(2);
+            if ( (LA31_0==SELECTOR) ) {
+                int LA31_1 = input.LA(2);
 
-                if ( (LA28_1==DOWN) ) {
-                    int LA28_3 = input.LA(3);
+                if ( (LA31_1==DOWN) ) {
+                    int LA31_3 = input.LA(3);
 
-                    if ( (LA28_3==ELEMENT) ) {
-                        alt28=1;
+                    if ( (LA31_3==ELEMENT) ) {
+                        alt31=1;
                     }
-                    else if ( (LA28_3==PSEUDO||LA28_3==ATTRIBUTE||LA28_3==INVALID_SELPART||LA28_3==CLASSKEYWORD||LA28_3==HASH) ) {
-                        alt28=2;
+                    else if ( (LA31_3==PSEUDO||LA31_3==ATTRIBUTE||LA31_3==INVALID_SELPART||LA31_3==CLASSKEYWORD||LA31_3==HASH) ) {
+                        alt31=2;
                     }
                     else {
                         NoViableAltException nvae =
-                            new NoViableAltException("", 28, 3, input);
+                            new NoViableAltException("", 31, 3, input);
 
                         throw nvae;
                     }
                 }
                 else {
                     NoViableAltException nvae =
-                        new NoViableAltException("", 28, 1, input);
+                        new NoViableAltException("", 31, 1, input);
 
                     throw nvae;
                 }
             }
-            else if ( (LA28_0==INVALID_SELECTOR) ) {
-                alt28=3;
+            else if ( (LA31_0==INVALID_SELECTOR) ) {
+                alt31=3;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 28, 0, input);
+                    new NoViableAltException("", 31, 0, input);
 
                 throw nvae;
             }
-            switch (alt28) {
+            switch (alt31) {
                 case 1 :
-                    // CSSTreeParser.g:509:7: ^( SELECTOR ^( ELEMENT (i= IDENT )? ) ( selpart )* )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:526:7: ^( SELECTOR ^( ELEMENT (i= IDENT )? ) ( selpart )* )
                     {
-                    match(input,SELECTOR,FOLLOW_SELECTOR_in_selector1246); 
+                    match(input,SELECTOR,FOLLOW_SELECTOR_in_selector1332); 
 
                     match(input, Token.DOWN, null); 
-                    match(input,ELEMENT,FOLLOW_ELEMENT_in_selector1258); 
+                    match(input,ELEMENT,FOLLOW_ELEMENT_in_selector1344); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // CSSTreeParser.g:511:11: (i= IDENT )?
-                        int alt25=2;
-                        int LA25_0 = input.LA(1);
+                        // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:528:11: (i= IDENT )?
+                        int alt28=2;
+                        int LA28_0 = input.LA(1);
 
-                        if ( (LA25_0==IDENT) ) {
-                            alt25=1;
+                        if ( (LA28_0==IDENT) ) {
+                            alt28=1;
                         }
-                        switch (alt25) {
+                        switch (alt28) {
                             case 1 :
-                                // CSSTreeParser.g:511:12: i= IDENT
+                                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:528:12: i= IDENT
                                 {
-                                i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_selector1274); 
+                                i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_selector1360); 
                                  en.setName(extractText(i)); 
 
                                 }
@@ -2071,22 +2185,22 @@ public class CSSTreeParser extends TreeParser {
                     		  log.debug("Adding element name: {}.", en.getName());
                     		  ((selector_scope)selector_stack.peek()).s.add(en);
                     		 
-                    // CSSTreeParser.g:517:10: ( selpart )*
-                    loop26:
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:534:10: ( selpart )*
+                    loop29:
                     do {
-                        int alt26=2;
-                        int LA26_0 = input.LA(1);
+                        int alt29=2;
+                        int LA29_0 = input.LA(1);
 
-                        if ( (LA26_0==PSEUDO||LA26_0==ATTRIBUTE||LA26_0==INVALID_SELPART||LA26_0==CLASSKEYWORD||LA26_0==HASH) ) {
-                            alt26=1;
+                        if ( (LA29_0==PSEUDO||LA29_0==ATTRIBUTE||LA29_0==INVALID_SELPART||LA29_0==CLASSKEYWORD||LA29_0==HASH) ) {
+                            alt29=1;
                         }
 
 
-                        switch (alt26) {
+                        switch (alt29) {
                     	case 1 :
-                    	    // CSSTreeParser.g:517:10: selpart
+                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:534:10: selpart
                     	    {
-                    	    pushFollow(FOLLOW_selpart_in_selector1321);
+                    	    pushFollow(FOLLOW_selpart_in_selector1407);
                     	    selpart();
 
                     	    state._fsp--;
@@ -2096,7 +2210,7 @@ public class CSSTreeParser extends TreeParser {
                     	    break;
 
                     	default :
-                    	    break loop26;
+                    	    break loop29;
                         }
                     } while (true);
 
@@ -2106,28 +2220,28 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:519:7: ^( SELECTOR ( selpart )+ )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:536:7: ^( SELECTOR ( selpart )+ )
                     {
-                    match(input,SELECTOR,FOLLOW_SELECTOR_in_selector1340); 
+                    match(input,SELECTOR,FOLLOW_SELECTOR_in_selector1426); 
 
                     match(input, Token.DOWN, null); 
-                    // CSSTreeParser.g:520:10: ( selpart )+
-                    int cnt27=0;
-                    loop27:
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:537:10: ( selpart )+
+                    int cnt30=0;
+                    loop30:
                     do {
-                        int alt27=2;
-                        int LA27_0 = input.LA(1);
+                        int alt30=2;
+                        int LA30_0 = input.LA(1);
 
-                        if ( (LA27_0==PSEUDO||LA27_0==ATTRIBUTE||LA27_0==INVALID_SELPART||LA27_0==CLASSKEYWORD||LA27_0==HASH) ) {
-                            alt27=1;
+                        if ( (LA30_0==PSEUDO||LA30_0==ATTRIBUTE||LA30_0==INVALID_SELPART||LA30_0==CLASSKEYWORD||LA30_0==HASH) ) {
+                            alt30=1;
                         }
 
 
-                        switch (alt27) {
+                        switch (alt30) {
                     	case 1 :
-                    	    // CSSTreeParser.g:520:10: selpart
+                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:537:10: selpart
                     	    {
-                    	    pushFollow(FOLLOW_selpart_in_selector1352);
+                    	    pushFollow(FOLLOW_selpart_in_selector1438);
                     	    selpart();
 
                     	    state._fsp--;
@@ -2137,12 +2251,12 @@ public class CSSTreeParser extends TreeParser {
                     	    break;
 
                     	default :
-                    	    if ( cnt27 >= 1 ) break loop27;
+                    	    if ( cnt30 >= 1 ) break loop30;
                                 EarlyExitException eee =
-                                    new EarlyExitException(27, input);
+                                    new EarlyExitException(30, input);
                                 throw eee;
                         }
-                        cnt27++;
+                        cnt30++;
                     } while (true);
 
 
@@ -2151,9 +2265,9 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // CSSTreeParser.g:522:7: INVALID_SELECTOR
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:539:7: INVALID_SELECTOR
                     {
-                    match(input,INVALID_SELECTOR,FOLLOW_INVALID_SELECTOR_in_selector1370); 
+                    match(input,INVALID_SELECTOR,FOLLOW_INVALID_SELECTOR_in_selector1456); 
                      ((statement_scope)statement_stack.peek()).invalid = true; 
 
                     }
@@ -2177,7 +2291,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "selpart"
-    // CSSTreeParser.g:525:1: selpart : (h= HASH | c= CLASSKEYWORD | ^( ATTRIBUTE ea= attribute ) | p= pseudo | INVALID_SELPART );
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:542:1: selpart : (h= HASH | c= CLASSKEYWORD | ^( ATTRIBUTE ea= attribute ) | p= pseudo | INVALID_SELPART );
     public final void selpart() throws RecognitionException {
         CommonTree h=null;
         CommonTree c=null;
@@ -2190,65 +2304,65 @@ public class CSSTreeParser extends TreeParser {
         	logEnter("selpart");
 
         try {
-            // CSSTreeParser.g:532:5: (h= HASH | c= CLASSKEYWORD | ^( ATTRIBUTE ea= attribute ) | p= pseudo | INVALID_SELPART )
-            int alt29=5;
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:549:5: (h= HASH | c= CLASSKEYWORD | ^( ATTRIBUTE ea= attribute ) | p= pseudo | INVALID_SELPART )
+            int alt32=5;
             switch ( input.LA(1) ) {
             case HASH:
                 {
-                alt29=1;
+                alt32=1;
                 }
                 break;
             case CLASSKEYWORD:
                 {
-                alt29=2;
+                alt32=2;
                 }
                 break;
             case ATTRIBUTE:
                 {
-                alt29=3;
+                alt32=3;
                 }
                 break;
             case PSEUDO:
                 {
-                alt29=4;
+                alt32=4;
                 }
                 break;
             case INVALID_SELPART:
                 {
-                alt29=5;
+                alt32=5;
                 }
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("", 29, 0, input);
+                    new NoViableAltException("", 32, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt29) {
+            switch (alt32) {
                 case 1 :
-                    // CSSTreeParser.g:532:8: h= HASH
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:549:8: h= HASH
                     {
-                    h=(CommonTree)match(input,HASH,FOLLOW_HASH_in_selpart1404); 
+                    h=(CommonTree)match(input,HASH,FOLLOW_HASH_in_selpart1490); 
                      ((selector_scope)selector_stack.peek()).s.add(rf.createID(extractText(h))); 
 
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:533:7: c= CLASSKEYWORD
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:550:7: c= CLASSKEYWORD
                     {
-                    c=(CommonTree)match(input,CLASSKEYWORD,FOLLOW_CLASSKEYWORD_in_selpart1416); 
+                    c=(CommonTree)match(input,CLASSKEYWORD,FOLLOW_CLASSKEYWORD_in_selpart1502); 
                      ((selector_scope)selector_stack.peek()).s.add(rf.createClass(extractText(c))); 
 
                     }
                     break;
                 case 3 :
-                    // CSSTreeParser.g:534:4: ^( ATTRIBUTE ea= attribute )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:551:4: ^( ATTRIBUTE ea= attribute )
                     {
-                    match(input,ATTRIBUTE,FOLLOW_ATTRIBUTE_in_selpart1424); 
+                    match(input,ATTRIBUTE,FOLLOW_ATTRIBUTE_in_selpart1510); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_attribute_in_selpart1428);
+                    pushFollow(FOLLOW_attribute_in_selpart1514);
                     ea=attribute();
 
                     state._fsp--;
@@ -2260,9 +2374,9 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 4 :
-                    // CSSTreeParser.g:535:7: p= pseudo
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:552:7: p= pseudo
                     {
-                    pushFollow(FOLLOW_pseudo_in_selpart1442);
+                    pushFollow(FOLLOW_pseudo_in_selpart1528);
                     p=pseudo();
 
                     state._fsp--;
@@ -2272,9 +2386,9 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 5 :
-                    // CSSTreeParser.g:536:4: INVALID_SELPART
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:553:4: INVALID_SELPART
                     {
-                    match(input,INVALID_SELPART,FOLLOW_INVALID_SELPART_in_selpart1449); 
+                    match(input,INVALID_SELPART,FOLLOW_INVALID_SELPART_in_selpart1535); 
                      ((combined_selector_scope)combined_selector_stack.peek()).invalid = true;
 
                     }
@@ -2297,7 +2411,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "attribute"
-    // CSSTreeParser.g:539:1: attribute returns [Selector.ElementAttribute elemAttr] : i= IDENT ( ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string ) )? ;
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:556:1: attribute returns [Selector.ElementAttribute elemAttr] : i= IDENT ( ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string ) )? ;
     public final Selector.ElementAttribute attribute() throws RecognitionException {
         Selector.ElementAttribute elemAttr = null;
 
@@ -2313,68 +2427,68 @@ public class CSSTreeParser extends TreeParser {
         	boolean isStringValue = false;
 
         try {
-            // CSSTreeParser.g:557:2: (i= IDENT ( ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string ) )? )
-            // CSSTreeParser.g:557:4: i= IDENT ( ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string ) )?
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:574:2: (i= IDENT ( ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string ) )? )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:574:4: i= IDENT ( ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string ) )?
             {
-            i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_attribute1483); 
+            i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_attribute1569); 
             attribute=extractText(i); 
-            // CSSTreeParser.g:558:4: ( ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string ) )?
-            int alt32=2;
-            int LA32_0 = input.LA(1);
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:575:4: ( ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string ) )?
+            int alt35=2;
+            int LA35_0 = input.LA(1);
 
-            if ( (LA32_0==INCLUDES||LA32_0==EQUALS||LA32_0==DASHMATCH) ) {
-                alt32=1;
+            if ( (LA35_0==INCLUDES||LA35_0==EQUALS||LA35_0==DASHMATCH) ) {
+                alt35=1;
             }
-            switch (alt32) {
+            switch (alt35) {
                 case 1 :
-                    // CSSTreeParser.g:558:5: ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:575:5: ( EQUALS | INCLUDES | DASHMATCH ) (i= IDENT | s= string )
                     {
-                    // CSSTreeParser.g:558:5: ( EQUALS | INCLUDES | DASHMATCH )
-                    int alt30=3;
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:575:5: ( EQUALS | INCLUDES | DASHMATCH )
+                    int alt33=3;
                     switch ( input.LA(1) ) {
                     case EQUALS:
                         {
-                        alt30=1;
+                        alt33=1;
                         }
                         break;
                     case INCLUDES:
                         {
-                        alt30=2;
+                        alt33=2;
                         }
                         break;
                     case DASHMATCH:
                         {
-                        alt30=3;
+                        alt33=3;
                         }
                         break;
                     default:
                         NoViableAltException nvae =
-                            new NoViableAltException("", 30, 0, input);
+                            new NoViableAltException("", 33, 0, input);
 
                         throw nvae;
                     }
 
-                    switch (alt30) {
+                    switch (alt33) {
                         case 1 :
-                            // CSSTreeParser.g:558:6: EQUALS
+                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:575:6: EQUALS
                             {
-                            match(input,EQUALS,FOLLOW_EQUALS_in_attribute1492); 
+                            match(input,EQUALS,FOLLOW_EQUALS_in_attribute1578); 
                             op=Selector.Operator.EQUALS; 
 
                             }
                             break;
                         case 2 :
-                            // CSSTreeParser.g:559:7: INCLUDES
+                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:576:7: INCLUDES
                             {
-                            match(input,INCLUDES,FOLLOW_INCLUDES_in_attribute1503); 
+                            match(input,INCLUDES,FOLLOW_INCLUDES_in_attribute1589); 
                             op=Selector.Operator.INCLUDES; 
 
                             }
                             break;
                         case 3 :
-                            // CSSTreeParser.g:560:7: DASHMATCH
+                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:577:7: DASHMATCH
                             {
-                            match(input,DASHMATCH,FOLLOW_DASHMATCH_in_attribute1514); 
+                            match(input,DASHMATCH,FOLLOW_DASHMATCH_in_attribute1600); 
                             op=Selector.Operator.DASHMATCH; 
 
                             }
@@ -2382,27 +2496,27 @@ public class CSSTreeParser extends TreeParser {
 
                     }
 
-                    // CSSTreeParser.g:562:5: (i= IDENT | s= string )
-                    int alt31=2;
-                    int LA31_0 = input.LA(1);
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:579:5: (i= IDENT | s= string )
+                    int alt34=2;
+                    int LA34_0 = input.LA(1);
 
-                    if ( (LA31_0==IDENT) ) {
-                        alt31=1;
+                    if ( (LA34_0==IDENT) ) {
+                        alt34=1;
                     }
-                    else if ( (LA31_0==INVALID_STRING||LA31_0==STRING) ) {
-                        alt31=2;
+                    else if ( (LA34_0==INVALID_STRING||LA34_0==STRING) ) {
+                        alt34=2;
                     }
                     else {
                         NoViableAltException nvae =
-                            new NoViableAltException("", 31, 0, input);
+                            new NoViableAltException("", 34, 0, input);
 
                         throw nvae;
                     }
-                    switch (alt31) {
+                    switch (alt34) {
                         case 1 :
-                            // CSSTreeParser.g:562:6: i= IDENT
+                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:579:6: i= IDENT
                             {
-                            i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_attribute1532); 
+                            i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_attribute1618); 
 
                             		value=extractText(i);
                             		isStringValue=false;
@@ -2411,9 +2525,9 @@ public class CSSTreeParser extends TreeParser {
                             }
                             break;
                         case 2 :
-                            // CSSTreeParser.g:566:7: s= string
+                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:583:7: s= string
                             {
-                            pushFollow(FOLLOW_string_in_attribute1544);
+                            pushFollow(FOLLOW_string_in_attribute1630);
                             s=string();
 
                             state._fsp--;
@@ -2465,7 +2579,7 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "pseudo"
-    // CSSTreeParser.g:578:1: pseudo returns [Selector.PseudoPage pseudoPage] : ^( PSEUDO (f= FUNCTION )? i= IDENT ) ;
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:595:1: pseudo returns [Selector.PseudoPage pseudoPage] : ^( PSEUDO (f= FUNCTION )? i= IDENT ) ;
     public final Selector.PseudoPage pseudo() throws RecognitionException {
         Selector.PseudoPage pseudoPage = null;
 
@@ -2478,24 +2592,24 @@ public class CSSTreeParser extends TreeParser {
         		  String value = null;
 
         try {
-            // CSSTreeParser.g:584:2: ( ^( PSEUDO (f= FUNCTION )? i= IDENT ) )
-            // CSSTreeParser.g:584:4: ^( PSEUDO (f= FUNCTION )? i= IDENT )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:601:2: ( ^( PSEUDO (f= FUNCTION )? i= IDENT ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:601:4: ^( PSEUDO (f= FUNCTION )? i= IDENT )
             {
-            match(input,PSEUDO,FOLLOW_PSEUDO_in_pseudo1577); 
+            match(input,PSEUDO,FOLLOW_PSEUDO_in_pseudo1663); 
 
             match(input, Token.DOWN, null); 
-            // CSSTreeParser.g:585:8: (f= FUNCTION )?
-            int alt33=2;
-            int LA33_0 = input.LA(1);
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:602:8: (f= FUNCTION )?
+            int alt36=2;
+            int LA36_0 = input.LA(1);
 
-            if ( (LA33_0==FUNCTION) ) {
-                alt33=1;
+            if ( (LA36_0==FUNCTION) ) {
+                alt36=1;
             }
-            switch (alt33) {
+            switch (alt36) {
                 case 1 :
-                    // CSSTreeParser.g:585:9: f= FUNCTION
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:602:9: f= FUNCTION
                     {
-                    f=(CommonTree)match(input,FUNCTION,FOLLOW_FUNCTION_in_pseudo1590); 
+                    f=(CommonTree)match(input,FUNCTION,FOLLOW_FUNCTION_in_pseudo1676); 
                     fname=extractText(f);
 
                     }
@@ -2503,7 +2617,7 @@ public class CSSTreeParser extends TreeParser {
 
             }
 
-            i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_pseudo1607); 
+            i=(CommonTree)match(input,IDENT,FOLLOW_IDENT_in_pseudo1693); 
             value=extractText(i);
 
             match(input, Token.UP, null); 
@@ -2526,42 +2640,42 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "string"
-    // CSSTreeParser.g:592:1: string returns [String s] : (st= STRING | INVALID_STRING );
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:609:1: string returns [String s] : (st= STRING | INVALID_STRING );
     public final String string() throws RecognitionException {
         String s = null;
 
         CommonTree st=null;
 
         try {
-            // CSSTreeParser.g:593:2: (st= STRING | INVALID_STRING )
-            int alt34=2;
-            int LA34_0 = input.LA(1);
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:610:2: (st= STRING | INVALID_STRING )
+            int alt37=2;
+            int LA37_0 = input.LA(1);
 
-            if ( (LA34_0==STRING) ) {
-                alt34=1;
+            if ( (LA37_0==STRING) ) {
+                alt37=1;
             }
-            else if ( (LA34_0==INVALID_STRING) ) {
-                alt34=2;
+            else if ( (LA37_0==INVALID_STRING) ) {
+                alt37=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 34, 0, input);
+                    new NoViableAltException("", 37, 0, input);
 
                 throw nvae;
             }
-            switch (alt34) {
+            switch (alt37) {
                 case 1 :
-                    // CSSTreeParser.g:593:4: st= STRING
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:610:4: st= STRING
                     {
-                    st=(CommonTree)match(input,STRING,FOLLOW_STRING_in_string1632); 
+                    st=(CommonTree)match(input,STRING,FOLLOW_STRING_in_string1718); 
                      s = extractText(st);
 
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:594:4: INVALID_STRING
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:611:4: INVALID_STRING
                     {
-                    match(input,INVALID_STRING,FOLLOW_INVALID_STRING_in_string1639); 
+                    match(input,INVALID_STRING,FOLLOW_INVALID_STRING_in_string1725); 
                     s =null;
 
                     }
@@ -2581,160 +2695,160 @@ public class CSSTreeParser extends TreeParser {
 
 
     // $ANTLR start "any"
-    // CSSTreeParser.g:597:1: any : ( IDENT | CLASSKEYWORD | NUMBER | PERCENTAGE | DIMENSION | string | URI | HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | EXCLAMATION | ^( FUNCTION ( any )* ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) );
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:614:1: any : ( IDENT | CLASSKEYWORD | NUMBER | PERCENTAGE | DIMENSION | string | URI | HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | EXCLAMATION | ^( FUNCTION ( any )* ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) );
     public final void any() throws RecognitionException {
         try {
-            // CSSTreeParser.g:598:3: ( IDENT | CLASSKEYWORD | NUMBER | PERCENTAGE | DIMENSION | string | URI | HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | EXCLAMATION | ^( FUNCTION ( any )* ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) )
-            int alt38=20;
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:615:3: ( IDENT | CLASSKEYWORD | NUMBER | PERCENTAGE | DIMENSION | string | URI | HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | EXCLAMATION | ^( FUNCTION ( any )* ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) )
+            int alt41=20;
             switch ( input.LA(1) ) {
             case IDENT:
                 {
-                alt38=1;
+                alt41=1;
                 }
                 break;
             case CLASSKEYWORD:
                 {
-                alt38=2;
+                alt41=2;
                 }
                 break;
             case NUMBER:
                 {
-                alt38=3;
+                alt41=3;
                 }
                 break;
             case PERCENTAGE:
                 {
-                alt38=4;
+                alt41=4;
                 }
                 break;
             case DIMENSION:
                 {
-                alt38=5;
+                alt41=5;
                 }
                 break;
             case INVALID_STRING:
             case STRING:
                 {
-                alt38=6;
+                alt41=6;
                 }
                 break;
             case URI:
                 {
-                alt38=7;
+                alt41=7;
                 }
                 break;
             case HASH:
                 {
-                alt38=8;
+                alt41=8;
                 }
                 break;
             case UNIRANGE:
                 {
-                alt38=9;
+                alt41=9;
                 }
                 break;
             case INCLUDES:
                 {
-                alt38=10;
+                alt41=10;
                 }
                 break;
             case COLON:
                 {
-                alt38=11;
+                alt41=11;
                 }
                 break;
             case COMMA:
                 {
-                alt38=12;
+                alt41=12;
                 }
                 break;
             case GREATER:
                 {
-                alt38=13;
+                alt41=13;
                 }
                 break;
             case EQUALS:
                 {
-                alt38=14;
+                alt41=14;
                 }
                 break;
             case SLASH:
                 {
-                alt38=15;
+                alt41=15;
                 }
                 break;
             case EXCLAMATION:
                 {
-                alt38=16;
+                alt41=16;
                 }
                 break;
             case FUNCTION:
                 {
-                alt38=17;
+                alt41=17;
                 }
                 break;
             case DASHMATCH:
                 {
-                alt38=18;
+                alt41=18;
                 }
                 break;
             case PARENBLOCK:
                 {
-                alt38=19;
+                alt41=19;
                 }
                 break;
             case BRACEBLOCK:
                 {
-                alt38=20;
+                alt41=20;
                 }
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("", 38, 0, input);
+                    new NoViableAltException("", 41, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt38) {
+            switch (alt41) {
                 case 1 :
-                    // CSSTreeParser.g:598:5: IDENT
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:615:5: IDENT
                     {
-                    match(input,IDENT,FOLLOW_IDENT_in_any1655); 
+                    match(input,IDENT,FOLLOW_IDENT_in_any1741); 
 
                     }
                     break;
                 case 2 :
-                    // CSSTreeParser.g:599:5: CLASSKEYWORD
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:616:5: CLASSKEYWORD
                     {
-                    match(input,CLASSKEYWORD,FOLLOW_CLASSKEYWORD_in_any1661); 
+                    match(input,CLASSKEYWORD,FOLLOW_CLASSKEYWORD_in_any1747); 
 
                     }
                     break;
                 case 3 :
-                    // CSSTreeParser.g:600:5: NUMBER
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:617:5: NUMBER
                     {
-                    match(input,NUMBER,FOLLOW_NUMBER_in_any1667); 
+                    match(input,NUMBER,FOLLOW_NUMBER_in_any1753); 
 
                     }
                     break;
                 case 4 :
-                    // CSSTreeParser.g:601:5: PERCENTAGE
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:618:5: PERCENTAGE
                     {
-                    match(input,PERCENTAGE,FOLLOW_PERCENTAGE_in_any1673); 
+                    match(input,PERCENTAGE,FOLLOW_PERCENTAGE_in_any1759); 
 
                     }
                     break;
                 case 5 :
-                    // CSSTreeParser.g:602:5: DIMENSION
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:619:5: DIMENSION
                     {
-                    match(input,DIMENSION,FOLLOW_DIMENSION_in_any1679); 
+                    match(input,DIMENSION,FOLLOW_DIMENSION_in_any1765); 
 
                     }
                     break;
                 case 6 :
-                    // CSSTreeParser.g:603:5: string
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:620:5: string
                     {
-                    pushFollow(FOLLOW_string_in_any1685);
+                    pushFollow(FOLLOW_string_in_any1771);
                     string();
 
                     state._fsp--;
@@ -2743,98 +2857,98 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 7 :
-                    // CSSTreeParser.g:604:5: URI
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:621:5: URI
                     {
-                    match(input,URI,FOLLOW_URI_in_any1691); 
+                    match(input,URI,FOLLOW_URI_in_any1777); 
 
                     }
                     break;
                 case 8 :
-                    // CSSTreeParser.g:605:5: HASH
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:622:5: HASH
                     {
-                    match(input,HASH,FOLLOW_HASH_in_any1697); 
+                    match(input,HASH,FOLLOW_HASH_in_any1783); 
 
                     }
                     break;
                 case 9 :
-                    // CSSTreeParser.g:606:5: UNIRANGE
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:623:5: UNIRANGE
                     {
-                    match(input,UNIRANGE,FOLLOW_UNIRANGE_in_any1703); 
+                    match(input,UNIRANGE,FOLLOW_UNIRANGE_in_any1789); 
 
                     }
                     break;
                 case 10 :
-                    // CSSTreeParser.g:607:5: INCLUDES
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:624:5: INCLUDES
                     {
-                    match(input,INCLUDES,FOLLOW_INCLUDES_in_any1709); 
+                    match(input,INCLUDES,FOLLOW_INCLUDES_in_any1795); 
 
                     }
                     break;
                 case 11 :
-                    // CSSTreeParser.g:608:5: COLON
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:625:5: COLON
                     {
-                    match(input,COLON,FOLLOW_COLON_in_any1715); 
+                    match(input,COLON,FOLLOW_COLON_in_any1801); 
 
                     }
                     break;
                 case 12 :
-                    // CSSTreeParser.g:609:5: COMMA
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:626:5: COMMA
                     {
-                    match(input,COMMA,FOLLOW_COMMA_in_any1721); 
+                    match(input,COMMA,FOLLOW_COMMA_in_any1807); 
 
                     }
                     break;
                 case 13 :
-                    // CSSTreeParser.g:610:5: GREATER
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:627:5: GREATER
                     {
-                    match(input,GREATER,FOLLOW_GREATER_in_any1727); 
+                    match(input,GREATER,FOLLOW_GREATER_in_any1813); 
 
                     }
                     break;
                 case 14 :
-                    // CSSTreeParser.g:611:5: EQUALS
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:628:5: EQUALS
                     {
-                    match(input,EQUALS,FOLLOW_EQUALS_in_any1733); 
+                    match(input,EQUALS,FOLLOW_EQUALS_in_any1819); 
 
                     }
                     break;
                 case 15 :
-                    // CSSTreeParser.g:612:5: SLASH
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:629:5: SLASH
                     {
-                    match(input,SLASH,FOLLOW_SLASH_in_any1739); 
+                    match(input,SLASH,FOLLOW_SLASH_in_any1825); 
 
                     }
                     break;
                 case 16 :
-                    // CSSTreeParser.g:613:5: EXCLAMATION
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:630:5: EXCLAMATION
                     {
-                    match(input,EXCLAMATION,FOLLOW_EXCLAMATION_in_any1745); 
+                    match(input,EXCLAMATION,FOLLOW_EXCLAMATION_in_any1831); 
 
                     }
                     break;
                 case 17 :
-                    // CSSTreeParser.g:614:5: ^( FUNCTION ( any )* )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:631:5: ^( FUNCTION ( any )* )
                     {
-                    match(input,FUNCTION,FOLLOW_FUNCTION_in_any1752); 
+                    match(input,FUNCTION,FOLLOW_FUNCTION_in_any1838); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // CSSTreeParser.g:614:16: ( any )*
-                        loop35:
+                        // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:631:16: ( any )*
+                        loop38:
                         do {
-                            int alt35=2;
-                            int LA35_0 = input.LA(1);
+                            int alt38=2;
+                            int LA38_0 = input.LA(1);
 
-                            if ( ((LA35_0>=PARENBLOCK && LA35_0<=BRACEBLOCK)||LA35_0==INVALID_STRING||(LA35_0>=COLON && LA35_0<=IDENT)||LA35_0==COMMA||(LA35_0>=EXCLAMATION && LA35_0<=CLASSKEYWORD)||(LA35_0>=NUMBER && LA35_0<=SLASH)||LA35_0==FUNCTION||LA35_0==DASHMATCH||LA35_0==STRING) ) {
-                                alt35=1;
+                            if ( ((LA38_0>=PARENBLOCK && LA38_0<=BRACEBLOCK)||LA38_0==INVALID_STRING||(LA38_0>=COLON && LA38_0<=IDENT)||LA38_0==COMMA||LA38_0==EXCLAMATION||LA38_0==FUNCTION||(LA38_0>=CLASSKEYWORD && LA38_0<=GREATER)||(LA38_0>=EQUALS && LA38_0<=SLASH)||LA38_0==DASHMATCH||LA38_0==STRING) ) {
+                                alt38=1;
                             }
 
 
-                            switch (alt35) {
+                            switch (alt38) {
                         	case 1 :
-                        	    // CSSTreeParser.g:614:16: any
+                        	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:631:16: any
                         	    {
-                        	    pushFollow(FOLLOW_any_in_any1754);
+                        	    pushFollow(FOLLOW_any_in_any1840);
                         	    any();
 
                         	    state._fsp--;
@@ -2844,7 +2958,7 @@ public class CSSTreeParser extends TreeParser {
                         	    break;
 
                         	default :
-                        	    break loop35;
+                        	    break loop38;
                             }
                         } while (true);
 
@@ -2855,35 +2969,35 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 18 :
-                    // CSSTreeParser.g:615:5: DASHMATCH
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:632:5: DASHMATCH
                     {
-                    match(input,DASHMATCH,FOLLOW_DASHMATCH_in_any1763); 
+                    match(input,DASHMATCH,FOLLOW_DASHMATCH_in_any1849); 
 
                     }
                     break;
                 case 19 :
-                    // CSSTreeParser.g:616:5: ^( PARENBLOCK ( any )* )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:633:5: ^( PARENBLOCK ( any )* )
                     {
-                    match(input,PARENBLOCK,FOLLOW_PARENBLOCK_in_any1770); 
+                    match(input,PARENBLOCK,FOLLOW_PARENBLOCK_in_any1856); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // CSSTreeParser.g:616:18: ( any )*
-                        loop36:
+                        // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:633:18: ( any )*
+                        loop39:
                         do {
-                            int alt36=2;
-                            int LA36_0 = input.LA(1);
+                            int alt39=2;
+                            int LA39_0 = input.LA(1);
 
-                            if ( ((LA36_0>=PARENBLOCK && LA36_0<=BRACEBLOCK)||LA36_0==INVALID_STRING||(LA36_0>=COLON && LA36_0<=IDENT)||LA36_0==COMMA||(LA36_0>=EXCLAMATION && LA36_0<=CLASSKEYWORD)||(LA36_0>=NUMBER && LA36_0<=SLASH)||LA36_0==FUNCTION||LA36_0==DASHMATCH||LA36_0==STRING) ) {
-                                alt36=1;
+                            if ( ((LA39_0>=PARENBLOCK && LA39_0<=BRACEBLOCK)||LA39_0==INVALID_STRING||(LA39_0>=COLON && LA39_0<=IDENT)||LA39_0==COMMA||LA39_0==EXCLAMATION||LA39_0==FUNCTION||(LA39_0>=CLASSKEYWORD && LA39_0<=GREATER)||(LA39_0>=EQUALS && LA39_0<=SLASH)||LA39_0==DASHMATCH||LA39_0==STRING) ) {
+                                alt39=1;
                             }
 
 
-                            switch (alt36) {
+                            switch (alt39) {
                         	case 1 :
-                        	    // CSSTreeParser.g:616:18: any
+                        	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:633:18: any
                         	    {
-                        	    pushFollow(FOLLOW_any_in_any1772);
+                        	    pushFollow(FOLLOW_any_in_any1858);
                         	    any();
 
                         	    state._fsp--;
@@ -2893,7 +3007,7 @@ public class CSSTreeParser extends TreeParser {
                         	    break;
 
                         	default :
-                        	    break loop36;
+                        	    break loop39;
                             }
                         } while (true);
 
@@ -2904,28 +3018,28 @@ public class CSSTreeParser extends TreeParser {
                     }
                     break;
                 case 20 :
-                    // CSSTreeParser.g:617:5: ^( BRACEBLOCK ( any )* )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:634:5: ^( BRACEBLOCK ( any )* )
                     {
-                    match(input,BRACEBLOCK,FOLLOW_BRACEBLOCK_in_any1781); 
+                    match(input,BRACEBLOCK,FOLLOW_BRACEBLOCK_in_any1867); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // CSSTreeParser.g:617:18: ( any )*
-                        loop37:
+                        // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:634:18: ( any )*
+                        loop40:
                         do {
-                            int alt37=2;
-                            int LA37_0 = input.LA(1);
+                            int alt40=2;
+                            int LA40_0 = input.LA(1);
 
-                            if ( ((LA37_0>=PARENBLOCK && LA37_0<=BRACEBLOCK)||LA37_0==INVALID_STRING||(LA37_0>=COLON && LA37_0<=IDENT)||LA37_0==COMMA||(LA37_0>=EXCLAMATION && LA37_0<=CLASSKEYWORD)||(LA37_0>=NUMBER && LA37_0<=SLASH)||LA37_0==FUNCTION||LA37_0==DASHMATCH||LA37_0==STRING) ) {
-                                alt37=1;
+                            if ( ((LA40_0>=PARENBLOCK && LA40_0<=BRACEBLOCK)||LA40_0==INVALID_STRING||(LA40_0>=COLON && LA40_0<=IDENT)||LA40_0==COMMA||LA40_0==EXCLAMATION||LA40_0==FUNCTION||(LA40_0>=CLASSKEYWORD && LA40_0<=GREATER)||(LA40_0>=EQUALS && LA40_0<=SLASH)||LA40_0==DASHMATCH||LA40_0==STRING) ) {
+                                alt40=1;
                             }
 
 
-                            switch (alt37) {
+                            switch (alt40) {
                         	case 1 :
-                        	    // CSSTreeParser.g:617:18: any
+                        	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSSTreeParser.g:634:18: any
                         	    {
-                        	    pushFollow(FOLLOW_any_in_any1783);
+                        	    pushFollow(FOLLOW_any_in_any1869);
                         	    any();
 
                         	    state._fsp--;
@@ -2935,7 +3049,7 @@ public class CSSTreeParser extends TreeParser {
                         	    break;
 
                         	default :
-                        	    break loop37;
+                        	    break loop40;
                             }
                         } while (true);
 
@@ -2961,27 +3075,31 @@ public class CSSTreeParser extends TreeParser {
     // Delegated rules
 
 
-    protected DFA22 dfa22 = new DFA22(this);
-    static final String DFA22_eotS =
-        "\27\uffff";
-    static final String DFA22_eofS =
-        "\27\uffff";
-    static final String DFA22_minS =
-        "\1\10\2\uffff\1\56\23\uffff";
-    static final String DFA22_maxS =
-        "\1\100\2\uffff\1\60\23\uffff";
-    static final String DFA22_acceptS =
-        "\1\uffff\1\1\1\2\1\uffff\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13"+
-        "\1\14\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25";
-    static final String DFA22_specialS =
-        "\27\uffff}>";
-    static final String[] DFA22_transitionS = {
-            "\1\25\1\26\15\uffff\1\7\13\uffff\1\14\1\1\4\uffff\1\15\2\uffff"+
-            "\1\2\1\3\1\4\1\5\1\6\1\10\1\11\1\12\1\13\1\16\1\17\1\20\1\21"+
-            "\1\22\1\23\1\uffff\1\24\3\uffff\1\7",
+    protected DFA25 dfa25 = new DFA25(this);
+    static final String DFA25_eotS =
+        "\33\uffff";
+    static final String DFA25_eofS =
+        "\33\uffff";
+    static final String DFA25_minS =
+        "\1\10\1\44\31\uffff";
+    static final String DFA25_maxS =
+        "\1\104\1\63\31\uffff";
+    static final String DFA25_acceptS =
+        "\2\uffff\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14\1"+
+        "\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25\1\26\1\27\1\30\1\31";
+    static final String DFA25_specialS =
+        "\33\uffff}>";
+    static final String[] DFA25_transitionS = {
+            "\1\31\1\32\15\uffff\1\7\13\uffff\1\14\1\2\4\uffff\1\15\2\uffff"+
+            "\1\1\1\26\1\27\1\uffff\1\3\1\4\1\5\1\6\1\10\1\11\1\12\1\13\1"+
+            "\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25\1\30\3\uffff\1\7",
+            "\1\2\14\uffff\1\4\1\5\1\6",
             "",
             "",
-            "\1\4\1\5\1\6",
+            "",
+            "",
+            "",
+            "",
             "",
             "",
             "",
@@ -3003,37 +3121,37 @@ public class CSSTreeParser extends TreeParser {
             ""
     };
 
-    static final short[] DFA22_eot = DFA.unpackEncodedString(DFA22_eotS);
-    static final short[] DFA22_eof = DFA.unpackEncodedString(DFA22_eofS);
-    static final char[] DFA22_min = DFA.unpackEncodedStringToUnsignedChars(DFA22_minS);
-    static final char[] DFA22_max = DFA.unpackEncodedStringToUnsignedChars(DFA22_maxS);
-    static final short[] DFA22_accept = DFA.unpackEncodedString(DFA22_acceptS);
-    static final short[] DFA22_special = DFA.unpackEncodedString(DFA22_specialS);
-    static final short[][] DFA22_transition;
+    static final short[] DFA25_eot = DFA.unpackEncodedString(DFA25_eotS);
+    static final short[] DFA25_eof = DFA.unpackEncodedString(DFA25_eofS);
+    static final char[] DFA25_min = DFA.unpackEncodedStringToUnsignedChars(DFA25_minS);
+    static final char[] DFA25_max = DFA.unpackEncodedStringToUnsignedChars(DFA25_maxS);
+    static final short[] DFA25_accept = DFA.unpackEncodedString(DFA25_acceptS);
+    static final short[] DFA25_special = DFA.unpackEncodedString(DFA25_specialS);
+    static final short[][] DFA25_transition;
 
     static {
-        int numStates = DFA22_transitionS.length;
-        DFA22_transition = new short[numStates][];
+        int numStates = DFA25_transitionS.length;
+        DFA25_transition = new short[numStates][];
         for (int i=0; i<numStates; i++) {
-            DFA22_transition[i] = DFA.unpackEncodedString(DFA22_transitionS[i]);
+            DFA25_transition[i] = DFA.unpackEncodedString(DFA25_transitionS[i]);
         }
     }
 
-    class DFA22 extends DFA {
+    class DFA25 extends DFA {
 
-        public DFA22(BaseRecognizer recognizer) {
+        public DFA25(BaseRecognizer recognizer) {
             this.recognizer = recognizer;
-            this.decisionNumber = 22;
-            this.eot = DFA22_eot;
-            this.eof = DFA22_eof;
-            this.min = DFA22_min;
-            this.max = DFA22_max;
-            this.accept = DFA22_accept;
-            this.special = DFA22_special;
-            this.transition = DFA22_transition;
+            this.decisionNumber = 25;
+            this.eot = DFA25_eot;
+            this.eof = DFA25_eof;
+            this.min = DFA25_min;
+            this.max = DFA25_max;
+            this.accept = DFA25_accept;
+            this.special = DFA25_special;
+            this.transition = DFA25_transition;
         }
         public String getDescription() {
-            return "383:1: valuepart : (i= IDENT | CLASSKEYWORD | ( MINUS )? n= NUMBER | ( MINUS )? p= PERCENTAGE | ( MINUS )? d= DIMENSION | s= string | u= URI | h= HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | EQUALS | SLASH | PLUS | ASTERISK | ^(f= FUNCTION t= terms ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) );";
+            return "391:1: valuepart : ( ( MINUS )? i= IDENT | CLASSKEYWORD | ( MINUS )? n= NUMBER | ( MINUS )? p= PERCENTAGE | ( MINUS )? d= DIMENSION | s= string | u= URI | h= HASH | UNIRANGE | INCLUDES | COLON | COMMA | GREATER | LESS | QUESTION | PERCENT | EQUALS | SLASH | PLUS | ASTERISK | e= EXPRESSION | ^(f= FUNCTION (t= terms )? ) | DASHMATCH | ^( PARENBLOCK ( any )* ) | ^( BRACEBLOCK ( any )* ) );";
         }
     }
  
@@ -3067,96 +3185,103 @@ public class CSSTreeParser extends TreeParser {
     public static final BitSet FOLLOW_SET_in_declarations529 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_declaration_in_declarations534 = new BitSet(new long[]{0x0000000004080008L});
     public static final BitSet FOLLOW_DECLARATION_in_declaration578 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_important_in_declaration585 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_important_in_declaration585 = new BitSet(new long[]{0x0000101000000000L});
     public static final BitSet FOLLOW_property_in_declaration597 = new BitSet(new long[]{0x0000000000100000L});
     public static final BitSet FOLLOW_terms_in_declaration608 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_INVALID_DECLARATION_in_declaration629 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_IMPORTANT_in_important646 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_IDENT_in_property686 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VALUE_in_terms731 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_term_in_terms733 = new BitSet(new long[]{0x17FFF31800800388L,0x0000000000000001L});
-    public static final BitSet FOLLOW_valuepart_in_term756 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CURLYBLOCK_in_term773 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ATKEYWORD_in_term783 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_valuepart811 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CLASSKEYWORD_in_valuepart823 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_MINUS_in_valuepart831 = new BitSet(new long[]{0x0000400000000000L});
-    public static final BitSet FOLLOW_NUMBER_in_valuepart839 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_MINUS_in_valuepart853 = new BitSet(new long[]{0x0000800000000000L});
-    public static final BitSet FOLLOW_PERCENTAGE_in_valuepart861 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_MINUS_in_valuepart873 = new BitSet(new long[]{0x0001000000000000L});
-    public static final BitSet FOLLOW_DIMENSION_in_valuepart881 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_string_in_valuepart897 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_URI_in_valuepart914 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_HASH_in_valuepart932 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_UNIRANGE_in_valuepart950 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INCLUDES_in_valuepart961 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_COLON_in_valuepart972 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_COMMA_in_valuepart986 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_GREATER_in_valuepart1004 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_EQUALS_in_valuepart1016 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SLASH_in_valuepart1029 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PLUS_in_valuepart1040 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ASTERISK_in_valuepart1048 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FUNCTION_in_valuepart1062 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_terms_in_valuepart1066 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_DASHMATCH_in_valuepart1077 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PARENBLOCK_in_valuepart1088 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_any_in_valuepart1090 = new BitSet(new long[]{0x14FFDA1800800308L,0x0000000000000001L});
-    public static final BitSet FOLLOW_BRACEBLOCK_in_valuepart1103 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_any_in_valuepart1105 = new BitSet(new long[]{0x14FFDA1800800308L,0x0000000000000001L});
-    public static final BitSet FOLLOW_selector_in_combined_selector1153 = new BitSet(new long[]{0x000000000001C002L});
-    public static final BitSet FOLLOW_combinator_in_combined_selector1162 = new BitSet(new long[]{0x0000000001040800L});
-    public static final BitSet FOLLOW_selector_in_combined_selector1166 = new BitSet(new long[]{0x000000000001C002L});
-    public static final BitSet FOLLOW_CHILD_in_combinator1196 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ADJACENT_in_combinator1203 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DESCENDANT_in_combinator1210 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SELECTOR_in_selector1246 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ELEMENT_in_selector1258 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_IDENT_in_selector1274 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_selpart_in_selector1321 = new BitSet(new long[]{0x0004100002062008L});
-    public static final BitSet FOLLOW_SELECTOR_in_selector1340 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_selpart_in_selector1352 = new BitSet(new long[]{0x0004100002062008L});
-    public static final BitSet FOLLOW_INVALID_SELECTOR_in_selector1370 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_HASH_in_selpart1404 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CLASSKEYWORD_in_selpart1416 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ATTRIBUTE_in_selpart1424 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_attribute_in_selpart1428 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_pseudo_in_selpart1442 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INVALID_SELPART_in_selpart1449 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_attribute1483 = new BitSet(new long[]{0x1050000000000002L});
-    public static final BitSet FOLLOW_EQUALS_in_attribute1492 = new BitSet(new long[]{0x0000001000800000L,0x0000000000000001L});
-    public static final BitSet FOLLOW_INCLUDES_in_attribute1503 = new BitSet(new long[]{0x0000001000800000L,0x0000000000000001L});
-    public static final BitSet FOLLOW_DASHMATCH_in_attribute1514 = new BitSet(new long[]{0x0000001000800000L,0x0000000000000001L});
-    public static final BitSet FOLLOW_IDENT_in_attribute1532 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_string_in_attribute1544 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PSEUDO_in_pseudo1577 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_FUNCTION_in_pseudo1590 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_IDENT_in_pseudo1607 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_STRING_in_string1632 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INVALID_STRING_in_string1639 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_any1655 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CLASSKEYWORD_in_any1661 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NUMBER_in_any1667 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PERCENTAGE_in_any1673 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DIMENSION_in_any1679 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_string_in_any1685 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_URI_in_any1691 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_HASH_in_any1697 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_UNIRANGE_in_any1703 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INCLUDES_in_any1709 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_COLON_in_any1715 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_COMMA_in_any1721 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_GREATER_in_any1727 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_EQUALS_in_any1733 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SLASH_in_any1739 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_EXCLAMATION_in_any1745 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FUNCTION_in_any1752 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_any_in_any1754 = new BitSet(new long[]{0x14FFDA1800800308L,0x0000000000000001L});
-    public static final BitSet FOLLOW_DASHMATCH_in_any1763 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PARENBLOCK_in_any1770 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_any_in_any1772 = new BitSet(new long[]{0x14FFDA1800800308L,0x0000000000000001L});
-    public static final BitSet FOLLOW_BRACEBLOCK_in_any1781 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_any_in_any1783 = new BitSet(new long[]{0x14FFDA1800800308L,0x0000000000000001L});
+    public static final BitSet FOLLOW_MINUS_in_property694 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_IDENT_in_property700 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VALUE_in_terms745 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_term_in_terms747 = new BitSet(new long[]{0xFFFF731800800388L,0x0000000000000011L});
+    public static final BitSet FOLLOW_valuepart_in_term775 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_CURLYBLOCK_in_term792 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ATKEYWORD_in_term802 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_MINUS_in_valuepart829 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_IDENT_in_valuepart837 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_CLASSKEYWORD_in_valuepart849 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_MINUS_in_valuepart859 = new BitSet(new long[]{0x0002000000000000L});
+    public static final BitSet FOLLOW_NUMBER_in_valuepart867 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_MINUS_in_valuepart881 = new BitSet(new long[]{0x0004000000000000L});
+    public static final BitSet FOLLOW_PERCENTAGE_in_valuepart889 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_MINUS_in_valuepart901 = new BitSet(new long[]{0x0008000000000000L});
+    public static final BitSet FOLLOW_DIMENSION_in_valuepart909 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_string_in_valuepart927 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_URI_in_valuepart946 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_HASH_in_valuepart964 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_UNIRANGE_in_valuepart983 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INCLUDES_in_valuepart994 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_COLON_in_valuepart1005 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_COMMA_in_valuepart1019 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_GREATER_in_valuepart1037 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LESS_in_valuepart1049 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_QUESTION_in_valuepart1064 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PERCENT_in_valuepart1075 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_EQUALS_in_valuepart1087 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SLASH_in_valuepart1100 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PLUS_in_valuepart1112 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ASTERISK_in_valuepart1123 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_EXPRESSION_in_valuepart1134 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FUNCTION_in_valuepart1147 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_terms_in_valuepart1151 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_DASHMATCH_in_valuepart1163 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PARENBLOCK_in_valuepart1174 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_any_in_valuepart1176 = new BitSet(new long[]{0x31FF4A1800800308L,0x0000000000000011L});
+    public static final BitSet FOLLOW_BRACEBLOCK_in_valuepart1189 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_any_in_valuepart1191 = new BitSet(new long[]{0x31FF4A1800800308L,0x0000000000000011L});
+    public static final BitSet FOLLOW_selector_in_combined_selector1239 = new BitSet(new long[]{0x000000000001C002L});
+    public static final BitSet FOLLOW_combinator_in_combined_selector1248 = new BitSet(new long[]{0x0000000001040800L});
+    public static final BitSet FOLLOW_selector_in_combined_selector1252 = new BitSet(new long[]{0x000000000001C002L});
+    public static final BitSet FOLLOW_CHILD_in_combinator1282 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ADJACENT_in_combinator1289 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DESCENDANT_in_combinator1296 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SELECTOR_in_selector1332 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ELEMENT_in_selector1344 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_IDENT_in_selector1360 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_selpart_in_selector1407 = new BitSet(new long[]{0x0021000002062008L});
+    public static final BitSet FOLLOW_SELECTOR_in_selector1426 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_selpart_in_selector1438 = new BitSet(new long[]{0x0021000002062008L});
+    public static final BitSet FOLLOW_INVALID_SELECTOR_in_selector1456 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_HASH_in_selpart1490 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_CLASSKEYWORD_in_selpart1502 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ATTRIBUTE_in_selpart1510 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_attribute_in_selpart1514 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_pseudo_in_selpart1528 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INVALID_SELPART_in_selpart1535 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_attribute1569 = new BitSet(new long[]{0x1080000000000002L,0x0000000000000001L});
+    public static final BitSet FOLLOW_EQUALS_in_attribute1578 = new BitSet(new long[]{0x0000001000800000L,0x0000000000000010L});
+    public static final BitSet FOLLOW_INCLUDES_in_attribute1589 = new BitSet(new long[]{0x0000001000800000L,0x0000000000000010L});
+    public static final BitSet FOLLOW_DASHMATCH_in_attribute1600 = new BitSet(new long[]{0x0000001000800000L,0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_attribute1618 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_string_in_attribute1630 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PSEUDO_in_pseudo1663 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_FUNCTION_in_pseudo1676 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_IDENT_in_pseudo1693 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_STRING_in_string1718 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INVALID_STRING_in_string1725 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_any1741 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_CLASSKEYWORD_in_any1747 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NUMBER_in_any1753 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PERCENTAGE_in_any1759 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DIMENSION_in_any1765 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_string_in_any1771 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_URI_in_any1777 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_HASH_in_any1783 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_UNIRANGE_in_any1789 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INCLUDES_in_any1795 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_COLON_in_any1801 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_COMMA_in_any1807 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_GREATER_in_any1813 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_EQUALS_in_any1819 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SLASH_in_any1825 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_EXCLAMATION_in_any1831 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FUNCTION_in_any1838 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_any_in_any1840 = new BitSet(new long[]{0x31FF4A1800800308L,0x0000000000000011L});
+    public static final BitSet FOLLOW_DASHMATCH_in_any1849 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PARENBLOCK_in_any1856 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_any_in_any1858 = new BitSet(new long[]{0x31FF4A1800800308L,0x0000000000000011L});
+    public static final BitSet FOLLOW_BRACEBLOCK_in_any1867 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_any_in_any1869 = new BitSet(new long[]{0x31FF4A1800800308L,0x0000000000000011L});
 
 }

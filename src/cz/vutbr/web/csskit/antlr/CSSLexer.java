@@ -1,117 +1,115 @@
-// $ANTLR 3.1 CSS.g 2008-11-01 16:46:32
+// $ANTLR 3.1.2 /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g 2009-09-16 17:38:12
 
 package cz.vutbr.web.csskit.antlr;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
-import java.util.Stack;
 
-import org.antlr.runtime.BaseRecognizer;
-import org.antlr.runtime.BitSet;
-import org.antlr.runtime.CharStream;
-import org.antlr.runtime.CommonToken;
-import org.antlr.runtime.DFA;
-import org.antlr.runtime.EarlyExitException;
-import org.antlr.runtime.Lexer;
-import org.antlr.runtime.MismatchedSetException;
-import org.antlr.runtime.NoViableAltException;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.RecognizerSharedState;
-import org.antlr.runtime.Token;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
-import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.SupportedCSS;
+import cz.vutbr.web.css.SupportedCSS; 
+
+
+
+import org.antlr.runtime.*;
+import java.util.Stack;
+import java.util.List;
+import java.util.ArrayList;
 
 public class CSSLexer extends Lexer {
-    public static final int FUNCTION=58;
-    public static final int APOS=71;
-    public static final int NAME_CHAR=78;
-    public static final int CLASSKEYWORD=44;
+    public static final int FUNCTION=46;
+    public static final int APOS=77;
+    public static final int NAME_CHAR=83;
+    public static final int CLASSKEYWORD=48;
     public static final int PSEUDO=13;
     public static final int INVALID_STATEMENT=27;
-    public static final int LBRACE=62;
+    public static final int LBRACE=66;
     public static final int ATTRIBUTE=17;
-    public static final int INVALID_TOKEN=76;
-    public static final int EQUALS=54;
-    public static final int NAME_START=77;
-    public static final int NUMBER_MACR=68;
+    public static final int INVALID_TOKEN=70;
+    public static final int EQUALS=60;
+    public static final int NAME_START=82;
+    public static final int NUMBER_MACR=74;
     public static final int MEDIA=39;
     public static final int CHARSET=32;
-    public static final int NL_CHAR=83;
-    public static final int NON_ASCII=79;
+    public static final int NL_CHAR=87;
+    public static final int NON_ASCII=84;
     public static final int EOF=-1;
     public static final int DECLARATION=19;
     public static final int STYLESHEET=4;
-    public static final int LPAREN=61;
-    public static final int ASTERISK=57;
+    public static final int LPAREN=65;
+    public static final int ASTERISK=63;
     public static final int BRACEBLOCK=9;
-    public static final int INCLUDES=52;
-    public static final int RPAREN=59;
+    public static final int INCLUDES=55;
+    public static final int RPAREN=47;
     public static final int IMPORT=33;
-    public static final int SLASH=55;
-    public static final int GREATER=53;
+    public static final int SLASH=61;
+    public static final int GREATER=56;
     public static final int SELECTOR=11;
     public static final int EXCLAMATION=43;
     public static final int ATBLOCK=6;
     public static final int COMMA=41;
     public static final int INVALID_SELPART=25;
+    public static final int LESS=57;
     public static final int INVALID_DECLARATION=26;
     public static final int ELEMENT=12;
     public static final int IDENT=36;
-    public static final int PLUS=56;
-    public static final int UNIRANGE=51;
-    public static final int DIMENSION=48;
-    public static final int COMMENT=74;
+    public static final int PLUS=62;
+    public static final int UNIRANGE=54;
+    public static final int DIMENSION=51;
+    public static final int COMMENT=80;
+    public static final int EXPRESSION=45;
     public static final int CURLYBLOCK=7;
     public static final int ATKEYWORD=40;
     public static final int CHILD=15;
     public static final int INVALID_STRING=23;
     public static final int RULE=10;
-    public static final int RBRACE=63;
-    public static final int W_CHAR=73;
+    public static final int PERCENT=59;
+    public static final int RBRACE=67;
+    public static final int W_CHAR=79;
     public static final int PARENBLOCK=8;
-    public static final int STRING_MACR=66;
-    public static final int W_MACR=69;
-    public static final int QUOT=72;
+    public static final int STRING_MACR=72;
+    public static final int W_MACR=75;
+    public static final int QUOT=78;
     public static final int DESCENDANT=16;
-    public static final int NUMBER=46;
-    public static final int URI_CHAR=82;
-    public static final int HASH=50;
+    public static final int NUMBER=49;
+    public static final int URI_CHAR=86;
+    public static final int HASH=53;
     public static final int LCURLY=37;
     public static final int SET=18;
     public static final int SEMICOLON=42;
-    public static final int NAME_MACR=67;
+    public static final int NAME_MACR=73;
     public static final int S=29;
     public static final int CDO=30;
     public static final int VALUE=20;
-    public static final int MINUS=45;
-    public static final int T__84=84;
+    public static final int MINUS=44;
     public static final int CDC=31;
-    public static final int PERCENTAGE=47;
+    public static final int PERCENTAGE=50;
+    public static final int T__88=88;
     public static final int INVALID_SELECTOR=24;
     public static final int IMPORTANT=21;
-    public static final int URI=49;
-    public static final int ESCAPE_CHAR=80;
+    public static final int URI=52;
+    public static final int ESCAPE_CHAR=85;
     public static final int COLON=35;
     public static final int PAGE=34;
-    public static final int STRING_CHAR=81;
-    public static final int DASHMATCH=60;
+    public static final int STRING_CHAR=69;
+    public static final int DASHMATCH=64;
     public static final int ADJACENT=14;
+    public static final int QUESTION=58;
     public static final int IMPORT_END=22;
     public static final int INVALID_IMPORT=28;
     public static final int INLINESTYLE=5;
     public static final int RCURLY=38;
-    public static final int SL_COMMENT=75;
-    public static final int IDENT_MACR=65;
-    public static final int STRING=64;
-    public static final int URI_MACR=70;
+    public static final int SL_COMMENT=81;
+    public static final int IDENT_MACR=71;
+    public static final int STRING=68;
+    public static final int URI_MACR=76;
 
         private static Logger log = LoggerFactory.getLogger(CSSLexer.class);
         
@@ -119,11 +117,13 @@ public class CSSLexer extends Lexer {
         
         public static class LexerState {
             public short curlyNest;
+            public short parenNest;
             public boolean quotOpen;
             public boolean aposOpen;
             
             public LexerState() {
             	this.curlyNest = 0;
+            	this.parenNest = 0;
             	this.quotOpen = false;
             	this.aposOpen = false;
             }
@@ -131,6 +131,7 @@ public class CSSLexer extends Lexer {
             public LexerState(LexerState clone) {
             	this();
                 this.curlyNest = clone.curlyNest;
+                this.parenNest = clone.parenNest;
                 this.quotOpen = clone.quotOpen;
                 this.aposOpen = clone.aposOpen;
             }
@@ -140,7 +141,11 @@ public class CSSLexer extends Lexer {
              * curly braces are balanced
     		*/ 
             public boolean isBalanced() {
-            	return aposOpen==false && quotOpen==false && curlyNest==0;
+            	return aposOpen==false && quotOpen==false && curlyNest==0 && parenNest==0;
+            }
+            
+            public boolean isFunctionBalanced() {
+            	return parenNest==0;
             }
             
             /**
@@ -161,6 +166,11 @@ public class CSSLexer extends Lexer {
             		t = new CSSToken(CSSLexer.QUOT, this);
             		t.setText("\"");
             	}
+            	else if(parenNest!=0) {
+            		this.parenNest--;
+            		t = new CSSToken(CSSLexer.RPAREN, this);
+            		t.setText(")");
+            	}
             	else if(curlyNest!=0) {
             		this.curlyNest--;
             		t = new CSSToken(CSSLexer.RCURLY, this);
@@ -175,6 +185,7 @@ public class CSSLexer extends Lexer {
             public String toString() {
             	StringBuilder sb = new StringBuilder();
             	sb.append("{=").append(curlyNest)
+            	  .append(", (=").append(parenNest)
             	  .append(", '=").append(aposOpen ? "1" : "0")
             	  .append(", \"=").append(quotOpen ? "1" :"0");
             	 
@@ -400,6 +411,12 @@ public class CSSLexer extends Lexer {
         		else if (c=='"' && ls.aposOpen==false) {
         			ls.quotOpen = !ls.quotOpen;
         		}
+        		else if(c=='(') {
+        			ls.parenNest++;
+        		}
+        		else if(c==')' && ls.parenNest>0) {
+        			ls.parenNest--;
+        		}
         		else if(c=='{') {
         			ls.curlyNest++;
         		}
@@ -448,6 +465,59 @@ public class CSSLexer extends Lexer {
         	input.consume();
         	return true;
         }
+        
+        /**
+         * Reads all the contents of an expression. Parenthesis are matched but not in strings.
+         */ 
+        private String readExpressionContents() 
+        {
+          log.debug("readExpressionContents"); 
+        
+          StringBuffer ret = new StringBuffer(); 
+          int parenN = 1; /* one already open */
+          boolean inApos = false;
+          boolean inQuot = false;
+          boolean esc = false;
+          boolean finished = false;
+          int c;
+    	    while (!finished)
+    	    {
+    	        c = input.LA(1);
+    	        if(c=='\'' && !inQuot && !(inApos && esc)) {
+    	            inApos = !inApos;
+    	        }
+    	        else if (c=='"' && !inApos && !(inQuot && esc)) {
+    	            inQuot = !inQuot;
+    	        }
+    	        else if(c=='(' && !inApos && !inQuot) {
+    	            parenN++;
+    	        }
+    	        else if(c==')' && parenN>0  && !inApos && !inQuot) {
+    	            parenN--;
+    	            if (parenN == 0) finished = true;
+    	        }
+    	        // handle end of line in string
+    	        else if (c=='\n') {
+    	           inQuot = false;
+    	           inApos = false;
+    	        } 
+    	        else if(c==EOF) {
+    	          log.info("Unexpected EOF during consumeUntilBalanced, EOF not consumed");
+    	          return ret.toString();
+    	        }
+    	        
+    	        esc = (c == '\\') && !esc;
+    	        
+    	        if (!finished) ret.append((char) c);
+    	        
+    	        input.consume();
+    	          
+    	    }
+    	    
+    	    log.debug("Expr: " + ret.toString());
+          return ret.toString();
+        }
+        
 
 
     // delegates
@@ -461,15 +531,15 @@ public class CSSLexer extends Lexer {
         super(input,state);
 
     }
-    public String getGrammarFileName() { return "CSS.g"; }
+    public String getGrammarFileName() { return "/home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g"; }
 
-    // $ANTLR start "T__84"
-    public final void mT__84() throws RecognitionException {
+    // $ANTLR start "T__88"
+    public final void mT__88() throws RecognitionException {
         try {
-            int _type = T__84;
+            int _type = T__88;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:359:7: ( 'important' )
-            // CSS.g:359:9: 'important'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:431:7: ( 'important' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:431:9: 'important'
             {
             match("important"); 
 
@@ -482,15 +552,15 @@ public class CSSLexer extends Lexer {
         finally {
         }
     }
-    // $ANTLR end "T__84"
+    // $ANTLR end "T__88"
 
     // $ANTLR start "IDENT"
     public final void mIDENT() throws RecognitionException {
         try {
             int _type = IDENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:694:2: ( IDENT_MACR )
-            // CSS.g:694:4: IDENT_MACR
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:926:2: ( IDENT_MACR )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:926:4: IDENT_MACR
             {
             mIDENT_MACR(); 
 
@@ -514,12 +584,12 @@ public class CSSLexer extends Lexer {
 
             	expectedToken.push(new Integer(CHARSET));
 
-            // CSS.g:705:2: ( '@charset' ( S )* s= STRING_MACR ( S )* SEMICOLON )
-            // CSS.g:705:4: '@charset' ( S )* s= STRING_MACR ( S )* SEMICOLON
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:937:2: ( '@charset' ( S )* s= STRING_MACR ( S )* SEMICOLON )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:937:4: '@charset' ( S )* s= STRING_MACR ( S )* SEMICOLON
             {
             match("@charset"); 
 
-            // CSS.g:705:15: ( S )*
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:937:15: ( S )*
             loop1:
             do {
                 int alt1=2;
@@ -532,7 +602,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt1) {
             	case 1 :
-            	    // CSS.g:705:15: S
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:937:15: S
             	    {
             	    mS(); 
 
@@ -547,7 +617,7 @@ public class CSSLexer extends Lexer {
             int sStart69 = getCharIndex();
             mSTRING_MACR(); 
             s = new CommonToken(input, Token.INVALID_TOKEN_TYPE, Token.DEFAULT_CHANNEL, sStart69, getCharIndex()-1);
-            // CSS.g:705:32: ( S )*
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:937:32: ( S )*
             loop2:
             do {
                 int alt2=2;
@@ -560,7 +630,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt2) {
             	case 1 :
-            	    // CSS.g:705:32: S
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:937:32: S
             	    {
             	    mS(); 
 
@@ -622,12 +692,12 @@ public class CSSLexer extends Lexer {
             	StringBuilder media = new StringBuilder();
             	String mText = null;
 
-            // CSS.g:740:2: ( '@import' ( S )* (s= STRING_MACR | s= URI ) ( S )* (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )? SEMICOLON )
-            // CSS.g:740:4: '@import' ( S )* (s= STRING_MACR | s= URI ) ( S )* (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )? SEMICOLON
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:972:2: ( '@import' ( S )* (s= STRING_MACR | s= URI ) ( S )* (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )? SEMICOLON )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:972:4: '@import' ( S )* (s= STRING_MACR | s= URI ) ( S )* (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )? SEMICOLON
             {
             match("@import"); 
 
-            // CSS.g:740:14: ( S )*
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:972:14: ( S )*
             loop3:
             do {
                 int alt3=2;
@@ -640,7 +710,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // CSS.g:740:14: S
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:972:14: S
             	    {
             	    mS(); 
 
@@ -652,7 +722,7 @@ public class CSSLexer extends Lexer {
                 }
             } while (true);
 
-            // CSS.g:741:4: (s= STRING_MACR | s= URI )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:973:4: (s= STRING_MACR | s= URI )
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -670,7 +740,7 @@ public class CSSLexer extends Lexer {
             }
             switch (alt4) {
                 case 1 :
-                    // CSS.g:741:5: s= STRING_MACR
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:973:5: s= STRING_MACR
                     {
                     int sStart114 = getCharIndex();
                     mSTRING_MACR(); 
@@ -680,7 +750,7 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // CSS.g:742:7: s= URI
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:974:7: s= URI
                     {
                     int sStart127 = getCharIndex();
                     mURI(); 
@@ -692,7 +762,7 @@ public class CSSLexer extends Lexer {
 
             }
 
-            // CSS.g:742:33: ( S )*
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:974:33: ( S )*
             loop5:
             do {
                 int alt5=2;
@@ -705,7 +775,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt5) {
             	case 1 :
-            	    // CSS.g:742:33: S
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:974:33: S
             	    {
             	    mS(); 
 
@@ -717,7 +787,7 @@ public class CSSLexer extends Lexer {
                 }
             } while (true);
 
-            // CSS.g:743:6: (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )?
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:975:6: (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )?
             int alt10=2;
             int LA10_0 = input.LA(1);
 
@@ -726,7 +796,7 @@ public class CSSLexer extends Lexer {
             }
             switch (alt10) {
                 case 1 :
-                    // CSS.g:743:7: m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )*
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:975:7: m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )*
                     {
                     int mStart143 = getCharIndex();
                     mIDENT_MACR(); 
@@ -738,7 +808,7 @@ public class CSSLexer extends Lexer {
                     	    	else
                     	    	    log.debug("Invalid import media \"{}\"", mText);
                     	     
-                    // CSS.g:750:7: ( S )*
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:982:7: ( S )*
                     loop6:
                     do {
                         int alt6=2;
@@ -751,7 +821,7 @@ public class CSSLexer extends Lexer {
 
                         switch (alt6) {
                     	case 1 :
-                    	    // CSS.g:750:7: S
+                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:982:7: S
                     	    {
                     	    mS(); 
 
@@ -763,7 +833,7 @@ public class CSSLexer extends Lexer {
                         }
                     } while (true);
 
-                    // CSS.g:751:9: ( ',' ( S )* m= IDENT_MACR ( S )* )*
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:983:9: ( ',' ( S )* m= IDENT_MACR ( S )* )*
                     loop9:
                     do {
                         int alt9=2;
@@ -776,10 +846,10 @@ public class CSSLexer extends Lexer {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // CSS.g:751:10: ',' ( S )* m= IDENT_MACR ( S )*
+                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:983:10: ',' ( S )* m= IDENT_MACR ( S )*
                     	    {
                     	    match(','); 
-                    	    // CSS.g:751:14: ( S )*
+                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:983:14: ( S )*
                     	    loop7:
                     	    do {
                     	        int alt7=2;
@@ -792,7 +862,7 @@ public class CSSLexer extends Lexer {
 
                     	        switch (alt7) {
                     	    	case 1 :
-                    	    	    // CSS.g:751:14: S
+                    	    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:983:14: S
                     	    	    {
                     	    	    mS(); 
 
@@ -814,7 +884,7 @@ public class CSSLexer extends Lexer {
                     	    	       	 else
                     	    	    	    log.debug("Invalid import media \"{}\"", mText);		
                     	    	       	
-                    	    // CSS.g:758:9: ( S )*
+                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:990:9: ( S )*
                     	    loop8:
                     	    do {
                     	        int alt8=2;
@@ -827,7 +897,7 @@ public class CSSLexer extends Lexer {
 
                     	        switch (alt8) {
                     	    	case 1 :
-                    	    	    // CSS.g:758:9: S
+                    	    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:990:9: S
                     	    	    {
                     	    	    mS(); 
 
@@ -856,8 +926,9 @@ public class CSSLexer extends Lexer {
 
             mSEMICOLON(); 
 
-            		// do some funny work with file name to be imported
+            		    // do some funny work with file name to be imported
                     String fileName = s.getText();
+                    log.debug("FILE: " + fileName);
                         	  	
                     if(s.getType()==STRING) 
                     	fileName = CSSToken.extractSTRING(fileName);
@@ -870,8 +941,17 @@ public class CSSLexer extends Lexer {
                     // import file
                     URL url = null;
                     try {
-                    		// construct URL
-                          	url = new URL(((CSSInputStream) input).getBase(), fileName);              			
+                    		    // construct URL
+                    		    log.debug("BASE: " + ((CSSInputStream) input).getBase());
+                    		    URL base = ((CSSInputStream) input).getBase();
+                    		    if (base != null)
+                          	    url = new URL(base, fileName);
+                          	else
+                          	{
+                          	    log.warn("Base URL is unknown");
+                          	    url = new URL(fileName);
+                          	}
+                          	               			
                           	log.debug("Actually, will try to import file \"{}\"", url.toString());	
                           			
                             // save current lexer's stream
@@ -895,7 +975,7 @@ public class CSSLexer extends Lexer {
                             setText("INVALID_IMPORT");
                      }              		 
                      catch(IOException fnf) {
-                     		log.warn("File \"{}\" to import was not found!", fileName);
+                     		log.warn("Cannot read \"{}\" to import: {}", fileName, fnf.getMessage());
                             // restore state
                             imports.pop();
                             // set type to invalid import
@@ -921,8 +1001,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = MEDIA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:812:2: ( '@media' )
-            // CSS.g:812:4: '@media'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1054:2: ( '@media' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1054:4: '@media'
             {
             match("@media"); 
 
@@ -942,8 +1022,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = PAGE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:816:2: ( '@page' )
-            // CSS.g:816:4: '@page'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1058:2: ( '@page' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1058:4: '@page'
             {
             match("@page"); 
 
@@ -963,8 +1043,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = ATKEYWORD;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:821:2: ( '@' IDENT_MACR )
-            // CSS.g:821:4: '@' IDENT_MACR
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1063:2: ( '@' IDENT_MACR )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1063:4: '@' IDENT_MACR
             {
             match('@'); 
             mIDENT_MACR(); 
@@ -984,8 +1064,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = CLASSKEYWORD;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:825:5: ( '.' IDENT_MACR )
-            // CSS.g:825:7: '.' IDENT_MACR
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1067:5: ( '.' IDENT_MACR )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1067:7: '.' IDENT_MACR
             {
             match('.'); 
             mIDENT_MACR(); 
@@ -1008,8 +1088,8 @@ public class CSSLexer extends Lexer {
 
             	expectedToken.push(new Integer(STRING));
 
-            // CSS.g:836:2: ( STRING_MACR )
-            // CSS.g:836:4: STRING_MACR
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1078:2: ( STRING_MACR )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1078:4: STRING_MACR
             {
             mSTRING_MACR(); 
 
@@ -1030,8 +1110,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = HASH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:841:2: ( '#' NAME_MACR )
-            // CSS.g:841:4: '#' NAME_MACR
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1083:2: ( '#' NAME_MACR )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1083:4: '#' NAME_MACR
             {
             match('#'); 
             mNAME_MACR(); 
@@ -1051,8 +1131,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = NUMBER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:846:2: ( NUMBER_MACR )
-            // CSS.g:846:4: NUMBER_MACR
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1088:2: ( NUMBER_MACR )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1088:4: NUMBER_MACR
             {
             mNUMBER_MACR(); 
 
@@ -1071,8 +1151,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = PERCENTAGE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:851:2: ( NUMBER_MACR '%' )
-            // CSS.g:851:4: NUMBER_MACR '%'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1093:2: ( NUMBER_MACR '%' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1093:4: NUMBER_MACR '%'
             {
             mNUMBER_MACR(); 
             match('%'); 
@@ -1092,8 +1172,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = DIMENSION;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:856:2: ( NUMBER_MACR IDENT_MACR )
-            // CSS.g:856:4: NUMBER_MACR IDENT_MACR
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1098:2: ( NUMBER_MACR IDENT_MACR )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1098:4: NUMBER_MACR IDENT_MACR
             {
             mNUMBER_MACR(); 
             mIDENT_MACR(); 
@@ -1113,20 +1193,20 @@ public class CSSLexer extends Lexer {
         try {
             int _type = URI;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:861:2: ( 'url(' W_MACR ( STRING_MACR | URI_MACR ) W_MACR ')' )
-            // CSS.g:861:4: 'url(' W_MACR ( STRING_MACR | URI_MACR ) W_MACR ')'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1103:2: ( 'url(' W_MACR ( STRING_MACR | URI_MACR ) W_MACR ')' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1103:4: 'url(' W_MACR ( STRING_MACR | URI_MACR ) W_MACR ')'
             {
             match("url("); 
 
             mW_MACR(); 
-            // CSS.g:861:18: ( STRING_MACR | URI_MACR )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1103:18: ( STRING_MACR | URI_MACR )
             int alt11=2;
             int LA11_0 = input.LA(1);
 
             if ( (LA11_0=='\"'||LA11_0=='\'') ) {
                 alt11=1;
             }
-            else if ( ((LA11_0>='\t' && LA11_0<='\n')||(LA11_0>='\f' && LA11_0<='\r')||(LA11_0>=' ' && LA11_0<='!')||(LA11_0>='#' && LA11_0<='&')||(LA11_0>='(' && LA11_0<='~')||(LA11_0>='\u0080' && LA11_0<='\uD7FF')||(LA11_0>='\uE000' && LA11_0<='\uFFFD')) ) {
+            else if ( ((LA11_0>='\t' && LA11_0<='\n')||(LA11_0>='\f' && LA11_0<='\r')||(LA11_0>=' ' && LA11_0<='!')||(LA11_0>='#' && LA11_0<='&')||(LA11_0>=')' && LA11_0<='~')||(LA11_0>='\u0080' && LA11_0<='\uD7FF')||(LA11_0>='\uE000' && LA11_0<='\uFFFD')) ) {
                 alt11=2;
             }
             else {
@@ -1137,14 +1217,14 @@ public class CSSLexer extends Lexer {
             }
             switch (alt11) {
                 case 1 :
-                    // CSS.g:861:19: STRING_MACR
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1103:19: STRING_MACR
                     {
                     mSTRING_MACR(); 
 
                     }
                     break;
                 case 2 :
-                    // CSS.g:861:33: URI_MACR
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1103:33: URI_MACR
                     {
                     mURI_MACR(); 
 
@@ -1171,8 +1251,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = UNIRANGE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:865:9: ( 'U+' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )? ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )? )
-            // CSS.g:866:2: 'U+' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )? ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )?
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1107:9: ( 'U+' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )? ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )? )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1108:2: 'U+' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )? ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )?
             {
             match("U+"); 
 
@@ -1212,7 +1292,7 @@ public class CSSLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // CSS.g:870:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )?
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1112:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )?
             int alt12=2;
             int LA12_0 = input.LA(1);
 
@@ -1221,7 +1301,7 @@ public class CSSLexer extends Lexer {
             }
             switch (alt12) {
                 case 1 :
-                    // CSS.g:870:8: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1112:8: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' )
                     {
                     if ( (input.LA(1)>='0' && input.LA(1)<='9')||input.LA(1)=='?'||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                         input.consume();
@@ -1247,7 +1327,7 @@ public class CSSLexer extends Lexer {
 
             }
 
-            // CSS.g:871:2: ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )?
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1113:2: ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )?
             int alt14=2;
             int LA14_0 = input.LA(1);
 
@@ -1256,7 +1336,7 @@ public class CSSLexer extends Lexer {
             }
             switch (alt14) {
                 case 1 :
-                    // CSS.g:871:3: '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1113:3: '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
                     {
                     match('-'); 
                     if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
@@ -1295,7 +1375,7 @@ public class CSSLexer extends Lexer {
                         recover(mse);
                         throw mse;}
 
-                    // CSS.g:876:14: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1118:14: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
                     int alt13=2;
                     int LA13_0 = input.LA(1);
 
@@ -1304,7 +1384,7 @@ public class CSSLexer extends Lexer {
                     }
                     switch (alt13) {
                         case 1 :
-                            // CSS.g:876:15: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1118:15: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
                             {
                             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                                 input.consume();
@@ -1352,8 +1432,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = CDO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:882:2: ( '<!--' )
-            // CSS.g:882:4: '<!--'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1124:2: ( '<!--' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1124:4: '<!--'
             {
             match("<!--"); 
 
@@ -1373,8 +1453,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = CDC;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:887:2: ( '-->' )
-            // CSS.g:887:4: '-->'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1129:2: ( '-->' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1129:4: '-->'
             {
             match("-->"); 
 
@@ -1394,8 +1474,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = SEMICOLON;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:891:2: ( ';' )
-            // CSS.g:891:4: ';'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1133:2: ( ';' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1133:4: ';'
             {
             match(';'); 
 
@@ -1414,8 +1494,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = COLON;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:895:2: ( ':' )
-            // CSS.g:895:4: ':'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1137:2: ( ':' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1137:4: ':'
             {
             match(':'); 
 
@@ -1434,8 +1514,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = COMMA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:899:5: ( ',' )
-            // CSS.g:899:7: ','
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1141:5: ( ',' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1141:7: ','
             {
             match(','); 
 
@@ -1449,13 +1529,53 @@ public class CSSLexer extends Lexer {
     }
     // $ANTLR end "COMMA"
 
+    // $ANTLR start "QUESTION"
+    public final void mQUESTION() throws RecognitionException {
+        try {
+            int _type = QUESTION;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1145:2: ( '?' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1145:4: '?'
+            {
+            match('?'); 
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "QUESTION"
+
+    // $ANTLR start "PERCENT"
+    public final void mPERCENT() throws RecognitionException {
+        try {
+            int _type = PERCENT;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1149:2: ( '%' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1149:4: '%'
+            {
+            match('%'); 
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "PERCENT"
+
     // $ANTLR start "EQUALS"
     public final void mEQUALS() throws RecognitionException {
         try {
             int _type = EQUALS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:903:5: ( '=' )
-            // CSS.g:903:7: '='
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1153:5: ( '=' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1153:7: '='
             {
             match('='); 
 
@@ -1474,8 +1594,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = SLASH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:907:5: ( '/' )
-            // CSS.g:907:7: '/'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1157:5: ( '/' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1157:7: '/'
             {
             match('/'); 
 
@@ -1494,8 +1614,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = GREATER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:911:5: ( '>' )
-            // CSS.g:911:7: '>'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1161:5: ( '>' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1161:7: '>'
             {
             match('>'); 
 
@@ -1509,13 +1629,33 @@ public class CSSLexer extends Lexer {
     }
     // $ANTLR end "GREATER"
 
+    // $ANTLR start "LESS"
+    public final void mLESS() throws RecognitionException {
+        try {
+            int _type = LESS;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1165:5: ( '<' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1165:7: '<'
+            {
+            match('<'); 
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "LESS"
+
     // $ANTLR start "LCURLY"
     public final void mLCURLY() throws RecognitionException {
         try {
             int _type = LCURLY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:915:2: ( '{' )
-            // CSS.g:915:4: '{'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1169:2: ( '{' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1169:4: '{'
             {
             match('{'); 
             ls.curlyNest++;
@@ -1535,8 +1675,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = RCURLY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:919:2: ( '}' )
-            // CSS.g:919:4: '}'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1173:2: ( '}' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1173:4: '}'
             {
             match('}'); 
              if(ls.curlyNest>0) ls.curlyNest--;
@@ -1556,8 +1696,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = APOS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:923:2: ( '\\'' )
-            // CSS.g:923:4: '\\''
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1177:2: ( '\\'' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1177:4: '\\''
             {
             match('\''); 
              ls.aposOpen=!ls.aposOpen; 
@@ -1577,8 +1717,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = QUOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:927:2: ( '\"' )
-            // CSS.g:927:4: '\"'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1181:2: ( '\"' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1181:4: '\"'
             {
             match('\"'); 
              ls.quotOpen=!ls.quotOpen; 
@@ -1598,10 +1738,11 @@ public class CSSLexer extends Lexer {
         try {
             int _type = LPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:931:2: ( '(' )
-            // CSS.g:931:4: '('
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1185:2: ( '(' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1185:4: '('
             {
             match('('); 
+            ls.parenNest++; 
 
             }
 
@@ -1618,10 +1759,11 @@ public class CSSLexer extends Lexer {
         try {
             int _type = RPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:935:2: ( ')' )
-            // CSS.g:935:4: ')'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1189:2: ( ')' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1189:4: ')'
             {
             match(')'); 
+             if(ls.parenNest>0) ls.parenNest--; 
 
             }
 
@@ -1638,8 +1780,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = LBRACE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:939:2: ( '[' )
-            // CSS.g:939:4: '['
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1193:2: ( '[' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1193:4: '['
             {
             match('['); 
 
@@ -1658,8 +1800,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = RBRACE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:943:2: ( ']' )
-            // CSS.g:943:4: ']'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1197:2: ( ']' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1197:4: ']'
             {
             match(']'); 
 
@@ -1678,8 +1820,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = EXCLAMATION;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:947:5: ( '!' )
-            // CSS.g:947:7: '!'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1201:5: ( '!' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1201:7: '!'
             {
             match('!'); 
 
@@ -1698,8 +1840,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = MINUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:951:2: ( '-' )
-            // CSS.g:951:4: '-'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1205:2: ( '-' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1205:4: '-'
             {
             match('-'); 
 
@@ -1718,8 +1860,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = PLUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:955:2: ( '+' )
-            // CSS.g:955:4: '+'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1209:2: ( '+' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1209:4: '+'
             {
             match('+'); 
 
@@ -1738,8 +1880,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = ASTERISK;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:959:2: ( '*' )
-            // CSS.g:959:4: '*'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1213:2: ( '*' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1213:4: '*'
             {
             match('*'); 
 
@@ -1758,10 +1900,10 @@ public class CSSLexer extends Lexer {
         try {
             int _type = S;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:964:2: ( ( W_CHAR )+ )
-            // CSS.g:964:4: ( W_CHAR )+
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1218:2: ( ( W_CHAR )+ )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1218:4: ( W_CHAR )+
             {
-            // CSS.g:964:4: ( W_CHAR )+
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1218:4: ( W_CHAR )+
             int cnt15=0;
             loop15:
             do {
@@ -1775,7 +1917,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt15) {
             	case 1 :
-            	    // CSS.g:964:4: W_CHAR
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1218:4: W_CHAR
             	    {
             	    mW_CHAR(); 
 
@@ -1807,12 +1949,12 @@ public class CSSLexer extends Lexer {
         try {
             int _type = COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:968:2: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // CSS.g:968:4: '/*' ( options {greedy=false; } : . )* '*/'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1222:2: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1222:4: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // CSS.g:968:9: ( options {greedy=false; } : . )*
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1222:9: ( options {greedy=false; } : . )*
             loop16:
             do {
                 int alt16=2;
@@ -1824,20 +1966,20 @@ public class CSSLexer extends Lexer {
                     if ( (LA16_1=='/') ) {
                         alt16=2;
                     }
-                    else if ( ((LA16_1>='\u0000' && LA16_1<='.')||(LA16_1>='0' && LA16_1<='\uFFFE')) ) {
+                    else if ( ((LA16_1>='\u0000' && LA16_1<='.')||(LA16_1>='0' && LA16_1<='\uFFFF')) ) {
                         alt16=1;
                     }
 
 
                 }
-                else if ( ((LA16_0>='\u0000' && LA16_0<=')')||(LA16_0>='+' && LA16_0<='\uFFFE')) ) {
+                else if ( ((LA16_0>='\u0000' && LA16_0<=')')||(LA16_0>='+' && LA16_0<='\uFFFF')) ) {
                     alt16=1;
                 }
 
 
                 switch (alt16) {
             	case 1 :
-            	    // CSS.g:968:37: .
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1222:37: .
             	    {
             	    matchAny(); 
 
@@ -1868,12 +2010,12 @@ public class CSSLexer extends Lexer {
         try {
             int _type = SL_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:972:2: ( '//' ( options {greedy=false; } : . )* ( '\\n' | '\\r' ) )
-            // CSS.g:972:4: '//' ( options {greedy=false; } : . )* ( '\\n' | '\\r' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1226:2: ( '//' ( options {greedy=false; } : . )* ( '\\n' | '\\r' ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1226:4: '//' ( options {greedy=false; } : . )* ( '\\n' | '\\r' )
             {
             match("//"); 
 
-            // CSS.g:972:9: ( options {greedy=false; } : . )*
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1226:9: ( options {greedy=false; } : . )*
             loop17:
             do {
                 int alt17=2;
@@ -1882,14 +2024,14 @@ public class CSSLexer extends Lexer {
                 if ( (LA17_0=='\n'||LA17_0=='\r') ) {
                     alt17=2;
                 }
-                else if ( ((LA17_0>='\u0000' && LA17_0<='\t')||(LA17_0>='\u000B' && LA17_0<='\f')||(LA17_0>='\u000E' && LA17_0<='\uFFFE')) ) {
+                else if ( ((LA17_0>='\u0000' && LA17_0<='\t')||(LA17_0>='\u000B' && LA17_0<='\f')||(LA17_0>='\u000E' && LA17_0<='\uFFFF')) ) {
                     alt17=1;
                 }
 
 
                 switch (alt17) {
             	case 1 :
-            	    // CSS.g:972:37: .
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1226:37: .
             	    {
             	    matchAny(); 
 
@@ -1922,13 +2064,35 @@ public class CSSLexer extends Lexer {
     }
     // $ANTLR end "SL_COMMENT"
 
+    // $ANTLR start "EXPRESSION"
+    public final void mEXPRESSION() throws RecognitionException {
+        try {
+            int _type = EXPRESSION;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1231:3: ( 'expression(' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1231:5: 'expression('
+            {
+            match("expression("); 
+
+             readExpressionContents(); 
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "EXPRESSION"
+
     // $ANTLR start "FUNCTION"
     public final void mFUNCTION() throws RecognitionException {
         try {
             int _type = FUNCTION;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:977:2: ( IDENT_MACR '(' )
-            // CSS.g:977:4: IDENT_MACR '('
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1236:2: ( IDENT_MACR '(' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1236:4: IDENT_MACR '('
             {
             mIDENT_MACR(); 
             match('('); 
@@ -1948,8 +2112,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = INCLUDES;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:981:2: ( '~=' )
-            // CSS.g:981:4: '~='
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1240:2: ( '~=' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1240:4: '~='
             {
             match("~="); 
 
@@ -1969,8 +2133,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = DASHMATCH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:985:2: ( '|=' )
-            // CSS.g:985:4: '|='
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1244:2: ( '|=' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1244:4: '|='
             {
             match("|="); 
 
@@ -1990,8 +2154,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = INVALID_TOKEN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CSS.g:989:2: ( . )
-            // CSS.g:989:4: .
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1248:2: ( . )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1248:4: .
             {
             matchAny(); 
 
@@ -2008,11 +2172,11 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "IDENT_MACR"
     public final void mIDENT_MACR() throws RecognitionException {
         try {
-            // CSS.g:998:4: ( NAME_START ( NAME_CHAR )* )
-            // CSS.g:998:6: NAME_START ( NAME_CHAR )*
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1257:4: ( NAME_START ( NAME_CHAR )* )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1257:6: NAME_START ( NAME_CHAR )*
             {
             mNAME_START(); 
-            // CSS.g:998:17: ( NAME_CHAR )*
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1257:17: ( NAME_CHAR )*
             loop18:
             do {
                 int alt18=2;
@@ -2025,7 +2189,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt18) {
             	case 1 :
-            	    // CSS.g:998:17: NAME_CHAR
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1257:17: NAME_CHAR
             	    {
             	    mNAME_CHAR(); 
 
@@ -2049,10 +2213,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NAME_MACR"
     public final void mNAME_MACR() throws RecognitionException {
         try {
-            // CSS.g:1003:3: ( ( NAME_CHAR )+ )
-            // CSS.g:1003:5: ( NAME_CHAR )+
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1262:3: ( ( NAME_CHAR )+ )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1262:5: ( NAME_CHAR )+
             {
-            // CSS.g:1003:5: ( NAME_CHAR )+
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1262:5: ( NAME_CHAR )+
             int cnt19=0;
             loop19:
             do {
@@ -2066,7 +2230,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt19) {
             	case 1 :
-            	    // CSS.g:1003:5: NAME_CHAR
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1262:5: NAME_CHAR
             	    {
             	    mNAME_CHAR(); 
 
@@ -2094,10 +2258,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NAME_START"
     public final void mNAME_START() throws RecognitionException {
         try {
-            // CSS.g:1008:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR ) )
-            // CSS.g:1008:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1267:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1267:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR )
             {
-            // CSS.g:1008:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1267:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR )
             int alt20=5;
             int LA20_0 = input.LA(1);
 
@@ -2124,35 +2288,35 @@ public class CSSLexer extends Lexer {
             }
             switch (alt20) {
                 case 1 :
-                    // CSS.g:1008:7: 'a' .. 'z'
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1267:7: 'a' .. 'z'
                     {
                     matchRange('a','z'); 
 
                     }
                     break;
                 case 2 :
-                    // CSS.g:1008:18: 'A' .. 'Z'
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1267:18: 'A' .. 'Z'
                     {
                     matchRange('A','Z'); 
 
                     }
                     break;
                 case 3 :
-                    // CSS.g:1008:29: '_'
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1267:29: '_'
                     {
                     match('_'); 
 
                     }
                     break;
                 case 4 :
-                    // CSS.g:1008:35: NON_ASCII
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1267:35: NON_ASCII
                     {
                     mNON_ASCII(); 
 
                     }
                     break;
                 case 5 :
-                    // CSS.g:1008:47: ESCAPE_CHAR
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1267:47: ESCAPE_CHAR
                     {
                     mESCAPE_CHAR(); 
 
@@ -2173,8 +2337,8 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NON_ASCII"
     public final void mNON_ASCII() throws RecognitionException {
         try {
-            // CSS.g:1013:4: ( ( '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
-            // CSS.g:1013:6: ( '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1272:4: ( ( '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1272:6: ( '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' )
             {
             if ( (input.LA(1)>='\u0080' && input.LA(1)<='\uD7FF')||(input.LA(1)>='\uE000' && input.LA(1)<='\uFFFD') ) {
                 input.consume();
@@ -2197,17 +2361,17 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "ESCAPE_CHAR"
     public final void mESCAPE_CHAR() throws RecognitionException {
         try {
-            // CSS.g:1018:3: ( ( '\\\\' ) ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) ) )
-            // CSS.g:1018:5: ( '\\\\' ) ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1277:3: ( ( '\\\\' ) ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1277:5: ( '\\\\' ) ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
             {
-            // CSS.g:1018:5: ( '\\\\' )
-            // CSS.g:1018:6: '\\\\'
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1277:5: ( '\\\\' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1277:6: '\\\\'
             {
             match('\\'); 
 
             }
 
-            // CSS.g:1019:5: ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1278:5: ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
             int alt22=2;
             int LA22_0 = input.LA(1);
 
@@ -2231,10 +2395,10 @@ public class CSSLexer extends Lexer {
             }
             switch (alt22) {
                 case 1 :
-                    // CSS.g:1020:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1279:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )
                     {
-                    // CSS.g:1020:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )
-                    // CSS.g:1020:8: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1279:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1279:8: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
                     {
                     if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                         input.consume();
@@ -2272,7 +2436,7 @@ public class CSSLexer extends Lexer {
                         recover(mse);
                         throw mse;}
 
-                    // CSS.g:1024:8: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1283:8: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
                     int alt21=2;
                     int LA21_0 = input.LA(1);
 
@@ -2281,7 +2445,7 @@ public class CSSLexer extends Lexer {
                     }
                     switch (alt21) {
                         case 1 :
-                            // CSS.g:1024:9: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1283:9: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
                             {
                             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                                 input.consume();
@@ -2314,7 +2478,7 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // CSS.g:1027:7: ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1286:7: ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' )
                     {
                     if ( (input.LA(1)>=' ' && input.LA(1)<='~')||(input.LA(1)>='\u0080' && input.LA(1)<='\uD7FF')||(input.LA(1)>='\uE000' && input.LA(1)<='\uFFFD') ) {
                         input.consume();
@@ -2343,10 +2507,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NAME_CHAR"
     public final void mNAME_CHAR() throws RecognitionException {
         try {
-            // CSS.g:1033:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR ) )
-            // CSS.g:1033:6: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1292:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1292:6: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR )
             {
-            // CSS.g:1033:6: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1292:6: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR )
             int alt23=7;
             int LA23_0 = input.LA(1);
 
@@ -2379,49 +2543,49 @@ public class CSSLexer extends Lexer {
             }
             switch (alt23) {
                 case 1 :
-                    // CSS.g:1033:7: 'a' .. 'z'
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1292:7: 'a' .. 'z'
                     {
                     matchRange('a','z'); 
 
                     }
                     break;
                 case 2 :
-                    // CSS.g:1033:18: 'A' .. 'Z'
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1292:18: 'A' .. 'Z'
                     {
                     matchRange('A','Z'); 
 
                     }
                     break;
                 case 3 :
-                    // CSS.g:1033:29: '0' .. '9'
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1292:29: '0' .. '9'
                     {
                     matchRange('0','9'); 
 
                     }
                     break;
                 case 4 :
-                    // CSS.g:1033:40: '-'
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1292:40: '-'
                     {
                     match('-'); 
 
                     }
                     break;
                 case 5 :
-                    // CSS.g:1033:46: '_'
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1292:46: '_'
                     {
                     match('_'); 
 
                     }
                     break;
                 case 6 :
-                    // CSS.g:1033:52: NON_ASCII
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1292:52: NON_ASCII
                     {
                     mNON_ASCII(); 
 
                     }
                     break;
                 case 7 :
-                    // CSS.g:1033:64: ESCAPE_CHAR
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1292:64: ESCAPE_CHAR
                     {
                     mESCAPE_CHAR(); 
 
@@ -2442,14 +2606,14 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NUMBER_MACR"
     public final void mNUMBER_MACR() throws RecognitionException {
         try {
-            // CSS.g:1038:4: ( ( '0' .. '9' )+ | ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1297:4: ( ( '0' .. '9' )+ | ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ ) )
             int alt27=2;
             alt27 = dfa27.predict(input);
             switch (alt27) {
                 case 1 :
-                    // CSS.g:1038:6: ( '0' .. '9' )+
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1297:6: ( '0' .. '9' )+
                     {
-                    // CSS.g:1038:6: ( '0' .. '9' )+
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1297:6: ( '0' .. '9' )+
                     int cnt24=0;
                     loop24:
                     do {
@@ -2463,7 +2627,7 @@ public class CSSLexer extends Lexer {
 
                         switch (alt24) {
                     	case 1 :
-                    	    // CSS.g:1038:7: '0' .. '9'
+                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1297:7: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2483,12 +2647,12 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // CSS.g:1038:20: ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1297:20: ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ )
                     {
-                    // CSS.g:1038:20: ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ )
-                    // CSS.g:1038:21: ( '0' .. '9' )* '.' ( '0' .. '9' )+
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1297:20: ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1297:21: ( '0' .. '9' )* '.' ( '0' .. '9' )+
                     {
-                    // CSS.g:1038:21: ( '0' .. '9' )*
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1297:21: ( '0' .. '9' )*
                     loop25:
                     do {
                         int alt25=2;
@@ -2501,7 +2665,7 @@ public class CSSLexer extends Lexer {
 
                         switch (alt25) {
                     	case 1 :
-                    	    // CSS.g:1038:22: '0' .. '9'
+                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1297:22: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2514,7 +2678,7 @@ public class CSSLexer extends Lexer {
                     } while (true);
 
                     match('.'); 
-                    // CSS.g:1038:37: ( '0' .. '9' )+
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1297:37: ( '0' .. '9' )+
                     int cnt26=0;
                     loop26:
                     do {
@@ -2528,7 +2692,7 @@ public class CSSLexer extends Lexer {
 
                         switch (alt26) {
                     	case 1 :
-                    	    // CSS.g:1038:38: '0' .. '9'
+                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1297:38: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2561,7 +2725,7 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "STRING_MACR"
     public final void mSTRING_MACR() throws RecognitionException {
         try {
-            // CSS.g:1043:2: ( QUOT ( STRING_CHAR | APOS )* QUOT | APOS ( STRING_CHAR | QUOT )* APOS )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1302:2: ( QUOT ( STRING_CHAR | APOS )* QUOT | APOS ( STRING_CHAR | QUOT )* APOS )
             int alt30=2;
             int LA30_0 = input.LA(1);
 
@@ -2579,16 +2743,16 @@ public class CSSLexer extends Lexer {
             }
             switch (alt30) {
                 case 1 :
-                    // CSS.g:1043:4: QUOT ( STRING_CHAR | APOS )* QUOT
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1302:4: QUOT ( STRING_CHAR | APOS )* QUOT
                     {
                     mQUOT(); 
-                    // CSS.g:1043:9: ( STRING_CHAR | APOS )*
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1302:9: ( STRING_CHAR | APOS )*
                     loop28:
                     do {
                         int alt28=3;
                         int LA28_0 = input.LA(1);
 
-                        if ( (LA28_0=='\t'||(LA28_0>=' ' && LA28_0<='!')||(LA28_0>='#' && LA28_0<='&')||(LA28_0>='(' && LA28_0<='~')||(LA28_0>='\u0080' && LA28_0<='\uD7FF')||(LA28_0>='\uE000' && LA28_0<='\uFFFD')) ) {
+                        if ( (LA28_0=='\t'||(LA28_0>=' ' && LA28_0<='!')||(LA28_0>='#' && LA28_0<='&')||(LA28_0>='*' && LA28_0<='~')||(LA28_0>='\u0080' && LA28_0<='\uD7FF')||(LA28_0>='\uE000' && LA28_0<='\uFFFD')) ) {
                             alt28=1;
                         }
                         else if ( (LA28_0=='\'') ) {
@@ -2598,14 +2762,14 @@ public class CSSLexer extends Lexer {
 
                         switch (alt28) {
                     	case 1 :
-                    	    // CSS.g:1043:10: STRING_CHAR
+                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1302:10: STRING_CHAR
                     	    {
                     	    mSTRING_CHAR(); 
 
                     	    }
                     	    break;
                     	case 2 :
-                    	    // CSS.g:1043:24: APOS
+                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1302:24: APOS
                     	    {
                     	    mAPOS(); 
                     	    ls.aposOpen=false;
@@ -2623,16 +2787,16 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // CSS.g:1044:4: APOS ( STRING_CHAR | QUOT )* APOS
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1303:4: APOS ( STRING_CHAR | QUOT )* APOS
                     {
                     mAPOS(); 
-                    // CSS.g:1044:9: ( STRING_CHAR | QUOT )*
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1303:9: ( STRING_CHAR | QUOT )*
                     loop29:
                     do {
                         int alt29=3;
                         int LA29_0 = input.LA(1);
 
-                        if ( (LA29_0=='\t'||(LA29_0>=' ' && LA29_0<='!')||(LA29_0>='#' && LA29_0<='&')||(LA29_0>='(' && LA29_0<='~')||(LA29_0>='\u0080' && LA29_0<='\uD7FF')||(LA29_0>='\uE000' && LA29_0<='\uFFFD')) ) {
+                        if ( (LA29_0=='\t'||(LA29_0>=' ' && LA29_0<='!')||(LA29_0>='#' && LA29_0<='&')||(LA29_0>='*' && LA29_0<='~')||(LA29_0>='\u0080' && LA29_0<='\uD7FF')||(LA29_0>='\uE000' && LA29_0<='\uFFFD')) ) {
                             alt29=1;
                         }
                         else if ( (LA29_0=='\"') ) {
@@ -2642,14 +2806,14 @@ public class CSSLexer extends Lexer {
 
                         switch (alt29) {
                     	case 1 :
-                    	    // CSS.g:1044:10: STRING_CHAR
+                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1303:10: STRING_CHAR
                     	    {
                     	    mSTRING_CHAR(); 
 
                     	    }
                     	    break;
                     	case 2 :
-                    	    // CSS.g:1044:24: QUOT
+                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1303:24: QUOT
                     	    {
                     	    mQUOT(); 
                     	    ls.quotOpen=false;
@@ -2677,10 +2841,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "STRING_CHAR"
     public final void mSTRING_CHAR() throws RecognitionException {
         try {
-            // CSS.g:1049:2: ( ( URI_CHAR | ' ' | ( '\\\\' NL_CHAR ) ) )
-            // CSS.g:1049:5: ( URI_CHAR | ' ' | ( '\\\\' NL_CHAR ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1308:2: ( ( URI_CHAR | ' ' | ( '\\\\' NL_CHAR ) ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1308:5: ( URI_CHAR | ' ' | ( '\\\\' NL_CHAR ) )
             {
-            // CSS.g:1049:5: ( URI_CHAR | ' ' | ( '\\\\' NL_CHAR ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1308:5: ( URI_CHAR | ' ' | ( '\\\\' NL_CHAR ) )
             int alt31=3;
             int LA31_0 = input.LA(1);
 
@@ -2693,7 +2857,7 @@ public class CSSLexer extends Lexer {
                 else {
                     alt31=1;}
             }
-            else if ( (LA31_0=='\t'||LA31_0=='!'||(LA31_0>='#' && LA31_0<='&')||(LA31_0>='(' && LA31_0<='[')||(LA31_0>=']' && LA31_0<='~')||(LA31_0>='\u0080' && LA31_0<='\uD7FF')||(LA31_0>='\uE000' && LA31_0<='\uFFFD')) ) {
+            else if ( (LA31_0=='\t'||LA31_0=='!'||(LA31_0>='#' && LA31_0<='&')||(LA31_0>='*' && LA31_0<='[')||(LA31_0>=']' && LA31_0<='~')||(LA31_0>='\u0080' && LA31_0<='\uD7FF')||(LA31_0>='\uE000' && LA31_0<='\uFFFD')) ) {
                 alt31=1;
             }
             else if ( (LA31_0==' ') ) {
@@ -2707,24 +2871,24 @@ public class CSSLexer extends Lexer {
             }
             switch (alt31) {
                 case 1 :
-                    // CSS.g:1049:6: URI_CHAR
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1308:6: URI_CHAR
                     {
                     mURI_CHAR(); 
 
                     }
                     break;
                 case 2 :
-                    // CSS.g:1049:17: ' '
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1308:17: ' '
                     {
                     match(' '); 
 
                     }
                     break;
                 case 3 :
-                    // CSS.g:1049:23: ( '\\\\' NL_CHAR )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1308:23: ( '\\\\' NL_CHAR )
                     {
-                    // CSS.g:1049:23: ( '\\\\' NL_CHAR )
-                    // CSS.g:1049:24: '\\\\' NL_CHAR
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1308:23: ( '\\\\' NL_CHAR )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1308:24: '\\\\' NL_CHAR
                     {
                     match('\\'); 
                     mNL_CHAR(); 
@@ -2749,23 +2913,23 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "URI_MACR"
     public final void mURI_MACR() throws RecognitionException {
         try {
-            // CSS.g:1054:2: ( ( URI_CHAR )* )
-            // CSS.g:1054:4: ( URI_CHAR )*
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1313:2: ( ( URI_CHAR )* )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1313:4: ( URI_CHAR )*
             {
-            // CSS.g:1054:4: ( URI_CHAR )*
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1313:4: ( URI_CHAR )*
             loop32:
             do {
                 int alt32=2;
                 int LA32_0 = input.LA(1);
 
-                if ( (LA32_0=='\t'||LA32_0=='!'||(LA32_0>='#' && LA32_0<='&')||(LA32_0>='(' && LA32_0<='~')||(LA32_0>='\u0080' && LA32_0<='\uD7FF')||(LA32_0>='\uE000' && LA32_0<='\uFFFD')) ) {
+                if ( (LA32_0=='\t'||LA32_0=='!'||(LA32_0>='#' && LA32_0<='&')||(LA32_0>='*' && LA32_0<='~')||(LA32_0>='\u0080' && LA32_0<='\uD7FF')||(LA32_0>='\uE000' && LA32_0<='\uFFFD')) ) {
                     alt32=1;
                 }
 
 
                 switch (alt32) {
             	case 1 :
-            	    // CSS.g:1054:4: URI_CHAR
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1313:4: URI_CHAR
             	    {
             	    mURI_CHAR(); 
 
@@ -2789,7 +2953,7 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "URI_CHAR"
     public final void mURI_CHAR() throws RecognitionException {
         try {
-            // CSS.g:1059:2: ( ( '\\u0009' | '\\u0021' | '\\u0023' .. '\\u0026' | '\\u0028' .. '\\u007E' ) | NON_ASCII | ESCAPE_CHAR )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1318:2: ( ( '\\u0009' | '\\u0021' | '\\u0023' .. '\\u0026' | '\\u002A' .. '\\u007E' ) | NON_ASCII | ESCAPE_CHAR )
             int alt33=3;
             int LA33_0 = input.LA(1);
 
@@ -2805,7 +2969,7 @@ public class CSSLexer extends Lexer {
             else if ( ((LA33_0>='\u0080' && LA33_0<='\uD7FF')||(LA33_0>='\uE000' && LA33_0<='\uFFFD')) ) {
                 alt33=2;
             }
-            else if ( (LA33_0=='\t'||LA33_0=='!'||(LA33_0>='#' && LA33_0<='&')||(LA33_0>='(' && LA33_0<='[')||(LA33_0>=']' && LA33_0<='~')) ) {
+            else if ( (LA33_0=='\t'||LA33_0=='!'||(LA33_0>='#' && LA33_0<='&')||(LA33_0>='*' && LA33_0<='[')||(LA33_0>=']' && LA33_0<='~')) ) {
                 alt33=1;
             }
             else {
@@ -2816,9 +2980,9 @@ public class CSSLexer extends Lexer {
             }
             switch (alt33) {
                 case 1 :
-                    // CSS.g:1059:4: ( '\\u0009' | '\\u0021' | '\\u0023' .. '\\u0026' | '\\u0028' .. '\\u007E' )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1318:4: ( '\\u0009' | '\\u0021' | '\\u0023' .. '\\u0026' | '\\u002A' .. '\\u007E' )
                     {
-                    if ( input.LA(1)=='\t'||input.LA(1)=='!'||(input.LA(1)>='#' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='~') ) {
+                    if ( input.LA(1)=='\t'||input.LA(1)=='!'||(input.LA(1)>='#' && input.LA(1)<='&')||(input.LA(1)>='*' && input.LA(1)<='~') ) {
                         input.consume();
 
                     }
@@ -2831,14 +2995,14 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // CSS.g:1060:6: NON_ASCII
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1319:6: NON_ASCII
                     {
                     mNON_ASCII(); 
 
                     }
                     break;
                 case 3 :
-                    // CSS.g:1060:18: ESCAPE_CHAR
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1319:18: ESCAPE_CHAR
                     {
                     mESCAPE_CHAR(); 
 
@@ -2855,7 +3019,7 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NL_CHAR"
     public final void mNL_CHAR() throws RecognitionException {
         try {
-            // CSS.g:1065:4: ( '\\u000A' | '\\u000D' '\\u000A' | '\\u000D' | '\\u000C' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1324:4: ( '\\u000A' | '\\u000D' '\\u000A' | '\\u000D' | '\\u000C' )
             int alt34=4;
             switch ( input.LA(1) ) {
             case '\n':
@@ -2888,14 +3052,14 @@ public class CSSLexer extends Lexer {
 
             switch (alt34) {
                 case 1 :
-                    // CSS.g:1065:6: '\\u000A'
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1324:6: '\\u000A'
                     {
                     match('\n'); 
 
                     }
                     break;
                 case 2 :
-                    // CSS.g:1065:17: '\\u000D' '\\u000A'
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1324:17: '\\u000D' '\\u000A'
                     {
                     match('\r'); 
                     match('\n'); 
@@ -2903,14 +3067,14 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // CSS.g:1065:37: '\\u000D'
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1324:37: '\\u000D'
                     {
                     match('\r'); 
 
                     }
                     break;
                 case 4 :
-                    // CSS.g:1065:48: '\\u000C'
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1324:48: '\\u000C'
                     {
                     match('\f'); 
 
@@ -2927,10 +3091,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "W_MACR"
     public final void mW_MACR() throws RecognitionException {
         try {
-            // CSS.g:1070:2: ( ( W_CHAR )* )
-            // CSS.g:1070:4: ( W_CHAR )*
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1329:2: ( ( W_CHAR )* )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1329:4: ( W_CHAR )*
             {
-            // CSS.g:1070:4: ( W_CHAR )*
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1329:4: ( W_CHAR )*
             loop35:
             do {
                 int alt35=2;
@@ -2943,7 +3107,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt35) {
             	case 1 :
-            	    // CSS.g:1070:4: W_CHAR
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1329:4: W_CHAR
             	    {
             	    mW_CHAR(); 
 
@@ -2967,8 +3131,8 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "W_CHAR"
     public final void mW_CHAR() throws RecognitionException {
         try {
-            // CSS.g:1075:4: ( '\\u0009' | '\\u000A' | '\\u000C' | '\\u000D' | '\\u0020' )
-            // CSS.g:
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1334:4: ( '\\u0009' | '\\u000A' | '\\u000C' | '\\u000D' | '\\u0020' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:
             {
             if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||(input.LA(1)>='\f' && input.LA(1)<='\r')||input.LA(1)==' ' ) {
                 input.consume();
@@ -2989,299 +3153,327 @@ public class CSSLexer extends Lexer {
     // $ANTLR end "W_CHAR"
 
     public void mTokens() throws RecognitionException {
-        // CSS.g:1:8: ( T__84 | IDENT | CHARSET | IMPORT | MEDIA | PAGE | ATKEYWORD | CLASSKEYWORD | STRING | HASH | NUMBER | PERCENTAGE | DIMENSION | URI | UNIRANGE | CDO | CDC | SEMICOLON | COLON | COMMA | EQUALS | SLASH | GREATER | LCURLY | RCURLY | APOS | QUOT | LPAREN | RPAREN | LBRACE | RBRACE | EXCLAMATION | MINUS | PLUS | ASTERISK | S | COMMENT | SL_COMMENT | FUNCTION | INCLUDES | DASHMATCH | INVALID_TOKEN )
-        int alt36=42;
+        // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:8: ( T__88 | IDENT | CHARSET | IMPORT | MEDIA | PAGE | ATKEYWORD | CLASSKEYWORD | STRING | HASH | NUMBER | PERCENTAGE | DIMENSION | URI | UNIRANGE | CDO | CDC | SEMICOLON | COLON | COMMA | QUESTION | PERCENT | EQUALS | SLASH | GREATER | LESS | LCURLY | RCURLY | APOS | QUOT | LPAREN | RPAREN | LBRACE | RBRACE | EXCLAMATION | MINUS | PLUS | ASTERISK | S | COMMENT | SL_COMMENT | EXPRESSION | FUNCTION | INCLUDES | DASHMATCH | INVALID_TOKEN )
+        int alt36=46;
         alt36 = dfa36.predict(input);
         switch (alt36) {
             case 1 :
-                // CSS.g:1:10: T__84
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:10: T__88
                 {
-                mT__84(); 
+                mT__88(); 
 
                 }
                 break;
             case 2 :
-                // CSS.g:1:16: IDENT
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:16: IDENT
                 {
                 mIDENT(); 
 
                 }
                 break;
             case 3 :
-                // CSS.g:1:22: CHARSET
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:22: CHARSET
                 {
                 mCHARSET(); 
 
                 }
                 break;
             case 4 :
-                // CSS.g:1:30: IMPORT
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:30: IMPORT
                 {
                 mIMPORT(); 
 
                 }
                 break;
             case 5 :
-                // CSS.g:1:37: MEDIA
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:37: MEDIA
                 {
                 mMEDIA(); 
 
                 }
                 break;
             case 6 :
-                // CSS.g:1:43: PAGE
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:43: PAGE
                 {
                 mPAGE(); 
 
                 }
                 break;
             case 7 :
-                // CSS.g:1:48: ATKEYWORD
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:48: ATKEYWORD
                 {
                 mATKEYWORD(); 
 
                 }
                 break;
             case 8 :
-                // CSS.g:1:58: CLASSKEYWORD
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:58: CLASSKEYWORD
                 {
                 mCLASSKEYWORD(); 
 
                 }
                 break;
             case 9 :
-                // CSS.g:1:71: STRING
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:71: STRING
                 {
                 mSTRING(); 
 
                 }
                 break;
             case 10 :
-                // CSS.g:1:78: HASH
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:78: HASH
                 {
                 mHASH(); 
 
                 }
                 break;
             case 11 :
-                // CSS.g:1:83: NUMBER
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:83: NUMBER
                 {
                 mNUMBER(); 
 
                 }
                 break;
             case 12 :
-                // CSS.g:1:90: PERCENTAGE
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:90: PERCENTAGE
                 {
                 mPERCENTAGE(); 
 
                 }
                 break;
             case 13 :
-                // CSS.g:1:101: DIMENSION
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:101: DIMENSION
                 {
                 mDIMENSION(); 
 
                 }
                 break;
             case 14 :
-                // CSS.g:1:111: URI
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:111: URI
                 {
                 mURI(); 
 
                 }
                 break;
             case 15 :
-                // CSS.g:1:115: UNIRANGE
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:115: UNIRANGE
                 {
                 mUNIRANGE(); 
 
                 }
                 break;
             case 16 :
-                // CSS.g:1:124: CDO
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:124: CDO
                 {
                 mCDO(); 
 
                 }
                 break;
             case 17 :
-                // CSS.g:1:128: CDC
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:128: CDC
                 {
                 mCDC(); 
 
                 }
                 break;
             case 18 :
-                // CSS.g:1:132: SEMICOLON
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:132: SEMICOLON
                 {
                 mSEMICOLON(); 
 
                 }
                 break;
             case 19 :
-                // CSS.g:1:142: COLON
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:142: COLON
                 {
                 mCOLON(); 
 
                 }
                 break;
             case 20 :
-                // CSS.g:1:148: COMMA
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:148: COMMA
                 {
                 mCOMMA(); 
 
                 }
                 break;
             case 21 :
-                // CSS.g:1:154: EQUALS
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:154: QUESTION
+                {
+                mQUESTION(); 
+
+                }
+                break;
+            case 22 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:163: PERCENT
+                {
+                mPERCENT(); 
+
+                }
+                break;
+            case 23 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:171: EQUALS
                 {
                 mEQUALS(); 
 
                 }
                 break;
-            case 22 :
-                // CSS.g:1:161: SLASH
+            case 24 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:178: SLASH
                 {
                 mSLASH(); 
 
                 }
                 break;
-            case 23 :
-                // CSS.g:1:167: GREATER
+            case 25 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:184: GREATER
                 {
                 mGREATER(); 
 
                 }
                 break;
-            case 24 :
-                // CSS.g:1:175: LCURLY
+            case 26 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:192: LESS
+                {
+                mLESS(); 
+
+                }
+                break;
+            case 27 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:197: LCURLY
                 {
                 mLCURLY(); 
 
                 }
                 break;
-            case 25 :
-                // CSS.g:1:182: RCURLY
+            case 28 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:204: RCURLY
                 {
                 mRCURLY(); 
 
                 }
                 break;
-            case 26 :
-                // CSS.g:1:189: APOS
+            case 29 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:211: APOS
                 {
                 mAPOS(); 
 
                 }
                 break;
-            case 27 :
-                // CSS.g:1:194: QUOT
+            case 30 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:216: QUOT
                 {
                 mQUOT(); 
 
                 }
                 break;
-            case 28 :
-                // CSS.g:1:199: LPAREN
+            case 31 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:221: LPAREN
                 {
                 mLPAREN(); 
 
                 }
                 break;
-            case 29 :
-                // CSS.g:1:206: RPAREN
+            case 32 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:228: RPAREN
                 {
                 mRPAREN(); 
 
                 }
                 break;
-            case 30 :
-                // CSS.g:1:213: LBRACE
+            case 33 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:235: LBRACE
                 {
                 mLBRACE(); 
 
                 }
                 break;
-            case 31 :
-                // CSS.g:1:220: RBRACE
+            case 34 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:242: RBRACE
                 {
                 mRBRACE(); 
 
                 }
                 break;
-            case 32 :
-                // CSS.g:1:227: EXCLAMATION
+            case 35 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:249: EXCLAMATION
                 {
                 mEXCLAMATION(); 
 
                 }
                 break;
-            case 33 :
-                // CSS.g:1:239: MINUS
+            case 36 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:261: MINUS
                 {
                 mMINUS(); 
 
                 }
                 break;
-            case 34 :
-                // CSS.g:1:245: PLUS
+            case 37 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:267: PLUS
                 {
                 mPLUS(); 
 
                 }
                 break;
-            case 35 :
-                // CSS.g:1:250: ASTERISK
+            case 38 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:272: ASTERISK
                 {
                 mASTERISK(); 
 
                 }
                 break;
-            case 36 :
-                // CSS.g:1:259: S
+            case 39 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:281: S
                 {
                 mS(); 
 
                 }
                 break;
-            case 37 :
-                // CSS.g:1:261: COMMENT
+            case 40 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:283: COMMENT
                 {
                 mCOMMENT(); 
 
                 }
                 break;
-            case 38 :
-                // CSS.g:1:269: SL_COMMENT
+            case 41 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:291: SL_COMMENT
                 {
                 mSL_COMMENT(); 
 
                 }
                 break;
-            case 39 :
-                // CSS.g:1:280: FUNCTION
+            case 42 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:302: EXPRESSION
+                {
+                mEXPRESSION(); 
+
+                }
+                break;
+            case 43 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:313: FUNCTION
                 {
                 mFUNCTION(); 
 
                 }
                 break;
-            case 40 :
-                // CSS.g:1:289: INCLUDES
+            case 44 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:322: INCLUDES
                 {
                 mINCLUDES(); 
 
                 }
                 break;
-            case 41 :
-                // CSS.g:1:298: DASHMATCH
+            case 45 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:331: DASHMATCH
                 {
                 mDASHMATCH(); 
 
                 }
                 break;
-            case 42 :
-                // CSS.g:1:308: INVALID_TOKEN
+            case 46 :
+                // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:341: INVALID_TOKEN
                 {
                 mINVALID_TOKEN(); 
 
@@ -3344,157 +3536,99 @@ public class CSSLexer extends Lexer {
             this.transition = DFA27_transition;
         }
         public String getDescription() {
-            return "1036:1: fragment NUMBER_MACR : ( ( '0' .. '9' )+ | ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ ) );";
+            return "1295:1: fragment NUMBER_MACR : ( ( '0' .. '9' )+ | ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ ) );";
         }
     }
     static final String DFA36_eotS =
-        "\1\uffff\5\45\3\43\1\71\1\73\1\43\1\77\2\45\1\43\1\104\4\uffff\1"+
-        "\113\13\uffff\2\43\1\uffff\1\45\1\uffff\6\45\2\uffff\1\45\1\uffff"+
-        "\2\45\4\66\1\uffff\1\77\6\uffff\1\77\32\uffff\7\45\4\66\4\45\1\55"+
-        "\3\45\4\66\4\45\1\uffff\3\45\3\66\1\u0086\7\45\2\66\1\u0090\1\uffff"+
-        "\7\45\2\66\1\uffff\4\45\2\66\1\uffff\1\u009b\1\uffff\1\66\1\uffff"+
-        "\1\66";
+        "\1\uffff\5\50\3\46\1\74\1\76\1\46\1\102\2\50\1\107\1\111\6\uffff"+
+        "\1\122\13\uffff\1\50\2\46\1\uffff\1\50\1\uffff\6\50\2\uffff\1\50"+
+        "\1\uffff\2\50\4\71\1\uffff\1\102\6\uffff\1\102\3\uffff\1\50\32\uffff"+
+        "\7\50\4\71\5\50\1\60\3\50\4\71\5\50\1\uffff\3\50\3\71\1\u0090\10"+
+        "\50\2\71\1\u009b\1\uffff\10\50\2\71\1\uffff\5\50\2\71\1\uffff\1"+
+        "\50\1\u00a9\1\uffff\1\71\1\50\1\uffff\1\71\1\50\2\uffff";
     static final String DFA36_eofS =
-        "\u009d\uffff";
+        "\u00ae\uffff";
     static final String DFA36_minS =
-        "\1\0\5\50\1\40\1\101\1\60\2\11\1\55\1\45\2\50\1\41\1\55\4\uffff"+
-        "\1\52\13\uffff\2\75\1\uffff\1\50\1\uffff\6\50\1\40\1\uffff\1\50"+
-        "\1\uffff\2\50\1\150\1\155\1\145\1\141\1\uffff\1\45\5\uffff\1\60"+
-        "\1\45\32\uffff\7\50\1\141\1\160\1\144\1\147\4\50\1\11\3\50\1\162"+
-        "\1\157\1\151\1\145\4\50\1\uffff\3\50\1\163\1\162\1\141\1\55\7\50"+
-        "\1\145\1\164\1\55\1\uffff\7\50\1\164\1\11\1\uffff\4\50\1\11\1\162"+
-        "\1\uffff\1\50\1\uffff\1\154\1\uffff\1\50";
+        "\1\0\5\50\1\40\1\101\1\60\2\11\1\55\1\45\2\50\1\41\1\55\6\uffff"+
+        "\1\52\13\uffff\1\50\2\75\1\uffff\1\50\1\uffff\6\50\1\40\1\uffff"+
+        "\1\50\1\uffff\2\50\1\150\1\155\1\145\1\141\1\uffff\1\45\5\uffff"+
+        "\1\60\1\45\3\uffff\1\50\32\uffff\7\50\1\141\1\160\1\144\1\147\5"+
+        "\50\1\11\3\50\1\162\1\157\1\151\1\145\5\50\1\uffff\3\50\1\163\1"+
+        "\162\1\141\1\55\10\50\1\145\1\164\1\55\1\uffff\10\50\1\164\1\11"+
+        "\1\uffff\5\50\1\11\1\162\1\uffff\2\50\1\uffff\1\154\1\50\1\uffff"+
+        "\2\50\2\uffff";
     static final String DFA36_maxS =
-        "\1\ufffe\16\ufffd\1\41\1\55\4\uffff\1\57\13\uffff\2\75\1\uffff\1"+
-        "\ufffd\1\uffff\7\ufffd\1\uffff\1\ufffd\1\uffff\2\ufffd\1\150\1\155"+
-        "\1\145\1\141\1\uffff\1\ufffd\5\uffff\1\71\1\ufffd\32\uffff\7\ufffd"+
-        "\1\141\1\160\1\144\1\147\10\ufffd\1\162\1\157\1\151\1\145\4\ufffd"+
-        "\1\uffff\3\ufffd\1\163\1\162\1\141\10\ufffd\1\145\1\164\1\ufffd"+
-        "\1\uffff\7\ufffd\1\164\1\165\1\uffff\4\ufffd\1\47\1\162\1\uffff"+
-        "\1\ufffd\1\uffff\1\154\1\uffff\1\50";
+        "\1\uffff\16\ufffd\1\41\1\55\6\uffff\1\57\13\uffff\1\ufffd\2\75\1"+
+        "\uffff\1\ufffd\1\uffff\7\ufffd\1\uffff\1\ufffd\1\uffff\2\ufffd\1"+
+        "\150\1\155\1\145\1\141\1\uffff\1\ufffd\5\uffff\1\71\1\ufffd\3\uffff"+
+        "\1\ufffd\32\uffff\7\ufffd\1\141\1\160\1\144\1\147\11\ufffd\1\162"+
+        "\1\157\1\151\1\145\5\ufffd\1\uffff\3\ufffd\1\163\1\162\1\141\11"+
+        "\ufffd\1\145\1\164\1\ufffd\1\uffff\10\ufffd\1\164\1\165\1\uffff"+
+        "\5\ufffd\1\47\1\162\1\uffff\2\ufffd\1\uffff\1\154\1\ufffd\1\uffff"+
+        "\1\50\1\ufffd\2\uffff";
     static final String DFA36_acceptS =
-        "\21\uffff\1\22\1\23\1\24\1\25\1\uffff\1\27\1\30\1\31\1\34\1\35\1"+
-        "\36\1\37\1\40\1\42\1\43\1\44\2\uffff\1\52\1\uffff\1\2\7\uffff\1"+
-        "\47\1\uffff\1\17\6\uffff\1\7\1\uffff\1\10\1\33\1\11\1\32\1\12\2"+
-        "\uffff\1\13\1\14\1\15\1\20\1\21\1\41\1\22\1\23\1\24\1\25\1\45\1"+
-        "\46\1\26\1\27\1\30\1\31\1\34\1\35\1\36\1\37\1\40\1\42\1\43\1\44"+
-        "\1\50\1\51\33\uffff\1\16\21\uffff\1\6\11\uffff\1\5\6\uffff\1\4\1"+
-        "\uffff\1\3\1\uffff\1\1\1\uffff";
+        "\21\uffff\1\22\1\23\1\24\1\25\1\26\1\27\1\uffff\1\31\1\33\1\34\1"+
+        "\37\1\40\1\41\1\42\1\43\1\45\1\46\1\47\3\uffff\1\56\1\uffff\1\2"+
+        "\7\uffff\1\53\1\uffff\1\17\6\uffff\1\7\1\uffff\1\10\1\36\1\11\1"+
+        "\35\1\12\2\uffff\1\13\1\15\1\14\1\uffff\1\20\1\32\1\21\1\44\1\22"+
+        "\1\23\1\24\1\25\1\26\1\27\1\50\1\51\1\30\1\31\1\33\1\34\1\37\1\40"+
+        "\1\41\1\42\1\43\1\45\1\46\1\47\1\54\1\55\35\uffff\1\16\22\uffff"+
+        "\1\6\12\uffff\1\5\7\uffff\1\4\2\uffff\1\3\2\uffff\1\1\2\uffff\2"+
+        "\52";
     static final String DFA36_specialS =
-        "\u009d\uffff}>";
+        "\1\0\u00ad\uffff}>";
     static final String[] DFA36_transitionS = {
-            "\11\43\2\40\1\43\2\40\22\43\1\40\1\35\1\11\1\13\3\43\1\12\1"+
-            "\31\1\32\1\37\1\36\1\23\1\20\1\10\1\25\12\14\1\22\1\21\1\17"+
-            "\1\24\1\26\1\43\1\7\24\16\1\3\5\16\1\33\1\6\1\34\1\43\1\4\1"+
-            "\43\10\15\1\1\13\15\1\2\5\15\1\27\1\42\1\30\1\41\1\43\ud780"+
-            "\5\u0800\43\u1ffe\5\1\43",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\14\46\1\44\15\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\21\46\1\56\10\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\2\uffff\1\57\1\uffff\1\51\2\uffff\12\50\7\uffff\32\47"+
-            "\1\uffff\1\54\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\20\61\12\60\7\61\6\60\32\61\6\60\30\61\1\uffff\ud780\61\u0800"+
-            "\uffff\u1ffe\61",
-            "\32\66\1\uffff\1\66\2\uffff\1\66\1\uffff\2\66\1\62\5\66\1\63"+
-            "\3\66\1\64\2\66\1\65\12\66\5\uffff\ud780\66\u0800\uffff\u1ffe"+
-            "\66",
-            "\12\67\7\uffff\32\70\1\uffff\1\70\2\uffff\1\70\1\uffff\32\70"+
-            "\5\uffff\ud780\70\u0800\uffff\u1ffe\70",
-            "\1\72\26\uffff\137\72\1\uffff\ud780\72\u0800\uffff\u1ffe\72",
-            "\1\72\26\uffff\137\72\1\uffff\ud780\72\u0800\uffff\u1ffe\72",
-            "\1\74\2\uffff\12\74\7\uffff\32\74\1\uffff\1\74\2\uffff\1\74"+
-            "\1\uffff\32\74\5\uffff\ud780\74\u0800\uffff\u1ffe\74",
-            "\1\100\10\uffff\1\75\1\uffff\12\76\7\uffff\32\101\1\uffff\1"+
-            "\101\2\uffff\1\101\1\uffff\32\101\5\uffff\ud780\101\u0800\uffff"+
-            "\u1ffe\101",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\1\102",
-            "\1\103",
-            "",
-            "",
-            "",
-            "",
-            "\1\111\4\uffff\1\112",
-            "",
-            "",
+            "\11\46\2\42\1\46\2\42\22\46\1\42\1\37\1\11\1\13\1\46\1\25\1"+
+            "\46\1\12\1\33\1\34\1\41\1\40\1\23\1\20\1\10\1\27\12\14\1\22"+
+            "\1\21\1\17\1\26\1\30\1\24\1\7\24\16\1\3\5\16\1\35\1\6\1\36\1"+
+            "\46\1\4\1\46\4\43\1\15\3\43\1\1\13\43\1\2\5\43\1\31\1\45\1\32"+
+            "\1\44\1\46\ud780\5\u0800\46\u1ffe\5\2\46",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\14\51\1\47\15\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\21\51\1\61\10\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\2\uffff\1\62\1\uffff\1\54\2\uffff\12\53\7\uffff\32\52"+
+            "\1\uffff\1\57\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\20\64\12\63\7\64\6\63\32\64\6\63\30\64\1\uffff\ud780\64\u0800"+
+            "\uffff\u1ffe\64",
+            "\32\71\1\uffff\1\71\2\uffff\1\71\1\uffff\2\71\1\65\5\71\1\66"+
+            "\3\71\1\67\2\71\1\70\12\71\5\uffff\ud780\71\u0800\uffff\u1ffe"+
+            "\71",
+            "\12\72\7\uffff\32\73\1\uffff\1\73\2\uffff\1\73\1\uffff\32\73"+
+            "\5\uffff\ud780\73\u0800\uffff\u1ffe\73",
+            "\1\75\26\uffff\10\75\2\uffff\125\75\1\uffff\ud780\75\u0800"+
+            "\uffff\u1ffe\75",
+            "\1\75\26\uffff\10\75\2\uffff\125\75\1\uffff\ud780\75\u0800"+
+            "\uffff\u1ffe\75",
+            "\1\77\2\uffff\12\77\7\uffff\32\77\1\uffff\1\77\2\uffff\1\77"+
+            "\1\uffff\32\77\5\uffff\ud780\77\u0800\uffff\u1ffe\77",
+            "\1\104\10\uffff\1\100\1\uffff\12\101\7\uffff\32\103\1\uffff"+
+            "\1\103\2\uffff\1\103\1\uffff\32\103\5\uffff\ud780\103\u0800"+
+            "\uffff\u1ffe\103",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\27\51\1\105\2\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\1\106",
+            "\1\110",
             "",
             "",
             "",
             "",
             "",
             "",
-            "",
-            "",
-            "",
-            "\1\127",
-            "\1\130",
-            "",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\17\46\1\131\12\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\20\133\12\132\7\133\6\132\32\133\6\132\30\133\1\uffff\ud780"+
-            "\133\u0800\uffff\u1ffe\133",
-            "",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\13\46\1\134\16\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "",
-            "\1\55\4\uffff\1\51\2\uffff\12\137\7\uffff\6\136\24\47\1\uffff"+
-            "\1\54\2\uffff\1\52\1\uffff\6\135\24\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\1\140",
-            "\1\141",
-            "\1\142",
-            "\1\143",
-            "",
-            "\1\100\12\uffff\12\67\7\uffff\32\101\1\uffff\1\101\2\uffff"+
-            "\1\101\1\uffff\32\101\5\uffff\ud780\101\u0800\uffff\u1ffe\101",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\12\67",
-            "\1\100\10\uffff\1\75\1\uffff\12\76\7\uffff\32\101\1\uffff\1"+
-            "\101\2\uffff\1\101\1\uffff\32\101\5\uffff\ud780\101\u0800\uffff"+
-            "\u1ffe\101",
+            "\1\120\4\uffff\1\121",
             "",
             "",
             "",
@@ -3506,6 +3640,69 @@ public class CSSLexer extends Lexer {
             "",
             "",
             "",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\1\136",
+            "\1\137",
+            "",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\17\51\1\140\12\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\20\142\12\141\7\142\6\141\32\142\6\141\30\142\1\uffff\ud780"+
+            "\142\u0800\uffff\u1ffe\142",
+            "",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\13\51\1\143\16\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "",
+            "\1\60\4\uffff\1\54\2\uffff\12\146\7\uffff\6\145\24\52\1\uffff"+
+            "\1\57\2\uffff\1\55\1\uffff\6\144\24\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\1\147",
+            "\1\150",
+            "\1\151",
+            "\1\152",
+            "",
+            "\1\104\12\uffff\12\72\7\uffff\32\103\1\uffff\1\103\2\uffff"+
+            "\1\103\1\uffff\32\103\5\uffff\ud780\103\u0800\uffff\u1ffe\103",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\12\72",
+            "\1\104\10\uffff\1\100\1\uffff\12\101\7\uffff\32\103\1\uffff"+
+            "\1\103\2\uffff\1\103\1\uffff\32\103\5\uffff\ud780\103\u0800"+
+            "\uffff\u1ffe\103",
+            "",
+            "",
+            "",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\17\51\1\153\12\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
             "",
             "",
             "",
@@ -3521,159 +3718,196 @@ public class CSSLexer extends Lexer {
             "",
             "",
             "",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\16\46\1\144\13\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\147\7\uffff\6\146\24\47\1\uffff"+
-            "\1\54\2\uffff\1\52\1\uffff\6\145\24\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\1\150\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\153\7\uffff\6\152\24\47\1\uffff"+
-            "\1\54\2\uffff\1\52\1\uffff\6\151\24\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\153\7\uffff\6\152\24\47\1\uffff"+
-            "\1\54\2\uffff\1\52\1\uffff\6\151\24\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\153\7\uffff\6\152\24\47\1\uffff"+
-            "\1\54\2\uffff\1\52\1\uffff\6\151\24\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\154",
-            "\1\155",
-            "\1\156",
-            "\1\157",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\21\46\1\160\10\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\163\7\uffff\6\162\24\47\1\uffff"+
-            "\1\54\2\uffff\1\52\1\uffff\6\161\24\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\163\7\uffff\6\162\24\47\1\uffff"+
-            "\1\54\2\uffff\1\52\1\uffff\6\161\24\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\163\7\uffff\6\162\24\47\1\uffff"+
-            "\1\54\2\uffff\1\52\1\uffff\6\161\24\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\2\164\1\uffff\2\164\22\uffff\137\164\1\uffff\ud780\164\u0800"+
-            "\uffff\u1ffe\164",
-            "\1\55\4\uffff\1\51\2\uffff\12\167\7\uffff\6\166\24\47\1\uffff"+
-            "\1\54\2\uffff\1\52\1\uffff\6\165\24\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\167\7\uffff\6\166\24\47\1\uffff"+
-            "\1\54\2\uffff\1\52\1\uffff\6\165\24\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\167\7\uffff\6\166\24\47\1\uffff"+
-            "\1\54\2\uffff\1\52\1\uffff\6\165\24\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\170",
-            "\1\171",
-            "\1\172",
-            "\1\173",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\23\46\1\174\6\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\177\7\uffff\6\176\24\47\1\uffff"+
-            "\1\54\2\uffff\1\52\1\uffff\6\175\24\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\177\7\uffff\6\176\24\47\1\uffff"+
-            "\1\54\2\uffff\1\52\1\uffff\6\175\24\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\177\7\uffff\6\176\24\47\1\uffff"+
-            "\1\54\2\uffff\1\52\1\uffff\6\175\24\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
             "",
-            "\1\55\4\uffff\1\51\2\uffff\12\u0082\7\uffff\6\u0081\24\47\1"+
-            "\uffff\1\54\2\uffff\1\52\1\uffff\6\u0080\24\46\5\uffff\ud780"+
-            "\53\u0800\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\u0082\7\uffff\6\u0081\24\47\1"+
-            "\uffff\1\54\2\uffff\1\52\1\uffff\6\u0080\24\46\5\uffff\ud780"+
-            "\53\u0800\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\u0082\7\uffff\6\u0081\24\47\1"+
-            "\uffff\1\54\2\uffff\1\52\1\uffff\6\u0080\24\46\5\uffff\ud780"+
-            "\53\u0800\uffff\u1ffe\53",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\16\51\1\154\13\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\157\7\uffff\6\156\24\52\1\uffff"+
+            "\1\57\2\uffff\1\55\1\uffff\6\155\24\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\1\160\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\163\7\uffff\6\162\24\52\1\uffff"+
+            "\1\57\2\uffff\1\55\1\uffff\6\161\24\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\163\7\uffff\6\162\24\52\1\uffff"+
+            "\1\57\2\uffff\1\55\1\uffff\6\161\24\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\163\7\uffff\6\162\24\52\1\uffff"+
+            "\1\57\2\uffff\1\55\1\uffff\6\161\24\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\164",
+            "\1\165",
+            "\1\166",
+            "\1\167",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\21\51\1\170\10\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\21\51\1\171\10\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\174\7\uffff\6\173\24\52\1\uffff"+
+            "\1\57\2\uffff\1\55\1\uffff\6\172\24\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\174\7\uffff\6\173\24\52\1\uffff"+
+            "\1\57\2\uffff\1\55\1\uffff\6\172\24\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\174\7\uffff\6\173\24\52\1\uffff"+
+            "\1\57\2\uffff\1\55\1\uffff\6\172\24\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\2\175\1\uffff\2\175\22\uffff\10\175\1\uffff\126\175\1\uffff"+
+            "\ud780\175\u0800\uffff\u1ffe\175",
+            "\1\60\4\uffff\1\54\2\uffff\12\u0080\7\uffff\6\177\24\52\1\uffff"+
+            "\1\57\2\uffff\1\55\1\uffff\6\176\24\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\u0080\7\uffff\6\177\24\52\1\uffff"+
+            "\1\57\2\uffff\1\55\1\uffff\6\176\24\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\u0080\7\uffff\6\177\24\52\1\uffff"+
+            "\1\57\2\uffff\1\55\1\uffff\6\176\24\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\u0081",
+            "\1\u0082",
             "\1\u0083",
             "\1\u0084",
-            "\1\u0085",
-            "\1\66\2\uffff\12\66\7\uffff\32\66\1\uffff\1\66\2\uffff\1\66"+
-            "\1\uffff\32\66\5\uffff\ud780\66\u0800\uffff\u1ffe\66",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\1\u0087\31\46\5\uffff\ud780\53\u0800\uffff"+
-            "\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\u008a\7\uffff\6\u0089\24\47\1"+
-            "\uffff\1\54\2\uffff\1\52\1\uffff\6\u0088\24\46\5\uffff\ud780"+
-            "\53\u0800\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\u008a\7\uffff\6\u0089\24\47\1"+
-            "\uffff\1\54\2\uffff\1\52\1\uffff\6\u0088\24\46\5\uffff\ud780"+
-            "\53\u0800\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\u008a\7\uffff\6\u0089\24\47\1"+
-            "\uffff\1\54\2\uffff\1\52\1\uffff\6\u0088\24\46\5\uffff\ud780"+
-            "\53\u0800\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\u008d\7\uffff\6\u008c\24\47\1"+
-            "\uffff\1\54\2\uffff\1\52\1\uffff\6\u008b\24\46\5\uffff\ud780"+
-            "\53\u0800\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\u008d\7\uffff\6\u008c\24\47\1"+
-            "\uffff\1\54\2\uffff\1\52\1\uffff\6\u008b\24\46\5\uffff\ud780"+
-            "\53\u0800\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\u008d\7\uffff\6\u008c\24\47\1"+
-            "\uffff\1\54\2\uffff\1\52\1\uffff\6\u008b\24\46\5\uffff\ud780"+
-            "\53\u0800\uffff\u1ffe\53",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\4\51\1\u0085\25\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\23\51\1\u0086\6\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\u0089\7\uffff\6\u0088\24\52\1"+
+            "\uffff\1\57\2\uffff\1\55\1\uffff\6\u0087\24\51\5\uffff\ud780"+
+            "\56\u0800\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\u0089\7\uffff\6\u0088\24\52\1"+
+            "\uffff\1\57\2\uffff\1\55\1\uffff\6\u0087\24\51\5\uffff\ud780"+
+            "\56\u0800\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\u0089\7\uffff\6\u0088\24\52\1"+
+            "\uffff\1\57\2\uffff\1\55\1\uffff\6\u0087\24\51\5\uffff\ud780"+
+            "\56\u0800\uffff\u1ffe\56",
+            "",
+            "\1\60\4\uffff\1\54\2\uffff\12\u008c\7\uffff\6\u008b\24\52\1"+
+            "\uffff\1\57\2\uffff\1\55\1\uffff\6\u008a\24\51\5\uffff\ud780"+
+            "\56\u0800\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\u008c\7\uffff\6\u008b\24\52\1"+
+            "\uffff\1\57\2\uffff\1\55\1\uffff\6\u008a\24\51\5\uffff\ud780"+
+            "\56\u0800\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\u008c\7\uffff\6\u008b\24\52\1"+
+            "\uffff\1\57\2\uffff\1\55\1\uffff\6\u008a\24\51\5\uffff\ud780"+
+            "\56\u0800\uffff\u1ffe\56",
+            "\1\u008d",
             "\1\u008e",
             "\1\u008f",
-            "\1\66\2\uffff\12\66\7\uffff\32\66\1\uffff\1\66\2\uffff\1\66"+
-            "\1\uffff\32\66\5\uffff\ud780\66\u0800\uffff\u1ffe\66",
-            "",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\15\46\1\u0091\14\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\u0094\7\uffff\6\u0093\24\47\1"+
-            "\uffff\1\54\2\uffff\1\52\1\uffff\6\u0092\24\46\5\uffff\ud780"+
-            "\53\u0800\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\u0094\7\uffff\6\u0093\24\47\1"+
-            "\uffff\1\54\2\uffff\1\52\1\uffff\6\u0092\24\46\5\uffff\ud780"+
-            "\53\u0800\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\u0094\7\uffff\6\u0093\24\47\1"+
-            "\uffff\1\54\2\uffff\1\52\1\uffff\6\u0092\24\46\5\uffff\ud780"+
-            "\53\u0800\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\1\u0095",
-            "\2\u0097\1\uffff\2\u0097\22\uffff\1\u0097\1\uffff\1\u0097\4"+
-            "\uffff\1\u0097\115\uffff\1\u0096",
-            "",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\23\46\1\u0098\6\46\5\uffff\ud780\53\u0800"+
-            "\uffff\u1ffe\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
-            "\2\u0099\1\uffff\2\u0099\22\uffff\1\u0099\1\uffff\1\u0099\4"+
-            "\uffff\1\u0099",
+            "\1\71\2\uffff\12\71\7\uffff\32\71\1\uffff\1\71\2\uffff\1\71"+
+            "\1\uffff\32\71\5\uffff\ud780\71\u0800\uffff\u1ffe\71",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\22\51\1\u0091\7\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\1\u0092\31\51\5\uffff\ud780\56\u0800\uffff"+
+            "\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\u0095\7\uffff\6\u0094\24\52\1"+
+            "\uffff\1\57\2\uffff\1\55\1\uffff\6\u0093\24\51\5\uffff\ud780"+
+            "\56\u0800\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\u0095\7\uffff\6\u0094\24\52\1"+
+            "\uffff\1\57\2\uffff\1\55\1\uffff\6\u0093\24\51\5\uffff\ud780"+
+            "\56\u0800\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\u0095\7\uffff\6\u0094\24\52\1"+
+            "\uffff\1\57\2\uffff\1\55\1\uffff\6\u0093\24\51\5\uffff\ud780"+
+            "\56\u0800\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\u0098\7\uffff\6\u0097\24\52\1"+
+            "\uffff\1\57\2\uffff\1\55\1\uffff\6\u0096\24\51\5\uffff\ud780"+
+            "\56\u0800\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\u0098\7\uffff\6\u0097\24\52\1"+
+            "\uffff\1\57\2\uffff\1\55\1\uffff\6\u0096\24\51\5\uffff\ud780"+
+            "\56\u0800\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\u0098\7\uffff\6\u0097\24\52\1"+
+            "\uffff\1\57\2\uffff\1\55\1\uffff\6\u0096\24\51\5\uffff\ud780"+
+            "\56\u0800\uffff\u1ffe\56",
+            "\1\u0099",
             "\1\u009a",
+            "\1\71\2\uffff\12\71\7\uffff\32\71\1\uffff\1\71\2\uffff\1\71"+
+            "\1\uffff\32\71\5\uffff\ud780\71\u0800\uffff\u1ffe\71",
             "",
-            "\1\55\4\uffff\1\51\2\uffff\12\50\7\uffff\32\47\1\uffff\1\54"+
-            "\2\uffff\1\52\1\uffff\32\46\5\uffff\ud780\53\u0800\uffff\u1ffe"+
-            "\53",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\22\51\1\u009c\7\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\15\51\1\u009d\14\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\u00a0\7\uffff\6\u009f\24\52\1"+
+            "\uffff\1\57\2\uffff\1\55\1\uffff\6\u009e\24\51\5\uffff\ud780"+
+            "\56\u0800\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\u00a0\7\uffff\6\u009f\24\52\1"+
+            "\uffff\1\57\2\uffff\1\55\1\uffff\6\u009e\24\51\5\uffff\ud780"+
+            "\56\u0800\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\u00a0\7\uffff\6\u009f\24\52\1"+
+            "\uffff\1\57\2\uffff\1\55\1\uffff\6\u009e\24\51\5\uffff\ud780"+
+            "\56\u0800\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\1\u00a1",
+            "\2\u00a3\1\uffff\2\u00a3\22\uffff\1\u00a3\1\uffff\1\u00a3\4"+
+            "\uffff\1\u00a3\115\uffff\1\u00a2",
             "",
-            "\1\u009c",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\10\51\1\u00a4\21\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\23\51\1\u00a5\6\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "\2\u00a6\1\uffff\2\u00a6\22\uffff\1\u00a6\1\uffff\1\u00a6\4"+
+            "\uffff\1\u00a6",
+            "\1\u00a7",
             "",
-            "\1\u0097"
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\16\51\1\u00a8\13\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff\u1ffe"+
+            "\56",
+            "",
+            "\1\u00aa",
+            "\1\60\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1\57"+
+            "\2\uffff\1\55\1\uffff\15\51\1\u00ab\14\51\5\uffff\ud780\56\u0800"+
+            "\uffff\u1ffe\56",
+            "",
+            "\1\u00a3",
+            "\1\u00ac\4\uffff\1\54\2\uffff\12\53\7\uffff\32\52\1\uffff\1"+
+            "\57\2\uffff\1\55\1\uffff\32\51\5\uffff\ud780\56\u0800\uffff"+
+            "\u1ffe\56",
+            "",
+            ""
     };
 
     static final short[] DFA36_eot = DFA.unpackEncodedString(DFA36_eotS);
@@ -3706,7 +3940,99 @@ public class CSSLexer extends Lexer {
             this.transition = DFA36_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T__84 | IDENT | CHARSET | IMPORT | MEDIA | PAGE | ATKEYWORD | CLASSKEYWORD | STRING | HASH | NUMBER | PERCENTAGE | DIMENSION | URI | UNIRANGE | CDO | CDC | SEMICOLON | COLON | COMMA | EQUALS | SLASH | GREATER | LCURLY | RCURLY | APOS | QUOT | LPAREN | RPAREN | LBRACE | RBRACE | EXCLAMATION | MINUS | PLUS | ASTERISK | S | COMMENT | SL_COMMENT | FUNCTION | INCLUDES | DASHMATCH | INVALID_TOKEN );";
+            return "1:1: Tokens : ( T__88 | IDENT | CHARSET | IMPORT | MEDIA | PAGE | ATKEYWORD | CLASSKEYWORD | STRING | HASH | NUMBER | PERCENTAGE | DIMENSION | URI | UNIRANGE | CDO | CDC | SEMICOLON | COLON | COMMA | QUESTION | PERCENT | EQUALS | SLASH | GREATER | LESS | LCURLY | RCURLY | APOS | QUOT | LPAREN | RPAREN | LBRACE | RBRACE | EXCLAMATION | MINUS | PLUS | ASTERISK | S | COMMENT | SL_COMMENT | EXPRESSION | FUNCTION | INCLUDES | DASHMATCH | INVALID_TOKEN );";
+        }
+        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
+            IntStream input = _input;
+        	int _s = s;
+            switch ( s ) {
+                    case 0 : 
+                        int LA36_0 = input.LA(1);
+
+                        s = -1;
+                        if ( (LA36_0=='i') ) {s = 1;}
+
+                        else if ( (LA36_0=='u') ) {s = 2;}
+
+                        else if ( (LA36_0=='U') ) {s = 3;}
+
+                        else if ( (LA36_0=='_') ) {s = 4;}
+
+                        else if ( ((LA36_0>='\u0080' && LA36_0<='\uD7FF')||(LA36_0>='\uE000' && LA36_0<='\uFFFD')) ) {s = 5;}
+
+                        else if ( (LA36_0=='\\') ) {s = 6;}
+
+                        else if ( (LA36_0=='@') ) {s = 7;}
+
+                        else if ( (LA36_0=='.') ) {s = 8;}
+
+                        else if ( (LA36_0=='\"') ) {s = 9;}
+
+                        else if ( (LA36_0=='\'') ) {s = 10;}
+
+                        else if ( (LA36_0=='#') ) {s = 11;}
+
+                        else if ( ((LA36_0>='0' && LA36_0<='9')) ) {s = 12;}
+
+                        else if ( (LA36_0=='e') ) {s = 13;}
+
+                        else if ( ((LA36_0>='A' && LA36_0<='T')||(LA36_0>='V' && LA36_0<='Z')) ) {s = 14;}
+
+                        else if ( (LA36_0=='<') ) {s = 15;}
+
+                        else if ( (LA36_0=='-') ) {s = 16;}
+
+                        else if ( (LA36_0==';') ) {s = 17;}
+
+                        else if ( (LA36_0==':') ) {s = 18;}
+
+                        else if ( (LA36_0==',') ) {s = 19;}
+
+                        else if ( (LA36_0=='?') ) {s = 20;}
+
+                        else if ( (LA36_0=='%') ) {s = 21;}
+
+                        else if ( (LA36_0=='=') ) {s = 22;}
+
+                        else if ( (LA36_0=='/') ) {s = 23;}
+
+                        else if ( (LA36_0=='>') ) {s = 24;}
+
+                        else if ( (LA36_0=='{') ) {s = 25;}
+
+                        else if ( (LA36_0=='}') ) {s = 26;}
+
+                        else if ( (LA36_0=='(') ) {s = 27;}
+
+                        else if ( (LA36_0==')') ) {s = 28;}
+
+                        else if ( (LA36_0=='[') ) {s = 29;}
+
+                        else if ( (LA36_0==']') ) {s = 30;}
+
+                        else if ( (LA36_0=='!') ) {s = 31;}
+
+                        else if ( (LA36_0=='+') ) {s = 32;}
+
+                        else if ( (LA36_0=='*') ) {s = 33;}
+
+                        else if ( ((LA36_0>='\t' && LA36_0<='\n')||(LA36_0>='\f' && LA36_0<='\r')||LA36_0==' ') ) {s = 34;}
+
+                        else if ( ((LA36_0>='a' && LA36_0<='d')||(LA36_0>='f' && LA36_0<='h')||(LA36_0>='j' && LA36_0<='t')||(LA36_0>='v' && LA36_0<='z')) ) {s = 35;}
+
+                        else if ( (LA36_0=='~') ) {s = 36;}
+
+                        else if ( (LA36_0=='|') ) {s = 37;}
+
+                        else if ( ((LA36_0>='\u0000' && LA36_0<='\b')||LA36_0=='\u000B'||(LA36_0>='\u000E' && LA36_0<='\u001F')||LA36_0=='$'||LA36_0=='&'||LA36_0=='^'||LA36_0=='`'||LA36_0=='\u007F'||(LA36_0>='\uD800' && LA36_0<='\uDFFF')||(LA36_0>='\uFFFE' && LA36_0<='\uFFFF')) ) {s = 38;}
+
+                        if ( s>=0 ) return s;
+                        break;
+            }
+            NoViableAltException nvae =
+                new NoViableAltException(getDescription(), 36, _s, input);
+            error(nvae);
+            throw nvae;
         }
     }
  
