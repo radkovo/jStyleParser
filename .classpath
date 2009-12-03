@@ -7,7 +7,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/logback-core-0.9.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-api-1.5.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/logback-classic-0.9.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jTidy-090119-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/nekohtml.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -7,18 +7,20 @@ import static org.junit.Assert.assertThat;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Map;
 
+import org.cyberneko.html.parsers.DOMParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.tidy.Tidy;
+import org.xml.sax.SAXException;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.NodeData;
@@ -35,12 +37,11 @@ public class DOMAssign {
 	private static TermFactory tf = CSSFactory.getTermFactory();
 	
 	@BeforeClass
-	public static void init() throws FileNotFoundException {
+	public static void init() throws SAXException, IOException {
 		log.info("\n\n\n == DOMAssign test at {} == \n\n\n", new Date());
-		Tidy parser = new Tidy();
-        parser.setInputEncoding("utf-8");
-		doc = parser.parseDOM(new FileInputStream("data/advanced/domassign.html"),
-				null);
+        DOMParser parser = new DOMParser();
+        parser.parse(new org.xml.sax.InputSource(new FileInputStream("data/advanced/domassign.html")));
+        doc = parser.getDocument();
 		elements = new ElementMap(doc);
 	}
 	

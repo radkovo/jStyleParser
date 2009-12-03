@@ -9,9 +9,9 @@ import java.util.Map;
 import java.io.*;
 import java.net.*;
 
+import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.tidy.Tidy;
 
 
 import cz.vutbr.web.css.*;
@@ -38,11 +38,11 @@ public class Test
     public static void main(String[] args)
     {
         try {
-            Tidy parser = new Tidy();
-            parser.setInputEncoding("utf-8");
+            DOMParser parser = new DOMParser();
             URL url = new URL("file:///home/burgetr/workspace/Layout/test/csstest.html");
             InputStream in = url.openStream();
-            Document doc = parser.parseDOM(in, null);
+            parser.parse(new org.xml.sax.InputSource(in));
+            Document doc = parser.getDocument();
             ElementMap elements = new ElementMap(doc);
             
             Map<Element, NodeData> decl = CSSFactory.assignDOM(doc, url, "screen", true);

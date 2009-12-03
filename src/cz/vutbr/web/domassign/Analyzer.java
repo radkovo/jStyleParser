@@ -26,7 +26,6 @@ import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.csskit.ElementUtil;
-import cz.vutbr.web.domassign.TidyTreeWalker.Traversal;
 
 /**
  * During initialization divides rules of stylesheet into maps accoring to

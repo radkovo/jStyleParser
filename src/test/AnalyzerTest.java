@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
+import org.cyberneko.html.parsers.DOMParser;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,9 +18,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.traversal.DocumentTraversal;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.TreeWalker;
-import org.w3c.tidy.Tidy;
+import org.xml.sax.SAXException;
 
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
@@ -35,8 +37,7 @@ import cz.vutbr.web.css.CSSProperty.BorderStyle;
 import cz.vutbr.web.css.CSSProperty.FontFamily;
 import cz.vutbr.web.css.CSSProperty.Margin;
 import cz.vutbr.web.domassign.Analyzer;
-import cz.vutbr.web.domassign.TidyTreeWalker;
-import cz.vutbr.web.domassign.TidyTreeWalker.Traversal;
+import cz.vutbr.web.domassign.Traversal;
 
 public class AnalyzerTest {
 
@@ -51,14 +52,12 @@ public class AnalyzerTest {
 	private static ElementMap elements;
 
 	@BeforeClass
-	public static void init() throws IOException, CSSException {
+	public static void init() throws IOException, CSSException, SAXException {
 		log.info("\n\n\n == AnalyzerTest test at {} == \n\n\n", new Date());
 
-		Tidy parser = new Tidy();
-        parser.setInputEncoding("utf-8");
-
-		doc = parser.parseDOM(new FileInputStream("data/simple/data.html"),
-				null);
+        DOMParser parser = new DOMParser();
+        parser.parse(new org.xml.sax.InputSource(new FileInputStream("data/simple/data.html")));
+        doc = parser.getDocument();
 
 		sheet = CSSFactory.parse("data/simple/data.css", null);
 
@@ -67,7 +66,9 @@ public class AnalyzerTest {
 		NodeList list = doc.getElementsByTagName("body");
 		assertEquals("There is one <body> element", 1, list.getLength());
 
-		walker = new TidyTreeWalker(list.item(0), NodeFilter.SHOW_ELEMENT);
+		//walker = new TidyTreeWalker(list.item(0), NodeFilter.SHOW_ELEMENT);
+		DocumentTraversal traversal = (DocumentTraversal) doc;
+		walker = traversal.createTreeWalker(list.item(0), NodeFilter.SHOW_ELEMENT, null, false);
 		elements = new ElementMap(doc);
 	}
 

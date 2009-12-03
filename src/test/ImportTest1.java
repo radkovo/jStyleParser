@@ -10,13 +10,14 @@ import java.net.URL;
 import java.util.Date;
 import java.util.Map;
 
+import org.cyberneko.html.parsers.DOMParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.tidy.Tidy;
+import org.xml.sax.SAXException;
 
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
@@ -48,14 +49,12 @@ public class ImportTest1 {
 		"@import url('http://www.abclinuxu.cz/styles.css');\n";
 
 	@BeforeClass
-	public static void init() throws FileNotFoundException {
+	public static void init() throws SAXException, IOException {
 		log.info("\n\n\n == ImportTest1 test at {} == \n\n\n", new Date());
 
-		Tidy parser = new Tidy();
-        parser.setInputEncoding("utf-8");
-
-		doc = parser.parseDOM(new FileInputStream("data/simple/data.html"),
-				null);
+        DOMParser parser = new DOMParser();
+        parser.parse(new org.xml.sax.InputSource(new FileInputStream("data/simple/data.html")));
+        doc = parser.getDocument();
 	}
 
 	@Test

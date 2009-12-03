@@ -19,7 +19,7 @@ import org.w3c.dom.traversal.NodeFilter;
 import cz.vutbr.web.csskit.antlr.CSSParserFactory;
 import cz.vutbr.web.csskit.antlr.CSSParserFactory.SourceType;
 import cz.vutbr.web.domassign.Analyzer;
-import cz.vutbr.web.domassign.TidyTreeWalker.Traversal;
+import cz.vutbr.web.domassign.Traversal;
 
 /**
  * This class is abstract factory for other factories used during CSS parsing.

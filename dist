@@ -18,7 +18,7 @@ mkdir $FDIR
 cp -r src $FDIR
 cp -r lib $FDIR
 cp -r doc $FDIR
-cp CHANGELOG CREDITS LICENSE README $FDIR
+cp CHANGELOG CREDITS COPYING COPYING.LESSER README $FDIR
 (cd bin; jar cvf $FDIR/jStyleParser.jar *)
 
 find $TMPDIR -name '.svn' -exec rm -rf {} \;

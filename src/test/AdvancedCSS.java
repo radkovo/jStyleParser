@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
+import org.cyberneko.html.parsers.DOMParser;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -12,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.tidy.Tidy;
+import org.xml.sax.SAXException;
 
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
@@ -38,15 +39,13 @@ public class AdvancedCSS {
 	private static Map<Element, NodeData> decl;
 
 	@BeforeClass
-	public static void init() throws IOException, CSSException {
+	public static void init() throws IOException, CSSException, SAXException {
 
 		log.info("\n\n\n == AdvancedTest test at {} == \n\n\n", new Date());
 
-		Tidy parser = new Tidy();
-        parser.setInputEncoding("utf-8");
-
-		doc = parser.parseDOM(new FileInputStream("data/advanced/style.html"),
-				null);
+		DOMParser parser = new DOMParser();
+        parser.parse(new org.xml.sax.InputSource(new FileInputStream("data/advanced/style.html")));
+        doc = parser.getDocument();
 
 		sheet = CSSFactory.parse("data/advanced/style.css", null);
 

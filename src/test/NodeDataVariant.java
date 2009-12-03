@@ -6,6 +6,7 @@ import java.util.BitSet;
 import java.util.Date;
 import java.util.Map;
 
+import org.cyberneko.html.parsers.DOMParser;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -16,7 +17,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeFilter;
-import org.w3c.tidy.Tidy;
+import org.xml.sax.SAXException;
 
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
@@ -29,7 +30,7 @@ import cz.vutbr.web.css.Term;
 import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.QuadrupleMapNodeData;
 import cz.vutbr.web.domassign.SingleMapNodeData;
-import cz.vutbr.web.domassign.TidyTreeWalker.Traversal;
+import cz.vutbr.web.domassign.Traversal;
 
 @Ignore
 public class NodeDataVariant {
@@ -42,16 +43,14 @@ public class NodeDataVariant {
 	private static Analyzer analyzer;
 
 	@BeforeClass
-	public static void init() throws CSSException, IOException {
+	public static void init() throws CSSException, IOException, SAXException {
 		
 		log.info("\n\n\n == NodeDataVariant test at {} == \n\n\n", new Date());
 		
-		Tidy parser = new Tidy();
-        parser.setInputEncoding("utf-8");
-
-		doc = parser.parseDOM(new FileInputStream("data/simple/data.html"),
-				null);
-
+        DOMParser parser = new DOMParser();
+        parser.parse(new org.xml.sax.InputSource(new FileInputStream("data/simple/data.html")));
+        doc = parser.getDocument();
+        
 		StyleSheet style = CSSFactory.parse("data/simple/data.css", null);
 
 		analyzer = new Analyzer(style);

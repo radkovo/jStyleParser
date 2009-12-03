@@ -1,6 +1,10 @@
 jStyleParser parses CSS 2.1 into structures which can be assigned to DOM elements.
 While handling errors, it is user agent conforming according to specification.
 
+All the source code of the CSSBox itself is licensed under the GNU Lesser General
+Public License (LGPL), version 3. A copy of the LGPL can be found 
+in the COPYING.LESSER and COPYING files.
+
 Compilation prerequisites
 =========================
 
@@ -12,10 +16,11 @@ of project to make compilation easier
 Required Libraries
 ==================
 - antlr-runtime for parsing CSS (version 3.1)
-- Tidy for HTML parsing
+- any DOM and DOM Traversal implementation. Currently, jStyleParser
+  has been tested with NekoHTML parser and Xerces DOM implementation
 - slf4j and arbitrary implementation for logging subsystem
 * (Optionally) JUnit with Hamcrest core extension (4.4) for JUnit tests
 
-All required libraries are provided within SVN repository.
+All required libraries are provided within the SVN repository.
 
 Additional information can be found in doc directory.

@@ -10,13 +10,14 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.cyberneko.html.parsers.DOMParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.tidy.Tidy;
+import org.xml.sax.SAXException;
 
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
@@ -162,14 +163,12 @@ public class GrammarRecovery1 {
 	}
 
 	@Test
-	public void invalidSelector() throws IOException, CSSException {
+	public void invalidSelector() throws IOException, CSSException, SAXException {
 		StyleSheet sheet = CSSFactory.parse(TEST_INVALID_SELECTOR);
 
-		Tidy parser = new Tidy();
-        parser.setInputEncoding("utf-8");
-
-		Document doc = parser.parseDOM(new FileInputStream(
-				"data/simple/h1.html"), null);
+        DOMParser parser = new DOMParser();
+        parser.parse(new org.xml.sax.InputSource(new FileInputStream("data/simple/h1.html")));
+        Document doc = parser.getDocument();
 
 		Analyzer analyzer = new Analyzer(sheet);
 		Map<Element, NodeData> decl = analyzer.evaluateDOM(doc, "all", true);
