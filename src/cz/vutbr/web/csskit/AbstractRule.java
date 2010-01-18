@@ -81,7 +81,7 @@ public class AbstractRule<T> extends AbstractList<T> implements Rule<T> {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (!(obj instanceof AbstractRule))
+		if (!(obj instanceof AbstractRule<?>))
 			return false;
 		AbstractRule<?> other = (AbstractRule<?>) obj;
 		if (list == null) {

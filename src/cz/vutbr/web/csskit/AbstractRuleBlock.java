@@ -44,7 +44,7 @@ public class AbstractRuleBlock<T> extends AbstractRule<T> implements RuleBlock<T
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (!(obj instanceof AbstractRuleBlock))
+		if (!(obj instanceof AbstractRuleBlock<?>))
 			return false;
 		AbstractRuleBlock<?> other = (AbstractRuleBlock<?>) obj;
 		if (priority == null) {

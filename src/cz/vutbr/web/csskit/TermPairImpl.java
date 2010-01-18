@@ -51,7 +51,7 @@ public class TermPairImpl<K,V> extends TermImpl<V> implements TermPair<K,V> {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (!(obj instanceof TermPairImpl))
+		if (!(obj instanceof TermPairImpl<?, ?>))
 			return false;
 		@SuppressWarnings("unchecked")
 		TermPairImpl<K,V> other = (TermPairImpl<K,V>) obj;

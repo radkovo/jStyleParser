@@ -51,7 +51,7 @@ public class TermNumericImpl<T> extends TermImpl<T> implements TermNumeric<T> {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (!(obj instanceof TermNumericImpl))
+		if (!(obj instanceof TermNumericImpl<?>))
 			return false;
 		@SuppressWarnings("unchecked")
 		TermNumericImpl<T> other = (TermNumericImpl<T>) obj;
