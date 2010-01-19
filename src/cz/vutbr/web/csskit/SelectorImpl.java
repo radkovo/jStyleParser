@@ -77,13 +77,6 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     
     public boolean matches(Element e) {
     	
-    	// this is obsolete as Element name is always present
-    	// at least in form of wildcard
-		//String elementName = getElementName();
-		//if(elementName!=null && !ElementUtil.matchesName(e, elementName))
-		//	return false;
-		
-    	
 		// check other items of simple selector
 		for(SelectorPart item : list) {
 			if(item == null || !item.matches(e)) //null in case of syntax error (missing term)
