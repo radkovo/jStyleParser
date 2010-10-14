@@ -1,5 +1,7 @@
 package cz.vutbr.web.css;
 
+import cz.vutbr.web.css.Selector.PseudoDeclaration;
+
 /**
  * CombinedSelector of CSS declaration block.
  * Acts as collection of Selectors with ability to get directly 
@@ -19,6 +21,12 @@ public interface CombinedSelector extends Rule<Selector> {
      * @throws OperationNotSupportedException In case that there is no simple selector inside
      */
     public Selector getLastSelector() throws UnsupportedOperationException;
+    
+    /**
+     * Reads the pseudo element of the last simple selector as defined in the CSS specs
+     * @return the pseudo-element or null if none is specified
+     */
+    public PseudoDeclaration getPseudoElement();
     
     /**
      * Computes specificity according to the CSS rules

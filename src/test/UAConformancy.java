@@ -2,9 +2,7 @@ package test;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
 
 import org.cyberneko.html.parsers.DOMParser;
 import org.junit.Assert;
@@ -24,12 +22,13 @@ import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.domassign.Analyzer;
+import cz.vutbr.web.domassign.StyleMap;
 
 public class UAConformancy {
 	private static Logger log = LoggerFactory.getLogger(UAConformancy.class);
 
 	private static TermFactory tf = CSSFactory.getTermFactory();
-	private static Map<Element, NodeData> decl;
+	private static StyleMap decl;
 
 	private static ElementMap em;
 
@@ -54,8 +53,7 @@ public class UAConformancy {
 	public void testNotEmptyness() {
 
 		Assert.assertNotNull("Declarations parsed", decl);
-		Assert.assertNotSame("There are some declarations", Collections
-				.emptyMap(), decl);
+		Assert.assertNotSame("There are some declarations", 0, decl.size());
 
 		for (Element e : decl.keySet())
 			log.debug("{} : {} ", e.getNodeName(), decl.get(e));

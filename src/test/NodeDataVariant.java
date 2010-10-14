@@ -30,6 +30,7 @@ import cz.vutbr.web.css.Term;
 import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.QuadrupleMapNodeData;
 import cz.vutbr.web.domassign.SingleMapNodeData;
+import cz.vutbr.web.domassign.StyleMap;
 import cz.vutbr.web.domassign.Traversal;
 
 @Ignore
@@ -135,12 +136,11 @@ public class NodeDataVariant {
 
 		CSSFactory.registerNodeDataInstance(clazz);
 		
-		Map<Element, NodeData> declInh = analyzer.evaluateDOM(doc, "all", true);
+		StyleMap declInh = analyzer.evaluateDOM(doc, "all", true);
 
-		Map<Element, NodeData> decl = analyzer.evaluateDOM(doc, "all", false);
+		StyleMap decl = analyzer.evaluateDOM(doc, "all", false);
 
-		Pair<Map<Element, NodeData>, Map<Element, NodeData>> pair = new Pair<Map<Element, NodeData>, Map<Element, NodeData>>(
-				declInh, decl);
+		Pair<StyleMap, StyleMap> pair = new Pair<StyleMap, StyleMap>(declInh, decl);
 
 		Traversal<Boolean> traversal = new Traversal<Boolean>(doc,
 				(Object) pair, NodeFilter.SHOW_ELEMENT) {

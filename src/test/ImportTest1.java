@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
-import java.util.Map;
 
 import org.cyberneko.html.parsers.DOMParser;
 import org.junit.BeforeClass;
@@ -26,6 +25,7 @@ import cz.vutbr.web.css.TermLength;
 import cz.vutbr.web.css.TermNumeric;
 import cz.vutbr.web.css.CSSProperty.Margin;
 import cz.vutbr.web.domassign.Analyzer;
+import cz.vutbr.web.domassign.StyleMap;
 
 public class ImportTest1 {
 	private static Logger log = LoggerFactory.getLogger(ImportTest1.class);
@@ -72,7 +72,7 @@ public class ImportTest1 {
 
 		Analyzer analyzer = new Analyzer(ss);
 
-		Map<Element, NodeData> decl = analyzer.evaluateDOM(doc, "all", true);
+		StyleMap decl = analyzer.evaluateDOM(doc, "all", true);
 		ElementMap elements = new ElementMap(doc);
 
 		Element marginator = elements.getElementById("marginator");

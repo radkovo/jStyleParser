@@ -5,7 +5,6 @@
  */
 package test;
 
-import java.util.Map;
 import java.io.*;
 import java.net.*;
 
@@ -15,6 +14,8 @@ import org.w3c.dom.Element;
 
 
 import cz.vutbr.web.css.*;
+import cz.vutbr.web.css.Selector.PseudoDeclaration;
+import cz.vutbr.web.domassign.StyleMap;
 
 
 /**
@@ -45,12 +46,18 @@ public class Test
             Document doc = parser.getDocument();
             ElementMap elements = new ElementMap(doc);
             
-            Map<Element, NodeData> decl = CSSFactory.assignDOM(doc, url, "screen", true);
+            StyleMap decl = CSSFactory.assignDOM(doc, url, "screen", true);
             Element el = elements.getElementById("head");
             
             System.out.println("id=" + el.getAttribute("id"));
             NodeData style = decl.get(el);
             System.out.println("Style: " + style);
+            
+            NodeData bstyle = decl.get(el, PseudoDeclaration.BEFORE);
+            System.out.println("BStyle: " + bstyle);
+            TermList cont = bstyle.getValue(TermList.class, "content");
+            System.out.println("content=" + cont);
+            
             
             /*CSSProperty.FontFamily x = style.getProperty("font-family");
             System.out.println("x="+x);

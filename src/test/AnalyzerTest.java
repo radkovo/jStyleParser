@@ -37,6 +37,7 @@ import cz.vutbr.web.css.CSSProperty.BorderStyle;
 import cz.vutbr.web.css.CSSProperty.FontFamily;
 import cz.vutbr.web.css.CSSProperty.Margin;
 import cz.vutbr.web.domassign.Analyzer;
+import cz.vutbr.web.domassign.StyleMap;
 import cz.vutbr.web.domassign.Traversal;
 
 public class AnalyzerTest {
@@ -75,11 +76,11 @@ public class AnalyzerTest {
 	@Test
 	public void evaluateSimple() {
 
-		Map<Element, NodeData> decl = analyzer.evaluateDOM(doc, "all", false);
+		StyleMap decl = analyzer.evaluateDOM(doc, "all", false);
 
 		Node current = walker.getCurrentNode();
 
-		NodeData data = decl.get(current);
+		NodeData data = (current instanceof Element) ? decl.get((Element) current) : null;
 
 		assertEquals("<body> nodedata contains color", CSSProperty.Color.color,
 				data.getProperty("color"));
@@ -96,7 +97,7 @@ public class AnalyzerTest {
 
 	@Test
 	public void testRepeaterOnMargin() {
-		Map<Element, NodeData> decl = analyzer.evaluateDOM(doc, "all", false);
+		StyleMap decl = analyzer.evaluateDOM(doc, "all", false);
 
 		Element marginator = elements.getElementById("marginator");
 
@@ -123,7 +124,7 @@ public class AnalyzerTest {
 	@Test
 	public void testVariatorOnBorderTop() {
 
-		Map<Element, NodeData> decl = analyzer.evaluateDOM(doc, "all", false);
+		StyleMap decl = analyzer.evaluateDOM(doc, "all", false);
 
 		Element marginator = elements.getElementById("marginator");
 		assertNotNull("Element marginator exists", marginator);
@@ -137,7 +138,7 @@ public class AnalyzerTest {
 	@Test
 	public void testFontFamily() {
 
-		Map<Element, NodeData> decl = analyzer.evaluateDOM(doc, "all", false);
+		StyleMap decl = analyzer.evaluateDOM(doc, "all", false);
 
 		Element fontoid = elements.getElementById("fontoid");
 		assertNotNull("Element fontoid exist", fontoid);
@@ -151,12 +152,11 @@ public class AnalyzerTest {
 	@Test
 	public void inheritanceDiffers() {
 
-		Map<Element, NodeData> declInh = analyzer.evaluateDOM(doc, "all", true);
+		StyleMap declInh = analyzer.evaluateDOM(doc, "all", true);
 
-		Map<Element, NodeData> decl = analyzer.evaluateDOM(doc, "all", false);
+		StyleMap decl = analyzer.evaluateDOM(doc, "all", false);
 
-		Pair<Map<Element, NodeData>, Map<Element, NodeData>> pair = new Pair<Map<Element, NodeData>, Map<Element, NodeData>>(
-				declInh, decl);
+		Pair<StyleMap, StyleMap> pair = new Pair<StyleMap, StyleMap>(declInh, decl);
 
 		Traversal<Boolean> traversal = new Traversal<Boolean>(doc,
 				(Object) pair, NodeFilter.SHOW_ELEMENT) {
@@ -188,12 +188,11 @@ public class AnalyzerTest {
 	@Test
 	public void inheritanceNoInheritedValues() {
 
-		Map<Element, NodeData> declInh = analyzer.evaluateDOM(doc, "all", true);
+		StyleMap declInh = analyzer.evaluateDOM(doc, "all", true);
 
-		Map<Element, NodeData> decl = analyzer.evaluateDOM(doc, "all", false);
+		StyleMap decl = analyzer.evaluateDOM(doc, "all", false);
 
-		Pair<Map<Element, NodeData>, Map<Element, NodeData>> pair = new Pair<Map<Element, NodeData>, Map<Element, NodeData>>(
-				declInh, decl);
+		Pair<StyleMap, StyleMap> pair = new Pair<StyleMap, StyleMap>(declInh, decl);
 
 		Traversal<Boolean> traversal = new Traversal<Boolean>(doc,
 				(Object) pair, NodeFilter.SHOW_ELEMENT) {

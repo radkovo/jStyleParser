@@ -3,7 +3,6 @@ package test;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Map;
 
 import org.cyberneko.html.parsers.DOMParser;
 import org.junit.Assert;
@@ -25,6 +24,7 @@ import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.CSSProperty.FontFamily;
 import cz.vutbr.web.css.Term.Operator;
 import cz.vutbr.web.domassign.Analyzer;
+import cz.vutbr.web.domassign.StyleMap;
 
 public class AdvancedCSS {
 
@@ -36,7 +36,7 @@ public class AdvancedCSS {
 	private static StyleSheet sheet;
 	private static Analyzer analyzer;
 	private static ElementMap elements;
-	private static Map<Element, NodeData> decl;
+	private static StyleMap decl;
 
 	@BeforeClass
 	public static void init() throws IOException, CSSException, SAXException {

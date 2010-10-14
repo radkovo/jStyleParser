@@ -53,6 +53,38 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     	public String value() {return value;}
     }
 
+    /**
+     * A pseudo class or element specification 
+     * @author burgetr
+     */
+    public enum PseudoDeclaration
+    {
+        ACTIVE("active", false),
+        FOCUS("focus", false),
+        HOVER("hover", false),
+        LINK("link", false),
+        VISITED("visited", false),
+        FIRST_CHILD("first-child", false),
+        LANG("lang", false),
+        
+        FIRST_LINE("first-line", true),
+        FIRST_LETTER("first-letter", true),
+        BEFORE("before", true),
+        AFTER("after", true);
+        
+        private String value;
+        private boolean element;
+        
+        private PseudoDeclaration(String value, boolean isElement) {
+            this.value = value;
+            this.element = isElement;
+        }
+        
+        public String value() {return value;}
+        
+        public boolean isPseudoElement() {return element;}
+        
+    }
     
     /**
      * Returns combinator of this and other simple selector
@@ -84,6 +116,12 @@ public interface Selector extends Rule<Selector.SelectorPart> {
      * @return Name of HTML element
      */
     public String getElementName();
+    
+    /**
+     * Reads the pseudoelement of the selector 
+     * @return the used pseudo-element or <code>null</code> if no pseudo-element is specified
+     */
+    public PseudoDeclaration getPseudoElement();
     
     /**
      * Modifies specificity according to CSS standard
@@ -175,6 +213,9 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     	
     	public String getValue();
     	public PseudoPage setValue(String value);
+    	
+        public PseudoDeclaration getDeclaration();
+        
     }
        
    

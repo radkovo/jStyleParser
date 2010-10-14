@@ -25,12 +25,14 @@ import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.StyleSheet;
+import cz.vutbr.web.css.Selector.PseudoDeclaration;
 import cz.vutbr.web.csskit.ElementUtil;
 
 /**
- * During initialization divides rules of stylesheet into maps accoring to
- * medias and their type. Afterwards it is able to return CSS declaration for
- * DOM tree and media. Allow to use or not to use inheritance.
+ * Analyzer allows to apply the given style to any document.
+ * During the initialization, it divides rules of stylesheet into maps accoring to
+ * medias and their type. Afterwards, it is able to return CSS declaration for any
+ * DOM tree and media. It allows to use or not to use inheritance.
  * 
  * @author Karel Piwko 2008,
  * 
@@ -63,38 +65,50 @@ public class Analyzer {
 	 *            Use inheritance
 	 * @return Map where each element contains its CSS properties
 	 */
-	public Map<Element, NodeData> evaluateDOM(Document doc, String media,
+	public StyleMap evaluateDOM(Document doc, String media,
 			final boolean inherit) {
 
-		Map<Element, List<Declaration>> declarations = assingDeclarationsToDOM(
-				doc, media, inherit);
+		DeclarationMap declarations = assingDeclarationsToDOM(doc, media, inherit);
 
-		Map<Element, NodeData> nodes = new HashMap<Element, NodeData>(
-				declarations.size(), 1.0f);
+		StyleMap nodes = new StyleMap(declarations.size());
 
-		Traversal<Map<Element, NodeData>> traversal = new Traversal<Map<Element, NodeData>>(
+		Traversal<StyleMap> traversal = new Traversal<StyleMap>(
 				doc, (Object) declarations, NodeFilter.SHOW_ELEMENT) {
-			@SuppressWarnings("unchecked")
+			
 			@Override
-			protected void processNode(Map<Element, NodeData> result,
-					Node current, Object source) {
+			protected void processNode(StyleMap result, Node current, Object source) {
 
-			    NodeData data = CSSFactory.createNodeData();
+			    NodeData main = CSSFactory.createNodeData();
 
-				// for all declarations available
-				List<Declaration> declarations = ((Map<Element, List<Declaration>>) source)
-						.get(current);
-				if (declarations == null)
-					declarations = Collections.emptyList();
-
-				for (Declaration d : declarations) {
-					data.push(d);
+				// for all declarations available in the main list (pseudo=null)
+				List<Declaration> declarations = ((DeclarationMap) source).get((Element) current, null);
+				if (declarations != null) 
+				{
+					for (Declaration d : declarations) {
+						main.push(d);
+					}
+					if (inherit)
+						main.inheritFrom(result.get((Element) walker.parentNode(), null));
 				}
-				if (inherit)
-					data.inheritFrom(result.get((Element) walker.parentNode()));
-
 				// concretize values and store them
-				result.put((Element) current, data.concretize());
+				result.put((Element) current, null, main.concretize());
+				
+				//repeat for the pseudo classes (if any)
+				for (PseudoDeclaration pseudo : ((DeclarationMap) source).pseudoSet((Element) current))
+				{
+				    NodeData pdata = CSSFactory.createNodeData();
+	                declarations = ((DeclarationMap) source).get((Element) current, pseudo);
+	                if (declarations != null) 
+	                {
+	                    for (Declaration d : declarations) {
+	                        pdata.push(d);
+	                    }
+                        pdata.inheritFrom(main); //always inherit from the main element style
+	                }
+	                // concretize values and store them
+	                result.put((Element) current, pseudo, pdata.concretize());
+				}
+				
 			}
 		};
 
@@ -114,8 +128,7 @@ public class Analyzer {
 	 *            Inheritance (cascade propagation of values)
 	 * @return Map of elements as keys and their declarations
 	 */
-	private Map<Element, List<Declaration>> assingDeclarationsToDOM(
-			Document doc, String media, final boolean inherit) {
+	protected DeclarationMap assingDeclarationsToDOM(Document doc, String media, final boolean inherit) {
 
 		// get holder
 		Holder holder;
@@ -129,29 +142,29 @@ public class Analyzer {
 			log.trace("For media \"{}\" constructed holder:\n {}", media, holder);
 		}
 		
-		// if holder is empty skip evaluation
-		if(holder==null || holder.isEmpty()) 
-			return Collections.emptyMap();
-		
 		// resulting map
-		Map<Element, List<Declaration>> declarations = new HashMap<Element, List<Declaration>>();
+		DeclarationMap declarations = new DeclarationMap();
 		
-		Traversal<Map<Element, List<Declaration>>> traversal = new Traversal<Map<Element, List<Declaration>>>(
-				doc, (Object) holder, NodeFilter.SHOW_ELEMENT) {
-			protected void processNode(Map<Element, List<Declaration>> result,
-					Node current, Object source) {
-				assignDeclarationsToElement(result, walker, (Element) current,
-						(Holder) source);
-			}
-		};
-
-		// list traversal will be enough
-		if (!inherit)
-			traversal.listTraversal(declarations);
-		// we will do level traversal to economize blind returning
-		// in tree
-		else
-			traversal.levelTraversal(declarations);
+        // if holder is empty skip evaluation
+        if(holder!=null && !holder.isEmpty()) {
+            
+    		Traversal<DeclarationMap> traversal = new Traversal<DeclarationMap>(
+    				doc, (Object) holder, NodeFilter.SHOW_ELEMENT) {
+    			protected void processNode(DeclarationMap result,
+    					Node current, Object source) {
+    				assignDeclarationsToElement(result, walker, (Element) current,
+    						(Holder) source);
+    			}
+    		};
+    
+    		// list traversal will be enough
+    		if (!inherit)
+    			traversal.listTraversal(declarations);
+    		// we will do level traversal to economize blind returning
+    		// in tree
+    		else
+    			traversal.levelTraversal(declarations);
+        }
 
 		return declarations;
 	}
@@ -168,8 +181,8 @@ public class Analyzer {
 	 * @param holder
 	 *            Wrap
 	 */
-	private void assignDeclarationsToElement(
-			Map<Element, List<Declaration>> declarations, TreeWalker walker,
+	protected void assignDeclarationsToElement(
+			DeclarationMap declarations, TreeWalker walker,
 			Element e, Holder holder) {
 
 		if(log.isDebugEnabled()) {
@@ -218,8 +231,11 @@ public class Analyzer {
 		log.debug("Totally {} candidates.", candidates.size());
 		log.trace("With values: {}", clist);
 
-		// resulting list of declaration for this element
+		// resulting list of declaration for this element with no pseudo-selectors (main list)(local cache)
 		List<Declaration> eldecl = new ArrayList<Declaration>();
+		
+		// existing pseudo selectors found
+		Set<PseudoDeclaration> pseudos = new HashSet<PseudoDeclaration>();
 
 		// for all candidates
 		for (RuleSet rule : clist) {
@@ -232,24 +248,39 @@ public class Analyzer {
 				}
 
 				log.trace("CombinedSelector \"{}\" matched", s);
-
-				// if match, add to declarations
-				CombinedSelector.Specificity spec = s.computeSpecificity();
-				for (Declaration d : rule)
-					eldecl.add(new AssignedDeclaration(d, spec));
+				
+				PseudoDeclaration pseudo = s.getPseudoElement();
+                CombinedSelector.Specificity spec = s.computeSpecificity();
+				if (pseudo == null)
+				{
+    				// add to main list
+    				for (Declaration d : rule)
+    					eldecl.add(new AssignedDeclaration(d, spec));
+				}
+				else
+				{
+				    // remember the pseudo element
+				    pseudos.add(pseudo);
+				    // add to pseudo lists
+                    for (Declaration d : rule)
+                        declarations.addDeclaration(e, pseudo, new AssignedDeclaration(d, spec));
+				}
 
 			}
 		}
 
 		// sort declarations
-		Collections.sort(eldecl);
-		log.debug("Assorted {} declarations.", eldecl.size());
+		Collections.sort(eldecl); //sort the main list
+		log.debug("Sorted {} declarations.", eldecl.size());
 		log.trace("With values: {}", eldecl);
-
-		declarations.put(e, eldecl);
+		for (PseudoDeclaration p : pseudos)
+		    declarations.sortDeclarations(e, p); //sort pseudos
+		
+		// set the main list
+		declarations.put(e, null, eldecl);
 	}
 
-	private boolean matchSelector(CombinedSelector sel, Element e, TreeWalker w) {
+	protected boolean matchSelector(CombinedSelector sel, Element e, TreeWalker w) {
 
 		// store current walker position
 		Node current = w.getCurrentNode();

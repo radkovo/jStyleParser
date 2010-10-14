@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Selector;
+import cz.vutbr.web.css.Selector.PseudoDeclaration;
 
 /**
  * CSS CombinedSelector with implementation of specificity
@@ -23,6 +24,9 @@ public class CombinedSelectorImpl extends AbstractRule<Selector> implements Comb
 		return list.get(list.size()-1);
 	}
 	
+    public PseudoDeclaration getPseudoElement() {
+        return getLastSelector().getPseudoElement(); //pseudo-elements may only be appended after the last simple selector of the selector
+    }
 	
 	/**
 	 * Computes specificity of selector

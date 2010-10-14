@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +18,7 @@ import org.w3c.dom.traversal.NodeFilter;
 import cz.vutbr.web.csskit.antlr.CSSParserFactory;
 import cz.vutbr.web.csskit.antlr.CSSParserFactory.SourceType;
 import cz.vutbr.web.domassign.Analyzer;
+import cz.vutbr.web.domassign.StyleMap;
 import cz.vutbr.web.domassign.Traversal;
 
 /**
@@ -313,7 +313,7 @@ public final class CSSFactory {
 	 * @return Map between DOM element nodes and data structure containing CSS
 	 *         information
 	 */
-	public static final Map<Element, NodeData> assignDOM(Document doc,
+	public static final StyleMap assignDOM(Document doc,
 			URL base, String media, boolean useInheritance) {
 
 		Pair pair = new Pair(base, media);

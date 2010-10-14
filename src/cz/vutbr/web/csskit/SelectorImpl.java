@@ -1,5 +1,7 @@
 package cz.vutbr.web.csskit;
 
+import java.util.HashMap;
+
 import org.w3c.dom.Element;
 
 import cz.vutbr.web.css.CombinedSelector;
@@ -73,6 +75,21 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     			elementName = ((ElementName)item).getName();
     	}
     	return elementName;
+    }
+    
+    public PseudoDeclaration getPseudoElement() {
+        PseudoDeclaration ret = null;
+        for(SelectorPart item : list) {
+            if(item instanceof PseudoPage)
+            {
+                ret = ((PseudoPage)item).getDeclaration();
+                if (ret.isPseudoElement())
+                    break; //pseudo-elements may only be appended after the last simple selector of the selector
+                else
+                    ret = null; //not interested in pseudo-classes
+            }
+        }
+        return ret;
     }
     
     public boolean matches(Element e) {
@@ -282,20 +299,37 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
      */
     public static class PseudoPageImpl implements PseudoPage {
     	
-    	private static final String PSEUDO_CLASSES = 
-    		"active|focus|hover|link|visited|first-child|lang";
-    	
-    	private static final String PSEUDO_ELEMENTS =
-    		"first-letter|first-line|before|after";
-    	
+        private static HashMap<String, PseudoDeclaration> PSEUDO_DECLARATIONS;
+        static {
+            PSEUDO_DECLARATIONS = new HashMap<String, PseudoDeclaration>(11);
+            PSEUDO_DECLARATIONS.put("active", PseudoDeclaration.ACTIVE);
+            PSEUDO_DECLARATIONS.put("focus", PseudoDeclaration.FOCUS);
+            PSEUDO_DECLARATIONS.put("hover", PseudoDeclaration.HOVER);
+            PSEUDO_DECLARATIONS.put("link", PseudoDeclaration.LINK);
+            PSEUDO_DECLARATIONS.put("visited", PseudoDeclaration.VISITED);
+            PSEUDO_DECLARATIONS.put("first-child", PseudoDeclaration.FIRST_CHILD);
+            PSEUDO_DECLARATIONS.put("lang", PseudoDeclaration.LANG);
+            PSEUDO_DECLARATIONS.put("first-letter", PseudoDeclaration.FIRST_LETTER);
+            PSEUDO_DECLARATIONS.put("first-line", PseudoDeclaration.FIRST_LINE);
+            PSEUDO_DECLARATIONS.put("before", PseudoDeclaration.BEFORE);
+            PSEUDO_DECLARATIONS.put("after", PseudoDeclaration.AFTER);
+        }
+        
     	private String functionName;
     	private String value;
+    	private PseudoDeclaration declaration;
     	
     	protected PseudoPageImpl(String value, String functionName) {
     		setValue(value);
     		setFunctionName(functionName);
     	}
 
+    	
+    	public PseudoDeclaration getDeclaration()
+    	{
+    	    return declaration;
+    	}
+    	
 		/**
 		 * @return the functionName
 		 */
@@ -308,31 +342,29 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		 */
 		public PseudoPage setFunctionName(String functionName) {			
 			this.functionName = functionName;
+            inferDeclaration();
 			return this;
 		}
 		
 		public void computeSpecificity(Specificity spec) {
 
-			// pseudo-class
-			if((value!=null && value.matches(PSEUDO_CLASSES)) ||
-					(functionName!=null && functionName.matches(PSEUDO_CLASSES)))
-				spec.add(Level.C);
-			
-			// pseudo element
-			else if((value!=null && value.matches(PSEUDO_ELEMENTS)) ||
-				(functionName!=null && functionName.matches(PSEUDO_ELEMENTS)))
-				spec.add(Level.D);
+		    if (declaration != null)
+		    {
+    			if(declaration.isPseudoElement())
+    				spec.add(Level.D);
+    			else
+    				spec.add(Level.C);
+		    }
 
 		}		
 		
 		public boolean matches(Element e) {
-			// pseudo-class
-			/*if((value!=null && value.matches(PSEUDO_ELEMENTS)) ||
-					(functionName!=null && functionName.matches(PSEUDO_ELEMENTS)))
-				return true;*/
-		    if (e.getTagName().equalsIgnoreCase("a") && value.equals("link"))
-		        return true;
 			
+			if(declaration != null) { //null declaration means some unknown or unimplemented pseudo
+			    if (declaration.isPseudoElement() || //match all pseudo elements and the LINK pseudo class for links
+			            (e.getTagName().equalsIgnoreCase("a") && declaration == PseudoDeclaration.LINK))
+			        return true;
+			}
 			return false;
 		}
 		
@@ -342,6 +374,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		 */
 		public PseudoPage setValue(String value) {
 			this.value = value;
+			inferDeclaration();
 			return this;
 		}
 		
@@ -402,6 +435,16 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			} else if (!value.equals(other.value))
 				return false;
 			return true;
+		}
+		
+		private void inferDeclaration()
+		{
+		    if (functionName != null)
+		        declaration = PSEUDO_DECLARATIONS.get(functionName.toLowerCase()); //Pseudo-element and pseudo-class names are case-insensitive
+		    else if (value != null)
+		        declaration = PSEUDO_DECLARATIONS.get(value.toLowerCase());
+		    else
+		        declaration = null;
 		}
 
     }

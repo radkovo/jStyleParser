@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -16,7 +15,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import cz.vutbr.web.css.CSSException;
@@ -29,6 +27,7 @@ import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.CSSProperty.FontFamily;
 import cz.vutbr.web.domassign.Analyzer;
+import cz.vutbr.web.domassign.StyleMap;
 
 public class GrammarRecovery1 {
 	private static Logger log = LoggerFactory.getLogger(GrammarRecovery1.class);
@@ -171,7 +170,7 @@ public class GrammarRecovery1 {
         Document doc = parser.getDocument();
 
 		Analyzer analyzer = new Analyzer(sheet);
-		Map<Element, NodeData> decl = analyzer.evaluateDOM(doc, "all", true);
+		StyleMap decl = analyzer.evaluateDOM(doc, "all", true);
 
 		ElementMap elements = new ElementMap(doc);
 
