@@ -583,7 +583,7 @@ import cz.vutbr.web.css.SupportedCSS;
 		      t= (CSSToken) input.LT(1);
 		  else
 		      break; /* not a CSSToken, probably EOF */
-		  log.trace("Skipped greedy: {}", t);
+		  log.trace("Skipped greedy: {} follow: {}", t, follow);
 		  // consume token even if it will match
 		  input.consume();
 		}while(!(t.getLexerState().isBalanced() && follow.member(t.getType())));
@@ -700,6 +700,7 @@ ruleset
 	| norule -> INVALID_STATEMENT
 	;
 	catch [RecognitionException re] {
+      log.trace("GOTCHA2");
       	final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
 	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
 	  		"INVALID_STATEMENT", follow, re);							
@@ -709,6 +710,10 @@ declarations
 	: declaration? (SEMICOLON S* declaration? )*
 	  -> ^(SET declaration*)
 	;
+  catch [RecognitionException re] {
+        final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
+      retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, re);             
+  }
 
 declaration
 	: property COLON S* terms important? -> ^(DECLARATION important? property terms)
@@ -720,8 +725,14 @@ declaration
 
 important
     : EXCLAMATION S* 'important' S* -> IMPORTANT
-    ;	
-	
+    ;
+  catch [RecognitionException re] {
+      log.trace("GOTCHA1");
+        final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
+      retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, re);
+      //TODO: tady asi nema byt Greedy - preskakuje nam to strednik?             
+  }
+
 property    
 	: MINUS? IDENT S* -> MINUS? IDENT
 	;
