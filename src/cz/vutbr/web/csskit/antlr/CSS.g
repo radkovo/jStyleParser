@@ -1304,7 +1304,7 @@ STRING_MACR
 
 fragment
 STRING_CHAR
-	:  (URI_CHAR | ' ' | ('\\' NL_CHAR))
+	:  (URI_CHAR | ' ' | '(' | ')' | ('\\' NL_CHAR))
 	;
   	
 fragment
