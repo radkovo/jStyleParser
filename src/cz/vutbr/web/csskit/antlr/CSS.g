@@ -78,11 +78,20 @@ import cz.vutbr.web.css.SupportedCSS;
 }
 
 @lexer::members {
+    
+
     private static Logger log = LoggerFactory.getLogger(CSSLexer.class);
     
     private static SupportedCSS css = CSSFactory.getSupportedCSS();
     
     public static class LexerState {
+        
+        public enum RecoveryMode {
+            BALANCED,
+            FUNCTION, 
+            RULE
+        } 
+    
         public short curlyNest;
         public short parenNest;
         public boolean quotOpen;
@@ -105,14 +114,28 @@ import cz.vutbr.web.css.SupportedCSS;
         
         /**
          * Checks whether all pair characters (single and double quotatation marks,
-         * curly braces are balanced
-		*/ 
+         * curly braces) are balanced
+		     */ 
         public boolean isBalanced() {
         	return aposOpen==false && quotOpen==false && curlyNest==0 && parenNest==0;
         }
         
-        public boolean isFunctionBalanced() {
-        	return parenNest==0;
+        /**
+         * Checks whether some pair characters are balanced. Modes are:
+         * <ul>
+         * <li>BALANCED - everything must be balanced: single and double quotatation marks, curly braces, parentheses 
+         * <li>FUNCTION - within the function arguments: parentheses must be balanced 
+         * <li>RULE - within the CSS rule: all but curly braces
+         * </ul> 
+         */ 
+        public boolean isBalanced(RecoveryMode mode)
+        {
+            if (mode == RecoveryMode.BALANCED)
+                return aposOpen==false && quotOpen==false && curlyNest==0 && parenNest==0;
+            else if (mode == RecoveryMode.FUNCTION)
+                return parenNest==0;
+            else
+                return aposOpen==false && quotOpen==false && parenNest==0;
         }
         
         /**
@@ -501,6 +524,7 @@ import org.slf4j.LoggerFactory;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.SupportedCSS;
+import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
 }
 
 @parser::members {
@@ -593,7 +617,7 @@ import cz.vutbr.web.css.SupportedCSS;
    * Recovers and logs error inside a function, using custom follow set,
    * prepares tree part replacement
    */ 
-  private Object invalidFallbackGreedyFunction(int ttype, String ttext, BitSet follow, RecognitionException re) {
+  private Object invalidFallbackGreedy(int ttype, String ttext, BitSet follow, LexerState.RecoveryMode mode, RecognitionException re) {
     reportError(re);
     if ( state.lastErrorIndex==input.index() ) {
       // uh oh, another error at same token index; must be a case
@@ -604,7 +628,7 @@ import cz.vutbr.web.css.SupportedCSS;
         }
     state.lastErrorIndex = input.index();
     beginResync();
-    consumeUntilGreedyFunction(input, follow);
+    consumeUntilGreedy(input, follow, mode);
     endResync();
     return invalidReplacement(ttype, ttext);
     
@@ -614,7 +638,7 @@ import cz.vutbr.web.css.SupportedCSS;
    * Consumes token until lexer state is function-balanced and
    * token from follow is matched. Matched token is also consumed
    */ 
-  private void consumeUntilGreedyFunction(TokenStream input, BitSet follow) {
+  private void consumeUntilGreedy(TokenStream input, BitSet follow, LexerState.RecoveryMode mode) {
     CSSToken t = null;
     do{
       Token next = input.LT(1);
@@ -625,7 +649,7 @@ import cz.vutbr.web.css.SupportedCSS;
       log.trace("Skipped greedy: {}", t);
       // consume token even if it will match
       input.consume();
-    }while(!(t.getLexerState().isFunctionBalanced() && follow.member(t.getType())));
+    }while(!(t.getLexerState().isBalanced(mode) && follow.member(t.getType())));
   }
   
   //this switches the single token insertion / deletion off because it interferes with our own error recovery
@@ -701,9 +725,8 @@ ruleset
 	;
 	catch [RecognitionException re] {
       log.trace("GOTCHA2");
-      	final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
-	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
-	  		"INVALID_STATEMENT", follow, re);							
+      final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
+	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT,	"INVALID_STATEMENT", follow, re);							
 	}
 
 declarations
@@ -711,15 +734,17 @@ declarations
 	  -> ^(SET declaration*)
 	;
   catch [RecognitionException re] {
-        final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
-      retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, re);             
+    log.trace("DECLS");
+    retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", re);                 
   }
 
 declaration
 	: property COLON S* terms important? -> ^(DECLARATION important? property terms)
 	| noprop any* -> INVALID_DECLARATION /* if first character in the declaration is invalid (various dirty hacks) */
+	| INVALID_DECLARATION /* allow some invalid declarations in the list of declarations */
 	;
 	catch [RecognitionException re] {
+	  log.trace("DECL");
 	  retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", re);									
 	}
 
@@ -728,9 +753,8 @@ important
     ;
   catch [RecognitionException re] {
       log.trace("GOTCHA1");
-        final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
-      retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, re);
-      //TODO: tady asi nema byt Greedy - preskakuje nam to strednik?             
+      final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
+      retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, LexerState.RecoveryMode.RULE, re);
   }
 
 property    
@@ -751,8 +775,7 @@ terms
 		else
 		{
         final BitSet follow = BitSet.of(CSSLexer.RPAREN, CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
-        retval.tree = invalidFallbackGreedyFunction(CSSLexer.INVALID_STATEMENT, 
-          "INVALID_STATEMENT", follow, re);
+        retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, LexerState.RecoveryMode.FUNCTION, re);
 		}
 	}
 	
