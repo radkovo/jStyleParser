@@ -316,11 +316,12 @@ scope {
     logLeave("declaration");    
 }
   : ^(DECLARATION 
-	  (important { $decl.setImportant(true);})?
+	    (important { $decl.setImportant(true); log.debug("IMPORTANT"); })?
+      (INVALID_DIRECTIVE { $declaration::invalid=true; })?
       property 
       t=terms {$decl.replaceAll(t);}      
      )
-	 | INVALID_DECLARATION { $declaration::invalid=true;}
+	| INVALID_DECLARATION { $declaration::invalid=true;}
   ;
 
 important

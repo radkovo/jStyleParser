@@ -56,6 +56,7 @@ tokens {
 	INVALID_DECLARATION;
 	INVALID_STATEMENT;
 	INVALID_IMPORT;
+	INVALID_DIRECTIVE;
 }
 
 @lexer::header {
@@ -652,6 +653,50 @@ import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
     }while(!(t.getLexerState().isBalanced(mode) && follow.member(t.getType())));
   }
   
+  /**
+   * Recovers and logs error inside a function, using custom follow set,
+   * prepares tree part replacement
+   */ 
+  private Object invalidFallback(int ttype, String ttext, BitSet follow, LexerState.RecoveryMode mode, RecognitionException re) {
+    reportError(re);
+    if ( state.lastErrorIndex==input.index() ) {
+      // uh oh, another error at same token index; must be a case
+      // where LT(1) is in the recovery token set so nothing is
+            // consumed; consume a single token so at least to prevent
+            // an infinite loop; this is a failsafe.
+            input.consume();
+        }
+    state.lastErrorIndex = input.index();
+    beginResync();
+    consumeUntil(input, follow, mode);
+    endResync();
+    return invalidReplacement(ttype, ttext);
+    
+    }
+  
+  /**
+   * Consumes token until lexer state is function-balanced and
+   * token from follow is matched.
+   */ 
+  private void consumeUntil(TokenStream input, BitSet follow, LexerState.RecoveryMode mode) {
+    CSSToken t = null;
+    boolean finish = false;
+    do{
+      Token next = input.LT(1);
+      if (next instanceof CSSToken)
+          t= (CSSToken) input.LT(1);
+      else
+          break; /* not a CSSToken, probably EOF */
+      // consume token if does not match
+      finish = (t.getLexerState().isBalanced(mode) && follow.member(t.getType()));
+      if (!finish)
+      { 
+          log.trace("Skipped: {}", t);
+          input.consume();
+      }
+    }while(!finish);
+  }
+  
   //this switches the single token insertion / deletion off because it interferes with our own error recovery
   protected Object recoverFromMismatchedToken(IntStream input, int ttype, BitSet follow)
       throws RecognitionException
@@ -733,28 +778,21 @@ declarations
 	: declaration? (SEMICOLON S* declaration? )*
 	  -> ^(SET declaration*)
 	;
-  catch [RecognitionException re] {
-    log.trace("DECLS");
-    retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", re);                 
-  }
 
 declaration
 	: property COLON S* terms important? -> ^(DECLARATION important? property terms)
 	| noprop any* -> INVALID_DECLARATION /* if first character in the declaration is invalid (various dirty hacks) */
-	| INVALID_DECLARATION /* allow some invalid declarations in the list of declarations */
 	;
 	catch [RecognitionException re] {
-	  log.trace("DECL");
 	  retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", re);									
 	}
 
 important
-    : EXCLAMATION S* 'important' S* -> IMPORTANT
-    ;
+  : EXCLAMATION S* 'important' S* -> IMPORTANT
+  ;
   catch [RecognitionException re] {
-      log.trace("GOTCHA1");
       final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
-      retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, LexerState.RecoveryMode.RULE, re);
+      retval.tree = invalidFallback(CSSLexer.INVALID_DIRECTIVE, "INVALID_DIRECTIVE", follow, LexerState.RecoveryMode.RULE, re);
   }
 
 property    
