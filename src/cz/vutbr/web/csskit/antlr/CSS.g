@@ -771,7 +771,8 @@ ruleset
 	catch [RecognitionException re] {
       log.trace("GOTCHA2");
       final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
-	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT,	"INVALID_STATEMENT", follow, re);							
+      //we don't require {} to be balanced here because of possible parent 'media' sections that may remain open => RecoveryMode.RULE
+	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT,	"INVALID_STATEMENT", follow, LexerState.RecoveryMode.RULE, re);							
 	}
 
 declarations
