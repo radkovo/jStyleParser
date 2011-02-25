@@ -769,8 +769,7 @@ ruleset
 	| norule -> INVALID_STATEMENT
 	;
 	catch [RecognitionException re] {
-      log.trace("GOTCHA2");
-      final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
+      final BitSet follow = BitSet.of(CSSLexer.RCURLY);
       //we don't require {} to be balanced here because of possible parent 'media' sections that may remain open => RecoveryMode.RULE
 	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT,	"INVALID_STATEMENT", follow, LexerState.RecoveryMode.RULE, re);							
 	}
@@ -888,7 +887,7 @@ selector
     ;
     catch [RecognitionException re] {
       retval.tree = invalidFallback(CSSLexer.INVALID_SELECTOR, "INVALID_SELECTOR", re);
-	}
+	  }
 
 selpart	
     :  HASH
@@ -899,7 +898,7 @@ selpart
     ;
     catch [RecognitionException re] {
       retval.tree = invalidFallback(CSSLexer.INVALID_SELPART, "INVALID_SELPART", re);
-	}
+	  }
 
 attribute
 	: IDENT S*
