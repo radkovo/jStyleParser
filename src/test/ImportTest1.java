@@ -52,6 +52,8 @@ public class ImportTest1 {
 		log.info("\n\n\n == ImportTest1 test at {} == \n\n\n", new Date());
 
         DOMParser parser = new DOMParser();
+        //namespaces prevent processing of our testing xhtml files for some reason
+        parser.getXMLParserConfiguration().setFeature("http://xml.org/sax/features/namespaces", false);
         parser.parse(new org.xml.sax.InputSource(new FileInputStream("data/simple/data.html")));
         doc = parser.getDocument();
 	}

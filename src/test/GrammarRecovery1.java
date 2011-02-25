@@ -166,6 +166,8 @@ public class GrammarRecovery1 {
 		StyleSheet sheet = CSSFactory.parse(TEST_INVALID_SELECTOR);
 
         DOMParser parser = new DOMParser();
+        //namespaces prevent processing of our testing xhtml files for some reason
+        parser.getXMLParserConfiguration().setFeature("http://xml.org/sax/features/namespaces", false);
         parser.parse(new org.xml.sax.InputSource(new FileInputStream("data/simple/h1.html")));
         Document doc = parser.getDocument();
 

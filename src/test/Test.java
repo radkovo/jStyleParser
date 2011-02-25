@@ -40,10 +40,11 @@ public class Test
     {
         try {
             DOMParser parser = new DOMParser();
-            URL url = new URL("file:///home/burgetr/workspace/Layout/test/csstest.html");
+            URL url = new URL("file:///home/radek/workspace/Testing/test/csstest.html");
             InputStream in = url.openStream();
             parser.parse(new org.xml.sax.InputSource(in));
             Document doc = parser.getDocument();
+            System.out.println("doc=" + doc.getDocumentElement());
             ElementMap elements = new ElementMap(doc);
             
             StyleMap decl = CSSFactory.assignDOM(doc, url, "screen", true);

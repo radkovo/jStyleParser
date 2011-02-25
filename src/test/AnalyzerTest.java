@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Date;
 import java.util.Map;
 
@@ -57,6 +59,8 @@ public class AnalyzerTest {
 		log.info("\n\n\n == AnalyzerTest test at {} == \n\n\n", new Date());
 
         DOMParser parser = new DOMParser();
+        //namespaces prevent processing of our testing xhtml files for some reason
+        parser.getXMLParserConfiguration().setFeature("http://xml.org/sax/features/namespaces", false);
         parser.parse(new org.xml.sax.InputSource(new FileInputStream("data/simple/data.html")));
         doc = parser.getDocument();
 
@@ -165,7 +169,7 @@ public class AnalyzerTest {
 			protected void processNode(Boolean result, Node current,
 					Object source) {
 
-				Pair<Map<Element, NodeData>, Map<Element, NodeData>> pair = (Pair<Map<Element, NodeData>, Map<Element, NodeData>>) source;
+				Pair<StyleMap, StyleMap> pair = (Pair<StyleMap, StyleMap>) source;
 
 				Element e = (Element) current;
 
@@ -201,7 +205,7 @@ public class AnalyzerTest {
 			protected void processNode(Boolean result, Node current,
 					Object source) {
 
-				Pair<Map<Element, NodeData>, Map<Element, NodeData>> pair = (Pair<Map<Element, NodeData>, Map<Element, NodeData>>) source;
+				Pair<StyleMap, StyleMap> pair = (Pair<StyleMap, StyleMap>) source;
 
 				Element e = (Element) current;
 
