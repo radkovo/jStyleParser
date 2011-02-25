@@ -155,10 +155,13 @@ scope {
 	$statement::invalid = false;
 }   
 @after {
+  if ($statement::invalid)
+      log.debug("Statement is invalid");
 	logLeave("statement");
 }
 	: rs=ruleset {$stm=(RuleBlock<?>) rs;} 
 	| ats=atstatement {$stm=(RuleBlock<?>) ats;}
+	| INVALID_STATEMENT { $statement::invalid = true; }
 	;
 	
 
@@ -194,21 +197,22 @@ scope {
 	| ^(PAGE (i=IDENT{ pseudo=extractText(i);})? decl=declarations)
 		{ $stmnt = preparator.prepareRulePage(decl, pseudo); }
 	| ^(MEDIA (mediaList=media)? 
-			(rs=ruleset {
-			   if(rules==null) rules = new ArrayList<RuleSet>();				
-			   if(rs!=null) {
-				   // this cast should be safe, because when inside of @statetement, oridinal ruleset
-				   // is returned
-			       rules.add((RuleSet)rs);
-				   log.debug("Inserted ruleset ({}) into @media", rules.size());
-			   }
-		
-			})*
+			(  rs=ruleset {
+					   if(rules==null) rules = new ArrayList<RuleSet>();				
+					   if(rs!=null) {
+						   // this cast should be safe, because when inside of @statetement, oridinal ruleset
+						   // is returned
+					       rules.add((RuleSet)rs);
+						   log.debug("Inserted ruleset ({}) into @media", rules.size());
+					   }
+					}
+			  | INVALID_STATEMENT { log.debug("Skiping invalid statement in media"); }
+			
+			)*
 	   )	
 	   {
 		   $stmnt = preparator.prepareRuleMedia(mark, rules, mediaList);
 	   }
-	| INVALID_STATEMENT {$statement::invalid=true;}
 	;
 	
 media returns [List<String> affected] 
