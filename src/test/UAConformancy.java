@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
 
-import org.cyberneko.html.parsers.DOMParser;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,9 +35,8 @@ public class UAConformancy {
 	public static void init() throws CSSException, IOException, SAXException {
 		log.info("\n\n\n == UAConformancy test at {} == \n\n\n", new Date());
 
-        DOMParser parser = new DOMParser();
-        parser.parse(new org.xml.sax.InputSource(new FileInputStream("data/invalid/style.html")));
-        Document doc = parser.getDocument();
+        DOMSource ds = new DOMSource(new FileInputStream("data/invalid/style.html"));
+        Document doc = ds.parse();
 
 		em = new ElementMap(doc);
 

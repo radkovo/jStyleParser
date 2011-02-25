@@ -5,12 +5,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.Date;
-import java.util.Map;
 
-import org.cyberneko.html.parsers.DOMParser;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -58,12 +54,9 @@ public class AnalyzerTest {
 	public static void init() throws IOException, CSSException, SAXException {
 		log.info("\n\n\n == AnalyzerTest test at {} == \n\n\n", new Date());
 
-        DOMParser parser = new DOMParser();
-        //namespaces prevent processing of our testing xhtml files for some reason
-        parser.getXMLParserConfiguration().setFeature("http://xml.org/sax/features/namespaces", false);
-        parser.parse(new org.xml.sax.InputSource(new FileInputStream("data/simple/data.html")));
-        doc = parser.getDocument();
-
+        DOMSource ds = new DOMSource(new FileInputStream("data/simple/data.html"));
+        doc = ds.parse();
+        
 		sheet = CSSFactory.parse("data/simple/data.css", null);
 
 		analyzer = new Analyzer(sheet);

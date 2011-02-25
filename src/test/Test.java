@@ -8,7 +8,6 @@ package test;
 import java.io.*;
 import java.net.*;
 
-import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -39,12 +38,10 @@ public class Test
     public static void main(String[] args)
     {
         try {
-            DOMParser parser = new DOMParser();
             URL url = new URL("file:///home/radek/workspace/Testing/test/csstest.html");
             InputStream in = url.openStream();
-            parser.parse(new org.xml.sax.InputSource(in));
-            Document doc = parser.getDocument();
-            System.out.println("doc=" + doc.getDocumentElement());
+            DOMSource ds = new DOMSource(in);
+            Document doc = ds.parse();
             ElementMap elements = new ElementMap(doc);
             
             StyleMap decl = CSSFactory.assignDOM(doc, url, "screen", true);

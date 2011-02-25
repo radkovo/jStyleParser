@@ -6,7 +6,6 @@ import java.util.BitSet;
 import java.util.Date;
 import java.util.Map;
 
-import org.cyberneko.html.parsers.DOMParser;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -48,9 +47,8 @@ public class NodeDataVariant {
 		
 		log.info("\n\n\n == NodeDataVariant test at {} == \n\n\n", new Date());
 		
-        DOMParser parser = new DOMParser();
-        parser.parse(new org.xml.sax.InputSource(new FileInputStream("data/simple/data.html")));
-        doc = parser.getDocument();
+        DOMSource ds = new DOMSource(new FileInputStream("data/simple/data.html"));
+        doc = ds.parse();
         
 		StyleSheet style = CSSFactory.parse("data/simple/data.css", null);
 

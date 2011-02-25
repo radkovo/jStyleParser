@@ -11,7 +11,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
-import org.cyberneko.html.parsers.DOMParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -37,9 +36,8 @@ public class DOMAssign {
 	@BeforeClass
 	public static void init() throws SAXException, IOException {
 		log.info("\n\n\n == DOMAssign test at {} == \n\n\n", new Date());
-        DOMParser parser = new DOMParser();
-        parser.parse(new org.xml.sax.InputSource(new FileInputStream("data/advanced/domassign.html")));
-        doc = parser.getDocument();
+        DOMSource ds = new DOMSource(new FileInputStream("data/advanced/domassign.html"));
+        doc = ds.parse();
 		elements = new ElementMap(doc);
 	}
 	

@@ -9,7 +9,6 @@ import java.util.Date;
 
 import junit.framework.Assert;
 
-import org.cyberneko.html.parsers.DOMParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -165,11 +164,8 @@ public class GrammarRecovery1 {
 	public void invalidSelector() throws IOException, CSSException, SAXException {
 		StyleSheet sheet = CSSFactory.parse(TEST_INVALID_SELECTOR);
 
-        DOMParser parser = new DOMParser();
-        //namespaces prevent processing of our testing xhtml files for some reason
-        parser.getXMLParserConfiguration().setFeature("http://xml.org/sax/features/namespaces", false);
-        parser.parse(new org.xml.sax.InputSource(new FileInputStream("data/simple/h1.html")));
-        Document doc = parser.getDocument();
+        DOMSource ds = new DOMSource(new FileInputStream("data/simple/h1.html"));
+        Document doc = ds.parse();
 
 		Analyzer analyzer = new Analyzer(sheet);
 		StyleMap decl = analyzer.evaluateDOM(doc, "all", true);

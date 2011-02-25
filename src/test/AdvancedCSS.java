@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
 
-import org.cyberneko.html.parsers.DOMParser;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,9 +42,8 @@ public class AdvancedCSS {
 
 		log.info("\n\n\n == AdvancedTest test at {} == \n\n\n", new Date());
 
-		DOMParser parser = new DOMParser();
-        parser.parse(new org.xml.sax.InputSource(new FileInputStream("data/advanced/style.html")));
-        doc = parser.getDocument();
+        DOMSource ds = new DOMSource(new FileInputStream("data/advanced/style.html"));
+        doc = ds.parse();
 
 		sheet = CSSFactory.parse("data/advanced/style.css", null);
 

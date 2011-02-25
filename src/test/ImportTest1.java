@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 
-import org.cyberneko.html.parsers.DOMParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -51,11 +50,8 @@ public class ImportTest1 {
 	public static void init() throws SAXException, IOException {
 		log.info("\n\n\n == ImportTest1 test at {} == \n\n\n", new Date());
 
-        DOMParser parser = new DOMParser();
-        //namespaces prevent processing of our testing xhtml files for some reason
-        parser.getXMLParserConfiguration().setFeature("http://xml.org/sax/features/namespaces", false);
-        parser.parse(new org.xml.sax.InputSource(new FileInputStream("data/simple/data.html")));
-        doc = parser.getDocument();
+        DOMSource ds = new DOMSource(new FileInputStream("data/simple/data.html"));
+        doc = ds.parse();
 	}
 
 	@Test
