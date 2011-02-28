@@ -32,6 +32,17 @@ public class GrammarRecovery2 {
     public static final String TEST_DECL4A = "p { color: red; *width: 10em; }"; /* invalid character */
     public static final String TEST_DECL4B = "p { *width: 10em; color: red; }";
     
+    public static final String TEST_DECL5A = "p { color: red; width: 10em !ie; }"; /* invalid !directive */
+    public static final String TEST_DECL5B = "p { width: 10em !ie; color: red; }";
+    
+    /* invalid selector - the whole rule should be skipped */
+    public static final String TEST_DECL6A = "#menu,x:-moz-any-link { color: green !ie; } #menu { border: 1px solid blue; }";
+    public static final String TEST_DECL6B = "#menu { border: 1px solid blue; } #menu,x:-moz-any-link { color: green !ie; }";
+    
+    /* invalid selector - the whole rule should be skipped but the other rules in media should be preserved (coorect {} matching test) */
+    public static final String TEST_DECL7A = "@media { #menu,x:-moz-any-link { color: green !ie; } #menu { border: 1px solid blue; } }";
+    public static final String TEST_DECL7B = "@media { #menu { border: 1px solid blue; } #menu,x:-moz-any-link { color: green !ie; } }";
+    
 	@BeforeClass
 	public static void init() 
 	{
@@ -74,4 +85,33 @@ public class GrammarRecovery2 {
         assertEquals("One property is accepted (first one is invalid)", 1, ss.get(0).size());
     }
 
+    @Test
+    public void invalidDirective() throws IOException, CSSException 
+    {
+        StyleSheet ss = CSSFactory.parse(TEST_DECL5A);
+        assertEquals("One property is accepted (second one is invalid)", 1, ss.get(0).size());
+        ss = CSSFactory.parse(TEST_DECL5B);
+        assertEquals("One property is accepted (first one is invalid)", 1, ss.get(0).size());
+    }
+    
+    @Test
+    public void invalidSelector() throws IOException, CSSException 
+    {
+        StyleSheet ss = CSSFactory.parse(TEST_DECL6A);
+        assertEquals("One declaration is accepted (second one is invalid)", 1, ss.size());
+        ss = CSSFactory.parse(TEST_DECL6B);
+        assertEquals("One declaration is accepted (first one is invalid)", 1, ss.size());
+    }
+    
+    @Test
+    public void invalidSelectorMedia() throws IOException, CSSException 
+    {
+        StyleSheet ss = CSSFactory.parse(TEST_DECL7A);
+        assertEquals("Style sheet contains one media rule", 1, ss.size());
+        assertEquals("One declaration is accepted (second one is invalid)", 1, ss.get(0).size());
+        ss = CSSFactory.parse(TEST_DECL7B);
+        assertEquals("Style sheet contains one media rule", 1, ss.size());
+        assertEquals("One declaration is accepted (first one is invalid)", 1, ss.get(0).size());
+    }
+    
 }

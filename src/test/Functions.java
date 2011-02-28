@@ -1,0 +1,45 @@
+package test;
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.util.Date;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cz.vutbr.web.css.CSSException;
+import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.RuleSet;
+import cz.vutbr.web.css.StyleSheet;
+import cz.vutbr.web.css.TermFactory;
+
+public class Functions {
+	private static Logger log = LoggerFactory.getLogger(GrammarRecovery1.class);
+
+	public static final TermFactory tf = CSSFactory.getTermFactory();
+
+	/* parentheses in strings - pair matching test */
+	public static final String TEST_DECL1A = " a:after { content: \"(\" attr(href) \")\"; border: 1px solid red; }";
+    public static final String TEST_DECL1B = " a:after { content: \"{\" attr(href) \"}\"; border: 1px solid red; }";
+
+    
+	@BeforeClass
+	public static void init() 
+	{
+		log.info("\n\n\n == Functions test at {} == \n\n\n", new Date());
+	}
+
+	@Test
+	public void vendorSpecificUnderscore() throws IOException, CSSException 
+	{
+		StyleSheet ss = CSSFactory.parse(TEST_DECL1A);
+		assertEquals("Two properties are accepted", 2, ss.get(0).size());
+		
+		final RuleSet rule = (RuleSet) ss.get(0);
+        assertEquals("The first property value has three terms", 3, rule.get(0).size());
+	}
+	
+}
