@@ -90,7 +90,8 @@ import cz.vutbr.web.css.SupportedCSS;
         public enum RecoveryMode {
             BALANCED,
             FUNCTION, 
-            RULE
+            RULE,
+            DECL
         } 
     
         public short curlyNest;
@@ -113,6 +114,15 @@ import cz.vutbr.web.css.SupportedCSS;
             this.aposOpen = clone.aposOpen;
         }
         
+        @Override
+        public boolean equals(Object o)
+        {
+            return (this.curlyNest == ((LexerState) o).curlyNest &&
+                    this.parenNest == ((LexerState) o).parenNest &&
+                    this.quotOpen == ((LexerState) o).quotOpen &&
+                    this.aposOpen == ((LexerState) o).aposOpen);
+        }
+        
         /**
          * Checks whether all pair characters (single and double quotatation marks,
          * curly braces) are balanced
@@ -127,16 +137,21 @@ import cz.vutbr.web.css.SupportedCSS;
          * <li>BALANCED - everything must be balanced: single and double quotatation marks, curly braces, parentheses 
          * <li>FUNCTION - within the function arguments: parentheses must be balanced 
          * <li>RULE - within the CSS rule: all but curly braces
+         * <li>DECL - within declaration: all, keep curly braces at desired state
          * </ul> 
          */ 
-        public boolean isBalanced(RecoveryMode mode)
+        public boolean isBalanced(RecoveryMode mode, LexerState desired)
         {
             if (mode == RecoveryMode.BALANCED)
                 return aposOpen==false && quotOpen==false && curlyNest==0 && parenNest==0;
             else if (mode == RecoveryMode.FUNCTION)
                 return parenNest==0;
-            else
+            else if (mode == RecoveryMode.RULE)
                 return aposOpen==false && quotOpen==false && parenNest==0;
+            else if (mode == RecoveryMode.DECL)
+                return aposOpen==false && quotOpen==false && parenNest==0 && curlyNest==desired.curlyNest;
+            else
+                return false;
         }
         
         /**
@@ -270,7 +285,8 @@ import cz.vutbr.web.css.SupportedCSS;
     }
 
     /**
-	 * Adds contextual information about nesting into token.
+	 * Adds contextual information about n      {
+	 esting into token.
 	 */
     @Override
 	public Token emit() {
@@ -641,16 +657,24 @@ import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
    */ 
   private void consumeUntilGreedy(TokenStream input, BitSet follow, LexerState.RecoveryMode mode) {
     CSSToken t = null;
+    LexerState cur = null;
     do{
       Token next = input.LT(1);
       if (next instanceof CSSToken)
+      {
           t= (CSSToken) input.LT(1);
+          if (cur == null)
+          { 
+              cur = t.getLexerState();
+              log.trace("Current: {}", cur);
+          }
+      }
       else
           break; /* not a CSSToken, probably EOF */
       log.trace("Skipped greedy: {}", t);
       // consume token even if it will match
       input.consume();
-    }while(!(t.getLexerState().isBalanced(mode) && follow.member(t.getType())));
+    }while(!(t.getLexerState().isBalanced(mode, cur) && follow.member(t.getType())));
   }
   
   /**
@@ -680,6 +704,7 @@ import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
    */ 
   private void consumeUntil(TokenStream input, BitSet follow, LexerState.RecoveryMode mode) {
     CSSToken t = null;
+    LexerState cur = null;
     boolean finish = false;
     do{
       Token next = input.LT(1);
@@ -688,7 +713,7 @@ import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
       else
           break; /* not a CSSToken, probably EOF */
       // consume token if does not match
-      finish = (t.getLexerState().isBalanced(mode) && follow.member(t.getType()));
+      finish = (t.getLexerState().isBalanced(mode, cur) && follow.member(t.getType()));
       if (!finish)
       { 
           log.trace("Skipped: {}", t);
@@ -784,7 +809,9 @@ declaration
 	| noprop any* -> INVALID_DECLARATION /* if first character in the declaration is invalid (various dirty hacks) */
 	;
 	catch [RecognitionException re] {
-	  retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", re);									
+	  //retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", re);									
+      final BitSet follow = BitSet.of(CSSLexer.SEMICOLON);               
+      retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, LexerState.RecoveryMode.DECL, re);             
 	}
 
 important
