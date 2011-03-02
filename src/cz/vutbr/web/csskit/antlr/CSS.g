@@ -140,7 +140,7 @@ import cz.vutbr.web.css.SupportedCSS;
          * <li>DECL - within declaration: all, keep curly braces at desired state
          * </ul> 
          */ 
-        public boolean isBalanced(RecoveryMode mode, LexerState desired)
+        public boolean isBalanced(RecoveryMode mode, LexerState state)
         {
             if (mode == RecoveryMode.BALANCED)
                 return aposOpen==false && quotOpen==false && curlyNest==0 && parenNest==0;
@@ -149,7 +149,7 @@ import cz.vutbr.web.css.SupportedCSS;
             else if (mode == RecoveryMode.RULE)
                 return aposOpen==false && quotOpen==false && parenNest==0;
             else if (mode == RecoveryMode.DECL)
-                return aposOpen==false && quotOpen==false && parenNest==0 && curlyNest==desired.curlyNest;
+                return aposOpen==false && quotOpen==false && parenNest==0 && curlyNest==state.curlyNest;
             else
                 return false;
         }
@@ -634,7 +634,7 @@ import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
    * Recovers and logs error inside a function, using custom follow set,
    * prepares tree part replacement
    */ 
-  private Object invalidFallbackGreedy(int ttype, String ttext, BitSet follow, LexerState.RecoveryMode mode, RecognitionException re) {
+  private Object invalidFallbackGreedy(int ttype, String ttext, BitSet follow, LexerState.RecoveryMode mode, LexerState ls, RecognitionException re) {
     reportError(re);
     if ( state.lastErrorIndex==input.index() ) {
       // uh oh, another error at same token index; must be a case
@@ -645,7 +645,7 @@ import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
         }
     state.lastErrorIndex = input.index();
     beginResync();
-    consumeUntilGreedy(input, follow, mode);
+    consumeUntilGreedy(input, follow, mode, ls);
     endResync();
     return invalidReplacement(ttype, ttext);
     
@@ -655,33 +655,25 @@ import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
    * Consumes token until lexer state is function-balanced and
    * token from follow is matched. Matched token is also consumed
    */ 
-  private void consumeUntilGreedy(TokenStream input, BitSet follow, LexerState.RecoveryMode mode) {
+  private void consumeUntilGreedy(TokenStream input, BitSet follow, LexerState.RecoveryMode mode, LexerState ls) {
     CSSToken t = null;
-    LexerState cur = null;
     do{
       Token next = input.LT(1);
       if (next instanceof CSSToken)
-      {
           t= (CSSToken) input.LT(1);
-          if (cur == null)
-          { 
-              cur = t.getLexerState();
-              log.trace("Current: {}", cur);
-          }
-      }
       else
           break; /* not a CSSToken, probably EOF */
       log.trace("Skipped greedy: {}", t);
       // consume token even if it will match
       input.consume();
-    }while(!(t.getLexerState().isBalanced(mode, cur) && follow.member(t.getType())));
+    }while(!(t.getLexerState().isBalanced(mode, ls) && follow.member(t.getType())));
   }
   
   /**
    * Recovers and logs error inside a function, using custom follow set,
    * prepares tree part replacement
    */ 
-  private Object invalidFallback(int ttype, String ttext, BitSet follow, LexerState.RecoveryMode mode, RecognitionException re) {
+  private Object invalidFallback(int ttype, String ttext, BitSet follow, LexerState.RecoveryMode mode, LexerState ls, RecognitionException re) {
     reportError(re);
     if ( state.lastErrorIndex==input.index() ) {
       // uh oh, another error at same token index; must be a case
@@ -692,7 +684,7 @@ import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
         }
     state.lastErrorIndex = input.index();
     beginResync();
-    consumeUntil(input, follow, mode);
+    consumeUntil(input, follow, mode, ls);
     endResync();
     return invalidReplacement(ttype, ttext);
     
@@ -702,9 +694,8 @@ import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
    * Consumes token until lexer state is function-balanced and
    * token from follow is matched.
    */ 
-  private void consumeUntil(TokenStream input, BitSet follow, LexerState.RecoveryMode mode) {
+  private void consumeUntil(TokenStream input, BitSet follow, LexerState.RecoveryMode mode, LexerState ls) {
     CSSToken t = null;
-    LexerState cur = null;
     boolean finish = false;
     do{
       Token next = input.LT(1);
@@ -713,7 +704,7 @@ import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
       else
           break; /* not a CSSToken, probably EOF */
       // consume token if does not match
-      finish = (t.getLexerState().isBalanced(mode, cur) && follow.member(t.getType()));
+      finish = (t.getLexerState().isBalanced(mode, ls) && follow.member(t.getType()));
       if (!finish)
       { 
           log.trace("Skipped: {}", t);
@@ -721,13 +712,24 @@ import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
       }
     }while(!finish);
   }
-  
+    
+  /**
+   * Obtains the current lexer state from current token
+   */
+  private LexerState getCurrentLexerState(Token t)
+  {
+      if (t instanceof CSSToken)
+          return ((CSSToken) t).getLexerState();
+      else
+          return null;
+  }
+     
   //this switches the single token insertion / deletion off because it interferes with our own error recovery
   protected Object recoverFromMismatchedToken(IntStream input, int ttype, BitSet follow)
       throws RecognitionException
   {
       throw new MismatchedTokenException(ttype, input);
-  }   
+  }
    
 }
 
@@ -796,7 +798,7 @@ ruleset
 	catch [RecognitionException re] {
       final BitSet follow = BitSet.of(CSSLexer.RCURLY);
       //we don't require {} to be balanced here because of possible parent 'media' sections that may remain open => RecoveryMode.RULE
-	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT,	"INVALID_STATEMENT", follow, LexerState.RecoveryMode.RULE, re);							
+	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT,	"INVALID_STATEMENT", follow, LexerState.RecoveryMode.RULE, null, re);							
 	}
 
 declarations
@@ -805,13 +807,17 @@ declarations
 	;
 
 declaration
+@init {
+  LexerState begin = getCurrentLexerState(retval.start);
+  log.trace("Decl begin: " + begin);
+}
 	: property COLON S* terms important? -> ^(DECLARATION important? property terms)
 	| noprop any* -> INVALID_DECLARATION /* if first character in the declaration is invalid (various dirty hacks) */
 	;
 	catch [RecognitionException re] {
 	  //retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", re);									
       final BitSet follow = BitSet.of(CSSLexer.SEMICOLON);               
-      retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, LexerState.RecoveryMode.DECL, re);             
+      retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, LexerState.RecoveryMode.DECL, begin, re);             
 	}
 
 important
@@ -819,7 +825,7 @@ important
   ;
   catch [RecognitionException re] {
       final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
-      retval.tree = invalidFallback(CSSLexer.INVALID_DIRECTIVE, "INVALID_DIRECTIVE", follow, LexerState.RecoveryMode.RULE, re);
+      retval.tree = invalidFallback(CSSLexer.INVALID_DIRECTIVE, "INVALID_DIRECTIVE", follow, LexerState.RecoveryMode.RULE, null, re);
   }
 
 property    
@@ -840,7 +846,7 @@ terms
 		else
 		{
         final BitSet follow = BitSet.of(CSSLexer.RPAREN, CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
-        retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, LexerState.RecoveryMode.FUNCTION, re);
+        retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, LexerState.RecoveryMode.FUNCTION, null, re);
 		}
 	}
 	
