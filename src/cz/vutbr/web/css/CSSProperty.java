@@ -294,7 +294,7 @@ public interface CSSProperty {
 	}
 
 	public enum BackgroundPosition implements CSSProperty {
-		list_values(""), LEFT("left"), CENTER("center"), RIGHT("right"), INHERIT(
+		list_values(""), LEFT("left"), CENTER("center"), RIGHT("right"), TOP("top"), BOTTOM("bottom"), INHERIT(
 				"inherit");
 
 		private String text;

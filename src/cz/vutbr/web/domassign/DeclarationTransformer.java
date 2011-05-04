@@ -2041,20 +2041,28 @@ public class DeclarationTransformer {
 
 				// try this and next term, but consider terms size
 				BackgroundPosition bp = null;
-				TermList list = tf.createList(2);
+				Term<?>[] vv = {null, null}; //horizontal and vertical position
 				for (; (i <= i + 1) && (i < terms.size()); i++) {
 					Term<?> term = terms.get(i);
 					if (term instanceof TermIdent) {
 						bp = genericPropertyRaw(BackgroundPosition.class,
 								allowedBackground, (TermIdent) term);
 						if (bp != null)
-							storeBackgroundPosition(list, bp, term);
+							storeBackgroundPosition(vv, bp, term);
 					} else if (term instanceof TermPercent) {
-						storeBackgroundPosition(list, null, term);
+						storeBackgroundPosition(vv, null, term);
 					} else if (term instanceof TermLength)
-						storeBackgroundPosition(list, null, term);
+						storeBackgroundPosition(vv, null, term);
 				}
 
+				//create term list from the values, replace unspecified values by center
+				TermList list = tf.createList(2);
+                for (int j = 0; j < 2; j++)
+                    if (vv[j] == null)
+                        list.add(tf.createPercent(50.0f));
+                    else
+                        list.add(vv[j]);
+                
 				if (list.isEmpty())
 					return false;
 				// copy element if only one present
@@ -2075,17 +2083,41 @@ public class DeclarationTransformer {
 			}
 		}
 
-		private void storeBackgroundPosition(TermList storage,
-				BackgroundPosition bp, Term<?> term) {
+		private void storeBackgroundPosition(Term<?>[] storage, BackgroundPosition bp, Term<?> term) 
+		{
 			if (bp == BackgroundPosition.LEFT)
-				storage.add(tf.createPercent(0.0f));
+				setPositionValue(storage, 0, tf.createPercent(0.0f));
+            else if (bp == BackgroundPosition.RIGHT)
+                setPositionValue(storage, 0, tf.createPercent(100.0f));
+            else if (bp == BackgroundPosition.TOP)
+                setPositionValue(storage, 1, tf.createPercent(0.0f));
+            else if (bp == BackgroundPosition.BOTTOM)
+                setPositionValue(storage, 1, tf.createPercent(100.0f));
 			else if (bp == BackgroundPosition.CENTER)
-				storage.add(tf.createPercent(50.0f));
-			else if (bp == BackgroundPosition.RIGHT)
-				storage.add(tf.createPercent(100.0f));
+                setPositionValue(storage, -1, tf.createPercent(50.0f));
 			else
-				storage.add(term);
+			    setPositionValue(storage, -1, term);
 		}
+		
+		private void setPositionValue(Term<?>[] s, int index, Term<?> term)
+		{
+		    switch (index) {
+		        case -1: if (s[0] == null) //any position - use the free position
+		                     s[0] = term;
+		                 else
+		                     s[1] = term;
+		                 break;
+                case 0: if (s[0] != null) //if the position is occupied, move the old value
+                            s[1] = s[0];
+                        s[0] = term;
+                        break;
+		        case 1: if (s[1] != null)
+		                    s[0] = s[1];
+		                s[1] = term;
+		                break;
+		    }
+		}
+		
 	}
 
 	/**
