@@ -1,3 +1,16 @@
+Version 1.4 - May 5, 2011
+- Pseudo-elements and pseudo-classes supported.
+- Many error recovery fixes. Nasty CSS hacks should be parsed as well.
+- Fixes in property inheritance and parsing
+
+Version 1.3 - Dec 3, 2009
+- removed the jTidy dependency. Now any DOM Traversar capable DOM
+  implementation may be used
+- license changed to LGPLv3
+
+Version 1.2 - Jul 23, 2009
+
+
 Version 1.1 - Mar 02, 2009
 - any contents in expression() supported
 - correct handling of various CSS hacks
