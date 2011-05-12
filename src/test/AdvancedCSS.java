@@ -69,9 +69,9 @@ public class AdvancedCSS {
 		Assert.assertEquals("Background position is list of two", 2, data
 				.getValue(TermList.class, "background-position").size());
 
-		Assert.assertEquals(tf.createPercent(50.0f), data.getValue(
-				TermList.class, "background-position").get(0));
 		Assert.assertEquals(tf.createPercent(100.0f), data.getValue(
+				TermList.class, "background-position").get(0));
+		Assert.assertEquals(tf.createPercent(50.0f), data.getValue(
 				TermList.class, "background-position").get(1));
 		Assert.assertEquals(tf.createColor(255, 255, 255), data.getValue(
 				TermColor.class, "color"));
