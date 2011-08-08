@@ -890,7 +890,7 @@ valuepart
       | SLASH -> SLASH
 	    | PLUS -> PLUS
 	    | ASTERISK -> ASTERISK		 
-      | funct -> funct 
+      | MINUS? funct -> MINUS? funct 
       | DASHMATCH -> DASHMATCH
       | LPAREN valuepart* RPAREN -> ^(PARENBLOCK valuepart*)
       | LBRACE valuepart* RBRACE -> ^(BRACEBLOCK valuepart*)

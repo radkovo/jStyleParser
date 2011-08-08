@@ -454,10 +454,12 @@ valuepart
         TermExpression expr = tf.createExpression(exprval.substring(11,exprval.length()-1)); //strip the 'expression()'
         $terms::term = expr;
 		}
-    | ^(f=FUNCTION t=terms?) {
+    | (MINUS {$terms::unary=-1;})? ^(f=FUNCTION t=terms?) {
         // create function
         TermFunction function = tf.createFunction();
         function.setFunctionName(extractText(f));
+        if ($terms::unary == -1) //if started with minus, add the minus to the function name
+            function.setFunctionName('-' + function.getFunctionName());
         if (t != null)
         	function.setValue(t);
         $terms::term = function;
