@@ -1,6 +1,7 @@
 package cz.vutbr.web.domassign;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -212,6 +213,14 @@ public class SingleMapNodeData implements NodeData {
 		}
 		return sb.toString();
 	}
+
+    @Override
+    public Collection<String> getPropertyNames()
+    {
+        final List<String> keys = new ArrayList<String>();
+        keys.addAll(map.keySet());
+        return keys;
+    }
 	
 	static class Quadruple {
 		CSSProperty inhProp = null;

@@ -1,6 +1,7 @@
 package cz.vutbr.web.domassign;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -224,6 +225,19 @@ public class QuadrupleMapNodeData implements NodeData {
 		return sb.toString();
 	}
 
+    @Override
+    public Collection<String> getPropertyNames()
+    {
+        final Set<String> props = new LinkedHashSet<String>();
+        props.addAll(propertiesInh.keySet());
+        props.addAll(propertiesOwn.keySet());
+
+        final List<String> keys = new ArrayList<String>(props);
+        Collections.sort(keys);
+
+        return keys;
+    }
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */

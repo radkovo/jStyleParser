@@ -2,7 +2,9 @@ package test;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
@@ -282,6 +284,11 @@ public class NodeDataVariant {
 		public NodeData concretize() {
 			return this;
 		}
+        
+        @Override
+        public Collection<String> getPropertyNames() {
+            return new ArrayList<String>(0);
+        }		
 
 	}
 	

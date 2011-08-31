@@ -1,5 +1,7 @@
 package cz.vutbr.web.css;
 
+import java.util.Collection;
+
 /**
  * Wrap of CSS properties defined for element. Enumeration values follows this
  * syntax:
@@ -115,4 +117,11 @@ public interface NodeData {
 	 */            
 	public NodeData push(Declaration d);
 
+	/**
+	 * Returns the names of all the that are available in the current node.
+	 *  
+	 * @return the name of the properties.
+	 */
+	public Collection<String> getPropertyNames();
+	
 }
