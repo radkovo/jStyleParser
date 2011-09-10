@@ -746,7 +746,7 @@ inlinestyle
 	;
 
 stylesheet
-	: ( CDO | CDC | S | statement )* 
+	: ( CDO | CDC | S | RCURLY | statement )* 
 		-> ^(STYLESHEET statement*)
 	;
 	
@@ -1019,6 +1019,7 @@ norule
 	    | MINUS -> MINUS
 	    | PLUS -> PLUS
       | DASHMATCH -> DASHMATCH
+      | RPAREN -> RPAREN
     );
     
 /////////////////////////////////////////////////////////////////////////////////

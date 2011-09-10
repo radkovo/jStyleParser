@@ -70,6 +70,9 @@ public class GrammarRecovery1 {
 	public static final String TEST_INVALID_SELECTOR = " h1, h2 & h3 {color: green;}\n "
 			+ " h1 {font-family: Times New Roman}";
 
+	//invalid closing parenthesis between the rules
+	public static final String TEST_INVALID_PAREN =	" h1 { color: red; } } h3 { color: blue; }";
+	
 	@BeforeClass
 	public static void init() {
 		log.info("\n\n\n == GrammarRecovery1 test at {} == \n\n\n", new Date());
@@ -184,4 +187,12 @@ public class GrammarRecovery1 {
 
 	}
 
+	@Test
+	public void invalidParen() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parse(TEST_INVALID_PAREN);
+
+		Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
+
+	}
+	
 }
