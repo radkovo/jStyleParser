@@ -746,7 +746,7 @@ inlinestyle
 	;
 
 stylesheet
-	: ( CDO | CDC | S | RCURLY | statement )* 
+	: ( CDO | CDC | S | nostatement | statement )* 
 		-> ^(STYLESHEET statement*)
 	;
 	
@@ -977,6 +977,10 @@ any
       | LPAREN any* RPAREN -> ^(PARENBLOCK any*)
       | LBRACE any* RBRACE -> ^(BRACEBLOCK any*)
     ) !S*;
+
+/** What cannot be contained directly in the stylesheet (ignored) */
+nostatement
+  : ( RCURLY -> RCURLY );
 
 /** invalid start of a property */
 noprop
