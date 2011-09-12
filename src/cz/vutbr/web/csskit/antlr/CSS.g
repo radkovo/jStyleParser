@@ -1169,7 +1169,7 @@ PAGE
 	
 /** Keyword beginning with '@' */
 ATKEYWORD
-	: '@' IDENT_MACR
+	: '@' MINUS? IDENT_MACR
 	;
 
 CLASSKEYWORD

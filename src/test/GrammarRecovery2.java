@@ -43,6 +43,8 @@ public class GrammarRecovery2 {
     public static final String TEST_DECL7A = "@media { #menu,x:-moz-any-link { color: green !ie; } #menu { border: 1px solid blue; } }";
     public static final String TEST_DECL7B = "@media { #menu { border: 1px solid blue; } #menu,x:-moz-any-link { color: green !ie; } }";
     
+    public static final String TEST_DECL8A = ".button{border-color:#c5c5c5 #7d7d7d #7b7b7b #a1a1a1}@-moz-document url-prefix(){.email-feed .g-cnt .button{padding:2px 0 3px 0}}.email{color:red}";
+    
 	@BeforeClass
 	public static void init() 
 	{
@@ -114,4 +116,10 @@ public class GrammarRecovery2 {
         assertEquals("One declaration is accepted (first one is invalid)", 1, ss.get(0).size());
     }
     
+    @Test
+    public void invalidSelectorSyntax() throws IOException, CSSException 
+    {
+        StyleSheet ss = CSSFactory.parse(TEST_DECL8A);
+        assertEquals("Style sheet contains two rules (the middle one is invalid)", 2, ss.size());
+    }
 }
