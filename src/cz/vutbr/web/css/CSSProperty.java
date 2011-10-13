@@ -2177,4 +2177,49 @@ public interface CSSProperty {
 		}
 	}
 
+    /**
+     * A generic property used for all the properties not supported by another implementation.
+     */
+    public class GenericCSSPropertyProxy implements CSSProperty
+    {
+        private String text;
+
+        private GenericCSSPropertyProxy(final String thePropertyValue)
+        {
+            this.text = thePropertyValue;
+        }
+
+        @Override
+        public boolean inherited()
+        {
+            return false;
+        }
+
+        @Override
+        public boolean equalsInherit()
+        {
+            return false;
+        }
+
+        @Override
+        public String toString()
+        {
+            return text;
+        }
+
+        /**
+         * Creates a new instance of the GenericCSSPropertyProxy. This method
+         * simulates the method valueOf(String) of the other CSS attributes that
+         * are implmented as enums.
+         * 
+         * @param value the property value.
+         * 
+         * @return a new insance that contains the property value.
+         */
+        public static GenericCSSPropertyProxy valueOf(final String value)
+        {
+            return new GenericCSSPropertyProxy(value == null ? "" : value.toLowerCase());
+        }
+	}	
+	
 }

@@ -1,16 +1,16 @@
 jStyleParser Credits
 --------------------
 
-Main developer:
-Karel Piwko <kapy>
-
-CSSBox project leader:
+Main developer & project leader:
 Radek Burget <burgetr@fit.vutbr.cz>
 
-Developers:
-Karel Piwko
+Former developers:
+Karel Piwko <kapy>
 Jan Svercl
-Radek Burget
+
+Contributors:
+Ron Kuhnert <ron.kuhnert@googlemail.com> - property processing and API extensions
+
 
 This project was supported by the Research Plan No. MSM 0021630528 – Security-Oriented 
 Research in Information Technology.

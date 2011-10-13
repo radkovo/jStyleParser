@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
+import cz.vutbr.web.css.CSSProperty.GenericCSSPropertyProxy;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
@@ -200,8 +201,13 @@ public class DeclarationTransformer {
 						.invoke(this, d, properties, values);
 				log.debug("Parsing /{}/ {}", result, d);
 				return result;
-
 			}
+			else
+			{
+			    boolean result = processAdditionalCSSGenericProperty(d, properties, values);
+			    log.debug("Parsing with proxy /{}/ {}", result, d);
+			    return result; 
+			}			
 		} catch (IllegalArgumentException e) {
 			log.warn("Illegal argument", e);
 		} catch (IllegalAccessException e) {
@@ -1476,6 +1482,28 @@ public class DeclarationTransformer {
 				properties, values);
 	}
 
+    /**
+     * Processes an unknown property and stores its values and types.
+     * 
+     * @param d the declaration.
+     * @param properties the properties.
+     * @param values the values.
+     * 
+     * @return <code>true</code>, if the property has been pared successfully
+     */
+    private boolean processAdditionalCSSGenericProperty(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values)
+    {
+        Term<?> term = d.get(0); //TODO all the parametres should be processed
+
+        if (term instanceof TermIdent)
+            return genericProperty(GenericCSSPropertyProxy.class, (TermIdent) term, true, properties, d.getProperty());
+        else
+            return genericTerm(TermLength.class, term, d.getProperty(), null, false, properties, values)
+                || genericTerm(TermPercent.class, term, d.getProperty(), null, false, properties, values)
+                || genericTerm(TermInteger.class, term, d.getProperty(), null, false, properties, values)
+                || genericTermColor(term, d.getProperty(), null, properties, values);
+    }          
+	
 	@SuppressWarnings("unused")
 	private boolean processContent(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
