@@ -1493,15 +1493,23 @@ public class DeclarationTransformer {
      */
     private boolean processAdditionalCSSGenericProperty(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values)
     {
-        Term<?> term = d.get(0); //TODO all the parametres should be processed
-
-        if (term instanceof TermIdent)
-            return genericProperty(GenericCSSPropertyProxy.class, (TermIdent) term, true, properties, d.getProperty());
-        else
-            return genericTerm(TermLength.class, term, d.getProperty(), null, false, properties, values)
-                || genericTerm(TermPercent.class, term, d.getProperty(), null, false, properties, values)
-                || genericTerm(TermInteger.class, term, d.getProperty(), null, false, properties, values)
-                || genericTermColor(term, d.getProperty(), null, properties, values);
+    	if (d.size() == 1)
+    	{
+	        Term<?> term = d.get(0);
+	
+	        if (term instanceof TermIdent)
+	            return genericProperty(GenericCSSPropertyProxy.class, (TermIdent) term, true, properties, d.getProperty());
+	        else
+	            return genericTerm(TermLength.class, term, d.getProperty(), null, false, properties, values)
+	                || genericTerm(TermPercent.class, term, d.getProperty(), null, false, properties, values)
+	                || genericTerm(TermInteger.class, term, d.getProperty(), null, false, properties, values)
+	                || genericTermColor(term, d.getProperty(), null, properties, values);
+    	}
+    	else
+    	{
+    		log.warn("Ignoring unsupported property " + d.getProperty() + " with multiple values");
+    		return false;
+    	}
     }          
 	
 	@SuppressWarnings("unused")
