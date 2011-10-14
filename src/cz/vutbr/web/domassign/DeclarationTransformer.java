@@ -1483,7 +1483,8 @@ public class DeclarationTransformer {
 	}
 
     /**
-     * Processes an unknown property and stores its values and types.
+     * Processes an unknown property and stores its value. Unknown properties containing
+     * multiple values are ignored (the interpretation is not clear).
      * 
      * @param d the declaration.
      * @param properties the properties.
