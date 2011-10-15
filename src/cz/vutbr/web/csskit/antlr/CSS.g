@@ -942,6 +942,9 @@ pseudo
 	: COLON COLON? (IDENT | FUNCTION S*  IDENT S* RPAREN)
 	 -> ^(PSEUDO FUNCTION? IDENT)
 	;
+  catch [RecognitionException re] {
+     retval.tree = invalidFallback(CSSLexer.INVALID_SELPART, "INVALID_SELPART", re);
+  }
 
 string
 	: STRING
