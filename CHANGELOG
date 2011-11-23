@@ -1,3 +1,9 @@
+Version 1.5 - Nov 23, 2011
+- Error recovery fixes
+- Fixed pseudo-class name processing (double colon support)
+- Fixed at-keyword name processing (leading dash)
+- Small API update for allowing better extensibility (by Ron)
+
 Version 1.4 - May 5, 2011
 - Pseudo-elements and pseudo-classes supported.
 - Many error recovery fixes. Nasty CSS hacks should be parsed as well.
