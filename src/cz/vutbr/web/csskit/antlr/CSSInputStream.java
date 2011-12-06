@@ -6,9 +6,12 @@ package cz.vutbr.web.csskit.antlr;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.util.zip.GZIPInputStream;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRReaderStream;
@@ -61,8 +64,14 @@ public class CSSInputStream implements CharStream {
 		
 		stream.base = source;
 		stream.encoding = Charset.defaultCharset().name();
-				
-		stream.input = new ANTLRInputStream(source.openStream(), stream.encoding);
+		
+        URLConnection con = source.openConnection();
+        InputStream is;
+        if ("gzip".equalsIgnoreCase(con.getContentEncoding()))
+            is = new GZIPInputStream(con.getInputStream());
+        else
+            is = con.getInputStream();
+        stream.input = new ANTLRInputStream(is, stream.encoding);
 		
 		return stream;
 	}
