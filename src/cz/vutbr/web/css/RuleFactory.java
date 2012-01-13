@@ -77,9 +77,10 @@ public interface RuleFactory {
 	/**
 	 * Creates CSS selector part, element DOM node
 	 * @param e Element node
+     * @param inlinePriority true means that the selector has an inline priority
 	 * @return New CSS element DOM selector part
 	 */
-	Selector.ElementDOM createElementDOM(Element e);
+	Selector.ElementDOM createElementDOM(Element e,  boolean inlinePriority);
 	
 	/**
 	 * Creates CSS selector part, element name

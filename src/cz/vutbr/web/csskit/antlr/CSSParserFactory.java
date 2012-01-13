@@ -209,6 +209,8 @@ public class CSSParserFactory {
 	 *            Type of source provided
 	 * @param inline
 	 *            InlineElement
+     * @param inlinePriority
+     *            True when the rule should have an 'inline' (greater) priority
 	 * @return Created StyleSheet
 	 * @throws IOException
 	 *             When problem with input stream occurs
@@ -216,13 +218,13 @@ public class CSSParserFactory {
 	 *             When unrecoverable exception during parsing occurs
 	 */
 	public static StyleSheet parse(Object source, SourceType type,
-			Element inline, URL base) throws IOException, CSSException {
+			Element inline, boolean inlinePriority, URL base) throws IOException, CSSException {
 
 		StyleSheet sheet = (StyleSheet) CSSFactory.getRuleFactory()
 				.createStyleSheet().unlock();
 
 		PriorityStrategy ps = new AtomicPriorityStrategy(lastPriority);
-		Preparator preparator = new SimplePreparator(ps, inline);
+		Preparator preparator = new SimplePreparator(ps, inline, inlinePriority);
 
 		CSSTreeParser parser = createParser(source, type, preparator, sheet, base);
 		StyleSheet ret = type.parse(parser);
@@ -253,7 +255,7 @@ public class CSSParserFactory {
 			throw new IllegalArgumentException(
 					"Missing element for INLINE input");
 
-		return parse(source, type, null, base);
+		return parse(source, type, null, false, base);
 	}
 
 	/**
@@ -266,6 +268,8 @@ public class CSSParserFactory {
 	 *            Type of source provided
 	 * @param inline
 	 *            Inline element
+	 * @param inlinePriority
+	 *            True when the rule should have an 'inline' (greater) priority
 	 * @param sheet
 	 *            StyleSheet to be modified
 	 * @return Modified StyleSheet
@@ -275,13 +279,13 @@ public class CSSParserFactory {
 	 *             When unrecoverable exception during parsing occurs
 	 */
 	public static StyleSheet append(Object source, SourceType type,
-			Element inline, StyleSheet sheet, URL base) throws IOException, CSSException {
+			Element inline, boolean inlinePriority, StyleSheet sheet, URL base) throws IOException, CSSException {
 
 	    Priority start = sheet.getLastMark();
 	    if (start == null)
 	        start = lastPriority;
 		PriorityStrategy ps = new AtomicPriorityStrategy(start);
-		Preparator preparator = new SimplePreparator(ps, inline);
+		Preparator preparator = new SimplePreparator(ps, inline, inlinePriority);
 
 		CSSTreeParser parser = createParser(source, type, preparator, sheet, base);
 		StyleSheet ret = type.parse(parser);
@@ -316,7 +320,7 @@ public class CSSParserFactory {
 			throw new IllegalArgumentException(
 					"Missing element for INLINE input");
 
-		return append(source, type, null, sheet, base);
+		return append(source, type, null, false, sheet, base);
 	}
 	
 	/**

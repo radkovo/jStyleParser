@@ -277,7 +277,15 @@ public final class CSSFactory {
 	}
 
     /**
-     * Loads all the style sheets used from the specified DOM tree including the inline styles
+     * Loads all the style sheets used from the specified DOM tree.
+     * The following style specifications are evaluated:
+     * <ul>
+     * <li>The style sheets included using the <code>link</code> and <code>style</code> tags.
+     * <li>Inline styles specified using the <code>style</code> element attribute.
+     * <li><strong>Proprietary extension:</strong> Default styles defined using the <code>XDefaultStyle</code>
+     *     element attribute. These styles behave the same way as the inline styles but they have the lowest priority
+     *     (the values are used only when not redefined by any other way)
+     *  </ul>   
      * 
      * @param doc
      *            DOM tree
@@ -300,7 +308,15 @@ public final class CSSFactory {
     }
     
 	/**
-	 * Uses DOM document and uses CSS declaration
+	 * Goes through a DOM tree and assigns the CSS declarations to the DOM elements.
+	 * The following style specifications are evaluated:
+	 * <ul>
+	 * <li>The style sheets included using the <code>link</code> and <code>style</code> tags.
+	 * <li>Inline styles specified using the <code>style</code> element attribute.
+	 * <li><strong>Proprietary extension:</strong> Default styles defined using the <code>XDefaultStyle</code>
+	 *     element attribute. These styles behave the same way as the inline styles but they have the lowest priority
+	 *     (the values are used only when not redefined by any other way)
+	 *  </ul>   
 	 * 
 	 * @param doc
 	 *            DOM tree
@@ -367,13 +383,20 @@ public final class CSSFactory {
 							result, base);
 					log.debug("Matched linked CSS style");
 				}
-				// in-line style
-				else if (elem.getAttribute("style") != null
-						&& elem.getAttribute("style").length() > 0) {
-					result = CSSParserFactory.append(
-							elem.getAttribute("style"), SourceType.INLINE,
-							elem, result, base);
-					log.debug("Matched inline CSS style");
+				// in-line style and default style
+				else {
+    				    if (elem.getAttribute("style") != null && elem.getAttribute("style").length() > 0) {
+        					result = CSSParserFactory.append(
+        							elem.getAttribute("style"), SourceType.INLINE,
+        							elem, true, result, base);
+        					log.debug("Matched inline CSS style");
+    				    }
+                        if (elem.getAttribute("XDefaultStyle") != null && elem.getAttribute("XDefaultStyle").length() > 0) {
+                            result = CSSParserFactory.append(
+                                    elem.getAttribute("XDefaultStyle"), SourceType.INLINE,
+                                    elem, false, result, base);
+                            log.debug("Matched default CSS style");
+                        }
 				}
 			} catch (CSSException ce) {
 				log.error("THROWN:", ce);

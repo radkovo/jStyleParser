@@ -204,7 +204,7 @@ public class Analyzer {
 
 		// match IDs
 		String id = ElementUtil.elementID(e);
-		if (id != null) {
+		if (id != null && id.length() != 0) {
 			List<RuleSet> rules = holder.get(HolderItem.ID, id.toLowerCase());
 			if (rules != null)
 				candidates.addAll(rules);

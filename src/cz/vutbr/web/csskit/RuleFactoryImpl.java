@@ -113,8 +113,8 @@ public class RuleFactoryImpl implements RuleFactory {
 		return new SelectorImpl.ElementNameImpl(elementName);
 	}
 	
-	public ElementDOM createElementDOM(Element e) {
-		return new SelectorImpl.ElementDOMImpl(e);
+	public ElementDOM createElementDOM(Element e, boolean inlinePriority) {
+		return new SelectorImpl.ElementDOMImpl(e, inlinePriority);
 	}
 
 	

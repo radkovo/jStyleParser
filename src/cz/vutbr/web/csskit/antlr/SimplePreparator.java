@@ -27,12 +27,13 @@ public class SimplePreparator implements Preparator {
 	private static RuleFactory rf = CSSFactory.getRuleFactory();
 
 	private PriorityStrategy ps;
-
 	private Element elem;
+	private boolean inlinePriority;
 
-	public SimplePreparator(PriorityStrategy ps, Element e) {
+	public SimplePreparator(PriorityStrategy ps, Element e, boolean inlinePriority) {
 		this.ps = ps;
 		this.elem = e;
+		this.inlinePriority = inlinePriority;
 	}
 
 	public RuleBlock<?> prepareRuleSet(List<CombinedSelector> cslist,
@@ -123,7 +124,7 @@ public class SimplePreparator implements Preparator {
 		CombinedSelector cs = (CombinedSelector) rf.createCombinedSelector()
 				.unlock();
 		Selector sel = (Selector) rf.createSelector().unlock();
-		sel.add(rf.createElementDOM(elem));
+		sel.add(rf.createElementDOM(elem, inlinePriority));
 		if(pseudos!=null) sel.addAll(pseudos);
 		cs.add(sel);
 		

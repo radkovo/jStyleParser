@@ -150,7 +150,11 @@ provides following method:</p>
 		externally stored CSS style sheets, base URL <code>base</code> is used.
 		<br/>
 		This method traverses the DOM tree collecting all linked, embedded (&lt;style&gt;) and inline
-		 (attribute style=&quot;&quot;) CSS declarations, and assigning them to the DOM elements.		 
+		 (attribute style=&quot;&quot;) CSS declarations, and assigning them to the DOM elements.
+		<br/>
+		<strong>Proprietary extension:</strong> In addition, default styles defined using the <code>XDefaultStyle=&quot;&quot;</code>
+         element attribute are processed as well. These styles behave the same way as the inline styles but they have the lowest priority
+         (the values are used only when not redefined by any other way)	 
 	</li>
 </ul>
 

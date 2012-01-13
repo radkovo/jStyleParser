@@ -664,10 +664,14 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     
     public static class ElementDOMImpl implements ElementDOM {
  
+        /** The element used as the selector */
     	private Element elem;
+    	/** When set to true, the selector has a maximal specificity (inline). Otherwise, it has a minimal specificity. */
+    	private boolean inlinePriority;
     	
-    	protected ElementDOMImpl(Element e) {
+    	protected ElementDOMImpl(Element e, boolean inlinePriority) {
     		this.elem = e;
+    		this.inlinePriority = inlinePriority;
     	}
 
 		public Element getElement() {
@@ -680,7 +684,8 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		}
 
 		public void computeSpecificity(Specificity spec) {
-			spec.add(Level.A);
+		    if (inlinePriority)
+		        spec.add(Level.A);
 		}
 
 		public boolean matches(Element e) {
