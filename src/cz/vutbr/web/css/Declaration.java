@@ -10,6 +10,10 @@ package cz.vutbr.web.css;
  */
 public interface Declaration extends Rule<Term<?>>, PrettyOutput, Comparable<Declaration> {
 
+    public StyleSheet getStyleSheet();
+    
+    public void setStyleSheet(StyleSheet sheet);
+    
     public boolean isImportant();
     
     public void setImportant(boolean important);

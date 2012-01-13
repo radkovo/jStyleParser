@@ -1,6 +1,7 @@
 package cz.vutbr.web.csskit;
 
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.Term;
 
 /**
@@ -13,6 +14,7 @@ public class DeclarationImpl extends AbstractRule<Term<?>> implements Declaratio
 
 	protected String property;
 	protected boolean important;
+	protected StyleSheet stylesheet;
 
 	protected DeclarationImpl() {
 		this.property = "";
@@ -26,9 +28,22 @@ public class DeclarationImpl extends AbstractRule<Term<?>> implements Declaratio
 	protected DeclarationImpl(Declaration clone) {
 		this.property = clone.getProperty();
 		this.important = clone.isImportant();
+		this.stylesheet = clone.getStyleSheet();
 		this.replaceAll(clone.asList());
 	}
 
+    @Override
+    public StyleSheet getStyleSheet()
+    {
+        return stylesheet;
+    }
+
+    @Override
+    public void setStyleSheet(StyleSheet sheet)
+    {
+        sheet = stylesheet;
+    }
+    
 	/**
 	 * This declaration type is never inherited
 	 * @return <code>false</code>
@@ -145,9 +160,5 @@ public class DeclarationImpl extends AbstractRule<Term<?>> implements Declaratio
 			return false;
 		return true;
 	}
-
-	
-	
-	
     
 }

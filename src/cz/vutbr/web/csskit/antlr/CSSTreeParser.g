@@ -308,6 +308,7 @@ scope {
     logEnter("declaration");
     $declaration::d = $decl = rf.createDeclaration();
     $declaration::invalid = false;
+    $decl.setStyleSheet(this.stylesheet);
 } 
 @after {
     if($declaration::invalid || $declaration.isEmpty()) {
