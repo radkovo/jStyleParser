@@ -49,11 +49,25 @@ public class Analyzer {
 	 */
 	protected Map<String, Holder> rules;
 
+	/**
+	 * Creates the analyzer for a single style sheet.
+	 * @param sheet The stylesheet that will be used as the source of rules.
+	 */
 	public Analyzer(StyleSheet sheet) {
 		this.rules = Collections.synchronizedMap(new HashMap<String, Holder>());
 		classifyRules(sheet);
 	}
 
+	/**
+	 * Creates the analyzer for multiple style sheets.
+	 * @param sheets A list of stylesheets that will be used as the source of rules.
+	 */
+	public Analyzer(List<StyleSheet> sheets) {
+		this.rules = Collections.synchronizedMap(new HashMap<String, Holder>());
+		for (StyleSheet sheet : sheets)
+			classifyRules(sheet);
+	}
+	
 	/**
 	 * Evaluates CSS properties of DOM tree
 	 * 
@@ -340,9 +354,12 @@ public class Analyzer {
 	 */
 	private void classifyRules(StyleSheet sheet) {
 
-		// create holder for medium of type all
-		Holder all = new Holder();
-		rules.put(UNIVERSAL_HOLDER, all);
+		// create holder for medium of type all if it does not exist
+		Holder all = rules.get(UNIVERSAL_HOLDER);
+		if (all == null) {
+			all = new Holder();
+			rules.put(UNIVERSAL_HOLDER, all);
+		}
 
 		for (Rule<?> rule : sheet) {
 			// this rule conforms to all media
