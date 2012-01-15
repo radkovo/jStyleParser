@@ -2,26 +2,30 @@ package cz.vutbr.web.domassign;
 
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.csskit.DeclarationImpl;
 
 /**
  * Adds specificity to declaration from its selector.
  * This class shares declaration with its parent class.
- *  
+ *
+ * @author burgetr
  * @author kapy
  */
 public class AssignedDeclaration extends DeclarationImpl implements Declaration {
 	
 	protected CombinedSelector.Specificity spec;
+	protected StyleSheet.Origin origin;
 
 	/**
 	 * Creates assigned declaration from specificity and shallow copy of declaration
 	 * @param d Declaration to be shallow-copied
 	 * @param spec Specificity
 	 */
-	public AssignedDeclaration(Declaration d, CombinedSelector.Specificity spec) {
+	public AssignedDeclaration(Declaration d, CombinedSelector.Specificity spec, StyleSheet.Origin origin) {
 		super(d);
 		this.spec = spec;
+		this.origin = origin;
 	}
 	
 	/**
@@ -29,8 +33,8 @@ public class AssignedDeclaration extends DeclarationImpl implements Declaration 
 	 * @param d Declaration to be shallow-copied
 	 * @param s CombinedSelector, which's specificity is computed inside
 	 */
-	public AssignedDeclaration(Declaration d, CombinedSelector s) {
-		this(d, s.computeSpecificity());
+	public AssignedDeclaration(Declaration d, CombinedSelector s, StyleSheet.Origin origin) {
+		this(d, s.computeSpecificity(), origin);
 	}
 	
 	@Override
@@ -41,12 +45,41 @@ public class AssignedDeclaration extends DeclarationImpl implements Declaration 
 		
 		AssignedDeclaration o = (AssignedDeclaration) other;
 
-		int result = super.compareTo(o);
-		if(result!=0) return result;
-		
-		return this.spec.compareTo(o.spec);
+		int res = getOriginOrder() - o.getOriginOrder();
+		if (res == 0)
+			return this.spec.compareTo(o.spec);
+		else
+			return res;
 	}
 
+	/**
+	 * Computes the priority order of the declaration based on its origin and importance
+	 * according to the CSS specification.
+	 * @return The priority order (1..5).
+	 * @see http://www.w3.org/TR/CSS21/cascade.html#cascading-order
+	 */
+	public int getOriginOrder()
+	{
+		if (important)
+		{
+			if (origin == StyleSheet.Origin.AUTHOR)
+				return 4;
+			else if (origin == StyleSheet.Origin.AGENT)
+				return 1;
+			else
+				return 5;
+		}
+		else
+		{
+			if (origin == StyleSheet.Origin.AUTHOR)
+				return 3;
+			else if (origin == StyleSheet.Origin.AGENT)
+				return 1;
+			else
+				return 2;
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */

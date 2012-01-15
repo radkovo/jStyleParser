@@ -239,6 +239,10 @@ public class Analyzer {
 
 		// for all candidates
 		for (RuleSet rule : clist) {
+			
+			StyleSheet sheet = rule.getStyleSheet();
+			StyleSheet.Origin origin = (sheet == null) ? StyleSheet.Origin.AGENT : sheet.getOrigin();
+			
 			// for all selectors inside
 			for (CombinedSelector s : rule.getSelectors()) {
 				// this method does automatic rewind of walker
@@ -255,7 +259,7 @@ public class Analyzer {
 				{
     				// add to main list
     				for (Declaration d : rule)
-    					eldecl.add(new AssignedDeclaration(d, spec));
+    					eldecl.add(new AssignedDeclaration(d, spec, origin));
 				}
 				else
 				{
@@ -263,7 +267,7 @@ public class Analyzer {
 				    pseudos.add(pseudo);
 				    // add to pseudo lists
                     for (Declaration d : rule)
-                        declarations.addDeclaration(e, pseudo, new AssignedDeclaration(d, spec));
+                        declarations.addDeclaration(e, pseudo, new AssignedDeclaration(d, spec, origin));
 				}
 
 			}

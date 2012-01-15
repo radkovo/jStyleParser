@@ -123,9 +123,16 @@ public interface RuleFactory {
 	Selector.PseudoPage createPseudoPage(String pseudo, String functionName);
 
 	/**
-	 * Creates CSS style sheet
-	 * @return New CSS style sheet
+	 * Creates CSS author style sheet
+	 * @return The new style sheet.
 	 */
 	StyleSheet createStyleSheet();
+
+	/**
+	 * Creates CSS author style sheet with the given origin.
+	 * @param origin the origin of the style sheet.
+	 * @return The new style sheet.
+	 */
+	StyleSheet createStyleSheet(StyleSheet.Origin origin);
 
 }

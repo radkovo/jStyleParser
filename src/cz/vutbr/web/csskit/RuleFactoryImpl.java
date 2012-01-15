@@ -126,10 +126,13 @@ public class RuleFactoryImpl implements RuleFactory {
 		return new SelectorImpl.PseudoPageImpl(pseudo, functionName);
 	}
 	
-	/* (non-Javadoc)
-	 * @see cz.vutbr.web.css.RuleFactory#createStyleSheet()
-	 */
 	public StyleSheet createStyleSheet() {
 		return new StyleSheetImpl();
+	}
+	
+	public StyleSheet createStyleSheet(StyleSheet.Origin origin) {
+		StyleSheet ret = new StyleSheetImpl();
+		ret.setOrigin(origin);
+		return ret;
 	}
 }

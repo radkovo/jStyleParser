@@ -1,10 +1,12 @@
 package cz.vutbr.web.csskit;
 
 import cz.vutbr.web.css.RuleBlock;
+import cz.vutbr.web.css.StyleSheet;
 
 public class AbstractRuleBlock<T> extends AbstractRule<T> implements RuleBlock<T> {
 	
 	protected Priority priority;
+	protected StyleSheet stylesheet;
 	
 	protected AbstractRuleBlock(Priority priority) {
 		this.priority = priority;
@@ -18,7 +20,17 @@ public class AbstractRuleBlock<T> extends AbstractRule<T> implements RuleBlock<T
 	public Priority getPriority() {
 		return priority;
 	}
-	
+
+	public StyleSheet getStyleSheet()
+	{
+		return stylesheet;
+	}
+
+	public void setStyleSheet(StyleSheet stylesheet)
+	{
+		this.stylesheet = stylesheet;
+	}
+
 	public int compareTo(RuleBlock<?> o) throws ClassCastException {
 		return this.getPriority().compareTo(o.getPriority());
 	}

@@ -30,4 +30,16 @@ public interface RuleBlock<T> extends Rule<T>, Comparable<RuleBlock<?>>{
 	 */
 	public Priority getPriority();
 	
+	/**
+	 * Sets the owner style sheet for this rule.
+	 * @param sheet The stylesheet where this rule is contained.
+	 */
+	public void setStyleSheet(StyleSheet sheet);
+	
+	/**
+	 * Returns the stylesheet where the rule is contained.
+	 * @return The stylesheet.
+	 */
+	public StyleSheet getStyleSheet();
+	
 }
