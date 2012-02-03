@@ -73,6 +73,9 @@ public class GrammarRecovery1 {
 	//invalid closing parenthesis between the rules
 	public static final String TEST_INVALID_PAREN =	" h1 { color: red; } } h3 { color: blue; }";
 	
+	//invalid semicolon between the rules
+	public static final String TEST_INVALID_SEMICOLON =	" h1 { color: red; } ; h3 { color: blue; }";
+	
 	@BeforeClass
 	public static void init() {
 		log.info("\n\n\n == GrammarRecovery1 test at {} == \n\n\n", new Date());
@@ -190,6 +193,14 @@ public class GrammarRecovery1 {
 	@Test
 	public void invalidParen() throws IOException, CSSException {
 		StyleSheet ss = CSSFactory.parse(TEST_INVALID_PAREN);
+
+		Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
+
+	}
+	
+	@Test
+	public void invalidSemicolon() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parse(TEST_INVALID_SEMICOLON);
 
 		Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
 

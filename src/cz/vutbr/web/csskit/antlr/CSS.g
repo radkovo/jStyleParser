@@ -983,7 +983,9 @@ any
 
 /** What cannot be contained directly in the stylesheet (ignored) */
 nostatement
-  : ( RCURLY -> RCURLY );
+  : ( RCURLY -> RCURLY |
+      SEMICOLON -> SEMICOLON
+    );
 
 /** invalid start of a property */
 noprop
