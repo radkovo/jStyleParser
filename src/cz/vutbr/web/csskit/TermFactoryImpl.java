@@ -140,7 +140,7 @@ public class TermFactoryImpl implements TermFactory {
 
 		for (TermNumeric.Unit unit : TermNumeric.Unit.values()) {
 			// try to find valid unit identifier
-			if (value.matches("^[0-9]*.?[0-9]+" + unit.value() + "$")) {
+			if (value.matches("^[0-9]*\\.?[0-9]+" + unit.value() + "$")) {
 				Float f = convertFloat(value, unit.value(), unary);
 				if (unit.isAngle())
 					return (TermNumeric<Float>) (new TermAngleImpl()).setUnit(
