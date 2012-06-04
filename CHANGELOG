@@ -1,3 +1,12 @@
+Version 1.6 - Jun 4, 2012
+- Obtaining gzipped style sheets linked from DOM
+- Support for multiple style sheets in DOM assignment
+- Style sheet origin support
+- Source stylesheet tracking in declarations (for stylesheet priority tracking)
+- Support for per-element default style definition in the DOM tree using the proprietary XDefaultStyle attribute.
+- Fixed base URI for nested imports
+- Value type discovery fix
+
 Version 1.5 - Nov 23, 2011
 - Error recovery fixes
 - Fixed pseudo-class name processing (double colon support)
