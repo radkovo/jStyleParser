@@ -380,7 +380,7 @@ public final class CSSFactory {
 				else if (isLinkedStyleSheet(elem, media)) {
 					URL uri = new URL(base, elem.getAttribute("href"));
 					result = CSSParserFactory.append(uri, SourceType.URL,
-							result, base);
+							result, uri);
 					log.debug("Matched linked CSS style");
 				}
 				// in-line style and default style
