@@ -414,7 +414,7 @@ public final class CSSFactory {
 		private static boolean isLinkedStyleSheet(Element e, String media) {
 			return e.getNodeName().equals("link")
 					&& "stylesheet".equalsIgnoreCase(e.getAttribute("rel"))
-					&& "text/css".equalsIgnoreCase(e.getAttribute("type"))
+					&& (e.getAttribute("type").isEmpty() || "text/css".equalsIgnoreCase(e.getAttribute("type")))
 					&& isAllowedMedia(e, media);
 		}
 
