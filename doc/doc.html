@@ -83,7 +83,8 @@ results for different media.</p>
 <p>The resulting <code>StyleSheet</code> cen be used as the input for <code>Analyzer</code>.</p>
 
 <h3>Analyzing a Style Sheet</h3>
-<p>When a <code>StyleSheet</code> instance is retrieved in the previous step, it can be passed to an <code>Analyzer</code>.
+<p>When a <code>StyleSheet</code> instance is retrieved in the previous step, it can be passed to an
+<a href="http://cssbox.sourceforge.net/jstyleparser/api/cz/vutbr/web/domassign/Analyzer.html"><code>Analyzer</code></a>.
 This object classifies rules into groups by CSS media and according to their CSS selectors. This operation is done
 only once during the construction of the <code>Analyzer</code> and all the subsequent requests are executed on maps created 
 during this classification.
@@ -98,6 +99,11 @@ when one CSS style-sheet has to be analyzer from to point of view of different m
 			allowed/disabled inheritance of declarations. 
 	</li>
 </ul>  
+<p>Additionally, a
+<a href="http://cssbox.sourceforge.net/jstyleparser/api/cz/vutbr/web/domassign/DirectAnalyzer.html"><code>DirectAnalyzer</code></a>
+analyzer is provided for cases when it is not necessary to evaluate the whole DOM. It computes a style for individual DOM nodes without
+creating the whole map. It is suitable for obtaining the style of individual elements without computing the style for the whole DOM tree.
+However, in larger scale, the performance of the individual computation is significantly worse.</p>
 
 <h3>Retrieving the Values of DOM Elements</h3>
 <p> 

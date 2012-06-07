@@ -11,17 +11,20 @@ import cz.vutbr.web.css.Rule;
 public class AbstractRule<T> extends AbstractList<T> implements Rule<T> {
 	
 	protected List<T> list = Collections.emptyList();
+	protected int hash = 0;
 	
 	public List<T> asList() {
 		return this.list;
 	}
 	
 	public Rule<T> replaceAll(List<T> replacement) {
+        hash = 0;
 		this.list = replacement;
 		return this;
 	}
 	
 	public Rule<T> unlock() {
+        hash = 0;
 		this.list = new ArrayList<T>();
 		return this;
 	}
@@ -38,16 +41,19 @@ public class AbstractRule<T> extends AbstractList<T> implements Rule<T> {
 	
 	@Override
 	public T set(int index, T element) {
+        hash = 0;
 		return list.set(index, element);
 	}
 	
 	@Override
 	public void add(int index, T element) {
+        hash = 0;
 		list.add(index, element);
 	}
 	
 	@Override
 	public T remove(int index) {
+        hash = 0;
 		return list.remove(index);
 	}
 	
@@ -58,6 +64,7 @@ public class AbstractRule<T> extends AbstractList<T> implements Rule<T> {
 
 	@Override
 	public boolean add(T o) {
+	    hash = 0;
 		return list.add(o);
 	};
 	
@@ -66,10 +73,14 @@ public class AbstractRule<T> extends AbstractList<T> implements Rule<T> {
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((list == null) ? 0 : list.hashCode());
-		return result;
+	    if (hash == 0)
+	    {
+    		final int prime = 31;
+    		int result = super.hashCode();
+    		result = prime * result + ((list == null) ? 0 : list.hashCode());
+    		hash = result;
+	    }
+	    return hash;
 	}
 
 	/* (non-Javadoc)

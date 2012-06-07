@@ -15,76 +15,88 @@ public class ElementUtil {
 	public static final String CLASS_ATTR = "class";
 	public static final String ID_ATTR = "id";
 	
-	public static Collection<String> elementClasses(Element e) {
-		
-		String classNames = e.getAttribute(CLASS_ATTR);
-		
-		if(classNames==null) Collections.emptyList();
-		
-		Collection<String> list = new ArrayList<String>();
-		
-		for(String cname: classNames.toLowerCase().split(CLASS_DELIM)) {
-			cname = cname.trim();
-			if(cname.length()>0)
-				list.add(cname);
-		}
-		
-		return list;
-		
+	public static Collection<String> elementClasses(Element e) 
+	{
+	    if (e.hasAttribute(CLASS_ATTR))
+	    {
+    		String classNames = e.getAttribute(CLASS_ATTR);
+    		
+    		Collection<String> list = new ArrayList<String>();
+    		for (String cname : classNames.toLowerCase().split(CLASS_DELIM)) 
+    		{
+    			cname = cname.trim();
+    			if(cname.length() > 0)
+    				list.add(cname);
+    		}
+    		return list;
+	    }
+	    else
+	        return Collections.emptyList();
 	}
 	
-	public static boolean matchesClass(Element e, String className) {
-		return elementClasses(e).contains(className.toLowerCase());
+	public static boolean matchesClass(Element e, String className) 
+	{
+        if (e.hasAttribute(CLASS_ATTR))
+        {
+            String classNames = e.getAttribute(CLASS_ATTR).toLowerCase();
+            int len = className.length();
+    	    int start = classNames.indexOf(className.toLowerCase());
+    	    if (start == -1)
+    	        return false;
+    	    else
+    	        return ((start == 0 || classNames.charAt(start - 1) == ' ') &&
+    	                (start + len == classNames.length() || classNames.charAt(start + len) == ' '));
+        }
+        else
+            return false;
 	}
 	
-	
-	public static String elementID(Element e) {
+	public static String elementID(Element e) 
+	{
 		String id = e.getAttribute(ID_ATTR);
-		
-		if(id==null) return null;
-		
 		return id;
 	}
 	
-	public static boolean matchesID(Element e, String id) {
+	public static boolean matchesID(Element e, String id) 
+	{
 		return id.equalsIgnoreCase(elementID(e));
 	}
 	
-	public static String elementName(Element e) {
+	public static String elementName(Element e) 
+	{
 		String name = e.getNodeName();
-		
-		if(name==null) return null;
-		
 		return name;
 	}
 	
-	public static boolean matchesName(Element e, String name) {
-		if(name==null) return false;
-		
-		name = name.toLowerCase();
-		
-		return name.equals(elementName(e));
+	public static boolean matchesName(Element e, String name)
+	{
+		if (name == null)
+		    return false;
+		else
+		    return name.equalsIgnoreCase(elementName(e));
 	}
 	
-	public static boolean matchesAttribute(Element e, String name, String value, Selector.Operator o) {
-		
+	public static boolean matchesAttribute(Element e, String name, String value, Selector.Operator o) 
+	{
 	    Node attributeNode = e.getAttributeNode(name);
-	    String attributeValue = attributeNode == null ? null : attributeNode.getNodeValue();
-		
-	    if (attributeValue == null) return false; //attribute not present, everything fails
-		if (o==null) return false;
-		
-		switch(o) {
-		case EQUALS:
-			return attributeValue.equals(value);
-		case INCLUDES:
-			attributeValue = " " + attributeValue + " ";
-			return attributeValue.matches(".* " + value + " .*");
-		case DASHMATCH:
-			return attributeValue.matches("^" + value + "(\\|.*)*");
-		default:
-			return true;
-		}
+	    if (attributeNode != null && o != null)
+	    {
+    	    String attributeValue = attributeNode.getNodeValue();
+    		
+    		switch(o) {
+        		case EQUALS:
+        			return attributeValue.equals(value);
+        		case INCLUDES:
+        			attributeValue = " " + attributeValue + " ";
+        			return attributeValue.matches(".* " + value + " .*");
+        		case DASHMATCH:
+        			return attributeValue.matches("^" + value + "(\\|.*)*");
+        		default:
+        			return true;
+    		}
+	    }
+	    else
+	        return false;
 	}
 	
 }

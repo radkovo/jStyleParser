@@ -41,7 +41,7 @@ public class Analyzer {
 
 	private static final Logger log = LoggerFactory.getLogger(Analyzer.class);
 
-	private static final String UNIVERSAL_HOLDER = "all";
+	protected static final String UNIVERSAL_HOLDER = "all";
 	
 	/**
 	 * For all medias holds maps of declared rules classified into groups of
@@ -309,8 +309,7 @@ public class Analyzer {
 		for (int i = sel.size() - 1; i >= 0; i--) {
 			// last simple selector
 			Selector s = sel.get(i);
-			log.trace("Iterating loop with selector {}, combinator {}",
-					s, combinator);
+			//log.trace("Iterating loop with selector {}, combinator {}",	s, combinator);
 
 			// decide according to combinator anti-pattern
 			if (combinator == null) {
@@ -487,7 +486,7 @@ public class Analyzer {
 	 * 
 	 * @author kapy
 	 */
-	private enum HolderItem {
+	protected enum HolderItem {
 		ELEMENT(0), ID(1), CLASS(2), OTHER(3);
 
 		private int type;
@@ -508,7 +507,7 @@ public class Analyzer {
 	 * @author kapy
 	 * 
 	 */
-	private class HolderSelector {
+	protected class HolderSelector {
 		public HolderItem item;
 		public String key;
 
@@ -525,7 +524,7 @@ public class Analyzer {
 	 * @author kapy
 	 * 
 	 */
-	private static class Holder {
+	protected static class Holder {
 
 		/** HolderItem.* except OTHER are stored there */
 		private List<Map<String, List<RuleSet>>> items;

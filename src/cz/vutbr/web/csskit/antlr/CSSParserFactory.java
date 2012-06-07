@@ -465,10 +465,10 @@ public class CSSParserFactory {
 		}
 
 		public int compareTo(Priority o) {
-			if (!(o instanceof PriorityImpl))
+			/*if (!(o instanceof PriorityImpl))
 				throw new ClassCastException(
 						"Unable to compare with different instance of priority: "
-								+ o.getClass());
+								+ o.getClass());*/
 
 			PriorityImpl other = (PriorityImpl) o;
 
