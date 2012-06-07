@@ -1,3 +1,7 @@
+Version 1.7 - Jun 7, 2012
+- Performance improvements
+- New DirectAnalyzer interface for direct element style computation
+
 Version 1.6 - Jun 4, 2012
 - Obtaining gzipped style sheets linked from DOM
 - Support for multiple style sheets in DOM assignment
