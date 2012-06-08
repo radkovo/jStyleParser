@@ -313,11 +313,6 @@ public class DeclarationTransformer {
 	/**
 	 * Converts TermIdent into value of CSSProperty for given class
 	 * 
-	 * @param <T>
-	 * @param enumType
-	 * @param d
-	 * @param properties
-	 * @return
 	 */
 	private <T extends CSSProperty> boolean genericTermIdent(Class<T> type,
 			Term<?> term, boolean avoidInherit, String propertyName,

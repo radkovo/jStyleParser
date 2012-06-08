@@ -417,7 +417,7 @@ public class Analyzer {
 	/**
 	 * Classify CSS rule according its selector for to be of specified item(s)
 	 * 
-	 * @param CombinedSelector
+	 * @param selector
 	 *            CombinedSelector of rules
 	 * @return List of HolderSelectors to which selectors conforms
 	 */

@@ -1,5 +1,5 @@
-Version 1.7 - Jun 7, 2012
-- Performance improvements
+Version 1.7 - Jun 8, 2012
+- Significant performance improvements
 - New DirectAnalyzer interface for direct element style computation
 
 Version 1.6 - Jun 4, 2012
