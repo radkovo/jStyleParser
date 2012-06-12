@@ -295,6 +295,7 @@ import cz.vutbr.web.css.SupportedCSS;
         t.setLine(state.tokenStartLine);
         t.setText(state.text);
         t.setCharPositionInLine(state.tokenStartCharPositionInLine);
+        t.setBase(((CSSInputStream) input).getBase());
         
         // clone lexer state
         t.setLexerState(new LexerState(ls));

@@ -1,5 +1,7 @@
 package cz.vutbr.web.css;
 
+import java.net.URL;
+
 import cz.vutbr.web.css.TermNumeric.Unit;
 
 public interface TermFactory {
@@ -51,4 +53,5 @@ public interface TermFactory {
 	TermTime createTime(String value, Unit unit, int unary);
 	
 	TermURI createURI(String value);
+    TermURI createURI(String value, URL base);
 }

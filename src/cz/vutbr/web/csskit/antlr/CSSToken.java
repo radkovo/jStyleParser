@@ -1,5 +1,7 @@
 package cz.vutbr.web.csskit.antlr;
 
+import java.net.URL;
+
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonToken;
 
@@ -22,6 +24,9 @@ public class CSSToken extends CommonToken {
 	 * Current lexer state
 	 */
 	protected CSSLexer.LexerState ls;
+	
+	/** Base URL for URIs */
+	protected URL base;
 	
 	/**
 	 * Creates CSSToken, this is base {@code emit()} constructor
@@ -78,8 +83,26 @@ public class CSSToken extends CommonToken {
 	public CSSLexer.LexerState getLexerState() {
 		return ls;	
 	}
-	
+
 	/**
+	 * Obtains the base URL used for the relative URIs
+	 * @return the URL or null if not set
+	 */
+	public URL getBase()
+    {
+        return base;
+    }
+
+	/**
+	 * Sets the base URL used for the relative URIs
+	 * @param base the base URL to set
+	 */
+    public void setBase(URL base)
+    {
+        this.base = base;
+    }
+
+    /**
 	 * Considers text as content of STRING token,
 	 * and models view at this text as an common string,
 	 * that is one character removed from the both beginning

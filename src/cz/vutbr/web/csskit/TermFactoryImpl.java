@@ -1,5 +1,7 @@
 package cz.vutbr.web.csskit;
 
+import java.net.URL;
+
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermAngle;
 import cz.vutbr.web.css.TermColor;
@@ -197,6 +199,10 @@ public class TermFactoryImpl implements TermFactory {
 	public TermURI createURI(String value) {
 		return (new TermURIImpl()).setValue(value);
 	}
+
+    public TermURI createURI(String value, URL base) {
+        return (new TermURIImpl()).setValue(value).setBase(base);
+    }
 
 	/************************************************************************
 	 * HELPERS *

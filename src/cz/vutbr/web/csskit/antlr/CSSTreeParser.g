@@ -8,6 +8,7 @@ options {
 @header {
 package cz.vutbr.web.csskit.antlr;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -85,7 +86,11 @@ import cz.vutbr.web.css.RuleBlock.Priority;
 	private String extractText(CommonTree token) {
         return token.getText();
     }
-    	
+   
+  private URL extractBase(CommonTree token) {
+      CSSToken ct = (CSSToken) token.getToken();
+      return ct.getBase();
+  }  	
 		
     private void logEnter(String entry) {
         log.trace("Entering '{}'", entry);
@@ -431,7 +436,7 @@ valuepart
 			{ if(s!=null) $terms::term = tf.createString(s);
 			  else $declaration::invalid=true;
 			}
-    | u=URI       {$terms::term = tf.createURI(extractText(u));}
+    | u=URI       {$terms::term = tf.createURI(extractText(u), extractBase(u));}
     | h=HASH    
 	    {$terms::term = tf.createColor(extractText(h));
 	     if($terms::term==null)

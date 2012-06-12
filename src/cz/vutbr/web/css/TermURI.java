@@ -1,5 +1,7 @@
 package cz.vutbr.web.css;
 
+import java.net.URL;
+
 /**
  * Holds CSS URI value
  * 
@@ -8,4 +10,8 @@ package cz.vutbr.web.css;
  * 
  */
 public interface TermURI extends Term<String> {
+    
+    public TermURI setBase(URL base);
+    public URL getBase();
+
 }

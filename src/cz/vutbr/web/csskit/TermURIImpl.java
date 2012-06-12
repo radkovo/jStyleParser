@@ -1,5 +1,7 @@
 package cz.vutbr.web.csskit;
 
+import java.net.URL;
+
 import cz.vutbr.web.css.TermURI;
 
 /**
@@ -9,6 +11,8 @@ import cz.vutbr.web.css.TermURI;
  */
 public class TermURIImpl extends TermImpl<String> implements TermURI {
 
+    protected URL base;
+    
 	protected TermURIImpl() {
 	}
 
@@ -28,6 +32,17 @@ public class TermURIImpl extends TermImpl<String> implements TermURI {
         
         this.value = uri;
         return this;
+    }
+    
+    public TermURI setBase(URL base)
+    {
+        this.base = base;
+        return this;
+    }
+    
+    public URL getBase()
+    {
+        return base;
     }
     
     @Override
