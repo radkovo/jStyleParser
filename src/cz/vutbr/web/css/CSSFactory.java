@@ -234,7 +234,7 @@ public final class CSSFactory {
 	 */
 	public static final StyleSheet parse(URL url, String encoding)
 			throws CSSException, IOException {
-		return CSSParserFactory.parse((Object) url, SourceType.URL, url);
+		return CSSParserFactory.parse((Object) url, encoding, SourceType.URL, url);
 	}
 
 	/**
@@ -273,9 +273,36 @@ public final class CSSFactory {
 	 */
 	public static final StyleSheet parse(String css) throws IOException,
 			CSSException {
-		return CSSParserFactory.parse(css, SourceType.EMBEDDED, null);
+		return CSSParserFactory.parse(css, null, SourceType.EMBEDDED, null);
 	}
 
+    /**
+     * Loads all the style sheets used from the specified DOM tree.
+     * The following style specifications are evaluated:
+     * <ul>
+     * <li>The style sheets included using the <code>link</code> and <code>style</code> tags.
+     * <li>Inline styles specified using the <code>style</code> element attribute.
+     * <li><strong>Proprietary extension:</strong> Default styles defined using the <code>XDefaultStyle</code>
+     *     element attribute. These styles behave the same way as the inline styles but they have the lowest priority
+     *     (the values are used only when not redefined by any other way)
+     *  </ul>
+     *  <b>This method does not allow specifying the default style sheet character encoding. The current system
+     *  encoding is used by default. It is recommended to use the {@link #getUsedStyles(Document, String, URL, String)}
+     *  method in order to specify the encoding correctly.</b>
+     * 
+     * @param doc
+     *            DOM tree
+     * @param base
+     *            Base URL against which all files are searched
+     * @param media
+     *            Selected media for style sheet
+     * @return the rules of all the style sheets used in the document including the inline styles
+     */
+    public static final StyleSheet getUsedStyles(Document doc, URL base, String media)
+    {
+        return getUsedStyles(doc, null, base, media);
+    }
+    
     /**
      * Loads all the style sheets used from the specified DOM tree.
      * The following style specifications are evaluated:
@@ -289,22 +316,54 @@ public final class CSSFactory {
      * 
      * @param doc
      *            DOM tree
+     * @param encoding
+     *            The default encoding used for the referenced style sheets
      * @param base
      *            Base URL against which all files are searched
      * @param media
      *            Selected media for style sheet
      * @return the rules of all the style sheets used in the document including the inline styles
      */
-    public static final StyleSheet getUsedStyles(Document doc, URL base, String media)
+    public static final StyleSheet getUsedStyles(Document doc, String encoding, URL base, String media)
     {
         Pair pair = new Pair(base, media);
 
-        Traversal<StyleSheet> traversal = new CSSAssignTraversal(doc,
+        Traversal<StyleSheet> traversal = new CSSAssignTraversal(doc, encoding,
                 (Object) pair, NodeFilter.SHOW_ELEMENT);
 
         StyleSheet style = (StyleSheet) getRuleFactory().createStyleSheet().unlock();
         traversal.listTraversal(style);
         return style;
+    }
+    
+    /**
+     * Goes through a DOM tree and assigns the CSS declarations to the DOM elements.
+     * The following style specifications are evaluated:
+     * <ul>
+     * <li>The style sheets included using the <code>link</code> and <code>style</code> tags.
+     * <li>Inline styles specified using the <code>style</code> element attribute.
+     * <li><strong>Proprietary extension:</strong> Default styles defined using the <code>XDefaultStyle</code>
+     *     element attribute. These styles behave the same way as the inline styles but they have the lowest priority
+     *     (the values are used only when not redefined by any other way)
+     *  </ul>   
+     *  <b>This method does not allow specifying the default style sheet character encoding. The current system
+     *  encoding is used by default. It is recommended to use the {@link #assignDOM(Document, String, URL, String, boolean)}
+     *  method in order to specify the encoding correctly.</b>
+     * 
+     * @param doc
+     *            DOM tree
+     * @param base
+     *            Base URL against which all files are searched
+     * @param media
+     *            Selected media for style sheet
+     * @param useInheritance
+     *            Whether inheritance will be used to determine values
+     * @return Map between DOM element nodes and data structure containing CSS
+     *         information
+     */
+    public static final StyleMap assignDOM(Document doc,
+            URL base, String media, boolean useInheritance) {
+        return assignDOM(doc, null, base, media, useInheritance);
     }
     
 	/**
@@ -320,6 +379,8 @@ public final class CSSFactory {
 	 * 
 	 * @param doc
 	 *            DOM tree
+     * @param encoding
+     *            The default encoding used for the referenced style sheets
 	 * @param base
 	 *            Base URL against which all files are searched
 	 * @param media
@@ -329,12 +390,12 @@ public final class CSSFactory {
 	 * @return Map between DOM element nodes and data structure containing CSS
 	 *         information
 	 */
-	public static final StyleMap assignDOM(Document doc,
+	public static final StyleMap assignDOM(Document doc, String encoding,
 			URL base, String media, boolean useInheritance) {
 
 		Pair pair = new Pair(base, media);
 
-		Traversal<StyleSheet> traversal = new CSSAssignTraversal(doc,
+		Traversal<StyleSheet> traversal = new CSSAssignTraversal(doc, encoding,
 				(Object) pair, NodeFilter.SHOW_ELEMENT);
 
 		StyleSheet style = (StyleSheet) getRuleFactory().createStyleSheet()
@@ -355,8 +416,11 @@ public final class CSSFactory {
 	 */
 	private static final class CSSAssignTraversal extends Traversal<StyleSheet> {
 
-		public CSSAssignTraversal(Document doc, Object source, int whatToShow) {
+	    private String encoding;
+	    
+		public CSSAssignTraversal(Document doc, String encoding, Object source, int whatToShow) {
 			super(doc, source, whatToShow);
+			this.encoding = encoding;
 		}
 
 		@Override
@@ -372,14 +436,14 @@ public final class CSSFactory {
 			try {
 				// embedded style-sheet
 				if (isEmbeddedStyleSheet(elem, media)) {
-					result = CSSParserFactory.append(extractElementText(elem),
+					result = CSSParserFactory.append(extractElementText(elem), null,
 							SourceType.EMBEDDED, result, base);
 					log.debug("Matched embedded CSS style");
 				}
 				// linked style-sheet
 				else if (isLinkedStyleSheet(elem, media)) {
 					URL uri = new URL(base, elem.getAttribute("href"));
-					result = CSSParserFactory.append(uri, SourceType.URL,
+					result = CSSParserFactory.append(uri, encoding, SourceType.URL,
 							result, uri);
 					log.debug("Matched linked CSS style");
 				}
@@ -387,13 +451,13 @@ public final class CSSFactory {
 				else {
     				    if (elem.getAttribute("style") != null && elem.getAttribute("style").length() > 0) {
         					result = CSSParserFactory.append(
-        							elem.getAttribute("style"), SourceType.INLINE,
+        							elem.getAttribute("style"), null, SourceType.INLINE,
         							elem, true, result, base);
         					log.debug("Matched inline CSS style");
     				    }
                         if (elem.getAttribute("XDefaultStyle") != null && elem.getAttribute("XDefaultStyle").length() > 0) {
                             result = CSSParserFactory.append(
-                                    elem.getAttribute("XDefaultStyle"), SourceType.INLINE,
+                                    elem.getAttribute("XDefaultStyle"), null, SourceType.INLINE,
                                     elem, false, result, base);
                             log.debug("Matched default CSS style");
                         }

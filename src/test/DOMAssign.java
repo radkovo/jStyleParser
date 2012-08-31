@@ -44,7 +44,7 @@ public class DOMAssign {
 	@Test
 	public void test() throws MalformedURLException {	
 		
-		StyleMap decl = CSSFactory.assignDOM(doc, 
+		StyleMap decl = CSSFactory.assignDOM(doc, null,
 				createBaseFromFilename("data/advanced/domassign.html"),"screen", true);
 		
 		NodeData data = decl.get(elements.getElementById("bp"));

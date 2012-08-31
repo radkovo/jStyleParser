@@ -212,6 +212,9 @@ import cz.vutbr.web.css.SupportedCSS;
     	}
     }
     
+    // number of already processed tokens (for checking the beginning of the style sheet)
+    private int tokencnt = 0;
+    
     // lexer states for imported files
     private Stack<LexerStream> imports;
     
@@ -251,6 +254,11 @@ import cz.vutbr.web.css.SupportedCSS;
 	@Override 
     public Token nextToken(){
        Token token = nextTokenRecover();
+
+       //count non-empty tokens for eventual checking of the style sheet start
+       if (token.getType() == S) {
+           tokencnt++;
+       }
 
        // recover from unexpected EOF
        if(token==Token.EOF_TOKEN && !ls.isBalanced()) {
@@ -1053,25 +1061,24 @@ CHARSET
 	  {
 	    // we have to trim manually
 	    String enc = CSSToken.extractSTRING($s.getText());
-	    try {
-        	String defaultEnc = Charset.defaultCharset().name();
-            if(!enc.equalsIgnoreCase(defaultEnc) && Charset.isSupported(enc)) {
-            	log.warn("Should change encoding to \"{}\"", enc);
-              			
-              	// FIXME how to solve string and not file inputs?
-              	// we can't just easily create new stream
-              	// how to avoid infinite loop on changing stream
-            	//input = setCharStream(new ANTLFileStream(input.getSourceName(), enc));
-            }
-            // charset already set
-            else {
-            	log.info("Already using correct charset (\"{}\") for stylesheet", enc);
-            }
-        }
-        catch(IllegalCharsetNameException icne) {
-        	log.warn("Could not change to unsupported charset!", icne);
-        	throw new RuntimeException(new CSSException("Unsupported charset: " + enc));
-        }
+	    //System.err.println("CHARSET"+tokencnt);
+	    if (tokencnt <= 1) //we are at the beginning of the style sheet
+	    {
+			    try {
+			           log.warn("Changing charset to {}", enc);
+			          ((CSSInputStream) input).setEncoding(enc);
+			          //input = setCharStream(new ANTLFileStream(input.getSourceName(), enc));
+			        }
+			        catch(IllegalCharsetNameException icne) {
+			        	log.warn("Could not change to unsupported charset!", icne);
+			        	throw new RuntimeException(new CSSException("Unsupported charset: " + enc));
+			        }
+			        catch (IOException e) {
+                log.warn("Could not change to unsupported charset!", e);
+			        }
+			 }
+			 else
+			      log.warn("Ignoring @charset rule not at the beginning of the style sheet");
 	  }
 	;
 
@@ -1142,7 +1149,8 @@ IMPORT
                 t.setText(media.toString());
                     	
                 // switch on new stream
-                setCharStream(CSSInputStream.urlStream(url));
+                String enc = ((CSSInputStream) input).getEncoding();
+                setCharStream(CSSInputStream.urlStream(url, enc));
                 reset();
                     	
                 log.info("File \"{}\" was imported.", url.toString());

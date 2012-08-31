@@ -40,6 +40,16 @@ public class CSSInputStream implements CharStream {
 	 */
 	private URL base = null;
 	
+    /**
+     * Source URL for URL streams, null for string streams
+     */
+    private URL url;
+    
+	/**
+	 * Source input stream for URL streams, null for string streams
+	 */
+	private InputStream source = null;
+	
 	/**
 	 * Encoding of file or string. If <code>null</code>
 	 */
@@ -59,11 +69,14 @@ public class CSSInputStream implements CharStream {
 		return stream;
 	}
 	
-	public static CSSInputStream urlStream(URL source) throws IOException {
+	public static CSSInputStream urlStream(URL source, String encoding) throws IOException {
 		CSSInputStream stream = new CSSInputStream();
 		
 		stream.base = source;
-		stream.encoding = Charset.defaultCharset().name();
+		if (encoding != null)
+            stream.encoding = encoding;
+		else
+            stream.encoding = Charset.defaultCharset().name();
 		
         URLConnection con = source.openConnection();
         InputStream is;
@@ -72,6 +85,8 @@ public class CSSInputStream implements CharStream {
         else
             is = con.getInputStream();
         stream.input = new ANTLRInputStream(is, stream.encoding);
+        stream.source = is;
+        stream.url = source;
 		
 		return stream;
 	}
@@ -194,14 +209,51 @@ public class CSSInputStream implements CharStream {
 	}	
 	
 	/**
-	 * @return URL base
+	 * Obtains the current base URL used for locating the eventual imported style sheets.
+	 * @return The base URL.
 	 */
 	public URL getBase() {
 		return base;
 	}
 	
+	/**
+	 * Sets the base URL used for locating the eventual imported style sheets.
+	 * @param base The new base URL.
+	 */
 	public void setBase(URL base) {
 	    this.base = base;
+	}
+	
+	/**
+	 * Obtains current character encoding used for processing the style sheets.
+	 * @return The charset name.
+	 */
+	public String getEncoding()
+	{
+	    return encoding;
+	}
+	
+	/**
+	 * Sets a new encoding for the input stream. <b>Warning:</b> this resets the stream
+	 * i.e. a new connection is opened and all the data is read again.
+	 * @param enc The new encoding name.
+	 * @throws IOException
+	 */
+	public void setEncoding(String enc) throws IOException
+	{
+	    if (source != null) //applicapble to URL streams only
+	    {
+    	    String current = encoding;
+    	    if (current == null)
+    	        current = Charset.defaultCharset().name();
+    	    if (!current.equalsIgnoreCase(enc))
+    	    {
+                source.close();
+    	        encoding = enc;
+                CSSInputStream newstream = urlStream(url, encoding);
+    	        input = newstream.input;
+    	    }
+	    }
 	}
 	
 	/**

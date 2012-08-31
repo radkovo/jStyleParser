@@ -69,7 +69,7 @@ public class CSSParserFactory {
 			}
 
 			@Override
-			public CSSInputStream getInput(Object source) throws IOException {
+			public CSSInputStream getInput(Object source, String encoding) throws IOException {
 				return CSSInputStream.stringStream((String) source);
 			}
 
@@ -103,7 +103,7 @@ public class CSSParserFactory {
 			}
 
 			@Override
-			public CSSInputStream getInput(Object source) throws IOException {
+			public CSSInputStream getInput(Object source, String encoding) throws IOException {
 				return CSSInputStream.stringStream((String) source);
 			}
 
@@ -137,8 +137,8 @@ public class CSSParserFactory {
 			}
 
 			@Override
-			public CSSInputStream getInput(Object source) throws IOException {
-				return CSSInputStream.urlStream((URL) source);
+			public CSSInputStream getInput(Object source, String encoding) throws IOException {
+				return CSSInputStream.urlStream((URL) source, encoding);
 			}
 
 		};
@@ -152,7 +152,7 @@ public class CSSParserFactory {
 		 * @throws IOException
 		 *             When file is not found or other IO exception occurs
 		 */
-		public abstract CSSInputStream getInput(Object source)
+		public abstract CSSInputStream getInput(Object source, String encoding)
 				throws IOException;
 
 		/**
@@ -217,7 +217,7 @@ public class CSSParserFactory {
 	 * @throws CSSException
 	 *             When unrecoverable exception during parsing occurs
 	 */
-	public static StyleSheet parse(Object source, SourceType type,
+	public static StyleSheet parse(Object source, String encoding, SourceType type,
 			Element inline, boolean inlinePriority, URL base) throws IOException, CSSException {
 
 		StyleSheet sheet = (StyleSheet) CSSFactory.getRuleFactory()
@@ -226,7 +226,7 @@ public class CSSParserFactory {
 		PriorityStrategy ps = new AtomicPriorityStrategy(lastPriority);
 		Preparator preparator = new SimplePreparator(ps, inline, inlinePriority);
 
-		CSSTreeParser parser = createParser(source, type, preparator, sheet, base);
+		CSSTreeParser parser = createParser(source, encoding, type, preparator, sheet, base);
 		StyleSheet ret = type.parse(parser);
 		lastPriority = ret.getLastMark();
 		return ret;
@@ -249,13 +249,13 @@ public class CSSParserFactory {
 	 * @throws IllegalArgumentException
 	 *             When type of source is INLINE
 	 */
-	public static StyleSheet parse(Object source, SourceType type, URL base)
+	public static StyleSheet parse(Object source, String encoding, SourceType type, URL base)
 			throws IOException, CSSException {
 		if (type == SourceType.INLINE)
 			throw new IllegalArgumentException(
 					"Missing element for INLINE input");
 
-		return parse(source, type, null, false, base);
+		return parse(source, encoding, type, null, false, base);
 	}
 
 	/**
@@ -278,7 +278,7 @@ public class CSSParserFactory {
 	 * @throws CSSException
 	 *             When unrecoverable exception during parsing occurs
 	 */
-	public static StyleSheet append(Object source, SourceType type,
+	public static StyleSheet append(Object source, String encoding, SourceType type,
 			Element inline, boolean inlinePriority, StyleSheet sheet, URL base) throws IOException, CSSException {
 
 	    Priority start = sheet.getLastMark();
@@ -287,7 +287,7 @@ public class CSSParserFactory {
 		PriorityStrategy ps = new AtomicPriorityStrategy(start);
 		Preparator preparator = new SimplePreparator(ps, inline, inlinePriority);
 
-		CSSTreeParser parser = createParser(source, type, preparator, sheet, base);
+		CSSTreeParser parser = createParser(source, encoding, type, preparator, sheet, base);
 		StyleSheet ret = type.parse(parser);
 		lastPriority = ret.getLastMark();
 		return ret;
@@ -314,13 +314,13 @@ public class CSSParserFactory {
 	 * @throws IllegalArgumentException
 	 *             When type of source is INLINE
 	 */
-	public static StyleSheet append(Object source, SourceType type,
+	public static StyleSheet append(Object source, String encoding, SourceType type,
 			StyleSheet sheet, URL base) throws IOException, CSSException {
 		if (type == SourceType.INLINE)
 			throw new IllegalArgumentException(
 					"Missing element for INLINE input");
 
-		return append(source, type, null, false, sheet, base);
+		return append(source, encoding, type, null, false, sheet, base);
 	}
 	
 	/**
@@ -332,11 +332,11 @@ public class CSSParserFactory {
 	}
 
 	// creates parser
-	private static CSSTreeParser createParser(Object source, SourceType type,
+	private static CSSTreeParser createParser(Object source, String encoding, SourceType type,
 			Preparator preparator, StyleSheet stylesheet, URL base) throws IOException,
 			CSSException {
 
-		CSSInputStream input = type.getInput(source);
+		CSSInputStream input = type.getInput(source, encoding);
 		input.setBase(base);
 		CommonTokenStream tokens = feedLexer(input, stylesheet);
 		CommonTree ast = feedParser(tokens, type, stylesheet);

@@ -44,7 +44,7 @@ public class Test
             Document doc = ds.parse();
             ElementMap elements = new ElementMap(doc);
             
-            StyleMap decl = CSSFactory.assignDOM(doc, url, "screen", true);
+            StyleMap decl = CSSFactory.assignDOM(doc, null, url, "screen", true);
             Element el = elements.getElementById("head");
             
             System.out.println("id=" + el.getAttribute("id"));

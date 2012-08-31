@@ -1,4 +1,4 @@
-// $ANTLR 3.1.2 /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g 2012-06-14 14:56:35
+// $ANTLR 3.1.2 /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g 2012-08-31 13:03:55
 
 package cz.vutbr.web.csskit.antlr;
 
@@ -245,6 +245,9 @@ public class CSSLexer extends Lexer {
         	}
         }
         
+        // number of already processed tokens (for checking the beginning of the style sheet)
+        private int tokencnt = 0;
+        
         // lexer states for imported files
         private Stack<LexerStream> imports;
         
@@ -284,6 +287,11 @@ public class CSSLexer extends Lexer {
     	@Override 
         public Token nextToken(){
            Token token = nextTokenRecover();
+
+           //count non-empty tokens for eventual checking of the style sheet start
+           if (token.getType() == S) {
+               tokencnt++;
+           }
 
            // recover from unexpected EOF
            if(token==Token.EOF_TOKEN && !ls.isBalanced()) {
@@ -572,15 +580,15 @@ public class CSSLexer extends Lexer {
         super(input,state);
 
     }
-    public String getGrammarFileName() { return "/home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g"; }
+    public String getGrammarFileName() { return "/mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g"; }
 
     // $ANTLR start "T__89"
     public final void mT__89() throws RecognitionException {
         try {
             int _type = T__89;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:471:7: ( 'important' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:471:9: 'important'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:479:7: ( 'important' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:479:9: 'important'
             {
             match("important"); 
 
@@ -600,8 +608,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = IDENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1041:2: ( IDENT_MACR )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1041:4: IDENT_MACR
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1049:2: ( IDENT_MACR )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1049:4: IDENT_MACR
             {
             mIDENT_MACR(); 
 
@@ -625,12 +633,12 @@ public class CSSLexer extends Lexer {
 
             	expectedToken.push(new Integer(CHARSET));
 
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1052:2: ( '@charset' ( S )* s= STRING_MACR ( S )* SEMICOLON )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1052:4: '@charset' ( S )* s= STRING_MACR ( S )* SEMICOLON
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1060:2: ( '@charset' ( S )* s= STRING_MACR ( S )* SEMICOLON )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1060:4: '@charset' ( S )* s= STRING_MACR ( S )* SEMICOLON
             {
             match("@charset"); 
 
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1052:15: ( S )*
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1060:15: ( S )*
             loop1:
             do {
                 int alt1=2;
@@ -643,7 +651,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt1) {
             	case 1 :
-            	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1052:15: S
+            	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1060:15: S
             	    {
             	    mS(); 
 
@@ -658,7 +666,7 @@ public class CSSLexer extends Lexer {
             int sStart69 = getCharIndex();
             mSTRING_MACR(); 
             s = new CommonToken(input, Token.INVALID_TOKEN_TYPE, Token.DEFAULT_CHANNEL, sStart69, getCharIndex()-1);
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1052:32: ( S )*
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1060:32: ( S )*
             loop2:
             do {
                 int alt2=2;
@@ -671,7 +679,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt2) {
             	case 1 :
-            	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1052:32: S
+            	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1060:32: S
             	    {
             	    mS(); 
 
@@ -687,25 +695,24 @@ public class CSSLexer extends Lexer {
 
             	    // we have to trim manually
             	    String enc = CSSToken.extractSTRING(s.getText());
-            	    try {
-                    	String defaultEnc = Charset.defaultCharset().name();
-                        if(!enc.equalsIgnoreCase(defaultEnc) && Charset.isSupported(enc)) {
-                        	log.warn("Should change encoding to \"{}\"", enc);
-                          			
-                          	// FIXME how to solve string and not file inputs?
-                          	// we can't just easily create new stream
-                          	// how to avoid infinite loop on changing stream
-                        	//input = setCharStream(new ANTLFileStream(input.getSourceName(), enc));
-                        }
-                        // charset already set
-                        else {
-                        	log.info("Already using correct charset (\"{}\") for stylesheet", enc);
-                        }
-                    }
-                    catch(IllegalCharsetNameException icne) {
-                    	log.warn("Could not change to unsupported charset!", icne);
-                    	throw new RuntimeException(new CSSException("Unsupported charset: " + enc));
-                    }
+            	    //System.err.println("CHARSET"+tokencnt);
+            	    if (tokencnt <= 1) //we are at the beginning of the style sheet
+            	    {
+            			    try {
+            			           log.warn("Changing charset to {}", enc);
+            			          ((CSSInputStream) input).setEncoding(enc);
+            			          //input = setCharStream(new ANTLFileStream(input.getSourceName(), enc));
+            			        }
+            			        catch(IllegalCharsetNameException icne) {
+            			        	log.warn("Could not change to unsupported charset!", icne);
+            			        	throw new RuntimeException(new CSSException("Unsupported charset: " + enc));
+            			        }
+            			        catch (IOException e) {
+                            log.warn("Could not change to unsupported charset!", e);
+            			        }
+            			 }
+            			 else
+            			      log.warn("Ignoring @charset rule not at the beginning of the style sheet");
             	  
 
             }
@@ -733,12 +740,12 @@ public class CSSLexer extends Lexer {
             	StringBuilder media = new StringBuilder();
             	String mText = null;
 
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1087:2: ( '@import' ( S )* (s= STRING_MACR | s= URI ) ( S )* (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )? SEMICOLON )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1087:4: '@import' ( S )* (s= STRING_MACR | s= URI ) ( S )* (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )? SEMICOLON
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1094:2: ( '@import' ( S )* (s= STRING_MACR | s= URI ) ( S )* (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )? SEMICOLON )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1094:4: '@import' ( S )* (s= STRING_MACR | s= URI ) ( S )* (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )? SEMICOLON
             {
             match("@import"); 
 
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1087:14: ( S )*
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1094:14: ( S )*
             loop3:
             do {
                 int alt3=2;
@@ -751,7 +758,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1087:14: S
+            	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1094:14: S
             	    {
             	    mS(); 
 
@@ -763,7 +770,7 @@ public class CSSLexer extends Lexer {
                 }
             } while (true);
 
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1088:4: (s= STRING_MACR | s= URI )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1095:4: (s= STRING_MACR | s= URI )
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -781,7 +788,7 @@ public class CSSLexer extends Lexer {
             }
             switch (alt4) {
                 case 1 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1088:5: s= STRING_MACR
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1095:5: s= STRING_MACR
                     {
                     int sStart114 = getCharIndex();
                     mSTRING_MACR(); 
@@ -791,7 +798,7 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1089:7: s= URI
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1096:7: s= URI
                     {
                     int sStart127 = getCharIndex();
                     mURI(); 
@@ -803,7 +810,7 @@ public class CSSLexer extends Lexer {
 
             }
 
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1089:33: ( S )*
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1096:33: ( S )*
             loop5:
             do {
                 int alt5=2;
@@ -816,7 +823,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt5) {
             	case 1 :
-            	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1089:33: S
+            	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1096:33: S
             	    {
             	    mS(); 
 
@@ -828,7 +835,7 @@ public class CSSLexer extends Lexer {
                 }
             } while (true);
 
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1090:6: (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )?
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1097:6: (m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )* )?
             int alt10=2;
             int LA10_0 = input.LA(1);
 
@@ -837,7 +844,7 @@ public class CSSLexer extends Lexer {
             }
             switch (alt10) {
                 case 1 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1090:7: m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )*
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1097:7: m= IDENT_MACR ( S )* ( ',' ( S )* m= IDENT_MACR ( S )* )*
                     {
                     int mStart143 = getCharIndex();
                     mIDENT_MACR(); 
@@ -849,7 +856,7 @@ public class CSSLexer extends Lexer {
                     	    	else
                     	    	    log.debug("Invalid import media \"{}\"", mText);
                     	     
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1097:7: ( S )*
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1104:7: ( S )*
                     loop6:
                     do {
                         int alt6=2;
@@ -862,7 +869,7 @@ public class CSSLexer extends Lexer {
 
                         switch (alt6) {
                     	case 1 :
-                    	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1097:7: S
+                    	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1104:7: S
                     	    {
                     	    mS(); 
 
@@ -874,7 +881,7 @@ public class CSSLexer extends Lexer {
                         }
                     } while (true);
 
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1098:9: ( ',' ( S )* m= IDENT_MACR ( S )* )*
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1105:9: ( ',' ( S )* m= IDENT_MACR ( S )* )*
                     loop9:
                     do {
                         int alt9=2;
@@ -887,10 +894,10 @@ public class CSSLexer extends Lexer {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1098:10: ',' ( S )* m= IDENT_MACR ( S )*
+                    	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1105:10: ',' ( S )* m= IDENT_MACR ( S )*
                     	    {
                     	    match(','); 
-                    	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1098:14: ( S )*
+                    	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1105:14: ( S )*
                     	    loop7:
                     	    do {
                     	        int alt7=2;
@@ -903,7 +910,7 @@ public class CSSLexer extends Lexer {
 
                     	        switch (alt7) {
                     	    	case 1 :
-                    	    	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1098:14: S
+                    	    	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1105:14: S
                     	    	    {
                     	    	    mS(); 
 
@@ -925,7 +932,7 @@ public class CSSLexer extends Lexer {
                     	    	       	 else
                     	    	    	    log.debug("Invalid import media \"{}\"", mText);		
                     	    	       	
-                    	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1105:9: ( S )*
+                    	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1112:9: ( S )*
                     	    loop8:
                     	    do {
                     	        int alt8=2;
@@ -938,7 +945,7 @@ public class CSSLexer extends Lexer {
 
                     	        switch (alt8) {
                     	    	case 1 :
-                    	    	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1105:9: S
+                    	    	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1112:9: S
                     	    	    {
                     	    	    mS(); 
 
@@ -1003,7 +1010,8 @@ public class CSSLexer extends Lexer {
                             t.setText(media.toString());
                                 	
                             // switch on new stream
-                            setCharStream(CSSInputStream.urlStream(url));
+                            String enc = ((CSSInputStream) input).getEncoding();
+                            setCharStream(CSSInputStream.urlStream(url, enc));
                             reset();
                                 	
                             log.info("File \"{}\" was imported.", url.toString());
@@ -1042,8 +1050,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = MEDIA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1169:2: ( '@media' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1169:4: '@media'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1177:2: ( '@media' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1177:4: '@media'
             {
             match("@media"); 
 
@@ -1063,8 +1071,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = PAGE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1173:2: ( '@page' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1173:4: '@page'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1181:2: ( '@page' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1181:4: '@page'
             {
             match("@page"); 
 
@@ -1084,11 +1092,11 @@ public class CSSLexer extends Lexer {
         try {
             int _type = ATKEYWORD;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1178:2: ( '@' ( MINUS )? IDENT_MACR )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1178:4: '@' ( MINUS )? IDENT_MACR
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1186:2: ( '@' ( MINUS )? IDENT_MACR )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1186:4: '@' ( MINUS )? IDENT_MACR
             {
             match('@'); 
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1178:8: ( MINUS )?
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1186:8: ( MINUS )?
             int alt11=2;
             int LA11_0 = input.LA(1);
 
@@ -1097,7 +1105,7 @@ public class CSSLexer extends Lexer {
             }
             switch (alt11) {
                 case 1 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1178:8: MINUS
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1186:8: MINUS
                     {
                     mMINUS(); 
 
@@ -1123,8 +1131,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = CLASSKEYWORD;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1182:5: ( '.' IDENT_MACR )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1182:7: '.' IDENT_MACR
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1190:5: ( '.' IDENT_MACR )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1190:7: '.' IDENT_MACR
             {
             match('.'); 
             mIDENT_MACR(); 
@@ -1147,8 +1155,8 @@ public class CSSLexer extends Lexer {
 
             	expectedToken.push(new Integer(STRING));
 
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1193:2: ( STRING_MACR )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1193:4: STRING_MACR
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1201:2: ( STRING_MACR )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1201:4: STRING_MACR
             {
             mSTRING_MACR(); 
 
@@ -1169,8 +1177,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = HASH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1198:2: ( '#' NAME_MACR )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1198:4: '#' NAME_MACR
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1206:2: ( '#' NAME_MACR )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1206:4: '#' NAME_MACR
             {
             match('#'); 
             mNAME_MACR(); 
@@ -1190,8 +1198,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = NUMBER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1203:2: ( NUMBER_MACR )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1203:4: NUMBER_MACR
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1211:2: ( NUMBER_MACR )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1211:4: NUMBER_MACR
             {
             mNUMBER_MACR(); 
 
@@ -1210,8 +1218,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = PERCENTAGE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1208:2: ( NUMBER_MACR '%' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1208:4: NUMBER_MACR '%'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1216:2: ( NUMBER_MACR '%' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1216:4: NUMBER_MACR '%'
             {
             mNUMBER_MACR(); 
             match('%'); 
@@ -1231,8 +1239,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = DIMENSION;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1213:2: ( NUMBER_MACR IDENT_MACR )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1213:4: NUMBER_MACR IDENT_MACR
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1221:2: ( NUMBER_MACR IDENT_MACR )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1221:4: NUMBER_MACR IDENT_MACR
             {
             mNUMBER_MACR(); 
             mIDENT_MACR(); 
@@ -1252,13 +1260,13 @@ public class CSSLexer extends Lexer {
         try {
             int _type = URI;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1218:2: ( 'url(' W_MACR ( STRING_MACR | URI_MACR ) W_MACR ')' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1218:4: 'url(' W_MACR ( STRING_MACR | URI_MACR ) W_MACR ')'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1226:2: ( 'url(' W_MACR ( STRING_MACR | URI_MACR ) W_MACR ')' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1226:4: 'url(' W_MACR ( STRING_MACR | URI_MACR ) W_MACR ')'
             {
             match("url("); 
 
             mW_MACR(); 
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1218:18: ( STRING_MACR | URI_MACR )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1226:18: ( STRING_MACR | URI_MACR )
             int alt12=2;
             int LA12_0 = input.LA(1);
 
@@ -1276,14 +1284,14 @@ public class CSSLexer extends Lexer {
             }
             switch (alt12) {
                 case 1 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1218:19: STRING_MACR
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1226:19: STRING_MACR
                     {
                     mSTRING_MACR(); 
 
                     }
                     break;
                 case 2 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1218:33: URI_MACR
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1226:33: URI_MACR
                     {
                     mURI_MACR(); 
 
@@ -1310,8 +1318,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = UNIRANGE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1222:9: ( 'U+' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )? ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )? )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1223:2: 'U+' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )? ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )?
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1230:9: ( 'U+' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )? ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )? )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1231:2: 'U+' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )? ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )?
             {
             match("U+"); 
 
@@ -1351,7 +1359,7 @@ public class CSSLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1227:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )?
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1235:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) )?
             int alt13=2;
             int LA13_0 = input.LA(1);
 
@@ -1360,7 +1368,7 @@ public class CSSLexer extends Lexer {
             }
             switch (alt13) {
                 case 1 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1227:8: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' )
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1235:8: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' | '?' )
                     {
                     if ( (input.LA(1)>='0' && input.LA(1)<='9')||input.LA(1)=='?'||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                         input.consume();
@@ -1386,7 +1394,7 @@ public class CSSLexer extends Lexer {
 
             }
 
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1228:2: ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )?
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1236:2: ( '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )?
             int alt15=2;
             int LA15_0 = input.LA(1);
 
@@ -1395,7 +1403,7 @@ public class CSSLexer extends Lexer {
             }
             switch (alt15) {
                 case 1 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1228:3: '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1236:3: '-' ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
                     {
                     match('-'); 
                     if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
@@ -1434,7 +1442,7 @@ public class CSSLexer extends Lexer {
                         recover(mse);
                         throw mse;}
 
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1233:14: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1241:14: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
                     int alt14=2;
                     int LA14_0 = input.LA(1);
 
@@ -1443,7 +1451,7 @@ public class CSSLexer extends Lexer {
                     }
                     switch (alt14) {
                         case 1 :
-                            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1233:15: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+                            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1241:15: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
                             {
                             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                                 input.consume();
@@ -1491,8 +1499,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = CDO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1239:2: ( '<!--' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1239:4: '<!--'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1247:2: ( '<!--' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1247:4: '<!--'
             {
             match("<!--"); 
 
@@ -1512,8 +1520,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = CDC;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1244:2: ( '-->' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1244:4: '-->'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1252:2: ( '-->' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1252:4: '-->'
             {
             match("-->"); 
 
@@ -1533,8 +1541,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = SEMICOLON;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1248:2: ( ';' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1248:4: ';'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1256:2: ( ';' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1256:4: ';'
             {
             match(';'); 
 
@@ -1553,8 +1561,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = COLON;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1252:2: ( ':' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1252:4: ':'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1260:2: ( ':' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1260:4: ':'
             {
             match(':'); 
 
@@ -1573,8 +1581,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = COMMA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1256:5: ( ',' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1256:7: ','
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1264:5: ( ',' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1264:7: ','
             {
             match(','); 
 
@@ -1593,8 +1601,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = QUESTION;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1260:2: ( '?' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1260:4: '?'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1268:2: ( '?' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1268:4: '?'
             {
             match('?'); 
 
@@ -1613,8 +1621,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = PERCENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1264:2: ( '%' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1264:4: '%'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1272:2: ( '%' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1272:4: '%'
             {
             match('%'); 
 
@@ -1633,8 +1641,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = EQUALS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1268:5: ( '=' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1268:7: '='
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1276:5: ( '=' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1276:7: '='
             {
             match('='); 
 
@@ -1653,8 +1661,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = SLASH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1272:5: ( '/' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1272:7: '/'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1280:5: ( '/' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1280:7: '/'
             {
             match('/'); 
 
@@ -1673,8 +1681,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = GREATER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1276:5: ( '>' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1276:7: '>'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1284:5: ( '>' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1284:7: '>'
             {
             match('>'); 
 
@@ -1693,8 +1701,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = LESS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1280:5: ( '<' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1280:7: '<'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1288:5: ( '<' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1288:7: '<'
             {
             match('<'); 
 
@@ -1713,8 +1721,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = LCURLY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1284:2: ( '{' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1284:4: '{'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1292:2: ( '{' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1292:4: '{'
             {
             match('{'); 
             ls.curlyNest++;
@@ -1734,8 +1742,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = RCURLY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1288:2: ( '}' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1288:4: '}'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1296:2: ( '}' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1296:4: '}'
             {
             match('}'); 
              if(ls.curlyNest>0) ls.curlyNest--;
@@ -1755,8 +1763,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = APOS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1292:2: ( '\\'' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1292:4: '\\''
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1300:2: ( '\\'' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1300:4: '\\''
             {
             match('\''); 
              ls.aposOpen=!ls.aposOpen; 
@@ -1776,8 +1784,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = QUOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1296:2: ( '\"' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1296:4: '\"'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1304:2: ( '\"' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1304:4: '\"'
             {
             match('\"'); 
              ls.quotOpen=!ls.quotOpen; 
@@ -1797,8 +1805,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = LPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1300:2: ( '(' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1300:4: '('
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1308:2: ( '(' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1308:4: '('
             {
             match('('); 
             ls.parenNest++; 
@@ -1818,8 +1826,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = RPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1304:2: ( ')' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1304:4: ')'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1312:2: ( ')' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1312:4: ')'
             {
             match(')'); 
              if(ls.parenNest>0) ls.parenNest--; 
@@ -1839,8 +1847,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = LBRACE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1308:2: ( '[' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1308:4: '['
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1316:2: ( '[' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1316:4: '['
             {
             match('['); 
 
@@ -1859,8 +1867,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = RBRACE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1312:2: ( ']' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1312:4: ']'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1320:2: ( ']' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1320:4: ']'
             {
             match(']'); 
 
@@ -1879,8 +1887,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = EXCLAMATION;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1316:5: ( '!' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1316:7: '!'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1324:5: ( '!' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1324:7: '!'
             {
             match('!'); 
 
@@ -1899,8 +1907,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = MINUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1320:2: ( '-' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1320:4: '-'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1328:2: ( '-' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1328:4: '-'
             {
             match('-'); 
 
@@ -1919,8 +1927,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = PLUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1324:2: ( '+' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1324:4: '+'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1332:2: ( '+' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1332:4: '+'
             {
             match('+'); 
 
@@ -1939,8 +1947,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = ASTERISK;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1328:2: ( '*' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1328:4: '*'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1336:2: ( '*' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1336:4: '*'
             {
             match('*'); 
 
@@ -1959,10 +1967,10 @@ public class CSSLexer extends Lexer {
         try {
             int _type = S;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1333:2: ( ( W_CHAR )+ )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1333:4: ( W_CHAR )+
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1341:2: ( ( W_CHAR )+ )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1341:4: ( W_CHAR )+
             {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1333:4: ( W_CHAR )+
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1341:4: ( W_CHAR )+
             int cnt16=0;
             loop16:
             do {
@@ -1976,7 +1984,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt16) {
             	case 1 :
-            	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1333:4: W_CHAR
+            	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1341:4: W_CHAR
             	    {
             	    mW_CHAR(); 
 
@@ -2008,12 +2016,12 @@ public class CSSLexer extends Lexer {
         try {
             int _type = COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1337:2: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1337:4: '/*' ( options {greedy=false; } : . )* '*/'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1345:2: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1345:4: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1337:9: ( options {greedy=false; } : . )*
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1345:9: ( options {greedy=false; } : . )*
             loop17:
             do {
                 int alt17=2;
@@ -2038,7 +2046,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt17) {
             	case 1 :
-            	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1337:37: .
+            	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1345:37: .
             	    {
             	    matchAny(); 
 
@@ -2069,12 +2077,12 @@ public class CSSLexer extends Lexer {
         try {
             int _type = SL_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1341:2: ( '//' ( options {greedy=false; } : . )* ( '\\n' | '\\r' ) )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1341:4: '//' ( options {greedy=false; } : . )* ( '\\n' | '\\r' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1349:2: ( '//' ( options {greedy=false; } : . )* ( '\\n' | '\\r' ) )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1349:4: '//' ( options {greedy=false; } : . )* ( '\\n' | '\\r' )
             {
             match("//"); 
 
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1341:9: ( options {greedy=false; } : . )*
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1349:9: ( options {greedy=false; } : . )*
             loop18:
             do {
                 int alt18=2;
@@ -2090,7 +2098,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt18) {
             	case 1 :
-            	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1341:37: .
+            	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1349:37: .
             	    {
             	    matchAny(); 
 
@@ -2128,8 +2136,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = EXPRESSION;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1346:3: ( 'expression(' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1346:5: 'expression('
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1354:3: ( 'expression(' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1354:5: 'expression('
             {
             match("expression("); 
 
@@ -2150,8 +2158,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = FUNCTION;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1351:2: ( IDENT_MACR '(' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1351:4: IDENT_MACR '('
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1359:2: ( IDENT_MACR '(' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1359:4: IDENT_MACR '('
             {
             mIDENT_MACR(); 
             match('('); 
@@ -2171,8 +2179,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = INCLUDES;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1355:2: ( '~=' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1355:4: '~='
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1363:2: ( '~=' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1363:4: '~='
             {
             match("~="); 
 
@@ -2192,8 +2200,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = DASHMATCH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1359:2: ( '|=' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1359:4: '|='
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1367:2: ( '|=' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1367:4: '|='
             {
             match("|="); 
 
@@ -2213,8 +2221,8 @@ public class CSSLexer extends Lexer {
         try {
             int _type = INVALID_TOKEN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1363:2: ( . )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1363:4: .
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1371:2: ( . )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1371:4: .
             {
             matchAny(); 
 
@@ -2231,11 +2239,11 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "IDENT_MACR"
     public final void mIDENT_MACR() throws RecognitionException {
         try {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1372:4: ( NAME_START ( NAME_CHAR )* )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1372:6: NAME_START ( NAME_CHAR )*
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1380:4: ( NAME_START ( NAME_CHAR )* )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1380:6: NAME_START ( NAME_CHAR )*
             {
             mNAME_START(); 
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1372:17: ( NAME_CHAR )*
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1380:17: ( NAME_CHAR )*
             loop19:
             do {
                 int alt19=2;
@@ -2248,7 +2256,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt19) {
             	case 1 :
-            	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1372:17: NAME_CHAR
+            	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1380:17: NAME_CHAR
             	    {
             	    mNAME_CHAR(); 
 
@@ -2272,10 +2280,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NAME_MACR"
     public final void mNAME_MACR() throws RecognitionException {
         try {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1377:3: ( ( NAME_CHAR )+ )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1377:5: ( NAME_CHAR )+
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1385:3: ( ( NAME_CHAR )+ )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1385:5: ( NAME_CHAR )+
             {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1377:5: ( NAME_CHAR )+
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1385:5: ( NAME_CHAR )+
             int cnt20=0;
             loop20:
             do {
@@ -2289,7 +2297,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt20) {
             	case 1 :
-            	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1377:5: NAME_CHAR
+            	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1385:5: NAME_CHAR
             	    {
             	    mNAME_CHAR(); 
 
@@ -2317,10 +2325,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NAME_START"
     public final void mNAME_START() throws RecognitionException {
         try {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1382:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR ) )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1382:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1390:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR ) )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1390:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR )
             {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1382:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1390:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | NON_ASCII | ESCAPE_CHAR )
             int alt21=5;
             int LA21_0 = input.LA(1);
 
@@ -2347,35 +2355,35 @@ public class CSSLexer extends Lexer {
             }
             switch (alt21) {
                 case 1 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1382:7: 'a' .. 'z'
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1390:7: 'a' .. 'z'
                     {
                     matchRange('a','z'); 
 
                     }
                     break;
                 case 2 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1382:18: 'A' .. 'Z'
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1390:18: 'A' .. 'Z'
                     {
                     matchRange('A','Z'); 
 
                     }
                     break;
                 case 3 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1382:29: '_'
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1390:29: '_'
                     {
                     match('_'); 
 
                     }
                     break;
                 case 4 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1382:35: NON_ASCII
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1390:35: NON_ASCII
                     {
                     mNON_ASCII(); 
 
                     }
                     break;
                 case 5 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1382:47: ESCAPE_CHAR
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1390:47: ESCAPE_CHAR
                     {
                     mESCAPE_CHAR(); 
 
@@ -2396,8 +2404,8 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NON_ASCII"
     public final void mNON_ASCII() throws RecognitionException {
         try {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1387:4: ( ( '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1387:6: ( '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1395:4: ( ( '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1395:6: ( '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' )
             {
             if ( (input.LA(1)>='\u0080' && input.LA(1)<='\uD7FF')||(input.LA(1)>='\uE000' && input.LA(1)<='\uFFFD') ) {
                 input.consume();
@@ -2420,17 +2428,17 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "ESCAPE_CHAR"
     public final void mESCAPE_CHAR() throws RecognitionException {
         try {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1392:3: ( ( '\\\\' ) ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) ) )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1392:5: ( '\\\\' ) ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1400:3: ( ( '\\\\' ) ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) ) )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1400:5: ( '\\\\' ) ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
             {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1392:5: ( '\\\\' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1392:6: '\\\\'
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1400:5: ( '\\\\' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1400:6: '\\\\'
             {
             match('\\'); 
 
             }
 
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1393:5: ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1401:5: ( ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? ) | ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' ) )
             int alt23=2;
             int LA23_0 = input.LA(1);
 
@@ -2454,10 +2462,10 @@ public class CSSLexer extends Lexer {
             }
             switch (alt23) {
                 case 1 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1394:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1402:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )
                     {
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1394:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1394:8: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1402:7: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )? )
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1402:8: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
                     {
                     if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                         input.consume();
@@ -2495,7 +2503,7 @@ public class CSSLexer extends Lexer {
                         recover(mse);
                         throw mse;}
 
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1398:8: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1406:8: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )?
                     int alt22=2;
                     int LA22_0 = input.LA(1);
 
@@ -2504,7 +2512,7 @@ public class CSSLexer extends Lexer {
                     }
                     switch (alt22) {
                         case 1 :
-                            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1398:9: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+                            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1406:9: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
                             {
                             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                                 input.consume();
@@ -2537,7 +2545,7 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1401:7: ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' )
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1409:7: ( '\\u0020' .. '\\u007E' | '\\u0080' .. '\\uD7FF' | '\\uE000' .. '\\uFFFD' )
                     {
                     if ( (input.LA(1)>=' ' && input.LA(1)<='~')||(input.LA(1)>='\u0080' && input.LA(1)<='\uD7FF')||(input.LA(1)>='\uE000' && input.LA(1)<='\uFFFD') ) {
                         input.consume();
@@ -2566,10 +2574,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NAME_CHAR"
     public final void mNAME_CHAR() throws RecognitionException {
         try {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1407:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR ) )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1407:6: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1415:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR ) )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1415:6: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR )
             {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1407:6: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1415:6: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR )
             int alt24=7;
             int LA24_0 = input.LA(1);
 
@@ -2602,49 +2610,49 @@ public class CSSLexer extends Lexer {
             }
             switch (alt24) {
                 case 1 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1407:7: 'a' .. 'z'
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1415:7: 'a' .. 'z'
                     {
                     matchRange('a','z'); 
 
                     }
                     break;
                 case 2 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1407:18: 'A' .. 'Z'
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1415:18: 'A' .. 'Z'
                     {
                     matchRange('A','Z'); 
 
                     }
                     break;
                 case 3 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1407:29: '0' .. '9'
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1415:29: '0' .. '9'
                     {
                     matchRange('0','9'); 
 
                     }
                     break;
                 case 4 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1407:40: '-'
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1415:40: '-'
                     {
                     match('-'); 
 
                     }
                     break;
                 case 5 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1407:46: '_'
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1415:46: '_'
                     {
                     match('_'); 
 
                     }
                     break;
                 case 6 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1407:52: NON_ASCII
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1415:52: NON_ASCII
                     {
                     mNON_ASCII(); 
 
                     }
                     break;
                 case 7 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1407:64: ESCAPE_CHAR
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1415:64: ESCAPE_CHAR
                     {
                     mESCAPE_CHAR(); 
 
@@ -2665,14 +2673,14 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NUMBER_MACR"
     public final void mNUMBER_MACR() throws RecognitionException {
         try {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1412:4: ( ( '0' .. '9' )+ | ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ ) )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1420:4: ( ( '0' .. '9' )+ | ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ ) )
             int alt28=2;
             alt28 = dfa28.predict(input);
             switch (alt28) {
                 case 1 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1412:6: ( '0' .. '9' )+
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1420:6: ( '0' .. '9' )+
                     {
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1412:6: ( '0' .. '9' )+
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1420:6: ( '0' .. '9' )+
                     int cnt25=0;
                     loop25:
                     do {
@@ -2686,7 +2694,7 @@ public class CSSLexer extends Lexer {
 
                         switch (alt25) {
                     	case 1 :
-                    	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1412:7: '0' .. '9'
+                    	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1420:7: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2706,12 +2714,12 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1412:20: ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ )
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1420:20: ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ )
                     {
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1412:20: ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ )
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1412:21: ( '0' .. '9' )* '.' ( '0' .. '9' )+
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1420:20: ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ )
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1420:21: ( '0' .. '9' )* '.' ( '0' .. '9' )+
                     {
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1412:21: ( '0' .. '9' )*
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1420:21: ( '0' .. '9' )*
                     loop26:
                     do {
                         int alt26=2;
@@ -2724,7 +2732,7 @@ public class CSSLexer extends Lexer {
 
                         switch (alt26) {
                     	case 1 :
-                    	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1412:22: '0' .. '9'
+                    	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1420:22: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2737,7 +2745,7 @@ public class CSSLexer extends Lexer {
                     } while (true);
 
                     match('.'); 
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1412:37: ( '0' .. '9' )+
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1420:37: ( '0' .. '9' )+
                     int cnt27=0;
                     loop27:
                     do {
@@ -2751,7 +2759,7 @@ public class CSSLexer extends Lexer {
 
                         switch (alt27) {
                     	case 1 :
-                    	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1412:38: '0' .. '9'
+                    	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1420:38: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2784,7 +2792,7 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "STRING_MACR"
     public final void mSTRING_MACR() throws RecognitionException {
         try {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1417:2: ( QUOT ( STRING_CHAR | APOS )* QUOT | APOS ( STRING_CHAR | QUOT )* APOS )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1425:2: ( QUOT ( STRING_CHAR | APOS )* QUOT | APOS ( STRING_CHAR | QUOT )* APOS )
             int alt31=2;
             int LA31_0 = input.LA(1);
 
@@ -2802,10 +2810,10 @@ public class CSSLexer extends Lexer {
             }
             switch (alt31) {
                 case 1 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1417:4: QUOT ( STRING_CHAR | APOS )* QUOT
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1425:4: QUOT ( STRING_CHAR | APOS )* QUOT
                     {
                     mQUOT(); 
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1417:9: ( STRING_CHAR | APOS )*
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1425:9: ( STRING_CHAR | APOS )*
                     loop29:
                     do {
                         int alt29=3;
@@ -2821,14 +2829,14 @@ public class CSSLexer extends Lexer {
 
                         switch (alt29) {
                     	case 1 :
-                    	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1417:10: STRING_CHAR
+                    	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1425:10: STRING_CHAR
                     	    {
                     	    mSTRING_CHAR(); 
 
                     	    }
                     	    break;
                     	case 2 :
-                    	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1417:24: APOS
+                    	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1425:24: APOS
                     	    {
                     	    mAPOS(); 
                     	    ls.aposOpen=false;
@@ -2846,10 +2854,10 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1418:4: APOS ( STRING_CHAR | QUOT )* APOS
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1426:4: APOS ( STRING_CHAR | QUOT )* APOS
                     {
                     mAPOS(); 
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1418:9: ( STRING_CHAR | QUOT )*
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1426:9: ( STRING_CHAR | QUOT )*
                     loop30:
                     do {
                         int alt30=3;
@@ -2865,14 +2873,14 @@ public class CSSLexer extends Lexer {
 
                         switch (alt30) {
                     	case 1 :
-                    	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1418:10: STRING_CHAR
+                    	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1426:10: STRING_CHAR
                     	    {
                     	    mSTRING_CHAR(); 
 
                     	    }
                     	    break;
                     	case 2 :
-                    	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1418:24: QUOT
+                    	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1426:24: QUOT
                     	    {
                     	    mQUOT(); 
                     	    ls.quotOpen=false;
@@ -2900,10 +2908,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "STRING_CHAR"
     public final void mSTRING_CHAR() throws RecognitionException {
         try {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1423:2: ( ( URI_CHAR | ' ' | '(' | ')' | ( '\\\\' NL_CHAR ) ) )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1423:5: ( URI_CHAR | ' ' | '(' | ')' | ( '\\\\' NL_CHAR ) )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1431:2: ( ( URI_CHAR | ' ' | '(' | ')' | ( '\\\\' NL_CHAR ) ) )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1431:5: ( URI_CHAR | ' ' | '(' | ')' | ( '\\\\' NL_CHAR ) )
             {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1423:5: ( URI_CHAR | ' ' | '(' | ')' | ( '\\\\' NL_CHAR ) )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1431:5: ( URI_CHAR | ' ' | '(' | ')' | ( '\\\\' NL_CHAR ) )
             int alt32=5;
             int LA32_0 = input.LA(1);
 
@@ -2936,38 +2944,38 @@ public class CSSLexer extends Lexer {
             }
             switch (alt32) {
                 case 1 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1423:6: URI_CHAR
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1431:6: URI_CHAR
                     {
                     mURI_CHAR(); 
 
                     }
                     break;
                 case 2 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1423:17: ' '
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1431:17: ' '
                     {
                     match(' '); 
 
                     }
                     break;
                 case 3 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1423:23: '('
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1431:23: '('
                     {
                     match('('); 
 
                     }
                     break;
                 case 4 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1423:29: ')'
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1431:29: ')'
                     {
                     match(')'); 
 
                     }
                     break;
                 case 5 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1423:35: ( '\\\\' NL_CHAR )
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1431:35: ( '\\\\' NL_CHAR )
                     {
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1423:35: ( '\\\\' NL_CHAR )
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1423:36: '\\\\' NL_CHAR
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1431:35: ( '\\\\' NL_CHAR )
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1431:36: '\\\\' NL_CHAR
                     {
                     match('\\'); 
                     mNL_CHAR(); 
@@ -2992,10 +3000,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "URI_MACR"
     public final void mURI_MACR() throws RecognitionException {
         try {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1428:2: ( ( URI_CHAR )* )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1428:4: ( URI_CHAR )*
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1436:2: ( ( URI_CHAR )* )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1436:4: ( URI_CHAR )*
             {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1428:4: ( URI_CHAR )*
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1436:4: ( URI_CHAR )*
             loop33:
             do {
                 int alt33=2;
@@ -3008,7 +3016,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt33) {
             	case 1 :
-            	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1428:4: URI_CHAR
+            	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1436:4: URI_CHAR
             	    {
             	    mURI_CHAR(); 
 
@@ -3032,7 +3040,7 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "URI_CHAR"
     public final void mURI_CHAR() throws RecognitionException {
         try {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1433:2: ( ( '\\u0009' | '\\u0021' | '\\u0023' .. '\\u0026' | '\\u002A' .. '\\u007E' ) | NON_ASCII | ESCAPE_CHAR )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1441:2: ( ( '\\u0009' | '\\u0021' | '\\u0023' .. '\\u0026' | '\\u002A' .. '\\u007E' ) | NON_ASCII | ESCAPE_CHAR )
             int alt34=3;
             int LA34_0 = input.LA(1);
 
@@ -3059,7 +3067,7 @@ public class CSSLexer extends Lexer {
             }
             switch (alt34) {
                 case 1 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1433:4: ( '\\u0009' | '\\u0021' | '\\u0023' .. '\\u0026' | '\\u002A' .. '\\u007E' )
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1441:4: ( '\\u0009' | '\\u0021' | '\\u0023' .. '\\u0026' | '\\u002A' .. '\\u007E' )
                     {
                     if ( input.LA(1)=='\t'||input.LA(1)=='!'||(input.LA(1)>='#' && input.LA(1)<='&')||(input.LA(1)>='*' && input.LA(1)<='~') ) {
                         input.consume();
@@ -3074,14 +3082,14 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1434:6: NON_ASCII
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1442:6: NON_ASCII
                     {
                     mNON_ASCII(); 
 
                     }
                     break;
                 case 3 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1434:18: ESCAPE_CHAR
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1442:18: ESCAPE_CHAR
                     {
                     mESCAPE_CHAR(); 
 
@@ -3098,7 +3106,7 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "NL_CHAR"
     public final void mNL_CHAR() throws RecognitionException {
         try {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1439:4: ( '\\u000A' | '\\u000D' '\\u000A' | '\\u000D' | '\\u000C' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1447:4: ( '\\u000A' | '\\u000D' '\\u000A' | '\\u000D' | '\\u000C' )
             int alt35=4;
             switch ( input.LA(1) ) {
             case '\n':
@@ -3131,14 +3139,14 @@ public class CSSLexer extends Lexer {
 
             switch (alt35) {
                 case 1 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1439:6: '\\u000A'
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1447:6: '\\u000A'
                     {
                     match('\n'); 
 
                     }
                     break;
                 case 2 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1439:17: '\\u000D' '\\u000A'
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1447:17: '\\u000D' '\\u000A'
                     {
                     match('\r'); 
                     match('\n'); 
@@ -3146,14 +3154,14 @@ public class CSSLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1439:37: '\\u000D'
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1447:37: '\\u000D'
                     {
                     match('\r'); 
 
                     }
                     break;
                 case 4 :
-                    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1439:48: '\\u000C'
+                    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1447:48: '\\u000C'
                     {
                     match('\f'); 
 
@@ -3170,10 +3178,10 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "W_MACR"
     public final void mW_MACR() throws RecognitionException {
         try {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1444:2: ( ( W_CHAR )* )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1444:4: ( W_CHAR )*
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1452:2: ( ( W_CHAR )* )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1452:4: ( W_CHAR )*
             {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1444:4: ( W_CHAR )*
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1452:4: ( W_CHAR )*
             loop36:
             do {
                 int alt36=2;
@@ -3186,7 +3194,7 @@ public class CSSLexer extends Lexer {
 
                 switch (alt36) {
             	case 1 :
-            	    // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1444:4: W_CHAR
+            	    // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1452:4: W_CHAR
             	    {
             	    mW_CHAR(); 
 
@@ -3210,8 +3218,8 @@ public class CSSLexer extends Lexer {
     // $ANTLR start "W_CHAR"
     public final void mW_CHAR() throws RecognitionException {
         try {
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1449:4: ( '\\u0009' | '\\u000A' | '\\u000C' | '\\u000D' | '\\u0020' )
-            // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1457:4: ( '\\u0009' | '\\u000A' | '\\u000C' | '\\u000D' | '\\u0020' )
+            // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:
             {
             if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||(input.LA(1)>='\f' && input.LA(1)<='\r')||input.LA(1)==' ' ) {
                 input.consume();
@@ -3232,327 +3240,327 @@ public class CSSLexer extends Lexer {
     // $ANTLR end "W_CHAR"
 
     public void mTokens() throws RecognitionException {
-        // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:8: ( T__89 | IDENT | CHARSET | IMPORT | MEDIA | PAGE | ATKEYWORD | CLASSKEYWORD | STRING | HASH | NUMBER | PERCENTAGE | DIMENSION | URI | UNIRANGE | CDO | CDC | SEMICOLON | COLON | COMMA | QUESTION | PERCENT | EQUALS | SLASH | GREATER | LESS | LCURLY | RCURLY | APOS | QUOT | LPAREN | RPAREN | LBRACE | RBRACE | EXCLAMATION | MINUS | PLUS | ASTERISK | S | COMMENT | SL_COMMENT | EXPRESSION | FUNCTION | INCLUDES | DASHMATCH | INVALID_TOKEN )
+        // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:8: ( T__89 | IDENT | CHARSET | IMPORT | MEDIA | PAGE | ATKEYWORD | CLASSKEYWORD | STRING | HASH | NUMBER | PERCENTAGE | DIMENSION | URI | UNIRANGE | CDO | CDC | SEMICOLON | COLON | COMMA | QUESTION | PERCENT | EQUALS | SLASH | GREATER | LESS | LCURLY | RCURLY | APOS | QUOT | LPAREN | RPAREN | LBRACE | RBRACE | EXCLAMATION | MINUS | PLUS | ASTERISK | S | COMMENT | SL_COMMENT | EXPRESSION | FUNCTION | INCLUDES | DASHMATCH | INVALID_TOKEN )
         int alt37=46;
         alt37 = dfa37.predict(input);
         switch (alt37) {
             case 1 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:10: T__89
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:10: T__89
                 {
                 mT__89(); 
 
                 }
                 break;
             case 2 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:16: IDENT
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:16: IDENT
                 {
                 mIDENT(); 
 
                 }
                 break;
             case 3 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:22: CHARSET
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:22: CHARSET
                 {
                 mCHARSET(); 
 
                 }
                 break;
             case 4 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:30: IMPORT
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:30: IMPORT
                 {
                 mIMPORT(); 
 
                 }
                 break;
             case 5 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:37: MEDIA
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:37: MEDIA
                 {
                 mMEDIA(); 
 
                 }
                 break;
             case 6 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:43: PAGE
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:43: PAGE
                 {
                 mPAGE(); 
 
                 }
                 break;
             case 7 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:48: ATKEYWORD
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:48: ATKEYWORD
                 {
                 mATKEYWORD(); 
 
                 }
                 break;
             case 8 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:58: CLASSKEYWORD
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:58: CLASSKEYWORD
                 {
                 mCLASSKEYWORD(); 
 
                 }
                 break;
             case 9 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:71: STRING
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:71: STRING
                 {
                 mSTRING(); 
 
                 }
                 break;
             case 10 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:78: HASH
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:78: HASH
                 {
                 mHASH(); 
 
                 }
                 break;
             case 11 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:83: NUMBER
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:83: NUMBER
                 {
                 mNUMBER(); 
 
                 }
                 break;
             case 12 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:90: PERCENTAGE
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:90: PERCENTAGE
                 {
                 mPERCENTAGE(); 
 
                 }
                 break;
             case 13 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:101: DIMENSION
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:101: DIMENSION
                 {
                 mDIMENSION(); 
 
                 }
                 break;
             case 14 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:111: URI
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:111: URI
                 {
                 mURI(); 
 
                 }
                 break;
             case 15 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:115: UNIRANGE
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:115: UNIRANGE
                 {
                 mUNIRANGE(); 
 
                 }
                 break;
             case 16 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:124: CDO
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:124: CDO
                 {
                 mCDO(); 
 
                 }
                 break;
             case 17 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:128: CDC
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:128: CDC
                 {
                 mCDC(); 
 
                 }
                 break;
             case 18 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:132: SEMICOLON
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:132: SEMICOLON
                 {
                 mSEMICOLON(); 
 
                 }
                 break;
             case 19 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:142: COLON
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:142: COLON
                 {
                 mCOLON(); 
 
                 }
                 break;
             case 20 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:148: COMMA
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:148: COMMA
                 {
                 mCOMMA(); 
 
                 }
                 break;
             case 21 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:154: QUESTION
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:154: QUESTION
                 {
                 mQUESTION(); 
 
                 }
                 break;
             case 22 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:163: PERCENT
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:163: PERCENT
                 {
                 mPERCENT(); 
 
                 }
                 break;
             case 23 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:171: EQUALS
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:171: EQUALS
                 {
                 mEQUALS(); 
 
                 }
                 break;
             case 24 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:178: SLASH
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:178: SLASH
                 {
                 mSLASH(); 
 
                 }
                 break;
             case 25 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:184: GREATER
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:184: GREATER
                 {
                 mGREATER(); 
 
                 }
                 break;
             case 26 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:192: LESS
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:192: LESS
                 {
                 mLESS(); 
 
                 }
                 break;
             case 27 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:197: LCURLY
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:197: LCURLY
                 {
                 mLCURLY(); 
 
                 }
                 break;
             case 28 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:204: RCURLY
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:204: RCURLY
                 {
                 mRCURLY(); 
 
                 }
                 break;
             case 29 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:211: APOS
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:211: APOS
                 {
                 mAPOS(); 
 
                 }
                 break;
             case 30 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:216: QUOT
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:216: QUOT
                 {
                 mQUOT(); 
 
                 }
                 break;
             case 31 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:221: LPAREN
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:221: LPAREN
                 {
                 mLPAREN(); 
 
                 }
                 break;
             case 32 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:228: RPAREN
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:228: RPAREN
                 {
                 mRPAREN(); 
 
                 }
                 break;
             case 33 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:235: LBRACE
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:235: LBRACE
                 {
                 mLBRACE(); 
 
                 }
                 break;
             case 34 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:242: RBRACE
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:242: RBRACE
                 {
                 mRBRACE(); 
 
                 }
                 break;
             case 35 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:249: EXCLAMATION
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:249: EXCLAMATION
                 {
                 mEXCLAMATION(); 
 
                 }
                 break;
             case 36 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:261: MINUS
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:261: MINUS
                 {
                 mMINUS(); 
 
                 }
                 break;
             case 37 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:267: PLUS
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:267: PLUS
                 {
                 mPLUS(); 
 
                 }
                 break;
             case 38 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:272: ASTERISK
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:272: ASTERISK
                 {
                 mASTERISK(); 
 
                 }
                 break;
             case 39 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:281: S
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:281: S
                 {
                 mS(); 
 
                 }
                 break;
             case 40 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:283: COMMENT
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:283: COMMENT
                 {
                 mCOMMENT(); 
 
                 }
                 break;
             case 41 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:291: SL_COMMENT
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:291: SL_COMMENT
                 {
                 mSL_COMMENT(); 
 
                 }
                 break;
             case 42 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:302: EXPRESSION
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:302: EXPRESSION
                 {
                 mEXPRESSION(); 
 
                 }
                 break;
             case 43 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:313: FUNCTION
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:313: FUNCTION
                 {
                 mFUNCTION(); 
 
                 }
                 break;
             case 44 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:322: INCLUDES
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:322: INCLUDES
                 {
                 mINCLUDES(); 
 
                 }
                 break;
             case 45 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:331: DASHMATCH
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:331: DASHMATCH
                 {
                 mDASHMATCH(); 
 
                 }
                 break;
             case 46 :
-                // /home/radek/myprog/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:341: INVALID_TOKEN
+                // /mnt/kazi/work/projects/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1:341: INVALID_TOKEN
                 {
                 mINVALID_TOKEN(); 
 
@@ -3615,7 +3623,7 @@ public class CSSLexer extends Lexer {
             this.transition = DFA28_transition;
         }
         public String getDescription() {
-            return "1410:1: fragment NUMBER_MACR : ( ( '0' .. '9' )+ | ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ ) );";
+            return "1418:1: fragment NUMBER_MACR : ( ( '0' .. '9' )+ | ( ( '0' .. '9' )* '.' ( '0' .. '9' )+ ) );";
         }
     }
     static final String DFA37_eotS =
