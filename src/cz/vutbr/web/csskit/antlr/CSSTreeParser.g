@@ -606,17 +606,21 @@ attribute returns [Selector.ElementAttribute elemAttr]
 	
 pseudo returns [Selector.PseudoPage pseudoPage]
 @init {
-		  logEnter("pseudo");
-		  String fname =null;
-		  String value = null;
+		logEnter("pseudo");
 }
-	: ^(PSEUDO 
-	   			(f=FUNCTION {fname=extractText(f);})? 
-			     i=IDENT {value=extractText(i);})
+	: ^(PSEUDO i=IDENT)
 		{
-			$pseudoPage = rf.createPseudoPage(value, fname);
+			$pseudoPage = rf.createPseudoPage(extractText(i), null);
 		}
-	;	
+	| ^(PSEUDO f=FUNCTION i=IDENT)
+		{
+			$pseudoPage = rf.createPseudoPage(extractText(i), extractText(f));
+		}
+	| ^(PSEUDO f=FUNCTION n=NUMBER)
+		{
+			$pseudoPage = rf.createPseudoPage(extractText(n), extractText(f));
+		}
+	;
 
 string returns [String s]
 	: st=STRING { $s= extractText(st);}

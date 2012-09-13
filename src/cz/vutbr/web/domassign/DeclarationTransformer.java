@@ -227,7 +227,7 @@ public class DeclarationTransformer {
 		this.methods = parsingMethods();
 	}
 
-	private Map<String, Method> parsingMethods() {
+	protected Map<String, Method> parsingMethods() {
 
 		Map<String, Method> map = new HashMap<String, Method>(css
 				.getTotalProperties(), 1.0f);
@@ -298,7 +298,7 @@ public class DeclarationTransformer {
 	 * @return <code>true</code> in case of success, <code>false</code>
 	 *         otherwise
 	 */
-	private <T extends CSSProperty> boolean genericProperty(Class<T> type,
+	protected <T extends CSSProperty> boolean genericProperty(Class<T> type,
 			TermIdent term, boolean avoidInherit,
 			Map<String, CSSProperty> properties, String propertyName) {
 
@@ -314,7 +314,7 @@ public class DeclarationTransformer {
 	 * Converts TermIdent into value of CSSProperty for given class
 	 * 
 	 */
-	private <T extends CSSProperty> boolean genericTermIdent(Class<T> type,
+	protected <T extends CSSProperty> boolean genericTermIdent(Class<T> type,
 			Term<?> term, boolean avoidInherit, String propertyName,
 			Map<String, CSSProperty> properties) {
 
@@ -343,7 +343,7 @@ public class DeclarationTransformer {
 	 * @return <code>true</code> in case of success, <code>false</code>
 	 *         otherwise
 	 */
-	private <T extends CSSProperty> boolean genericTermColor(Term<?> term,
+	protected <T extends CSSProperty> boolean genericTermColor(Term<?> term,
 			String propertyName, T colorIdentification,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
@@ -381,7 +381,7 @@ public class DeclarationTransformer {
 	 * @return <code>true</code> if succeeded in recognition, <code>false</code>
 	 *         otherwise
 	 */
-	private <T extends CSSProperty> boolean genericTerm(
+	protected <T extends CSSProperty> boolean genericTerm(
 			Class<? extends Term<?>> termType, Term<?> term,
 			String propertyName, T typeIdentification, boolean sanify,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
@@ -435,7 +435,7 @@ public class DeclarationTransformer {
 	 * @return <code>true</code> in case of success, <code>false</code>
 	 *         elsewhere
 	 */
-	private <T extends CSSProperty> boolean genericOneIdent(Class<T> type,
+	protected <T extends CSSProperty> boolean genericOneIdent(Class<T> type,
 			Declaration d, Map<String, CSSProperty> properties) {
 
 		if (d.size() != 1)
@@ -464,7 +464,7 @@ public class DeclarationTransformer {
 	 * @return <code>true</code> in case of success, <code>false</code>
 	 *         elsewhere
 	 */
-	private <T extends CSSProperty> boolean genericOneIdentOrColor(
+	protected <T extends CSSProperty> boolean genericOneIdentOrColor(
 			Class<T> type, T colorIdentification, Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
@@ -477,7 +477,7 @@ public class DeclarationTransformer {
 						colorIdentification, properties, values);
 	}
 
-	private <T extends CSSProperty> boolean genericOneIdentOrInteger(
+	protected <T extends CSSProperty> boolean genericOneIdentOrInteger(
 			Class<T> type, T integerIdentification, boolean sanify,
 			Declaration d, Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values) {
@@ -491,7 +491,7 @@ public class DeclarationTransformer {
 						integerIdentification, sanify, properties, values);
 	}
 
-	private <T extends CSSProperty> boolean genericOneIdentOrLength(
+	protected <T extends CSSProperty> boolean genericOneIdentOrLength(
 			Class<T> type, T lengthIdentification, boolean sanify,
 			Declaration d, Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values) {
@@ -505,7 +505,7 @@ public class DeclarationTransformer {
 						lengthIdentification, sanify, properties, values);
 	}
 
-	private <T extends Enum<T> & CSSProperty> boolean genericOneIdentOrLengthOrPercent(
+	protected <T extends Enum<T> & CSSProperty> boolean genericOneIdentOrLengthOrPercent(
 			Class<T> type, T lengthIdentification, T percentIdentification,
 			boolean sanify, Declaration d, Map<String, CSSProperty> properties,
 			Map<String, Term<?>> values) {

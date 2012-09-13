@@ -3,6 +3,7 @@ package cz.vutbr.web.csskit;
 import java.util.HashMap;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Selector;
@@ -308,6 +309,9 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
             PSEUDO_DECLARATIONS.put("link", PseudoDeclaration.LINK);
             PSEUDO_DECLARATIONS.put("visited", PseudoDeclaration.VISITED);
             PSEUDO_DECLARATIONS.put("first-child", PseudoDeclaration.FIRST_CHILD);
+            PSEUDO_DECLARATIONS.put("last-child", PseudoDeclaration.LAST_CHILD);
+            PSEUDO_DECLARATIONS.put("only-child", PseudoDeclaration.ONLY_CHILD);
+            PSEUDO_DECLARATIONS.put("nth-child", PseudoDeclaration.NTH_CHILD);
             PSEUDO_DECLARATIONS.put("lang", PseudoDeclaration.LANG);
             PSEUDO_DECLARATIONS.put("first-letter", PseudoDeclaration.FIRST_LETTER);
             PSEUDO_DECLARATIONS.put("first-line", PseudoDeclaration.FIRST_LINE);
@@ -361,9 +365,54 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		public boolean matches(Element e) {
 			
 			if(declaration != null) { //null declaration means some unknown or unimplemented pseudo
-			    if (declaration.isPseudoElement() || //match all pseudo elements and the LINK pseudo class for links
-			            (e.getTagName().equalsIgnoreCase("a") && declaration == PseudoDeclaration.LINK))
-			        return true;
+				switch (declaration) {
+					case FIRST_CHILD:
+					case LAST_CHILD:
+					case ONLY_CHILD:
+						boolean first = false;
+						boolean last = false;
+						if (declaration != PseudoDeclaration.LAST_CHILD) {
+							Node prev = e;
+							do {
+								prev = prev.getPreviousSibling();
+								if (prev == null)
+									first = true; break;
+							} while(prev.getNodeType() != Node.ELEMENT_NODE);
+						}
+						if (declaration != PseudoDeclaration.FIRST_CHILD) {
+							Node next = e;
+							do {
+								next = next.getNextSibling();
+								if (next == null)
+									last = true; break;
+							} while(next.getNodeType() != Node.ELEMENT_NODE);
+						}
+						switch (declaration) {
+							case FIRST_CHILD: return first;
+							case LAST_CHILD: return last;
+							case ONLY_CHILD: return first && last;
+						}
+					case NTH_CHILD:
+						try {
+							int n = Integer.parseInt(value);
+							int count = 0;
+							Node prev = e;
+							do {
+								prev = prev.getPreviousSibling();
+								if (prev == null)
+									break;
+								if (prev.getNodeType() == Node.ELEMENT_NODE)
+									count++;
+							} while(count < n);
+							return (count == n-1);
+						} catch (NumberFormatException ex) {
+							return false;
+						}
+					default:
+						if (declaration.isPseudoElement() || //match all pseudo elements and the LINK pseudo class for links
+								(e.getTagName().equalsIgnoreCase("a") && declaration == PseudoDeclaration.LINK))
+							return true;
+				}
 			}
 			return false;
 		}

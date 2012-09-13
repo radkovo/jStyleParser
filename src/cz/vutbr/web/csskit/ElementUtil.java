@@ -90,7 +90,11 @@ public class ElementUtil {
         			attributeValue = " " + attributeValue + " ";
         			return attributeValue.matches(".* " + value + " .*");
         		case DASHMATCH:
-        			return attributeValue.matches("^" + value + "(\\|.*)*");
+        			return attributeValue.matches("^" + value + "(-.*|$)");
+        		case CONTAINS:
+        			return attributeValue.matches(".*" + value + ".*");
+        		case STARTSWITH:
+        			return attributeValue.matches("^" + value + ".*");
         		default:
         			return true;
     		}

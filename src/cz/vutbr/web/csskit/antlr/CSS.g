@@ -948,12 +948,15 @@ attribute
 	;
 
 pseudo
-	: COLON COLON? (IDENT | FUNCTION S*  IDENT S* RPAREN)
-	 -> ^(PSEUDO FUNCTION? IDENT)
+	: pseudocolon^ (IDENT | FUNCTION (IDENT | NUMBER) RPAREN!)
 	;
   catch [RecognitionException re] {
      retval.tree = invalidFallback(CSSLexer.INVALID_SELPART, "INVALID_SELPART", re);
   }
+
+pseudocolon
+	: COLON COLON? -> PSEUDO
+	;
 
 string
 	: STRING

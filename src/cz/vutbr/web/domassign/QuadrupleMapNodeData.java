@@ -30,7 +30,7 @@ public class QuadrupleMapNodeData implements NodeData {
 
 	private static final int COMMON_DECLARATION_SIZE = 7;
 	
-	protected static DeclarationTransformer transformer = DeclarationTransformer.getInstance();
+	protected static DeclarationTransformer transformer = CSSFactory.getDeclarationTransformer();
 	protected static SupportedCSS css = CSSFactory.getSupportedCSS();
 
 	private Map<String,CSSProperty> propertiesOwn;

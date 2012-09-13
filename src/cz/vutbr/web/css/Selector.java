@@ -42,6 +42,8 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     	EQUALS("="),
     	INCLUDES("~="),
     	DASHMATCH("|="),
+    	CONTAINS("*="),
+    	STARTSWITH("^="),
     	NO_OPERATOR("");
     	
     	private String value;
@@ -65,6 +67,9 @@ public interface Selector extends Rule<Selector.SelectorPart> {
         LINK("link", false),
         VISITED("visited", false),
         FIRST_CHILD("first-child", false),
+        LAST_CHILD("last-child", false),
+        ONLY_CHILD("only-child", false),
+        NTH_CHILD("nth-child", false),
         LANG("lang", false),
         
         FIRST_LINE("first-line", true),

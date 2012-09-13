@@ -18,6 +18,7 @@ import org.w3c.dom.traversal.NodeFilter;
 import cz.vutbr.web.csskit.antlr.CSSParserFactory;
 import cz.vutbr.web.csskit.antlr.CSSParserFactory.SourceType;
 import cz.vutbr.web.domassign.Analyzer;
+import cz.vutbr.web.domassign.DeclarationTransformer;
 import cz.vutbr.web.domassign.StyleMap;
 import cz.vutbr.web.domassign.Traversal;
 
@@ -48,6 +49,7 @@ public final class CSSFactory {
 	private static final String DEFAULT_TERM_FACTORY = "cz.vutbr.web.csskit.TermFactoryImpl";
 	private static final String DEFAULT_SUPPORTED_CSS = "cz.vutbr.web.domassign.SupportedCSS21";
 	private static final String DEFAULT_RULE_FACTORY = "cz.vutbr.web.csskit.RuleFactoryImpl";
+    private static final String DEFAULT_DECLARATION_TRANSFORMER = "cz.vutbr.web.domassign.DeclarationTransformer";
 	private static final String DEFAULT_NODE_DATA_IMPL = "cz.vutbr.web.domassign.SingleMapNodeData";
 
 	/**
@@ -65,6 +67,14 @@ public final class CSSFactory {
 	 */
 	private static RuleFactory rf;
 
+	/**
+	 * Default instance of DeclarationTransformer
+	 */
+	private static DeclarationTransformer dt;
+	
+	/**
+	 * Used NodeData class
+	 */
 	private static Class<? extends NodeData> ndImpl;
 
 	/**
@@ -171,6 +181,41 @@ public final class CSSFactory {
 		return rf;
 	}
 
+    /**
+     * Registers new DeclarationTransformer
+     * 
+     * @param newDeclarationTransformer
+     *            New DeclarationTransformer instance
+     */
+    public static final void registerDeclarationTransformer(DeclarationTransformer newDeclarationTransformer) {
+        dt = newDeclarationTransformer;
+    }
+
+    /**
+     * Returns the registered DeclarationTransformer
+     * 
+     * @return DeclarationTransformer instance
+     */
+    public static final DeclarationTransformer getDeclarationTransformer() {
+        if (dt == null) {
+            try {
+                @SuppressWarnings("unchecked")
+                Class<? extends DeclarationTransformer> clazz = (Class<? extends DeclarationTransformer>) Class
+                        .forName(DEFAULT_DECLARATION_TRANSFORMER);
+                Method m = clazz.getMethod("getInstance");
+                registerDeclarationTransformer((DeclarationTransformer) m.invoke(null));
+                log.debug("Retrived {} as default DeclarationTransformer implementation.",
+                        DEFAULT_DECLARATION_TRANSFORMER);
+            } catch (Exception e) {
+                log.error("Unable to get DeclarationTransformer from default", e);
+                throw new RuntimeException(
+                        "No DeclarationTransformer implementation registered!");
+            }
+        }
+
+        return dt;
+    }
+    
 	/**
 	 * Registers node data instance. Instance must provide no-argument
 	 * Constructor
