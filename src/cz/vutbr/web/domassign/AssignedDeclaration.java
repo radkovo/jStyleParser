@@ -56,7 +56,7 @@ public class AssignedDeclaration extends DeclarationImpl implements Declaration 
 	 * Computes the priority order of the declaration based on its origin and importance
 	 * according to the CSS specification.
 	 * @return The priority order (1..5).
-	 * @see http://www.w3.org/TR/CSS21/cascade.html#cascading-order
+	 * @see <a href="http://www.w3.org/TR/CSS21/cascade.html#cascading-order">http://www.w3.org/TR/CSS21/cascade.html#cascading-order</a>
 	 */
 	public int getOriginOrder()
 	{

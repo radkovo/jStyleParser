@@ -1,3 +1,8 @@
+Version 1.8 - Sep 14, 2012
+- Style sheet charset specification support
+- @charset rule support
+- Base URL propagation for URI terms
+
 Version 1.7 - Jun 8, 2012
 - Significant performance improvements
 - New DirectAnalyzer interface for direct element style computation
