@@ -23,10 +23,12 @@ public abstract class Traversal<T>
     }
 
     public Traversal(Document doc, Object source, int whatToShow) {
-        /*this.walker = new TidyTreeWalker(doc.getDocumentElement(),
-                whatToShow);*/
-        DocumentTraversal dt = (DocumentTraversal) doc;
-        this.walker = dt.createTreeWalker(doc.getDocumentElement(), whatToShow, null, false); 
+        if (doc instanceof DocumentTraversal) {
+            DocumentTraversal dt = (DocumentTraversal) doc;
+            this.walker = dt.createTreeWalker(doc.getDocumentElement(), whatToShow, null, false);
+        } else {
+            this.walker = new GenericTreeWalker(doc.getDocumentElement(), whatToShow);
+        }
         this.source = source;
     }
 
