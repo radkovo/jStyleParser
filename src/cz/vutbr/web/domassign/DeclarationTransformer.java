@@ -536,6 +536,7 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		Variator background = new BackgroundVariator();
 		background.assignTermsFromDeclaration(d);
+		background.assignDefaults(properties, values);
 		return background.vary(properties, values);
 	}
 
@@ -584,6 +585,7 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		Variator border = new BorderVariator();
 		border.assignTermsFromDeclaration(d);
+		border.assignDefaults(properties, values);
 		return border.vary(properties, values);
 	}
 
@@ -758,6 +760,7 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		Variator borderSide = new BorderSideVariator("top");
 		borderSide.assignTermsFromDeclaration(d);
+		borderSide.assignDefaults(properties, values);
 		return borderSide.vary(properties, values);
 	}
 
@@ -766,6 +769,7 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		Variator borderSide = new BorderSideVariator("right");
 		borderSide.assignTermsFromDeclaration(d);
+        borderSide.assignDefaults(properties, values);
 		return borderSide.vary(properties, values);
 	}
 
@@ -774,6 +778,7 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		Variator borderSide = new BorderSideVariator("bottom");
 		borderSide.assignTermsFromDeclaration(d);
+        borderSide.assignDefaults(properties, values);
 		return borderSide.vary(properties, values);
 	}
 
@@ -782,6 +787,7 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		Variator borderSide = new BorderSideVariator("left");
 		borderSide.assignTermsFromDeclaration(d);
+        borderSide.assignDefaults(properties, values);
 		return borderSide.vary(properties, values);
 	}
 
@@ -896,6 +902,7 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		Variator font = new FontVariator();
 		font.assignTermsFromDeclaration(d);
+		font.assignDefaults(properties, values);
 		return font.vary(properties, values);
 	}
 
@@ -1162,6 +1169,7 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		Variator listStyle = new ListStyleVariator();
 		listStyle.assignTermsFromDeclaration(d);
+		listStyle.assignDefaults(properties, values);
 		return listStyle.vary(properties, values);
 	}
 
@@ -1268,6 +1276,7 @@ public class DeclarationTransformer {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		Variator outline = new OutlineVariator();
 		outline.assignTermsFromDeclaration(d);
+		outline.assignDefaults(properties, values);
 		return outline.vary(properties, values);
 	}
 
@@ -2233,6 +2242,14 @@ public class DeclarationTransformer {
 			r.repeat(properties, null);
 			return true;
 		}
+
+        @Override
+        public void assignDefaults(Map<String, CSSProperty> properties, Map<String, Term<?>> values)
+        {
+            for (Repeater r : repeaters)
+                r.assignDefaults(properties, values);
+        }
+		
 
 	}
 

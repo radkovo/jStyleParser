@@ -93,7 +93,10 @@ public class Analyzer {
 			protected void processNode(StyleMap result, Node current, Object source) {
 
 			    NodeData main = CSSFactory.createNodeData();
-
+			    
+			    if (current instanceof Element && ((Element) current).getAttribute("id").equals("mojo"))
+			        System.out.println("jo!");
+			    
 				// for all declarations available in the main list (pseudo=null)
 				List<Declaration> declarations = ((DeclarationMap) source).get((Element) current, null);
 				if (declarations != null) 

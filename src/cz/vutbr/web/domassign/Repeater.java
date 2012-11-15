@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermIdent;
 
@@ -189,5 +191,22 @@ public abstract class Repeater {
 					"Invalid length of terms in Repeater.");
 		this.terms = Arrays.asList(terms);
 	}
+	
+    /**
+     * Assigns the default values to all the properties.
+     * @param properties
+     * @param values
+     */
+    public void assignDefaults(Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        SupportedCSS css = CSSFactory.getSupportedCSS();
+        for (String name : names) {
+            CSSProperty dp = css.getDefaultProperty(name);
+            if (dp != null)
+                properties.put(name, dp);
+            Term<?> dv = css.getDefaultValue(name);
+            if (dv != null)
+                values.put(name, dv);
+        }
+    }
 
 }
