@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.fit.net.DataURLHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -487,7 +488,7 @@ public final class CSSFactory {
 				}
 				// linked style-sheet
 				else if (isLinkedStyleSheet(elem, media)) {
-					URL uri = new URL(base, elem.getAttribute("href"));
+				    URL uri = DataURLHandler.createURL(base, elem.getAttribute("href"));
 					result = CSSParserFactory.append(uri, encoding, SourceType.URL,
 							result, uri);
 					log.debug("Matched linked CSS style");
@@ -522,7 +523,7 @@ public final class CSSFactory {
 
 		private static boolean isLinkedStyleSheet(Element e, String media) {
 			return e.getNodeName().equals("link")
-					&& "stylesheet".equalsIgnoreCase(e.getAttribute("rel"))
+			        && (e.getAttribute("rel").toLowerCase().contains("stylesheet"))
 					&& (e.getAttribute("type").isEmpty() || "text/css".equalsIgnoreCase(e.getAttribute("type")))
 					&& isAllowedMedia(e, media);
 		}

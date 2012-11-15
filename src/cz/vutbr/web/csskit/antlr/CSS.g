@@ -62,6 +62,7 @@ tokens {
 @lexer::header {
 package cz.vutbr.web.csskit.antlr;
 
+import org.fit.net.DataURLHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1135,11 +1136,11 @@ IMPORT
         		    log.debug("BASE: " + ((CSSInputStream) input).getBase());
         		    URL base = ((CSSInputStream) input).getBase();
         		    if (base != null)
-              	    url = new URL(base, fileName);
+              	    url = DataURLHandler.createURL(base, fileName);
               	else
               	{
               	    log.warn("Base URL is unknown");
-              	    url = new URL(fileName);
+                    url = DataURLHandler.createURL(base, fileName);
               	}
               	               			
               	log.debug("Actually, will try to import file \"{}\"", url.toString());	
