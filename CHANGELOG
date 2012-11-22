@@ -1,3 +1,8 @@
+Version 1.9 - Nov 22, 2012
+- A fallback TreeWalker implementation is used when Traversal is not supported by the DOM implementation
+- Support for data: URLs in DOM analyzer
+- Fixed using default values when some variated property value is missing
+
 Version 1.8 - Sep 14, 2012
 - Style sheet charset specification support
 - @charset rule support

@@ -11,19 +11,24 @@
 jStyleParser parses CSS 2.1 into structures which can be assigned to DOM elements.
 While handling errors, it is user agent conforming according to specification.
 </p>
+<p>More detailed information is available at the
+<a href="http://cssbox.sourceforge.net/jstyleparser/">jStyleParser website</a>.</p>
 <h2>Compilation prerequisites</h2>
 <ul>
-<li>ANTLR 3.1 to generate Lexer and Parser from grammar files. Generated output is part 
+<li>(optionally) ANTLR 3.1 to generate Lexer and Parser from grammar files. Generated output is part 
 of the project to make compilation easier.</li>
-<li>ANT to compile classes into jar package by using provided build file</li>
+<li>(optionally) ANT to compile classes into jar package by using the provided build file.</li>
 <li>Libraries
 	<ul>
 		<li>antlr-runtime for parsing CSS</li>
-		<li>any DOM and DOM Traversal implementation. Currently, jStyleParser has been tested with NekoHTML parser and Xerces DOM implementation</li>
+		<li>any DOM implementation. Currently, jStyleParser has been tested with NekoHTML parser
+		and Xerces DOM implementation.</li>
 		<li>slf4j and arbitrary implementation for logging subsystem</li>
 		<li> (Optionally) JUnit with Hamcrest core extension (4.4) for JUnit tests</li> 
 	</ul>
-	All required libraries are provided within SVN repository.
+	All required libraries are provided within the SVN repository and the distribution
+	packages. The Xerces and the NekoHTML libraries may be replaced by any other
+	DOM implementation.	
 </li>
 
 </ul>

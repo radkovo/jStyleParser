@@ -8,19 +8,21 @@ in the COPYING.LESSER and COPYING files.
 Compilation prerequisites
 =========================
 
-- ANTLR 3.1 to generate Lexer and Parser from grammar files. Generated output is part 
+- (optional) ANTLR 3.1 to generate Lexer and Parser from grammar files. Generated output is part 
 of project to make compilation easier
 
-- ANT to compile classes into jar package by using provided build file
+- (optional) ANT to compile classes into jar package by using provided build file
 
 Required Libraries
 ==================
 - antlr-runtime for parsing CSS (version 3.1)
-- any DOM and DOM Traversal implementation. Currently, jStyleParser
-  has been tested with NekoHTML parser and Xerces DOM implementation
+- any DOM implementation. Currently, jStyleParser has been tested with 
+  NekoHTML parser and Xerces DOM implementation
 - slf4j and arbitrary implementation for logging subsystem
 * (Optionally) JUnit with Hamcrest core extension (4.4) for JUnit tests
 
-All required libraries are provided within the SVN repository.
+All required libraries are provided within the SVN repository and the distribution
+packages. The Xerces and the NekoHTML libraries may be replaced by any other
+DOM implementation.
 
 Additional information can be found in doc directory.
