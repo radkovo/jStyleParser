@@ -576,8 +576,8 @@ public class DeclarationTransformer {
 	private boolean processBackgroundPosition(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator background = new BackgroundVariator();
-		return background.tryOneTermVariant(BackgroundVariator.POSITION, d,
-				properties, values);
+		return background.tryMultiTermVariant(BackgroundVariator.POSITION,
+				properties, values, d.toArray(new Term<?>[0]));
 	}
 
 	@SuppressWarnings("unused")
