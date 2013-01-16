@@ -44,8 +44,8 @@ public class ElementUtil {
     	    if (start == -1)
     	        return false;
     	    else
-    	        return ((start == 0 || classNames.charAt(start - 1) == ' ') &&
-    	                (start + len == classNames.length() || classNames.charAt(start + len) == ' '));
+    	        return ((start == 0 || Character.isWhitespace(classNames.charAt(start - 1))) &&
+    	                (start + len == classNames.length() || Character.isWhitespace(classNames.charAt(start + len))));
         }
         else
             return false;
