@@ -821,7 +821,7 @@ declaration
   LexerState begin = getCurrentLexerState(retval.start);
   log.trace("Decl begin: " + begin);
 }
-	: property COLON S* terms important? -> ^(DECLARATION important? property terms)
+	: property COLON S* terms? important? -> ^(DECLARATION important? property terms?)
 	| noprop any* -> INVALID_DECLARATION /* if first character in the declaration is invalid (various dirty hacks) */
 	;
 	catch [RecognitionException re] {
