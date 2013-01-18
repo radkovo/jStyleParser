@@ -127,7 +127,7 @@ public class CSSToken extends CommonToken {
 	public static String extractURI(String uri) {
 		String ret = uri.substring(4, uri.length()-1);
 		// trim string
-		if(ret.charAt(0)=='\'' || ret.charAt(0)=='"')
+		if(ret.length() > 0 && (ret.charAt(0)=='\'' || ret.charAt(0)=='"'))
 			ret = ret.substring(1, ret.length()-1);
 		
 		return ret;
