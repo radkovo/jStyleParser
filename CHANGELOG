@@ -1,3 +1,9 @@
+Version 1.11 - Jan 21, 2013
+- Class matching fix
+- Allow empty url() values
+- Allow no terms in property declarations
+- Error recovery improvements
+
 Version 1.10 - Jan 14, 2013
 - A background-position assignment fix in DOM analyzer
 
