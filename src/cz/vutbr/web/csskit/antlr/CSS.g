@@ -1043,6 +1043,7 @@ norule
       | DASHMATCH -> DASHMATCH
       | RPAREN -> RPAREN
       | '#' //that is not HASH (not an identifier)
+      | '^'
     );
     
 /////////////////////////////////////////////////////////////////////////////////

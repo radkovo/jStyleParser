@@ -1,4 +1,4 @@
-// $ANTLR 3.1.2 /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g 2013-01-21 09:15:30
+// $ANTLR 3.1.2 /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g 2013-01-31 15:14:05
  
 package cz.vutbr.web.csskit.antlr;
 
@@ -24,94 +24,95 @@ import org.antlr.runtime.tree.*;
  */
 public class CSSParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "STYLESHEET", "INLINESTYLE", "ATBLOCK", "CURLYBLOCK", "PARENBLOCK", "BRACEBLOCK", "RULE", "SELECTOR", "ELEMENT", "PSEUDO", "ADJACENT", "CHILD", "DESCENDANT", "ATTRIBUTE", "SET", "DECLARATION", "VALUE", "IMPORTANT", "IMPORT_END", "INVALID_STRING", "INVALID_SELECTOR", "INVALID_SELPART", "INVALID_DECLARATION", "INVALID_STATEMENT", "INVALID_IMPORT", "INVALID_DIRECTIVE", "S", "CDO", "CDC", "CHARSET", "IMPORT", "PAGE", "COLON", "IDENT", "LCURLY", "RCURLY", "MEDIA", "ATKEYWORD", "COMMA", "SEMICOLON", "EXCLAMATION", "MINUS", "EXPRESSION", "FUNCTION", "RPAREN", "CLASSKEYWORD", "NUMBER", "PERCENTAGE", "DIMENSION", "URI", "HASH", "UNIRANGE", "INCLUDES", "GREATER", "LESS", "QUESTION", "PERCENT", "EQUALS", "SLASH", "PLUS", "ASTERISK", "DASHMATCH", "LPAREN", "LBRACE", "RBRACE", "STRING", "STRING_CHAR", "INVALID_TOKEN", "IDENT_MACR", "STRING_MACR", "NAME_MACR", "NUMBER_MACR", "W_MACR", "URI_MACR", "APOS", "QUOT", "W_CHAR", "COMMENT", "SL_COMMENT", "NAME_START", "NAME_CHAR", "NON_ASCII", "ESCAPE_CHAR", "URI_CHAR", "NL_CHAR", "'important'", "'#'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "STYLESHEET", "INLINESTYLE", "ATBLOCK", "CURLYBLOCK", "PARENBLOCK", "BRACEBLOCK", "RULE", "SELECTOR", "ELEMENT", "PSEUDO", "ADJACENT", "CHILD", "DESCENDANT", "ATTRIBUTE", "SET", "DECLARATION", "VALUE", "IMPORTANT", "IMPORT_END", "INVALID_STRING", "INVALID_SELECTOR", "INVALID_SELPART", "INVALID_DECLARATION", "INVALID_STATEMENT", "INVALID_IMPORT", "INVALID_DIRECTIVE", "S", "CDO", "CDC", "CHARSET", "IMPORT", "PAGE", "COLON", "IDENT", "LCURLY", "RCURLY", "MEDIA", "ATKEYWORD", "COMMA", "SEMICOLON", "EXCLAMATION", "MINUS", "EXPRESSION", "FUNCTION", "RPAREN", "CLASSKEYWORD", "NUMBER", "PERCENTAGE", "DIMENSION", "URI", "HASH", "UNIRANGE", "INCLUDES", "GREATER", "LESS", "QUESTION", "PERCENT", "EQUALS", "SLASH", "PLUS", "ASTERISK", "DASHMATCH", "LPAREN", "LBRACE", "RBRACE", "STRING", "STRING_CHAR", "INVALID_TOKEN", "IDENT_MACR", "STRING_MACR", "NAME_MACR", "NUMBER_MACR", "W_MACR", "URI_MACR", "APOS", "QUOT", "W_CHAR", "COMMENT", "SL_COMMENT", "NAME_START", "NAME_CHAR", "NON_ASCII", "ESCAPE_CHAR", "URI_CHAR", "NL_CHAR", "'important'", "'#'", "'^'"
     };
     public static final int FUNCTION=47;
     public static final int APOS=78;
-    public static final int NAME_CHAR=84;
     public static final int CLASSKEYWORD=49;
-    public static final int PSEUDO=13;
-    public static final int LBRACE=67;
     public static final int INVALID_STATEMENT=27;
-    public static final int ATTRIBUTE=17;
     public static final int INVALID_TOKEN=71;
     public static final int EQUALS=61;
-    public static final int NAME_START=83;
-    public static final int NUMBER_MACR=75;
     public static final int MEDIA=40;
     public static final int NL_CHAR=88;
-    public static final int CHARSET=33;
-    public static final int NON_ASCII=85;
     public static final int EOF=-1;
-    public static final int DECLARATION=19;
+    public static final int NON_ASCII=85;
     public static final int STYLESHEET=4;
-    public static final int LPAREN=66;
-    public static final int ASTERISK=64;
-    public static final int BRACEBLOCK=9;
     public static final int INCLUDES=56;
-    public static final int RPAREN=48;
     public static final int INVALID_DIRECTIVE=29;
+    public static final int T__91=91;
+    public static final int RPAREN=48;
     public static final int IMPORT=34;
-    public static final int SLASH=62;
     public static final int GREATER=57;
-    public static final int SELECTOR=11;
     public static final int T__90=90;
     public static final int EXCLAMATION=44;
-    public static final int ATBLOCK=6;
-    public static final int COMMA=42;
     public static final int INVALID_SELPART=25;
-    public static final int LESS=58;
     public static final int INVALID_DECLARATION=26;
+    public static final int LESS=58;
     public static final int ELEMENT=12;
-    public static final int IDENT=37;
-    public static final int PLUS=63;
-    public static final int UNIRANGE=55;
     public static final int DIMENSION=52;
     public static final int COMMENT=81;
+    public static final int CHILD=15;
+    public static final int INVALID_STRING=23;
+    public static final int RULE=10;
+    public static final int RBRACE=68;
+    public static final int PARENBLOCK=8;
+    public static final int NUMBER=50;
+    public static final int URI_CHAR=87;
+    public static final int LCURLY=38;
+    public static final int SEMICOLON=43;
+    public static final int S=30;
+    public static final int CDO=31;
+    public static final int VALUE=20;
+    public static final int CDC=32;
+    public static final int T__89=89;
+    public static final int PERCENTAGE=51;
+    public static final int INVALID_SELECTOR=24;
+    public static final int URI=53;
+    public static final int STRING_CHAR=70;
+    public static final int DASHMATCH=65;
+    public static final int IMPORT_END=22;
+    public static final int INLINESTYLE=5;
+    public static final int SL_COMMENT=82;
+    public static final int IDENT_MACR=72;
+    public static final int NAME_CHAR=84;
+    public static final int PSEUDO=13;
+    public static final int LBRACE=67;
+    public static final int ATTRIBUTE=17;
+    public static final int NAME_START=83;
+    public static final int NUMBER_MACR=75;
+    public static final int CHARSET=33;
+    public static final int DECLARATION=19;
+    public static final int ASTERISK=64;
+    public static final int LPAREN=66;
+    public static final int BRACEBLOCK=9;
+    public static final int SELECTOR=11;
+    public static final int SLASH=62;
+    public static final int ATBLOCK=6;
+    public static final int COMMA=42;
+    public static final int IDENT=37;
+    public static final int UNIRANGE=55;
+    public static final int PLUS=63;
     public static final int EXPRESSION=46;
     public static final int CURLYBLOCK=7;
-    public static final int CHILD=15;
     public static final int ATKEYWORD=41;
-    public static final int INVALID_STRING=23;
-    public static final int RBRACE=68;
     public static final int PERCENT=60;
-    public static final int RULE=10;
     public static final int W_CHAR=80;
-    public static final int PARENBLOCK=8;
     public static final int STRING_MACR=73;
-    public static final int QUOT=79;
     public static final int W_MACR=76;
-    public static final int URI_CHAR=87;
-    public static final int NUMBER=50;
+    public static final int QUOT=79;
     public static final int DESCENDANT=16;
     public static final int HASH=54;
     public static final int SET=18;
-    public static final int LCURLY=38;
     public static final int NAME_MACR=74;
-    public static final int SEMICOLON=43;
-    public static final int S=30;
     public static final int MINUS=45;
-    public static final int VALUE=20;
-    public static final int CDO=31;
-    public static final int CDC=32;
-    public static final int PERCENTAGE=51;
-    public static final int T__89=89;
     public static final int IMPORTANT=21;
-    public static final int INVALID_SELECTOR=24;
     public static final int ESCAPE_CHAR=86;
-    public static final int URI=53;
     public static final int COLON=36;
-    public static final int STRING_CHAR=70;
     public static final int PAGE=35;
-    public static final int DASHMATCH=65;
-    public static final int QUESTION=59;
     public static final int ADJACENT=14;
-    public static final int IMPORT_END=22;
+    public static final int QUESTION=59;
     public static final int INVALID_IMPORT=28;
-    public static final int INLINESTYLE=5;
-    public static final int SL_COMMENT=82;
     public static final int RCURLY=39;
-    public static final int IDENT_MACR=72;
     public static final int STRING=69;
     public static final int URI_MACR=77;
 
@@ -7317,7 +7318,7 @@ public class CSSParser extends Parser {
     };
 
     // $ANTLR start "norule"
-    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1024:1: norule : ( NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COMMA -> COMMA | GREATER -> GREATER | LESS -> LESS | QUESTION -> QUESTION | PERCENT -> PERCENT | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | DASHMATCH -> DASHMATCH | RPAREN -> RPAREN | '#' ) ;
+    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1024:1: norule : ( NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COMMA -> COMMA | GREATER -> GREATER | LESS -> LESS | QUESTION -> QUESTION | PERCENT -> PERCENT | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | DASHMATCH -> DASHMATCH | RPAREN -> RPAREN | '#' | '^' ) ;
     public final CSSParser.norule_return norule() throws RecognitionException {
         CSSParser.norule_return retval = new CSSParser.norule_return();
         retval.start = input.LT(1);
@@ -7343,6 +7344,7 @@ public class CSSParser extends Parser {
         Token DASHMATCH236=null;
         Token RPAREN237=null;
         Token char_literal238=null;
+        Token char_literal239=null;
         CSSParser.string_return string222 = null;
 
 
@@ -7365,6 +7367,7 @@ public class CSSParser extends Parser {
         Object DASHMATCH236_tree=null;
         Object RPAREN237_tree=null;
         Object char_literal238_tree=null;
+        Object char_literal239_tree=null;
         RewriteRuleTokenStream stream_INCLUDES=new RewriteRuleTokenStream(adaptor,"token INCLUDES");
         RewriteRuleTokenStream stream_RPAREN=new RewriteRuleTokenStream(adaptor,"token RPAREN");
         RewriteRuleTokenStream stream_GREATER=new RewriteRuleTokenStream(adaptor,"token GREATER");
@@ -7373,6 +7376,7 @@ public class CSSParser extends Parser {
         RewriteRuleTokenStream stream_EXCLAMATION=new RewriteRuleTokenStream(adaptor,"token EXCLAMATION");
         RewriteRuleTokenStream stream_QUESTION=new RewriteRuleTokenStream(adaptor,"token QUESTION");
         RewriteRuleTokenStream stream_PERCENT=new RewriteRuleTokenStream(adaptor,"token PERCENT");
+        RewriteRuleTokenStream stream_91=new RewriteRuleTokenStream(adaptor,"token 91");
         RewriteRuleTokenStream stream_90=new RewriteRuleTokenStream(adaptor,"token 90");
         RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
         RewriteRuleTokenStream stream_NUMBER=new RewriteRuleTokenStream(adaptor,"token NUMBER");
@@ -7386,11 +7390,11 @@ public class CSSParser extends Parser {
         RewriteRuleTokenStream stream_URI=new RewriteRuleTokenStream(adaptor,"token URI");
         RewriteRuleSubtreeStream stream_string=new RewriteRuleSubtreeStream(adaptor,"rule string");
         try {
-            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1026:3: ( ( NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COMMA -> COMMA | GREATER -> GREATER | LESS -> LESS | QUESTION -> QUESTION | PERCENT -> PERCENT | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | DASHMATCH -> DASHMATCH | RPAREN -> RPAREN | '#' ) )
-            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1026:5: ( NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COMMA -> COMMA | GREATER -> GREATER | LESS -> LESS | QUESTION -> QUESTION | PERCENT -> PERCENT | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | DASHMATCH -> DASHMATCH | RPAREN -> RPAREN | '#' )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1026:3: ( ( NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COMMA -> COMMA | GREATER -> GREATER | LESS -> LESS | QUESTION -> QUESTION | PERCENT -> PERCENT | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | DASHMATCH -> DASHMATCH | RPAREN -> RPAREN | '#' | '^' ) )
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1026:5: ( NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COMMA -> COMMA | GREATER -> GREATER | LESS -> LESS | QUESTION -> QUESTION | PERCENT -> PERCENT | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | DASHMATCH -> DASHMATCH | RPAREN -> RPAREN | '#' | '^' )
             {
-            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1026:5: ( NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COMMA -> COMMA | GREATER -> GREATER | LESS -> LESS | QUESTION -> QUESTION | PERCENT -> PERCENT | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | DASHMATCH -> DASHMATCH | RPAREN -> RPAREN | '#' )
-            int alt90=20;
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1026:5: ( NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COMMA -> COMMA | GREATER -> GREATER | LESS -> LESS | QUESTION -> QUESTION | PERCENT -> PERCENT | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | DASHMATCH -> DASHMATCH | RPAREN -> RPAREN | '#' | '^' )
+            int alt90=21;
             alt90 = dfa90.predict(input);
             switch (alt90) {
                 case 1 :
@@ -7937,6 +7941,15 @@ public class CSSParser extends Parser {
 
                     }
                     break;
+                case 21 :
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1046:9: '^'
+                    {
+                    char_literal239=(Token)match(input,91,FOLLOW_91_in_norule2641);  
+                    stream_91.add(char_literal239);
+
+
+                    }
+                    break;
 
             }
 
@@ -8183,21 +8196,22 @@ public class CSSParser extends Parser {
         }
     }
     static final String DFA4_eotS =
-        "\51\uffff";
+        "\52\uffff";
     static final String DFA4_eofS =
-        "\1\1\50\uffff";
+        "\1\1\51\uffff";
     static final String DFA4_minS =
-        "\1\26\50\uffff";
+        "\1\26\51\uffff";
     static final String DFA4_maxS =
-        "\1\132\50\uffff";
+        "\1\133\51\uffff";
     static final String DFA4_acceptS =
-        "\1\uffff\1\6\1\1\1\2\1\3\1\4\1\uffff\1\5\41\uffff";
+        "\1\uffff\1\6\1\1\1\2\1\3\1\4\1\uffff\1\5\42\uffff";
     static final String DFA4_specialS =
-        "\51\uffff}>";
+        "\52\uffff}>";
     static final String[] DFA4_transitionS = {
             "\2\7\1\uffff\1\7\2\uffff\1\7\1\uffff\1\4\1\2\1\3\5\7\1\uffff"+
             "\1\5\3\7\1\5\2\7\2\uffff\22\7\1\uffff\1\7\1\uffff\1\7\24\uffff"+
-            "\1\7",
+            "\2\7",
+            "",
             "",
             "",
             "",
@@ -8274,21 +8288,22 @@ public class CSSParser extends Parser {
         }
     }
     static final String DFA5_eotS =
-        "\43\uffff";
+        "\44\uffff";
     static final String DFA5_eofS =
-        "\43\uffff";
+        "\44\uffff";
     static final String DFA5_minS =
-        "\1\26\42\uffff";
+        "\1\26\43\uffff";
     static final String DFA5_maxS =
-        "\1\132\42\uffff";
+        "\1\133\43\uffff";
     static final String DFA5_acceptS =
-        "\1\uffff\1\1\32\uffff\1\2\6\uffff";
+        "\1\uffff\1\1\33\uffff\1\2\6\uffff";
     static final String DFA5_specialS =
-        "\43\uffff}>";
+        "\44\uffff}>";
     static final String[] DFA5_transitionS = {
-            "\1\34\1\1\1\uffff\1\1\2\uffff\1\34\4\uffff\3\34\2\1\2\uffff"+
-            "\2\34\1\1\1\uffff\2\1\2\uffff\22\1\1\uffff\1\1\1\uffff\1\1\24"+
-            "\uffff\1\1",
+            "\1\35\1\1\1\uffff\1\1\2\uffff\1\35\4\uffff\3\35\2\1\2\uffff"+
+            "\2\35\1\1\1\uffff\2\1\2\uffff\22\1\1\uffff\1\1\1\uffff\1\1\24"+
+            "\uffff\2\1",
+            "",
             "",
             "",
             "",
@@ -8431,21 +8446,22 @@ public class CSSParser extends Parser {
         }
     }
     static final String DFA12_eotS =
-        "\36\uffff";
+        "\37\uffff";
     static final String DFA12_eofS =
-        "\36\uffff";
+        "\37\uffff";
     static final String DFA12_minS =
-        "\1\27\35\uffff";
+        "\1\27\36\uffff";
     static final String DFA12_maxS =
-        "\1\132\35\uffff";
+        "\1\133\36\uffff";
     static final String DFA12_acceptS =
-        "\1\uffff\1\2\33\uffff\1\1";
+        "\1\uffff\1\2\34\uffff\1\1";
     static final String DFA12_specialS =
-        "\36\uffff}>";
+        "\37\uffff}>";
     static final String[] DFA12_transitionS = {
-            "\1\1\1\uffff\1\1\4\uffff\1\35\5\uffff\2\1\1\uffff\1\1\2\uffff"+
+            "\1\1\1\uffff\1\1\4\uffff\1\36\5\uffff\2\1\1\uffff\1\1\2\uffff"+
             "\1\1\1\uffff\2\1\2\uffff\22\1\1\uffff\1\1\1\uffff\1\1\24\uffff"+
-            "\1\1",
+            "\2\1",
+            "",
             "",
             "",
             "",
@@ -8511,20 +8527,21 @@ public class CSSParser extends Parser {
         }
     }
     static final String DFA14_eotS =
-        "\35\uffff";
+        "\36\uffff";
     static final String DFA14_eofS =
-        "\35\uffff";
+        "\36\uffff";
     static final String DFA14_minS =
-        "\1\27\34\uffff";
+        "\1\27\35\uffff";
     static final String DFA14_maxS =
-        "\1\132\34\uffff";
+        "\1\133\35\uffff";
     static final String DFA14_acceptS =
-        "\1\uffff\1\2\1\1\32\uffff";
+        "\1\uffff\1\2\1\1\33\uffff";
     static final String DFA14_specialS =
-        "\35\uffff}>";
+        "\36\uffff}>";
     static final String[] DFA14_transitionS = {
             "\1\2\1\uffff\1\2\12\uffff\2\2\1\uffff\1\1\2\uffff\1\2\1\uffff"+
-            "\2\2\2\uffff\22\2\1\uffff\1\2\1\uffff\1\2\24\uffff\1\2",
+            "\2\2\2\uffff\22\2\1\uffff\1\2\1\uffff\1\2\24\uffff\2\2",
+            "",
             "",
             "",
             "",
@@ -8589,21 +8606,22 @@ public class CSSParser extends Parser {
         }
     }
     static final String DFA13_eotS =
-        "\36\uffff";
+        "\37\uffff";
     static final String DFA13_eofS =
-        "\36\uffff";
+        "\37\uffff";
     static final String DFA13_minS =
-        "\1\27\35\uffff";
+        "\1\27\36\uffff";
     static final String DFA13_maxS =
-        "\1\132\35\uffff";
+        "\1\133\36\uffff";
     static final String DFA13_acceptS =
-        "\1\uffff\1\2\33\uffff\1\1";
+        "\1\uffff\1\2\34\uffff\1\1";
     static final String DFA13_specialS =
-        "\36\uffff}>";
+        "\37\uffff}>";
     static final String[] DFA13_transitionS = {
-            "\1\1\1\uffff\1\1\4\uffff\1\35\5\uffff\2\1\1\uffff\1\1\2\uffff"+
+            "\1\1\1\uffff\1\1\4\uffff\1\36\5\uffff\2\1\1\uffff\1\1\2\uffff"+
             "\1\1\1\uffff\2\1\2\uffff\22\1\1\uffff\1\1\1\uffff\1\1\24\uffff"+
-            "\1\1",
+            "\2\1",
+            "",
             "",
             "",
             "",
@@ -8746,21 +8764,22 @@ public class CSSParser extends Parser {
         }
     }
     static final String DFA30_eotS =
-        "\34\uffff";
+        "\35\uffff";
     static final String DFA30_eofS =
-        "\34\uffff";
+        "\35\uffff";
     static final String DFA30_minS =
-        "\1\27\33\uffff";
+        "\1\27\34\uffff";
     static final String DFA30_maxS =
-        "\1\132\33\uffff";
+        "\1\133\34\uffff";
     static final String DFA30_acceptS =
-        "\1\uffff\1\1\6\uffff\1\2\23\uffff";
+        "\1\uffff\1\1\6\uffff\1\2\24\uffff";
     static final String DFA30_specialS =
-        "\34\uffff}>";
+        "\35\uffff}>";
     static final String[] DFA30_transitionS = {
             "\1\10\1\uffff\1\1\12\uffff\2\1\4\uffff\1\10\1\uffff\2\10\2\uffff"+
             "\1\10\1\1\4\10\1\1\11\10\1\1\1\10\1\uffff\1\1\1\uffff\1\10\24"+
-            "\uffff\1\10",
+            "\uffff\2\10",
+            "",
             "",
             "",
             "",
@@ -11260,22 +11279,23 @@ public class CSSParser extends Parser {
         }
     }
     static final String DFA90_eotS =
-        "\25\uffff";
+        "\26\uffff";
     static final String DFA90_eofS =
-        "\25\uffff";
+        "\26\uffff";
     static final String DFA90_minS =
-        "\1\27\24\uffff";
+        "\1\27\25\uffff";
     static final String DFA90_maxS =
-        "\1\132\24\uffff";
+        "\1\133\25\uffff";
     static final String DFA90_acceptS =
         "\1\uffff\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14\1"+
-        "\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24";
+        "\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25";
     static final String DFA90_specialS =
-        "\25\uffff}>";
+        "\26\uffff}>";
     static final String[] DFA90_transitionS = {
             "\1\4\22\uffff\1\10\1\uffff\1\17\1\20\2\uffff\1\23\1\uffff\1"+
             "\1\1\2\1\3\1\5\1\uffff\1\6\1\7\1\11\1\12\1\13\1\14\1\15\1\16"+
-            "\1\21\1\uffff\1\22\3\uffff\1\4\24\uffff\1\24",
+            "\1\21\1\uffff\1\22\3\uffff\1\4\24\uffff\1\24\1\25",
+            "",
             "",
             "",
             "",
@@ -11328,7 +11348,7 @@ public class CSSParser extends Parser {
             this.transition = DFA90_transition;
         }
         public String getDescription() {
-            return "1026:5: ( NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COMMA -> COMMA | GREATER -> GREATER | LESS -> LESS | QUESTION -> QUESTION | PERCENT -> PERCENT | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | DASHMATCH -> DASHMATCH | RPAREN -> RPAREN | '#' )";
+            return "1026:5: ( NUMBER -> NUMBER | PERCENTAGE -> PERCENTAGE | DIMENSION -> DIMENSION | string -> string | URI -> URI | UNIRANGE -> UNIRANGE | INCLUDES -> INCLUDES | COMMA -> COMMA | GREATER -> GREATER | LESS -> LESS | QUESTION -> QUESTION | PERCENT -> PERCENT | EQUALS -> EQUALS | SLASH -> SLASH | EXCLAMATION -> EXCLAMATION | MINUS -> MINUS | PLUS -> PLUS | DASHMATCH -> DASHMATCH | RPAREN -> RPAREN | '#' | '^' )";
         }
     }
  
@@ -11336,11 +11356,11 @@ public class CSSParser extends Parser {
     public static final BitSet FOLLOW_S_in_inlinestyle201 = new BitSet(new long[]{0xFF063C7040000000L,0x00000000000000C3L});
     public static final BitSet FOLLOW_declarations_in_inlinestyle206 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_inlineset_in_inlinestyle226 = new BitSet(new long[]{0xFF063C7000000002L,0x00000000000000C3L});
-    public static final BitSet FOLLOW_CDO_in_stylesheet254 = new BitSet(new long[]{0xFFFF3FBFD2C00002L,0x000000000400002BL});
-    public static final BitSet FOLLOW_CDC_in_stylesheet258 = new BitSet(new long[]{0xFFFF3FBFD2C00002L,0x000000000400002BL});
-    public static final BitSet FOLLOW_S_in_stylesheet262 = new BitSet(new long[]{0xFFFF3FBFD2C00002L,0x000000000400002BL});
-    public static final BitSet FOLLOW_nostatement_in_stylesheet266 = new BitSet(new long[]{0xFFFF3FBFD2C00002L,0x000000000400002BL});
-    public static final BitSet FOLLOW_statement_in_stylesheet270 = new BitSet(new long[]{0xFFFF3FBFD2C00002L,0x000000000400002BL});
+    public static final BitSet FOLLOW_CDO_in_stylesheet254 = new BitSet(new long[]{0xFFFF3FBFD2C00002L,0x000000000C00002BL});
+    public static final BitSet FOLLOW_CDC_in_stylesheet258 = new BitSet(new long[]{0xFFFF3FBFD2C00002L,0x000000000C00002BL});
+    public static final BitSet FOLLOW_S_in_stylesheet262 = new BitSet(new long[]{0xFFFF3FBFD2C00002L,0x000000000C00002BL});
+    public static final BitSet FOLLOW_nostatement_in_stylesheet266 = new BitSet(new long[]{0xFFFF3FBFD2C00002L,0x000000000C00002BL});
+    public static final BitSet FOLLOW_statement_in_stylesheet270 = new BitSet(new long[]{0xFFFF3FBFD2C00002L,0x000000000C00002BL});
     public static final BitSet FOLLOW_ruleset_in_statement300 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_atstatement_in_statement304 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_CHARSET_in_atstatement315 = new BitSet(new long[]{0x0000000000000002L});
@@ -11359,10 +11379,10 @@ public class CSSParser extends Parser {
     public static final BitSet FOLLOW_MEDIA_in_atstatement379 = new BitSet(new long[]{0x0000006040000000L});
     public static final BitSet FOLLOW_S_in_atstatement381 = new BitSet(new long[]{0x0000006040000000L});
     public static final BitSet FOLLOW_media_in_atstatement384 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_LCURLY_in_atstatement390 = new BitSet(new long[]{0xFFFF34B042800000L,0x000000000400002BL});
-    public static final BitSet FOLLOW_S_in_atstatement392 = new BitSet(new long[]{0xFFFF34B042800000L,0x000000000400002BL});
-    public static final BitSet FOLLOW_ruleset_in_atstatement396 = new BitSet(new long[]{0xFFFF34B042800000L,0x000000000400002BL});
-    public static final BitSet FOLLOW_S_in_atstatement398 = new BitSet(new long[]{0xFFFF34B042800000L,0x000000000400002BL});
+    public static final BitSet FOLLOW_LCURLY_in_atstatement390 = new BitSet(new long[]{0xFFFF34B042800000L,0x000000000C00002BL});
+    public static final BitSet FOLLOW_S_in_atstatement392 = new BitSet(new long[]{0xFFFF34B042800000L,0x000000000C00002BL});
+    public static final BitSet FOLLOW_ruleset_in_atstatement396 = new BitSet(new long[]{0xFFFF34B042800000L,0x000000000C00002BL});
+    public static final BitSet FOLLOW_S_in_atstatement398 = new BitSet(new long[]{0xFFFF34B042800000L,0x000000000C00002BL});
     public static final BitSet FOLLOW_RCURLY_in_atstatement403 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ATKEYWORD_in_atstatement421 = new BitSet(new long[]{0x0000004040000000L});
     public static final BitSet FOLLOW_S_in_atstatement423 = new BitSet(new long[]{0x0000004040000000L});
@@ -11571,5 +11591,6 @@ public class CSSParser extends Parser {
     public static final BitSet FOLLOW_DASHMATCH_in_norule2602 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_RPAREN_in_norule2616 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_90_in_norule2630 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_91_in_norule2641 = new BitSet(new long[]{0x0000000000000002L});
 
 }
