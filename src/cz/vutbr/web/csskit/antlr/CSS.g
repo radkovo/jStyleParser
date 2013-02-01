@@ -772,6 +772,9 @@ atstatement
 	| PAGE S* (COLON IDENT S*)? 
 		LCURLY S* declarations 
 		RCURLY -> ^(PAGE IDENT? declarations)
+	| FONTFACE S*
+	  LCURLY S* declarations
+	  RCURLY -> ^(FONTFACE declarations)
 	| MEDIA S* media? 
 		LCURLY S* (ruleset S*)* RCURLY -> ^(MEDIA media? ruleset*)	
 	| ATKEYWORD S* LCURLY any* RCURLY -> INVALID_STATEMENT
@@ -1186,7 +1189,11 @@ MEDIA
 PAGE
 	: '@page'
 	;
-	
+
+FONTFACE
+  : '@font-face'
+	;
+
 /** Keyword beginning with '@' */
 ATKEYWORD
 	: '@' MINUS? IDENT_MACR

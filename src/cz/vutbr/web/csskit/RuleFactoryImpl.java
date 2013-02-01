@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleFactory;
+import cz.vutbr.web.css.RuleFontFace;
 import cz.vutbr.web.css.RuleImport;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
@@ -79,6 +80,10 @@ public class RuleFactoryImpl implements RuleFactory {
 		return new RulePageImpl(priority);
 	}
 
+	public RuleFontFace createFontFace(Priority priority) {
+	    return new RuleFontFaceImpl(priority);
+	}
+	
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createCombinedSelector()
 	 */

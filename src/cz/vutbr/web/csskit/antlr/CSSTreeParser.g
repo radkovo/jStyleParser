@@ -201,6 +201,8 @@ scope {
 	  }
 	| ^(PAGE (i=IDENT{ pseudo=extractText(i);})? decl=declarations)
 		{ $stmnt = preparator.prepareRulePage(decl, pseudo); }
+  | ^(FONTFACE decl=declarations)
+    { $stmnt = preparator.prepareRuleFontFace(decl); }
 	| ^(MEDIA (mediaList=media)? 
 			(  rs=ruleset {
 					   if(rules==null) rules = new ArrayList<RuleSet>();				

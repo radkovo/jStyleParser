@@ -12,6 +12,7 @@ import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
+import cz.vutbr.web.css.RuleFontFace;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
 import cz.vutbr.web.css.RuleSet;
@@ -107,6 +108,21 @@ public class SimplePreparator implements Preparator {
 
 		return (RuleBlock<?>) rp;
 	}
+
+    public RuleBlock<?> prepareRuleFontFace(List<Declaration> decl) {
+
+        if (decl == null || decl.isEmpty()) {
+            log.debug("Empty RuleFontFace was ommited");
+            return null;
+        }
+
+        Priority prio = ps.getAndIncrement();
+        RuleFontFace rp = rf.createFontFace(prio);
+        rp.replaceAll(decl);
+        log.info("Create @font-face as {}th with:\n{}", prio, rp);
+
+        return (RuleBlock<?>) rp;
+    }
 
 	public Priority markPriority() {
 		return ps.markAndIncrement();

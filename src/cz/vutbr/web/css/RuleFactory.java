@@ -62,6 +62,13 @@ public interface RuleFactory {
 	 */
 	RulePage createPage(Priority priority);
 
+    /**
+     * Creates CSS named font
+     * @param priority Priority mark
+     * @return New CSS font
+     */
+    RuleFontFace createFontFace(Priority priority);
+
 	/**
 	 * Creates CSS combined selector, collection of (simple) selectors
 	 * @return New CSS combined selector

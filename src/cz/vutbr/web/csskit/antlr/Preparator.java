@@ -59,6 +59,13 @@ public interface Preparator {
 	 */
 	public RuleBlock<?> prepareRulePage(List<Declaration> decl, String pseudo);
 	
+    /**
+     * Creates RuleFontFace, block of rules associated with specific font 
+     * @param decl List of declarations
+     * @return RuleFontFace
+     */
+    public RuleBlock<?> prepareRuleFontFace(List<Declaration> decl);
+    
 	/**
 	 * Marks priority 
 	 * @return Mark
