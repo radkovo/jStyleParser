@@ -589,6 +589,9 @@ attribute returns [Selector.ElementAttribute elemAttr]
 	  ((EQUALS {op=Selector.Operator.EQUALS; } 
 	   | INCLUDES {op=Selector.Operator.INCLUDES; } 
 	   | DASHMATCH {op=Selector.Operator.DASHMATCH; }
+     | CONTAINS {op=Selector.Operator.CONTAINS; }
+     | STARTSWITH {op=Selector.Operator.STARTSWITH; }
+     | ENDSWITH {op=Selector.Operator.ENDSWITH; }
 	   ) 
 	   (i=IDENT {
 		value=extractText(i);

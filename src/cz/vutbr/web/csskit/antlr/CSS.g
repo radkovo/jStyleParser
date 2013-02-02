@@ -948,7 +948,7 @@ selpart
 
 attribute
 	: IDENT S*
-	  ((EQUALS | INCLUDES | DASHMATCH) S* (IDENT | string) S*)?
+	  ((EQUALS | INCLUDES | DASHMATCH | STARTSWITH | ENDSWITH | CONTAINS) S* (IDENT | string) S*)?
 	;
 
 pseudo
@@ -1379,6 +1379,18 @@ INCLUDES
 DASHMATCH
 	: '|='
 	;
+
+STARTSWITH
+  : '^='
+  ;
+  
+ENDSWITH
+  : '$='
+  ;
+  
+CONTAINS
+  : '*='
+  ;
 
 INVALID_TOKEN
 	: .

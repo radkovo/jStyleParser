@@ -44,6 +44,7 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     	DASHMATCH("|="),
     	CONTAINS("*="),
     	STARTSWITH("^="),
+    	ENDSWITH("$="),
     	NO_OPERATOR("");
     	
     	private String value;
