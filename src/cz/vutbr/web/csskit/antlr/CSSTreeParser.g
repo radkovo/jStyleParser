@@ -20,6 +20,7 @@ import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
+import cz.vutbr.web.css.RuleMargin;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
 import cz.vutbr.web.css.RuleSet;
@@ -179,6 +180,8 @@ scope {
 	$statement::insideAtstatement=true;
 	$atstatement::stm = $stmnt = null;
 	List<RuleSet> rules = null;
+	List<RuleMargin> margins = null;
+	String name = null;
 	String pseudo = null;
 	Priority mark = preparator.markPriority();
 }
@@ -199,8 +202,25 @@ scope {
 	    imports.pop();
 		log.info("Imported file was parsed, returing in nesting.");
 	  }
-	| ^(PAGE (i=IDENT{ pseudo=extractText(i);})? decl=declarations)
-		{ $stmnt = preparator.prepareRulePage(decl, pseudo); }
+  | ^(PAGE
+      (i=IDENT
+        { name = extractText(i); }
+      )?
+      (^(PSEUDO i=IDENT)
+        { pseudo = extractText(i); }
+      )?
+      decl=declarations
+      ^(SET (m=margin {
+        if (m!=null) {
+          if (margins == null) margins = new ArrayList<RuleMargin>();
+          margins.add(m);
+          log.debug("Inserted margin rule #{} into @page", margins.size()+1);
+        }
+      })*)
+    )
+    {
+      $stmnt = preparator.prepareRulePage(decl, margins, name, pseudo);
+    }
   | ^(FONTFACE decl=declarations)
     { $stmnt = preparator.prepareRuleFontFace(decl); }
 	| ^(MEDIA (mediaList=media)? 
@@ -221,7 +241,19 @@ scope {
 		   $stmnt = preparator.prepareRuleMedia(mark, rules, mediaList);
 	   }
 	;
-	
+
+margin returns [RuleMargin m]
+@init {
+    logEnter("margin");
+}
+@after {
+    logLeave("margin");
+}
+	: ^(area = MARGIN_AREA
+		decl=declarations)
+		{ $m = preparator.prepareRuleMargin(extractText(area).substring(1), decl); }
+	;
+
 media returns [List<String> affected] 
 @init {
    logEnter("media");

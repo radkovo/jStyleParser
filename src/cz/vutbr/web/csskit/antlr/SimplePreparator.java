@@ -13,6 +13,7 @@ import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleFontFace;
+import cz.vutbr.web.css.RuleMargin;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
 import cz.vutbr.web.css.RuleSet;
@@ -93,22 +94,47 @@ public class SimplePreparator implements Preparator {
 		return (RuleBlock<?>) rm;
 	}
 
-	public RuleBlock<?> prepareRulePage(List<Declaration> decl, String pseudo) {
+	public RuleBlock<?> prepareRulePage(List<Declaration> declarations, List<RuleMargin> marginRules, String name, String pseudo) {
 
-		if (decl == null || decl.isEmpty()) {
+	    if ((declarations == null || declarations.isEmpty()) &&
+	         (marginRules == null || marginRules.isEmpty())) {
 			log.debug("Empty RulePage was ommited");
 			return null;
 		}
 
 		Priority prio = ps.getAndIncrement();
 		RulePage rp = rf.createPage(prio);
-		rp.replaceAll(decl);
+        if (declarations != null)
+            for (Declaration d : declarations)
+                rp.add(d);
+        if (marginRules != null)
+            for (RuleMargin m : marginRules)
+                rp.add(m);
+        rp.setName(name);
+		
 		rp.setPseudo(pseudo);
 		log.info("Create @page as {}th with:\n{}", prio, rp);
 
 		return (RuleBlock<?>) rp;
 	}
 
+    public RuleMargin prepareRuleMargin(String area, List<Declaration> decl) {
+
+        if ((decl == null || decl.isEmpty()))
+        {
+            log.debug("Empty RuleMargin was ommited");
+            return null;
+        }
+
+        Priority prio = ps.getAndIncrement();
+        RuleMargin rm = rf.createMargin(area, prio);
+        rm.replaceAll(decl);
+
+        log.info("Create @" + area + " as " + prio + "th with:\n" + rm);
+
+        return rm;
+    }
+	
     public RuleBlock<?> prepareRuleFontFace(List<Declaration> decl) {
 
         if (decl == null || decl.isEmpty()) {

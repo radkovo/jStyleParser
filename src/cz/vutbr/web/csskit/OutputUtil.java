@@ -43,6 +43,7 @@ public class OutputUtil {
 	public static final String ATTRIBUTE_CLOSING = "]";
 	public static final String PERCENT_SIGN = "%";
 	public static final String HASH_SIGN = "#";
+	public static final String MARGIN_AREA_OPENING = "@";
 	
 	
 	

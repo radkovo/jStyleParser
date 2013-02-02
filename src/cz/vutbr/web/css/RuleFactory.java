@@ -61,6 +61,14 @@ public interface RuleFactory {
 	 * @return New CSS page
 	 */
 	RulePage createPage(Priority priority);
+	
+	/**
+	 * Creates CSS margin rule
+	 * @param area Margin area
+	 * @param priority Priority mark
+	 * @return New CSS margin rule
+	 */
+	RuleMargin createMargin(String area, Priority priority);
 
     /**
      * Creates CSS named font

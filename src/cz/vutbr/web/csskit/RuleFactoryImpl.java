@@ -10,6 +10,7 @@ import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleFontFace;
 import cz.vutbr.web.css.RuleImport;
+import cz.vutbr.web.css.RuleMargin;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
 import cz.vutbr.web.css.RuleSet;
@@ -78,6 +79,13 @@ public class RuleFactoryImpl implements RuleFactory {
 	 */
 	public RulePage createPage(Priority priority) {
 		return new RulePageImpl(priority);
+	}
+	
+	/* (non-Javadoc)
+	 * @see cz.vutbr.web.css.RuleFactory#createMargin()
+	 */
+	public RuleMargin createMargin(String area, Priority priority) {
+		return new RuleMarginImpl(area, priority);
 	}
 
 	public RuleFontFace createFontFace(Priority priority) {

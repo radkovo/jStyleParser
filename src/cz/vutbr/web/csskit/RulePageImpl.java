@@ -1,37 +1,73 @@
 package cz.vutbr.web.csskit;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.PrettyOutput;
+import cz.vutbr.web.css.Rule;
+import cz.vutbr.web.css.RuleMargin;
 import cz.vutbr.web.css.RulePage;
 
 /**
- * Wrap of declarations bounded with pseudo-page 
+ * Wrap of declarations bounded with a page rule 
  * 
  * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
+ * @author Bert Frees, 2012
  */
-public class RulePageImpl extends AbstractRuleBlock<Declaration> implements RulePage {
+public class RulePageImpl extends AbstractRuleBlock<Rule<?>> implements RulePage {
 
+	protected String name;
 	protected String pseudo;
 	
 	protected RulePageImpl(Priority priority) {
 		super(priority);
+		this.name = null;
 		this.pseudo = null;
+		replaceAll(new ArrayList<Rule<?>>());
 	}
 	
 	/**
-	 * Gets name of pseudopage
+	 * Gets name of the page
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets name of the page
+	 * @param name The name to set
+	 * @return Modified instance
+	 */
+	public RulePage setName(String name) {
+		this.name = name;
+		return this;
+	}
+	
+	/**
+	 * Gets pseudo-class of the page
 	 */
 	public String getPseudo() {
 		return pseudo;
 	}
 
 	/**
-	 * @param pseudo the pseudo to set
+	 * Sets pseudo-class of the page
+	 * @param pseudo The pseudo-class to set
 	 * @return Modified instance
 	 */
 	public RulePage setPseudo(String pseudo) {
 		this.pseudo = pseudo;
 		return this;
+	}
+
+	@Override
+	public boolean add(Rule<?> element) {
+		if (element instanceof Declaration || element instanceof RuleMargin)
+			return super.add(element);
+		else
+			throw new IllegalArgumentException("Element must be either a Declaration or a RuleMargin");
 	}
 
 	@Override 
@@ -43,13 +79,16 @@ public class RulePageImpl extends AbstractRuleBlock<Declaration> implements Rule
     	
     	StringBuilder sb = new StringBuilder();
     	
-    	sb.append(OutputUtil.PAGE_KEYWORD).append(OutputUtil.SPACE_DELIM);
+    	sb.append(OutputUtil.PAGE_KEYWORD);
+    	if(name != null && !"".equals(name))
+    		sb.append(OutputUtil.SPACE_DELIM).append(name);
     	if(pseudo != null && !"".equals(pseudo))
     		sb.append(OutputUtil.PAGE_OPENING).append(pseudo);
     	
-    	// append declarations
+    	// append declarations and margin rules
     	sb.append(OutputUtil.RULE_OPENING);
-    	sb = OutputUtil.appendList(sb, list, OutputUtil.EMPTY_DELIM, depth + 1);
+    	List<PrettyOutput> rules = (List)list;
+    	sb = OutputUtil.appendList(sb, rules, OutputUtil.EMPTY_DELIM, depth + 1);
     	sb.append(OutputUtil.RULE_CLOSING).append(OutputUtil.PAGE_CLOSING);
     
     	return sb.toString();

@@ -769,9 +769,7 @@ atstatement
 	| IMPORT
 	| INVALID_IMPORT
 	| IMPORT_END
-	| PAGE S* (COLON IDENT S*)? 
-		LCURLY S* declarations 
-		RCURLY -> ^(PAGE IDENT? declarations)
+	| page
 	| FONTFACE S*
 	  LCURLY S* declarations
 	  RCURLY -> ^(FONTFACE declarations)
@@ -784,6 +782,22 @@ atstatement
 	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
 	  		"INVALID_STATEMENT", follow, re);							
 	}
+
+page
+	: PAGE S* (( IDENT | IDENT page_pseudo | page_pseudo) S*) ?
+		LCURLY S*
+		declarations margin_rule*
+		RCURLY
+		-> ^(PAGE IDENT? page_pseudo? declarations ^(SET margin_rule*))
+	;
+
+page_pseudo
+	: pseudocolon^ IDENT
+	;
+
+margin_rule
+	: MARGIN_AREA S* LCURLY S* declarations RCURLY S* -> ^(MARGIN_AREA declarations)
+	;
 
 /** A ruleset in the inline style according to
     http://www.w3.org/TR/css-style-attr */
@@ -1189,6 +1203,25 @@ MEDIA
 PAGE
 	: '@page'
 	;
+
+MARGIN_AREA
+  : '@top-left-corner'
+  | '@top-left'
+  | '@top-center'
+  | '@top-right'
+  | '@top-right-corner'
+  | '@bottom-left-corner'
+  | '@bottom-left'
+  | '@bottom-center'
+  | '@bottom-right'
+  | '@bottom-right-corner'
+  | '@left-top'
+  | '@left-middle'
+  | '@left-bottom'
+  | '@right-top'
+  | '@right-middle'
+  | '@right-bottom'
+  ;
 
 FONTFACE
   : '@font-face'
