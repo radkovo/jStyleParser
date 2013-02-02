@@ -21,7 +21,8 @@ public interface Selector extends Rule<Selector.SelectorPart> {
 	 */
     public enum Combinator {
     	DESCENDANT(" "),
-    	ADJACENT("+"),
+        ADJACENT("+"),
+    	PRECEDING("~"),
     	CHILD(">");
     
     	private String value;

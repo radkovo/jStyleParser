@@ -108,6 +108,11 @@ public class SelectorsUtil {
 		return appendSimpleSelector(selectors, element, Selector.Combinator.ADJACENT, items);
 	}
 	
+    public static List<CombinedSelector> appendPreceding(List<CombinedSelector> selectors,
+            String element, Selector.SelectorPart...items) {
+        return appendSimpleSelector(selectors, element, Selector.Combinator.PRECEDING, items);
+    }
+    
 	/**
 	 * Append new empty combined selector to list of selectors
 	 * @param cslist List of selectors

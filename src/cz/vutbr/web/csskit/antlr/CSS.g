@@ -40,6 +40,7 @@ tokens {
 	ELEMENT;
 	PSEUDO;
 	ADJACENT;
+	PRECEDING;
 	CHILD;
 	DESCENDANT;
 	ATTRIBUTE;
@@ -936,6 +937,7 @@ combined_selector
 combinator
 	: GREATER S* -> CHILD
 	| PLUS S* -> ADJACENT
+	| TILDE S* -> PRECEDING
 	| S -> DESCENDANT
 	;
 
@@ -1369,6 +1371,10 @@ RBRACE
 EXCLAMATION
     : '!'
     ;	
+
+TILDE
+  : '~'
+  ;
 
 MINUS
 	: '-'

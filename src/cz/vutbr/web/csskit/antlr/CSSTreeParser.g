@@ -553,6 +553,7 @@ combinator returns [Selector.Combinator combinator]
 @after{ logLeave("combinator"); }
 	: CHILD {$combinator=Selector.Combinator.CHILD;}
 	| ADJACENT {$combinator=Selector.Combinator.ADJACENT;}
+  | PRECEDING {$combinator=Selector.Combinator.PRECEDING;}
 	| DESCENDANT {$combinator=Selector.Combinator.DESCENDANT;}
 	;
 
