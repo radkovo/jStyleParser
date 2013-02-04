@@ -378,63 +378,73 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 					case FIRST_CHILD:
 					case LAST_CHILD:
 					case ONLY_CHILD:
-						boolean first = false;
-						boolean last = false;
-						if (declaration != PseudoDeclaration.LAST_CHILD) {
-							Node prev = e;
-							do {
-								prev = prev.getPreviousSibling();
-								if (prev == null) {
-								    first = true;
-								    break;
-								}
-							} while(prev.getNodeType() != Node.ELEMENT_NODE);
-						}
-						if (declaration != PseudoDeclaration.FIRST_CHILD) {
-							Node next = e;
-							do {
-								next = next.getNextSibling();
-								if (next == null) {
-								    last = true;
-								    break; 
-								}
-							} while(next.getNodeType() != Node.ELEMENT_NODE);
-						}
-						switch (declaration) {
-							case FIRST_CHILD: return first;
-							case LAST_CHILD: return last;
-							default: return first && last; //ONLY_CHILD
-						}
+					    if (e.getParentNode().getNodeType() == Node.ELEMENT_NODE)
+					    {
+    						boolean first = false;
+    						boolean last = false;
+    						if (declaration != PseudoDeclaration.LAST_CHILD) {
+    							Node prev = e;
+    							do {
+    								prev = prev.getPreviousSibling();
+    								if (prev == null) {
+    								    first = true;
+    								    break;
+    								}
+    							} while(prev.getNodeType() != Node.ELEMENT_NODE);
+    						}
+    						if (declaration != PseudoDeclaration.FIRST_CHILD) {
+    							Node next = e;
+    							do {
+    								next = next.getNextSibling();
+    								if (next == null) {
+    								    last = true;
+    								    break; 
+    								}
+    							} while(next.getNodeType() != Node.ELEMENT_NODE);
+    						}
+    						switch (declaration) {
+    							case FIRST_CHILD: return first;
+    							case LAST_CHILD: return last;
+    							default: return first && last; //ONLY_CHILD
+    						}
+					    }
+					    else
+					        return false;
                     case FIRST_OF_TYPE:
                     case LAST_OF_TYPE:
                     case ONLY_OF_TYPE:
-                        boolean firstt = false;
-                        boolean lastt = false;
-                        if (declaration != PseudoDeclaration.LAST_OF_TYPE) {
-                            Node prev = e;
-                            firstt = true;
-                            do {
-                                prev = prev.getPreviousSibling();
-                                if (prev != null && prev.getNodeType() == Node.ELEMENT_NODE
-                                        && isSameElementType(e, (Element) prev))
-                                    firstt = false;
-                            } while (prev != null && firstt);
+                        if (e.getParentNode().getNodeType() == Node.ELEMENT_NODE)
+                        {
+                            boolean firstt = false;
+                            boolean lastt = false;
+                            if (declaration != PseudoDeclaration.LAST_OF_TYPE) {
+                                Node prev = e;
+                                firstt = true;
+                                do {
+                                    prev = prev.getPreviousSibling();
+                                    if (prev != null && prev.getNodeType() == Node.ELEMENT_NODE
+                                            && isSameElementType(e, (Element) prev))
+                                        firstt = false;
+                                } while (prev != null && firstt);
+                            }
+                            if (declaration != PseudoDeclaration.FIRST_OF_TYPE) {
+                                Node next = e;
+                                lastt = true;
+                                do {
+                                    next = next.getNextSibling();
+                                    if (next != null && next.getNodeType() == Node.ELEMENT_NODE
+                                            && isSameElementType(e, (Element) next))
+                                        lastt = false;
+                                } while(next != null && lastt);
+                            }
+                            switch (declaration) {
+                                case FIRST_OF_TYPE: return firstt;
+                                case LAST_OF_TYPE: return lastt;
+                                default: return firstt && lastt; //ONLY_OF_TYPE
+                            }
                         }
-                        if (declaration != PseudoDeclaration.FIRST_OF_TYPE) {
-                            Node next = e;
-                            lastt = true;
-                            do {
-                                next = next.getNextSibling();
-                                if (next != null && next.getNodeType() == Node.ELEMENT_NODE
-                                        && isSameElementType(e, (Element) next))
-                                    lastt = false;
-                            } while(next != null && lastt);
-                        }
-                        switch (declaration) {
-                            case FIRST_OF_TYPE: return firstt;
-                            case LAST_OF_TYPE: return lastt;
-                            default: return firstt && lastt; //ONLY_OF_TYPE
-                        }
+                        else
+                            return false;
                     case NTH_CHILD:
                         try {
                             int n = Integer.parseInt(value);
