@@ -1,5 +1,5 @@
 #main, #cont {
-  background: none;
+  background: transparent;
 }
 p:first-child {
   color: red;
