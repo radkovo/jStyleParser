@@ -303,7 +303,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	
         private static HashMap<String, PseudoDeclaration> PSEUDO_DECLARATIONS;
         static {
-            PSEUDO_DECLARATIONS = new HashMap<String, PseudoDeclaration>(11);
+            PSEUDO_DECLARATIONS = new HashMap<String, PseudoDeclaration>(22);
             PSEUDO_DECLARATIONS.put("active", PseudoDeclaration.ACTIVE);
             PSEUDO_DECLARATIONS.put("focus", PseudoDeclaration.FOCUS);
             PSEUDO_DECLARATIONS.put("hover", PseudoDeclaration.HOVER);
@@ -331,6 +331,8 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	private String functionName;
     	private String value;
     	private PseudoDeclaration declaration;
+    	//decoded element index for nth-XXX properties -- values a and b in the an+b specification
+    	private int[] elementIndex;
     	
     	protected PseudoPageImpl(String value, String functionName) {
     		setValue(value);
@@ -356,6 +358,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		public PseudoPage setFunctionName(String functionName) {			
 			this.functionName = functionName;
             inferDeclaration();
+            decodeValue();
 			return this;
 		}
 		
@@ -446,13 +449,13 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
                         else
                             return false;
                     case NTH_CHILD:
-                        return positionMatches(countSiblingsBefore(e, false) + 1, value);
+                        return positionMatches(countSiblingsBefore(e, false) + 1, elementIndex);
                     case NTH_LAST_CHILD:
-                        return positionMatches(countSiblingsAfter(e, false) + 1, value);
+                        return positionMatches(countSiblingsAfter(e, false) + 1, elementIndex);
                     case NTH_OF_TYPE:
-                        return positionMatches(countSiblingsBefore(e, true) + 1, value);
+                        return positionMatches(countSiblingsBefore(e, true) + 1, elementIndex);
                     case NTH_LAST_OF_TYPE:
-                        return positionMatches(countSiblingsAfter(e, true) + 1, value);
+                        return positionMatches(countSiblingsAfter(e, true) + 1, elementIndex);
                     case ROOT:
                         return e.getParentNode().getNodeType() == Node.DOCUMENT_NODE;
                     case EMPTY:
@@ -477,13 +480,12 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		/**
 		 * Checks whether the element position matches a <code>an+b</code> index specification.
 		 * @param pos The element position according to some counting criteria.
-		 * @param index The index specifiaction <code>an+b</code> where <code>a</code> and <code>b</code> are integers.
+		 * @param n The index specifiaction <code>an+b</code> - <code>a</code> and <code>b</code> values in array int[2].
 		 * @return <code>true</code> when the position matches the index.
 		 */
-		protected boolean positionMatches(int pos, String index)
+		protected boolean positionMatches(int pos, int[] n)
 		{
             try {
-                int[] n = decodeIndex(index);
                 int an = pos - n[1];
                 if (n[0] == 0)
                     return an == 0;
@@ -502,35 +504,46 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		 */
 		protected int[] decodeIndex(String index) throws NumberFormatException
 		{
-            int[] ret = {0, 0};
-		    int n = index.indexOf('n');
-		    if (n == -1)
-		        n = index.indexOf('N');
-		    if (n != -1)
-		    {
-		        String sa = index.substring(0, n).trim();
-                if (sa.length() == 0)
-                    ret[0] = 1;
-                else if (sa.equals("-"))
-                    ret[0] = -1;
-                else
-                    ret[0] = Integer.parseInt(sa);
-                
-		        n++;
-		        while (n < index.length()
-		                && (Character.isWhitespace(index.charAt(n)) || index.charAt(n) == '+'))
-		            n++;
-		        if (n < index.length())
-		        {
-    		        String sb = index.substring(n).trim();
-    	            if (sb.length() > 0)
-    	                ret[1] = Integer.parseInt(sb);
-		        }
+		    String s = index.toLowerCase().trim();
+		    if (s.equals("odd")){
+                int[] ret = {2, 1};
+                return ret;
 		    }
-		    else
-		        ret[1] = Integer.parseInt(index);
-		    
-		    return ret;
+		    else if (s.equals("even")){
+                int[] ret = {2, 0};
+                return ret;
+            }
+		    else {
+                int[] ret = {0, 0};
+    		    int n = s.indexOf('n');
+    		    if (n == -1)
+    		        n = s.indexOf('N');
+    		    if (n != -1)
+    		    {
+    		        String sa = s.substring(0, n).trim();
+                    if (sa.length() == 0)
+                        ret[0] = 1;
+                    else if (sa.equals("-"))
+                        ret[0] = -1;
+                    else
+                        ret[0] = Integer.parseInt(sa);
+                    
+    		        n++;
+    		        while (n < s.length()
+    		                && (Character.isWhitespace(s.charAt(n)) || s.charAt(n) == '+'))
+    		            n++;
+    		        if (n < s.length())
+    		        {
+        		        String sb = s.substring(n).trim();
+        	            if (sb.length() > 0)
+        	                ret[1] = Integer.parseInt(sb);
+    		        }
+    		    }
+    		    else
+    		        ret[1] = Integer.parseInt(s);
+    		    
+    		    return ret;
+		    }
 		}
 		
 		/**
@@ -597,6 +610,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		public PseudoPage setValue(String value) {
 			this.value = value;
 			inferDeclaration();
+			decodeValue();
 			return this;
 		}
 		
@@ -668,6 +682,20 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		    else
 		        declaration = null;
 		}
+
+        private void decodeValue()
+        {
+            //decode the element index for nth-X properties
+            elementIndex = null;
+            if (declaration == PseudoDeclaration.NTH_CHILD || declaration == PseudoDeclaration.NTH_LAST_CHILD
+                    || declaration == PseudoDeclaration.NTH_OF_TYPE || declaration == PseudoDeclaration.NTH_LAST_OF_TYPE)
+            {
+                try {
+                    elementIndex = decodeIndex(value);
+                } catch (NumberFormatException e) {
+                }
+            }
+        }
 
     }
     
