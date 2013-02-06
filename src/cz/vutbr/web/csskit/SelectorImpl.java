@@ -446,37 +446,13 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
                         else
                             return false;
                     case NTH_CHILD:
-                        try {
-                            int n = Integer.parseInt(value);
-                            int count = 0;
-                            Node prev = e;
-                            do {
-                                prev = prev.getPreviousSibling();
-                                if (prev == null)
-                                    break;
-                                if (prev.getNodeType() == Node.ELEMENT_NODE)
-                                    count++;
-                            } while(count < n);
-                            return (count == n-1);
-                        } catch (NumberFormatException ex) {
-                            return false;
-                        }
+                        return positionMatches(countSiblingsBefore(e, false) + 1, value);
                     case NTH_LAST_CHILD:
-                        try {
-                            int n = Integer.parseInt(value);
-                            int count = 0;
-                            Node next = e;
-                            do {
-                                next = next.getNextSibling();
-                                if (next == null)
-                                    break;
-                                if (next.getNodeType() == Node.ELEMENT_NODE)
-                                    count++;
-                            } while(count < n);
-                            return (count == n-1);
-                        } catch (NumberFormatException ex) {
-                            return false;
-                        }
+                        return positionMatches(countSiblingsAfter(e, false) + 1, value);
+                    case NTH_OF_TYPE:
+                        return positionMatches(countSiblingsBefore(e, true) + 1, value);
+                    case NTH_LAST_OF_TYPE:
+                        return positionMatches(countSiblingsAfter(e, true) + 1, value);
                     case ROOT:
                         return e.getParentNode().getNodeType() == Node.DOCUMENT_NODE;
                     case EMPTY:
@@ -498,6 +474,111 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			return false;
 		}
 		
+		/**
+		 * Checks whether the element position matches a <code>an+b</code> index specification.
+		 * @param pos The element position according to some counting criteria.
+		 * @param index The index specifiaction <code>an+b</code> where <code>a</code> and <code>b</code> are integers.
+		 * @return <code>true</code> when the position matches the index.
+		 */
+		protected boolean positionMatches(int pos, String index)
+		{
+            try {
+                int[] n = decodeIndex(index);
+                int an = pos - n[1];
+                if (n[0] == 0)
+                    return an == 0;
+                else
+                    return an * n[0] >= 0 && an % n[0] == 0;
+            } catch (NumberFormatException ex) {
+                return false;
+            }
+		}
+		
+		/**
+		 * Decodes the element index in the <code>an+b</code> form.
+		 * @param index the element index string
+		 * @return an array of two integers <code>a</code> and <code>b</code>
+		 * @throws NumberFormatException
+		 */
+		protected int[] decodeIndex(String index) throws NumberFormatException
+		{
+            int[] ret = {0, 0};
+		    int n = index.indexOf('n');
+		    if (n == -1)
+		        n = index.indexOf('N');
+		    if (n != -1)
+		    {
+		        String sa = index.substring(0, n).trim();
+                if (sa.length() == 0)
+                    ret[0] = 1;
+                else if (sa.equals("-"))
+                    ret[0] = -1;
+                else
+                    ret[0] = Integer.parseInt(sa);
+                
+		        n++;
+		        while (n < index.length()
+		                && (Character.isWhitespace(index.charAt(n)) || index.charAt(n) == '+'))
+		            n++;
+		        if (n < index.length())
+		        {
+    		        String sb = index.substring(n).trim();
+    	            if (sb.length() > 0)
+    	                ret[1] = Integer.parseInt(sb);
+		        }
+		    }
+		    else
+		        ret[1] = Integer.parseInt(index);
+		    
+		    return ret;
+		}
+		
+		/**
+		 * Computes the count of element siblings before the given element in the DOM tree.
+		 * @param e The element to be examined
+		 * @param sameType when set to <code>true</code> only the element with the same type are considered.
+		 *                 Otherwise, all elements are considered.
+		 * @return the number of preceding siblings
+		 */
+		protected int countSiblingsBefore(Element e, boolean sameType)
+		{
+		    int cnt = 0;
+		    Node prev = e;
+		    do {
+		        prev = prev.getPreviousSibling();
+		        if (prev != null && prev.getNodeType() == Node.ELEMENT_NODE)
+		        {
+		            if (!sameType || isSameElementType(e, (Element) prev))
+		                cnt++;
+		        }
+		    } while (prev != null);
+		    
+		    return cnt;
+		}
+		
+        /**
+         * Computes the count of element siblings after the given element in the DOM tree.
+         * @param e The element to be examined
+         * @param sameType when set to <code>true</code> only the element with the same type are considered.
+         *                 Otherwise, all elements are considered.
+         * @return the number of following siblings
+         */
+        protected int countSiblingsAfter(Element e, boolean sameType)
+        {
+            int cnt = 0;
+            Node next = e;
+            do {
+                next = next.getNextSibling();
+                if (next != null && next.getNodeType() == Node.ELEMENT_NODE)
+                {
+                    if (!sameType || isSameElementType(e, (Element) next))
+                        cnt++;
+                }
+            } while (next != null);
+            
+            return cnt;
+        }
+        
 		/**
 		 * Checks whether two elements have the same name.
 		 * @param e1 the first element

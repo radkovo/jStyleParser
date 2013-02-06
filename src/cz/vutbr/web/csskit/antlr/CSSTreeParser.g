@@ -658,6 +658,10 @@ pseudo returns [Selector.PseudoPage pseudoPage]
 		{
 			$pseudoPage = rf.createPseudoPage(extractText(n), extractText(f));
 		}
+  | ^(PSEUDO f=FUNCTION n=INDEX)
+    {
+      $pseudoPage = rf.createPseudoPage(extractText(n), extractText(f));
+    }
 	;
 
 string returns [String s]
