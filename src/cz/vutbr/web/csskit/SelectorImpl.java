@@ -516,8 +516,6 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		    else {
                 int[] ret = {0, 0};
     		    int n = s.indexOf('n');
-    		    if (n == -1)
-    		        n = s.indexOf('N');
     		    if (n != -1)
     		    {
     		        String sa = s.substring(0, n).trim();

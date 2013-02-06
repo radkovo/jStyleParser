@@ -1,4 +1,4 @@
-// $ANTLR 3.1.2 /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g 2013-02-06 14:40:09
+// $ANTLR 3.1.2 /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g 2013-02-06 16:07:35
 
 package cz.vutbr.web.csskit.antlr;
 
