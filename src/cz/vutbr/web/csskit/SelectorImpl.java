@@ -527,15 +527,16 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
                         ret[0] = Integer.parseInt(sa);
                     
     		        n++;
-    		        while (n < s.length()
-    		                && (Character.isWhitespace(s.charAt(n)) || s.charAt(n) == '+'))
-    		            n++;
-    		        if (n < s.length())
+    		        StringBuilder sb = new StringBuilder();
+    		        while (n < s.length())
     		        {
-        		        String sb = s.substring(n).trim();
-        	            if (sb.length() > 0)
-        	                ret[1] = Integer.parseInt(sb);
+    		            char ch = s.charAt(n);
+    		            if (ch != '+' && !Character.isWhitespace(ch))
+    		                sb.append(ch);
+    		            n++;
     		        }
+    		        if (sb.length() > 0)
+    	                ret[1] = Integer.parseInt(sb.toString());
     		    }
     		    else
     		        ret[1] = Integer.parseInt(s);

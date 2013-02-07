@@ -1,7 +1,7 @@
-#main *:nth-child(3n-1) {
+#main *:nth-child( 3n - 1 ) {
 	border: 1px solid green;
 }
-#main *:nth-last-child(2) {
+#main *:nth-last-child( 2 ) {
 	color: red;
 }
 #main p:nth-of-type(3n) {

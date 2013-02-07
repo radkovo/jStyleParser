@@ -968,7 +968,7 @@ attribute
 	;
 
 pseudo
-	: pseudocolon^ (IDENT | FUNCTION (IDENT | NUMBER | INDEX) RPAREN!)
+	: pseudocolon^ (IDENT | FUNCTION S!* (IDENT | NUMBER | INDEX) S!* RPAREN!)
 	;
   catch [RecognitionException re] {
      retval.tree = invalidFallback(CSSLexer.INVALID_SELPART, "INVALID_SELPART", re);
