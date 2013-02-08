@@ -71,6 +71,13 @@ public interface Preparator {
     public RuleMargin prepareRuleMargin(String area, List<Declaration> declarations);
 
     /**
+     * Creates RuleViewport, block of rules associated with the viewport. 
+     * @param decl List of declarations
+     * @return RuleViewport
+     */
+    public RuleBlock<?> prepareRuleViewport(List<Declaration> decl);
+    
+    /**
      * Creates RuleFontFace, block of rules associated with specific font 
      * @param decl List of declarations
      * @return RuleFontFace

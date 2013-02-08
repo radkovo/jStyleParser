@@ -221,6 +221,8 @@ scope {
     {
       $stmnt = preparator.prepareRulePage(decl, margins, name, pseudo);
     }
+  | ^(VIEWPORT decl=declarations)
+    { $stmnt = preparator.prepareRuleViewport(decl); }
   | ^(FONTFACE decl=declarations)
     { $stmnt = preparator.prepareRuleFontFace(decl); }
 	| ^(MEDIA (mediaList=media)? 

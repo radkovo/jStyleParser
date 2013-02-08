@@ -2,8 +2,6 @@ package cz.vutbr.web.csskit;
 
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleMargin;
-import cz.vutbr.web.css.RuleMargin.MarginArea;
-import cz.vutbr.web.css.RuleSet;
 
 /**
  * Implementation of RuleMargin

@@ -34,6 +34,7 @@ public class OutputUtil {
 	public static final String PAGE_KEYWORD = "@page";
 	public static final String PAGE_OPENING = ":";
 	public static final String PAGE_CLOSING = "";
+    public static final String VIEWPORT_KEYWORD = "@viewport";
     public static final String FONT_FACE_KEYWORD = "@font-face";
 	public static final String FUNCTION_OPENING = "(";
 	public static final String FUNCTION_CLOSING = ")";

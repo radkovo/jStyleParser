@@ -71,6 +71,13 @@ public interface RuleFactory {
 	RuleMargin createMargin(String area, Priority priority);
 
     /**
+     * Creates CSS viewport rule.
+     * @param priority Priority mark
+     * @return New CSS viewport rule
+     */
+    RuleViewport createViewport(Priority priority);
+
+    /**
      * Creates CSS named font
      * @param priority Priority mark
      * @return New CSS font

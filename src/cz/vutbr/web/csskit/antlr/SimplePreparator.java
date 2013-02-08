@@ -17,6 +17,7 @@ import cz.vutbr.web.css.RuleMargin;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
 import cz.vutbr.web.css.RuleSet;
+import cz.vutbr.web.css.RuleViewport;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.RuleBlock.Priority;
 import cz.vutbr.web.css.Selector.PseudoPage;
@@ -135,6 +136,21 @@ public class SimplePreparator implements Preparator {
         return rm;
     }
 	
+    public RuleBlock<?> prepareRuleViewport(List<Declaration> decl) {
+
+        if (decl == null || decl.isEmpty()) {
+            log.debug("Empty Viewport was ommited");
+            return null;
+        }
+
+        Priority prio = ps.getAndIncrement();
+        RuleViewport rp = rf.createViewport(prio);
+        rp.replaceAll(decl);
+        log.info("Create @viewport as {}th with:\n{}", prio, rp);
+
+        return (RuleBlock<?>) rp;
+    }
+
     public RuleBlock<?> prepareRuleFontFace(List<Declaration> decl) {
 
         if (decl == null || decl.isEmpty()) {

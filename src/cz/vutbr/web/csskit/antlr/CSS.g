@@ -771,6 +771,9 @@ atstatement
 	| INVALID_IMPORT
 	| IMPORT_END
 	| page
+  | VIEWPORT S*
+    LCURLY S* declarations
+    RCURLY -> ^(VIEWPORT declarations)
 	| FONTFACE S*
 	  LCURLY S* declarations
 	  RCURLY -> ^(FONTFACE declarations)
@@ -1225,9 +1228,13 @@ MARGIN_AREA
   | '@right-bottom'
   ;
 
+VIEWPORT
+  : '@viewport'
+	;
+
 FONTFACE
   : '@font-face'
-	;
+  ;
 
 /** Keyword beginning with '@' */
 ATKEYWORD
