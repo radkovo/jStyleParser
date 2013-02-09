@@ -8,10 +8,13 @@ import org.w3c.dom.Element;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleFactory;
+import cz.vutbr.web.css.RuleFontFace;
 import cz.vutbr.web.css.RuleImport;
+import cz.vutbr.web.css.RuleMargin;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
 import cz.vutbr.web.css.RuleSet;
+import cz.vutbr.web.css.RuleViewport;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.RuleBlock.Priority;
@@ -78,7 +81,22 @@ public class RuleFactoryImpl implements RuleFactory {
 	public RulePage createPage(Priority priority) {
 		return new RulePageImpl(priority);
 	}
+	
+	/* (non-Javadoc)
+	 * @see cz.vutbr.web.css.RuleFactory#createMargin()
+	 */
+	public RuleMargin createMargin(String area, Priority priority) {
+		return new RuleMarginImpl(area, priority);
+	}
 
+    public RuleViewport createViewport(Priority priority) {
+        return new RuleViewportImpl(priority);
+    }
+    
+	public RuleFontFace createFontFace(Priority priority) {
+	    return new RuleFontFaceImpl(priority);
+	}
+	
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createCombinedSelector()
 	 */

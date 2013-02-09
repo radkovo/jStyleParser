@@ -50,7 +50,7 @@ public class GrammarRecovery1 {
 			+ "BODY { color: blue;}\n" + "p {color: white; quotes: '^' '^\n"
 			+ "color: red;" + "color: green}";
 
-	public static final String TEST_INVALID_ATTRIBUTE_OPERATOR = ".st a[href^=\"/slovnik/\"]:after {\n"
+	public static final String TEST_INVALID_ATTRIBUTE_OPERATOR = ".st a[href%=\"/slovnik/\"]:after {\n"
 			+ "content: url('/images/site2/slovnik.png');\n"
 			+ "margin: 0 0.1em 0 0.2em;\n";
 

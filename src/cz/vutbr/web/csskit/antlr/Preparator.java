@@ -5,6 +5,7 @@ import java.util.List;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleBlock;
+import cz.vutbr.web.css.RuleMargin;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.RuleBlock.Priority;
@@ -53,12 +54,36 @@ public interface Preparator {
 	
 	/**
 	 * Creates RulePage, block of rules associated with specific page 
-	 * @param decl List of declarations
-	 * @param pseudo Name, or pseudo name of page
+     * @param declarations List of declarations
+     * @param marginRules List of margin rules
+     * @param name Name of the page
+     * @param pseudo Pseudo-class of the page
 	 * @return RulePage
 	 */
-	public RuleBlock<?> prepareRulePage(List<Declaration> decl, String pseudo);
+	public RuleBlock<?> prepareRulePage(List<Declaration> declarations, List<RuleMargin> marginRules, String name, String pseudo);
 	
+    /**
+     * Creates RuleMargin, block of declarations associated with specific area in the page margin. 
+     * @param area The margin area
+     * @param declarations List of declarations
+     * @return RuleMargin
+     */
+    public RuleMargin prepareRuleMargin(String area, List<Declaration> declarations);
+
+    /**
+     * Creates RuleViewport, block of rules associated with the viewport. 
+     * @param decl List of declarations
+     * @return RuleViewport
+     */
+    public RuleBlock<?> prepareRuleViewport(List<Declaration> decl);
+    
+    /**
+     * Creates RuleFontFace, block of rules associated with specific font 
+     * @param decl List of declarations
+     * @return RuleFontFace
+     */
+    public RuleBlock<?> prepareRuleFontFace(List<Declaration> decl);
+    
 	/**
 	 * Marks priority 
 	 * @return Mark

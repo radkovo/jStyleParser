@@ -21,7 +21,8 @@ public interface Selector extends Rule<Selector.SelectorPart> {
 	 */
     public enum Combinator {
     	DESCENDANT(" "),
-    	ADJACENT("+"),
+        ADJACENT("+"),
+    	PRECEDING("~"),
     	CHILD(">");
     
     	private String value;
@@ -44,6 +45,7 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     	DASHMATCH("|="),
     	CONTAINS("*="),
     	STARTSWITH("^="),
+    	ENDSWITH("$="),
     	NO_OPERATOR("");
     	
     	private String value;
@@ -69,7 +71,15 @@ public interface Selector extends Rule<Selector.SelectorPart> {
         FIRST_CHILD("first-child", false),
         LAST_CHILD("last-child", false),
         ONLY_CHILD("only-child", false),
+        ONLY_OF_TYPE("only-of-type", false),
         NTH_CHILD("nth-child", false),
+        NTH_LAST_CHILD("nth-last-child", false),
+        NTH_OF_TYPE("nth-of-type", false),
+        NTH_LAST_OF_TYPE("nth-last-of-type", false),
+        FIRST_OF_TYPE("first-of-type", false),
+        LAST_OF_TYPE("last-of-type", false),
+        ROOT("root", false),
+        EMPTY("empty", false),
         LANG("lang", false),
         
         FIRST_LINE("first-line", true),

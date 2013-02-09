@@ -1,0 +1,12 @@
+#main *:nth-child( 3n - 1 ) {
+	border: 1px solid green;
+}
+#main *:nth-last-child( 2 ) {
+	color: red;
+}
+#main p:nth-of-type(3n) {
+	background-color: #eee;
+}
+#main div:nth-last-of-type(3n) {
+	background-color: #aaf;
+}

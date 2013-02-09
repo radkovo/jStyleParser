@@ -33,6 +33,8 @@ public class SelectorTest extends TestCase {
 	public static final String TEST_DESCENDANT = "H1 P { display: inline;}";
 
 	public static final String TEST_ADJACENT = "DIV+P { color: blue;}";
+	
+	public static final String TEST_PRECEDING = "DIV ~ P { color: blue;}";
 
 	public static final String TEST_CHILD = "DIV >P, SPAN, A, FORM+DIV { color: white;}";
 
@@ -117,6 +119,27 @@ public class SelectorTest extends TestCase {
 						.createColor(0, 0, 255)), rule.asList());
 
 	}
+
+    @Test
+    public void testPreceding() throws CSSException, IOException {
+
+        StyleSheet ss = CSSFactory.parse(TEST_PRECEDING);
+        assertEquals("One rule is set", 1, ss.size());
+
+        RuleSet rule = (RuleSet) ss.get(0);
+
+        List<CombinedSelector> cslist = SelectorsUtil.appendCS(null);
+        SelectorsUtil.appendSimpleSelector(cslist, "DIV", null);
+        SelectorsUtil.appendPreceding(cslist, "P");
+
+        assertEquals("Rule contains one combined selectors DIV~P ", cslist,
+                rule.getSelectors());
+
+        assertEquals("Rule contains one declaration {color:blue;}",
+                DeclarationsUtil.appendDeclaration(null, "color", tf
+                        .createColor(0, 0, 255)), rule.asList());
+
+    }
 
 	@Test
 	public void testChild() throws CSSException, IOException {

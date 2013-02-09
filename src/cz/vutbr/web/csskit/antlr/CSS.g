@@ -40,6 +40,7 @@ tokens {
 	ELEMENT;
 	PSEUDO;
 	ADJACENT;
+	PRECEDING;
 	CHILD;
 	DESCENDANT;
 	ATTRIBUTE;
@@ -769,9 +770,13 @@ atstatement
 	| IMPORT
 	| INVALID_IMPORT
 	| IMPORT_END
-	| PAGE S* (COLON IDENT S*)? 
-		LCURLY S* declarations 
-		RCURLY -> ^(PAGE IDENT? declarations)
+	| page
+  | VIEWPORT S*
+    LCURLY S* declarations
+    RCURLY -> ^(VIEWPORT declarations)
+	| FONTFACE S*
+	  LCURLY S* declarations
+	  RCURLY -> ^(FONTFACE declarations)
 	| MEDIA S* media? 
 		LCURLY S* (ruleset S*)* RCURLY -> ^(MEDIA media? ruleset*)	
 	| ATKEYWORD S* LCURLY any* RCURLY -> INVALID_STATEMENT
@@ -781,6 +786,22 @@ atstatement
 	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
 	  		"INVALID_STATEMENT", follow, re);							
 	}
+
+page
+	: PAGE S* (( IDENT | IDENT page_pseudo | page_pseudo) S*) ?
+		LCURLY S*
+		declarations margin_rule*
+		RCURLY
+		-> ^(PAGE IDENT? page_pseudo? declarations ^(SET margin_rule*))
+	;
+
+page_pseudo
+	: pseudocolon^ IDENT
+	;
+
+margin_rule
+	: MARGIN_AREA S* LCURLY S* declarations RCURLY S* -> ^(MARGIN_AREA declarations)
+	;
 
 /** A ruleset in the inline style according to
     http://www.w3.org/TR/css-style-attr */
@@ -919,6 +940,7 @@ combined_selector
 combinator
 	: GREATER S* -> CHILD
 	| PLUS S* -> ADJACENT
+	| TILDE S* -> PRECEDING
 	| S -> DESCENDANT
 	;
 
@@ -945,11 +967,11 @@ selpart
 
 attribute
 	: IDENT S*
-	  ((EQUALS | INCLUDES | DASHMATCH) S* (IDENT | string) S*)?
+	  ((EQUALS | INCLUDES | DASHMATCH | STARTSWITH | ENDSWITH | CONTAINS) S* (IDENT | string) S*)?
 	;
 
 pseudo
-	: pseudocolon^ (IDENT | FUNCTION (IDENT | NUMBER) RPAREN!)
+	: pseudocolon^ (IDENT | FUNCTION S!* (IDENT | NUMBER | INDEX) S!* RPAREN!)
 	;
   catch [RecognitionException re] {
      retval.tree = invalidFallback(CSSLexer.INVALID_SELPART, "INVALID_SELPART", re);
@@ -1186,7 +1208,34 @@ MEDIA
 PAGE
 	: '@page'
 	;
-	
+
+MARGIN_AREA
+  : '@top-left-corner'
+  | '@top-left'
+  | '@top-center'
+  | '@top-right'
+  | '@top-right-corner'
+  | '@bottom-left-corner'
+  | '@bottom-left'
+  | '@bottom-center'
+  | '@bottom-right'
+  | '@bottom-right-corner'
+  | '@left-top'
+  | '@left-middle'
+  | '@left-bottom'
+  | '@right-top'
+  | '@right-middle'
+  | '@right-bottom'
+  ;
+
+VIEWPORT
+  : '@viewport'
+	;
+
+FONTFACE
+  : '@font-face'
+  ;
+
 /** Keyword beginning with '@' */
 ATKEYWORD
 	: '@' MINUS? IDENT_MACR
@@ -1211,6 +1260,11 @@ STRING
 HASH
 	: '#' NAME_MACR	
 	;
+
+/** An element index in the an+b form */
+INDEX
+  : ('+' | '-')? INTEGER_MACR? ('N' | 'n') (S* ('+' | '-') S* INTEGER_MACR)?
+  ;
 
 /** Number, decimal or integer */
 NUMBER
@@ -1330,6 +1384,10 @@ EXCLAMATION
     : '!'
     ;	
 
+TILDE
+  : '~'
+  ;
+
 MINUS
 	: '-'
 	;
@@ -1372,6 +1430,18 @@ INCLUDES
 DASHMATCH
 	: '|='
 	;
+
+STARTSWITH
+  : '^='
+  ;
+  
+ENDSWITH
+  : '$='
+  ;
+  
+CONTAINS
+  : '*='
+  ;
 
 INVALID_TOKEN
 	: .
@@ -1420,6 +1490,11 @@ fragment
 NAME_CHAR
   	: ('a'..'z' | 'A'..'Z' | '0'..'9' | '-' | '_' | NON_ASCII | ESCAPE_CHAR)
   	;
+
+fragment 
+INTEGER_MACR
+    : ('0'..'9')+
+    ;
 
 fragment 
 NUMBER_MACR

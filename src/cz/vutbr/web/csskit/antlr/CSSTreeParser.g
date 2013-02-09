@@ -20,6 +20,7 @@ import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
+import cz.vutbr.web.css.RuleMargin;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
 import cz.vutbr.web.css.RuleSet;
@@ -179,6 +180,8 @@ scope {
 	$statement::insideAtstatement=true;
 	$atstatement::stm = $stmnt = null;
 	List<RuleSet> rules = null;
+	List<RuleMargin> margins = null;
+	String name = null;
 	String pseudo = null;
 	Priority mark = preparator.markPriority();
 }
@@ -199,8 +202,29 @@ scope {
 	    imports.pop();
 		log.info("Imported file was parsed, returing in nesting.");
 	  }
-	| ^(PAGE (i=IDENT{ pseudo=extractText(i);})? decl=declarations)
-		{ $stmnt = preparator.prepareRulePage(decl, pseudo); }
+  | ^(PAGE
+      (i=IDENT
+        { name = extractText(i); }
+      )?
+      (^(PSEUDO i=IDENT)
+        { pseudo = extractText(i); }
+      )?
+      decl=declarations
+      ^(SET (m=margin {
+        if (m!=null) {
+          if (margins == null) margins = new ArrayList<RuleMargin>();
+          margins.add(m);
+          log.debug("Inserted margin rule #{} into @page", margins.size()+1);
+        }
+      })*)
+    )
+    {
+      $stmnt = preparator.prepareRulePage(decl, margins, name, pseudo);
+    }
+  | ^(VIEWPORT decl=declarations)
+    { $stmnt = preparator.prepareRuleViewport(decl); }
+  | ^(FONTFACE decl=declarations)
+    { $stmnt = preparator.prepareRuleFontFace(decl); }
 	| ^(MEDIA (mediaList=media)? 
 			(  rs=ruleset {
 					   if(rules==null) rules = new ArrayList<RuleSet>();				
@@ -219,7 +243,19 @@ scope {
 		   $stmnt = preparator.prepareRuleMedia(mark, rules, mediaList);
 	   }
 	;
-	
+
+margin returns [RuleMargin m]
+@init {
+    logEnter("margin");
+}
+@after {
+    logLeave("margin");
+}
+	: ^(area = MARGIN_AREA
+		decl=declarations)
+		{ $m = preparator.prepareRuleMargin(extractText(area).substring(1), decl); }
+	;
+
 media returns [List<String> affected] 
 @init {
    logEnter("media");
@@ -519,6 +555,7 @@ combinator returns [Selector.Combinator combinator]
 @after{ logLeave("combinator"); }
 	: CHILD {$combinator=Selector.Combinator.CHILD;}
 	| ADJACENT {$combinator=Selector.Combinator.ADJACENT;}
+  | PRECEDING {$combinator=Selector.Combinator.PRECEDING;}
 	| DESCENDANT {$combinator=Selector.Combinator.DESCENDANT;}
 	;
 
@@ -587,6 +624,9 @@ attribute returns [Selector.ElementAttribute elemAttr]
 	  ((EQUALS {op=Selector.Operator.EQUALS; } 
 	   | INCLUDES {op=Selector.Operator.INCLUDES; } 
 	   | DASHMATCH {op=Selector.Operator.DASHMATCH; }
+     | CONTAINS {op=Selector.Operator.CONTAINS; }
+     | STARTSWITH {op=Selector.Operator.STARTSWITH; }
+     | ENDSWITH {op=Selector.Operator.ENDSWITH; }
 	   ) 
 	   (i=IDENT {
 		value=extractText(i);
@@ -620,6 +660,10 @@ pseudo returns [Selector.PseudoPage pseudoPage]
 		{
 			$pseudoPage = rf.createPseudoPage(extractText(n), extractText(f));
 		}
+  | ^(PSEUDO f=FUNCTION n=INDEX)
+    {
+      $pseudoPage = rf.createPseudoPage(extractText(n), extractText(f));
+    }
 	;
 
 string returns [String s]

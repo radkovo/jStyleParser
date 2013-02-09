@@ -95,6 +95,8 @@ public class ElementUtil {
         			return attributeValue.matches(".*" + value + ".*");
         		case STARTSWITH:
         			return attributeValue.matches("^" + value + ".*");
+                case ENDSWITH:
+                    return attributeValue.matches(".*" + value + "$");
         		default:
         			return true;
     		}

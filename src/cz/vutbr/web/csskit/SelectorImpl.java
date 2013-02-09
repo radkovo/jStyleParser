@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Selector;
@@ -302,7 +303,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	
         private static HashMap<String, PseudoDeclaration> PSEUDO_DECLARATIONS;
         static {
-            PSEUDO_DECLARATIONS = new HashMap<String, PseudoDeclaration>(11);
+            PSEUDO_DECLARATIONS = new HashMap<String, PseudoDeclaration>(22);
             PSEUDO_DECLARATIONS.put("active", PseudoDeclaration.ACTIVE);
             PSEUDO_DECLARATIONS.put("focus", PseudoDeclaration.FOCUS);
             PSEUDO_DECLARATIONS.put("hover", PseudoDeclaration.HOVER);
@@ -311,7 +312,15 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
             PSEUDO_DECLARATIONS.put("first-child", PseudoDeclaration.FIRST_CHILD);
             PSEUDO_DECLARATIONS.put("last-child", PseudoDeclaration.LAST_CHILD);
             PSEUDO_DECLARATIONS.put("only-child", PseudoDeclaration.ONLY_CHILD);
+            PSEUDO_DECLARATIONS.put("only-of-type", PseudoDeclaration.ONLY_OF_TYPE);
             PSEUDO_DECLARATIONS.put("nth-child", PseudoDeclaration.NTH_CHILD);
+            PSEUDO_DECLARATIONS.put("nth-last-child", PseudoDeclaration.NTH_LAST_CHILD);
+            PSEUDO_DECLARATIONS.put("nth-of-type", PseudoDeclaration.NTH_OF_TYPE);
+            PSEUDO_DECLARATIONS.put("nth-last-of-type", PseudoDeclaration.NTH_LAST_OF_TYPE);
+            PSEUDO_DECLARATIONS.put("first-of-type", PseudoDeclaration.FIRST_OF_TYPE);
+            PSEUDO_DECLARATIONS.put("last-of-type", PseudoDeclaration.LAST_OF_TYPE);
+            PSEUDO_DECLARATIONS.put("root", PseudoDeclaration.ROOT);
+            PSEUDO_DECLARATIONS.put("empty", PseudoDeclaration.EMPTY);
             PSEUDO_DECLARATIONS.put("lang", PseudoDeclaration.LANG);
             PSEUDO_DECLARATIONS.put("first-letter", PseudoDeclaration.FIRST_LETTER);
             PSEUDO_DECLARATIONS.put("first-line", PseudoDeclaration.FIRST_LINE);
@@ -322,6 +331,8 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	private String functionName;
     	private String value;
     	private PseudoDeclaration declaration;
+    	//decoded element index for nth-XXX properties -- values a and b in the an+b specification
+    	private int[] elementIndex;
     	
     	protected PseudoPageImpl(String value, String functionName) {
     		setValue(value);
@@ -347,6 +358,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		public PseudoPage setFunctionName(String functionName) {			
 			this.functionName = functionName;
             inferDeclaration();
+            decodeValue();
 			return this;
 		}
 		
@@ -369,45 +381,93 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 					case FIRST_CHILD:
 					case LAST_CHILD:
 					case ONLY_CHILD:
-						boolean first = false;
-						boolean last = false;
-						if (declaration != PseudoDeclaration.LAST_CHILD) {
-							Node prev = e;
-							do {
-								prev = prev.getPreviousSibling();
-								if (prev == null)
-									first = true; break;
-							} while(prev.getNodeType() != Node.ELEMENT_NODE);
-						}
-						if (declaration != PseudoDeclaration.FIRST_CHILD) {
-							Node next = e;
-							do {
-								next = next.getNextSibling();
-								if (next == null)
-									last = true; break;
-							} while(next.getNodeType() != Node.ELEMENT_NODE);
-						}
-						switch (declaration) {
-							case FIRST_CHILD: return first;
-							case LAST_CHILD: return last;
-							case ONLY_CHILD: return first && last;
-						}
-					case NTH_CHILD:
-						try {
-							int n = Integer.parseInt(value);
-							int count = 0;
-							Node prev = e;
-							do {
-								prev = prev.getPreviousSibling();
-								if (prev == null)
-									break;
-								if (prev.getNodeType() == Node.ELEMENT_NODE)
-									count++;
-							} while(count < n);
-							return (count == n-1);
-						} catch (NumberFormatException ex) {
-							return false;
-						}
+					    if (e.getParentNode().getNodeType() == Node.ELEMENT_NODE)
+					    {
+    						boolean first = false;
+    						boolean last = false;
+    						if (declaration != PseudoDeclaration.LAST_CHILD) {
+    							Node prev = e;
+    							do {
+    								prev = prev.getPreviousSibling();
+    								if (prev == null) {
+    								    first = true;
+    								    break;
+    								}
+    							} while(prev.getNodeType() != Node.ELEMENT_NODE);
+    						}
+    						if (declaration != PseudoDeclaration.FIRST_CHILD) {
+    							Node next = e;
+    							do {
+    								next = next.getNextSibling();
+    								if (next == null) {
+    								    last = true;
+    								    break; 
+    								}
+    							} while(next.getNodeType() != Node.ELEMENT_NODE);
+    						}
+    						switch (declaration) {
+    							case FIRST_CHILD: return first;
+    							case LAST_CHILD: return last;
+    							default: return first && last; //ONLY_CHILD
+    						}
+					    }
+					    else
+					        return false;
+                    case FIRST_OF_TYPE:
+                    case LAST_OF_TYPE:
+                    case ONLY_OF_TYPE:
+                        if (e.getParentNode().getNodeType() == Node.ELEMENT_NODE)
+                        {
+                            boolean firstt = false;
+                            boolean lastt = false;
+                            if (declaration != PseudoDeclaration.LAST_OF_TYPE) {
+                                Node prev = e;
+                                firstt = true;
+                                do {
+                                    prev = prev.getPreviousSibling();
+                                    if (prev != null && prev.getNodeType() == Node.ELEMENT_NODE
+                                            && isSameElementType(e, (Element) prev))
+                                        firstt = false;
+                                } while (prev != null && firstt);
+                            }
+                            if (declaration != PseudoDeclaration.FIRST_OF_TYPE) {
+                                Node next = e;
+                                lastt = true;
+                                do {
+                                    next = next.getNextSibling();
+                                    if (next != null && next.getNodeType() == Node.ELEMENT_NODE
+                                            && isSameElementType(e, (Element) next))
+                                        lastt = false;
+                                } while(next != null && lastt);
+                            }
+                            switch (declaration) {
+                                case FIRST_OF_TYPE: return firstt;
+                                case LAST_OF_TYPE: return lastt;
+                                default: return firstt && lastt; //ONLY_OF_TYPE
+                            }
+                        }
+                        else
+                            return false;
+                    case NTH_CHILD:
+                        return positionMatches(countSiblingsBefore(e, false) + 1, elementIndex);
+                    case NTH_LAST_CHILD:
+                        return positionMatches(countSiblingsAfter(e, false) + 1, elementIndex);
+                    case NTH_OF_TYPE:
+                        return positionMatches(countSiblingsBefore(e, true) + 1, elementIndex);
+                    case NTH_LAST_OF_TYPE:
+                        return positionMatches(countSiblingsAfter(e, true) + 1, elementIndex);
+                    case ROOT:
+                        return e.getParentNode().getNodeType() == Node.DOCUMENT_NODE;
+                    case EMPTY:
+                        NodeList elist = e.getChildNodes();
+                        for (int i = 0; i < elist.getLength(); i++)
+                        {
+                            short t = elist.item(i).getNodeType();
+                            if (t == Node.ELEMENT_NODE || t == Node.TEXT_NODE 
+                                    ||t == Node.CDATA_SECTION_NODE || t == Node.ENTITY_REFERENCE_NODE)
+                                return false;
+                        }
+                        return true;
 					default:
 						if (declaration.isPseudoElement() || //match all pseudo elements and the LINK pseudo class for links
 								(e.getTagName().equalsIgnoreCase("a") && declaration == PseudoDeclaration.LINK))
@@ -418,12 +478,138 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		}
 		
 		/**
+		 * Checks whether the element position matches a <code>an+b</code> index specification.
+		 * @param pos The element position according to some counting criteria.
+		 * @param n The index specifiaction <code>an+b</code> - <code>a</code> and <code>b</code> values in array int[2].
+		 * @return <code>true</code> when the position matches the index.
+		 */
+		protected boolean positionMatches(int pos, int[] n)
+		{
+            try {
+                int an = pos - n[1];
+                if (n[0] == 0)
+                    return an == 0;
+                else
+                    return an * n[0] >= 0 && an % n[0] == 0;
+            } catch (NumberFormatException ex) {
+                return false;
+            }
+		}
+		
+		/**
+		 * Decodes the element index in the <code>an+b</code> form.
+		 * @param index the element index string
+		 * @return an array of two integers <code>a</code> and <code>b</code>
+		 * @throws NumberFormatException
+		 */
+		protected int[] decodeIndex(String index) throws NumberFormatException
+		{
+		    String s = index.toLowerCase().trim();
+		    if (s.equals("odd")){
+                int[] ret = {2, 1};
+                return ret;
+		    }
+		    else if (s.equals("even")){
+                int[] ret = {2, 0};
+                return ret;
+            }
+		    else {
+                int[] ret = {0, 0};
+    		    int n = s.indexOf('n');
+    		    if (n != -1)
+    		    {
+    		        String sa = s.substring(0, n).trim();
+                    if (sa.length() == 0)
+                        ret[0] = 1;
+                    else if (sa.equals("-"))
+                        ret[0] = -1;
+                    else
+                        ret[0] = Integer.parseInt(sa);
+                    
+    		        n++;
+    		        StringBuilder sb = new StringBuilder();
+    		        while (n < s.length())
+    		        {
+    		            char ch = s.charAt(n);
+    		            if (ch != '+' && !Character.isWhitespace(ch))
+    		                sb.append(ch);
+    		            n++;
+    		        }
+    		        if (sb.length() > 0)
+    	                ret[1] = Integer.parseInt(sb.toString());
+    		    }
+    		    else
+    		        ret[1] = Integer.parseInt(s);
+    		    
+    		    return ret;
+		    }
+		}
+		
+		/**
+		 * Computes the count of element siblings before the given element in the DOM tree.
+		 * @param e The element to be examined
+		 * @param sameType when set to <code>true</code> only the element with the same type are considered.
+		 *                 Otherwise, all elements are considered.
+		 * @return the number of preceding siblings
+		 */
+		protected int countSiblingsBefore(Element e, boolean sameType)
+		{
+		    int cnt = 0;
+		    Node prev = e;
+		    do {
+		        prev = prev.getPreviousSibling();
+		        if (prev != null && prev.getNodeType() == Node.ELEMENT_NODE)
+		        {
+		            if (!sameType || isSameElementType(e, (Element) prev))
+		                cnt++;
+		        }
+		    } while (prev != null);
+		    
+		    return cnt;
+		}
+		
+        /**
+         * Computes the count of element siblings after the given element in the DOM tree.
+         * @param e The element to be examined
+         * @param sameType when set to <code>true</code> only the element with the same type are considered.
+         *                 Otherwise, all elements are considered.
+         * @return the number of following siblings
+         */
+        protected int countSiblingsAfter(Element e, boolean sameType)
+        {
+            int cnt = 0;
+            Node next = e;
+            do {
+                next = next.getNextSibling();
+                if (next != null && next.getNodeType() == Node.ELEMENT_NODE)
+                {
+                    if (!sameType || isSameElementType(e, (Element) next))
+                        cnt++;
+                }
+            } while (next != null);
+            
+            return cnt;
+        }
+        
+		/**
+		 * Checks whether two elements have the same name.
+		 * @param e1 the first element
+		 * @param e2 the second element
+		 * @return <code>true</code> when the elements have the same names
+		 */
+		protected boolean isSameElementType(Element e1, Element e2)
+		{
+		    return e1.getNodeName().equalsIgnoreCase(e2.getNodeName());
+		}
+		
+		/**
 		 * Sets value of pseudo. Could be even <code>null</code>
 		 * @param value New value
 		 */
 		public PseudoPage setValue(String value) {
 			this.value = value;
 			inferDeclaration();
+			decodeValue();
 			return this;
 		}
 		
@@ -495,6 +681,20 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		    else
 		        declaration = null;
 		}
+
+        private void decodeValue()
+        {
+            //decode the element index for nth-X properties
+            elementIndex = null;
+            if (declaration == PseudoDeclaration.NTH_CHILD || declaration == PseudoDeclaration.NTH_LAST_CHILD
+                    || declaration == PseudoDeclaration.NTH_OF_TYPE || declaration == PseudoDeclaration.NTH_LAST_OF_TYPE)
+            {
+                try {
+                    elementIndex = decodeIndex(value);
+                } catch (NumberFormatException e) {
+                }
+            }
+        }
 
     }
     

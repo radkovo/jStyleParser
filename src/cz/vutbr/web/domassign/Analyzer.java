@@ -322,6 +322,12 @@ public class Analyzer {
 				retval = false;
 				if (adjacent != null)
 					retval = s.matches(adjacent);
+            } else if (combinator == Selector.Combinator.PRECEDING) {
+                Element preceding;
+                retval = false;
+                while (!retval && (preceding = (Element) w.previousSibling()) != null) {
+                    retval = s.matches(preceding);
+                }
 			} else if (combinator == Selector.Combinator.DESCENDANT) {
                 Element ancestor;
                 retval = false;
