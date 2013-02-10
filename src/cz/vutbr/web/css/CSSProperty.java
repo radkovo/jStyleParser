@@ -156,7 +156,7 @@ public interface CSSProperty {
 	}
 
 	public enum Color implements CSSProperty {
-		color(""), INHERIT("inherit");
+		color(""), TRANSPARENT("trasparent"), INHERIT("inherit");
 
 		private String text;
 
@@ -1211,6 +1211,29 @@ public interface CSSProperty {
 		}
 	}
 
+    public enum Opacity implements CSSProperty {
+        number(""), INHERIT("inherit");
+
+        private String text;
+
+        private Opacity(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+    
 	public enum Orphans implements CSSProperty {
 		integer(""), INHERIT("inherit");
 

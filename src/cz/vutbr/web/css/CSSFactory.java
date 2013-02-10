@@ -31,7 +31,7 @@ import cz.vutbr.web.domassign.Traversal;
  * Factories need to be registered first. By default, CSSFactory uses
  * automatically for implementations:
  * <code>cz.vutbr.web.csskit.TermFactoryImpl</code>
- * <code>cz.vutbr.web.domassign.SupportedCSS21</code>
+ * <code>cz.vutbr.web.domassign.SupportedCSS3</code>
  * <code>cz.vutbr.web.csskit.RuleFactoryImpl</code>
  * <code>cz.vutbr.web.domassign.SingleMapNodeData</code>
  * 
@@ -48,7 +48,7 @@ public final class CSSFactory {
 	private static Logger log = LoggerFactory.getLogger(CSSFactory.class);
 
 	private static final String DEFAULT_TERM_FACTORY = "cz.vutbr.web.csskit.TermFactoryImpl";
-	private static final String DEFAULT_SUPPORTED_CSS = "cz.vutbr.web.domassign.SupportedCSS21";
+	private static final String DEFAULT_SUPPORTED_CSS = "cz.vutbr.web.domassign.SupportedCSS3";
 	private static final String DEFAULT_RULE_FACTORY = "cz.vutbr.web.csskit.RuleFactoryImpl";
     private static final String DEFAULT_DECLARATION_TRANSFORMER = "cz.vutbr.web.domassign.DeclarationTransformer";
 	private static final String DEFAULT_NODE_DATA_IMPL = "cz.vutbr.web.domassign.SingleMapNodeData";

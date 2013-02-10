@@ -58,6 +58,10 @@ public class TermFactoryImpl implements TermFactory {
 		return new TermColorImpl(r, g, b);
 	}
 
+    public TermColor createColor(int r, int g, int b, int a) {
+        return new TermColorImpl(r, g, b, a);
+    }
+
 	public TermColor createColor(TermFunction function) {
 		return TermColorImpl.getColorByFunction(function);
 	}
