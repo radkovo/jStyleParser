@@ -971,7 +971,7 @@ attribute
 	;
 
 pseudo
-	: pseudocolon^ (IDENT | FUNCTION S!* (IDENT | NUMBER | INDEX) S!* RPAREN!)
+	: pseudocolon^ (IDENT | FUNCTION S!* (IDENT | MINUS? NUMBER | MINUS? INDEX) S!* RPAREN!)
 	;
   catch [RecognitionException re] {
      retval.tree = invalidFallback(CSSLexer.INVALID_SELPART, "INVALID_SELPART", re);
@@ -1263,7 +1263,7 @@ HASH
 
 /** An element index in the an+b form */
 INDEX
-  : ('+' | '-')? INTEGER_MACR? ('N' | 'n') (S* ('+' | '-') S* INTEGER_MACR)?
+  : INTEGER_MACR? ('N' | 'n') (S* (PLUS | MINUS) S* INTEGER_MACR)?
   ;
 
 /** Number, decimal or integer */

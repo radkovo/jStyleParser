@@ -656,13 +656,17 @@ pseudo returns [Selector.PseudoPage pseudoPage]
 		{
 			$pseudoPage = rf.createPseudoPage(extractText(i), extractText(f));
 		}
-	| ^(PSEUDO f=FUNCTION n=NUMBER)
+	| ^(PSEUDO f=FUNCTION m=MINUS? n=NUMBER)
 		{
-			$pseudoPage = rf.createPseudoPage(extractText(n), extractText(f));
+      String exp = extractText(n);
+      if (m != null) exp = "-" + exp;
+			$pseudoPage = rf.createPseudoPage(exp, extractText(f));
 		}
-  | ^(PSEUDO f=FUNCTION n=INDEX)
+  | ^(PSEUDO f=FUNCTION m=MINUS? n=INDEX)
     {
-      $pseudoPage = rf.createPseudoPage(extractText(n), extractText(f));
+      String exp = extractText(n);
+      if (m != null) exp = "-" + exp;
+      $pseudoPage = rf.createPseudoPage(exp, extractText(f));
     }
 	;
 
