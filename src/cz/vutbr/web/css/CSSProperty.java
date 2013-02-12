@@ -411,6 +411,29 @@ public interface CSSProperty {
 		}
 	}
 
+    public enum BorderRadius implements CSSProperty {
+        component_values(""), list_values(""), INHERIT("inherit");
+
+        private String text;
+
+        private BorderRadius(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+	
 	public enum BorderSpacing implements CSSProperty {
 		list_values(""), INHERIT("inherit");
 

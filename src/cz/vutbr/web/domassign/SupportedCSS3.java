@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
+import cz.vutbr.web.css.CSSProperty.BorderRadius;
 import cz.vutbr.web.css.CSSProperty.Opacity;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
@@ -111,7 +112,7 @@ import cz.vutbr.web.css.CSSProperty.ZIndex;
 public class SupportedCSS3 implements SupportedCSS {
 	private static Logger log = LoggerFactory.getLogger(SupportedCSS3.class);
 
-	private static final int TOTAL_SUPPORTED_DECLARATIONS = 116;
+	private static final int TOTAL_SUPPORTED_DECLARATIONS = 122;
 
 	private static final TermFactory tf = CSSFactory.getTermFactory();
 
@@ -124,12 +125,16 @@ public class SupportedCSS3 implements SupportedCSS {
 	private static final Term<?> DEFAULT_UA_PADDING = tf.createLength(0.0f);
 	private static final Term<?> DEFAULT_UA_MIN_WIDTH = tf.createLength(0.0f);
 	private static final Term<?> DEFAULT_UA_MIN_HEIGHT = tf.createLength(0.0f);
-	private static final TermList DEFAULT_UA_BACKGROUND_POSITION = tf
-			.createList(2);
+	private static final TermList DEFAULT_UA_BACKGROUND_POSITION = tf.createList(2);
 	static {
 		DEFAULT_UA_BACKGROUND_POSITION.add(tf.createPercent(0.0f));
 		DEFAULT_UA_BACKGROUND_POSITION.add(tf.createPercent(0.0f));
 	}
+	private static final TermList DEFAULT_UA_BORDER_RADIUS = tf.createList(2);
+    static {
+        DEFAULT_UA_BORDER_RADIUS.add(tf.createLength(0.0f));
+        DEFAULT_UA_BORDER_RADIUS.add(tf.createLength(0.0f));
+    }
 	private static final TermList DEFAULT_UA_BORDER_SPACING = tf.createList(2);
 	static {
 		DEFAULT_UA_BORDER_SPACING.add(tf.createLength(0.0f));
@@ -238,7 +243,7 @@ public class SupportedCSS3 implements SupportedCSS {
 		// text type
 		props.put("color", Color.color);
 		values.put("color", DEFAULT_UA_COLOR);
-		props.put("color", Opacity.number);
+		props.put("opacity", Opacity.number);
 		values.put("opacity", DEFAULT_UA_OPACITY);
 		props.put("font", Font.component_values);
 		props.put("font-family", DEFAULT_UA_FONT_FAMILY);
@@ -306,6 +311,16 @@ public class SupportedCSS3 implements SupportedCSS {
 		props.put("border-bottom-color", BorderColor.taken);
 		props.put("border-left-color", BorderColor.taken);
 
+        props.put("border-radius", BorderRadius.component_values);
+		props.put("border-top-left-radius", BorderRadius.list_values);
+		values.put("border-top-left-radius", DEFAULT_UA_BORDER_RADIUS);
+        props.put("border-top-right-radius", BorderRadius.list_values);
+        values.put("border-top-right-radius", DEFAULT_UA_BORDER_RADIUS);
+        props.put("border-bottom-right-radius", BorderRadius.list_values);
+        values.put("border-bottom-right-radius", DEFAULT_UA_BORDER_RADIUS);
+        props.put("border-bottom-left-radius", BorderRadius.list_values);
+        values.put("border-bottom-left-radius", DEFAULT_UA_BORDER_RADIUS);
+		
 		props.put("width", Width.AUTO);
 		props.put("min-width", MinWidth.length);
 		values.put("min-width", DEFAULT_UA_MIN_WIDTH);
