@@ -966,8 +966,8 @@ selpart
 	  }
 
 attribute
-	: IDENT S*
-	  ((EQUALS | INCLUDES | DASHMATCH | STARTSWITH | ENDSWITH | CONTAINS) S* (IDENT | string) S*)?
+	: IDENT S!*
+	  ((EQUALS | INCLUDES | DASHMATCH | STARTSWITH | ENDSWITH | CONTAINS) S!* (IDENT | string) S!*)?
 	;
 
 pseudo

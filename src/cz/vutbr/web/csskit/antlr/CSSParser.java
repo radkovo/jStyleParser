@@ -1,4 +1,4 @@
-// $ANTLR 3.1.2 /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g 2013-02-11 18:51:34
+// $ANTLR 3.1.2 /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g 2013-02-19 23:15:56
  
 package cz.vutbr.web.csskit.antlr;
 
@@ -971,7 +971,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: VIEWPORT, declarations
+                    // elements: declarations, VIEWPORT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1225,7 +1225,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: media, MEDIA, ruleset
+                    // elements: ruleset, media, MEDIA
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1885,7 +1885,7 @@ public class CSSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: MARGIN_AREA, declarations
+            // elements: declarations, MARGIN_AREA
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2519,7 +2519,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: combined_selector, declarations
+                    // elements: declarations, combined_selector
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -2896,7 +2896,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: property, terms, important
+                    // elements: important, property, terms
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -3222,7 +3222,7 @@ public class CSSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: IDENT, MINUS
+            // elements: MINUS, IDENT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3759,7 +3759,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: terms, FUNCTION
+                    // elements: FUNCTION, terms
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -3962,7 +3962,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: MINUS, IDENT
+                    // elements: IDENT, MINUS
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -4044,7 +4044,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: NUMBER, MINUS
+                    // elements: MINUS, NUMBER
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -4098,7 +4098,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: PERCENTAGE, MINUS
+                    // elements: MINUS, PERCENTAGE
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -4632,7 +4632,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: MINUS, funct
+                    // elements: funct, MINUS
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -5378,7 +5378,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: IDENT, selpart
+                    // elements: selpart, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -5784,7 +5784,7 @@ public class CSSParser extends Parser {
             IDENT177_tree = (Object)adaptor.create(IDENT177);
             adaptor.addChild(root_0, IDENT177_tree);
 
-            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:969:10: ( S )*
+            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:969:11: ( S )*
             loop84:
             do {
                 int alt84=2;
@@ -5797,12 +5797,9 @@ public class CSSParser extends Parser {
 
                 switch (alt84) {
             	case 1 :
-            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:969:10: S
+            	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:969:11: S
             	    {
             	    S178=(Token)match(input,S,FOLLOW_S_in_attribute1758); 
-            	    S178_tree = (Object)adaptor.create(S178);
-            	    adaptor.addChild(root_0, S178_tree);
-
 
             	    }
             	    break;
@@ -5834,7 +5831,7 @@ public class CSSParser extends Parser {
                         throw mse;
                     }
 
-                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:970:72: ( S )*
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:970:73: ( S )*
                     loop85:
                     do {
                         int alt85=2;
@@ -5847,12 +5844,9 @@ public class CSSParser extends Parser {
 
                         switch (alt85) {
                     	case 1 :
-                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:970:72: S
+                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:970:73: S
                     	    {
-                    	    S180=(Token)match(input,S,FOLLOW_S_in_attribute1789); 
-                    	    S180_tree = (Object)adaptor.create(S180);
-                    	    adaptor.addChild(root_0, S180_tree);
-
+                    	    S180=(Token)match(input,S,FOLLOW_S_in_attribute1790); 
 
                     	    }
                     	    break;
@@ -5862,7 +5856,7 @@ public class CSSParser extends Parser {
                         }
                     } while (true);
 
-                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:970:75: ( IDENT | string )
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:970:76: ( IDENT | string )
                     int alt86=2;
                     int LA86_0 = input.LA(1);
 
@@ -5880,9 +5874,9 @@ public class CSSParser extends Parser {
                     }
                     switch (alt86) {
                         case 1 :
-                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:970:76: IDENT
+                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:970:77: IDENT
                             {
-                            IDENT181=(Token)match(input,IDENT,FOLLOW_IDENT_in_attribute1793); 
+                            IDENT181=(Token)match(input,IDENT,FOLLOW_IDENT_in_attribute1795); 
                             IDENT181_tree = (Object)adaptor.create(IDENT181);
                             adaptor.addChild(root_0, IDENT181_tree);
 
@@ -5890,9 +5884,9 @@ public class CSSParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:970:84: string
+                            // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:970:85: string
                             {
-                            pushFollow(FOLLOW_string_in_attribute1797);
+                            pushFollow(FOLLOW_string_in_attribute1799);
                             string182=string();
 
                             state._fsp--;
@@ -5904,7 +5898,7 @@ public class CSSParser extends Parser {
 
                     }
 
-                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:970:92: ( S )*
+                    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:970:94: ( S )*
                     loop87:
                     do {
                         int alt87=2;
@@ -5917,12 +5911,9 @@ public class CSSParser extends Parser {
 
                         switch (alt87) {
                     	case 1 :
-                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:970:92: S
+                    	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:970:94: S
                     	    {
-                    	    S183=(Token)match(input,S,FOLLOW_S_in_attribute1800); 
-                    	    S183_tree = (Object)adaptor.create(S183);
-                    	    adaptor.addChild(root_0, S183_tree);
-
+                    	    S183=(Token)match(input,S,FOLLOW_S_in_attribute1802); 
 
                     	    }
                     	    break;
@@ -6002,7 +5993,7 @@ public class CSSParser extends Parser {
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_pseudocolon_in_pseudo1814);
+            pushFollow(FOLLOW_pseudocolon_in_pseudo1817);
             pseudocolon184=pseudocolon();
 
             state._fsp--;
@@ -6028,7 +6019,7 @@ public class CSSParser extends Parser {
                 case 1 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:974:18: IDENT
                     {
-                    IDENT185=(Token)match(input,IDENT,FOLLOW_IDENT_in_pseudo1818); 
+                    IDENT185=(Token)match(input,IDENT,FOLLOW_IDENT_in_pseudo1821); 
                     IDENT185_tree = (Object)adaptor.create(IDENT185);
                     adaptor.addChild(root_0, IDENT185_tree);
 
@@ -6038,7 +6029,7 @@ public class CSSParser extends Parser {
                 case 2 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:974:26: FUNCTION ( S )* ( IDENT | ( MINUS )? NUMBER | ( MINUS )? INDEX ) ( S )* RPAREN
                     {
-                    FUNCTION186=(Token)match(input,FUNCTION,FOLLOW_FUNCTION_in_pseudo1822); 
+                    FUNCTION186=(Token)match(input,FUNCTION,FOLLOW_FUNCTION_in_pseudo1825); 
                     FUNCTION186_tree = (Object)adaptor.create(FUNCTION186);
                     adaptor.addChild(root_0, FUNCTION186_tree);
 
@@ -6057,7 +6048,7 @@ public class CSSParser extends Parser {
                     	case 1 :
                     	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:974:36: S
                     	    {
-                    	    S187=(Token)match(input,S,FOLLOW_S_in_pseudo1824); 
+                    	    S187=(Token)match(input,S,FOLLOW_S_in_pseudo1827); 
 
                     	    }
                     	    break;
@@ -6114,7 +6105,7 @@ public class CSSParser extends Parser {
                         case 1 :
                             // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:974:40: IDENT
                             {
-                            IDENT188=(Token)match(input,IDENT,FOLLOW_IDENT_in_pseudo1829); 
+                            IDENT188=(Token)match(input,IDENT,FOLLOW_IDENT_in_pseudo1832); 
                             IDENT188_tree = (Object)adaptor.create(IDENT188);
                             adaptor.addChild(root_0, IDENT188_tree);
 
@@ -6135,7 +6126,7 @@ public class CSSParser extends Parser {
                                 case 1 :
                                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:974:48: MINUS
                                     {
-                                    MINUS189=(Token)match(input,MINUS,FOLLOW_MINUS_in_pseudo1833); 
+                                    MINUS189=(Token)match(input,MINUS,FOLLOW_MINUS_in_pseudo1836); 
                                     MINUS189_tree = (Object)adaptor.create(MINUS189);
                                     adaptor.addChild(root_0, MINUS189_tree);
 
@@ -6145,7 +6136,7 @@ public class CSSParser extends Parser {
 
                             }
 
-                            NUMBER190=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pseudo1836); 
+                            NUMBER190=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pseudo1839); 
                             NUMBER190_tree = (Object)adaptor.create(NUMBER190);
                             adaptor.addChild(root_0, NUMBER190_tree);
 
@@ -6166,7 +6157,7 @@ public class CSSParser extends Parser {
                                 case 1 :
                                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:974:64: MINUS
                                     {
-                                    MINUS191=(Token)match(input,MINUS,FOLLOW_MINUS_in_pseudo1840); 
+                                    MINUS191=(Token)match(input,MINUS,FOLLOW_MINUS_in_pseudo1843); 
                                     MINUS191_tree = (Object)adaptor.create(MINUS191);
                                     adaptor.addChild(root_0, MINUS191_tree);
 
@@ -6176,7 +6167,7 @@ public class CSSParser extends Parser {
 
                             }
 
-                            INDEX192=(Token)match(input,INDEX,FOLLOW_INDEX_in_pseudo1843); 
+                            INDEX192=(Token)match(input,INDEX,FOLLOW_INDEX_in_pseudo1846); 
                             INDEX192_tree = (Object)adaptor.create(INDEX192);
                             adaptor.addChild(root_0, INDEX192_tree);
 
@@ -6201,7 +6192,7 @@ public class CSSParser extends Parser {
                     	case 1 :
                     	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:974:79: S
                     	    {
-                    	    S193=(Token)match(input,S,FOLLOW_S_in_pseudo1846); 
+                    	    S193=(Token)match(input,S,FOLLOW_S_in_pseudo1849); 
 
                     	    }
                     	    break;
@@ -6211,7 +6202,7 @@ public class CSSParser extends Parser {
                         }
                     } while (true);
 
-                    RPAREN194=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_pseudo1850); 
+                    RPAREN194=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_pseudo1853); 
 
                     }
                     break;
@@ -6262,7 +6253,7 @@ public class CSSParser extends Parser {
             // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:981:2: ( COLON ( COLON )? -> PSEUDO )
             // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:981:4: COLON ( COLON )?
             {
-            COLON195=(Token)match(input,COLON,FOLLOW_COLON_in_pseudocolon1871);  
+            COLON195=(Token)match(input,COLON,FOLLOW_COLON_in_pseudocolon1874);  
             stream_COLON.add(COLON195);
 
             // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:981:10: ( COLON )?
@@ -6276,7 +6267,7 @@ public class CSSParser extends Parser {
                 case 1 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:981:10: COLON
                     {
-                    COLON196=(Token)match(input,COLON,FOLLOW_COLON_in_pseudocolon1873);  
+                    COLON196=(Token)match(input,COLON,FOLLOW_COLON_in_pseudocolon1876);  
                     stream_COLON.add(COLON196);
 
 
@@ -6503,7 +6494,7 @@ public class CSSParser extends Parser {
                 case 1 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:991:6: IDENT
                     {
-                    IDENT198=(Token)match(input,IDENT,FOLLOW_IDENT_in_any1910);  
+                    IDENT198=(Token)match(input,IDENT,FOLLOW_IDENT_in_any1913);  
                     stream_IDENT.add(IDENT198);
 
 
@@ -6531,7 +6522,7 @@ public class CSSParser extends Parser {
                 case 2 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:992:6: CLASSKEYWORD
                     {
-                    CLASSKEYWORD199=(Token)match(input,CLASSKEYWORD,FOLLOW_CLASSKEYWORD_in_any1921);  
+                    CLASSKEYWORD199=(Token)match(input,CLASSKEYWORD,FOLLOW_CLASSKEYWORD_in_any1924);  
                     stream_CLASSKEYWORD.add(CLASSKEYWORD199);
 
 
@@ -6559,7 +6550,7 @@ public class CSSParser extends Parser {
                 case 3 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:993:6: NUMBER
                     {
-                    NUMBER200=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_any1932);  
+                    NUMBER200=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_any1935);  
                     stream_NUMBER.add(NUMBER200);
 
 
@@ -6587,7 +6578,7 @@ public class CSSParser extends Parser {
                 case 4 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:994:6: PERCENTAGE
                     {
-                    PERCENTAGE201=(Token)match(input,PERCENTAGE,FOLLOW_PERCENTAGE_in_any1943);  
+                    PERCENTAGE201=(Token)match(input,PERCENTAGE,FOLLOW_PERCENTAGE_in_any1946);  
                     stream_PERCENTAGE.add(PERCENTAGE201);
 
 
@@ -6615,7 +6606,7 @@ public class CSSParser extends Parser {
                 case 5 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:995:6: DIMENSION
                     {
-                    DIMENSION202=(Token)match(input,DIMENSION,FOLLOW_DIMENSION_in_any1953);  
+                    DIMENSION202=(Token)match(input,DIMENSION,FOLLOW_DIMENSION_in_any1956);  
                     stream_DIMENSION.add(DIMENSION202);
 
 
@@ -6643,7 +6634,7 @@ public class CSSParser extends Parser {
                 case 6 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:996:6: string
                     {
-                    pushFollow(FOLLOW_string_in_any1964);
+                    pushFollow(FOLLOW_string_in_any1967);
                     string203=string();
 
                     state._fsp--;
@@ -6674,7 +6665,7 @@ public class CSSParser extends Parser {
                 case 7 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:997:9: URI
                     {
-                    URI204=(Token)match(input,URI,FOLLOW_URI_in_any1978);  
+                    URI204=(Token)match(input,URI,FOLLOW_URI_in_any1981);  
                     stream_URI.add(URI204);
 
 
@@ -6702,7 +6693,7 @@ public class CSSParser extends Parser {
                 case 8 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:998:9: HASH
                     {
-                    HASH205=(Token)match(input,HASH,FOLLOW_HASH_in_any1995);  
+                    HASH205=(Token)match(input,HASH,FOLLOW_HASH_in_any1998);  
                     stream_HASH.add(HASH205);
 
 
@@ -6730,7 +6721,7 @@ public class CSSParser extends Parser {
                 case 9 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:999:9: UNIRANGE
                     {
-                    UNIRANGE206=(Token)match(input,UNIRANGE,FOLLOW_UNIRANGE_in_any2009);  
+                    UNIRANGE206=(Token)match(input,UNIRANGE,FOLLOW_UNIRANGE_in_any2012);  
                     stream_UNIRANGE.add(UNIRANGE206);
 
 
@@ -6758,7 +6749,7 @@ public class CSSParser extends Parser {
                 case 10 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1000:9: INCLUDES
                     {
-                    INCLUDES207=(Token)match(input,INCLUDES,FOLLOW_INCLUDES_in_any2023);  
+                    INCLUDES207=(Token)match(input,INCLUDES,FOLLOW_INCLUDES_in_any2026);  
                     stream_INCLUDES.add(INCLUDES207);
 
 
@@ -6786,7 +6777,7 @@ public class CSSParser extends Parser {
                 case 11 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1001:9: COLON
                     {
-                    COLON208=(Token)match(input,COLON,FOLLOW_COLON_in_any2037);  
+                    COLON208=(Token)match(input,COLON,FOLLOW_COLON_in_any2040);  
                     stream_COLON.add(COLON208);
 
 
@@ -6814,7 +6805,7 @@ public class CSSParser extends Parser {
                 case 12 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1002:9: COMMA
                     {
-                    COMMA209=(Token)match(input,COMMA,FOLLOW_COMMA_in_any2051);  
+                    COMMA209=(Token)match(input,COMMA,FOLLOW_COMMA_in_any2054);  
                     stream_COMMA.add(COMMA209);
 
 
@@ -6842,7 +6833,7 @@ public class CSSParser extends Parser {
                 case 13 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1003:9: GREATER
                     {
-                    GREATER210=(Token)match(input,GREATER,FOLLOW_GREATER_in_any2065);  
+                    GREATER210=(Token)match(input,GREATER,FOLLOW_GREATER_in_any2068);  
                     stream_GREATER.add(GREATER210);
 
 
@@ -6870,7 +6861,7 @@ public class CSSParser extends Parser {
                 case 14 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1004:9: LESS
                     {
-                    LESS211=(Token)match(input,LESS,FOLLOW_LESS_in_any2079);  
+                    LESS211=(Token)match(input,LESS,FOLLOW_LESS_in_any2082);  
                     stream_LESS.add(LESS211);
 
 
@@ -6898,7 +6889,7 @@ public class CSSParser extends Parser {
                 case 15 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1005:9: QUESTION
                     {
-                    QUESTION212=(Token)match(input,QUESTION,FOLLOW_QUESTION_in_any2093);  
+                    QUESTION212=(Token)match(input,QUESTION,FOLLOW_QUESTION_in_any2096);  
                     stream_QUESTION.add(QUESTION212);
 
 
@@ -6926,7 +6917,7 @@ public class CSSParser extends Parser {
                 case 16 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1006:9: PERCENT
                     {
-                    PERCENT213=(Token)match(input,PERCENT,FOLLOW_PERCENT_in_any2107);  
+                    PERCENT213=(Token)match(input,PERCENT,FOLLOW_PERCENT_in_any2110);  
                     stream_PERCENT.add(PERCENT213);
 
 
@@ -6954,7 +6945,7 @@ public class CSSParser extends Parser {
                 case 17 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1007:9: EQUALS
                     {
-                    EQUALS214=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_any2121);  
+                    EQUALS214=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_any2124);  
                     stream_EQUALS.add(EQUALS214);
 
 
@@ -6982,7 +6973,7 @@ public class CSSParser extends Parser {
                 case 18 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1008:9: SLASH
                     {
-                    SLASH215=(Token)match(input,SLASH,FOLLOW_SLASH_in_any2135);  
+                    SLASH215=(Token)match(input,SLASH,FOLLOW_SLASH_in_any2138);  
                     stream_SLASH.add(SLASH215);
 
 
@@ -7010,7 +7001,7 @@ public class CSSParser extends Parser {
                 case 19 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1009:9: EXCLAMATION
                     {
-                    EXCLAMATION216=(Token)match(input,EXCLAMATION,FOLLOW_EXCLAMATION_in_any2149);  
+                    EXCLAMATION216=(Token)match(input,EXCLAMATION,FOLLOW_EXCLAMATION_in_any2152);  
                     stream_EXCLAMATION.add(EXCLAMATION216);
 
 
@@ -7038,7 +7029,7 @@ public class CSSParser extends Parser {
                 case 20 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1010:6: MINUS
                     {
-                    MINUS217=(Token)match(input,MINUS,FOLLOW_MINUS_in_any2160);  
+                    MINUS217=(Token)match(input,MINUS,FOLLOW_MINUS_in_any2163);  
                     stream_MINUS.add(MINUS217);
 
 
@@ -7066,7 +7057,7 @@ public class CSSParser extends Parser {
                 case 21 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1011:6: PLUS
                     {
-                    PLUS218=(Token)match(input,PLUS,FOLLOW_PLUS_in_any2171);  
+                    PLUS218=(Token)match(input,PLUS,FOLLOW_PLUS_in_any2174);  
                     stream_PLUS.add(PLUS218);
 
 
@@ -7094,7 +7085,7 @@ public class CSSParser extends Parser {
                 case 22 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1012:6: ASTERISK
                     {
-                    ASTERISK219=(Token)match(input,ASTERISK,FOLLOW_ASTERISK_in_any2182);  
+                    ASTERISK219=(Token)match(input,ASTERISK,FOLLOW_ASTERISK_in_any2185);  
                     stream_ASTERISK.add(ASTERISK219);
 
 
@@ -7122,7 +7113,7 @@ public class CSSParser extends Parser {
                 case 23 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1013:9: FUNCTION ( S )* ( any )* RPAREN
                     {
-                    FUNCTION220=(Token)match(input,FUNCTION,FOLLOW_FUNCTION_in_any2199);  
+                    FUNCTION220=(Token)match(input,FUNCTION,FOLLOW_FUNCTION_in_any2202);  
                     stream_FUNCTION.add(FUNCTION220);
 
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1013:18: ( S )*
@@ -7134,7 +7125,7 @@ public class CSSParser extends Parser {
                     	case 1 :
                     	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1013:18: S
                     	    {
-                    	    S221=(Token)match(input,S,FOLLOW_S_in_any2201);  
+                    	    S221=(Token)match(input,S,FOLLOW_S_in_any2204);  
                     	    stream_S.add(S221);
 
 
@@ -7155,7 +7146,7 @@ public class CSSParser extends Parser {
                     	case 1 :
                     	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1013:21: any
                     	    {
-                    	    pushFollow(FOLLOW_any_in_any2204);
+                    	    pushFollow(FOLLOW_any_in_any2207);
                     	    any222=any();
 
                     	    state._fsp--;
@@ -7170,13 +7161,13 @@ public class CSSParser extends Parser {
                         }
                     } while (true);
 
-                    RPAREN223=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_any2207);  
+                    RPAREN223=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_any2210);  
                     stream_RPAREN.add(RPAREN223);
 
 
 
                     // AST REWRITE
-                    // elements: any, FUNCTION
+                    // elements: FUNCTION, any
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -7211,7 +7202,7 @@ public class CSSParser extends Parser {
                 case 24 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1014:9: DASHMATCH
                     {
-                    DASHMATCH224=(Token)match(input,DASHMATCH,FOLLOW_DASHMATCH_in_any2227);  
+                    DASHMATCH224=(Token)match(input,DASHMATCH,FOLLOW_DASHMATCH_in_any2230);  
                     stream_DASHMATCH.add(DASHMATCH224);
 
 
@@ -7239,7 +7230,7 @@ public class CSSParser extends Parser {
                 case 25 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1015:9: LPAREN ( any )* RPAREN
                     {
-                    LPAREN225=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_any2241);  
+                    LPAREN225=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_any2244);  
                     stream_LPAREN.add(LPAREN225);
 
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1015:16: ( any )*
@@ -7251,7 +7242,7 @@ public class CSSParser extends Parser {
                     	case 1 :
                     	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1015:16: any
                     	    {
-                    	    pushFollow(FOLLOW_any_in_any2243);
+                    	    pushFollow(FOLLOW_any_in_any2246);
                     	    any226=any();
 
                     	    state._fsp--;
@@ -7266,7 +7257,7 @@ public class CSSParser extends Parser {
                         }
                     } while (true);
 
-                    RPAREN227=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_any2246);  
+                    RPAREN227=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_any2249);  
                     stream_RPAREN.add(RPAREN227);
 
 
@@ -7307,7 +7298,7 @@ public class CSSParser extends Parser {
                 case 26 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1016:9: LBRACE ( any )* RBRACE
                     {
-                    LBRACE228=(Token)match(input,LBRACE,FOLLOW_LBRACE_in_any2265);  
+                    LBRACE228=(Token)match(input,LBRACE,FOLLOW_LBRACE_in_any2268);  
                     stream_LBRACE.add(LBRACE228);
 
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1016:16: ( any )*
@@ -7319,7 +7310,7 @@ public class CSSParser extends Parser {
                     	case 1 :
                     	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1016:16: any
                     	    {
-                    	    pushFollow(FOLLOW_any_in_any2267);
+                    	    pushFollow(FOLLOW_any_in_any2270);
                     	    any229=any();
 
                     	    state._fsp--;
@@ -7334,7 +7325,7 @@ public class CSSParser extends Parser {
                         }
                     } while (true);
 
-                    RBRACE230=(Token)match(input,RBRACE,FOLLOW_RBRACE_in_any2270);  
+                    RBRACE230=(Token)match(input,RBRACE,FOLLOW_RBRACE_in_any2273);  
                     stream_RBRACE.add(RBRACE230);
 
 
@@ -7384,7 +7375,7 @@ public class CSSParser extends Parser {
             	case 1 :
             	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1017:8: S
             	    {
-            	    S231=(Token)match(input,S,FOLLOW_S_in_any2288);  
+            	    S231=(Token)match(input,S,FOLLOW_S_in_any2291);  
             	    stream_S.add(S231);
 
 
@@ -7462,7 +7453,7 @@ public class CSSParser extends Parser {
                 case 1 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1021:7: RCURLY
                     {
-                    RCURLY232=(Token)match(input,RCURLY,FOLLOW_RCURLY_in_nostatement2303);  
+                    RCURLY232=(Token)match(input,RCURLY,FOLLOW_RCURLY_in_nostatement2306);  
                     stream_RCURLY.add(RCURLY232);
 
 
@@ -7490,7 +7481,7 @@ public class CSSParser extends Parser {
                 case 2 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1022:7: SEMICOLON
                     {
-                    SEMICOLON233=(Token)match(input,SEMICOLON,FOLLOW_SEMICOLON_in_nostatement2317);  
+                    SEMICOLON233=(Token)match(input,SEMICOLON,FOLLOW_SEMICOLON_in_nostatement2320);  
                     stream_SEMICOLON.add(SEMICOLON233);
 
 
@@ -7619,7 +7610,7 @@ public class CSSParser extends Parser {
                 case 1 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1027:6: CLASSKEYWORD
                     {
-                    CLASSKEYWORD234=(Token)match(input,CLASSKEYWORD,FOLLOW_CLASSKEYWORD_in_noprop2340);  
+                    CLASSKEYWORD234=(Token)match(input,CLASSKEYWORD,FOLLOW_CLASSKEYWORD_in_noprop2343);  
                     stream_CLASSKEYWORD.add(CLASSKEYWORD234);
 
 
@@ -7647,7 +7638,7 @@ public class CSSParser extends Parser {
                 case 2 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1028:8: NUMBER
                     {
-                    NUMBER235=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_noprop2353);  
+                    NUMBER235=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_noprop2356);  
                     stream_NUMBER.add(NUMBER235);
 
 
@@ -7675,7 +7666,7 @@ public class CSSParser extends Parser {
                 case 3 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1029:7: COMMA
                     {
-                    COMMA236=(Token)match(input,COMMA,FOLLOW_COMMA_in_noprop2365);  
+                    COMMA236=(Token)match(input,COMMA,FOLLOW_COMMA_in_noprop2368);  
                     stream_COMMA.add(COMMA236);
 
 
@@ -7703,7 +7694,7 @@ public class CSSParser extends Parser {
                 case 4 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1030:7: GREATER
                     {
-                    GREATER237=(Token)match(input,GREATER,FOLLOW_GREATER_in_noprop2377);  
+                    GREATER237=(Token)match(input,GREATER,FOLLOW_GREATER_in_noprop2380);  
                     stream_GREATER.add(GREATER237);
 
 
@@ -7731,7 +7722,7 @@ public class CSSParser extends Parser {
                 case 5 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1031:7: LESS
                     {
-                    LESS238=(Token)match(input,LESS,FOLLOW_LESS_in_noprop2389);  
+                    LESS238=(Token)match(input,LESS,FOLLOW_LESS_in_noprop2392);  
                     stream_LESS.add(LESS238);
 
 
@@ -7759,7 +7750,7 @@ public class CSSParser extends Parser {
                 case 6 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1032:7: QUESTION
                     {
-                    QUESTION239=(Token)match(input,QUESTION,FOLLOW_QUESTION_in_noprop2401);  
+                    QUESTION239=(Token)match(input,QUESTION,FOLLOW_QUESTION_in_noprop2404);  
                     stream_QUESTION.add(QUESTION239);
 
 
@@ -7787,7 +7778,7 @@ public class CSSParser extends Parser {
                 case 7 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1033:7: PERCENT
                     {
-                    PERCENT240=(Token)match(input,PERCENT,FOLLOW_PERCENT_in_noprop2413);  
+                    PERCENT240=(Token)match(input,PERCENT,FOLLOW_PERCENT_in_noprop2416);  
                     stream_PERCENT.add(PERCENT240);
 
 
@@ -7815,7 +7806,7 @@ public class CSSParser extends Parser {
                 case 8 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1034:7: EQUALS
                     {
-                    EQUALS241=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_noprop2425);  
+                    EQUALS241=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_noprop2428);  
                     stream_EQUALS.add(EQUALS241);
 
 
@@ -7843,7 +7834,7 @@ public class CSSParser extends Parser {
                 case 9 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1035:7: SLASH
                     {
-                    SLASH242=(Token)match(input,SLASH,FOLLOW_SLASH_in_noprop2437);  
+                    SLASH242=(Token)match(input,SLASH,FOLLOW_SLASH_in_noprop2440);  
                     stream_SLASH.add(SLASH242);
 
 
@@ -7871,7 +7862,7 @@ public class CSSParser extends Parser {
                 case 10 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1036:7: EXCLAMATION
                     {
-                    EXCLAMATION243=(Token)match(input,EXCLAMATION,FOLLOW_EXCLAMATION_in_noprop2449);  
+                    EXCLAMATION243=(Token)match(input,EXCLAMATION,FOLLOW_EXCLAMATION_in_noprop2452);  
                     stream_EXCLAMATION.add(EXCLAMATION243);
 
 
@@ -7899,7 +7890,7 @@ public class CSSParser extends Parser {
                 case 11 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1037:7: PLUS
                     {
-                    PLUS244=(Token)match(input,PLUS,FOLLOW_PLUS_in_noprop2461);  
+                    PLUS244=(Token)match(input,PLUS,FOLLOW_PLUS_in_noprop2464);  
                     stream_PLUS.add(PLUS244);
 
 
@@ -7927,7 +7918,7 @@ public class CSSParser extends Parser {
                 case 12 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1038:7: ASTERISK
                     {
-                    ASTERISK245=(Token)match(input,ASTERISK,FOLLOW_ASTERISK_in_noprop2473);  
+                    ASTERISK245=(Token)match(input,ASTERISK,FOLLOW_ASTERISK_in_noprop2476);  
                     stream_ASTERISK.add(ASTERISK245);
 
 
@@ -7955,7 +7946,7 @@ public class CSSParser extends Parser {
                 case 13 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1039:7: DASHMATCH
                     {
-                    DASHMATCH246=(Token)match(input,DASHMATCH,FOLLOW_DASHMATCH_in_noprop2488);  
+                    DASHMATCH246=(Token)match(input,DASHMATCH,FOLLOW_DASHMATCH_in_noprop2491);  
                     stream_DASHMATCH.add(DASHMATCH246);
 
 
@@ -7983,7 +7974,7 @@ public class CSSParser extends Parser {
                 case 14 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1040:7: INCLUDES
                     {
-                    INCLUDES247=(Token)match(input,INCLUDES,FOLLOW_INCLUDES_in_noprop2500);  
+                    INCLUDES247=(Token)match(input,INCLUDES,FOLLOW_INCLUDES_in_noprop2503);  
                     stream_INCLUDES.add(INCLUDES247);
 
 
@@ -8011,7 +8002,7 @@ public class CSSParser extends Parser {
                 case 15 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1041:7: COLON
                     {
-                    COLON248=(Token)match(input,COLON,FOLLOW_COLON_in_noprop2512);  
+                    COLON248=(Token)match(input,COLON,FOLLOW_COLON_in_noprop2515);  
                     stream_COLON.add(COLON248);
 
 
@@ -8039,7 +8030,7 @@ public class CSSParser extends Parser {
                 case 16 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1042:7: STRING_CHAR
                     {
-                    STRING_CHAR249=(Token)match(input,STRING_CHAR,FOLLOW_STRING_CHAR_in_noprop2524);  
+                    STRING_CHAR249=(Token)match(input,STRING_CHAR,FOLLOW_STRING_CHAR_in_noprop2527);  
                     stream_STRING_CHAR.add(STRING_CHAR249);
 
 
@@ -8067,7 +8058,7 @@ public class CSSParser extends Parser {
                 case 17 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1043:7: INVALID_TOKEN
                     {
-                    INVALID_TOKEN250=(Token)match(input,INVALID_TOKEN,FOLLOW_INVALID_TOKEN_in_noprop2536);  
+                    INVALID_TOKEN250=(Token)match(input,INVALID_TOKEN,FOLLOW_INVALID_TOKEN_in_noprop2539);  
                     stream_INVALID_TOKEN.add(INVALID_TOKEN250);
 
 
@@ -8104,7 +8095,7 @@ public class CSSParser extends Parser {
             	case 1 :
             	    // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1044:8: S
             	    {
-            	    S251=(Token)match(input,S,FOLLOW_S_in_noprop2549);  
+            	    S251=(Token)match(input,S,FOLLOW_S_in_noprop2552);  
             	    stream_S.add(S251);
 
 
@@ -8225,7 +8216,7 @@ public class CSSParser extends Parser {
                 case 1 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1048:7: NUMBER
                     {
-                    NUMBER252=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_norule2564);  
+                    NUMBER252=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_norule2567);  
                     stream_NUMBER.add(NUMBER252);
 
 
@@ -8253,7 +8244,7 @@ public class CSSParser extends Parser {
                 case 2 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1049:8: PERCENTAGE
                     {
-                    PERCENTAGE253=(Token)match(input,PERCENTAGE,FOLLOW_PERCENTAGE_in_norule2577);  
+                    PERCENTAGE253=(Token)match(input,PERCENTAGE,FOLLOW_PERCENTAGE_in_norule2580);  
                     stream_PERCENTAGE.add(PERCENTAGE253);
 
 
@@ -8281,7 +8272,7 @@ public class CSSParser extends Parser {
                 case 3 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1050:8: DIMENSION
                     {
-                    DIMENSION254=(Token)match(input,DIMENSION,FOLLOW_DIMENSION_in_norule2589);  
+                    DIMENSION254=(Token)match(input,DIMENSION,FOLLOW_DIMENSION_in_norule2592);  
                     stream_DIMENSION.add(DIMENSION254);
 
 
@@ -8309,7 +8300,7 @@ public class CSSParser extends Parser {
                 case 4 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1051:8: string
                     {
-                    pushFollow(FOLLOW_string_in_norule2602);
+                    pushFollow(FOLLOW_string_in_norule2605);
                     string255=string();
 
                     state._fsp--;
@@ -8340,7 +8331,7 @@ public class CSSParser extends Parser {
                 case 5 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1052:9: URI
                     {
-                    URI256=(Token)match(input,URI,FOLLOW_URI_in_norule2616);  
+                    URI256=(Token)match(input,URI,FOLLOW_URI_in_norule2619);  
                     stream_URI.add(URI256);
 
 
@@ -8368,7 +8359,7 @@ public class CSSParser extends Parser {
                 case 6 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1053:9: UNIRANGE
                     {
-                    UNIRANGE257=(Token)match(input,UNIRANGE,FOLLOW_UNIRANGE_in_norule2633);  
+                    UNIRANGE257=(Token)match(input,UNIRANGE,FOLLOW_UNIRANGE_in_norule2636);  
                     stream_UNIRANGE.add(UNIRANGE257);
 
 
@@ -8396,7 +8387,7 @@ public class CSSParser extends Parser {
                 case 7 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1054:9: INCLUDES
                     {
-                    INCLUDES258=(Token)match(input,INCLUDES,FOLLOW_INCLUDES_in_norule2647);  
+                    INCLUDES258=(Token)match(input,INCLUDES,FOLLOW_INCLUDES_in_norule2650);  
                     stream_INCLUDES.add(INCLUDES258);
 
 
@@ -8424,7 +8415,7 @@ public class CSSParser extends Parser {
                 case 8 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1055:9: COMMA
                     {
-                    COMMA259=(Token)match(input,COMMA,FOLLOW_COMMA_in_norule2661);  
+                    COMMA259=(Token)match(input,COMMA,FOLLOW_COMMA_in_norule2664);  
                     stream_COMMA.add(COMMA259);
 
 
@@ -8452,7 +8443,7 @@ public class CSSParser extends Parser {
                 case 9 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1056:9: GREATER
                     {
-                    GREATER260=(Token)match(input,GREATER,FOLLOW_GREATER_in_norule2675);  
+                    GREATER260=(Token)match(input,GREATER,FOLLOW_GREATER_in_norule2678);  
                     stream_GREATER.add(GREATER260);
 
 
@@ -8480,7 +8471,7 @@ public class CSSParser extends Parser {
                 case 10 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1057:9: LESS
                     {
-                    LESS261=(Token)match(input,LESS,FOLLOW_LESS_in_norule2689);  
+                    LESS261=(Token)match(input,LESS,FOLLOW_LESS_in_norule2692);  
                     stream_LESS.add(LESS261);
 
 
@@ -8508,7 +8499,7 @@ public class CSSParser extends Parser {
                 case 11 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1058:9: QUESTION
                     {
-                    QUESTION262=(Token)match(input,QUESTION,FOLLOW_QUESTION_in_norule2703);  
+                    QUESTION262=(Token)match(input,QUESTION,FOLLOW_QUESTION_in_norule2706);  
                     stream_QUESTION.add(QUESTION262);
 
 
@@ -8536,7 +8527,7 @@ public class CSSParser extends Parser {
                 case 12 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1059:9: PERCENT
                     {
-                    PERCENT263=(Token)match(input,PERCENT,FOLLOW_PERCENT_in_norule2717);  
+                    PERCENT263=(Token)match(input,PERCENT,FOLLOW_PERCENT_in_norule2720);  
                     stream_PERCENT.add(PERCENT263);
 
 
@@ -8564,7 +8555,7 @@ public class CSSParser extends Parser {
                 case 13 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1060:9: EQUALS
                     {
-                    EQUALS264=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_norule2731);  
+                    EQUALS264=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_norule2734);  
                     stream_EQUALS.add(EQUALS264);
 
 
@@ -8592,7 +8583,7 @@ public class CSSParser extends Parser {
                 case 14 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1061:9: SLASH
                     {
-                    SLASH265=(Token)match(input,SLASH,FOLLOW_SLASH_in_norule2745);  
+                    SLASH265=(Token)match(input,SLASH,FOLLOW_SLASH_in_norule2748);  
                     stream_SLASH.add(SLASH265);
 
 
@@ -8620,7 +8611,7 @@ public class CSSParser extends Parser {
                 case 15 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1062:9: EXCLAMATION
                     {
-                    EXCLAMATION266=(Token)match(input,EXCLAMATION,FOLLOW_EXCLAMATION_in_norule2759);  
+                    EXCLAMATION266=(Token)match(input,EXCLAMATION,FOLLOW_EXCLAMATION_in_norule2762);  
                     stream_EXCLAMATION.add(EXCLAMATION266);
 
 
@@ -8648,7 +8639,7 @@ public class CSSParser extends Parser {
                 case 16 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1063:8: MINUS
                     {
-                    MINUS267=(Token)match(input,MINUS,FOLLOW_MINUS_in_norule2772);  
+                    MINUS267=(Token)match(input,MINUS,FOLLOW_MINUS_in_norule2775);  
                     stream_MINUS.add(MINUS267);
 
 
@@ -8676,7 +8667,7 @@ public class CSSParser extends Parser {
                 case 17 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1064:8: PLUS
                     {
-                    PLUS268=(Token)match(input,PLUS,FOLLOW_PLUS_in_norule2785);  
+                    PLUS268=(Token)match(input,PLUS,FOLLOW_PLUS_in_norule2788);  
                     stream_PLUS.add(PLUS268);
 
 
@@ -8704,7 +8695,7 @@ public class CSSParser extends Parser {
                 case 18 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1065:9: DASHMATCH
                     {
-                    DASHMATCH269=(Token)match(input,DASHMATCH,FOLLOW_DASHMATCH_in_norule2799);  
+                    DASHMATCH269=(Token)match(input,DASHMATCH,FOLLOW_DASHMATCH_in_norule2802);  
                     stream_DASHMATCH.add(DASHMATCH269);
 
 
@@ -8732,7 +8723,7 @@ public class CSSParser extends Parser {
                 case 19 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1066:9: RPAREN
                     {
-                    RPAREN270=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_norule2813);  
+                    RPAREN270=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_norule2816);  
                     stream_RPAREN.add(RPAREN270);
 
 
@@ -8760,7 +8751,7 @@ public class CSSParser extends Parser {
                 case 20 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1067:9: '#'
                     {
-                    char_literal271=(Token)match(input,100,FOLLOW_100_in_norule2827);  
+                    char_literal271=(Token)match(input,100,FOLLOW_100_in_norule2830);  
                     stream_100.add(char_literal271);
 
 
@@ -8769,7 +8760,7 @@ public class CSSParser extends Parser {
                 case 21 :
                     // /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g:1068:9: '^'
                     {
-                    char_literal272=(Token)match(input,101,FOLLOW_101_in_norule2838);  
+                    char_literal272=(Token)match(input,101,FOLLOW_101_in_norule2841);  
                     stream_101.add(char_literal272);
 
 
@@ -12666,99 +12657,99 @@ public class CSSParser extends Parser {
     public static final BitSet FOLLOW_INVALID_SELPART_in_selpart1732 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_IDENT_in_attribute1756 = new BitSet(new long[]{0x1000000080000002L,0x0000000000001C22L});
     public static final BitSet FOLLOW_S_in_attribute1758 = new BitSet(new long[]{0x1000000080000002L,0x0000000000001C22L});
-    public static final BitSet FOLLOW_set_in_attribute1765 = new BitSet(new long[]{0x0000080081000000L,0x0000000000004000L});
-    public static final BitSet FOLLOW_S_in_attribute1789 = new BitSet(new long[]{0x0000080081000000L,0x0000000000004000L});
-    public static final BitSet FOLLOW_IDENT_in_attribute1793 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_string_in_attribute1797 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_S_in_attribute1800 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_pseudocolon_in_pseudo1814 = new BitSet(new long[]{0x0008080000000000L});
-    public static final BitSet FOLLOW_IDENT_in_pseudo1818 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FUNCTION_in_pseudo1822 = new BitSet(new long[]{0x0042080080000000L,0x0000000000002000L});
-    public static final BitSet FOLLOW_S_in_pseudo1824 = new BitSet(new long[]{0x0042080080000000L,0x0000000000002000L});
-    public static final BitSet FOLLOW_IDENT_in_pseudo1829 = new BitSet(new long[]{0x0010000080000000L});
-    public static final BitSet FOLLOW_MINUS_in_pseudo1833 = new BitSet(new long[]{0x0040000000000000L});
-    public static final BitSet FOLLOW_NUMBER_in_pseudo1836 = new BitSet(new long[]{0x0010000080000000L});
-    public static final BitSet FOLLOW_MINUS_in_pseudo1840 = new BitSet(new long[]{0x0000000000000000L,0x0000000000002000L});
-    public static final BitSet FOLLOW_INDEX_in_pseudo1843 = new BitSet(new long[]{0x0010000080000000L});
-    public static final BitSet FOLLOW_S_in_pseudo1846 = new BitSet(new long[]{0x0010000080000000L});
-    public static final BitSet FOLLOW_RPAREN_in_pseudo1850 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_COLON_in_pseudocolon1871 = new BitSet(new long[]{0x0000800000000002L});
-    public static final BitSet FOLLOW_COLON_in_pseudocolon1873 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_attribute1766 = new BitSet(new long[]{0x0000080081000000L,0x0000000000004000L});
+    public static final BitSet FOLLOW_S_in_attribute1790 = new BitSet(new long[]{0x0000080081000000L,0x0000000000004000L});
+    public static final BitSet FOLLOW_IDENT_in_attribute1795 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_string_in_attribute1799 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_S_in_attribute1802 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_pseudocolon_in_pseudo1817 = new BitSet(new long[]{0x0008080000000000L});
+    public static final BitSet FOLLOW_IDENT_in_pseudo1821 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FUNCTION_in_pseudo1825 = new BitSet(new long[]{0x0042080080000000L,0x0000000000002000L});
+    public static final BitSet FOLLOW_S_in_pseudo1827 = new BitSet(new long[]{0x0042080080000000L,0x0000000000002000L});
+    public static final BitSet FOLLOW_IDENT_in_pseudo1832 = new BitSet(new long[]{0x0010000080000000L});
+    public static final BitSet FOLLOW_MINUS_in_pseudo1836 = new BitSet(new long[]{0x0040000000000000L});
+    public static final BitSet FOLLOW_NUMBER_in_pseudo1839 = new BitSet(new long[]{0x0010000080000000L});
+    public static final BitSet FOLLOW_MINUS_in_pseudo1843 = new BitSet(new long[]{0x0000000000000000L,0x0000000000002000L});
+    public static final BitSet FOLLOW_INDEX_in_pseudo1846 = new BitSet(new long[]{0x0010000080000000L});
+    public static final BitSet FOLLOW_S_in_pseudo1849 = new BitSet(new long[]{0x0010000080000000L});
+    public static final BitSet FOLLOW_RPAREN_in_pseudo1853 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_COLON_in_pseudocolon1874 = new BitSet(new long[]{0x0000800000000002L});
+    public static final BitSet FOLLOW_COLON_in_pseudocolon1876 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_set_in_string0 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_any1910 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_CLASSKEYWORD_in_any1921 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_NUMBER_in_any1932 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_PERCENTAGE_in_any1943 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_DIMENSION_in_any1953 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_string_in_any1964 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_URI_in_any1978 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_HASH_in_any1995 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_UNIRANGE_in_any2009 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_INCLUDES_in_any2023 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_COLON_in_any2037 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_COMMA_in_any2051 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_GREATER_in_any2065 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_LESS_in_any2079 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_QUESTION_in_any2093 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_PERCENT_in_any2107 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_EQUALS_in_any2121 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_SLASH_in_any2135 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_EXCLAMATION_in_any2149 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_MINUS_in_any2160 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_PLUS_in_any2171 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_ASTERISK_in_any2182 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_FUNCTION_in_any2199 = new BitSet(new long[]{0xFFFBA80081000000L,0x00000000000040FFL});
-    public static final BitSet FOLLOW_S_in_any2201 = new BitSet(new long[]{0xFFFBA80081000000L,0x00000000000040FFL});
-    public static final BitSet FOLLOW_any_in_any2204 = new BitSet(new long[]{0xFFFBA80001000000L,0x00000000000040FFL});
-    public static final BitSet FOLLOW_RPAREN_in_any2207 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_DASHMATCH_in_any2227 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_LPAREN_in_any2241 = new BitSet(new long[]{0xFFFBA80001000000L,0x00000000000040FFL});
-    public static final BitSet FOLLOW_any_in_any2243 = new BitSet(new long[]{0xFFFBA80001000000L,0x00000000000040FFL});
-    public static final BitSet FOLLOW_RPAREN_in_any2246 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_LBRACE_in_any2265 = new BitSet(new long[]{0xFFEBA80001000000L,0x00000000000041FFL});
-    public static final BitSet FOLLOW_any_in_any2267 = new BitSet(new long[]{0xFFEBA80001000000L,0x00000000000041FFL});
-    public static final BitSet FOLLOW_RBRACE_in_any2270 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_S_in_any2288 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_RCURLY_in_nostatement2303 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SEMICOLON_in_nostatement2317 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CLASSKEYWORD_in_noprop2340 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_NUMBER_in_noprop2353 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_COMMA_in_noprop2365 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_GREATER_in_noprop2377 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_LESS_in_noprop2389 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_QUESTION_in_noprop2401 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_PERCENT_in_noprop2413 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_EQUALS_in_noprop2425 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_SLASH_in_noprop2437 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_EXCLAMATION_in_noprop2449 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_PLUS_in_noprop2461 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_ASTERISK_in_noprop2473 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_DASHMATCH_in_noprop2488 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_INCLUDES_in_noprop2500 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_COLON_in_noprop2512 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_STRING_CHAR_in_noprop2524 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_INVALID_TOKEN_in_noprop2536 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_S_in_noprop2549 = new BitSet(new long[]{0x0000000080000002L});
-    public static final BitSet FOLLOW_NUMBER_in_norule2564 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PERCENTAGE_in_norule2577 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DIMENSION_in_norule2589 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_string_in_norule2602 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_URI_in_norule2616 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_UNIRANGE_in_norule2633 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INCLUDES_in_norule2647 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_COMMA_in_norule2661 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_GREATER_in_norule2675 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LESS_in_norule2689 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_QUESTION_in_norule2703 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PERCENT_in_norule2717 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_EQUALS_in_norule2731 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SLASH_in_norule2745 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_EXCLAMATION_in_norule2759 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_MINUS_in_norule2772 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PLUS_in_norule2785 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DASHMATCH_in_norule2799 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RPAREN_in_norule2813 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_100_in_norule2827 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_101_in_norule2838 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_any1913 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_CLASSKEYWORD_in_any1924 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_NUMBER_in_any1935 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_PERCENTAGE_in_any1946 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_DIMENSION_in_any1956 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_string_in_any1967 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_URI_in_any1981 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_HASH_in_any1998 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_UNIRANGE_in_any2012 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_INCLUDES_in_any2026 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_COLON_in_any2040 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_COMMA_in_any2054 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_GREATER_in_any2068 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_LESS_in_any2082 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_QUESTION_in_any2096 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_PERCENT_in_any2110 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_EQUALS_in_any2124 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_SLASH_in_any2138 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_EXCLAMATION_in_any2152 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_MINUS_in_any2163 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_PLUS_in_any2174 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_ASTERISK_in_any2185 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_FUNCTION_in_any2202 = new BitSet(new long[]{0xFFFBA80081000000L,0x00000000000040FFL});
+    public static final BitSet FOLLOW_S_in_any2204 = new BitSet(new long[]{0xFFFBA80081000000L,0x00000000000040FFL});
+    public static final BitSet FOLLOW_any_in_any2207 = new BitSet(new long[]{0xFFFBA80001000000L,0x00000000000040FFL});
+    public static final BitSet FOLLOW_RPAREN_in_any2210 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_DASHMATCH_in_any2230 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_LPAREN_in_any2244 = new BitSet(new long[]{0xFFFBA80001000000L,0x00000000000040FFL});
+    public static final BitSet FOLLOW_any_in_any2246 = new BitSet(new long[]{0xFFFBA80001000000L,0x00000000000040FFL});
+    public static final BitSet FOLLOW_RPAREN_in_any2249 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_LBRACE_in_any2268 = new BitSet(new long[]{0xFFEBA80001000000L,0x00000000000041FFL});
+    public static final BitSet FOLLOW_any_in_any2270 = new BitSet(new long[]{0xFFEBA80001000000L,0x00000000000041FFL});
+    public static final BitSet FOLLOW_RBRACE_in_any2273 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_S_in_any2291 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_RCURLY_in_nostatement2306 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SEMICOLON_in_nostatement2320 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_CLASSKEYWORD_in_noprop2343 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_NUMBER_in_noprop2356 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_COMMA_in_noprop2368 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_GREATER_in_noprop2380 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_LESS_in_noprop2392 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_QUESTION_in_noprop2404 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_PERCENT_in_noprop2416 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_EQUALS_in_noprop2428 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_SLASH_in_noprop2440 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_EXCLAMATION_in_noprop2452 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_PLUS_in_noprop2464 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_ASTERISK_in_noprop2476 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_DASHMATCH_in_noprop2491 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_INCLUDES_in_noprop2503 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_COLON_in_noprop2515 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_STRING_CHAR_in_noprop2527 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_INVALID_TOKEN_in_noprop2539 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_S_in_noprop2552 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_NUMBER_in_norule2567 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PERCENTAGE_in_norule2580 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DIMENSION_in_norule2592 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_string_in_norule2605 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_URI_in_norule2619 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_UNIRANGE_in_norule2636 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INCLUDES_in_norule2650 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_COMMA_in_norule2664 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_GREATER_in_norule2678 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LESS_in_norule2692 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_QUESTION_in_norule2706 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PERCENT_in_norule2720 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_EQUALS_in_norule2734 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SLASH_in_norule2748 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_EXCLAMATION_in_norule2762 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_MINUS_in_norule2775 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PLUS_in_norule2788 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DASHMATCH_in_norule2802 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RPAREN_in_norule2816 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_100_in_norule2830 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_101_in_norule2841 = new BitSet(new long[]{0x0000000000000002L});
 
 }
