@@ -360,6 +360,45 @@ public class DeclarationTransformer {
 	}
 
 	/**
+	 * Converts term into TermLength and stores values and types in maps
+	 * 
+	 * @param <T>
+	 *            CSSProperty
+	 * @param term
+	 *            Term to be parsed
+	 * @param propertyName
+	 *            How to store colorIdentificiton
+	 * @param lengthIdentification
+	 *            What to store under propertyName
+	 * @param properties
+	 *            Map to store property types
+	 * @param values
+	 *            Map to store property values
+	 * @return <code>true</code> in case of success, <code>false</code>
+	 *         otherwise
+	 */
+	protected <T extends CSSProperty> boolean genericTermLength(Term<?> term,
+			String propertyName, T lengthIdentification, boolean sanify,
+			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+
+        if (term instanceof TermInteger  && ((TermInteger) term).getUnit().equals(TermNumber.Unit.none)) {
+            if (CSSFactory.getImplyPixelLength() || ((TermInteger) term).getValue() == 0) { //0 is always allowed with no units
+                // convert to length with units of px
+                TermLength tl = tf.createLength(((TermInteger) term).getValue(), TermNumber.Unit.px);
+                return genericTerm(TermLength.class, tl, propertyName, lengthIdentification, sanify, properties, values);
+            } else {
+                return false;
+            }
+        }
+        else if (term instanceof TermLength) { 
+            return genericTerm(TermLength.class, term, propertyName, lengthIdentification, sanify, properties, values); 
+        }
+
+        return false;
+
+	}
+
+	/**
 	 * Check whether given declaration contains one term of given type. It is
 	 * able to check even whether is above zero for numeric values
 	 * 
@@ -518,7 +557,7 @@ public class DeclarationTransformer {
 
 		return genericTermIdent(type, d.get(0), ALLOW_INH, d.getProperty(),
 				properties)
-				|| genericTerm(TermLength.class, d.get(0), d.getProperty(),
+				|| genericTermLength(d.get(0), d.getProperty(),
 						lengthIdentification, sanify, properties, values);
 	}
 
@@ -532,7 +571,7 @@ public class DeclarationTransformer {
 
 		return genericTermIdent(type, d.get(0), ALLOW_INH, d.getProperty(),
 				properties)
-				|| genericTerm(TermLength.class, d.get(0), d.getProperty(),
+				|| genericTermLength(d.get(0), d.getProperty(),
 						lengthIdentification, sanify, properties, values)
 				|| genericTerm(TermPercent.class, d.get(0), d.getProperty(),
 						percentIdentification, sanify, properties, values);
@@ -548,7 +587,7 @@ public class DeclarationTransformer {
             String propertyName = d.getProperty();
             // is it identifier or length ?
             if (genericTermIdent(type, term, ALLOW_INH, propertyName, properties)
-                || genericTerm(TermLength.class, term, propertyName,
+                || genericTermLength(term, propertyName,
                         listIdentification, sanify, properties, values)
                 || genericTerm(TermPercent.class, term, propertyName,
                         listIdentification, sanify, properties, values)) {
@@ -570,11 +609,11 @@ public class DeclarationTransformer {
             Term<?> term2 = d.get(1);
             String propertyName = d.getProperty();
             // two lengths ?
-            if ((genericTerm(TermLength.class, term1, propertyName,
+            if ((genericTermLength(term1, propertyName,
                             listIdentification, sanify, properties, values)
                     || genericTerm(TermPercent.class, term1, propertyName,
                             listIdentification, sanify, properties, values))
-                 && (genericTerm(TermLength.class, term2, propertyName,
+                 && (genericTermLength(term2, propertyName,
                             listIdentification, sanify, properties, values)
                     || genericTerm(TermPercent.class, term2, propertyName,
                             listIdentification, sanify, properties, values))) {
@@ -739,7 +778,7 @@ public class DeclarationTransformer {
 			// is it identifier or length ?
 			if (genericTermIdent(BorderSpacing.class, term, ALLOW_INH,
 					propertyName, properties)
-					|| genericTerm(TermLength.class, term, propertyName,
+					|| genericTermLength(term, propertyName,
 							BorderSpacing.list_values, true, properties, values)) {
 				// one term with length was inserted, double it
 				if (properties.get(propertyName) == BorderSpacing.list_values) {
@@ -757,9 +796,9 @@ public class DeclarationTransformer {
 			Term<?> term2 = d.get(1);
 			String propertyName = d.getProperty();
 			// two lengths ?
-			if (genericTerm(TermLength.class, term1, propertyName,
+			if (genericTermLength(term1, propertyName,
 					BorderSpacing.list_values, true, properties, values)
-					&& genericTerm(TermLength.class, term2, propertyName,
+					&& genericTermLength(term2, propertyName,
 							BorderSpacing.list_values, true, properties, values)) {
 				TermList terms = tf.createList(2);
 				terms.add(term1);
@@ -1783,7 +1822,7 @@ public class DeclarationTransformer {
 				// process width
 				return genericTermIdent(types.get(WIDTH), terms.get(i),
 						AVOID_INH, names.get(WIDTH), properties)
-						|| genericTerm(TermLength.class, terms.get(i), names
+						|| genericTermLength(terms.get(i), names
 								.get(WIDTH), BorderWidth.length, true,
 								properties, values);
 			default:
@@ -1842,7 +1881,7 @@ public class DeclarationTransformer {
 				// process width
 				return genericTermIdent(types.get(WIDTH), terms.get(i),
 						AVOID_INH, names.get(WIDTH), properties)
-						|| genericTerm(TermLength.class, terms.get(i), names
+						|| genericTermLength(terms.get(i), names
 								.get(WIDTH), OutlineWidth.length, true,
 								properties, values);
 			default:
@@ -1952,7 +1991,7 @@ public class DeclarationTransformer {
 			case SIZE:
 				return genericTermIdent(types.get(SIZE), terms.get(i),
 						AVOID_INH, names.get(SIZE), properties)
-						|| genericTerm(TermLength.class, terms.get(i), names
+						|| genericTermLength(terms.get(i), names
 								.get(SIZE), FontSize.length, true, properties,
 								values)
 						|| genericTerm(TermPercent.class, terms.get(i), names
@@ -2442,7 +2481,7 @@ public class DeclarationTransformer {
 
 			return genericTermIdent(type, terms.get(i), AVOID_INH,
 					names.get(i), properties)
-					|| genericTerm(TermLength.class, terms.get(i),
+					|| genericTermLength(terms.get(i),
 							names.get(i), BorderWidth.length, true, properties,
 							values);
 		}
@@ -2620,7 +2659,7 @@ public class DeclarationTransformer {
 
 			return genericTermIdent(type, terms.get(i), AVOID_INH,
 					names.get(i), properties)
-					|| genericTerm(TermLength.class, terms.get(i),
+					|| genericTermLength(terms.get(i),
 							names.get(i), Margin.length, false, properties,
 							values)
 					|| genericTerm(TermPercent.class, terms.get(i), names
@@ -2652,7 +2691,7 @@ public class DeclarationTransformer {
 
 			return genericTermIdent(type, terms.get(i), AVOID_INH,
 					names.get(i), properties)
-					|| genericTerm(TermLength.class, terms.get(i),
+					|| genericTermLength(terms.get(i),
 							names.get(i), Padding.length, false, properties,
 							values)
 					|| genericTerm(TermPercent.class, terms.get(i), names
@@ -2692,7 +2731,7 @@ public class DeclarationTransformer {
 				properties.put(names.get(i), clip);
 				return true;
 			} else
-				return genericTerm(TermLength.class, terms.get(i),
+				return genericTermLength(terms.get(i),
 						names.get(i), Clip.rect, false, properties, values);
 		}
 	}

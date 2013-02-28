@@ -79,6 +79,28 @@ public final class CSSFactory {
 	private static Class<? extends NodeData> ndImpl;
 
 	/**
+	 * Whether to allow lengths with no units and interpret them as pixels.
+	 */
+	private static boolean implyPixelLengths = false;
+	
+	
+	/**
+	 * Sets whether to allow lengths with no units and interpret them as pixels.
+	 * @param b
+	 */
+	public static final void setImplyPixelLength(boolean b) {
+	    implyPixelLengths = b;
+	}
+	
+    /**
+     * Says whether to allow lengths with no units and interpret them as pixels.
+     * @return
+     */
+    public static final boolean getImplyPixelLength() {
+        return implyPixelLengths;
+    }
+    
+	/**
 	 * Registers new TermFactory instance
 	 * 
 	 * @param newFactory
