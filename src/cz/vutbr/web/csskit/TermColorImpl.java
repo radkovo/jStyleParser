@@ -44,12 +44,23 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
     	
     	if(operator!=null) sb.append(operator.value());
     	
-        String s = Integer.toHexString(value.getRGB() & 0xffffff );
-        if ( s.length() < 6 ) { 
-            s = "000000".substring(0, 6 - s.length()) + s;
-        }
-        
-        sb.append(OutputUtil.HASH_SIGN).append(s);
+    	if (value.getAlpha() == 255) { //use hash notation if aplha is not used
+            String s = Integer.toHexString(value.getRGB() & 0xffffff );
+            if ( s.length() < 6 ) { 
+                s = "000000".substring(0, 6 - s.length()) + s;
+            }
+            sb.append(OutputUtil.HASH_SIGN).append(s);
+    	} else { //use rgba() when aplha is used
+    	    sb.append("rgba(");
+    	    sb.append(value.getRed());
+    	    sb.append(',');
+            sb.append(value.getGreen());
+            sb.append(',');
+            sb.append(value.getBlue());
+            sb.append(',');
+            sb.append(Math.round(value.getAlpha() / 2.55) / 100.0);
+            sb.append(")");
+    	}
     
         return sb.toString();
     }
