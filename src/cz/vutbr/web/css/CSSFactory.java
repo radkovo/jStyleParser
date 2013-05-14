@@ -555,13 +555,13 @@ public final class CSSFactory {
 		 * 
 		 * @param e
 		 *            Element
-		 * @return Element's text or {@code null}
+		 * @return Element's text
 		 */
 		private static String extractElementText(Element e) {
 			Node text = e.getFirstChild();
 			if (text != null && text.getNodeType() == Node.TEXT_NODE)
 				return ((Text) text).getData();
-			return null;
+			return "";
 		}
 
 		/**
