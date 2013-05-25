@@ -1,3 +1,7 @@
+Version 1.13 - May 25, 2013
+- Empty <style> tag parsing fix (fixes #18)
+- Fixed the 'trasparent' typo (fixes #16)
+
 Version 1.12 - Mar 27, 2013
 - New CSS3 support
 - @font-face, @page and @viewport rules supported
