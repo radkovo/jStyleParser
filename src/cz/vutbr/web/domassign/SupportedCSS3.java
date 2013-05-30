@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.CSSProperty.BorderRadius;
+import cz.vutbr.web.css.CSSProperty.Height;
 import cz.vutbr.web.css.CSSProperty.Opacity;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
@@ -325,7 +326,7 @@ public class SupportedCSS3 implements SupportedCSS {
 		props.put("min-width", MinWidth.length);
 		values.put("min-width", DEFAULT_UA_MIN_WIDTH);
 		props.put("max-width", MaxWidth.NONE);
-		props.put("height", Width.AUTO);
+		props.put("height", Height.AUTO);
 		props.put("min-height", MinHeight.length);
 		values.put("min-height", DEFAULT_UA_MIN_HEIGHT);
 		props.put("max-height", MaxHeight.NONE);
