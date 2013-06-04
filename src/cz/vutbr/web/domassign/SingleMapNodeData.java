@@ -128,11 +128,11 @@ public class SingleMapNodeData implements NodeData {
 		for(String key: map.keySet()) {
 			Quadruple q = map.get(key);
 			// replace inherited with defaults
-			if(q.inhProp!=null && q.inhProp.equalsInherit()) {
+			/*if(q.inhProp!=null && q.inhProp.equalsInherit()) {
 				q.inhProp = css.getDefaultProperty(key);
 				Term<?> value = css.getDefaultValue(key);
 				if(value!=null) q.inhValue = value;
-			}
+			}*/
 			
 			// replace current with inherited or defaults
 			if(q.curProp!=null && q.curProp.equalsInherit()) {
@@ -173,7 +173,8 @@ public class SingleMapNodeData implements NodeData {
 				q.inhValue = qp.inhValue;
 			}
 			
-			if(qp.curProp!=null && qp.curProp.inherited()) {
+			if((qp.curProp!=null && qp.curProp.inherited())
+			   || (q.curProp!=null && q.curProp.equalsInherit())) {
 				q.inhProp = qp.curProp;
 				q.inhValue = qp.curValue;
 			}
