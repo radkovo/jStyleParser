@@ -20,10 +20,13 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermLength;
 import cz.vutbr.web.css.TermList;
+import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.domassign.StyleMap;
 
 public class DOMAssign {
@@ -132,6 +135,34 @@ public class DOMAssign {
         assertThat(i3.getValue(TermColor.class, "background-color"), is(tf.createColor(238,238,238)));
         assertThat(i9.getValue(TermColor.class, "background-color"), is(tf.createColor(238,238,238)));
         assertThat(i5.getValue(TermColor.class, "background-color"), is(tf.createColor(170,170,255)));
+        
+    }
+    
+    @Test
+    public void inherit() throws SAXException, IOException {  
+        
+        DOMSource ds = new DOMSource(new FileInputStream("data/advanced/inherit.html"));
+        Document doc = ds.parse();
+        ElementMap elements = new ElementMap(doc);
+        
+        StyleMap decl = CSSFactory.assignDOM(doc, null,
+                createBaseFromFilename("data/advanced/inherit.html"),"screen", true);
+        
+        NodeData data = decl.get(elements.getElementById("item1"));
+        assertNotNull("Data for #item1 exist", data);
+        assertThat(data.getValue(TermLength.class, "border-top-width"), is(tf.createLength(1.0f, Unit.px)));
+        assertThat(data.getValue(TermColor.class, "border-top-color"), is(tf.createColor(0, 128, 0)));
+        assertThat((CSSProperty.BorderStyle) data.getProperty("border-top-style"), is(CSSProperty.BorderStyle.SOLID));
+        assertThat(data.getValue(TermLength.class, "margin-top"), is(tf.createLength(1.0f, Unit.em)));
+        assertThat(data.getValue(TermLength.class, "margin-bottom"), is(tf.createLength(3.0f, Unit.em)));
+        
+        data = decl.get(elements.getElementById("item2"));
+        assertNotNull("Data for #item2 exist", data);
+        assertThat(data.getValue(TermLength.class, "border-top-width"), is(tf.createLength(5.0f, Unit.px)));
+        assertThat(data.getValue(TermColor.class, "border-top-color"), is(tf.createColor(0, 128, 0)));
+        assertThat((CSSProperty.BorderStyle) data.getProperty("border-top-style"), is(CSSProperty.BorderStyle.DOTTED));
+        assertThat(data.getValue(TermLength.class, "margin-top"), is(tf.createLength(1.0f, Unit.em)));
+        assertNull(data.getValue(TermLength.class, "margin-bottom"));
         
     }
     

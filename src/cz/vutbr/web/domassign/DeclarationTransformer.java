@@ -2425,8 +2425,7 @@ public class DeclarationTransformer {
 		protected boolean operation(int i, Map<String, CSSProperty> properties,
 				Map<String, Term<?>> values) {
 
-			return genericTermIdent(BorderStyle.class, terms.get(i), AVOID_INH,
-					names.get(i), properties);
+			return genericTermIdent(BorderStyle.class, terms.get(i), ALLOW_INH,	names.get(i), properties);
 		}
 	}
 
@@ -2451,10 +2450,8 @@ public class DeclarationTransformer {
 		protected boolean operation(int i, Map<String, CSSProperty> properties,
 				Map<String, Term<?>> values) {
 
-			return genericTermIdent(type, terms.get(i), AVOID_INH,
-					names.get(i), properties)
-					|| genericTerm(TermColor.class, terms.get(i), names.get(i),
-							BorderColor.color, false, properties, values);
+			return genericTermIdent(type, terms.get(i), ALLOW_INH, names.get(i), properties)
+					|| genericTerm(TermColor.class, terms.get(i), names.get(i),	BorderColor.color, false, properties, values);
 		}
 	}
 
@@ -2479,11 +2476,8 @@ public class DeclarationTransformer {
 		protected boolean operation(int i, Map<String, CSSProperty> properties,
 				Map<String, Term<?>> values) {
 
-			return genericTermIdent(type, terms.get(i), AVOID_INH,
-					names.get(i), properties)
-					|| genericTermLength(terms.get(i),
-							names.get(i), BorderWidth.length, true, properties,
-							values);
+			return genericTermIdent(type, terms.get(i), ALLOW_INH, names.get(i), properties)
+					|| genericTermLength(terms.get(i), names.get(i), BorderWidth.length, true, properties, values);
 		}
 	}
 
