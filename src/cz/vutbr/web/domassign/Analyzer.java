@@ -79,8 +79,7 @@ public class Analyzer {
 	 *            Use inheritance
 	 * @return Map where each element contains its CSS properties
 	 */
-	public StyleMap evaluateDOM(Document doc, String media,
-			final boolean inherit) {
+	public StyleMap evaluateDOM(Document doc, String media,	final boolean inherit) {
 
 		DeclarationMap declarations = assingDeclarationsToDOM(doc, media, inherit);
 
@@ -93,9 +92,6 @@ public class Analyzer {
 			protected void processNode(StyleMap result, Node current, Object source) {
 
 			    NodeData main = CSSFactory.createNodeData();
-			    
-			    if (current instanceof Element && ((Element) current).getAttribute("id").equals("mojo"))
-			        System.out.println("jo!");
 			    
 				// for all declarations available in the main list (pseudo=null)
 				List<Declaration> declarations = ((DeclarationMap) source).get((Element) current, null);

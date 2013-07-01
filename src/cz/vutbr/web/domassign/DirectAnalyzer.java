@@ -188,6 +188,19 @@ public class DirectAnalyzer extends Analyzer
                 retval = false;
                 if (adjacent != null && adjacent.getNodeType() == Node.ELEMENT_NODE)
                     retval = s.matches((Element) adjacent);
+            } else if (combinator == Selector.Combinator.PRECEDING) {
+                Node preceding = e.getPreviousSibling();
+                retval = false;
+                do
+                {
+                    if (preceding != null)
+                    {
+                        if (preceding.getNodeType() == Node.ELEMENT_NODE && s.matches((Element) preceding))
+                            retval = true;
+                        else
+                            preceding = preceding.getPreviousSibling();
+                    }
+                } while (!retval && preceding != null);
             } else if (combinator == Selector.Combinator.DESCENDANT) {
                 Node ancestor = e.getParentNode();
                 retval = false;
