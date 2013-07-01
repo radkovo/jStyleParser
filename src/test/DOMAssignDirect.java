@@ -38,7 +38,7 @@ public class DOMAssignDirect {
 	
 	@BeforeClass
 	public static void init() throws SAXException, IOException {
-		log.info("\n\n\n == DOMAssign test at {} == \n\n\n", new Date());
+		log.info("\n\n\n == DOMAssignDirect test at {} == \n\n\n", new Date());
 	}
 	
 	@Test
