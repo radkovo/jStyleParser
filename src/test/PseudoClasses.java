@@ -20,10 +20,12 @@ import org.xml.sax.SAXException;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.NodeData;
+import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.Selector.PseudoDeclaration;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.csskit.MatchConditionOnElements;
+import cz.vutbr.web.domassign.DirectAnalyzer;
 import cz.vutbr.web.domassign.StyleMap;
 
 public class PseudoClasses {
@@ -43,8 +45,9 @@ public class PseudoClasses {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        MatchConditionOnElements cond = new MatchConditionOnElements(doc.getElementById("l2"), PseudoDeclaration.HOVER);
-        cond.addMatch(doc.getElementById("l3"), PseudoDeclaration.VISITED);
+        MatchConditionOnElements cond = new MatchConditionOnElements("a", PseudoDeclaration.LINK);
+        cond.addMatch(elements.getElementById("l2"), PseudoDeclaration.HOVER);
+        cond.addMatch(elements.getElementById("l3"), PseudoDeclaration.VISITED);
         CSSFactory.registerDefaultMatchCondition(cond);
         
         StyleMap decl = CSSFactory.assignDOM(doc, null, createBaseFromFilename("data/simple/pseudo.html"),"screen", true);
@@ -56,13 +59,43 @@ public class PseudoClasses {
         assertThat(l1.getValue(TermColor.class, "color"), is(tf.createColor(0,255,0)));
         assertThat(l2.getValue(TermColor.class, "color"), is(tf.createColor(0,255,255)));
         assertThat(l3.getValue(TermColor.class, "color"), is(tf.createColor(0,0,170)));
+    }
+    
+    @Test
+    public void pseudoClassDirect() throws SAXException, IOException {  
         
+        DOMSource ds = new DOMSource(new FileInputStream("data/simple/pseudo.html"));
+        Document doc = ds.parse();
+        ElementMap elements = new ElementMap(doc);
+        
+        MatchConditionOnElements cond = new MatchConditionOnElements("a", PseudoDeclaration.LINK);
+        cond.addMatch(elements.getElementById("l2"), PseudoDeclaration.HOVER);
+        cond.addMatch(elements.getElementById("l3"), PseudoDeclaration.VISITED);
+        CSSFactory.registerDefaultMatchCondition(cond);
+        
+        StyleSheet style = CSSFactory.getUsedStyles(doc, null, createBaseFromFilename("data/simple/selectors.html"),"screen");
+        DirectAnalyzer da = new DirectAnalyzer(style);
+
+        NodeData l1 = getStyleById(elements, da, "l1");
+        NodeData l2 = getStyleById(elements, da, "l2");
+        NodeData l3 = getStyleById(elements, da, "l3");
+        
+        assertThat(l1.getValue(TermColor.class, "color"), is(tf.createColor(0,255,0)));
+        assertThat(l2.getValue(TermColor.class, "color"), is(tf.createColor(0,255,255)));
+        assertThat(l3.getValue(TermColor.class, "color"), is(tf.createColor(0,0,170)));
     }
     
     
     private NodeData getStyleById(ElementMap elements, StyleMap decl, String id)
     {
         NodeData data = decl.get(elements.getElementById(id));
+        assertNotNull("Data for #" + id + " exists", data);
+        return data;
+    }
+    
+    private NodeData getStyleById(ElementMap elements, DirectAnalyzer da, String id)
+    {
+        NodeData data = da.getElementStyle(elements.getElementById(id), null, "screen");
         assertNotNull("Data for #" + id + " exists", data);
         return data;
     }
