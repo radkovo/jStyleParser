@@ -16,6 +16,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 import org.w3c.dom.traversal.NodeFilter;
 
+import cz.vutbr.web.csskit.MatchConditionImpl;
 import cz.vutbr.web.csskit.antlr.CSSParserFactory;
 import cz.vutbr.web.csskit.antlr.CSSParserFactory.SourceType;
 import cz.vutbr.web.domassign.Analyzer;
@@ -78,6 +79,11 @@ public final class CSSFactory {
 	 */
 	private static Class<? extends NodeData> ndImpl;
 
+	/**
+	 * Default match condition
+	 */
+	private static MatchCondition dcond;
+	
 	/**
 	 * Whether to allow lengths with no units and interpret them as pixels.
 	 */
@@ -237,6 +243,25 @@ public final class CSSFactory {
         }
 
         return dt;
+    }
+    
+    /**
+     * Registers a new default match condition to be used for matching the elements and selector parts.
+     * @param newMatchCondition the new match condition
+     */
+    public static final void registerDefaultMatchCondition(MatchCondition newMatchCondition)
+    {
+        dcond = newMatchCondition;
+    }
+    
+    /**
+     * Obtains the default match condition to be used for matching the elements and selector parts.
+     * @return the default match condition used by this factory.
+     */
+    public static final MatchCondition getDefaultMatchCondition() {
+        if (dcond == null)
+            dcond = new MatchConditionImpl(); //use the default match condition when nothing is registered
+        return dcond;
     }
     
 	/**

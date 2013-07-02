@@ -6,7 +6,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
+import cz.vutbr.web.css.MatchCondition;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.CombinedSelector.Specificity;
 import cz.vutbr.web.css.CombinedSelector.Specificity.Level;
@@ -98,12 +100,23 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	
 		// check other items of simple selector
 		for(SelectorPart item : list) {
-			if(item == null || !item.matches(e)) //null in case of syntax error (missing term)
+			if(item == null || !item.matches(e, CSSFactory.getDefaultMatchCondition())) //null in case of syntax error (missing term)
 				return false;
 		}
 		
 		// we passed checking
 		return true;
+    }
+    
+    public boolean matches(Element e, MatchCondition cond) {
+        
+        // check other items of simple selector
+        for(SelectorPart item : list) {
+            if(item == null || !item.matches(e, cond)) //null in case of syntax error (missing term)
+                return false;
+        }
+        // we passed checking
+        return true;
     }
     
     /**
@@ -168,7 +181,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 				spec.add(Level.D);
 		}
 		
-		public boolean matches(Element e) {
+		public boolean matches(Element e, MatchCondition cond) {
 			if(name!=null && WILDCARD.equals(name)) return true;
 			return ElementUtil.matchesName(e, name);
 		}	
@@ -240,7 +253,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     		spec.add(Level.C);
     	}
     	
-    	public boolean matches(Element e) {
+    	public boolean matches(Element e, MatchCondition cond) {
     		return ElementUtil.	matchesClass(e, className);
     	}
     	
@@ -331,7 +344,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	private String functionName;
     	private String value;
     	private PseudoDeclaration declaration;
-    	//decoded element index for nth-XXX properties -- values a and b in the an+b specification
+    	//decoded element index for nth-XXXX properties -- values a and b in the an+b specification
     	private int[] elementIndex;
     	
     	protected PseudoPageImpl(String value, String functionName) {
@@ -374,7 +387,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 
 		}		
 		
-		public boolean matches(Element e) {
+		public boolean matches(Element e, MatchCondition cond) {
 			
 			if(declaration != null) { //null declaration means some unknown or unimplemented pseudo
 				switch (declaration) {
@@ -469,9 +482,11 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
                         }
                         return true;
 					default:
-						if (declaration.isPseudoElement() || //match all pseudo elements and the LINK pseudo class for links
-								(e.getTagName().equalsIgnoreCase("a") && declaration == PseudoDeclaration.LINK))
+					    //match all pseudo elements and the pseudo classes specified by an additional condition (usually used for using LINK pseudo class for links)
+						if (declaration.isPseudoElement() || cond.isSatisfied(e, this)) 
+						{
 							return true;
+						}
 				}
 			}
 			return false;
@@ -715,7 +730,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     		spec.add(Level.B);
 		}    	
     	
-    	public boolean matches(Element e) {
+    	public boolean matches(Element e, MatchCondition cond) {
     		return ElementUtil.matchesID(e, id);
     	}
     	
@@ -828,7 +843,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			spec.add(Level.C);
 		}
 		
-		public boolean matches(Element e) {
+		public boolean matches(Element e, MatchCondition cond) {
 			return ElementUtil.matchesAttribute(e, attribute, value, operator);
 		}
     	
@@ -937,7 +952,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		        spec.add(Level.A);
 		}
 
-		public boolean matches(Element e) {
+		public boolean matches(Element e, MatchCondition cond) {
 			return elem.equals(e);
 		}
 
