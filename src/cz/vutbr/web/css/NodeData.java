@@ -7,7 +7,7 @@ import java.util.Collection;
  * syntax:
  * 
  * <ul style="list-style:none"> <li>
- * <b>UPPERCASE<b> terminal symbols, direct values present in stylesheet, such
+ * <b>UPPERCASE</b> terminal symbols, direct values present in stylesheet, such
  * as background-color: transparent;</li> <li>
  * <b>lowercase</b> non-terminal symbols, just information that concrete value
  * is stored somewhere else</li> </ul>
