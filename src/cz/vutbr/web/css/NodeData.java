@@ -124,4 +124,10 @@ public interface NodeData {
 	 */
 	public Collection<String> getPropertyNames();
 	
+	/**
+	 * Obtains the source declaration used for this property.
+	 * @return the source declaration
+	 */
+	public Declaration getSourceDeclaration(String name);
+	
 }

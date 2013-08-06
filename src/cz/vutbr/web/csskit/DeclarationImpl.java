@@ -13,10 +13,12 @@ public class DeclarationImpl extends AbstractRule<Term<?>> implements Declaratio
 
 	protected String property;
 	protected boolean important;
+	protected Source source;
 
 	protected DeclarationImpl() {
 		this.property = "";
 		this.important = false;
+		this.source = null;
 	}
 	
 	/**
@@ -26,6 +28,7 @@ public class DeclarationImpl extends AbstractRule<Term<?>> implements Declaratio
 	protected DeclarationImpl(Declaration clone) {
 		this.property = clone.getProperty();
 		this.important = clone.isImportant();
+		this.source = new Source(clone.getSource());
 		this.replaceAll(clone.asList());
 	}
 
@@ -87,6 +90,18 @@ public class DeclarationImpl extends AbstractRule<Term<?>> implements Declaratio
 	}	
 
 	@Override
+    public Source getSource()
+    {
+        return source;
+    }
+
+    @Override
+    public void setSource(Source src)
+    {
+        this.source = src;
+    }
+
+	@Override
 	public String toString() {
 		return this.toString(0);
 	}
@@ -145,9 +160,5 @@ public class DeclarationImpl extends AbstractRule<Term<?>> implements Declaratio
 			return false;
 		return true;
 	}
-
-	
-	
-	
     
 }

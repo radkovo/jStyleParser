@@ -115,6 +115,7 @@ public class SingleMapNodeData implements NodeData {
 			if(q==null) q = new Quadruple();
 			q.curProp = properties.get(key);
 			q.curValue = terms.get(key);
+			q.source = d;
 			// remove operator
 			if(q.curValue!=null) q.curValue = q.curValue.setOperator(null);
 			map.put(key, q);
@@ -165,12 +166,14 @@ public class SingleMapNodeData implements NodeData {
 			if(qp.inhProp!=null && qp.inhProp.inherited()) {
 				q.inhProp = qp.inhProp;
 				q.inhValue = qp.inhValue;
+				q.source = qp.source;
 			}
 			
 			if((qp.curProp!=null && qp.curProp.inherited())
 			   || (q.curProp!=null && q.curProp.equalsInherit())) {
 				q.inhProp = qp.curProp;
 				q.inhValue = qp.curValue;
+                q.source = qp.source;
 			}
 			// insert/replace only if contains inherited/original 
 			// value			
@@ -217,11 +220,22 @@ public class SingleMapNodeData implements NodeData {
         return keys;
     }
 	
+    @Override
+    public Declaration getSourceDeclaration(String name)
+    {
+        Quadruple q = map.get(name);
+        if (q == null)
+            return null;
+        else
+            return q.source;
+    }
+
 	static class Quadruple {
 		CSSProperty inhProp = null;
 		CSSProperty curProp = null;
 		Term<?> inhValue = null;
 		Term<?> curValue = null;
+		Declaration source = null;
 		
 		public Quadruple() {			
 		}

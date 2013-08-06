@@ -91,7 +91,13 @@ import cz.vutbr.web.css.RuleBlock.Priority;
   private URL extractBase(CommonTree token) {
       CSSToken ct = (CSSToken) token.getToken();
       return ct.getBase();
-  }  	
+  }
+    	
+  private Declaration.Source extractSource(CommonTree token) {
+      CSSToken ct = (CSSToken) token.getToken();
+      Declaration.Source src = new Declaration.Source(ct.getBase(), ct.getLine(), ct.getCharPositionInLine());
+      return src;
+  }   
 		
     private void logEnter(String entry) {
         log.trace("Entering '{}'", entry);
@@ -384,8 +390,8 @@ property
 	log.debug("Setting property: {}", $declaration::d.getProperty());	   
     logLeave("property");
 }    
-  : i = IDENT { $declaration::d.setProperty(extractText(i)); }
-  | MINUS i = IDENT { $declaration::d.setProperty("-" + extractText(i)); }
+  : i = IDENT { $declaration::d.setProperty(extractText(i)); $declaration::d.setSource(extractSource(i)); }
+  | MINUS i = IDENT { $declaration::d.setProperty("-" + extractText(i)); $declaration::d.setSource(extractSource(i)); }
   ;
 
 /**

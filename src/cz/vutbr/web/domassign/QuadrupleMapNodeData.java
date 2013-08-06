@@ -37,12 +37,14 @@ public class QuadrupleMapNodeData implements NodeData {
 	private Map<String,CSSProperty> propertiesInh;
 	private Map<String,Term<?>> valuesOwn;
 	private Map<String,Term<?>> valuesInh;
+	private Map<String,Declaration> sources;
 	
 	public QuadrupleMapNodeData() {
 		this.propertiesOwn = new HashMap<String, CSSProperty>(css.getTotalProperties(), 1.0f);
 		this.propertiesInh = new HashMap<String, CSSProperty>(css.getTotalProperties(), 1.0f);
 		this.valuesOwn = new HashMap<String, Term<?>>(css.getTotalProperties(), 1.0f);
 		this.valuesInh = new HashMap<String, Term<?>>(css.getTotalProperties(), 1.0f);
+        this.sources = new HashMap<String, Declaration>(css.getTotalProperties(), 1.0f);
 	}
 	
 	
@@ -111,10 +113,11 @@ public class QuadrupleMapNodeData implements NodeData {
 		
 		this.propertiesOwn.putAll(properties);
 		
-		// remove operators from terms
+		// remove operators from terms and set the sources
 		for(Entry<String,Term<?>> entry: terms.entrySet()) {
 			entry.getValue().setOperator(null);
 			valuesOwn.put(entry.getKey(), entry.getValue());
+			sources.put(entry.getKey(), d);
 		}
 		
 		return this;
@@ -237,6 +240,13 @@ public class QuadrupleMapNodeData implements NodeData {
 
         return keys;
     }
+
+    @Override
+    public Declaration getSourceDeclaration(String name)
+    {
+        return sources.get(name);
+    }
+    
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -290,7 +300,7 @@ public class QuadrupleMapNodeData implements NodeData {
 			return false;
 		return true;
 	}
-	
+
 	
 	
 }

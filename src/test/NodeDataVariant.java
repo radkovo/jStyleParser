@@ -288,6 +288,12 @@ public class NodeDataVariant {
         @Override
         public Collection<String> getPropertyNames() {
             return new ArrayList<String>(0);
+        }
+
+        @Override
+        public Declaration getSourceDeclaration(String name)
+        {
+            return null;
         }		
 
 	}

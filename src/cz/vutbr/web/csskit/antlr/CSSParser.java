@@ -1,4 +1,4 @@
-// $ANTLR 3.1.2 /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g 2013-07-01 12:32:31
+// $ANTLR 3.1.2 /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g 2013-08-06 11:05:09
  
 package cz.vutbr.web.csskit.antlr;
 
@@ -971,7 +971,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: VIEWPORT, declarations
+                    // elements: declarations, VIEWPORT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1225,7 +1225,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: MEDIA, ruleset, media
+                    // elements: ruleset, media, MEDIA
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1628,7 +1628,7 @@ public class CSSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: declarations, margin_rule, IDENT, PAGE, page_pseudo
+            // elements: margin_rule, PAGE, declarations, IDENT, page_pseudo
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2124,7 +2124,7 @@ public class CSSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: declarations, pseudo
+            // elements: pseudo, declarations
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2896,7 +2896,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: terms, property, important
+                    // elements: important, terms, property
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -4044,7 +4044,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: NUMBER, MINUS
+                    // elements: MINUS, NUMBER
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
