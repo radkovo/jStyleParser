@@ -600,12 +600,25 @@ public final class CSSFactory {
 		 * @return {@code true} if allowed, {@code false} otherwise
 		 */
 		private static boolean isAllowedMedia(Element e, String media) {
-			String mediaList = e.getAttribute("media");
-			if (mediaList == null || mediaList.length() == 0
-				|| mediaList.contains(media) || mediaList.contains("all"))
-				return true;
-
-			return false;
+		    String attr = e.getAttribute("media");
+		    if (attr != null && attr.length() > 0)
+		    {
+		        attr = attr.trim();
+		        if (attr.length() > 0)
+		        {
+		            String[] mediaList = attr.split("\\s*,\\s*");
+		            for (String m : mediaList)
+		            {
+		                if (m.equals(media) || m.equals("all"))
+		                    return true;
+		            }
+		            return false;
+		        }
+		        else
+		            return true;
+		    }
+		    else
+		        return true;
 		}
 	}
 
