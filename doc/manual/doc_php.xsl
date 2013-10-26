@@ -12,7 +12,7 @@
 	<xsl:template match="doc:document">
 		<xsl:text disable-output-escaping="yes">&lt;?</xsl:text>
 		require "include/page.php";
-		make_header("documentation", "Manual", ".", "@import \"manual.css\";");
+		make_header("documentation", "Manual", "./", "@import \"manual.css\";");
 		<xsl:text disable-output-escaping="yes">?&gt;</xsl:text>
 		<h1><xsl:apply-templates select="doc:title" /></h1>
 		<p class="author">
