@@ -1,4 +1,4 @@
-// $ANTLR 3.1.2 /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g 2013-08-06 11:05:09
+// $ANTLR 3.1.2 /home/burgetr/workspace/CSSParser/src/cz/vutbr/web/csskit/antlr/CSS.g 2013-10-26 18:52:02
  
 package cz.vutbr.web.csskit.antlr;
 
@@ -1628,7 +1628,7 @@ public class CSSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: margin_rule, PAGE, declarations, IDENT, page_pseudo
+            // elements: page_pseudo, IDENT, PAGE, margin_rule, declarations
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2519,7 +2519,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: combined_selector, declarations
+                    // elements: declarations, combined_selector
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -2896,7 +2896,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: important, terms, property
+                    // elements: important, property, terms
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -3222,7 +3222,7 @@ public class CSSParser extends Parser {
 
 
             // AST REWRITE
-            // elements: IDENT, MINUS
+            // elements: MINUS, IDENT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3962,7 +3962,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: IDENT, MINUS
+                    // elements: MINUS, IDENT
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -4152,7 +4152,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: DIMENSION, MINUS
+                    // elements: MINUS, DIMENSION
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -5378,7 +5378,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: selpart, IDENT
+                    // elements: IDENT, selpart
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -7167,7 +7167,7 @@ public class CSSParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: FUNCTION, any
+                    // elements: any, FUNCTION
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
