@@ -79,6 +79,21 @@ public class MatchConditionOnElements implements MatchCondition
     }
     
     /**
+     * Removes the pseudo class from the given element.
+     * @param e the DOM element
+     * @param pseudoClass the pseudo class to be removed
+     */
+    public void removeMatch(Element e, PseudoDeclaration pseudoClass)
+    {
+        if (elements != null)
+        {
+            Set<PseudoDeclaration> classes = elements.get(e);
+            if (classes != null)
+                classes.remove(pseudoClass);
+        }   
+    }
+    
+    /**
      * Assigns a pseudo class to the given element name. Element names are case-insensitive.
      * Multiple pseudo classes may be assigned to a single element name.
      * @param name the element name
@@ -96,6 +111,21 @@ public class MatchConditionOnElements implements MatchCondition
             names.put(name, classes);
         }
         classes.add(pseudoClass);
+    }
+    
+    /**
+     * Removes the pseudo class from the given element name. Element names are case-insensitive.
+     * @param name the element name
+     * @param pseudoClass the pseudo class to be removed
+     */
+    public void removeMatch(String name, PseudoDeclaration pseudoClass)
+    {
+        if (names != null)
+        {
+            Set<PseudoDeclaration> classes = names.get(name);
+            if (classes != null)
+                classes.remove(pseudoClass);
+        }   
     }
     
     public boolean isSatisfied(Element e, SelectorPart selpart)
