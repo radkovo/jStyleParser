@@ -48,6 +48,8 @@ public class PseudoClasses {
         MatchConditionOnElements cond = new MatchConditionOnElements("a", PseudoDeclaration.LINK);
         cond.addMatch(elements.getElementById("l2"), PseudoDeclaration.HOVER);
         cond.addMatch(elements.getElementById("l3"), PseudoDeclaration.VISITED);
+        cond.addMatch(elements.getElementById("l3"), PseudoDeclaration.HOVER);
+        cond.removeMatch(elements.getElementById("l3"), PseudoDeclaration.HOVER);
         CSSFactory.registerDefaultMatchCondition(cond);
         
         StyleMap decl = CSSFactory.assignDOM(doc, null, createBaseFromFilename("data/simple/pseudo.html"),"screen", true);
