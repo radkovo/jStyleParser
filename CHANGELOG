@@ -1,3 +1,11 @@
+Version 1.14 - Oct 26, 2013
+- Pseudo class processing during DOM style computation
+- Declaration source tracking
+- Inheritance processing fixes
+- Media matching improved
+- Defalut values of height property fixed
+- Direct analyzer updates
+
 Version 1.13 - May 25, 2013
 - Empty <style> tag parsing fix (fixes #18)
 - Fixed the 'trasparent' typo (fixes #16)
