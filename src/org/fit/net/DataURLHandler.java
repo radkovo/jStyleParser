@@ -10,6 +10,11 @@ import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.net.URLStreamHandler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cz.vutbr.web.css.CSSFactory;
+
 
 /**
  * URL handler for the data: URI scheme.
@@ -17,6 +22,8 @@ import java.net.URLStreamHandler;
  */
 public class DataURLHandler extends URLStreamHandler 
 {
+    private static Logger log = LoggerFactory.getLogger(CSSFactory.class);
+
     protected String mime = "text/plain";
     protected String charset = "US-ASCII";
     protected boolean encoded = false;
@@ -85,7 +92,26 @@ public class DataURLHandler extends URLStreamHandler
         if (urlstring.startsWith("data:"))
             return new URL(null, urlstring, new DataURLHandler());
         else
-            return new URL(base, urlstring);
+        {
+            URL ret = new URL(base, urlstring);
+            //fix the incorrect absolute URLs that contain ./ or ../
+            String path = ret.getPath();
+            if (path.startsWith("/./") || path.startsWith("/../"))
+            {
+                path = path.substring(1);
+                while (path.startsWith("./") || path.startsWith("../"))
+                {
+                    if (path.startsWith("./"))
+                        path = path.substring(2);
+                    else
+                        path = path.substring(3);
+                }
+                URL fixed = new URL(base, "/" + path);
+                log.warn("Normalized non-standard URL %s to %s", ret.toString(), fixed.toString());
+                ret = fixed;
+            }
+            return ret;
+        }
     }
     
 }
