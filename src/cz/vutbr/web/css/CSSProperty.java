@@ -827,7 +827,7 @@ public interface CSSProperty {
 	}
 
 	public enum Clip implements CSSProperty {
-		rect(""), AUTO("auto"), INHERIT("inherit");
+		shape(""), AUTO("auto"), INHERIT("inherit");
 
 		private String text;
 

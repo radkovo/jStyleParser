@@ -1121,26 +1121,15 @@ public class DeclarationTransformer {
 
 		Term<?> term = d.get(0);
 		if (term instanceof TermIdent) {
-
 			final Set<Clip> allowedClips = EnumSet.allOf(Clip.class);
-			Clip clip = genericPropertyRaw(Clip.class, allowedClips,
-					(TermIdent) term);
+			Clip clip = genericPropertyRaw(Clip.class, allowedClips, (TermIdent) term);
 			if (clip != null) {
-				properties.put("clip-top", clip);
-				properties.put("clip-right", clip);
-				properties.put("clip-bottom", clip);
-				properties.put("clip-left", clip);
+				properties.put("clip", clip);
 				return true;
 			}
 			return false;
 		} else if (term instanceof TermFunction) {
-			TermFunction termf = (TermFunction) term;
-			// this is possibly valid rect() function
-			if ("rect".equals(termf.getFunctionName()) && termf.size() == 4) {
-				Repeater clip = new ClipRepeater();
-				clip.assignTerms(termf.getValue().toArray(new Term<?>[0]));
-				return clip.repeat(properties, values);
-			}
+		    return genericTerm(TermFunction.class, term, "clip", Clip.shape, false, properties, values);
 		}
 		return false;
 	}
@@ -2691,42 +2680,6 @@ public class DeclarationTransformer {
 					|| genericTerm(TermPercent.class, terms.get(i), names
 							.get(i), Padding.percentage, false, properties,
 							values);
-		}
-	}
-
-	/**
-	 * Clip repeater
-	 * 
-	 * @author kapy
-	 * 
-	 */
-	private final class ClipRepeater extends Repeater {
-
-		public ClipRepeater() {
-			super(4);
-			names.add("clip-top");
-			names.add("clip-right");
-			names.add("clip-bottom");
-			names.add("clip-left");
-			this.type = Clip.class;
-		}
-
-		@Override
-		protected boolean operation(int i, Map<String, CSSProperty> properties,
-				Map<String, Term<?>> values) {
-
-			final Set<Clip> allowedClips = EnumSet.of(Clip.AUTO);
-
-			Clip clip = null;
-
-			if (terms.get(i) instanceof TermIdent
-					&& (clip = genericPropertyRaw(Clip.class, allowedClips,
-							(TermIdent) terms.get(i))) != null) {
-				properties.put(names.get(i), clip);
-				return true;
-			} else
-				return genericTermLength(terms.get(i),
-						names.get(i), Clip.rect, false, properties, values);
 		}
 	}
 
