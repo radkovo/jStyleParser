@@ -113,7 +113,7 @@
     <xsl:template match="doc:api">
     	<a>
     		<xsl:attribute name="href">
-    			<xsl:text>../api/</xsl:text>
+    			<xsl:text>api/</xsl:text>
     			<xsl:choose>
     				<xsl:when test="string-length(@class)>0">
 		    			<xsl:value-of select="@class" />

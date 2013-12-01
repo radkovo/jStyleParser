@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:doc="http://cssbox.sourceforge.net/docs"><head><title>jStyleParser Manual</title><meta http-equiv="content-type" content="text/html; charset=utf-8" /><style type="text/css">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xmlns:doc="http://cssbox.sourceforge.net/docs"><head><title>jStyleParser Manual</title><meta http-equiv="content-type" content="text/html; charset=utf-8" /><style type="text/css">
 			@import "manual.css";
 			</style></head><body><h1>jStyleParser Manual</h1><p class="author">Radek Burget and Karel Piwko<br />
 <a href="mailto:burgetr@fit.vutbr.cz">burgetr@fit.vutbr.cz</a>
@@ -10,49 +9,49 @@ document elements according to the W3C CSS 2.1 specification and a subset of the
 The result of the parsing is a mapping between the DOM elements and the corresponding CSS declarations.
 This mapping can be used either for displaying the HTML document or for performimg some further analysis on 
 the document structure.
-</p></div><div class="section" id="userguide"><h2>User Guide</h2><div class="subsection" id="used"><h3>Obtaining the style sheets used in an HTML document</h3><p>The <a href="../api/cz/vutbr/web/css/CSSFactory.html" class="api"><code>CSSFactory</code></a> provides a method that
+</p></div><div class="section" id="userguide"><h2>User Guide</h2><div class="subsection" id="used"><h3>Obtaining the style sheets used in an HTML document</h3><p>The <a href="api/cz/vutbr/web/css/CSSFactory.html" class="api"><code>CSSFactory</code></a> provides a method that
 analyzes an HTML or XML document represented by a DOM and it parses all the referenced style sheets:</p><ul>
-<li><a href="../api/cz/vutbr/web/css/CSSFactory.html#getUsedStyles(org.w3c.dom.Document, java.lang.String, java.net.URL, java.lang.String)" class="api"><code>StyleSheet CSSFactory.getUsedStyles(Document doc, String encoding, URL base, String media)</code></a></li>
+<li><a href="api/cz/vutbr/web/css/CSSFactory.html#getUsedStyles(org.w3c.dom.Document, java.lang.String, java.net.URL, java.lang.String)" class="api"><code>StyleSheet CSSFactory.getUsedStyles(Document doc, String encoding, URL base, String media)</code></a></li>
 </ul><p>It parses all the style sheets referenced from the document that correspond to the specified media
 and it returns a single style sheet structure that contains all the relevant CSS rules. The <code>base</code>
 URL is used for eventual relative URLs used int the style sheets. The <code>encoding</code> specifies
 a default encoding that is used when the encoding is not specified within the style sheet.</p><h3 id="sheet">Parsing a style sheet (<code>StyleSheet</code>)</h3><p>This functionality may be used for parsing individual style sheets obtained from a remote file (URL),
-local file or a string. Three static methods are defined in the <a href="../api/cz/vutbr/web/css/CSSFactory.html" class="api"><code>CSSFactory</code></a> class for
+local file or a string. Three static methods are defined in the <a href="api/cz/vutbr/web/css/CSSFactory.html" class="api"><code>CSSFactory</code></a> class for
 this purpose:</p><ul>
-	<li><a href="../api/cz/vutbr/web/css/CSSFactory.html#parse(java.net.URL, java.lang.String)" class="api"><code>StyleSheet parse(URL url, String encoding)</code></a>, the most general method. 
+	<li><a href="api/cz/vutbr/web/css/CSSFactory.html#parse(java.net.URL, java.lang.String)" class="api"><code>StyleSheet parse(URL url, String encoding)</code></a>, the most general method. 
 			Transforms data available at the given <code>url</code>, expecting given <code>encoding</code>,
 			or taking the default one if it is not provided.,			
 	</li>
-	<li><a href="../api/cz/vutbr/web/css/CSSFactory.html#parse(java.lang.String, java.lang.String)" class="api"><code>StyleSheet parse(String fileName, String encoding)</code></a>,
+	<li><a href="api/cz/vutbr/web/css/CSSFactory.html#parse(java.lang.String, java.lang.String)" class="api"><code>StyleSheet parse(String fileName, String encoding)</code></a>,
 			which internally transforms the
 			<code>fileName</code> into an URL and		
 	</li>
-	<li><a href="../api/cz/vutbr/web/css/CSSFactory.html#parse(java.lang.String)" class="api"><code>StyleSheet parse(String css)</code></a>,
+	<li><a href="api/cz/vutbr/web/css/CSSFactory.html#parse(java.lang.String)" class="api"><code>StyleSheet parse(String css)</code></a>,
 			which can be used to parse embedded CSS declarations that is declarations between the &lt;style&gt; tags.
 	</li>
 </ul><p>
-The resulting <code>StyleSheet</code> can be used as the input for <a href="../api/cz/vutbr/web/domassign/Analyzer.html" class="api"><code>Analyzer</code></a> as described
+The resulting <code>StyleSheet</code> can be used as the input for <a href="api/cz/vutbr/web/domassign/Analyzer.html" class="api"><code>Analyzer</code></a> as described
 in the following section.
 </p></div><div class="subsection" id="analyze"><h3>Analyzing a Style Sheet</h3><p>When a <code>StyleSheet</code> instance is retrieved in the previous step, it can be passed to an
-<a href="../api/cz/vutbr/web/domassign/Analyzer.html" class="api"><code>Analyzer</code></a>.
+<a href="api/cz/vutbr/web/domassign/Analyzer.html" class="api"><code>Analyzer</code></a>.
 This object classifies rules into groups by CSS media and according to their CSS selectors. This operation is done
 only once during the construction of the <code>Analyzer</code> and all the subsequent requests are executed on maps created 
 during this classification.
 This will lead to light overhead when only a single CSS medium type is used, but it greatly improves the performance
 when one CSS style-sheet has to be analyzer from to point of view of different media.  
 </p><p>The <code>Analyzer</code> basically provides following method:</p><ul>
-	<li><a href="../api/cz/vutbr/web/domassign/Analyzer.html#evaluateDOM(org.w3c.dom.Document, java.lang.String, boolean)" class="api"><code>StyleMap evaluateDOM(Document doc, String medium,
+	<li><a href="api/cz/vutbr/web/domassign/Analyzer.html#evaluateDOM(org.w3c.dom.Document, java.lang.String, boolean)" class="api"><code>StyleMap evaluateDOM(Document doc, String medium,
 			final boolean inherit)</code></a>, which constructs a map between DOM elements 
 			and their CSS declarations according to the given <code>medium</code> and
 			allowed/disabled inheritance of declarations. 
 	</li>
 </ul><p>Additionally, a
-<a href="../api/cz/vutbr/web/domassign/DirectAnalyzer.html" class="api"><code>DirectAnalyzer</code></a>
+<a href="api/cz/vutbr/web/domassign/DirectAnalyzer.html" class="api"><code>DirectAnalyzer</code></a>
 analyzer class is provided for cases when it is not necessary to evaluate the whole DOM. It computes a style for individual DOM nodes without
 creating the whole map. It is suitable for obtaining the style of individual elements without computing the style for the whole DOM tree.
 However, in larger scale, the performance of the individual computation is significantly worse.</p></div><div class="subsection" id="direct"><h3>Simplified and Direct Usage Method</h3><p>To provide simpler approach while parsing an (X)HTML document, <code>CSSFactory</code>
 provides the following method:</p><ul>
-	<li><a href="../api/cz/vutbr/web/css/CSSFactory.html#assignDOM(org.w3c.dom.Document, java.lang.String, java.net.URL, java.lang.String, boolean)" class="api"><code>StyleMap assignDOM(Document doc, String encoding,
+	<li><a href="api/cz/vutbr/web/css/CSSFactory.html#assignDOM(org.w3c.dom.Document, java.lang.String, java.net.URL, java.lang.String, boolean)" class="api"><code>StyleMap assignDOM(Document doc, String encoding,
 			URL base, String medium, boolean useInheritance)</code></a>,
 		which directly creates and assigns a <code>NodeData</code> to each element in the
 		DOM document <code>doc</code> for the given medium <code>medium</code>. While searching for 
@@ -63,14 +62,14 @@ provides the following method:</p><ul>
 	</li>
 </ul></div><div class="subsection" id="dom"><h3>Retrieving the Style of DOM Elements</h3><p> 
 When the analyzing part is done for the style sheet, the computed mapping between DOM elements and
-the <a href="../api/cz/vutbr/web/css/NodeData.html" class="api"><code>NodeData</code></a> structures representing their styles is available
-as a <a href="../api/cz/vutbr/web/domassign/StyleMap.html" class="api"><code>StyleMap</code></a> structure. This structure extends the standard Java
+the <a href="api/cz/vutbr/web/css/NodeData.html" class="api"><code>NodeData</code></a> structures representing their styles is available
+as a <a href="api/cz/vutbr/web/domassign/StyleMap.html" class="api"><code>StyleMap</code></a> structure. This structure extends the standard Java
 <code>Map</code> structure and the style of a particular DOM element may be therefore obtained using the following method:
 </p><ul>
 	<li><code><b>NodeData get(org.w3c.dom.Element)</b></code></li>
-</ul><p>The <a href="../api/cz/vutbr/web/css/NodeData.html" class="api"><code>NodeData</code></a> structure provides two basic methods:</p><ul>
-	<li><a href="../api/cz/vutbr/web/css/NodeData.html#getProperty(java.lang.String, boolean)" class="api"><code>public &lt;T extends CSSProperty&gt; T getProperty(String name,
-			boolean includeInherited)</code></a>, which returns a <a href="../api/cz/vutbr/web/css/CSSProperty.html" class="api"><code>CSSProperty</code></a>.
+</ul><p>The <a href="api/cz/vutbr/web/css/NodeData.html" class="api"><code>NodeData</code></a> structure provides two basic methods:</p><ul>
+	<li><a href="api/cz/vutbr/web/css/NodeData.html#getProperty(java.lang.String, boolean)" class="api"><code>public &lt;T extends CSSProperty&gt; T getProperty(String name,
+			boolean includeInherited)</code></a>, which returns a <a href="api/cz/vutbr/web/css/CSSProperty.html" class="api"><code>CSSProperty</code></a>.
 		Basically, these properties are the implementations of the <code>CSSProperty</code> by specialized <code>enums</code>.
 		To distinguish between constants values and variable values, following contract is used for the enum values:
 		<ul>
@@ -79,9 +78,9 @@ as a <a href="../api/cz/vutbr/web/domassign/StyleMap.html" class="api"><code>Sty
 				which can be retrieved by the following function.</li> 
 		</ul> 
 	</li>
-	<li><a href="../api/cz/vutbr/web/css/NodeData.html#getValue(java.lang.Class, java.lang.String, boolean)" class="api"><code>public &lt;T extends Term&lt;?&gt;&gt; T getValue(Class&lt;T&gt; clazz, String name,
+	<li><a href="api/cz/vutbr/web/css/NodeData.html#getValue(java.lang.Class, java.lang.String, boolean)" class="api"><code>public &lt;T extends Term&lt;?&gt;&gt; T getValue(Class&lt;T&gt; clazz, String name,
 			boolean includeInherited);</code></a>
-		retrieves a value of type <a href="../api/cz/vutbr/web/css/Term.html" class="api"><code>Term</code></a>, determined in package <code>cz.vutbr.web.css</code>. 		
+		retrieves a value of type <a href="api/cz/vutbr/web/css/Term.html" class="api"><code>Term</code></a>, determined in package <code>cz.vutbr.web.css</code>. 		
 	</li>
 </ul><p>For both these methods, there are equivalent ones defined with automatic inclusion of inherited properties/terms.</p><p>Example of enum values for the <code>CSSProperty</code> <code>max-height</code>: 
  <code>length</code>, <code>percentage</code>, <code>NONE</code>, <code>INHERIT</code></p><p>
@@ -110,15 +109,15 @@ if (mm == Margin.length)
 }
 </pre></div></div><div class="subsection" id="pseudoelements"><h3>Obtaining the Style of Pseudo-Elements</h3><p>CSS specification allows the use of <a href="http://www.w3.org/TR/CSS21/selector.html#pseudo-element-selectors">several pseudo elements</a>
 for addressing specific parts of the existing DOM elements. The style of the pseudo elements may be accessed using the following method
-of the <a href="../api/cz/vutbr/web/domassign/StyleMap.html" class="api"><code>StyleMap</code></a> obtained for the DOM tree:
+of the <a href="api/cz/vutbr/web/domassign/StyleMap.html" class="api"><code>StyleMap</code></a> obtained for the DOM tree:
 </p><ul>
 	<li><code><b>boolean hasPseudo(org.w3c.dom.Element, Selector.PseudoDeclaration)</b></code> checks whether the given element
 	has some style for the particular pseudo-element declared.</li>
 	<li><code><b>NodeData get(org.w3c.dom.Element, Selector.PseudoDeclaration)</b></code> obtains the style of the particular 
 	pseudo-element of the given DOM element.</li>
-</ul><p>The pseudo-elements are specified by a <a href="../api/cz/vutbr/web/css/Selector.PseudoDeclaration.html" class="api"><code>Selector.PseudoDeclaration</code></a>
+</ul><p>The pseudo-elements are specified by a <a href="api/cz/vutbr/web/css/Selector.PseudoDeclaration.html" class="api"><code>Selector.PseudoDeclaration</code></a>
 pseudo-element value and may be one of the following: <code>BEFORE</code>, <code>AFTER</code>, <code>FIRST_LETTER</code> or <code>FIRST_LINE</code>.
-The remaining values of <a href="../api/cz/vutbr/web/css/Selector.PseudoDeclaration.html" class="api"><code>Selector.PseudoDeclaration</code></a> correspond to pseudo-classes
+The remaining values of <a href="api/cz/vutbr/web/css/Selector.PseudoDeclaration.html" class="api"><code>Selector.PseudoDeclaration</code></a> correspond to pseudo-classes
 that must be treated differently as described in the following section.
 </p></div><div class="subsection" id="pseudoclasses"><h3>Applying Pseudo-Classes</h3><p>jStyle parser supports a subset of the available <a href="http://www.w3.org/TR/selectors/#pseudo-classes">CSS3 pseudo-classes</a>:
 the <a href="http://www.w3.org/TR/selectors/#structural-pseudos">structural pseudo-classes</a> and the
@@ -134,10 +133,10 @@ the current pseudo-classes must be assigned to the individual elements in order 
 </p><p>The default behavior of jStyleParser corresponds to the standard static HTML file displaying behavior:</p><ul>
 	<li>Links represented using the <code>&lt;a&gt;</code> tags are assigned the <code>:link</code> pseudo-class.</li>
 	<li>No dynamic pseudo-classes are assigned to the remaining elements.</li>
-</ul><p>For specifying other pseudo-classes for different elements, a special <a href="../api/cz/vutbr/web/css/MatchCondition.html" class="api"><code>MatchCondition</code></a> mechanism 
-may be used. Generally, a <a href="../api/cz/vutbr/web/css/MatchCondition.html.html" class="api"><code>MatchCondition</code></a> specifies an additional condition
-applied when matching specific parts of the CSS selectors. Its default implementation <a href="../api/cz/vutbr/web/csskit/MatchConditionImpl.html" class="api"><code>MatchConditionImpl</code></a>
-implements the default behavior described above. For implementing a better behavior, a configurable <a href="../api/cz/vutbr/web/csskit/MatchConditionOnElements.html" class="api"><code>MatchConditionOnElements</code></a>
+</ul><p>For specifying other pseudo-classes for different elements, a special <a href="api/cz/vutbr/web/css/MatchCondition.html" class="api"><code>MatchCondition</code></a> mechanism 
+may be used. Generally, a <a href="api/cz/vutbr/web/css/MatchCondition.html.html" class="api"><code>MatchCondition</code></a> specifies an additional condition
+applied when matching specific parts of the CSS selectors. Its default implementation <a href="api/cz/vutbr/web/csskit/MatchConditionImpl.html" class="api"><code>MatchConditionImpl</code></a>
+implements the default behavior described above. For implementing a better behavior, a configurable <a href="api/cz/vutbr/web/csskit/MatchConditionOnElements.html" class="api"><code>MatchConditionOnElements</code></a>
 implementation is prepared. It allows do assign a set of pseudo classes directly to given DOM elements or to specified element names. It usage
 is demonstrated on the following code:
 </p><div class="code"><pre>
@@ -183,7 +182,7 @@ registering other implementation by calling the appropriate methods of <code>CSS
 Internally, it uses <a href="http://www.antlr.org">ANTLR</a> to parse CSS input into structures 
 defined by contracts in the package <code>cz.vutbr.web.css</code>.
 </p></div><div class="subsection" id="package_domassign"><h3>Package cz.vutbr.web.domassign</h3><p>
-This package provides among others an <a href="../api/cz/vutbr/web/domassign/Analyzer.html" class="api"><code>Analyzer</code></a> class,
+This package provides among others an <a href="api/cz/vutbr/web/domassign/Analyzer.html" class="api"><code>Analyzer</code></a> class,
 which is able sort the CSS declarations, to classify them according to a CSS medium and
 finally, to assign them to the DOM elements.
 </p><p>
