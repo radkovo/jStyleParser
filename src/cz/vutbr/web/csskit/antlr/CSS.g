@@ -1020,6 +1020,8 @@ any
 nostatement
   : ( RCURLY -> RCURLY
       | SEMICOLON -> SEMICOLON
+      | QUOT -> QUOT
+      | APOS -> APOS
     );
 
 /** invalid start of a property */
