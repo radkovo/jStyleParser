@@ -1018,8 +1018,8 @@ any
 
 /** What cannot be contained directly in the stylesheet (ignored) */
 nostatement
-  : ( RCURLY -> RCURLY |
-      SEMICOLON -> SEMICOLON
+  : ( RCURLY -> RCURLY
+      | SEMICOLON -> SEMICOLON
     );
 
 /** invalid start of a property */
@@ -1040,6 +1040,7 @@ noprop
 	   | INCLUDES -> INCLUDES
 	   | COLON -> COLON
 	   | STRING_CHAR -> STRING_CHAR
+     | CTRL -> CTRL
 	   | INVALID_TOKEN -> INVALID_TOKEN
     ) !S*;
 
@@ -1064,6 +1065,7 @@ norule
 	    | PLUS -> PLUS
       | DASHMATCH -> DASHMATCH
       | RPAREN -> RPAREN
+      | CTRL -> CTRL
       | '#' //that is not HASH (not an identifier)
       | '^'
     );
@@ -1443,6 +1445,10 @@ CONTAINS
   : '*='
   ;
 
+CTRL
+  : CTRL_CHAR+
+  ;
+
 INVALID_TOKEN
 	: .
 	;
@@ -1535,5 +1541,10 @@ W_MACR
 
 fragment 
 W_CHAR
-  	: '\u0009' | '\u000A' | '\u000C' | '\u000D' | '\u0020'
+  	: '\u0009' | '\u000A' | '\u000B' | '\u000C' | '\u000D' | '\u0020'
   	;
+
+fragment
+CTRL_CHAR
+    : '\u0000'..'\u0008' | '\u000E'..'\u001F'
+    ;

@@ -1,9 +1,9 @@
 <configuration>
 
-	<appender name="cssbox" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<File>/tmp/cssbox.log</File>
+	<appender name="jstyleparser1" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>/tmp/jstyleparser1.log</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<FileNamePattern>/tmp/cssbox.%i.log.zip</FileNamePattern>
+			<FileNamePattern>/tmp/jstyleparser1.%i.log.zip</FileNamePattern>
 			<MinIndex>1</MinIndex>
 			<MaxIndex>3</MaxIndex>
 		</rollingPolicy>
@@ -19,33 +19,33 @@
 	
 	<logger name="test" additivity="false">
         <level value="debug" />
-        <appender-ref ref="cssbox" />
+        <appender-ref ref="jstyleparser1" />
     </logger>
     
     <logger name="cz.vutbr.web.csskit" additivity="false">
         <level value="warn" />
-        <appender-ref ref="cssbox" />
+        <appender-ref ref="jstyleparser1" />
     </logger>
     
     <logger name="cz.vutbr.web.csskit.antlr" additivity="false">
         <level value="warn" />
-        <appender-ref ref="cssbox" />
+        <appender-ref ref="jstyleparser1" />
     </logger>  
     
     <logger name="cz.vutbr.web.domassign" additivity="false">
     	<level value="warn" />
-        <appender-ref ref="cssbox" />
+        <appender-ref ref="jstyleparser1" />
     </logger>
 
 	<logger name="cz.vutbr.web.domassign.DeclarationTransformer" additivity="false">
     	<level value="warn" />
-        <appender-ref ref="cssbox" />
+        <appender-ref ref="jstyleparser1" />
     </logger>
 
 
     <root>
         <priority value="warn"/>
-        <appender-ref ref="cssbox"/>
+        <appender-ref ref="jstyleparser1"/>
     </root>
 		
 </configuration>
