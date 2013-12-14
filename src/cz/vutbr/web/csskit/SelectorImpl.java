@@ -254,7 +254,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	}
     	
     	public boolean matches(Element e, MatchCondition cond) {
-    		return ElementUtil.	matchesClass(e, className);
+    		return ElementUtil.matchesClass(e, className);
     	}
     	
 		public String getClassName() {

@@ -34,7 +34,7 @@ public class ElementUtil {
 	        return Collections.emptyList();
 	}
 	
-	public static boolean matchesClass(Element e, String className) 
+	public static boolean matchesClassOld(Element e, String className) 
 	{
         if (e.hasAttribute(CLASS_ATTR))
         {
@@ -50,6 +50,29 @@ public class ElementUtil {
         else
             return false;
 	}
+	
+	public static boolean matchesClass(Element e, String className)
+    {
+        if (e.hasAttribute(CLASS_ATTR))
+        {
+            String classNames = e.getAttribute(CLASS_ATTR).toLowerCase();
+            String search = className.toLowerCase();
+            int len = className.length();
+            int lastIndex = 0;
+            
+            while ((lastIndex = classNames.indexOf(search, lastIndex)) != -1) {
+                if ((lastIndex == 0 || Character.isWhitespace(classNames.charAt(lastIndex - 1))) &&
+                        (lastIndex + len == classNames.length() || Character.isWhitespace(classNames.charAt(lastIndex + len)))) {
+                    return true;
+                }
+                lastIndex += len;
+            }
+            return false;
+        }
+        else
+            return false;
+    }
+
 	
 	public static String elementID(Element e) 
 	{
