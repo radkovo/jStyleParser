@@ -41,7 +41,7 @@ public class PseudoClasses {
     @Test
     public void pseudoClassMap() throws SAXException, IOException {  
         
-        DOMSource ds = new DOMSource(new FileInputStream("data/simple/pseudo.html"));
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/pseudo.html"));
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
@@ -66,7 +66,7 @@ public class PseudoClasses {
     @Test
     public void pseudoClassDirect() throws SAXException, IOException {  
         
-        DOMSource ds = new DOMSource(new FileInputStream("data/simple/pseudo.html"));
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/pseudo.html"));
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         

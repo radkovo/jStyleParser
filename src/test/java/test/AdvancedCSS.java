@@ -42,10 +42,10 @@ public class AdvancedCSS {
 
 		log.info("\n\n\n == AdvancedTest test at {} == \n\n\n", new Date());
 
-        DOMSource ds = new DOMSource(new FileInputStream("data/advanced/style.html"));
+        DOMSource ds = new DOMSource(AdvancedCSS.class.getResourceAsStream("/advanced/style.html"));
         doc = ds.parse();
 
-		sheet = CSSFactory.parse("data/advanced/style.css", null);
+		sheet = CSSFactory.parse(AdvancedCSS.class.getResource("/advanced/style.css"), null);
 
 		analyzer = new Analyzer(sheet);
 		decl = analyzer.evaluateDOM(doc, "all", true);

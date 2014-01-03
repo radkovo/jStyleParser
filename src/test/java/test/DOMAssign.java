@@ -42,12 +42,11 @@ public class DOMAssign {
 	@Test
 	public void basic() throws SAXException, IOException {	
 		
-        DOMSource ds = new DOMSource(new FileInputStream("data/advanced/domassign.html"));
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/advanced/domassign.html"));
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-		StyleMap decl = CSSFactory.assignDOM(doc, null,
-				createBaseFromFilename("data/advanced/domassign.html"),"screen", true);
+		StyleMap decl = CSSFactory.assignDOM(doc, null, getClass().getResource("/advanced/domassign.html"), "screen", true);
 		
 		NodeData data = decl.get(elements.getElementById("bp"));
 		assertNotNull("Data for #bp exist", data);
@@ -70,11 +69,11 @@ public class DOMAssign {
     @Test
     public void structureSelectors() throws SAXException, IOException {  
         
-        DOMSource ds = new DOMSource(new FileInputStream("data/simple/selectors.html"));
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/selectors.html"));
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        StyleMap decl = CSSFactory.assignDOM(doc, null, createBaseFromFilename("data/simple/selectors.html"),"screen", true);
+        StyleMap decl = CSSFactory.assignDOM(doc, null, getClass().getResource("/simple/selectors.html"),"screen", true);
         
         NodeData i1 = getStyleById(elements, decl, "i1");
         NodeData i2 = getStyleById(elements, decl, "i2");
@@ -102,11 +101,11 @@ public class DOMAssign {
     @Test
     public void indexSelectors() throws SAXException, IOException {  
         
-        DOMSource ds = new DOMSource(new FileInputStream("data/simple/selectors2.html"));
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/selectors2.html"));
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        StyleMap decl = CSSFactory.assignDOM(doc, null, createBaseFromFilename("data/simple/selectors2.html"),"screen", true);
+        StyleMap decl = CSSFactory.assignDOM(doc, null, getClass().getResource("/simple/selectors2.html"),"screen", true);
         
         NodeData i1 = getStyleById(elements, decl, "i1");
         NodeData i2 = getStyleById(elements, decl, "i2");
@@ -140,13 +139,12 @@ public class DOMAssign {
     
     @Test
     public void inherit() throws SAXException, IOException {  
-        
-        DOMSource ds = new DOMSource(new FileInputStream("data/advanced/inherit.html"));
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/advanced/inherit.html"));
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
         StyleMap decl = CSSFactory.assignDOM(doc, null,
-                createBaseFromFilename("data/advanced/inherit.html"),"screen", true);
+        		getClass().getResource("/advanced/inherit.html"),"screen", true);
         
         NodeData data = decl.get(elements.getElementById("item1"));
         assertNotNull("Data for #item1 exist", data);

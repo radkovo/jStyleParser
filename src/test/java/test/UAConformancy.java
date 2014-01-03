@@ -35,12 +35,12 @@ public class UAConformancy {
 	public static void init() throws CSSException, IOException, SAXException {
 		log.info("\n\n\n == UAConformancy test at {} == \n\n\n", new Date());
 
-        DOMSource ds = new DOMSource(new FileInputStream("data/invalid/style.html"));
+        DOMSource ds = new DOMSource(UAConformancy.class.getResourceAsStream("/invalid/style.html"));
         Document doc = ds.parse();
 
 		em = new ElementMap(doc);
 
-		StyleSheet sheet = CSSFactory.parse("data/invalid/style.css", null);
+		StyleSheet sheet = CSSFactory.parse(UAConformancy.class.getResource("/invalid/style.css"), null);
 
 		Analyzer analyzer = new Analyzer(sheet);
 		decl = analyzer.evaluateDOM(doc, "screen", true);

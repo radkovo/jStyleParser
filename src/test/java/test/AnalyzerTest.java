@@ -54,10 +54,10 @@ public class AnalyzerTest {
 	public static void init() throws IOException, CSSException, SAXException {
 		log.info("\n\n\n == AnalyzerTest test at {} == \n\n\n", new Date());
 
-        DOMSource ds = new DOMSource(new FileInputStream("data/simple/data.html"));
+        DOMSource ds = new DOMSource(AnalyzerTest.class.getResourceAsStream("/simple/data.html"));
         doc = ds.parse();
         
-		sheet = CSSFactory.parse("data/simple/data.css", null);
+		sheet = CSSFactory.parse(AnalyzerTest.class.getResource("/simple/data.css"), null);
 
 		analyzer = new Analyzer(sheet);
 

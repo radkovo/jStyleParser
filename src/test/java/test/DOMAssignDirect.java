@@ -44,11 +44,11 @@ public class DOMAssignDirect {
 	@Test
 	public void basic() throws SAXException, IOException {	
 		
-        DOMSource ds = new DOMSource(new FileInputStream("data/advanced/domassign.html"));
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/advanced/domassign.html"));
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        StyleSheet style = CSSFactory.getUsedStyles(doc, null, createBaseFromFilename("data/advanced/domassign.html"),"screen");
+        StyleSheet style = CSSFactory.getUsedStyles(doc, null, getClass().getResource("/advanced/domassign.html"),"screen");
         DirectAnalyzer da = new DirectAnalyzer(style);
         
 		NodeData data = da.getElementStyle(elements.getElementById("bp"), null, "screen");
@@ -72,11 +72,11 @@ public class DOMAssignDirect {
     @Test
     public void structureSelectors() throws SAXException, IOException {  
         
-        DOMSource ds = new DOMSource(new FileInputStream("data/simple/selectors.html"));
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/selectors.html"));
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        StyleSheet style = CSSFactory.getUsedStyles(doc, null, createBaseFromFilename("data/simple/selectors.html"),"screen");
+        StyleSheet style = CSSFactory.getUsedStyles(doc, null, getClass().getResource("/simple/selectors.html"),"screen");
         DirectAnalyzer da = new DirectAnalyzer(style);
         
         NodeData i1 = getStyleById(elements, da, "i1");
@@ -105,11 +105,11 @@ public class DOMAssignDirect {
     @Test
     public void indexSelectors() throws SAXException, IOException {  
         
-        DOMSource ds = new DOMSource(new FileInputStream("data/simple/selectors2.html"));
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/selectors2.html"));
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        StyleSheet style = CSSFactory.getUsedStyles(doc, null, createBaseFromFilename("data/simple/selectors2.html"),"screen");
+        StyleSheet style = CSSFactory.getUsedStyles(doc, null, getClass().getResource("/simple/selectors2.html"),"screen");
         DirectAnalyzer da = new DirectAnalyzer(style);
         
         NodeData i1 = getStyleById(elements, da, "i1");
@@ -145,12 +145,12 @@ public class DOMAssignDirect {
     @Test
     public void inherit() throws SAXException, IOException {  
         
-        DOMSource ds = new DOMSource(new FileInputStream("data/advanced/inherit.html"));
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/advanced/inherit.html"));
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
         StyleMap decl = CSSFactory.assignDOM(doc, null,
-                createBaseFromFilename("data/advanced/inherit.html"),"screen", true);
+        		getClass().getResource("/advanced/inherit.html"),"screen", true);
         
         NodeData data = decl.get(elements.getElementById("item1"));
         assertNotNull("Data for #item1 exist", data);

@@ -50,7 +50,7 @@ public class ImportTest1 {
 	public static void init() throws SAXException, IOException {
 		log.info("\n\n\n == ImportTest1 test at {} == \n\n\n", new Date());
 
-        DOMSource ds = new DOMSource(new FileInputStream("data/simple/data.html"));
+        DOMSource ds = new DOMSource(ImportTest1.class.getResourceAsStream("/simple/data.html"));
         doc = ds.parse();
 	}
 
@@ -66,7 +66,7 @@ public class ImportTest1 {
 	@Test
 	public void testSimpleImport() throws CSSException, IOException {
 
-		StyleSheet ss = CSSFactory.parse("data/simple/imp.css", null);
+		StyleSheet ss = CSSFactory.parse(getClass().getResource("/simple/imp.css"), null);
 
 		Analyzer analyzer = new Analyzer(ss);
 
@@ -97,12 +97,12 @@ public class ImportTest1 {
 
 	@Test
 	public void testMediaImport() throws CSSException, IOException {
-		CSSFactory.parse("data/simple/impmedia.css", null);
+		CSSFactory.parse(getClass().getResource("/simple/impmedia.css"), null);
 	}
 
 	@Test
 	public void testRealAndNested() throws CSSException, IOException {
-		CSSFactory.parse("data/abclinuxu/styles.css", null);
+		CSSFactory.parse(getClass().getResource("/abclinuxu/styles.css"), null);
 	}
 
 	@Test

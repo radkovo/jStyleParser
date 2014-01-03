@@ -91,7 +91,7 @@ public class GrammarRecovery1 {
 	@Test
 	public void charsetWithoutSemicolonAndDefinitinAfter() throws CSSException, IOException {
 
-		StyleSheet ss = CSSFactory.parse("data/invalid/recovery2.css", null);
+		StyleSheet ss = CSSFactory.parse(getClass().getResource("/invalid/recovery2.css"), null);
 		assertEquals("No rules are set", 0, ss.size());
 
 	}
@@ -170,7 +170,7 @@ public class GrammarRecovery1 {
 	public void invalidSelector() throws IOException, CSSException, SAXException {
 		StyleSheet sheet = CSSFactory.parse(TEST_INVALID_SELECTOR);
 
-        DOMSource ds = new DOMSource(new FileInputStream("data/simple/h1.html"));
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/h1.html"));
         Document doc = ds.parse();
 
 		Analyzer analyzer = new Analyzer(sheet);
