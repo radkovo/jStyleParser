@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/radkovo/jStyleParser.png)](https://travis-ci.org/radkovo/jStyleParser)
 
 jStyleParser
 ============
