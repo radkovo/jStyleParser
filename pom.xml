@@ -18,6 +18,45 @@
 		</license>
 	</licenses>
 
+	<developers>
+		<developer>
+			<name>Radek Burget</name>
+			<roles>
+				<role>Main developer &amp; project leader</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Karel Piwko</name>
+			<roles>
+				<role>Former developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Jan Švercl</name>
+			<roles>
+				<role>Former developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Ron Kuhnert</name>
+			<roles>
+				<role>Contributor</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Bert Frees</name>
+			<roles>
+				<role>Contributor</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Philip Borlin</name>
+			<roles>
+				<role>Contributor</role>
+			</roles>
+		</developer>
+	</developers>
+  
 	<scm>
 		<url>https://github.com/radkovo/jStyleParser</url>
 		<connection>scm:git:git@github.com:radkovo/jStyleParser.git</connection>
