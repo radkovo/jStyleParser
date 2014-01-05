@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.sourceforge.cssbox</groupId>
-	<artifactId>jstyleparser</artifactId>
+	<artifactId>jStyleParser</artifactId>
 	<version>0.15-SNAPSHOT</version>
 	<name>jStyleParser</name>
 	<description>jStyleParser is a CSS parser written in Java. It has its own application interface that is designed to allow an efficient CSS processing in Java and mapping the values to the Java data types. It parses CSS 2.1 style sheets into structures that can be efficiently assigned to DOM elements. It is intended be the primary CSS parser for the CSSBox library. While handling errors, it is user agent conforming according to the CSS specification.</description>
@@ -24,6 +24,10 @@
 		<developerConnection>scm:git:git@github.com:radkovo/jStyleParser.git</developerConnection>
 	</scm>
 	
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
 	<build>
 		<resources>
 			<resource>
@@ -63,26 +67,31 @@
                 <version>2.2.1</version>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.1.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-			
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.4.3</version>
-            </plugin>
-			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.4.3</version>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>package-all</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>/src/main/assembly/dist.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+	
 			<plugin>
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr3-maven-plugin</artifactId>
