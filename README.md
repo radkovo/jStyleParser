@@ -10,6 +10,5 @@ All the source code of jStyleParser itself is licensed under the GNU Lesser Gene
 Public License (LGPL), version 3. A copy of the LGPL can be found 
 in the LICENSE file.
 
-Required Libraries
-------------------
-The Xerces and the NekoHTML libraries may be replaced by any other DOM implementation.
+See the project page for more information:
+[http://cssbox.sourceforge.net/jstyleparser](http://cssbox.sourceforge.net/jstyleparser)
