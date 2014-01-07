@@ -10,5 +10,5 @@ All the source code of jStyleParser itself is licensed under the GNU Lesser Gene
 Public License (LGPL), version 3. A copy of the LGPL can be found 
 in the LICENSE file.
 
-See the project page for more information:
+See the project page for more information and downloads:
 [http://cssbox.sourceforge.net/jstyleparser](http://cssbox.sourceforge.net/jstyleparser)
