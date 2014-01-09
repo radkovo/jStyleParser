@@ -1,17 +1,18 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<!-- 
 		Deploy: mvn clean deploy (includes javadoc)
 		Package: mvn clean package assembly:single
-	
+	    Release: mvn release:clean
+	             mvn release:prepare
+	             mvn release:perform
 	 -->
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.sf.cssbox</groupId>
 	<artifactId>jstyleparser</artifactId>
-	<version>0.15-SNAPSHOT</version>
+	<version>0.16-SNAPSHOT</version>
 	<name>jStyleParser</name>
 	<description>jStyleParser is a CSS parser written in Java. It has its own application interface that is designed to allow an efficient CSS processing in Java and mapping the values to the Java data types. It parses CSS 2.1 style sheets into structures that can be efficiently assigned to DOM elements. It is intended be the primary CSS parser for the CSSBox library. While handling errors, it is user agent conforming according to the CSS specification.</description>
 	<url>http://cssbox.sourceforge.net/jstyleparser</url>
@@ -153,6 +154,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -190,7 +192,7 @@
 					<configuration>
 						<mavenExecutorId>forked-path</mavenExecutorId>
 						<useReleaseProfile>false</useReleaseProfile>
-						<arguments>${arguments} -Psonatype-oss-release</arguments>
+						<arguments>-Psonatype-oss-release</arguments>
 					</configuration>
 				</plugin>
 			</plugins>
