@@ -1,3 +1,10 @@
+Version 1.15 - Jan 9, 2014
+- Project layout changed to maven
+- Rewritten test resource reading
+- clip: property changed to correspond the specification
+- Base URL processing improved
+- Error recovery fixes
+
 Version 1.14 - Oct 26, 2013
 - Pseudo class processing during DOM style computation
 - Declaration source tracking
