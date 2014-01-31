@@ -254,6 +254,8 @@ public class Analyzer {
 		for (RuleSet rule : clist) {
 			
 			StyleSheet sheet = rule.getStyleSheet();
+			if (sheet == null)
+			    log.warn("No source style sheet set for rule: {}", rule.toString());
 			StyleSheet.Origin origin = (sheet == null) ? StyleSheet.Origin.AGENT : sheet.getOrigin();
 			
 			// for all selectors inside

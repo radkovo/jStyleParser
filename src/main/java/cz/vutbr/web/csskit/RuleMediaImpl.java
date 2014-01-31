@@ -5,6 +5,7 @@ import java.util.List;
 
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RuleSet;
+import cz.vutbr.web.css.StyleSheet;
 
 /**
  * Implementation of RuleMedia
@@ -37,8 +38,16 @@ public class RuleMediaImpl extends AbstractRuleBlock<RuleSet> implements RuleMed
 		return this;
 	}
 	
+    @Override
+    public void setStyleSheet(StyleSheet stylesheet)
+    {
+        super.setStyleSheet(stylesheet);
+        //assign the style sheet recursively to the contained rule sets
+        for (RuleSet set : list)
+            set.setStyleSheet(stylesheet);
+    }
 
-	@Override
+    @Override
     public String toString() {
     	return this.toString(0);
     }
