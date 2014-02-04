@@ -1,3 +1,6 @@
+Version 1.16 - Feb 4, 2014
+- Rule priority computation fix for nested (@media) rules
+
 Version 1.15 - Jan 9, 2014
 - Project layout changed to maven
 - Rewritten test resource reading
