@@ -1242,7 +1242,7 @@ FONTFACE
 
 /** Keyword beginning with '@' */
 ATKEYWORD
-	: '@' MINUS? IDENT_MACR
+	: '@' MINUS? IDENT_MACR?
 	;
 
 CLASSKEYWORD
