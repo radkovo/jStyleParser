@@ -19,6 +19,7 @@ import org.w3c.dom.traversal.TreeWalker;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.RuleMedia;
@@ -44,7 +45,7 @@ public class Analyzer {
 	protected static final String UNIVERSAL_HOLDER = "all";
 	
 	/**
-	 * For all medias holds maps of declared rules classified into groups of
+	 * For all media holds maps of declared rules classified into groups of
 	 * HolderItem (ID, CLASS, ELEMENT, OTHER). Media's type is key
 	 */
 	protected Map<String, Holder> rules;
@@ -388,18 +389,16 @@ public class Analyzer {
 						// insert into all medias
 						
 						// if there are no medias, it equals all
-						if(rulemedia.getMedia()==null ||
-								rulemedia.getMedia().isEmpty()) {
-							
+						if(rulemedia.getMediaQueries()==null ||	rulemedia.getMediaQueries().isEmpty()) {
 							insertClassified(rules.get(UNIVERSAL_HOLDER), hs, ruleset);
 							continue;
 						}
 						
-						for (String media : rulemedia.getMedia()) {
+						for (MediaQuery media : rulemedia.getMediaQueries()) {
 							Holder h = rules.get(media);
 							if (h == null) {
 								h = new Holder();
-								rules.put(media, h);
+								rules.put(media.getType(), h); //TODO: media type is not enough (consider the whole query)
 							}
 							insertClassified(h, hs, ruleset);
 						}

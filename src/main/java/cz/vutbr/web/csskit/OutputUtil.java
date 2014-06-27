@@ -14,6 +14,7 @@ public class OutputUtil {
 	public static final String EMPTY_DELIM = "";
 	public static final String SPACE_DELIM = " ";
 	public static final String DEPTH_DELIM = "\t";
+    public static final String QUERY_DELIM = " AND ";
 	public static final String RULE_OPENING = " {\n";
 	public static final String RULE_CLOSING = "}\n";
 	public static final String MEDIA_DELIM = ", ";
@@ -45,6 +46,9 @@ public class OutputUtil {
 	public static final String PERCENT_SIGN = "%";
 	public static final String HASH_SIGN = "#";
 	public static final String MARGIN_AREA_OPENING = "@";
+    public static final String MEDIA_EXPR_OPENING = "(";
+    public static final String MEDIA_EXPR_CLOSING = ")";
+    public static final String MEDIA_FEATURE_DELIM = ": ";
 	
 	
 	

@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.MediaExpression;
+import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleMargin;
@@ -46,13 +48,15 @@ import cz.vutbr.web.css.RuleBlock.Priority;
 	private static SupportedCSS css = CSSFactory.getSupportedCSS();
 
 	private static class TreeParserState {
-	    public List<String> media;
+	    public List<MediaQuery> media;
 		
 		public TreeParserState(String media) {
-			if(media==null || media.length()==0)
+		  //TODO
+		  this.media = Collections.emptyList();
+			/*if(media==null || media.length()==0)
 			    this.media = Collections.emptyList();
 			else	
-		    	this.media = Arrays.asList(media.split(","));
+		    	this.media = Arrays.asList(media.split(","));*/
 		}
 		
 		public boolean doWrap() {
@@ -262,21 +266,62 @@ margin returns [RuleMargin m]
 		{ $m = preparator.prepareRuleMargin(extractText(area).substring(1), decl); }
 	;
 
-media returns [List<String> affected] 
+media returns [List<MediaQuery> queries] 
 @init {
    logEnter("media");
-   $affected = new ArrayList<String>();
+   $queries = new ArrayList<MediaQuery>();
 }
 @after {
-   log.debug("Totally returned {} media.", $affected.size());							  
+   log.debug("Totally returned {} media queries.", $queries.size());							  
    logLeave("media");		   
 }
-	: (i=IDENT {
-				   String m = extractText(i);
-				   if(css.isSupportedMedia(m)) $affected.add(m);
+	: (q = mediaquery {
+				   $queries.add(q);
     } )+
 	;
-    
+
+mediaquery returns [MediaQuery query]
+scope {
+    MediaQuery q;
+}
+@init {
+    logEnter("mediaquery");
+    $mediaquery::q = $query = rf.createMediaQuery();
+    $query.unlock();
+}
+@after {
+    logLeave("mediaquery");
+}
+  : ^(MEDIA_QUERY mediaterm+)
+  ;
+
+mediaterm
+  : (i=IDENT {
+          if ($mediaquery::q.getType() == null) { //skip all the identifiers when the media type is already set
+              String m = extractText(i);
+              if (m.equalsIgnoreCase("NOT"))
+                  $mediaquery::q.setNegative(true);
+              if (m.equalsIgnoreCase("AND"))
+                  ;
+              else
+                  $mediaquery::q.setType(m);
+          }
+        }
+      )
+   | (e=mediaexpression { $mediaquery::q.add(e); })
+   ;
+
+mediaexpression returns [MediaExpression expr]
+@init {
+    logEnter("mediaquery");
+    $expr = rf.createMediaExpression();
+}
+@after {
+    logLeave("mediaquery");
+}
+    : d=declaration { $expr.setFeature(d.getProperty()); $expr.replaceAll(d); }
+    ;
+
 inlineset returns [RuleBlock<?> is]
 @init {
      logEnter("inlineset");

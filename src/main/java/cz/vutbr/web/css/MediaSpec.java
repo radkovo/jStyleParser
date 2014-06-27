@@ -5,6 +5,13 @@
  */
 package cz.vutbr.web.css;
 
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.TokenStream;
+import org.antlr.runtime.tree.CommonTree;
+
+
 /**
  * This class represents the properties of the output media used for displaying the document.
  * 
@@ -150,4 +157,51 @@ public class MediaSpec
         grid = 0;
     }
     
+    //===============================================================================================
+    
+    public void parseQuery(String expression)
+    {
+        /*try {
+            //lexer splits input into tokens
+            ANTLRStringStream input = new ANTLRStringStream(expression);
+            TokenStream tokens = new CommonTokenStream( new MediaQueryLexer( input ) );
+         
+            //parser generates abstract syntax tree
+            MediaQueryParser parser = new MediaQueryParser(tokens);
+            MediaQueryParser.media_return ret = parser.media();
+         
+            //acquire parse result
+            CommonTree ast = (CommonTree) ret.getTree();
+            printTree(ast);
+            //return ast;
+          } catch (RecognitionException e) {
+              System.err.println("Error: " + e.getMessage());
+              //return null;
+          }*/
+
+    }
+
+    private void printTree(CommonTree ast)
+    {
+        print(ast, 0);
+    }
+
+    private void print(CommonTree tree, int level)
+    {
+        // indent level
+        for (int i = 0; i < level; i++)
+            System.out.print("--");
+
+        // print node description: type code followed by token text
+        System.out.println(" " + tree.getType() + " " + tree.getText());
+
+        // print all children
+        if (tree.getChildren() != null)
+        {
+            for (Object ie : tree.getChildren())
+            {
+                print((CommonTree) ie, level + 1);
+            }
+        }
+    }
 }

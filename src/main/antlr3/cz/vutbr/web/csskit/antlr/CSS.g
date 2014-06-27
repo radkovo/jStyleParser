@@ -48,6 +48,8 @@ tokens {
 	DECLARATION;	
 	VALUE;
 	IMPORTANT;
+	MEDIA_QUERY;
+	MEDIA_EXPR;
 	
 	IMPORT_END;
 	
@@ -813,10 +815,28 @@ inlineset
 	  -> ^(RULE pseudo* declarations)
 	;
 	
-media
+/*media
 	: IDENT S* (COMMA S* IDENT S*)* 
 		-> IDENT+
-	;		
+	;*/
+	
+media
+ : media_query (COMMA S* media_query)*
+    -> ^(MEDIA_QUERY media_query+)
+ ;
+
+media_query
+ : (media_term S!*)+
+ ;
+
+media_term
+ : (IDENT | media_expression)
+ ;
+
+media_expression
+ : LPAREN S* IDENT S* (COLON S* terms)? RPAREN
+    -> ^(DECLARATION IDENT terms)
+ ;
 	
 ruleset
 	: combined_selector (COMMA S* combined_selector)* 

@@ -10,6 +10,7 @@ import org.w3c.dom.Element;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleFontFace;
@@ -40,7 +41,7 @@ public class SimplePreparator implements Preparator {
 	}
 
 	public RuleBlock<?> prepareRuleSet(List<CombinedSelector> cslist,
-			List<Declaration> dlist, boolean wrap, List<String> media) {
+			List<Declaration> dlist, boolean wrap, List<MediaQuery> media) {
 
 		// check emptiness
 		if ((cslist == null || cslist.isEmpty())
@@ -66,7 +67,7 @@ public class SimplePreparator implements Preparator {
 
 			rm.unlock();
 			rm.add(rs);
-			rm.setMedia(media);
+			rm.setMediaQueries(media);
 
 			// return wrapped block
 			return (RuleBlock<?>) rm;
@@ -76,8 +77,7 @@ public class SimplePreparator implements Preparator {
 		return (RuleBlock<?>) rs;
 	}
 
-	public RuleBlock<?> prepareRuleMedia(Priority mark, List<RuleSet> rules,
-			List<String> media) {
+	public RuleBlock<?> prepareRuleMedia(Priority mark, List<RuleSet> rules, List<MediaQuery> media) {
 
 		if (rules == null || rules.isEmpty()) {
 			log.debug("Empty RuleMedia was ommited");
@@ -88,7 +88,7 @@ public class SimplePreparator implements Preparator {
 		RuleMedia rm = rf.createMedia(mark);
 		rm.replaceAll(rules);
 		if (media != null && !media.isEmpty())
-			rm.setMedia(media);
+			rm.setMediaQueries(media);
 
 		log.info("Create @media as {}th with:\n{}", mark, rm);
 

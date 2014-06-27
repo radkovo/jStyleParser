@@ -3,6 +3,7 @@ package cz.vutbr.web.csskit;
 import java.util.Collections;
 import java.util.List;
 
+import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
@@ -17,7 +18,7 @@ import cz.vutbr.web.css.StyleSheet;
 public class RuleMediaImpl extends AbstractRuleBlock<RuleSet> implements RuleMedia {
   
 	/** List of medias */
-	protected List<String> medias;
+	protected List<MediaQuery> media;
 	
 	/**
 	 * Creates an empty object to be filled by interface methods
@@ -25,16 +26,17 @@ public class RuleMediaImpl extends AbstractRuleBlock<RuleSet> implements RuleMed
 	 */
 	protected RuleMediaImpl(Priority priority) {
 		super(priority);
-		this.medias = Collections.emptyList();
+		this.media = Collections.emptyList();
 	}    
     
-    public List<String> getMedia() {
-		return medias;
+	@Override
+	public List<MediaQuery> getMediaQueries() {
+		return media;
 	}
 
-
-	public RuleMedia setMedia(List<String> medias) {
-		this.medias = medias;
+	@Override
+	public RuleMedia setMediaQueries(List<MediaQuery> medias) {
+		this.media = medias;
 		return this;
 	}
 	
@@ -59,7 +61,7 @@ public class RuleMediaImpl extends AbstractRuleBlock<RuleSet> implements RuleMed
     	// append medias
     	sb = OutputUtil.appendTimes(sb, OutputUtil.DEPTH_DELIM, depth);
     	sb.append(OutputUtil.MEDIA_KEYWORD);    	
-    	sb = OutputUtil.appendList(sb, medias, OutputUtil.MEDIA_DELIM);
+    	sb = OutputUtil.appendList(sb, media, OutputUtil.MEDIA_DELIM);
     	
     	// append rules
     	sb = OutputUtil.appendTimes(sb, OutputUtil.DEPTH_DELIM, depth);
@@ -77,7 +79,7 @@ public class RuleMediaImpl extends AbstractRuleBlock<RuleSet> implements RuleMed
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((medias == null) ? 0 : medias.hashCode());
+		result = prime * result + ((media == null) ? 0 : media.hashCode());
 		return result;
 	}
 
@@ -93,10 +95,10 @@ public class RuleMediaImpl extends AbstractRuleBlock<RuleSet> implements RuleMed
 		if (!(obj instanceof RuleMediaImpl))
 			return false;
 		RuleMediaImpl other = (RuleMediaImpl) obj;
-		if (medias == null) {
-			if (other.medias != null)
+		if (media == null) {
+			if (other.media != null)
 				return false;
-		} else if (!medias.equals(other.medias))
+		} else if (!media.equals(other.media))
 			return false;
 		return true;
 	}   
