@@ -49,7 +49,6 @@ tokens {
 	VALUE;
 	IMPORTANT;
 	MEDIA_QUERY;
-	MEDIA_EXPR;
 	
 	IMPORT_END;
 	
