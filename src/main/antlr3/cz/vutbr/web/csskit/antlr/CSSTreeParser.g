@@ -75,6 +75,14 @@ import cz.vutbr.web.csskit.RuleArrayList;
       for (RuleBlock<?> rule : rules)
       {
           rule.setPriority(ps.getAndIncrement());
+          if (rule instanceof RuleMedia) //@media: assign priority to contained rules
+          {
+            if (rule instanceof RuleMedia)
+            {
+                for (RuleSet inrule : (RuleMedia) rule)
+                    inrule.setPriority(ps.getAndIncrement());
+            }
+          }
           sheet.add(rule); 
       }
       sheet.markLast(ps.markAndIncrement());
