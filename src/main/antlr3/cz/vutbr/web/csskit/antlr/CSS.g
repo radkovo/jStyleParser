@@ -50,8 +50,6 @@ tokens {
 	IMPORTANT;
 	MEDIA_QUERY;
 	
-	IMPORT_END;
-	
 	INVALID_STRING;
 	INVALID_SELECTOR;
 	INVALID_SELPART;
@@ -268,25 +266,6 @@ import cz.vutbr.web.css.SupportedCSS;
            CSSToken t = ls.generateEOFRecover(); 
            return (Token) t;
        }
-
-       // push back import stream
-       // We've got EOF and have non empty stack
-       if(token==Token.EOF_TOKEN && !imports.empty()){
-
-       	 // prepare end token 	
-       	 CSSToken t = new CSSToken(IMPORT_END, ls);
-       	 t.setText("IMPORT_END");
-       
-         // We've got EOF and have non empty stack.
-         LexerStream stream = imports.pop();
-         setCharStream(stream.input);
-         input.rewind(stream.mark);
-         this.ls = stream.ls;
-         
-         // send created token
-         return (Token) t;
-         //token = nextTokenRecover();
-       }       
 
        // Skip first token after switching on another input.
        if(((CommonToken)token).getStartIndex() < 0)
@@ -768,9 +747,8 @@ statement
 
 atstatement
 	: CHARSET
-	| IMPORT
-	| INVALID_IMPORT
-	| IMPORT_END
+	| IMPORT S* import_uri S* media? SEMICOLON
+	  -> ^(IMPORT media? import_uri)  
 	| page
   | VIEWPORT S*
     LCURLY S* declarations
@@ -787,6 +765,10 @@ atstatement
 	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
 	  		"INVALID_STATEMENT", follow, re);							
 	}
+
+import_uri
+  : (STRING | URI)
+  ;
 
 page
 	: PAGE S* (( IDENT | IDENT page_pseudo | page_pseudo) S*) ?
@@ -1134,94 +1116,7 @@ CHARSET
 	;
 
 IMPORT
-@init {
-	expectedToken.push(new Integer(IMPORT));
-	StringBuilder media = new StringBuilder();
-	String mText = null;
-}
-@after {
-	expectedToken.pop();
-}
-	: '@import' S* 
-	  (s=STRING_MACR { $s.setType(STRING);} 
-	  	| s=URI {$s.setType(URI);}) S*
-	    (m=IDENT_MACR { 
-	        mText = $m.getText();
-	    	if(css.isSupportedMedia(mText)) 
-	    		media.append(mText); 
-	    	else
-	    	    log.debug("Invalid import media \"{}\"", mText);
-	     } 
-	     S* 
-	       (',' S* m=IDENT_MACR { 
-	         mText = $m.getText();
-	       	 if(css.isSupportedMedia(mText)) 
-	       	 		media.append(",").append(mText);
-	       	 else
-	    	    log.debug("Invalid import media \"{}\"", mText);		
-	       	} 
-	       S* )*
-	    )?
-	  SEMICOLON 
-	  {
-		    // do some funny work with file name to be imported
-        String fileName = s.getText();
-        log.debug("FILE: " + fileName);
-            	  	
-        if(s.getType()==STRING) 
-        	fileName = CSSToken.extractSTRING(fileName);
-        else
-        	fileName = CSSToken.extractURI(fileName);
-            	  	
-        log.info("Will import file \"{}\" with media: {}", 
-          		fileName, media.toString());           	  	
-            	  	
-        // import file
-        URL url = null;
-        try {
-        		    // construct URL
-        		    log.debug("BASE: " + ((CSSInputStream) input).getBase());
-        		    URL base = ((CSSInputStream) input).getBase();
-        		    if (base != null)
-              	    url = DataURLHandler.createURL(base, fileName);
-              	else
-              	{
-              	    log.warn("Base URL is unknown");
-                    url = DataURLHandler.createURL(base, fileName);
-              	}
-              	               			
-              	log.debug("Actually, will try to import file \"{}\"", url.toString());	
-              			
-                // save current lexer's stream
-                LexerStream stream = new LexerStream(input, ls);
-                imports.push(stream);
-                    	
-                CSSToken t = new CSSToken(IMPORT, ls);
-                t.setText(media.toString());
-                    	
-                // switch on new stream
-                String enc = ((CSSInputStream) input).getEncoding();
-                setCharStream(CSSInputStream.urlStream(url, enc));
-                reset();
-                    	
-                log.info("File \"{}\" was imported.", url.toString());
-                emit(t);
-         }
-         catch(MalformedURLException mue) {
-         		log.warn("Unable to construct URL for fileName", fileName); 
-              	// set type to invalid import
-                _type = INVALID_IMPORT;
-                setText("INVALID_IMPORT");
-         }              		 
-         catch(IOException fnf) {
-         		log.warn("Cannot read \"{}\" to import: {}", fileName, fnf.getMessage());
-                // restore state
-                imports.pop();
-                // set type to invalid import
-                _type = INVALID_IMPORT;
-                setText("INVALID_IMPORT");
-          }
-	}
+	: '@import' 
 	;
 
 MEDIA

@@ -22,6 +22,7 @@ import cz.vutbr.web.css.MediaExpression;
 import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
+import cz.vutbr.web.css.RuleList;
 import cz.vutbr.web.css.RuleMargin;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
@@ -37,6 +38,9 @@ import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.RuleBlock.Priority;
 
+import cz.vutbr.web.csskit.PriorityStrategy;
+import cz.vutbr.web.csskit.RuleArrayList;
+
 // @SuppressWarnings("unchecked")
 }
 
@@ -47,43 +51,53 @@ import cz.vutbr.web.css.RuleBlock.Priority;
 	private static TermFactory tf = CSSFactory.getTermFactory();
 	private static SupportedCSS css = CSSFactory.getSupportedCSS();
 
-	private static class TreeParserState {
-	    public List<MediaQuery> media;
-		
-		public TreeParserState(String media) {
-		  //TODO
-		  this.media = Collections.emptyList();
-			/*if(media==null || media.length()==0)
-			    this.media = Collections.emptyList();
-			else	
-		    	this.media = Arrays.asList(media.split(","));*/
-		}
-		
-		public boolean doWrap() {
-		   return !media.isEmpty();
-		}
-		
-		@Override
-		public String toString() {
-		    return media.toString();
-		}
-	}
-
     // block preparator
 	private Preparator preparator;
+	private PriorityStrategy ps;
+	private RuleList rules;
+	private List<CommonTree> importNodes;
+	private List<String> importPaths;
 	
-	private StyleSheet stylesheet;
 
-	private Stack<TreeParserState> imports;	
-       
-    public CSSTreeParser init(StyleSheet sheet, Preparator preparator) {
-	    this.stylesheet = sheet;
+  public CSSTreeParser init(Preparator preparator, PriorityStrategy ps) {
 		this.preparator = preparator;
-		this.imports = new Stack<TreeParserState>();
+		this.ps = ps;
+		this.rules = null;
+		this.importNodes = new ArrayList<CommonTree>();
+		this.importPaths = new ArrayList<String>();
 		return this;
 	}   
-       
-    @Override
+  
+  public StyleSheet addRulesToStyleSheet(StyleSheet sheet)
+  {
+    if (rules != null)
+    {
+      for (RuleBlock<?> rule : rules)
+      {
+          rule.setPriority(ps.getAndIncrement());
+          sheet.add(rule); 
+      }
+      sheet.markLast(ps.markAndIncrement());
+    }
+    return sheet;
+  }
+  
+  public RuleList getRules()
+  {
+    return rules;
+  }
+  
+  public List<CommonTree> getImportNodes()
+  {
+    return importNodes;
+  } 
+  
+  public List<String> getImportPaths()
+  {
+    return importPaths;
+  }
+  
+  @Override
 	public void emitErrorMessage(String msg) {
 	    log.info("ANTLR: {}", msg);
 	}
@@ -112,45 +126,41 @@ import cz.vutbr.web.css.RuleBlock.Priority;
     }
 }
 
-inlinestyle returns [StyleSheet sheet]
+inlinestyle returns [RuleList rules]
 @init {
 	logEnter("inlinestyle");
-	$sheet = this.stylesheet;
+	$rules = this.rules = new RuleArrayList();
 } 
 @after {
-	log.debug("\n***\n{}\n***\n", $sheet);	   
-	// mark last usage
-	$sheet.markLast(preparator.markPriority());
+	log.debug("\n***\n{}\n***\n", $rules);	   
 	logLeave("inlinestyle");
 }
 	: 	^(INLINESTYLE decl=declarations) 
 		{
 			RuleBlock<?> rb = preparator.prepareInlineRuleSet(decl, null);
 			if(rb!=null) {
-			     $sheet.add(rb);
+			     $rules.add(rb);
 			}
 		} 
 	|   ^(INLINESTYLE 
-		 	(irs=inlineset {if(irs!=null) $sheet.add(irs);} )+ )
+		 	(irs=inlineset {if(irs!=null) $rules.add(irs);} )+ )
 	;
 
 
 /**
  * Stylesheet, main rule
  */
-stylesheet returns [StyleSheet sheet]
+stylesheet returns [RuleList rules]
 @init {
 	logEnter("stylesheet");
-	$sheet = this.stylesheet;
+  $rules = this.rules = new RuleArrayList();
 } 
 @after {
-	log.debug("\n***\n{}\n***\n", $sheet);
-	// mark last usage
-	$sheet.markLast(preparator.markPriority());
+	log.debug("\n***\n{}\n***\n", $rules);
 	logLeave("stylesheet");
 }
 	: ^(STYLESHEET 
-		 (s=statement { if(s!=null) $sheet.add(s);})*  
+		 (s=statement { if(s!=null) $rules.add(s);})*  
 	   )
 	;
 
@@ -193,24 +203,20 @@ scope {
 	List<RuleMargin> margins = null;
 	String name = null;
 	String pseudo = null;
-	Priority mark = preparator.markPriority();
 }
 @after {
     logLeave("atstatement");
 }
 	: CHARSET	// charset already set
 	| INVALID_IMPORT // already handled
-	| i=IMPORT 
+	| ^(ii=IMPORT
+	      (im=media)?
+	      (iuri=import_uri)
+	   )
 	  {
-	    String media = extractText(i);
-		imports.push(new TreeParserState(media));
-		
-		log.info("From imported file: Rules will use these media: {}", 
-			imports.peek());
-	  }
-	| IMPORT_END {
-	    imports.pop();
-		log.info("Imported file was parsed, returing in nesting.");
+	    log.debug("Adding import: {}", iuri);
+	    importNodes.add(ii);
+	    importPaths.add(iuri); 
 	  }
   | ^(PAGE
       (i=IDENT
@@ -250,9 +256,14 @@ scope {
 			)*
 	   )	
 	   {
-		   $stmnt = preparator.prepareRuleMedia(mark, rules, mediaList);
+		   $stmnt = preparator.prepareRuleMedia(rules, mediaList);
 	   }
 	;
+
+import_uri returns [String s]
+  : (uri=URI) { s = extractText(uri); }
+  | (str=STRING) { s = extractText(str); }
+  ;
 
 margin returns [RuleMargin m]
 @init {
@@ -350,9 +361,7 @@ ruleset returns [RuleBlock<?> stmnt]
         log.debug("Ruleset not valid, so not created");
     }
     else {    
-		 $stmnt = preparator.prepareRuleSet(cslist, decl, 
-		 	!$statement::insideAtstatement && !imports.isEmpty() && imports.peek().doWrap(), 
-			imports.isEmpty() ? null : imports.peek().media);
+		 $stmnt = preparator.prepareRuleSet(cslist, decl, false, null); 
         }		
     logLeave("ruleset");
 }    

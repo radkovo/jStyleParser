@@ -14,6 +14,7 @@ import org.w3c.dom.Element;
 
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.RuleList;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.RuleBlock.Priority;
 import cz.vutbr.web.csskit.PriorityStrategy;
@@ -56,7 +57,7 @@ public class CSSParserFactory {
 			}
 
 			@Override
-			public StyleSheet parse(CSSTreeParser parser) throws CSSException {
+			public RuleList parse(CSSTreeParser parser) throws CSSException {
 				try {
 					return parser.inlinestyle();
 				} catch (RecognitionException re) {
@@ -90,7 +91,7 @@ public class CSSParserFactory {
 			}
 
 			@Override
-			public StyleSheet parse(CSSTreeParser parser) throws CSSException {
+			public RuleList parse(CSSTreeParser parser) throws CSSException {
 				try {
 					return parser.stylesheet();
 				} catch (RecognitionException re) {
@@ -124,7 +125,7 @@ public class CSSParserFactory {
 			}
 
 			@Override
-			public StyleSheet parse(CSSTreeParser parser) throws CSSException {
+			public RuleList parse(CSSTreeParser parser) throws CSSException {
 				try {
 					return parser.stylesheet();
 				} catch (RecognitionException re) {
@@ -177,7 +178,7 @@ public class CSSParserFactory {
 		 *             When unrecoverable exception during parse occurs.
 		 *             RuntimeException are also encapsulated at this point
 		 */
-		public abstract StyleSheet parse(CSSTreeParser parser)
+		public abstract RuleList parse(CSSTreeParser parser)
 				throws CSSException;
 
 		/**
@@ -224,10 +225,10 @@ public class CSSParserFactory {
 				.createStyleSheet().unlock();
 
 		PriorityStrategy ps = new AtomicPriorityStrategy(lastPriority);
-		Preparator preparator = new SimplePreparator(ps, inline, inlinePriority);
+		Preparator preparator = new SimplePreparator(inline, inlinePriority);
 
-		CSSTreeParser parser = createParser(source, encoding, type, preparator, sheet, base);
-		StyleSheet ret = type.parse(parser);
+		CSSTreeParser parser = createParser(source, encoding, type, preparator, sheet, ps, base);
+        StyleSheet ret = parseAndImport(parser, type, sheet);
 		lastPriority = ret.getLastMark();
 		return ret;
 	}
@@ -285,11 +286,12 @@ public class CSSParserFactory {
 	    if (start == null)
 	        start = lastPriority;
 		PriorityStrategy ps = new AtomicPriorityStrategy(start);
-		Preparator preparator = new SimplePreparator(ps, inline, inlinePriority);
+		Preparator preparator = new SimplePreparator(inline, inlinePriority);
 
-		CSSTreeParser parser = createParser(source, encoding, type, preparator, sheet, base);
-		StyleSheet ret = type.parse(parser);
+		CSSTreeParser parser = createParser(source, encoding, type, preparator, sheet, ps, base);
+		StyleSheet ret = parseAndImport(parser, type, sheet);
 		lastPriority = ret.getLastMark();
+        System.err.println("File: " + source + " Imports: " + parser.getImportPaths());
 		return ret;
 	}
 
@@ -331,16 +333,23 @@ public class CSSParserFactory {
 	    lastPriority = null;
 	}
 
+	private static StyleSheet parseAndImport(CSSTreeParser parser, SourceType src, StyleSheet sheet) throws CSSException
+	{
+	    //TODO handle imports
+	    src.parse(parser);
+	    return parser.addRulesToStyleSheet(sheet);
+	}
+	
 	// creates parser
 	private static CSSTreeParser createParser(Object source, String encoding, SourceType type,
-			Preparator preparator, StyleSheet stylesheet, URL base) throws IOException,
+			Preparator preparator, StyleSheet stylesheet, PriorityStrategy ps, URL base) throws IOException,
 			CSSException {
 
 		CSSInputStream input = type.getInput(source, encoding);
 		input.setBase(base);
 		CommonTokenStream tokens = feedLexer(input, stylesheet);
 		CommonTree ast = feedParser(tokens, type, stylesheet);
-		return feedAST(tokens, ast, preparator, stylesheet);
+		return feedAST(tokens, ast, preparator, ps);
 	}
 
 	// initializer lexer
@@ -377,7 +386,7 @@ public class CSSParserFactory {
 
 	// initializes tree parser
 	private static CSSTreeParser feedAST(CommonTokenStream source,
-			CommonTree ast, Preparator preparator, StyleSheet stylesheet) {
+			CommonTree ast, Preparator preparator, PriorityStrategy ps) {
 
 		if (log.isTraceEnabled()) {
 			log.trace("Feeding tree parser with AST:\n{}", TreeUtil
@@ -392,7 +401,7 @@ public class CSSParserFactory {
 
 		CSSTreeParser parser = new CSSTreeParser(nodes);
 
-		return parser.init(stylesheet, preparator);
+		return parser.init(preparator, ps);
 	}
 
 	// priority strategy using atomic incrementing
