@@ -786,14 +786,9 @@ inlineset
 	  -> ^(RULE pseudo* declarations)
 	;
 	
-/*media
-	: IDENT S* (COMMA S* IDENT S*)* 
-		-> IDENT+
-	;*/
-	
 media
  : media_query (COMMA S* media_query)*
-    -> ^(MEDIA_QUERY media_query+)
+    -> ^(MEDIA_QUERY media_query)+
  ;
 
 media_query
