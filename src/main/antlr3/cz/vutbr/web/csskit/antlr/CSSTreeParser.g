@@ -51,6 +51,8 @@ import cz.vutbr.web.csskit.RuleArrayList;
 	private static TermFactory tf = CSSFactory.getTermFactory();
 	private static SupportedCSS css = CSSFactory.getSupportedCSS();
 
+	private enum MediaQueryState { START, TYPE, AND, EXPR, TYPEOREXPR }
+
     // block preparator
 	private Preparator preparator;
 	private List<MediaQuery> wrapMedia;
@@ -320,13 +322,23 @@ media returns [List<MediaQuery> queries]
 mediaquery returns [MediaQuery query]
 scope {
     MediaQuery q;
+    MediaQueryState state;
+    boolean invalid;
 }
 @init {
     logEnter("mediaquery");
     $mediaquery::q = $query = rf.createMediaQuery();
     $query.unlock();
+    $mediaquery::state = MediaQueryState.START;
+    $mediaquery::invalid = false;
 }
 @after {
+    if ($mediaquery::invalid)
+    {
+        log.trace("Skipping invalid rule {}", $query);
+        $mediaquery::q.setType("all"); //change the malformed media queries to "not all"
+        $mediaquery::q.setNegative(true);
+    }
     logLeave("mediaquery");
 }
   : ^(MEDIA_QUERY mediaterm+)
@@ -334,18 +346,49 @@ scope {
 
 mediaterm
   : (i=IDENT {
-          if ($mediaquery::q.getType() == null) { //skip all the identifiers when the media type is already set
-              String m = extractText(i);
-              if (m.equalsIgnoreCase("NOT"))
-                  $mediaquery::q.setNegative(true);
-              if (m.equalsIgnoreCase("AND"))
-                  ;
-              else
-                  $mediaquery::q.setType(m);
-          }
+            String m = extractText(i);
+            MediaQueryState state = $mediaquery::state;
+            if (m.equalsIgnoreCase("ONLY") && state == MediaQueryState.START)
+            {
+                $mediaquery::state = MediaQueryState.TYPEOREXPR;
+            }
+            else if (m.equalsIgnoreCase("NOT") && state == MediaQueryState.START)
+            {
+                $mediaquery::q.setNegative(true);
+                $mediaquery::state = MediaQueryState.TYPEOREXPR;
+            }
+            else if (m.equalsIgnoreCase("AND") && state == MediaQueryState.AND)
+            {
+                $mediaquery::state = MediaQueryState.EXPR;
+            }
+            else if (state == MediaQueryState.START
+                      || state == MediaQueryState.TYPE
+                      || state == MediaQueryState.TYPEOREXPR)
+            { 
+                $mediaquery::q.setType(m);
+                $mediaquery::state = MediaQueryState.AND;
+            }
+            else
+            {
+                log.trace("Invalid media query: found ident: {} state: {}", m, state);
+                $mediaquery::invalid = true;
+            }
         }
       )
-   | (e=mediaexpression { $mediaquery::q.add(e); })
+   | (e=mediaexpression {
+            if ($mediaquery::state == MediaQueryState.START 
+                || $mediaquery::state == MediaQueryState.EXPR
+                || $mediaquery::state == MediaQueryState.TYPEOREXPR)
+            {
+                $mediaquery::q.add(e); 
+                $mediaquery::state = MediaQueryState.AND;
+            }
+            else
+            {
+                log.trace("Invalid media query: found expr, state: {}", $mediaquery::state);
+                $mediaquery::invalid = true;
+            }
+      })
    ;
 
 mediaexpression returns [MediaExpression expr]
