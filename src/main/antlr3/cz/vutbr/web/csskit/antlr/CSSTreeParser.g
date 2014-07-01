@@ -53,15 +53,24 @@ import cz.vutbr.web.csskit.RuleArrayList;
 
     // block preparator
 	private Preparator preparator;
+	private List<MediaQuery> wrapMedia;
 	private RuleList rules;
-	private List<CommonTree> importNodes;
+	private List<List<MediaQuery>> importMedia;
 	private List<String> importPaths;
 	
 
-  public CSSTreeParser init(Preparator preparator) {
+  /**
+   * Initializes the tree parser.
+   * @param preparator The preparator to be used for creating the rules.
+   * @param wrapMedia The media queries to be used for wrapping the created rules (e.g. in case
+   *    of parsing and imported style sheet) or null when no wrapping is required.
+   * @return The initialized tree parser 
+   */
+  public CSSTreeParser init(Preparator preparator, List<MediaQuery> wrapMedia) {
 		this.preparator = preparator;
+		this.wrapMedia = wrapMedia;
 		this.rules = null;
-		this.importNodes = new ArrayList<CommonTree>();
+		this.importMedia = new ArrayList<List<MediaQuery>>();
 		this.importPaths = new ArrayList<String>();
 		return this;
 	}   
@@ -93,9 +102,9 @@ import cz.vutbr.web.csskit.RuleArrayList;
     return rules;
   }
   
-  public List<CommonTree> getImportNodes()
+  public List<List<MediaQuery>> getImportMedia()
   {
-    return importNodes;
+    return importMedia;
   } 
   
   public List<String> getImportPaths()
@@ -215,13 +224,13 @@ scope {
 }
 	: CHARSET	// charset already set
 	| INVALID_IMPORT // already handled
-	| ^(ii=IMPORT
+	| ^(IMPORT
 	      (im=media)?
 	      (iuri=import_uri)
 	   )
 	  {
 	    log.debug("Adding import: {}", iuri);
-	    importNodes.add(ii);
+	    importMedia.add(im);
 	    importPaths.add(iuri); 
 	  }
   | ^(PAGE
@@ -367,7 +376,7 @@ ruleset returns [RuleBlock<?> stmnt]
         log.debug("Ruleset not valid, so not created");
     }
     else {    
-		 $stmnt = preparator.prepareRuleSet(cslist, decl, false, null); 
+		 $stmnt = preparator.prepareRuleSet(cslist, decl, (this.wrapMedia != null && !this.wrapMedia.isEmpty()), this.wrapMedia); 
         }		
     logLeave("ruleset");
 }    
