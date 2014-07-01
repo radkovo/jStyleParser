@@ -747,7 +747,7 @@ atstatement
 	  LCURLY S* declarations
 	  RCURLY -> ^(FONTFACE declarations)
 	| MEDIA S* media? 
-		LCURLY S* (ruleset S*)* RCURLY -> ^(MEDIA media? ruleset*)	
+		LCURLY S* (media_rule S*)* RCURLY -> ^(MEDIA media? media_rule*)	
 	| ATKEYWORD S* LCURLY any* RCURLY -> INVALID_STATEMENT
 	;
 	catch [RecognitionException re] {
@@ -807,6 +807,11 @@ media_term
 media_expression
  : LPAREN S* IDENT S* (COLON S* terms)? RPAREN
     -> ^(DECLARATION IDENT terms)
+ ;
+
+media_rule
+ : ruleset
+ | atstatement -> INVALID_STATEMENT
  ;
 	
 ruleset
