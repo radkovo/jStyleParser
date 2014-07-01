@@ -342,15 +342,17 @@ public class CSSParserFactory {
         CSSTreeParser parser = createTreeParser(source, encoding, type, preparator, base, media);
         type.parse(parser);
         
-        System.err.println("File: " + source + "\n Imports: " + parser.getImportPaths());
         for (int i = 0; i < parser.getImportPaths().size(); i++)
         {
             String path = parser.getImportPaths().get(i);
             List<MediaQuery> imedia = parser.getImportMedia().get(i);
             
             URL url = DataURLHandler.createURL(base, path);
-            System.err.println("Importing: " + url);
-            parseAndImport(url, encoding, SourceType.URL, sheet, preparator, ps, url, imedia);
+            try {
+                parseAndImport(url, encoding, SourceType.URL, sheet, preparator, ps, url, imedia);
+            } catch (IOException e) {
+                log.warn("Couldn't read imported style sheet: {}", e.getMessage());
+            }
         }
 
 	    return parser.addRulesToStyleSheet(sheet, ps);

@@ -366,7 +366,8 @@ public final class CSSFactory {
 	 */
 	public static final StyleSheet parse(String css) throws IOException,
 			CSSException {
-		return CSSParserFactory.parse(css, null, SourceType.EMBEDDED, null);
+	    URL base = new URL("file:///base/url/is/not/specified"); //Cannot determine the base URI in this method but we need some base URI for relative URLs
+		return CSSParserFactory.parse(css, null, SourceType.EMBEDDED, base);
 	}
 
     /**
