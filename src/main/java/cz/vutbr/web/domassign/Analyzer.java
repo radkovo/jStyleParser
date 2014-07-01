@@ -49,6 +49,11 @@ public class Analyzer {
 	 * HolderItem (ID, CLASS, ELEMENT, OTHER). Media's type is key
 	 */
 	protected Map<String, Holder> rules;
+	
+	/**
+	 * Holds the rules for 'NOT something' media queries.
+	 */
+	protected Map<String, Holder> notrules;
 
 	/**
 	 * Creates the analyzer for a single style sheet.
@@ -56,6 +61,7 @@ public class Analyzer {
 	 */
 	public Analyzer(StyleSheet sheet) {
 		this.rules = Collections.synchronizedMap(new HashMap<String, Holder>());
+		this.notrules = Collections.synchronizedMap(new HashMap<String, Holder>());
 		classifyRules(sheet);
 	}
 
@@ -65,6 +71,7 @@ public class Analyzer {
 	 */
 	public Analyzer(List<StyleSheet> sheets) {
 		this.rules = Collections.synchronizedMap(new HashMap<String, Holder>());
+        this.notrules = Collections.synchronizedMap(new HashMap<String, Holder>());
 		for (StyleSheet sheet : sheets)
 			classifyRules(sheet);
 	}
@@ -386,19 +393,19 @@ public class Analyzer {
 					for (CombinedSelector s : ruleset.getSelectors()) {
 
 						List<HolderSelector> hs = classifySelector(s);
-						// insert into all medias
 						
-						// if there are no medias, it equals all
+						// if there are no media, it equals all
 						if(rulemedia.getMediaQueries()==null ||	rulemedia.getMediaQueries().isEmpty()) {
 							insertClassified(rules.get(UNIVERSAL_HOLDER), hs, ruleset);
 							continue;
 						}
 						
 						for (MediaQuery media : rulemedia.getMediaQueries()) {
-							Holder h = rules.get(media);
+						    Map<String, Holder> container = media.isNegative() ? notrules : rules;
+							Holder h = container.get(media.getType());
 							if (h == null) {
 								h = new Holder();
-								rules.put(media.getType(), h); //TODO: media type is not enough (consider the whole query)
+								container.put(media.getType(), h);
 							}
 							insertClassified(h, hs, ruleset);
 						}
@@ -409,7 +416,7 @@ public class Analyzer {
 
 		// logging
 		if (log.isDebugEnabled()) {
-			log.debug("Contains rules for {} medias.", rules.size());
+			log.debug("Contains rules for {} media.", rules.size());
 			for (String media : rules.keySet()) {
 				log.debug("For media \"{}\" it is {}", media, rules.get(media).contentCount());
 				if(log.isTraceEnabled()) {

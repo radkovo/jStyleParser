@@ -5,6 +5,8 @@
  */
 package cz.vutbr.web.csskit;
 
+import java.util.Locale;
+
 import cz.vutbr.web.css.MediaExpression;
 import cz.vutbr.web.css.MediaQuery;
 
@@ -26,7 +28,7 @@ public class MediaQueryImpl extends AbstractRule<MediaExpression> implements Med
     public MediaQueryImpl(String type, boolean negative)
     {
         this.negative = negative;
-        this.type = type;
+        this.type = type.toLowerCase(Locale.ENGLISH);
     }
     
     @Override
