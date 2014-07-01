@@ -53,22 +53,20 @@ import cz.vutbr.web.csskit.RuleArrayList;
 
     // block preparator
 	private Preparator preparator;
-	private PriorityStrategy ps;
 	private RuleList rules;
 	private List<CommonTree> importNodes;
 	private List<String> importPaths;
 	
 
-  public CSSTreeParser init(Preparator preparator, PriorityStrategy ps) {
+  public CSSTreeParser init(Preparator preparator) {
 		this.preparator = preparator;
-		this.ps = ps;
 		this.rules = null;
 		this.importNodes = new ArrayList<CommonTree>();
 		this.importPaths = new ArrayList<String>();
 		return this;
 	}   
   
-  public StyleSheet addRulesToStyleSheet(StyleSheet sheet)
+  public StyleSheet addRulesToStyleSheet(StyleSheet sheet, PriorityStrategy ps)
   {
     if (rules != null)
     {

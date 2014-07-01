@@ -222,24 +222,18 @@ import cz.vutbr.web.css.SupportedCSS;
     // current lexer state
     private LexerState ls;
     
-    // this is for orthogonality
-    @SuppressWarnings("unused")
-    private StyleSheet stylesheet;
-    
     // token recovery
     private Stack<Integer> expectedToken;
     
     /**
      * This function must be called to initialize lexer's state.
      * Because we can't change directly generated constructors.
-     * @param stylesheet CSS StyleSheet instance  
      */
-    public CSSLexer init(StyleSheet stylesheet) {
+    public CSSLexer init() {
 	    this.imports = new Stack<LexerStream>();
 	    this.expectedToken = new Stack<Integer>();
-		this.ls = new LexerState();
-		this.stylesheet = stylesheet;
-		return this;
+	    this.ls = new LexerState();
+	    return this;
     }
     
     @Override
@@ -540,17 +534,13 @@ import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
     
     private static SupportedCSS css = CSSFactory.getSupportedCSS();
     
-    private StyleSheet stylesheet;
-    
     private int functLevel = 0;
     
     /**
      * This function must be called to initialize parser's state.
      * Because we can't change directly generated constructors.
-     * @param stylesheet CSS StyleSheet instance  
      */
-    public CSSParser init(StyleSheet stylesheet) {
-    	this.stylesheet = stylesheet;
+    public CSSParser init() {
     	return this;
     }
     

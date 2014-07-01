@@ -227,8 +227,8 @@ public class CSSParserFactory {
 		PriorityStrategy ps = new AtomicPriorityStrategy(lastPriority);
 		Preparator preparator = new SimplePreparator(inline, inlinePriority);
 
-		CSSTreeParser parser = createParser(source, encoding, type, preparator, sheet, ps, base);
-        StyleSheet ret = parseAndImport(parser, type, sheet);
+		CSSTreeParser parser = createParser(source, encoding, type, preparator, base);
+        StyleSheet ret = parseAndImport(parser, type, sheet, ps);
 		lastPriority = ret.getLastMark();
 		return ret;
 	}
@@ -288,8 +288,8 @@ public class CSSParserFactory {
 		PriorityStrategy ps = new AtomicPriorityStrategy(start);
 		Preparator preparator = new SimplePreparator(inline, inlinePriority);
 
-		CSSTreeParser parser = createParser(source, encoding, type, preparator, sheet, ps, base);
-		StyleSheet ret = parseAndImport(parser, type, sheet);
+		CSSTreeParser parser = createParser(source, encoding, type, preparator, base);
+		StyleSheet ret = parseAndImport(parser, type, sheet, ps);
 		lastPriority = ret.getLastMark();
         System.err.println("File: " + source + " Imports: " + parser.getImportPaths());
 		return ret;
@@ -333,35 +333,35 @@ public class CSSParserFactory {
 	    lastPriority = null;
 	}
 
-	private static StyleSheet parseAndImport(CSSTreeParser parser, SourceType src, StyleSheet sheet) throws CSSException
+	private static StyleSheet parseAndImport(CSSTreeParser parser, SourceType src, StyleSheet sheet, PriorityStrategy ps)
+	        throws CSSException
 	{
 	    //TODO handle imports
 	    src.parse(parser);
-	    return parser.addRulesToStyleSheet(sheet);
+	    return parser.addRulesToStyleSheet(sheet, ps);
 	}
 	
 	// creates parser
 	private static CSSTreeParser createParser(Object source, String encoding, SourceType type,
-			Preparator preparator, StyleSheet stylesheet, PriorityStrategy ps, URL base) throws IOException,
-			CSSException {
+			Preparator preparator, URL base) throws IOException, CSSException {
 
 		CSSInputStream input = type.getInput(source, encoding);
 		input.setBase(base);
-		CommonTokenStream tokens = feedLexer(input, stylesheet);
-		CommonTree ast = feedParser(tokens, type, stylesheet);
-		return feedAST(tokens, ast, preparator, ps);
+		CommonTokenStream tokens = feedLexer(input);
+		CommonTree ast = feedParser(tokens, type);
+		return feedAST(tokens, ast, preparator);
 	}
 
 	// initializer lexer
-	private static CommonTokenStream feedLexer(CSSInputStream source,
-			StyleSheet stylesheet) throws CSSException {
-
+	private static CommonTokenStream feedLexer(CSSInputStream source)
+	        throws CSSException 
+	{
 		// we have to unpack runtime exception
 		// because of Java limitation
 		// to change method contract with different type of exception
 		try {
 			CSSLexer lexer = new CSSLexer(source);
-			lexer.init(stylesheet);
+			lexer.init();
 			return new CommonTokenStream(lexer);
 		} catch (RuntimeException re) {
 			if (re.getCause() instanceof CSSException) {
@@ -376,32 +376,26 @@ public class CSSParserFactory {
 	}
 
 	// Initializes parser
-	private static CommonTree feedParser(CommonTokenStream source,
-			SourceType type, StyleSheet stylesheet) throws CSSException {
-
+	private static CommonTree feedParser(CommonTokenStream source, SourceType type)
+	        throws CSSException 
+	{
 		CSSParser parser = new CSSParser(source);
-		parser.init(stylesheet);
+		parser.init();
 		return type.getAST(parser);
 	}
 
 	// initializes tree parser
-	private static CSSTreeParser feedAST(CommonTokenStream source,
-			CommonTree ast, Preparator preparator, PriorityStrategy ps) {
-
+	private static CSSTreeParser feedAST(CommonTokenStream source, CommonTree ast, Preparator preparator) 
+	{
 		if (log.isTraceEnabled()) {
-			log.trace("Feeding tree parser with AST:\n{}", TreeUtil
-					.toStringTree(ast));
+			log.trace("Feeding tree parser with AST:\n{}", TreeUtil.toStringTree(ast));
 		}
-
 		// Walk resulting tree; create tree-node stream first
 		CommonTreeNodeStream nodes = new CommonTreeNodeStream(ast);
-
 		// AST nodes have payloads that point into token stream
 		nodes.setTokenStream(source);
-
 		CSSTreeParser parser = new CSSTreeParser(nodes);
-
-		return parser.init(preparator, ps);
+		return parser.init(preparator);
 	}
 
 	// priority strategy using atomic incrementing
@@ -409,10 +403,6 @@ public class CSSParserFactory {
 			PriorityStrategy {
 
 		private final AtomicInteger counter;
-
-		public AtomicPriorityStrategy() {
-			this.counter = new AtomicInteger(0);
-		}
 
 		public AtomicPriorityStrategy(Priority last) {
 			if (last == null)
@@ -441,10 +431,6 @@ public class CSSParserFactory {
 			PriorityStrategy {
 
 		private int counter;
-
-		public SimplePriorityStrategy() {
-			this.counter = 0;
-		}
 
 		public SimplePriorityStrategy(Priority last) {
 			if (!(last instanceof PriorityImpl))
