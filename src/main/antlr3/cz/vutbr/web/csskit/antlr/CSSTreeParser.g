@@ -58,6 +58,9 @@ import cz.vutbr.web.csskit.RuleArrayList;
 	private List<List<MediaQuery>> importMedia;
 	private List<String> importPaths;
 	
+	//prevent imports inside the style sheet
+	private boolean preventImports;
+	
 
   /**
    * Initializes the tree parser.
@@ -72,6 +75,7 @@ import cz.vutbr.web.csskit.RuleArrayList;
 		this.rules = null;
 		this.importMedia = new ArrayList<List<MediaQuery>>();
 		this.importPaths = new ArrayList<String>();
+		this.preventImports = false;
 		return this;
 	}   
   
@@ -229,9 +233,14 @@ scope {
 	      (iuri=import_uri)
 	   )
 	  {
-	    log.debug("Adding import: {}", iuri);
-	    importMedia.add(im);
-	    importPaths.add(iuri); 
+	    if (!this.preventImports)
+	    {
+		    log.debug("Adding import: {}", iuri);
+		    importMedia.add(im);
+		    importPaths.add(iuri);
+		  }
+		  else 
+        log.debug("Ignoring import: {}", iuri);
 	  }
   | ^(PAGE
       (i=IDENT
@@ -251,11 +260,12 @@ scope {
     )
     {
       $stmnt = preparator.prepareRulePage(decl, margins, name, pseudo);
+      this.preventImports = true;
     }
   | ^(VIEWPORT decl=declarations)
-    { $stmnt = preparator.prepareRuleViewport(decl); }
+    { $stmnt = preparator.prepareRuleViewport(decl); this.preventImports = true; }
   | ^(FONTFACE decl=declarations)
-    { $stmnt = preparator.prepareRuleFontFace(decl); }
+    { $stmnt = preparator.prepareRuleFontFace(decl); this.preventImports = true; }
 	| ^(MEDIA (mediaList=media)? 
 			(  rs=ruleset {
 					   if(rules==null) rules = new ArrayList<RuleSet>();				
@@ -272,6 +282,7 @@ scope {
 	   )	
 	   {
 		   $stmnt = preparator.prepareRuleMedia(rules, mediaList);
+		   this.preventImports = true;
 	   }
 	;
 
@@ -376,7 +387,8 @@ ruleset returns [RuleBlock<?> stmnt]
         log.debug("Ruleset not valid, so not created");
     }
     else {    
-		 $stmnt = preparator.prepareRuleSet(cslist, decl, (this.wrapMedia != null && !this.wrapMedia.isEmpty()), this.wrapMedia); 
+		 $stmnt = preparator.prepareRuleSet(cslist, decl, (this.wrapMedia != null && !this.wrapMedia.isEmpty()), this.wrapMedia);
+		 this.preventImports = true; 
         }		
     logLeave("ruleset");
 }    
