@@ -45,6 +45,9 @@ public interface TermFactory {
 	TermPercent createPercent(Float value);
 	TermPercent createPercent(String value, int unary);
 	
+    TermResolution createResolution(Float value);
+    TermResolution createResolution(String value, Unit unit, int unary);
+    
 	TermString createString(String value);
 	
 	<V> Term<V> createTerm(V value);

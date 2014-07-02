@@ -16,21 +16,31 @@ public interface TermNumeric<T> extends Term<T> {
 	 */
 	public enum Unit {
 	    none(""),
-    	px("px"),
     	em("em"),
     	ex("ex"),
+    	ch("ch"),
+    	rem("rem"),
+    	vw("vw"),
+    	vh("vh"),
+    	vmin("vmin"),
+    	vmax("vmax"),
     	cm("cm"),
     	mm("mm"),
+        in("in"),
     	pt("pt"),
-    	in("in"),
     	pc("pc"),
+        px("px"),
     	deg("deg"),
     	rad("rad"),
     	grad("grad"),
+        turn("turn"),
     	ms("ms"),
     	s("s"),
     	hz("hz"),
-    	khz("khz");
+    	khz("khz"),
+    	dpi("dpi"),
+    	dpcm("dpcm"),
+    	dppx("dppx");
     
     	private String value;
     	
@@ -40,12 +50,14 @@ public interface TermNumeric<T> extends Term<T> {
     	public String value() { return value; }
     	
     	public boolean isAngle() {
-    		return this==deg || this==rad || this==grad;
+    		return this==deg || this==rad || this==grad || this==turn;
     	}
     	
     	public boolean isLength() {
     		return this==px || this==ex || this==em || this==cm
-    		|| this==mm || this==pt || this==pc || this==in;
+    		|| this==mm || this==pt || this==pc || this==in
+    		|| this==ch || this==rem || this==vw || this==vh
+    		|| this==vmin || this==vmax;
     	}
     	
     	public boolean isTime() {
@@ -54,6 +66,10 @@ public interface TermNumeric<T> extends Term<T> {
     	
     	public boolean isFrequency() {
     		return this==hz || this==khz;
+    	}
+    	
+    	public boolean isResolution() {
+    	    return this==dpi || this==dpcm || this==dppx;
     	}
     }
 	

@@ -17,6 +17,7 @@ import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermNumeric;
 import cz.vutbr.web.css.TermPair;
 import cz.vutbr.web.css.TermPercent;
+import cz.vutbr.web.css.TermResolution;
 import cz.vutbr.web.css.TermString;
 import cz.vutbr.web.css.TermTime;
 import cz.vutbr.web.css.TermURI;
@@ -142,6 +143,15 @@ public class TermFactoryImpl implements TermFactory {
 		}
 	}
 
+    public TermResolution createResolution(Float value) {
+        return (TermResolution) (new TermResolutionImpl()).setValue(value);
+    }
+
+    public TermResolution createResolution(String value, Unit unit, int unary) {
+        return (TermResolution) (new TermResolutionImpl()).setUnit(unit).setValue(
+                convertFloat(value, unit.value(), unary));
+    }
+
 	public TermNumeric<Float> createDimension(String value, int unary) {
 
 		for (TermNumeric.Unit unit : TermNumeric.Unit.values()) {
@@ -157,6 +167,9 @@ public class TermFactoryImpl implements TermFactory {
 				else if (unit.isLength())
 					return (TermNumeric<Float>) (new TermLengthImpl()).setUnit(
 							unit).setValue(f);
+                else if (unit.isResolution())
+                    return (TermNumeric<Float>) (new TermResolutionImpl()).setUnit(
+                            unit).setValue(f);
 				else if (unit.isTime())
 					return (TermNumeric<Float>) (new TermTimeImpl()).setUnit(
 							unit).setValue(f);
