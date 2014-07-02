@@ -28,7 +28,7 @@ public class MediaQueryImpl extends AbstractRule<MediaExpression> implements Med
     public MediaQueryImpl(String type, boolean negative)
     {
         this.negative = negative;
-        this.type = type.toLowerCase(Locale.ENGLISH);
+        this.type = type.trim().toLowerCase(Locale.ENGLISH);
     }
     
     @Override

@@ -5,6 +5,8 @@
  */
 package cz.vutbr.web.csskit;
 
+import java.util.Locale;
+
 import cz.vutbr.web.css.MediaExpression;
 import cz.vutbr.web.css.Term;
 
@@ -25,7 +27,7 @@ public class MediaExpressionImpl extends AbstractRule<Term<?>> implements MediaE
     @Override
     public void setFeature(String feature)
     {
-        this.feature = feature;
+        this.feature = feature.trim().toLowerCase(Locale.ENGLISH);
     }
 
     @Override
