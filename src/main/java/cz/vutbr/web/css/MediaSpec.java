@@ -51,6 +51,8 @@ public class MediaSpec
     public static final float em = 16.0f;
     /** the values of 'em' used for computing the pixel lengths */
     public static final float ex = 10.0f;
+    /** CSS3 uses a fixed value of 96DPI for computing the lengths */
+    public static final float dpi = 96.0f;
     
     protected static Map<String, Feature> featureMap;
     
@@ -479,13 +481,12 @@ public class MediaSpec
     }
     
     /** 
-     * Converts a length from a CSS length to 'px' while using the current media resolution.
+     * Converts a length from a CSS length to 'px'.
      * @param spec the CSS length specification
      * @return the length in 'px' or {@code null} when the unit is invalid 
      */
     protected Float pxLength(TermLength spec)
     {
-        float dpi = getResolution();
         float nval = spec.getValue();
         TermLength.Unit unit = spec.getUnit();
         
