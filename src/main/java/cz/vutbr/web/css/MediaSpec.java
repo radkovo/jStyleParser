@@ -240,7 +240,12 @@ public class MediaSpec
         //match the media type
         if (q.getType() != null)
         {
-            if (q.getType().equals(this.getType()) == q.isNegative())
+            if (q.getType().equals("all"))
+            {
+                if (q.isNegative())
+                    return false; //"NOT all" doesn't match to anything
+            }
+            else if (q.getType().equals(this.getType()) == q.isNegative()) //other than all
                 return false;
         }
         //match the eventual expressions
