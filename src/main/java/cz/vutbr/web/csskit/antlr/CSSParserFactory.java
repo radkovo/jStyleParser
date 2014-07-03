@@ -199,6 +199,8 @@ public class CSSParserFactory {
 		}
 	}
 
+    //========================================================================================================================
+	
 	// disable instantiation
 	private CSSParserFactory() {
 		throw new AssertionError();
@@ -415,6 +417,44 @@ public class CSSParserFactory {
 		return parser.init(preparator, media);
 	}
 
+    //========================================================================================================================
+	
+	/**
+	 * Parses a media query from a string (e.g. the 'media' HTML attribute).
+	 * @param query The query string
+	 * @return List of media queries found.
+	 */
+	public static List<MediaQuery> parseMediaQuery(String query)
+	{
+	    try
+        {
+	        //input from string
+            CSSInputStream input = CSSInputStream.stringStream(query);
+            input.setBase(new URL("file://media/query/url")); //this URL should not be used, just for safety
+            //lexer
+            CommonTokenStream tokens = feedLexer(input);
+            //run parser - create AST
+            CSSParser parser = new CSSParser(tokens);
+            parser.init();
+            CSSParser.media_return retval = parser.media();
+            CommonTree ast = (CommonTree) retval.getTree();
+            //tree parser
+            CSSTreeParser tparser = feedAST(tokens, ast, null, null);
+            return tparser.media();
+        } catch (IOException e) {
+            log.error("I/O error during media query parsing: {}", e.getMessage());
+            return null;
+        } catch (CSSException e) {
+            log.warn("Malformed media query {}", query);
+            return null;
+        } catch (RecognitionException e) {
+            log.warn("Malformed media query {}", query);
+            return null;
+        }
+	}
+	
+	//========================================================================================================================
+	
 	// priority strategy using atomic incrementing
 	private static final class AtomicPriorityStrategy implements
 			PriorityStrategy {
