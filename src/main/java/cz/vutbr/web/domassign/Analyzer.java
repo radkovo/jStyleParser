@@ -20,6 +20,7 @@ import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.MediaQuery;
+import cz.vutbr.web.css.MediaSpec;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.RuleMedia;
@@ -35,7 +36,8 @@ import cz.vutbr.web.csskit.ElementUtil;
  * medias and their type. Afterwards, it is able to return CSS declaration for any
  * DOM tree and media. It allows to use or not to use inheritance.
  * 
- * @author Karel Piwko 2008,
+ * @author Karel Piwko 2008
+ * @author Radek Burget 2008-2014
  * 
  */
 public class Analyzer {
@@ -87,7 +89,7 @@ public class Analyzer {
 	 *            Use inheritance
 	 * @return Map where each element contains its CSS properties
 	 */
-	public StyleMap evaluateDOM(Document doc, String media,	final boolean inherit) {
+	public StyleMap evaluateDOM(Document doc, MediaSpec media, final boolean inherit) {
 
 		DeclarationMap declarations = assingDeclarationsToDOM(doc, media, inherit);
 
@@ -138,6 +140,10 @@ public class Analyzer {
 		return nodes;
 	}
 
+   public StyleMap evaluateDOM(Document doc, String media, final boolean inherit) {
+       return evaluateDOM(doc, new MediaSpec(media), inherit);
+   }
+
 	/**
 	 * Creates map of declarations assigned to each element of a DOM tree
 	 * 
@@ -149,7 +155,7 @@ public class Analyzer {
 	 *            Inheritance (cascade propagation of values)
 	 * @return Map of elements as keys and their declarations
 	 */
-	protected DeclarationMap assingDeclarationsToDOM(Document doc, String media, final boolean inherit) {
+	protected DeclarationMap assingDeclarationsToDOM(Document doc, MediaSpec media, final boolean inherit) {
 
 		// get holder
 		Holder holder;
@@ -401,6 +407,10 @@ public class Analyzer {
 						}
 						
 						for (MediaQuery media : rulemedia.getMediaQueries()) {
+						    
+						    MediaSpec spec = new MediaSpec("screen");
+						    spec.matches(media);
+						    
 						    Map<String, Holder> container = media.isNegative() ? notrules : rules;
 							Holder h = container.get(media.getType());
 							if (h == null) {
