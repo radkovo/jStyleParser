@@ -14,7 +14,7 @@
 jStyleParser is a Java library for parsing CSS style sheets and assigning styles to the HTML or XML
 document elements according to the W3C CSS 2.1 specification and a subset of the CSS 3 specification.
 The result of the parsing is a mapping between the DOM elements and the corresponding CSS declarations.
-This mapping can be used either for displaying the HTML document or for performimg some further analysis on 
+This mapping can be used either for displaying the HTML document or for performing some further analysis on
 the document structure.
 </p>
 </d:section>
@@ -161,8 +161,8 @@ if (mm == Margin.length)
 
 <d:subsection id="pseudoelements">
 <d:title>Obtaining the Style of Pseudo-Elements</d:title>
-<p>CSS specification allows the use of <a href="http://www.w3.org/TR/CSS21/selector.html#pseudo-element-selectors">several pseudo elements</a>
-for addressing specific parts of the existing DOM elements. The style of the pseudo elements may be accessed using the following method
+<p>CSS specification allows the use of <a href="http://www.w3.org/TR/CSS21/selector.html#pseudo-element-selectors">several pseudo-elements</a>
+for addressing specific parts of the existing DOM elements. The style of the pseudo-elements may be accessed using the following method
 of the <d:api class="cz/vutbr/web/domassign/StyleMap">StyleMap</d:api> obtained for the DOM tree:
 </p>
 <ul>
@@ -187,11 +187,11 @@ the <a href="http://www.w3.org/TR/selectors/#structural-pseudos">structural pseu
 </p>
 <p>
 The <em>structural pseudo-classes</em> (such as <code>:first-child</code>) are supported and evaluated automatically. Their defined
-style is automatically inlcuded in the resulting style assigned to the appropriate DOM elements in the resulting <code>StyleMap</code>.
+style is automatically included in the resulting style assigned to the appropriate DOM elements in the resulting <code>StyleMap</code>.
 </p>
 <p>
 The <em>dynamic pseudo-classes</em> (such as <code>:hover</code>) are more complicated. Any element may belong dynamically to several
-pseudo classes that influence the resulting style of the element itself but also the style of its child elements. Therefore,
+pseudo-classes that influence the resulting style of the element itself but also the style of its child elements. Therefore,
 before the DOM style is evaluated as described in <ref target="analyze">previous</ref> <ref target="direct">sections</ref>,
 the current pseudo-classes must be assigned to the individual elements in order to compute the resulting styles properly. 
 </p>
@@ -204,7 +204,7 @@ the current pseudo-classes must be assigned to the individual elements in order 
 may be used. Generally, a <d:api class="cz/vutbr/web/css/MatchCondition.html">MatchCondition</d:api> specifies an additional condition
 applied when matching specific parts of the CSS selectors. Its default implementation <d:api class="cz/vutbr/web/csskit/MatchConditionImpl">MatchConditionImpl</d:api>
 implements the default behavior described above. For implementing a better behavior, a configurable <d:api class="cz/vutbr/web/csskit/MatchConditionOnElements">MatchConditionOnElements</d:api>
-implementation is prepared. It allows do assign a set of pseudo classes directly to given DOM elements or to specified element names. It usage
+implementation is prepared. It allows do assign a set of pseudo-classes directly to given DOM elements or to specified element names. It usage
 is demonstrated on the following code:
 </p>
 <d:codebox>
@@ -216,7 +216,7 @@ Element e2 = ... <em>//or any other way of obtaining a DOM Element</em>
 <em>//  all &lt;a&gt; links are assigned the :link class</em>
 MatchConditionOnElements cond = new MatchConditionOnElements("a", PseudoDeclaration.LINK);
 
-<em>//assign pseudo classes to the selected elements</em>
+<em>//assign pseudo-classes to the selected elements</em>
 cond.addMatch(e1, PseudoDeclaration.HOVER);
 cond.addMatch(e2, PseudoDeclaration.VISITED);
 
@@ -263,7 +263,7 @@ a base for CSS properties. By implementing this interface, new CSS properties ca
 <d:subsection id="package_csskit">
 <d:title>Package <code>cz.vutbr.web.csskit</code></d:title>
 <p>
-This pcakage provides a default implementation of <code>cz.vutbr.web.css</code>. This can be changed by
+This package provides a default implementation of <code>cz.vutbr.web.css</code>. This can be changed by
 registering other implementation by calling the appropriate methods of <code>CSSFactory</code>. 
 </p>
 <p>
