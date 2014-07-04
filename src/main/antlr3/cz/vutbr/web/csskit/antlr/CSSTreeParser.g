@@ -18,8 +18,11 @@ import org.slf4j.LoggerFactory;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.MediaExpression;
+import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
+import cz.vutbr.web.css.RuleList;
 import cz.vutbr.web.css.RuleMargin;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
@@ -35,6 +38,9 @@ import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.RuleBlock.Priority;
 
+import cz.vutbr.web.csskit.PriorityStrategy;
+import cz.vutbr.web.csskit.RuleArrayList;
+
 // @SuppressWarnings("unchecked")
 }
 
@@ -45,41 +51,74 @@ import cz.vutbr.web.css.RuleBlock.Priority;
 	private static TermFactory tf = CSSFactory.getTermFactory();
 	private static SupportedCSS css = CSSFactory.getSupportedCSS();
 
-	private static class TreeParserState {
-	    public List<String> media;
-		
-		public TreeParserState(String media) {
-			if(media==null || media.length()==0)
-			    this.media = Collections.emptyList();
-			else	
-		    	this.media = Arrays.asList(media.split(","));
-		}
-		
-		public boolean doWrap() {
-		   return !media.isEmpty();
-		}
-		
-		@Override
-		public String toString() {
-		    return media.toString();
-		}
-	}
+	private enum MediaQueryState { START, TYPE, AND, EXPR, TYPEOREXPR }
 
     // block preparator
 	private Preparator preparator;
+	private List<MediaQuery> wrapMedia;
+	private RuleList rules;
+	private List<List<MediaQuery>> importMedia;
+	private List<String> importPaths;
 	
-	private StyleSheet stylesheet;
+	//prevent imports inside the style sheet
+	private boolean preventImports;
+	
 
-	private Stack<TreeParserState> imports;	
-       
-    public CSSTreeParser init(StyleSheet sheet, Preparator preparator) {
-	    this.stylesheet = sheet;
+  /**
+   * Initializes the tree parser.
+   * @param preparator The preparator to be used for creating the rules.
+   * @param wrapMedia The media queries to be used for wrapping the created rules (e.g. in case
+   *    of parsing and imported style sheet) or null when no wrapping is required.
+   * @return The initialized tree parser 
+   */
+  public CSSTreeParser init(Preparator preparator, List<MediaQuery> wrapMedia) {
 		this.preparator = preparator;
-		this.imports = new Stack<TreeParserState>();
+		this.wrapMedia = wrapMedia;
+		this.rules = null;
+		this.importMedia = new ArrayList<List<MediaQuery>>();
+		this.importPaths = new ArrayList<String>();
+		this.preventImports = false;
 		return this;
 	}   
-       
-    @Override
+  
+  public StyleSheet addRulesToStyleSheet(StyleSheet sheet, PriorityStrategy ps)
+  {
+    if (rules != null)
+    {
+      for (RuleBlock<?> rule : rules)
+      {
+          rule.setPriority(ps.getAndIncrement());
+          if (rule instanceof RuleMedia) //@media: assign priority to contained rules
+          {
+            if (rule instanceof RuleMedia)
+            {
+                for (RuleSet inrule : (RuleMedia) rule)
+                    inrule.setPriority(ps.getAndIncrement());
+            }
+          }
+          sheet.add(rule); 
+      }
+      sheet.markLast(ps.markAndIncrement());
+    }
+    return sheet;
+  }
+  
+  public RuleList getRules()
+  {
+    return rules;
+  }
+  
+  public List<List<MediaQuery>> getImportMedia()
+  {
+    return importMedia;
+  } 
+  
+  public List<String> getImportPaths()
+  {
+    return importPaths;
+  }
+  
+  @Override
 	public void emitErrorMessage(String msg) {
 	    log.info("ANTLR: {}", msg);
 	}
@@ -108,45 +147,41 @@ import cz.vutbr.web.css.RuleBlock.Priority;
     }
 }
 
-inlinestyle returns [StyleSheet sheet]
+inlinestyle returns [RuleList rules]
 @init {
 	logEnter("inlinestyle");
-	$sheet = this.stylesheet;
+	$rules = this.rules = new RuleArrayList();
 } 
 @after {
-	log.debug("\n***\n{}\n***\n", $sheet);	   
-	// mark last usage
-	$sheet.markLast(preparator.markPriority());
+	log.debug("\n***\n{}\n***\n", $rules);	   
 	logLeave("inlinestyle");
 }
 	: 	^(INLINESTYLE decl=declarations) 
 		{
 			RuleBlock<?> rb = preparator.prepareInlineRuleSet(decl, null);
 			if(rb!=null) {
-			     $sheet.add(rb);
+			     $rules.add(rb);
 			}
 		} 
 	|   ^(INLINESTYLE 
-		 	(irs=inlineset {if(irs!=null) $sheet.add(irs);} )+ )
+		 	(irs=inlineset {if(irs!=null) $rules.add(irs);} )+ )
 	;
 
 
 /**
  * Stylesheet, main rule
  */
-stylesheet returns [StyleSheet sheet]
+stylesheet returns [RuleList rules]
 @init {
 	logEnter("stylesheet");
-	$sheet = this.stylesheet;
+  $rules = this.rules = new RuleArrayList();
 } 
 @after {
-	log.debug("\n***\n{}\n***\n", $sheet);
-	// mark last usage
-	$sheet.markLast(preparator.markPriority());
+	log.debug("\n***\n{}\n***\n", $rules);
 	logLeave("stylesheet");
 }
 	: ^(STYLESHEET 
-		 (s=statement { if(s!=null) $sheet.add(s);})*  
+		 (s=statement { if(s!=null) $rules.add(s);})*  
 	   )
 	;
 
@@ -189,24 +224,25 @@ scope {
 	List<RuleMargin> margins = null;
 	String name = null;
 	String pseudo = null;
-	Priority mark = preparator.markPriority();
 }
 @after {
     logLeave("atstatement");
 }
 	: CHARSET	// charset already set
 	| INVALID_IMPORT // already handled
-	| i=IMPORT 
+	| ^(IMPORT
+	      (im=media)?
+	      (iuri=import_uri)
+	   )
 	  {
-	    String media = extractText(i);
-		imports.push(new TreeParserState(media));
-		
-		log.info("From imported file: Rules will use these media: {}", 
-			imports.peek());
-	  }
-	| IMPORT_END {
-	    imports.pop();
-		log.info("Imported file was parsed, returing in nesting.");
+	    if (!this.preventImports)
+	    {
+		    log.debug("Adding import: {}", iuri);
+		    importMedia.add(im);
+		    importPaths.add(iuri);
+		  }
+		  else 
+        log.debug("Ignoring import: {}", iuri);
 	  }
   | ^(PAGE
       (i=IDENT
@@ -226,11 +262,12 @@ scope {
     )
     {
       $stmnt = preparator.prepareRulePage(decl, margins, name, pseudo);
+      this.preventImports = true;
     }
   | ^(VIEWPORT decl=declarations)
-    { $stmnt = preparator.prepareRuleViewport(decl); }
+    { $stmnt = preparator.prepareRuleViewport(decl); this.preventImports = true; }
   | ^(FONTFACE decl=declarations)
-    { $stmnt = preparator.prepareRuleFontFace(decl); }
+    { $stmnt = preparator.prepareRuleFontFace(decl); this.preventImports = true; }
 	| ^(MEDIA (mediaList=media)? 
 			(  rs=ruleset {
 					   if(rules==null) rules = new ArrayList<RuleSet>();				
@@ -246,9 +283,15 @@ scope {
 			)*
 	   )	
 	   {
-		   $stmnt = preparator.prepareRuleMedia(mark, rules, mediaList);
+		   $stmnt = preparator.prepareRuleMedia(rules, mediaList);
+		   this.preventImports = true;
 	   }
 	;
+
+import_uri returns [String s]
+  : (uri=URI) { s = extractText(uri); }
+  | (str=STRING) { s = extractText(str); }
+  ;
 
 margin returns [RuleMargin m]
 @init {
@@ -262,21 +305,103 @@ margin returns [RuleMargin m]
 		{ $m = preparator.prepareRuleMargin(extractText(area).substring(1), decl); }
 	;
 
-media returns [List<String> affected] 
+media returns [List<MediaQuery> queries] 
 @init {
    logEnter("media");
-   $affected = new ArrayList<String>();
+   $queries = new ArrayList<MediaQuery>();
 }
 @after {
-   log.debug("Totally returned {} media.", $affected.size());							  
+   log.debug("Totally returned {} media queries.", $queries.size());							  
    logLeave("media");		   
 }
-	: (i=IDENT {
-				   String m = extractText(i);
-				   if(css.isSupportedMedia(m)) $affected.add(m);
+	: (q = mediaquery {
+				   $queries.add(q);
     } )+
 	;
-    
+
+mediaquery returns [MediaQuery query]
+scope {
+    MediaQuery q;
+    MediaQueryState state;
+    boolean invalid;
+}
+@init {
+    logEnter("mediaquery");
+    $mediaquery::q = $query = rf.createMediaQuery();
+    $query.unlock();
+    $mediaquery::state = MediaQueryState.START;
+    $mediaquery::invalid = false;
+}
+@after {
+    if ($mediaquery::invalid)
+    {
+        log.trace("Skipping invalid rule {}", $query);
+        $mediaquery::q.setType("all"); //change the malformed media queries to "not all"
+        $mediaquery::q.setNegative(true);
+    }
+    logLeave("mediaquery");
+}
+  : ^(MEDIA_QUERY mediaterm+)
+  ;
+
+mediaterm
+  : (i=IDENT {
+            String m = extractText(i);
+            MediaQueryState state = $mediaquery::state;
+            if (m.equalsIgnoreCase("ONLY") && state == MediaQueryState.START)
+            {
+                $mediaquery::state = MediaQueryState.TYPEOREXPR;
+            }
+            else if (m.equalsIgnoreCase("NOT") && state == MediaQueryState.START)
+            {
+                $mediaquery::q.setNegative(true);
+                $mediaquery::state = MediaQueryState.TYPEOREXPR;
+            }
+            else if (m.equalsIgnoreCase("AND") && state == MediaQueryState.AND)
+            {
+                $mediaquery::state = MediaQueryState.EXPR;
+            }
+            else if (state == MediaQueryState.START
+                      || state == MediaQueryState.TYPE
+                      || state == MediaQueryState.TYPEOREXPR)
+            { 
+                $mediaquery::q.setType(m);
+                $mediaquery::state = MediaQueryState.AND;
+            }
+            else
+            {
+                log.trace("Invalid media query: found ident: {} state: {}", m, state);
+                $mediaquery::invalid = true;
+            }
+        }
+      )
+   | (e=mediaexpression {
+            if ($mediaquery::state == MediaQueryState.START 
+                || $mediaquery::state == MediaQueryState.EXPR
+                || $mediaquery::state == MediaQueryState.TYPEOREXPR)
+            {
+                $mediaquery::q.add(e); 
+                $mediaquery::state = MediaQueryState.AND;
+            }
+            else
+            {
+                log.trace("Invalid media query: found expr, state: {}", $mediaquery::state);
+                $mediaquery::invalid = true;
+            }
+      })
+   ;
+
+mediaexpression returns [MediaExpression expr]
+@init {
+    logEnter("mediaquery");
+    $expr = rf.createMediaExpression();
+}
+@after {
+    logLeave("mediaquery");
+}
+    : d=declaration { $expr.setFeature(d.getProperty()); $expr.replaceAll(d); }
+    ;
+
 inlineset returns [RuleBlock<?> is]
 @init {
      logEnter("inlineset");
@@ -305,9 +430,8 @@ ruleset returns [RuleBlock<?> stmnt]
         log.debug("Ruleset not valid, so not created");
     }
     else {    
-		 $stmnt = preparator.prepareRuleSet(cslist, decl, 
-		 	!$statement::insideAtstatement && !imports.isEmpty() && imports.peek().doWrap(), 
-			imports.isEmpty() ? null : imports.peek().media);
+		 $stmnt = preparator.prepareRuleSet(cslist, decl, (this.wrapMedia != null && !this.wrapMedia.isEmpty()), this.wrapMedia);
+		 this.preventImports = true; 
         }		
     logLeave("ruleset");
 }    

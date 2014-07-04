@@ -2,18 +2,22 @@ package cz.vutbr.web.csskit.antlr;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.fit.net.DataURLHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.MediaQuery;
+import cz.vutbr.web.css.RuleList;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.RuleBlock.Priority;
 import cz.vutbr.web.csskit.PriorityStrategy;
@@ -56,7 +60,7 @@ public class CSSParserFactory {
 			}
 
 			@Override
-			public StyleSheet parse(CSSTreeParser parser) throws CSSException {
+			public RuleList parse(CSSTreeParser parser) throws CSSException {
 				try {
 					return parser.inlinestyle();
 				} catch (RecognitionException re) {
@@ -90,7 +94,7 @@ public class CSSParserFactory {
 			}
 
 			@Override
-			public StyleSheet parse(CSSTreeParser parser) throws CSSException {
+			public RuleList parse(CSSTreeParser parser) throws CSSException {
 				try {
 					return parser.stylesheet();
 				} catch (RecognitionException re) {
@@ -124,7 +128,7 @@ public class CSSParserFactory {
 			}
 
 			@Override
-			public StyleSheet parse(CSSTreeParser parser) throws CSSException {
+			public RuleList parse(CSSTreeParser parser) throws CSSException {
 				try {
 					return parser.stylesheet();
 				} catch (RecognitionException re) {
@@ -177,7 +181,7 @@ public class CSSParserFactory {
 		 *             When unrecoverable exception during parse occurs.
 		 *             RuntimeException are also encapsulated at this point
 		 */
-		public abstract StyleSheet parse(CSSTreeParser parser)
+		public abstract RuleList parse(CSSTreeParser parser)
 				throws CSSException;
 
 		/**
@@ -195,6 +199,8 @@ public class CSSParserFactory {
 		}
 	}
 
+    //========================================================================================================================
+	
 	// disable instantiation
 	private CSSParserFactory() {
 		throw new AssertionError();
@@ -224,10 +230,8 @@ public class CSSParserFactory {
 				.createStyleSheet().unlock();
 
 		PriorityStrategy ps = new AtomicPriorityStrategy(lastPriority);
-		Preparator preparator = new SimplePreparator(ps, inline, inlinePriority);
-
-		CSSTreeParser parser = createParser(source, encoding, type, preparator, sheet, base);
-		StyleSheet ret = type.parse(parser);
+		Preparator preparator = new SimplePreparator(inline, inlinePriority);
+        StyleSheet ret = parseAndImport(source, encoding, type, sheet, preparator, ps, base, null);
 		lastPriority = ret.getLastMark();
 		return ret;
 	}
@@ -285,10 +289,8 @@ public class CSSParserFactory {
 	    if (start == null)
 	        start = lastPriority;
 		PriorityStrategy ps = new AtomicPriorityStrategy(start);
-		Preparator preparator = new SimplePreparator(ps, inline, inlinePriority);
-
-		CSSTreeParser parser = createParser(source, encoding, type, preparator, sheet, base);
-		StyleSheet ret = type.parse(parser);
+		Preparator preparator = new SimplePreparator(inline, inlinePriority);
+		StyleSheet ret = parseAndImport(source, encoding, type, sheet, preparator, ps, base, null);
 		lastPriority = ret.getLastMark();
 		return ret;
 	}
@@ -330,29 +332,55 @@ public class CSSParserFactory {
 	{
 	    lastPriority = null;
 	}
+	
+	/**
+	 * Parses the source using the given infrastructure and returns the resulting style sheet.
+	 * The imports are handled recursively.
+	 */
+	private static StyleSheet parseAndImport(Object source, String encoding, SourceType type,
+	        StyleSheet sheet, Preparator preparator, PriorityStrategy ps, URL base, List<MediaQuery> media)
+	        throws CSSException, IOException
+	{
+        CSSTreeParser parser = createTreeParser(source, encoding, type, preparator, base, media);
+        type.parse(parser);
+        
+        for (int i = 0; i < parser.getImportPaths().size(); i++)
+        {
+            String path = parser.getImportPaths().get(i);
+            List<MediaQuery> imedia = parser.getImportMedia().get(i);
+            
+            URL url = DataURLHandler.createURL(base, path);
+            try {
+                parseAndImport(url, encoding, SourceType.URL, sheet, preparator, ps, url, imedia);
+            } catch (IOException e) {
+                log.warn("Couldn't read imported style sheet: {}", e.getMessage());
+            }
+        }
 
-	// creates parser
-	private static CSSTreeParser createParser(Object source, String encoding, SourceType type,
-			Preparator preparator, StyleSheet stylesheet, URL base) throws IOException,
-			CSSException {
+	    return parser.addRulesToStyleSheet(sheet, ps);
+	}
+	
+	// creates the tree parser
+	private static CSSTreeParser createTreeParser(Object source, String encoding, SourceType type,
+			Preparator preparator, URL base, List<MediaQuery> media) throws IOException, CSSException {
 
 		CSSInputStream input = type.getInput(source, encoding);
 		input.setBase(base);
-		CommonTokenStream tokens = feedLexer(input, stylesheet);
-		CommonTree ast = feedParser(tokens, type, stylesheet);
-		return feedAST(tokens, ast, preparator, stylesheet);
+		CommonTokenStream tokens = feedLexer(input);
+		CommonTree ast = feedParser(tokens, type);
+		return feedAST(tokens, ast, preparator, media);
 	}
 
 	// initializer lexer
-	private static CommonTokenStream feedLexer(CSSInputStream source,
-			StyleSheet stylesheet) throws CSSException {
-
+	private static CommonTokenStream feedLexer(CSSInputStream source)
+	        throws CSSException 
+	{
 		// we have to unpack runtime exception
 		// because of Java limitation
 		// to change method contract with different type of exception
 		try {
 			CSSLexer lexer = new CSSLexer(source);
-			lexer.init(stylesheet);
+			lexer.init();
 			return new CommonTokenStream(lexer);
 		} catch (RuntimeException re) {
 			if (re.getCause() instanceof CSSException) {
@@ -367,43 +395,71 @@ public class CSSParserFactory {
 	}
 
 	// Initializes parser
-	private static CommonTree feedParser(CommonTokenStream source,
-			SourceType type, StyleSheet stylesheet) throws CSSException {
-
+	private static CommonTree feedParser(CommonTokenStream source, SourceType type)
+	        throws CSSException 
+	{
 		CSSParser parser = new CSSParser(source);
-		parser.init(stylesheet);
+		parser.init();
 		return type.getAST(parser);
 	}
 
 	// initializes tree parser
-	private static CSSTreeParser feedAST(CommonTokenStream source,
-			CommonTree ast, Preparator preparator, StyleSheet stylesheet) {
-
+	private static CSSTreeParser feedAST(CommonTokenStream source, CommonTree ast, Preparator preparator, List<MediaQuery> media) 
+	{
 		if (log.isTraceEnabled()) {
-			log.trace("Feeding tree parser with AST:\n{}", TreeUtil
-					.toStringTree(ast));
+			log.trace("Feeding tree parser with AST:\n{}", TreeUtil.toStringTree(ast));
 		}
-
 		// Walk resulting tree; create tree-node stream first
 		CommonTreeNodeStream nodes = new CommonTreeNodeStream(ast);
-
 		// AST nodes have payloads that point into token stream
 		nodes.setTokenStream(source);
-
 		CSSTreeParser parser = new CSSTreeParser(nodes);
-
-		return parser.init(stylesheet, preparator);
+		return parser.init(preparator, media);
 	}
 
+    //========================================================================================================================
+	
+	/**
+	 * Parses a media query from a string (e.g. the 'media' HTML attribute).
+	 * @param query The query string
+	 * @return List of media queries found.
+	 */
+	public static List<MediaQuery> parseMediaQuery(String query)
+	{
+	    try
+        {
+	        //input from string
+            CSSInputStream input = CSSInputStream.stringStream(query);
+            input.setBase(new URL("file://media/query/url")); //this URL should not be used, just for safety
+            //lexer
+            CommonTokenStream tokens = feedLexer(input);
+            //run parser - create AST
+            CSSParser parser = new CSSParser(tokens);
+            parser.init();
+            CSSParser.media_return retval = parser.media();
+            CommonTree ast = (CommonTree) retval.getTree();
+            //tree parser
+            CSSTreeParser tparser = feedAST(tokens, ast, null, null);
+            return tparser.media();
+        } catch (IOException e) {
+            log.error("I/O error during media query parsing: {}", e.getMessage());
+            return null;
+        } catch (CSSException e) {
+            log.warn("Malformed media query {}", query);
+            return null;
+        } catch (RecognitionException e) {
+            log.warn("Malformed media query {}", query);
+            return null;
+        }
+	}
+	
+	//========================================================================================================================
+	
 	// priority strategy using atomic incrementing
 	private static final class AtomicPriorityStrategy implements
 			PriorityStrategy {
 
 		private final AtomicInteger counter;
-
-		public AtomicPriorityStrategy() {
-			this.counter = new AtomicInteger(0);
-		}
 
 		public AtomicPriorityStrategy(Priority last) {
 			if (last == null)
@@ -432,10 +488,6 @@ public class CSSParserFactory {
 			PriorityStrategy {
 
 		private int counter;
-
-		public SimplePriorityStrategy() {
-			this.counter = 0;
-		}
 
 		public SimplePriorityStrategy(Priority last) {
 			if (!(last instanceof PriorityImpl))

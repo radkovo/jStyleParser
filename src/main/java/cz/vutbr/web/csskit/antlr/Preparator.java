@@ -4,11 +4,11 @@ import java.util.List;
 
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleMargin;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.RuleBlock.Priority;
 
 /**
  * Prepares StyleSheet blocks in parser. Allows switching strategy in runtime,
@@ -31,7 +31,7 @@ public interface Preparator {
 	 * version of RuleSet
 	 */
 	public RuleBlock<?> prepareRuleSet(List<CombinedSelector> cslist,
-			List<Declaration> dlist, boolean wrap, List<String> media);
+			List<Declaration> dlist, boolean wrap, List<MediaQuery> media);
 	
 	/**
 	 * Creates block of rules as result of parsing in-line declaration.
@@ -50,7 +50,7 @@ public interface Preparator {
 	 * @param media List of media assigned to rule
 	 * @return RuleMedia 
 	 */
-	public RuleBlock<?> prepareRuleMedia(Priority mark, List<RuleSet> rules, List<String> media);
+	public RuleBlock<?> prepareRuleMedia(List<RuleSet> rules, List<MediaQuery> media);
 	
 	/**
 	 * Creates RulePage, block of rules associated with specific page 
@@ -84,9 +84,4 @@ public interface Preparator {
      */
     public RuleBlock<?> prepareRuleFontFace(List<Declaration> decl);
     
-	/**
-	 * Marks priority 
-	 * @return Mark
-	 */
-	public Priority markPriority();
 }

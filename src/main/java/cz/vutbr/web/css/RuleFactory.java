@@ -56,6 +56,18 @@ public interface RuleFactory {
 	RuleMedia createMedia(Priority priority);
 
 	/**
+	 * Creates a CSS media query
+	 * @return New CSS media query
+	 */
+	MediaQuery createMediaQuery();
+	
+	/**
+	 * Creates a new CSS media query expression.
+	 * @return The new expression
+	 */
+	MediaExpression createMediaExpression();
+	
+	/**
 	 * Creates CSS named page
 	 * @param priority Priority mark
 	 * @return New CSS page

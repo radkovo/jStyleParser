@@ -10,6 +10,7 @@ import org.w3c.dom.Element;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleFontFace;
@@ -19,9 +20,7 @@ import cz.vutbr.web.css.RulePage;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.RuleViewport;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.RuleBlock.Priority;
 import cz.vutbr.web.css.Selector.PseudoPage;
-import cz.vutbr.web.csskit.PriorityStrategy;
 
 public class SimplePreparator implements Preparator {
 	protected static final Logger log = LoggerFactory
@@ -29,18 +28,16 @@ public class SimplePreparator implements Preparator {
 
 	private static RuleFactory rf = CSSFactory.getRuleFactory();
 
-	private PriorityStrategy ps;
 	private Element elem;
 	private boolean inlinePriority;
 
-	public SimplePreparator(PriorityStrategy ps, Element e, boolean inlinePriority) {
-		this.ps = ps;
+	public SimplePreparator(Element e, boolean inlinePriority) {
 		this.elem = e;
 		this.inlinePriority = inlinePriority;
 	}
 
 	public RuleBlock<?> prepareRuleSet(List<CombinedSelector> cslist,
-			List<Declaration> dlist, boolean wrap, List<String> media) {
+			List<Declaration> dlist, boolean wrap, List<MediaQuery> media) {
 
 		// check emptiness
 		if ((cslist == null || cslist.isEmpty())
@@ -50,23 +47,20 @@ public class SimplePreparator implements Preparator {
 		}
 
 		// create rule set
-		Priority prio = ps.getAndIncrement();
-		RuleSet rs = rf.createSet(prio);
+		RuleSet rs = rf.createSet(null);
 		rs.setSelectors(cslist);
 		rs.replaceAll(dlist);
-		log.info("Created RuleSet as {}th with:\n{}", prio, rs);
+		log.info("Created RuleSet as with:\n{}", rs);
 
 		// wrap
 		if (wrap) {
 			// swap numbers, so RuleMedia is created before RuleSet
-			prio = rs.getPriority();
-			rs.setPriority(ps.getAndIncrement());
-			RuleMedia rm = rf.createMedia(prio);
+			RuleMedia rm = rf.createMedia(null);
 			log.debug("Wrapping RuleSet {} into RuleMedia: {}", rs, media);
 
 			rm.unlock();
 			rm.add(rs);
-			rm.setMedia(media);
+			rm.setMediaQueries(media);
 
 			// return wrapped block
 			return (RuleBlock<?>) rm;
@@ -76,8 +70,7 @@ public class SimplePreparator implements Preparator {
 		return (RuleBlock<?>) rs;
 	}
 
-	public RuleBlock<?> prepareRuleMedia(Priority mark, List<RuleSet> rules,
-			List<String> media) {
+	public RuleBlock<?> prepareRuleMedia(List<RuleSet> rules, List<MediaQuery> media) {
 
 		if (rules == null || rules.isEmpty()) {
 			log.debug("Empty RuleMedia was ommited");
@@ -85,12 +78,12 @@ public class SimplePreparator implements Preparator {
 		}
 
 		// create media at position of mark
-		RuleMedia rm = rf.createMedia(mark);
+		RuleMedia rm = rf.createMedia(null);
 		rm.replaceAll(rules);
 		if (media != null && !media.isEmpty())
-			rm.setMedia(media);
+			rm.setMediaQueries(media);
 
-		log.info("Create @media as {}th with:\n{}", mark, rm);
+		log.info("Create @media as with:\n{}", rm);
 
 		return (RuleBlock<?>) rm;
 	}
@@ -103,8 +96,7 @@ public class SimplePreparator implements Preparator {
 			return null;
 		}
 
-		Priority prio = ps.getAndIncrement();
-		RulePage rp = rf.createPage(prio);
+		RulePage rp = rf.createPage(null);
         if (declarations != null)
             for (Declaration d : declarations)
                 rp.add(d);
@@ -114,7 +106,7 @@ public class SimplePreparator implements Preparator {
         rp.setName(name);
 		
 		rp.setPseudo(pseudo);
-		log.info("Create @page as {}th with:\n{}", prio, rp);
+		log.info("Create @page as with:\n{}", rp);
 
 		return (RuleBlock<?>) rp;
 	}
@@ -127,11 +119,10 @@ public class SimplePreparator implements Preparator {
             return null;
         }
 
-        Priority prio = ps.getAndIncrement();
-        RuleMargin rm = rf.createMargin(area, prio);
+        RuleMargin rm = rf.createMargin(area, null);
         rm.replaceAll(decl);
 
-        log.info("Create @" + area + " as " + prio + "th with:\n" + rm);
+        log.info("Create @" + area + " with:\n" + rm);
 
         return rm;
     }
@@ -143,10 +134,9 @@ public class SimplePreparator implements Preparator {
             return null;
         }
 
-        Priority prio = ps.getAndIncrement();
-        RuleViewport rp = rf.createViewport(prio);
+        RuleViewport rp = rf.createViewport(null);
         rp.replaceAll(decl);
-        log.info("Create @viewport as {}th with:\n{}", prio, rp);
+        log.info("Create @viewport as {}th with:\n{}", rp);
 
         return (RuleBlock<?>) rp;
     }
@@ -158,17 +148,12 @@ public class SimplePreparator implements Preparator {
             return null;
         }
 
-        Priority prio = ps.getAndIncrement();
-        RuleFontFace rp = rf.createFontFace(prio);
+        RuleFontFace rp = rf.createFontFace(null);
         rp.replaceAll(decl);
-        log.info("Create @font-face as {}th with:\n{}", prio, rp);
+        log.info("Create @font-face as with:\n{}", rp);
 
         return (RuleBlock<?>) rp;
     }
-
-	public Priority markPriority() {
-		return ps.markAndIncrement();
-	}
 
 	public RuleBlock<?> prepareInlineRuleSet(List<Declaration> dlist,
 			List<PseudoPage> pseudos) {
@@ -186,12 +171,11 @@ public class SimplePreparator implements Preparator {
 		if(pseudos!=null) sel.addAll(pseudos);
 		cs.add(sel);
 		
-		Priority prio = ps.getAndIncrement();
-		RuleSet rs = rf.createSet(prio);
+		RuleSet rs = rf.createSet(null);
 		rs.replaceAll(dlist);
 		rs.setSelectors(Arrays.asList(cs));
 		
-		log.info("Create @media as {}th with:\n{}", prio, rs);
+		log.info("Create @media as with:\n{}", rs);
 		
 		return (RuleBlock<?>) rs;
 	}

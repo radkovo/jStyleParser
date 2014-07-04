@@ -7,7 +7,7 @@ import java.util.List;
  * Externally provides view of collection of defined RuleSet 
  * with additional media information.
  * 
- * 
+ * @author burgetr
  * @author kapy
  * @author Jan Svercl, VUT Brno, 2008,
  * 
@@ -18,14 +18,14 @@ public interface RuleMedia extends RuleBlock<RuleSet>, PrettyOutput {
 	 * Returns list of all media associated with this rule
 	 * @return List of media
 	 */
-	public List<String> getMedia();	
+	public List<MediaQuery> getMediaQueries();	
 	
 	/**
 	 * Sets media associated with rules
 	 * @param media Media associated
 	 * @return Modified instance
 	 */
-	public RuleMedia setMedia(List<String> media);	
+	public RuleMedia setMediaQueries(List<MediaQuery> media);	
 
 	
 }

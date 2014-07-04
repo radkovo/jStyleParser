@@ -7,6 +7,8 @@ import org.w3c.dom.Element;
 
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.MediaExpression;
+import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleFontFace;
 import cz.vutbr.web.css.RuleImport;
@@ -75,6 +77,14 @@ public class RuleFactoryImpl implements RuleFactory {
 		return new RuleMediaImpl(priority);
 	}
 
+	public MediaQuery createMediaQuery() {
+	    return new MediaQueryImpl();
+	}
+	
+    public MediaExpression createMediaExpression() {
+        return new MediaExpressionImpl();
+    }
+    
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createPage()
 	 */

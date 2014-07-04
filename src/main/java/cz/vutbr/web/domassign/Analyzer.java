@@ -19,6 +19,8 @@ import org.w3c.dom.traversal.TreeWalker;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.MediaQuery;
+import cz.vutbr.web.css.MediaSpec;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.RuleMedia;
@@ -34,28 +36,30 @@ import cz.vutbr.web.csskit.ElementUtil;
  * medias and their type. Afterwards, it is able to return CSS declaration for any
  * DOM tree and media. It allows to use or not to use inheritance.
  * 
- * @author Karel Piwko 2008,
+ * @author Karel Piwko 2008
+ * @author Radek Burget 2008-2014
  * 
  */
 public class Analyzer {
 
 	private static final Logger log = LoggerFactory.getLogger(Analyzer.class);
 
-	protected static final String UNIVERSAL_HOLDER = "all";
+	/** The style sheets to be processed. */
+	protected List<StyleSheet> sheets;
 	
 	/**
-	 * For all medias holds maps of declared rules classified into groups of
-	 * HolderItem (ID, CLASS, ELEMENT, OTHER). Media's type is key
+	 * Holds maps of declared rules classified into groups of
+	 * HolderItem (ID, CLASS, ELEMENT, OTHER).
 	 */
-	protected Map<String, Holder> rules;
+	protected Holder rules;
 
 	/**
 	 * Creates the analyzer for a single style sheet.
 	 * @param sheet The stylesheet that will be used as the source of rules.
 	 */
 	public Analyzer(StyleSheet sheet) {
-		this.rules = Collections.synchronizedMap(new HashMap<String, Holder>());
-		classifyRules(sheet);
+	    sheets = new ArrayList<StyleSheet>(1);
+	    sheets.add(sheet);
 	}
 
 	/**
@@ -63,9 +67,7 @@ public class Analyzer {
 	 * @param sheets A list of stylesheets that will be used as the source of rules.
 	 */
 	public Analyzer(List<StyleSheet> sheets) {
-		this.rules = Collections.synchronizedMap(new HashMap<String, Holder>());
-		for (StyleSheet sheet : sheets)
-			classifyRules(sheet);
+	    this.sheets = sheets;
 	}
 	
 	/**
@@ -79,7 +81,7 @@ public class Analyzer {
 	 *            Use inheritance
 	 * @return Map where each element contains its CSS properties
 	 */
-	public StyleMap evaluateDOM(Document doc, String media,	final boolean inherit) {
+	public StyleMap evaluateDOM(Document doc, MediaSpec media, final boolean inherit) {
 
 		DeclarationMap declarations = assingDeclarationsToDOM(doc, media, inherit);
 
@@ -130,6 +132,10 @@ public class Analyzer {
 		return nodes;
 	}
 
+   public StyleMap evaluateDOM(Document doc, String media, final boolean inherit) {
+       return evaluateDOM(doc, new MediaSpec(media), inherit);
+   }
+
 	/**
 	 * Creates map of declarations assigned to each element of a DOM tree
 	 * 
@@ -141,28 +147,19 @@ public class Analyzer {
 	 *            Inheritance (cascade propagation of values)
 	 * @return Map of elements as keys and their declarations
 	 */
-	protected DeclarationMap assingDeclarationsToDOM(Document doc, String media, final boolean inherit) {
+	protected DeclarationMap assingDeclarationsToDOM(Document doc, MediaSpec media, final boolean inherit) {
 
-		// get holder
-		Holder holder;
-		if(UNIVERSAL_HOLDER.equals(media)) 
-			holder = rules.get(UNIVERSAL_HOLDER);
-		else 
-			holder = Holder.union(rules.get(UNIVERSAL_HOLDER), rules.get(media));
-		
-		// log holder content
-		if(log.isTraceEnabled()) {
-			log.trace("For media \"{}\" constructed holder:\n {}", media, holder);
-		}
+		// classify the rules
+	    classifyAllSheets(media);
 		
 		// resulting map
 		DeclarationMap declarations = new DeclarationMap();
 		
-        // if holder is empty skip evaluation
-        if(holder!=null && !holder.isEmpty()) {
+        // if the holder is empty skip evaluation
+        if(rules!=null && !rules.isEmpty()) {
             
     		Traversal<DeclarationMap> traversal = new Traversal<DeclarationMap>(
-    				doc, (Object) holder, NodeFilter.SHOW_ELEMENT) {
+    				doc, (Object) rules, NodeFilter.SHOW_ELEMENT) {
     			protected void processNode(DeclarationMap result,
     					Node current, Object source) {
     				assignDeclarationsToElement(result, walker, (Element) current,
@@ -353,18 +350,28 @@ public class Analyzer {
 	}
 
 	/**
+	 * Classifies the rules in all the style sheets.
+	 * @param mediaspec The specification of the media for evaluating the media queries.
+	 */
+	protected void classifyAllSheets(MediaSpec mediaspec)
+	{
+	    rules = new Holder();
+	    for (StyleSheet sheet : sheets)
+	        classifyRules(sheet, mediaspec);
+	}
+	
+	/**
 	 * Divides rules in sheet into different categories to be easily and more
 	 * quickly parsed afterward
 	 * 
-	 * @param sheet
+	 * @param sheet The style sheet to be classified
+     * @param mediaspec The specification of the media for evaluating the media queries.
 	 */
-	private void classifyRules(StyleSheet sheet) {
+	protected void classifyRules(StyleSheet sheet, MediaSpec mediaspec) {
 
-		// create holder for medium of type all if it does not exist
-		Holder all = rules.get(UNIVERSAL_HOLDER);
-		if (all == null) {
-			all = new Holder();
-			rules.put(UNIVERSAL_HOLDER, all);
+		// create a new holder if it does not exist
+		if (rules == null) {
+			rules = new Holder();
 		}
 
 		for (Rule<?> rule : sheet) {
@@ -372,50 +379,45 @@ public class Analyzer {
 			if (rule instanceof RuleSet) {
 				RuleSet ruleset = (RuleSet) rule;
 				for (CombinedSelector s : ruleset.getSelectors()) {
-					insertClassified(all, classifySelector(s), ruleset);
+					insertClassified(rules, classifySelector(s), ruleset);
 				}
 			}
 			// this rule conforms to different media
-			if (rule instanceof RuleMedia) {
+			else if (rule instanceof RuleMedia) {
 				RuleMedia rulemedia = (RuleMedia) rule;
 
-				// for all rules in media set
-				for (RuleSet ruleset : rulemedia) {
-					// for all selectors in there
-					for (CombinedSelector s : ruleset.getSelectors()) {
-
-						List<HolderSelector> hs = classifySelector(s);
-						// insert into all medias
-						
-						// if there are no medias, it equals all
-						if(rulemedia.getMedia()==null ||
-								rulemedia.getMedia().isEmpty()) {
-							
-							insertClassified(rules.get(UNIVERSAL_HOLDER), hs, ruleset);
-							continue;
-						}
-						
-						for (String media : rulemedia.getMedia()) {
-							Holder h = rules.get(media);
-							if (h == null) {
-								h = new Holder();
-								rules.put(media, h);
-							}
-							insertClassified(h, hs, ruleset);
-						}
-					}
-				}
+				boolean mediaValid = false;
+                if(rulemedia.getMediaQueries()==null || rulemedia.getMediaQueries().isEmpty()) {
+                    //no media queries actually
+                    mediaValid = true;
+                } else {
+                    //find a matching query
+    				for (MediaQuery media : rulemedia.getMediaQueries()) {
+                        if (mediaspec.matches(media)) {
+                            mediaValid = true;
+                            break;
+                        }
+    				}
+                }
+				
+                if (mediaValid)
+                {
+    				// for all rules in media set
+    				for (RuleSet ruleset : rulemedia) {
+    					// for all selectors in there
+    					for (CombinedSelector s : ruleset.getSelectors()) {
+   							insertClassified(rules, classifySelector(s), ruleset);
+    					}
+    				}
+                }
 			}
 		}
 
 		// logging
 		if (log.isDebugEnabled()) {
-			log.debug("Contains rules for {} medias.", rules.size());
-			for (String media : rules.keySet()) {
-				log.debug("For media \"{}\" it is {}", media, rules.get(media).contentCount());
-				if(log.isTraceEnabled()) {
-					log.trace("Detailed view: \n{}", rules.get(media));
-				}
+			log.debug("For media \"{}\" we have {} rules", mediaspec, rules.contentCount());
+			if(log.isTraceEnabled()) {
+				log.trace("Detailed view: \n{}", rules);
 			}
 		}
 

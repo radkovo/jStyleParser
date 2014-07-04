@@ -3,7 +3,6 @@ package test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
 
@@ -157,7 +156,7 @@ public class GrammarRecovery1 {
 
 		RuleMedia rm = (RuleMedia) ss.get(0);
 
-		assertEquals("Media is set for screen", "screen", rm.getMedia().get(0));
+		assertEquals("Media is set for screen", "screen", rm.getMediaQueries().get(0).getType());
 	}
 
 	@Test

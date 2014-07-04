@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import org.fit.net.DataURLHandler;
 import org.slf4j.Logger;
@@ -366,36 +367,10 @@ public final class CSSFactory {
 	 */
 	public static final StyleSheet parse(String css) throws IOException,
 			CSSException {
-		return CSSParserFactory.parse(css, null, SourceType.EMBEDDED, null);
+	    URL base = new URL("file:///base/url/is/not/specified"); //Cannot determine the base URI in this method but we need some base URI for relative URLs
+		return CSSParserFactory.parse(css, null, SourceType.EMBEDDED, base);
 	}
 
-    /**
-     * Loads all the style sheets used from the specified DOM tree.
-     * The following style specifications are evaluated:
-     * <ul>
-     * <li>The style sheets included using the <code>link</code> and <code>style</code> tags.
-     * <li>Inline styles specified using the <code>style</code> element attribute.
-     * <li><strong>Proprietary extension:</strong> Default styles defined using the <code>XDefaultStyle</code>
-     *     element attribute. These styles behave the same way as the inline styles but they have the lowest priority
-     *     (the values are used only when not redefined by any other way)
-     *  </ul>
-     *  <b>This method does not allow specifying the default style sheet character encoding. The current system
-     *  encoding is used by default. It is recommended to use the {@link #getUsedStyles(Document, String, URL, String)}
-     *  method in order to specify the encoding correctly.</b>
-     * 
-     * @param doc
-     *            DOM tree
-     * @param base
-     *            Base URL against which all files are searched
-     * @param media
-     *            Selected media for style sheet
-     * @return the rules of all the style sheets used in the document including the inline styles
-     */
-    public static final StyleSheet getUsedStyles(Document doc, URL base, String media)
-    {
-        return getUsedStyles(doc, null, base, media);
-    }
-    
     /**
      * Loads all the style sheets used from the specified DOM tree.
      * The following style specifications are evaluated:
@@ -417,7 +392,7 @@ public final class CSSFactory {
      *            Selected media for style sheet
      * @return the rules of all the style sheets used in the document including the inline styles
      */
-    public static final StyleSheet getUsedStyles(Document doc, String encoding, URL base, String media)
+    public static final StyleSheet getUsedStyles(Document doc, String encoding, URL base, MediaSpec media)
     {
         Pair pair = new Pair(base, media);
 
@@ -430,33 +405,28 @@ public final class CSSFactory {
     }
     
     /**
-     * Goes through a DOM tree and assigns the CSS declarations to the DOM elements.
-     * The following style specifications are evaluated:
-     * <ul>
-     * <li>The style sheets included using the <code>link</code> and <code>style</code> tags.
-     * <li>Inline styles specified using the <code>style</code> element attribute.
-     * <li><strong>Proprietary extension:</strong> Default styles defined using the <code>XDefaultStyle</code>
-     *     element attribute. These styles behave the same way as the inline styles but they have the lowest priority
-     *     (the values are used only when not redefined by any other way)
-     *  </ul>   
-     *  <b>This method does not allow specifying the default style sheet character encoding. The current system
-     *  encoding is used by default. It is recommended to use the {@link #assignDOM(Document, String, URL, String, boolean)}
-     *  method in order to specify the encoding correctly.</b>
+     * This is the same as {@link CSSFactory#getUsedStyles(Document, String, URL, MediaSpec)} but only the
+     * media type is provided instead of the complete media specification.
      * 
      * @param doc
      *            DOM tree
+     * @param encoding
+     *            The default encoding used for the referenced style sheets
      * @param base
      *            Base URL against which all files are searched
      * @param media
      *            Selected media for style sheet
-     * @param useInheritance
-     *            Whether inheritance will be used to determine values
-     * @return Map between DOM element nodes and data structure containing CSS
-     *         information
+     * @return the rules of all the style sheets used in the document including the inline styles
      */
-    public static final StyleMap assignDOM(Document doc,
-            URL base, String media, boolean useInheritance) {
-        return assignDOM(doc, null, base, media, useInheritance);
+    public static final StyleSheet getUsedStyles(Document doc, String encoding, URL base, String media)
+    {
+        return getUsedStyles(doc, encoding, base, new MediaSpec(media));
+    }
+    
+    @Deprecated
+    public static final StyleSheet getUsedStyles(Document doc, URL base, String media)
+    {
+        return getUsedStyles(doc, null, base, media);
     }
     
 	/**
@@ -477,14 +447,14 @@ public final class CSSFactory {
 	 * @param base
 	 *            Base URL against which all files are searched
 	 * @param media
-	 *            Selected media for style sheet
+	 *            Current media specification used for evaluating the media queries 
 	 * @param useInheritance
 	 *            Whether inheritance will be used to determine values
 	 * @return Map between DOM element nodes and data structure containing CSS
 	 *         information
 	 */
 	public static final StyleMap assignDOM(Document doc, String encoding,
-			URL base, String media, boolean useInheritance) {
+			URL base, MediaSpec media, boolean useInheritance) {
 
 		Pair pair = new Pair(base, media);
 
@@ -499,6 +469,35 @@ public final class CSSFactory {
 		return analyzer.evaluateDOM(doc, media, useInheritance);
 	}
 
+    /**
+     * This is the same as {@link CSSFactory#assignDOM(Document, String, URL, MediaSpec, boolean)} but only the
+     * media type is provided instead of the complete media specification.
+     * 
+     * @param doc
+     *            DOM tree
+     * @param encoding
+     *            The default encoding used for the referenced style sheets
+     * @param base
+     *            Base URL against which all files are searched
+     * @param media
+     *            Selected media type for style sheet
+     * @param useInheritance
+     *            Whether inheritance will be used to determine values
+     * @return Map between DOM element nodes and data structure containing CSS
+     *         information
+     */
+    public static final StyleMap assignDOM(Document doc, String encoding,
+            URL base, String media, boolean useInheritance) {
+        
+        return assignDOM(doc, encoding, base, new MediaSpec(media), useInheritance);
+    }
+
+    @Deprecated
+    public static final StyleMap assignDOM(Document doc,
+            URL base, String media, boolean useInheritance) {
+        return assignDOM(doc, null, base, media, useInheritance);
+    }
+    
 	// ========================================================================
 
 	/**
@@ -517,13 +516,12 @@ public final class CSSFactory {
 		}
 
 		@Override
-		protected void processNode(StyleSheet result, Node current,
-				Object source) {
-
+		protected void processNode(StyleSheet result, Node current,	Object source) 
+		{
 			// base uri
 			URL base = ((Pair) source).base;
 			// allowed media
-			String media = ((Pair) source).media;
+			MediaSpec media = ((Pair) source).media;
 			Element elem = (Element) current;
 
 			try {
@@ -563,13 +561,13 @@ public final class CSSFactory {
 
 		}
 
-		private static boolean isEmbeddedStyleSheet(Element e, String media) {
+		private static boolean isEmbeddedStyleSheet(Element e, MediaSpec media) {
 			return "style".equalsIgnoreCase(e.getNodeName())
 					&& isAllowedMedia(e, media);
 		}
 
-		private static boolean isLinkedStyleSheet(Element e, String media) {
-			return e.getNodeName().equals("link")
+		private static boolean isLinkedStyleSheet(Element e, MediaSpec media) {
+			return e.getNodeName().equalsIgnoreCase("link")
 			        && (e.getAttribute("rel").toLowerCase().contains("stylesheet"))
 					&& (e.getAttribute("type").isEmpty() || "text/css".equalsIgnoreCase(e.getAttribute("type")))
 					&& isAllowedMedia(e, media);
@@ -596,38 +594,43 @@ public final class CSSFactory {
 		 * @param e
 		 *            (STYLE) Element
 		 * @param media
-		 *            Media used for parsing
+		 *            Current media specification used for parsing
 		 * @return {@code true} if allowed, {@code false} otherwise
 		 */
-		private static boolean isAllowedMedia(Element e, String media) {
+		private static boolean isAllowedMedia(Element e, MediaSpec media) {
 		    String attr = e.getAttribute("media");
 		    if (attr != null && attr.length() > 0)
 		    {
 		        attr = attr.trim();
 		        if (attr.length() > 0)
 		        {
-		            String[] mediaList = attr.split("\\s*,\\s*");
-		            for (String m : mediaList)
+		            List<MediaQuery> ql = CSSParserFactory.parseMediaQuery(attr);
+		            if (ql != null)
 		            {
-		                if (m.equals(media) || m.equals("all"))
-		                    return true;
+		                for (MediaQuery q : ql)
+		                {
+		                    if (media.matches(q))
+		                        return true; //found a matching media query
+		                }
+		                return false; //no matching media query
 		            }
-		            return false;
+		            else
+		                return false; //no usable media queries (malformed string?)
 		        }
 		        else
-		            return true;
+		            return true; //empty query string
 		    }
 		    else
-		        return true;
+		        return true; //no media queries
 		}
 	}
 
-	// holds pair with URL base and allowed media
+	// holds pair with URL base and the required media
 	private static final class Pair {
 		public URL base;
-		public String media;
+		public MediaSpec media;
 
-		public Pair(URL base, String media) {
+		public Pair(URL base, MediaSpec media) {
 			this.base = base;
 			this.media = media;
 		}
