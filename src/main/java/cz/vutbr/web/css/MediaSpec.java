@@ -13,7 +13,22 @@ import cz.vutbr.web.css.Term.Operator;
 
 
 /**
- * This class represents the properties of the output media used for displaying the document.
+ * This class represents the features of the output media used for displaying the document. It specifies the name
+ * of the output media type (e.g. "screen", "print", etc.) and further features defined by the CSS3 specification.
+ * The default values of the features are the following (corresponding to a standard desktop station):
+ *
+ * <ul>
+ * <li><code>width: 1100px</code></li>
+ * <li><code>height: 850px</code></li>
+ * <li><code>device-width: 1920px</code></li>
+ * <li><code>device-height: 1200px</code></li>
+ * <li><code>color: 8</code></li>
+ * <li><code>color-index: 0</code></li>
+ * <li><code>monochrome: 0</code></li>
+ * <li><code>resolution: 96dpi</code></li>
+ * <li><code>scan: progressive</code></li>
+ * <li><code>grid: 0</code></li>
+ * </ul>
  * 
  * @author burgetr
  */
@@ -99,130 +114,250 @@ public class MediaSpec
     protected int grid;
     
     
+    /**
+     * Creates a new media specification with the given media type and default values of the features.
+     * @param type The media type (e.g. "screen")
+     */
     public MediaSpec(String type)
     {
         loadDefaults();
         this.type = type.trim().toLowerCase(Locale.ENGLISH);
     }
-    
+
     /**
-     * @return the type
+     * Obtains the media type of this specification.
+     * @return The media type name (e.g. "screen")
      */
     public String getType()
     {
         return type;
     }
     
+    /**
+     * Obtains the width of the display area.
+     * @return the width in pixels.
+     */
     public float getWidth()
     {
         return width;
     }
 
+    /**
+     * Sets the width of the display area.
+     * @param width The width in pixels.
+     */
     public void setWidth(float width)
     {
         this.width = width;
     }
 
+    /**
+     * Obtains the height of the display area.
+     * @return the height in pixels.
+     */
     public float getHeight()
     {
         return height;
     }
 
+    /**
+     * Sets the height of the display area.
+     * @param height The height in pixels.
+     */
     public void setHeight(float height)
     {
         this.height = height;
     }
 
+    /**
+     * Sets the width and height height of the display area.
+     * @param width The width in pixels.
+     * @param height The height in pixels.
+     */
+    public void setDimensions(float width, float height)
+    {
+        this.width = width;
+        this.height = height;
+    }
+    
+    /**
+     * Obtains the width of the rendering surface of the output device.
+     * @return the width in pixels.
+     */
     public float getDeviceWidth()
     {
         return deviceWidth;
     }
 
+    /**
+     * Sets the width of the rendering surface of the output device.
+     * @param deviceWidth the width in pixels.
+     */
     public void setDeviceWidth(float deviceWidth)
     {
         this.deviceWidth = deviceWidth;
     }
 
+    /**
+     * Obtains the height of the rendering surface of the output device.
+     * @return the height in pixels.
+     */
     public float getDeviceHeight()
     {
         return deviceHeight;
     }
 
+    /**
+     * Sets the height of the rendering surface of the output device.
+     * @param deviceHeight the height in pixels.
+     */
     public void setDeviceHeight(float deviceHeight)
     {
         this.deviceHeight = deviceHeight;
     }
 
+    /**
+     * Sets the width of the rendering surface of the output device.
+     * @param deviceWidth the width in pixels.
+     * @param deviceHeight the height in pixels.
+     */
+    public void setDeviceDimensions(float deviceWidth, float deviceHeight)
+    {
+        this.deviceWidth = deviceWidth;
+        this.deviceHeight = deviceHeight;
+    }
+
+    /**
+     * Obtains the number of bits per color component of the output device. 
+     * @return The number of bits or 0 if the device is not a color device.
+     */
     public int getColor()
     {
         return color;
     }
 
+    /**
+     * Sets the number of bits per color component of the output device.
+     * @param color The number of bits or 0 if the device is not a color device.
+     */
     public void setColor(int color)
     {
         this.color = color;
     }
 
+    /**
+     * Obtains the number of entries in the color lookup table of the output device.
+     * @return The number of lookup table entries or 0 if the device does not use a color lookup table.
+     */
     public int getColorIndex()
     {
         return colorIndex;
     }
 
+    /**
+     * Sets the number of entries in the color lookup table of the output device.
+     * @param colorIndex The number of lookup table entries or 0 if the device does not use a color lookup table.
+     */
     public void setColorIndex(int colorIndex)
     {
         this.colorIndex = colorIndex;
     }
 
+    /**
+     * Obtains the number of bits per pixel in a monochrome frame buffer.
+     * @return The number of bits per pixel or 0 if the device is not a monochrome device.
+     */
     public int getMonochrome()
     {
         return monochrome;
     }
 
+    /**
+     * Sets the number of bits per pixel in a monochrome frame buffer.
+     * @param monochrome The number of bits per pixel or 0 if the device is not a monochrome device.
+     */
     public void setMonochrome(int monochrome)
     {
         this.monochrome = monochrome;
     }
 
+    /**
+     * Sets the resolution of the output device, i.e. the density of the pixels.
+     * @return The resolution in DPI.
+     */
     public float getResolution()
     {
         return resolution;
     }
 
+    /**
+     * Obtains the resolution of the output device, i.e. the density of the pixels.
+     * @param resolution The resolution in DPI.
+     */
     public void setResolution(float resolution)
     {
         this.resolution = resolution;
     }
 
+    /**
+     * Checks if the device is using the interlaced or progressive scanning (for "tv" media only).
+     * @return {@code true} if the device is using the interlaced scanning, {@code false} for progressive scanning.
+     */
     public boolean isScanInterlace()
     {
         return scanInterlace;
     }
 
+    /**
+     * Sets the device scanning process (for "tv" media only).
+     * @param scanInterlace {@code true} if the device is using the interlaced scanning, {@code false} for progressive scanning.
+     */
     public void setScanInterlace(boolean scanInterlace)
     {
         this.scanInterlace = scanInterlace;
     }
 
+    /**
+     * Checks whether the output device is grid or bitmap.
+     * @return If the output device is grid-based (e.g., a "tty" terminal, or a phone display with only one fixed font), the value will be 1. Otherwise, the value will be 0.
+     */
     public int getGrid()
     {
         return grid;
     }
 
+    /**
+     * Sets whether the output device is grid or bitmap.
+     * @param grid If the output device is grid-based (e.g., a "tty" terminal, or a phone display with only one fixed font), the value will be 1. Otherwise, the value will be 0.
+     */
     public void setGrid(int grid)
     {
         this.grid = grid;
     }
 
+    /**
+     * Obtains the aspect ratio of the display area defined as width / height.
+     * @return The aspect radio.
+     */
     public float getAspectRatio()
     {
         return width / height;
     }
     
+    /**
+     * Obtains the aspect ratio of the device defined as deviceWidth / deviceHeight.
+     * @return The aspect radio.
+     */
     public float getDeviceAspectRation()
     {
         return deviceWidth / deviceHeight;
     }
     
+    /**
+     * Checks whether the display area orientation is portrait or landscape.
+     * @return {@code true} when the value of the {@code height} media feature is greater than or equal to the value
+     *  of the {@code width} media feature.
+     */
     public boolean isPortrait()
     {
         return height >= width; //http://www.w3.org/TR/css3-mediaqueries/#orientation
@@ -561,5 +696,24 @@ public class MediaSpec
     }
     
     //===============================================================================================
+    
+    @Override
+    public String toString()
+    {
+        StringBuilder ret = new StringBuilder();
+        ret.append(type).append('[');
+        ret.append("width:").append(width).append("; ");
+        ret.append("height:").append(height).append("; ");
+        ret.append("device-width:").append(deviceWidth).append("; ");
+        ret.append("device-height:").append(deviceHeight).append("; ");
+        ret.append("color:").append(color).append("; ");
+        ret.append("color-index:").append(colorIndex).append("; ");
+        ret.append("monochrome:").append(monochrome).append("; ");
+        ret.append("resolution:").append(resolution).append("; ");
+        ret.append("scan:").append(scanInterlace ? "interlace" : "progressive").append("; ");
+        ret.append("grid:").append(grid).append(";");
+        ret.append(']');
+        return ret.toString();
+    }
     
 }
