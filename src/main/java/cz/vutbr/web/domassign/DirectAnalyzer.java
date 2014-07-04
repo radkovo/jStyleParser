@@ -19,6 +19,7 @@ import org.w3c.dom.Node;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.MediaSpec;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
@@ -60,24 +61,33 @@ public class DirectAnalyzer extends Analyzer
      * Computes the style of an element with an eventual pseudo element for the given media.
      * @param el The DOM element.
      * @param pseudo A pseudo element that should be used for style computation or <code>null</code> if no pseudo element should be used (e.g. :after).
-     * @param media Used media name (e.g. "screen" or "all")
+     * @param media Used media specification.
      * @return The relevant declarations from the registered style sheets.
      */
-    public NodeData getElementStyle(Element el, PseudoDeclaration pseudo, String media)
+    public NodeData getElementStyle(Element el, PseudoDeclaration pseudo, MediaSpec media)
     {
-        Holder holder;
-        if (UNIVERSAL_HOLDER.equals(media)) 
-            holder = rules.get(UNIVERSAL_HOLDER);
-        else 
-            holder = Holder.union(rules.get(UNIVERSAL_HOLDER), rules.get(media));
+        if (rules == null)
+            classifyAllSheets(media);
         
-        List<Declaration> decls = getDeclarationsForElement(el, pseudo, holder);
+        List<Declaration> decls = getDeclarationsForElement(el, pseudo, rules);
         
         NodeData main = CSSFactory.createNodeData();
         for (Declaration d : decls)
             main.push(d);
         
         return main;
+    }
+    
+    /**
+     * Computes the style of an element with an eventual pseudo element for the given media.
+     * @param el The DOM element.
+     * @param pseudo A pseudo element that should be used for style computation or <code>null</code> if no pseudo element should be used (e.g. :after).
+     * @param media Used media name (e.g. "screen" or "all")
+     * @return The relevant declarations from the registered style sheets.
+     */
+    public NodeData getElementStyle(Element el, PseudoDeclaration pseudo, String media)
+    {
+        return getElementStyle(el, pseudo, new MediaSpec(media));
     }
     
     //==========================================================================================
