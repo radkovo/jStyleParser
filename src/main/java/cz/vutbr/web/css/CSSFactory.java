@@ -92,6 +92,11 @@ public final class CSSFactory {
 	
 	
 	/**
+	 * Media specification used for automatically importing style sheets. 
+	 */
+	private static MediaSpec autoImportMedia = null;
+	
+	/**
 	 * Sets whether to allow lengths with no units and interpret them as pixels.
 	 * @param b
 	 */
@@ -106,8 +111,34 @@ public final class CSSFactory {
     public static final boolean getImplyPixelLength() {
         return implyPixelLengths;
     }
-    
-	/**
+
+    /**
+     * Obtains the media specification used for automatical style import. The parser will
+     * automatically download the style sheets imported using the {@code @import} rules
+     * when they corespond to the given media specification.
+     * @return The media specification.
+     */
+    public static MediaSpec getAutoImportMedia()
+    {
+        if (autoImportMedia == null)
+            autoImportMedia = new MediaSpecAll();
+        return autoImportMedia;
+    }
+
+    /**
+     * Sets the media specification used for automatical style import. The parser will
+     * automatically download the style sheets imported using the {@code @import} rules
+     * when they corespond to the given media specification. The default is "all" i.e.
+     * all the imported style sheets are automatically parsed.
+     * 
+     * @param autoImportMedia The media specification for checking the imports.
+     */
+    public static void setAutoImportMedia(MediaSpec autoImportMedia)
+    {
+        CSSFactory.autoImportMedia = autoImportMedia;
+    }
+
+    /**
 	 * Registers new TermFactory instance
 	 * 
 	 * @param newFactory

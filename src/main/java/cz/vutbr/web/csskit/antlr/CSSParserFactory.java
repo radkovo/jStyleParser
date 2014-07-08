@@ -349,12 +349,18 @@ public class CSSParserFactory {
             String path = parser.getImportPaths().get(i);
             List<MediaQuery> imedia = parser.getImportMedia().get(i);
             
-            URL url = DataURLHandler.createURL(base, path);
-            try {
-                parseAndImport(url, encoding, SourceType.URL, sheet, preparator, ps, url, imedia);
-            } catch (IOException e) {
-                log.warn("Couldn't read imported style sheet: {}", e.getMessage());
+            if (imedia == null || imedia.isEmpty() || //no media query specified
+                    CSSFactory.getAutoImportMedia().matchesOneOf(imedia)) //or some media query matches to the autoload media spec
+            {    
+                URL url = DataURLHandler.createURL(base, path);
+                try {
+                    parseAndImport(url, encoding, SourceType.URL, sheet, preparator, ps, url, imedia);
+                } catch (IOException e) {
+                    log.warn("Couldn't read imported style sheet: {}", e.getMessage());
+                }
             }
+            else
+                log.trace("Skipping import {} (media not matching)", path);
         }
 
 	    return parser.addRulesToStyleSheet(sheet, ps);

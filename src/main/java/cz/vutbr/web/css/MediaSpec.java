@@ -6,6 +6,7 @@
 package cz.vutbr.web.css;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -465,6 +466,21 @@ public class MediaSpec
         }
         else
             return false; //results in "not all" for the whole query
+    }
+    
+    /**
+     * Checks whether this media specification matches to at least one of the given media queries.
+     * @param queries The list of media queries to be matched.
+     * @return {@code true} when at least one query matches, {@code false} when no query matches. 
+     */
+    public boolean matchesOneOf(List<MediaQuery> queries)
+    {
+        for (MediaQuery q : queries)
+        {
+            if (matches(q))
+                return true;
+        }
+        return false;
     }
     
     /**
