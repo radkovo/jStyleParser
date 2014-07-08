@@ -13,27 +13,12 @@
 <p>
 jStyleParser is a Java library for parsing CSS style sheets and assigning styles to the HTML or XML
 document elements according to the W3C CSS 2.1 specification and a subset of the CSS 3 specification.
-The result of the parsing is a mapping between the DOM elements and the corresponding CSS declarations.
-This mapping can be used either for displaying the HTML document or for performing some further analysis on
-the document structure.
+It allows parsing the individual CSS files as well as computing the efficient style of the DOM elements.  
 </p>
 </d:section>
 
-<d:section id="userguide">
-<d:title>User Guide</d:title>
-
-<d:subsection id="used">
-<d:title>Obtaining the style sheets used in an HTML document</d:title>
-<p>The <d:api class="cz/vutbr/web/css/CSSFactory">CSSFactory</d:api> provides a method that
-analyzes an HTML or XML document represented by a DOM and it parses all the referenced style sheets:</p>
-<ul>
-<li><d:api class="cz/vutbr/web/css/CSSFactory" anchor="getUsedStyles(org.w3c.dom.Document, java.lang.String, java.net.URL, java.lang.String)">StyleSheet CSSFactory.getUsedStyles(Document doc, String encoding, URL base, String media)</d:api></li>
-</ul>
-<p>It parses all the style sheets referenced from the document that correspond to the specified media
-and it returns a single style sheet structure that contains all the relevant CSS rules. The <code>base</code>
-URL is used for eventual relative URLs used int the style sheets. The <code>encoding</code> specifies
-a default encoding that is used when the encoding is not specified within the style sheet.</p> 
-<h3 id="sheet">Parsing a style sheet (<code>StyleSheet</code>)</h3>
+<d:section id="parsing">
+<d:title>Style Sheet Parsing</d:title>
 <p>This functionality may be used for parsing individual style sheets obtained from a remote file (URL),
 local file or a string. Three static methods are defined in the <d:api class="cz/vutbr/web/css/CSSFactory">CSSFactory</d:api> class for
 this purpose:</p>
@@ -50,27 +35,73 @@ this purpose:</p>
 			which can be used to parse embedded CSS declarations that is declarations between the &lt;style&gt; tags.
 	</li>
 </ul>
-<p>
-The resulting <code>StyleSheet</code> can be used as the input for <d:api class="cz/vutbr/web/domassign/Analyzer">Analyzer</d:api> as described
-in the following section.
+<p>During the parsing process, the parser automatically imports all the style sheets referenced using the <code>@import</code>
+rules. See the <d:ref target="media">Media</d:ref> section for further reference about how to limit this behavior to certain
+media only or disable it completely.</p>
+
+<p>The result of the parsing is a <d:api class="cz/vutbr/web/css/StyleSheet">StyleSheet</d:api> object that is generally a collection
+of <em>rules</em> discovered in the style sheet. It can be also used as the input for the DOM <d:api class="cz/vutbr/web/domassign/Analyzer">Analyzer</d:api> as described
+below in the <d:ref target="dom">DOM Analysis</d:ref> section.</p>
+
+<d:subsection id="sheet">
+<d:title>Parsed style sheet processing</d:title>
+<p>When the DOM Analyzer feature is not used, the parsed style sheed may be manually traversed in order to obtain the contained
+rules and declarations. The most important data structures are the following:</p>
+<ul>
+	<li>The <d:api class="cz/vutbr/web/css/StyleSheet">StyleSheet</d:api> is a collection of <em>rules</em>.</li>
+	<li>Each rule is an instance of <d:api class="cz/vutbr/web/css/RuleBlock">RuleBlock</d:api>. There exist several
+		subclases of this class that correspond to the individual CSS rule types. The most important of them are
+		<d:api class="cz/vutbr/web/css/RuleSet">RuleSet</d:api> (a standard CSS rule with a selector and declarations)
+		and <d:api class="cz/vutbr/web/css/RuleMedia">RuleMedia</d:api> (the <code>@media</code> rule containing further <code>RuleSet</code> rules).</li>
+	<li>The <code>RuleSet</code> is a collection of <d:api class="cz/vutbr/web/css/Declaration">Declaration</d:api> objects.
+		The selectors used for the whole rule may be obtained using the 
+		<d:api class="cz/vutbr/web/css/RuleSet" anchor="getSelectors()">getSelectors()</d:api> method.</li>
+	<li>Each <code>Declaration</code> is a set of <d:api class="cz/vutbr/web/css/Term">Term</d:api> objects that represent
+		the values that are assigned to the given property. There exist many subclasses of <code>Term</code> that represent
+		the individual value types in CSS (lengths, integers, colors, identifiers, etc.) The name of the property can be obtained using its
+		<d:api class="cz/vutbr/web/css/Declaration" anchor="getProperty()">getProperty()</d:api> method.</li>
+</ul>
+<p>A simple example of the style sheet processing is available in the
+	<a href="http://github.com/radkovo/jStyleParser/blob/master/src/test/java/test/ParserDemo.java">test.ParserDemo</a> example.
 </p>
 </d:subsection>
+</d:section>
+
+<d:section id="used">
+<d:title>Obtaining the style sheets used in an HTML document</d:title>
+<p>The <d:api class="cz/vutbr/web/css/CSSFactory">CSSFactory</d:api> provides a method that
+analyzes an HTML or XML document represented by a DOM and it parses all the referenced style sheets:</p>
+<ul>
+<li><d:api class="cz/vutbr/web/css/CSSFactory" anchor="getUsedStyles(org.w3c.dom.Document, java.lang.String, java.net.URL, cz.vutbr.web.css.MediaSpec)">StyleSheet CSSFactory.getUsedStyles(Document doc, String encoding, URL base, MediaSpec media)</d:api></li>
+</ul>
+<p>It parses all the style sheets referenced from the document that correspond to the specified media
+and it returns a single style sheet structure that contains all the relevant CSS rules. The <code>base</code>
+URL is used for the possible relative URLs used in the style sheets. The <code>encoding</code> specifies
+a default encoding that is used when the encoding is not specified within the style sheet. Finally, <code>media</code>
+specifies the current media features that should be used for evaluating the media queries used in the style sheet
+as described in the <d:ref target="media">Media</d:ref> section.
+</p> 
+</d:section>
+
+<d:section id="dom">
+<d:title>DOM Analysis</d:title>
+
+<p>The purpose of the DOM analysis is to apply the relevant style sheets to a particular HTML or XML document
+represented by a DOM in order to obtain the efficient styles of the individual document elements. The result
+of the analysis is a mapping between the DOM elements and the corresponding CSS declarations.
+This mapping can be used either for displaying the HTML document or for performing some further analysis on
+the document structure.</p>
 
 <d:subsection id="analyze">
 <d:title>Analyzing a Style Sheet</d:title>
-<p>When a <code>StyleSheet</code> instance is retrieved in the previous step, it can be passed to an
-<d:api class="cz/vutbr/web/domassign/Analyzer">Analyzer</d:api>.
-This object classifies rules into groups by CSS media and according to their CSS selectors. This operation is done
-only once during the construction of the <code>Analyzer</code> and all the subsequent requests are executed on maps created 
-during this classification.
-This will lead to light overhead when only a single CSS medium type is used, but it greatly improves the performance
-when one CSS style-sheet has to be analyzer from to point of view of different media.  
+<p>When a <code>StyleSheet</code> instance is <d:ref target="parsing">obtained from the parser</d:ref>, it can be passed to an
+<d:api class="cz/vutbr/web/domassign/Analyzer">Analyzer</d:api>. 
 </p>
-<p>The <code>Analyzer</code> basically provides following method:</p>
+<p>The <code>Analyzer</code> basically provides the following method:</p>
 <ul>
-	<li><d:api class="cz/vutbr/web/domassign/Analyzer" anchor="evaluateDOM(org.w3c.dom.Document, java.lang.String, boolean)">StyleMap evaluateDOM(Document doc, String medium,
-			final boolean inherit)</d:api>, which constructs a map between DOM elements 
-			and their CSS declarations according to the given <code>medium</code> and
+	<li><d:api class="cz/vutbr/web/domassign/Analyzer" anchor="evaluateDOM(org.w3c.dom.Document, cz.vutbr.web.css.MediaSpec, boolean)">StyleMap evaluateDOM(Document doc, MediaSpec media,
+			boolean inherit)</d:api>, which constructs a map between DOM elements 
+			and their CSS declarations according to the given <code>media</code> specification and
 			allowed/disabled inheritance of declarations. 
 	</li>
 </ul>  
@@ -87,15 +118,11 @@ However, in larger scale, the performance of the individual computation is signi
 provides the following method:</p>
 <ul>
 	<li><d:api class="cz/vutbr/web/css/CSSFactory" anchor="assignDOM(org.w3c.dom.Document, java.lang.String, java.net.URL, java.lang.String, boolean)">StyleMap assignDOM(Document doc, String encoding,
-			URL base, String medium, boolean useInheritance)</d:api>,
-		which directly creates and assigns a <code>NodeData</code> to each element in the
-		DOM document <code>doc</code> for the given medium <code>medium</code>. While searching for 
-		externally stored CSS style sheets, base URL <code>base</code> is used.
-		<br/>
-		This method traverses the DOM tree collecting all linked, embedded (&lt;style&gt;) and inline
-		 (attribute style=&quot;&quot;) CSS declarations, and assigning them to the DOM elements.		 
-	</li>
-</ul>
+			URL base, MediaSpec media, boolean useInheritance)</d:api></li>
+</ul>			
+<p>It automatically downloads and parses all the internal and external style sheets referenced from a DOM for the given media and 
+runs the style mapping to the given DOM. It creates and assigns a <code>NodeData</code> to each element in the DOM document <code>doc</code> for the 
+given medium <code>media</code>. While searching for externally stored CSS style sheets, base URL <code>base</code> is used.</p>
 </d:subsection>
 
 <d:subsection id="dom">
@@ -192,7 +219,7 @@ style is automatically included in the resulting style assigned to the appropria
 <p>
 The <em>dynamic pseudo-classes</em> (such as <code>:hover</code>) are more complicated. Any element may belong dynamically to several
 pseudo-classes that influence the resulting style of the element itself but also the style of its child elements. Therefore,
-before the DOM style is evaluated as described in <ref target="analyze">previous</ref> <ref target="direct">sections</ref>,
+before the DOM style is evaluated as described in <d:ref target="analyze">previous</d:ref> <d:ref target="direct">sections</d:ref>,
 the current pseudo-classes must be assigned to the individual elements in order to compute the resulting styles properly. 
 </p>
 <p>The default behavior of jStyleParser corresponds to the standard static HTML file displaying behavior:</p>
@@ -229,7 +256,74 @@ StyleMap decl = CSSFactory.assignDOM(doc, null, base, "screen", true);
 </d:codebox>
 <p>When the pseudo-class assignment changes, the match condition must be reconfigured and the DOM style must be recomputed.</p>
 </d:subsection>
+
 </d:section>
+
+<d:section id="media">
+<d:title>Media</d:title>
+
+<p>The style sheets are typically evaluated for some particular media. In jStyleParser the type and the features of the media
+being used are specified using the <d:api class="cz/vutbr/web/css/MediaSpec">MediaSpec</d:api> structure. It specifies the media type
+such as "screen" or "print" and the features such as display area size, device size, colors, etc. A simple media specification
+may be created as follows:</p>
+<d:codebox>
+<em>//create a 'screen' media type with default feature values</em>
+MediaSpec media = new MediaSpec("screen");
+
+<em>//set the display area size in pixeld</em>
+media.setDimensions(1600, 1200);
+</d:codebox> 
+
+<p>The created media specification may be used for several parsing and analysis steps as described in the following sections.</p>
+
+<d:subsection id="media_parser">
+<d:title>Automatic loading of imported style sheets</d:title>
+<p>By default, the parser automatically loads and recursively parses <b>all</b> the style sheets imported using 
+the <code>@import</code> rules. The optional media queries used in the <code>@import</code> rules are evaluated later during the 
+DOM analysis. However, the automatic download may be limited to certain media only by using the
+ <d:api class="cz/vutbr/web/css/CSSFactory.html" anchor="setAutoImportMedia(cz.vutbr.web.css.MediaSpec)">setAutoImportMedia(cz.vutbr.web.css.MediaSpec media)</d:api>
+method. The following code shows several typical configuration.</p>
+
+<d:codebox>
+<em>//import only the style sheets valid for "screen" media type with default values of all the features</em>
+CSSFactory.setAutoImportMedia(new MediaSpec("screen"));
+
+<em>//import all the style sheets valid for "screen" media type regardless on the feature values</em>
+CSSFactory.setAutoImportMedia(new MediaSpecType("screen"));
+
+<em>//import all style sheets (the default behavior)</em>
+CSSFactory.setAutoImportMedia(new MediaSpecAll());
+
+<em>//do not import any style sheets automatically</em>
+CSSFactory.setAutoImportMedia(new MediaSpecNone());
+</d:codebox>
+
+<p>Note that this specification only affects the behavior of the <code>@import</code> rules during parsing. The media used
+for assigning the style to the DOM elements are specified in the further step.</p>
+</d:subsection>
+
+<d:subsection id="media_dom">
+<d:title>DOM style analysis</d:title>
+<p>The media specification is used in the following steps of the DOM analysis:</p>
+<ul>
+<li>When obtaining all style sheets referenced from the HTML or XML code using the
+	<d:api class="cz/vutbr/web/css/CSSFactory" anchor="getUsedStyles(org.w3c.dom.Document, java.lang.String, java.net.URL, cz.vutbr.web.css.MediaSpec)">StyleSheet CSSFactory.getUsedStyles(Document doc, String encoding, URL base, MediaSpec media)</d:api>
+	method. Only the style sheets that match the given media specification are considered.</li>
+<li>When assigning the style to the individual DOM elements using the
+    <d:api class="cz/vutbr/web/domassign/Analyzer" anchor="evaluateDOM(org.w3c.dom.Document, cz.vutbr.web.css.MediaSpec, boolean)">StyleMap evaluateDOM(Document doc, MediaSpec media, boolean inherit)</d:api>
+    method. Only the rules that apply to the given media are considered. This includes both the internal <code>@media</code> rules
+    and the rules imported using an <code>@import</code> with an optional media query used.</li>
+<li>In the direct usage using the
+	<d:api class="cz/vutbr/web/css/CSSFactory" anchor="assignDOM(org.w3c.dom.Document, java.lang.String, java.net.URL, java.lang.String, boolean)">StyleMap assignDOM(Document doc, String encoding,
+			URL base, MediaSpec media, boolean useInheritance)</d:api> method that combines the two cases above together.</li>
+</ul>
+</d:subsection>
+
+<p>The default behavior of the parser is to download all the imported style sheets and to apply the media during the DOM analysis. However,
+the above methods allow to optimize this process by downloading only the style sheets that are actually used.</p>
+
+</d:section>
+
 
 <d:section id="structure"> 
 <d:title>Internal Structure of the Library</d:title>
