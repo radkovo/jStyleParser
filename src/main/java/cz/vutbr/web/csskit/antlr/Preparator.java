@@ -45,7 +45,6 @@ public interface Preparator {
 	/**
 	 * Creates RuleMedia, block of rules with assigned medias. Uses mark to change priority of rules,
 	 * that is priority of this rule is set to mark 
-	 * @param mark Priority mark
 	 * @param rules Rules encapsulated by this RuleMedia
 	 * @param media List of media assigned to rule
 	 * @return RuleMedia 

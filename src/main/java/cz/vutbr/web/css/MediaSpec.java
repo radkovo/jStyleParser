@@ -37,7 +37,8 @@ public class MediaSpec
 {
     
     /**
-     * Known media query features based on the specification {@link http://www.w3.org/TR/css3-mediaqueries/}
+     * Known media query features based on the specification
+     * @see <a href="http://www.w3.org/TR/css3-mediaqueries/">http://www.w3.org/TR/css3-mediaqueries/</a>
      */
     public enum Feature
     {
@@ -518,8 +519,8 @@ public class MediaSpec
     
     /**
      * Checks whether a value coresponds to the given criteria.
-     * @param value the tested value or {@code null} for invalid value
      * @param required the required value
+     * @param current the tested value or {@code null} for invalid value
      * @param min {@code true} when the required value is the minimal one
      * @param max {@code true} when the required value is the maximal one
      * @return {@code true} when the value matches the criteria.

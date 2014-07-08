@@ -97,8 +97,8 @@ public final class CSSFactory {
 	private static MediaSpec autoImportMedia = null;
 	
 	/**
-	 * Sets whether to allow lengths with no units and interpret them as pixels.
-	 * @param b
+	 * Sets whether to allow lengths with no units and interpret them as pixels. The default value is {@code false}.
+	 * @param b {@code true} when the lengths with no units should be allowed.
 	 */
 	public static final void setImplyPixelLength(boolean b) {
 	    implyPixelLengths = b;
@@ -106,7 +106,7 @@ public final class CSSFactory {
 	
     /**
      * Says whether to allow lengths with no units and interpret them as pixels.
-     * @return
+     * @return {@code true} if the lengths with no units are allowed
      */
     public static final boolean getImplyPixelLength() {
         return implyPixelLengths;

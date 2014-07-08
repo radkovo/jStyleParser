@@ -287,7 +287,7 @@ public class DeclarationTransformer {
 	 * 
 	 * @param <T>
 	 *            Enum & CSSProperty limitation
-	 * @param enumType
+	 * @param type
 	 *            Type of enum which instance is retrieved
 	 * @param term
 	 *            Term with value to be converted
