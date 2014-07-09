@@ -5,11 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 
 import org.junit.BeforeClass;
@@ -171,12 +167,4 @@ public class DOMAssign {
         return data;
     }
     
-	private static URL createBaseFromFilename(String filename) {
-		try {
-			File f = new File(filename);
-			return f.toURI().toURL();
-		} catch (MalformedURLException e) {
-			return null;
-		}
-	}
 }
