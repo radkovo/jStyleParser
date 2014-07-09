@@ -685,6 +685,7 @@ import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
       else
           break; /* not a CSSToken, probably EOF */
       // consume token if does not match
+      boolean b = t.getLexerState().isBalanced(mode, ls);
       finish = (t.getLexerState().isBalanced(mode, ls) && follow.member(t.getType()));
       if (!finish)
       { 
@@ -790,6 +791,10 @@ media
  : media_query (COMMA S* media_query)*
     -> ^(MEDIA_QUERY media_query)+
  ;
+ catch [RecognitionException re] {
+     final BitSet follow = BitSet.of(CSSLexer.COMMA, CSSLexer.LCURLY, CSSLexer.SEMICOLON);               
+     retval.tree = invalidFallback(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, LexerState.RecoveryMode.BALANCED, null, re);
+ }
 
 media_query
  : (media_term S!*)+
@@ -797,12 +802,22 @@ media_query
 
 media_term
  : (IDENT | media_expression)
+ | nomediaquery -> INVALID_STATEMENT
  ;
+ catch [RecognitionException re] {
+     final BitSet follow = BitSet.of(CSSLexer.COMMA, CSSLexer.LCURLY, CSSLexer.SEMICOLON);               
+     retval.tree = invalidFallback(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, LexerState.RecoveryMode.RULE, null, re);
+ }
 
 media_expression
  : LPAREN S* IDENT S* (COLON S* terms)? RPAREN
     -> ^(DECLARATION IDENT terms)
  ;
+ catch [RecognitionException re] {
+		 final BitSet follow = BitSet.of(CSSLexer.RPAREN, CSSLexer.SEMICOLON);               
+		 retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
+		   "INVALID_STATEMENT", follow, re);
+ }
 
 media_rule
  : ruleset
@@ -837,7 +852,6 @@ declaration
 	| noprop any* -> INVALID_DECLARATION /* if first character in the declaration is invalid (various dirty hacks) */
 	;
 	catch [RecognitionException re] {
-	  //retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", re);									
       final BitSet follow = BitSet.of(CSSLexer.SEMICOLON);               
       retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, LexerState.RecoveryMode.DECL, begin, re);             
 	}
@@ -1061,6 +1075,36 @@ norule
       | CTRL -> CTRL
       | '#' //that is not HASH (not an identifier)
       | '^'
+      | '&'
+    );
+
+/** invalid start of a media query */    
+nomediaquery
+  : ( NUMBER -> NUMBER
+      | PERCENTAGE ->PERCENTAGE
+      | DIMENSION -> DIMENSION
+      | string -> string
+      | URI    -> URI
+      | UNIRANGE -> UNIRANGE
+      | INCLUDES -> INCLUDES
+      | GREATER -> GREATER
+      | LESS -> LESS
+      | QUESTION -> QUESTION
+      | PERCENT -> PERCENT
+      | EQUALS -> EQUALS
+      | SLASH -> SLASH
+      | EXCLAMATION -> EXCLAMATION
+      | MINUS -> MINUS
+      | PLUS -> PLUS
+      | DASHMATCH -> DASHMATCH
+      | RPAREN -> RPAREN
+      | CTRL -> CTRL
+      | COLON -> COLON
+      | ASTERISK -> ASTERISK
+      | FUNCTION -> FUNCTION
+      | '#' //that is not HASH (not an identifier)
+      | '^'
+      | '&'
     );
     
 /////////////////////////////////////////////////////////////////////////////////

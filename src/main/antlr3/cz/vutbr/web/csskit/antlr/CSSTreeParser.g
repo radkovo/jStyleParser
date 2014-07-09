@@ -389,6 +389,9 @@ mediaterm
                 $mediaquery::invalid = true;
             }
       })
+   | (INVALID_STATEMENT {
+            $mediaquery::invalid = true;
+      })
    ;
 
 mediaexpression returns [MediaExpression expr]
