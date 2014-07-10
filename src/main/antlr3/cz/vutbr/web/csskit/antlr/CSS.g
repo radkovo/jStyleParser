@@ -139,9 +139,12 @@ import cz.vutbr.web.css.SupportedCSS;
          * <li>FUNCTION - within the function arguments: parentheses must be balanced 
          * <li>RULE - within the CSS rule: all but curly braces
          * <li>DECL - within declaration: all, keep curly braces at desired state
-         * </ul> 
+         * </ul>
+         * @param mode the desired recovery node
+         * @param state the required lexer state (used for DECL mode)
+         * @param t the token that is being processed (used for DECL mode)
          */ 
-        public boolean isBalanced(RecoveryMode mode, LexerState state)
+        public boolean isBalanced(RecoveryMode mode, LexerState state, CSSToken t)
         {
             if (mode == RecoveryMode.BALANCED)
                 return aposOpen==false && quotOpen==false && curlyNest==0 && parenNest==0;
@@ -150,7 +153,12 @@ import cz.vutbr.web.css.SupportedCSS;
             else if (mode == RecoveryMode.RULE)
                 return aposOpen==false && quotOpen==false && parenNest==0;
             else if (mode == RecoveryMode.DECL)
-                return aposOpen==false && quotOpen==false && parenNest==0 && curlyNest==state.curlyNest;
+            {
+                if (t.getType() == RCURLY) //if '}' is processed the curlyNest has been already decreased 
+                    return aposOpen==false && quotOpen==false && parenNest==0 && curlyNest==state.curlyNest-1;
+                else
+                    return aposOpen==false && quotOpen==false && parenNest==0 && curlyNest==state.curlyNest;
+            }
             else
                 return false;
         }
@@ -647,7 +655,7 @@ import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
       log.trace("Skipped greedy: {}", t);
       // consume token even if it will match
       input.consume();
-    }while(!(t.getLexerState().isBalanced(mode, ls) && follow.member(t.getType())));
+    }while(!(t.getLexerState().isBalanced(mode, ls, t) && follow.member(t.getType())));
   }
   
   /**
@@ -685,8 +693,7 @@ import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
       else
           break; /* not a CSSToken, probably EOF */
       // consume token if does not match
-      boolean b = t.getLexerState().isBalanced(mode, ls);
-      finish = (t.getLexerState().isBalanced(mode, ls) && follow.member(t.getType()));
+      finish = (t.getLexerState().isBalanced(mode, ls, t) && follow.member(t.getType()));
       if (!finish)
       { 
           log.trace("Skipped: {}", t);
@@ -852,7 +859,7 @@ declaration
 	| noprop any* -> INVALID_DECLARATION /* if first character in the declaration is invalid (various dirty hacks) */
 	;
 	catch [RecognitionException re] {
-      final BitSet follow = BitSet.of(CSSLexer.SEMICOLON);               
+      final BitSet follow = BitSet.of(CSSLexer.SEMICOLON, CSSLexer.RCURLY); //recover on the declaration end or rule end
       retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, LexerState.RecoveryMode.DECL, begin, re);             
 	}
 

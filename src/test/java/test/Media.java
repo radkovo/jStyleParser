@@ -18,7 +18,6 @@ import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.StyleSheet;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,7 +133,6 @@ public class Media
     }
     
     @Test
-    @Ignore //should be fixed but not so important now
     public void malformedQueries4() throws IOException, CSSException 
     {
         StyleSheet ss = CSSFactory.parse(TEST_MALFORMED4);
