@@ -380,8 +380,16 @@ mediaterm
                 || $mediaquery::state == MediaQueryState.EXPR
                 || $mediaquery::state == MediaQueryState.TYPEOREXPR)
             {
-                $mediaquery::q.add(e); 
-                $mediaquery::state = MediaQueryState.AND;
+                if (e.getFeature() != null) //the expression is valid
+                {
+		                $mediaquery::q.add(e); 
+		                $mediaquery::state = MediaQueryState.AND;
+		            }
+		            else
+		            {
+		                log.trace("Invalidating media query for invalud expression");
+		                $mediaquery::invalid = true;
+		            }
             }
             else
             {
@@ -402,7 +410,12 @@ mediaexpression returns [MediaExpression expr]
 @after {
     logLeave("mediaquery");
 }
-    : d=declaration { $expr.setFeature(d.getProperty()); $expr.replaceAll(d); }
+    : d=declaration { 
+          if (d != null) { //if the declaration is valid
+              $expr.setFeature(d.getProperty()); 
+              $expr.replaceAll(d);
+          } 
+      }
     ;
 
 inlineset returns [RuleBlock<?> is]
