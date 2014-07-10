@@ -18,6 +18,7 @@ import org.xml.sax.SAXException;
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.MediaSpec;
+import cz.vutbr.web.css.MediaSpecAll;
 import cz.vutbr.web.css.MediaSpecNone;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.StyleSheet;
@@ -98,6 +99,7 @@ public class ImportTest1 {
 
 	@Test
 	public void testMediaImport() throws CSSException, IOException {
+        CSSFactory.setAutoImportMedia(new MediaSpecAll()); //reset to default
 		StyleSheet ss = CSSFactory.parse(getClass().getResource("/simple/impmedia.css"), null);
 		assertEquals("All rules have been imported", 8, ss.size());
 	}
