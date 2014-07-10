@@ -17,6 +17,8 @@ import org.xml.sax.SAXException;
 
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.MediaSpec;
+import cz.vutbr.web.css.MediaSpecNone;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermLength;
@@ -96,8 +98,30 @@ public class ImportTest1 {
 
 	@Test
 	public void testMediaImport() throws CSSException, IOException {
-		CSSFactory.parse(getClass().getResource("/simple/impmedia.css"), null);
+		StyleSheet ss = CSSFactory.parse(getClass().getResource("/simple/impmedia.css"), null);
+		assertEquals("All rules have been imported", 8, ss.size());
 	}
+
+    @Test
+    public void testMediaImportLimit1() throws CSSException, IOException {
+        CSSFactory.setAutoImportMedia(new MediaSpec("projection"));
+        StyleSheet ss = CSSFactory.parse(getClass().getResource("/simple/impmedia.css"), null);
+        assertEquals("All rules have been imported", 8, ss.size());
+    }
+
+    @Test
+    public void testMediaImportLimit2() throws CSSException, IOException {
+        CSSFactory.setAutoImportMedia(new MediaSpec("screen"));
+        StyleSheet ss = CSSFactory.parse(getClass().getResource("/simple/impmedia.css"), null);
+        assertEquals("No rules have been imported", 0, ss.size());
+    }
+
+    @Test
+    public void testMediaImportLimit3() throws CSSException, IOException {
+        CSSFactory.setAutoImportMedia(new MediaSpecNone());
+        StyleSheet ss = CSSFactory.parse(getClass().getResource("/simple/impmedia.css"), null);
+        assertEquals("No rules have been imported", 0, ss.size());
+    }
 
 	@Test
 	public void testRealAndNested() throws CSSException, IOException {
