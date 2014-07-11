@@ -1,3 +1,10 @@
+Version 1.17 - Jul 11, 2014
+- Media queries supported in parser and DOMAnalyzer
+- API extensions for Media queries
+- Extended API for configuring the automatic processing of imported style sheets 
+- New CSS3 units supported (ch, rem, vw, vh, vmin, vmax, in, turn,
+    dpi, dpcm, dppx)
+
 Version 1.16 - Feb 4, 2014
 - Rule priority computation fix for nested (@media) rules
 
