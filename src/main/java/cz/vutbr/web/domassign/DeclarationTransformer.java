@@ -650,10 +650,10 @@ public class DeclarationTransformer {
 	}
 
 	@SuppressWarnings("unused")
-	private boolean processBackgroundAttachement(Declaration d,
+	private boolean processBackgroundAttachment(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator background = new BackgroundVariator();
-		return background.tryOneTermVariant(BackgroundVariator.ATTACHEMENT, d,
+		return background.tryOneTermVariant(BackgroundVariator.ATTACHMENT, d,
 				properties, values);
 	}
 
@@ -1029,7 +1029,7 @@ public class DeclarationTransformer {
 	private boolean processFontVariant(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator font = new FontVariator();
-		return font.tryOneTermVariant(FontVariator.WEIGHT, d, properties,
+		return font.tryOneTermVariant(FontVariator.VARIANT, d, properties,
 				values);
 	}
 
@@ -2170,7 +2170,7 @@ public class DeclarationTransformer {
 		public static final int COLOR = 0;
 		public static final int IMAGE = 1;
 		public static final int REPEAT = 2;
-		public static final int ATTACHEMENT = 3;
+		public static final int ATTACHMENT = 3;
 		public static final int POSITION = 4;
 
 		public BackgroundVariator() {
@@ -2181,7 +2181,7 @@ public class DeclarationTransformer {
 			types.add(BackgroundImage.class);
 			names.add("background-repeat");
 			types.add(BackgroundRepeat.class);
-			names.add("background-attachement");
+			names.add("background-attachment");
 			types.add(BackgroundAttachment.class);
 			names.add("background-position");
 			types.add(BackgroundPosition.class);
@@ -2210,9 +2210,9 @@ public class DeclarationTransformer {
 			case REPEAT:
 				return genericTermIdent(types.get(REPEAT), terms.get(i),
 						AVOID_INH, names.get(REPEAT), properties);
-			case ATTACHEMENT:
-				return genericTermIdent(types.get(ATTACHEMENT), terms.get(i),
-						AVOID_INH, names.get(ATTACHEMENT), properties);
+			case ATTACHMENT:
+				return genericTermIdent(types.get(ATTACHMENT), terms.get(i),
+						AVOID_INH, names.get(ATTACHMENT), properties);
 			case POSITION:
 
 				final EnumSet<BackgroundPosition> allowedBackground = EnumSet
