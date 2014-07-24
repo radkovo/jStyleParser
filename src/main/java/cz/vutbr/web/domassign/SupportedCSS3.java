@@ -347,7 +347,7 @@ public class SupportedCSS3 implements SupportedCSS {
 
 		// background
 		props.put("background", Background.component_values);
-		props.put("background-attachement", BackgroundAttachment.SCROLL);
+		props.put("background-attachment", BackgroundAttachment.SCROLL);
 		props.put("background-color", BackgroundColor.TRANSPARENT);
 		props.put("background-image", BackgroundImage.NONE);
 		props.put("background-position", BackgroundPosition.list_values);
