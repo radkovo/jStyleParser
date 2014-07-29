@@ -81,6 +81,10 @@ public interface Selector extends Rule<Selector.SelectorPart> {
         ROOT("root", false),
         EMPTY("empty", false),
         LANG("lang", false),
+        ENABLED("enabled", false),
+        DISABLED("disabled", false),
+        CHECKED("checked", false),
+        TARGET("target", false),
         
         FIRST_LINE("first-line", true),
         FIRST_LETTER("first-letter", true),

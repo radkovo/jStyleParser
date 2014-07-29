@@ -335,7 +335,11 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
             PSEUDO_DECLARATIONS.put("root", PseudoDeclaration.ROOT);
             PSEUDO_DECLARATIONS.put("empty", PseudoDeclaration.EMPTY);
             PSEUDO_DECLARATIONS.put("lang", PseudoDeclaration.LANG);
-            PSEUDO_DECLARATIONS.put("first-letter", PseudoDeclaration.FIRST_LETTER);
+            PSEUDO_DECLARATIONS.put("enabled", PseudoDeclaration.ENABLED);
+            PSEUDO_DECLARATIONS.put("disabled", PseudoDeclaration.DISABLED);
+            PSEUDO_DECLARATIONS.put("checked", PseudoDeclaration.CHECKED);
+            PSEUDO_DECLARATIONS.put("target", PseudoDeclaration.TARGET);
+            
             PSEUDO_DECLARATIONS.put("first-line", PseudoDeclaration.FIRST_LINE);
             PSEUDO_DECLARATIONS.put("before", PseudoDeclaration.BEFORE);
             PSEUDO_DECLARATIONS.put("after", PseudoDeclaration.AFTER);
