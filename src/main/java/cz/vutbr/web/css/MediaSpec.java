@@ -115,6 +115,8 @@ public class MediaSpec
     /** 1 for a grid device, 0 for bitmap device */
     protected int grid;
     
+    /** Matches an empty media query? */
+    protected boolean matchEmpty;
     
     /**
      * Creates a new media specification with the given media type and default values of the features.
@@ -124,6 +126,7 @@ public class MediaSpec
     {
         loadDefaults();
         this.type = type.trim().toLowerCase(Locale.ENGLISH);
+        this.matchEmpty = true; //normally, an empty media query means any media
     }
 
     /**
@@ -365,6 +368,15 @@ public class MediaSpec
         return height >= width; //http://www.w3.org/TR/css3-mediaqueries/#orientation
     }
     
+    /**
+     * Sets whether this media specification should match empty media queries.
+     * @param matchEmpty {@code true} when this media specification should match empty media queries (this is the default)
+     */
+    public void setMatchEmpty(boolean matchEmpty)
+    {
+        this.matchEmpty = matchEmpty;
+    }
+    
     //===============================================================================================
 
     /**
@@ -482,6 +494,16 @@ public class MediaSpec
                 return true;
         }
         return false;
+    }
+    
+    /**
+     * Checks whether the media specification matches an empty or missing media query, i.e. whether the
+     * media or import rules with no media queries should be accepted with this media specification.
+     * @return {@code true} when this media specification matches an empty media query
+     */
+    public boolean matchesEmpty()
+    {
+        return true;
     }
     
     /**

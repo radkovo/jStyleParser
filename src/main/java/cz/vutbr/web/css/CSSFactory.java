@@ -649,10 +649,10 @@ public final class CSSFactory {
 		                return false; //no usable media queries (malformed string?)
 		        }
 		        else
-		            return true; //empty query string
+		            return media.matchesEmpty(); //empty query string
 		    }
 		    else
-		        return true; //no media queries
+		        return media.matchesEmpty(); //no media queries
 		}
 	}
 

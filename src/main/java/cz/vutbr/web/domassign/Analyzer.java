@@ -389,7 +389,7 @@ public class Analyzer {
 				boolean mediaValid = false;
                 if(rulemedia.getMediaQueries()==null || rulemedia.getMediaQueries().isEmpty()) {
                     //no media queries actually
-                    mediaValid = true;
+                    mediaValid = mediaspec.matchesEmpty();
                 } else {
                     //find a matching query
     				for (MediaQuery media : rulemedia.getMediaQueries()) {

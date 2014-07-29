@@ -349,8 +349,8 @@ public class CSSParserFactory {
             String path = parser.getImportPaths().get(i);
             List<MediaQuery> imedia = parser.getImportMedia().get(i);
             
-            if (imedia == null || imedia.isEmpty() || //no media query specified
-                    CSSFactory.getAutoImportMedia().matchesOneOf(imedia)) //or some media query matches to the autoload media spec
+            if (((imedia == null || imedia.isEmpty()) && CSSFactory.getAutoImportMedia().matchesEmpty()) //no media query specified
+                 || CSSFactory.getAutoImportMedia().matchesOneOf(imedia)) //or some media query matches to the autoload media spec
             {    
                 URL url = DataURLHandler.createURL(base, path);
                 try {
