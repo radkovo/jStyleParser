@@ -296,6 +296,12 @@ public class NodeDataVariant {
             return null;
         }		
 
+        @Override
+        public Declaration getSourceDeclaration(String name, boolean includeInherited)
+        {
+            return null;
+        }       
+
 	}
 	
 	static class Pair<T, V> {

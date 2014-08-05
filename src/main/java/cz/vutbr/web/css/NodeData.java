@@ -125,9 +125,18 @@ public interface NodeData {
 	public Collection<String> getPropertyNames();
 	
 	/**
-	 * Obtains the source declaration used for this property.
+	 * Obtains the source declaration used for the given property. Inherited properties are included.
+	 * @param name The property name.
 	 * @return the source declaration
 	 */
 	public Declaration getSourceDeclaration(String name);
 	
+    /**
+     * Obtains the source declaration used for the given property.
+     * @param name The property name.
+     * @param includeInherited whether to include the inherited properties.
+     * @return the source declaration
+     */
+    public Declaration getSourceDeclaration(String name, boolean includeInherited);
+    
 }

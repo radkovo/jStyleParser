@@ -115,7 +115,7 @@ public class SingleMapNodeData implements NodeData {
 			if(q==null) q = new Quadruple();
 			q.curProp = properties.get(key);
 			q.curValue = terms.get(key);
-			q.source = d;
+			q.curSource = d;
 			// remove operator
 			if(q.curValue!=null) q.curValue = q.curValue.setOperator(null);
 			map.put(key, q);
@@ -132,7 +132,10 @@ public class SingleMapNodeData implements NodeData {
 			// replace current with inherited or defaults
 			if(q.curProp!=null && q.curProp.equalsInherit()) {
 				if(q.inhProp==null) q.curProp = css.getDefaultProperty(key);
-				else q.curProp = q.inhProp;
+				else {
+				    q.curProp = q.inhProp;
+				    q.curSource = q.inhSource;
+				}
 				
 				if(q.inhValue==null) q.curValue = css.getDefaultValue(key);
 				else q.curValue = q.inhValue;
@@ -163,21 +166,25 @@ public class SingleMapNodeData implements NodeData {
 			// for this property
 			if(q==null) q = new Quadruple();
 			
-			if(qp.inhProp!=null && qp.inhProp.inherited()) {
+			boolean forceInherit = (q.curProp != null && q.curProp.equalsInherit());
+			
+			//try the inherited value of the parent
+			if(qp.inhProp!=null && (qp.inhProp.inherited() || forceInherit)) {
 				q.inhProp = qp.inhProp;
 				q.inhValue = qp.inhValue;
-				q.source = qp.source;
+				q.inhSource = qp.inhSource;
 			}
 			
-			if((qp.curProp!=null && qp.curProp.inherited())
-			   || (q.curProp!=null && q.curProp.equalsInherit())) {
+			//try the declared property of the parent
+			if(qp.curProp!=null && (qp.curProp.inherited() || forceInherit)) {
 				q.inhProp = qp.curProp;
 				q.inhValue = qp.curValue;
-                q.source = qp.source;
+                q.inhSource = qp.curSource;
 			}
 			// insert/replace only if contains inherited/original 
 			// value			
-			if(!q.isEmpty()) map.put(key, q);
+			if(!q.isEmpty())
+			    map.put(key, q);
 		}
 		return this;
 	}
@@ -223,11 +230,24 @@ public class SingleMapNodeData implements NodeData {
     @Override
     public Declaration getSourceDeclaration(String name)
     {
+        return getSourceDeclaration(name, true);
+    }
+    
+    @Override
+    public Declaration getSourceDeclaration(String name, boolean includeInherited)
+    {
         Quadruple q = map.get(name);
         if (q == null)
             return null;
         else
-            return q.source;
+        {
+            if(includeInherited) {
+                if(q.curSource!=null) return q.curSource;
+                return q.inhSource;
+            }
+            else
+                return q.curSource;
+        }
     }
 
 	static class Quadruple {
@@ -235,7 +255,8 @@ public class SingleMapNodeData implements NodeData {
 		CSSProperty curProp = null;
 		Term<?> inhValue = null;
 		Term<?> curValue = null;
-		Declaration source = null;
+		Declaration inhSource = null;
+        Declaration curSource = null;
 		
 		public Quadruple() {			
 		}

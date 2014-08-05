@@ -37,14 +37,16 @@ public class QuadrupleMapNodeData implements NodeData {
 	private Map<String,CSSProperty> propertiesInh;
 	private Map<String,Term<?>> valuesOwn;
 	private Map<String,Term<?>> valuesInh;
-	private Map<String,Declaration> sources;
+	private Map<String,Declaration> sourcesOwn;
+    private Map<String,Declaration> sourcesInh;
 	
 	public QuadrupleMapNodeData() {
 		this.propertiesOwn = new HashMap<String, CSSProperty>(css.getTotalProperties(), 1.0f);
 		this.propertiesInh = new HashMap<String, CSSProperty>(css.getTotalProperties(), 1.0f);
 		this.valuesOwn = new HashMap<String, Term<?>>(css.getTotalProperties(), 1.0f);
 		this.valuesInh = new HashMap<String, Term<?>>(css.getTotalProperties(), 1.0f);
-        this.sources = new HashMap<String, Declaration>(css.getTotalProperties(), 1.0f);
+        this.sourcesOwn = new HashMap<String, Declaration>(css.getTotalProperties(), 1.0f);
+        this.sourcesInh = new HashMap<String, Declaration>(css.getTotalProperties(), 1.0f);
 	}
 	
 	
@@ -117,7 +119,7 @@ public class QuadrupleMapNodeData implements NodeData {
 		for(Entry<String,Term<?>> entry: terms.entrySet()) {
 			entry.getValue().setOperator(null);
 			valuesOwn.put(entry.getKey(), entry.getValue());
-			sources.put(entry.getKey(), d);
+			sourcesOwn.put(entry.getKey(), d);
 		}
 		
 		return this;
@@ -144,8 +146,11 @@ public class QuadrupleMapNodeData implements NodeData {
 				// remove old value to be sure
 				this.valuesInh.remove(key);
 				Term<?> term = nd.valuesInh.get(key);
-				if(term!=null)
+				Declaration src = nd.sourcesInh.get(key);
+				if(term!=null) {
 					this.valuesInh.put(key, term);
+					this.sourcesInh.put(key, src);
+				}
 			}
 		}
 		
@@ -156,8 +161,11 @@ public class QuadrupleMapNodeData implements NodeData {
 				// remove old value to be sure
 				this.valuesInh.remove(key);
 				Term<?> term = nd.valuesOwn.get(key);
-				if(term!=null)
+                Declaration src = nd.sourcesOwn.get(key);
+				if(term!=null) {
 					this.valuesInh.put(key, term);
+                    this.sourcesInh.put(key, src);
+				}
 			}
 		}		
 	
@@ -244,7 +252,16 @@ public class QuadrupleMapNodeData implements NodeData {
     @Override
     public Declaration getSourceDeclaration(String name)
     {
-        return sources.get(name);
+        return sourcesOwn.get(name);
+    }
+    
+    @Override
+    public Declaration getSourceDeclaration(String name, boolean includeInherited)
+    {
+        Declaration ret = sourcesOwn.get(name);
+        if (includeInherited && ret == null)
+            ret = sourcesInh.get(name);
+        return ret;
     }
     
 	
