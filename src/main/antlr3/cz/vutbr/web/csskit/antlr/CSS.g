@@ -153,12 +153,7 @@ import cz.vutbr.web.css.SupportedCSS;
             else if (mode == RecoveryMode.RULE)
                 return aposOpen==false && quotOpen==false && parenNest==0;
             else if (mode == RecoveryMode.DECL)
-            {
-                if (t.getType() == RCURLY) //if '}' is processed the curlyNest has been already decreased 
-                    return aposOpen==false && quotOpen==false && parenNest==0 && curlyNest==state.curlyNest-1;
-                else
-                    return aposOpen==false && quotOpen==false && parenNest==0 && curlyNest==state.curlyNest;
-            }
+                return aposOpen==false && quotOpen==false && parenNest==0 && curlyNest==state.curlyNest;
             else
                 return false;
         }
@@ -756,11 +751,11 @@ atstatement
 	  RCURLY -> ^(FONTFACE declarations)
 	| MEDIA S* media? 
 		LCURLY S* (media_rule S*)* RCURLY -> ^(MEDIA media? media_rule*)	
-	| ATKEYWORD S* LCURLY any* RCURLY -> INVALID_STATEMENT
+	| unknown_atrule -> INVALID_STATEMENT
 	;
 	catch [RecognitionException re] {
       	final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
-	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
+	      retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
 	  		"INVALID_STATEMENT", follow, re);							
 	}
 
@@ -831,6 +826,17 @@ media_rule
  | atstatement -> INVALID_STATEMENT
  ;
 	
+unknown_atrule
+@init {
+  LexerState begin = getCurrentLexerState(retval.start);
+}
+ : ATKEYWORD S* any* LCURLY S* any* RCURLY
+ ;
+ catch [RecognitionException re] {
+     final BitSet follow = BitSet.of(CSSLexer.RCURLY);               
+     retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, LexerState.RecoveryMode.DECL, begin, re);
+ }
+	
 ruleset
 	: combined_selector (COMMA S* combined_selector)* 
 	  LCURLY S* 
@@ -842,7 +848,7 @@ ruleset
 	catch [RecognitionException re] {
       final BitSet follow = BitSet.of(CSSLexer.RCURLY);
       //we don't require {} to be balanced here because of possible parent 'media' sections that may remain open => RecoveryMode.RULE
-	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT,	"INVALID_STATEMENT", follow, LexerState.RecoveryMode.RULE, null, re);							
+	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT,	"INVALID_STATEMENT", follow, LexerState.RecoveryMode.RULE, null, re);
 	}
 
 declarations
@@ -860,7 +866,7 @@ declaration
 	;
 	catch [RecognitionException re] {
       final BitSet follow = BitSet.of(CSSLexer.SEMICOLON, CSSLexer.RCURLY); //recover on the declaration end or rule end
-      retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, LexerState.RecoveryMode.DECL, begin, re);             
+      retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, LexerState.RecoveryMode.DECL, begin, re);             
 	}
 
 important
