@@ -1,3 +1,10 @@
+Version 1.18 - Aug 28, 2014
+- New CSS3 pseudo classes support
+- Fix background-attachment and font-variant bugs
+- Matching empty media queries in MediaSpec
+- Property inheritance fixes
+- Error recovery fixes (unknown at-rules)
+
 Version 1.17 - Jul 11, 2014
 - Media queries supported in parser and DOMAnalyzer
 - API extensions for Media queries
