@@ -15,11 +15,16 @@ public class ElementUtil {
 	public static final String CLASS_ATTR = "class";
 	public static final String ID_ATTR = "id";
 	
+	public static String getAttribute(Element e, String name)
+	{
+	    return e.hasAttribute(name) ? e.getAttribute(name) : "";
+	}
+	
 	public static Collection<String> elementClasses(Element e) 
 	{
 	    if (e.hasAttribute(CLASS_ATTR))
 	    {
-    		String classNames = e.getAttribute(CLASS_ATTR);
+    		String classNames = getAttribute(e, CLASS_ATTR);
     		
     		Collection<String> list = new ArrayList<String>();
     		for (String cname : classNames.toLowerCase().split(CLASS_DELIM)) 
@@ -38,7 +43,7 @@ public class ElementUtil {
 	{
         if (e.hasAttribute(CLASS_ATTR))
         {
-            String classNames = e.getAttribute(CLASS_ATTR).toLowerCase();
+            String classNames = getAttribute(e, CLASS_ATTR).toLowerCase();
             int len = className.length();
     	    int start = classNames.indexOf(className.toLowerCase());
     	    if (start == -1)
@@ -55,7 +60,7 @@ public class ElementUtil {
     {
         if (e.hasAttribute(CLASS_ATTR))
         {
-            String classNames = e.getAttribute(CLASS_ATTR).toLowerCase();
+            String classNames = getAttribute(e, CLASS_ATTR).toLowerCase();
             String search = className.toLowerCase();
             int len = className.length();
             int lastIndex = 0;
@@ -76,7 +81,7 @@ public class ElementUtil {
 	
 	public static String elementID(Element e) 
 	{
-		String id = e.getAttribute(ID_ATTR);
+		String id = getAttribute(e, ID_ATTR);
 		return id;
 	}
 	

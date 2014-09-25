@@ -17,6 +17,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 import org.w3c.dom.traversal.NodeFilter;
 
+import cz.vutbr.web.csskit.ElementUtil;
 import cz.vutbr.web.csskit.MatchConditionImpl;
 import cz.vutbr.web.csskit.antlr.CSSParserFactory;
 import cz.vutbr.web.csskit.antlr.CSSParserFactory.SourceType;
@@ -564,7 +565,7 @@ public final class CSSFactory {
 				}
 				// linked style-sheet
 				else if (isLinkedStyleSheet(elem, media)) {
-				    URL uri = DataURLHandler.createURL(base, elem.getAttribute("href"));
+				    URL uri = DataURLHandler.createURL(base, ElementUtil.getAttribute(elem, "href"));
 					result = CSSParserFactory.append(uri, encoding, SourceType.URL,
 							result, uri);
 					log.debug("Matched linked CSS style");
@@ -599,8 +600,8 @@ public final class CSSFactory {
 
 		private static boolean isLinkedStyleSheet(Element e, MediaSpec media) {
 			return e.getNodeName().equalsIgnoreCase("link")
-			        && (e.getAttribute("rel").toLowerCase().contains("stylesheet"))
-					&& (e.getAttribute("type").isEmpty() || "text/css".equalsIgnoreCase(e.getAttribute("type")))
+			        && (ElementUtil.getAttribute(e, "rel").toLowerCase().contains("stylesheet"))
+					&& (ElementUtil.getAttribute(e, "type").isEmpty() || "text/css".equalsIgnoreCase(ElementUtil.getAttribute(e, "type")))
 					&& isAllowedMedia(e, media);
 		}
 
@@ -629,7 +630,7 @@ public final class CSSFactory {
 		 * @return {@code true} if allowed, {@code false} otherwise
 		 */
 		private static boolean isAllowedMedia(Element e, MediaSpec media) {
-		    String attr = e.getAttribute("media");
+		    String attr = ElementUtil.getAttribute(e, "media");
 		    if (attr != null && attr.length() > 0)
 		    {
 		        attr = attr.trim();
