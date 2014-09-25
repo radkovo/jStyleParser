@@ -10,7 +10,7 @@ package cz.vutbr.web.css;
  * @author Jan Svercl, 2008
  * 
  */
-public interface Term<T> {
+public interface Term<T> extends Cloneable {
 
 	/**
 	 * This operator is between terms in value part of CSS declaration.
@@ -65,5 +65,6 @@ public interface Term<T> {
      * @return Modified object to allow chaining
      */
     public Term<T> setOperator(Operator operator);
-    
+
+    public Term<T> shallowClone();
 }
