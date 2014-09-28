@@ -2237,21 +2237,25 @@ public class DeclarationTransformer {
 				}
 
 				//create term list from the values, replace unspecified values by center
+                int assigned = 0;
 				TermList list = tf.createList(2);
                 for (int j = 0; j < 2; j++)
+                {
                     if (vv[j] == null)
                         list.add(tf.createPercent(50.0f));
                     else
+                    {
                         list.add(vv[j]);
+                        assigned++;
+                    }
+                }
                 
-				if (list.isEmpty())
+                // no values could be used
+				if (assigned == 0)
 					return false;
-				// copy element if only one present
-				else if (list.size() == 1)
-					list.add(1, list.get(0));
 				// if used two elements, inform master
-				else if (list.size() == 2)
-					iteration.inc();
+				else if (assigned == 2)
+				    iteration.inc();
 
 				// store list
 				properties.put(names.get(POSITION),
