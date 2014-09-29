@@ -136,6 +136,6 @@ public class Media
     public void malformedQueries4() throws IOException, CSSException 
     {
         StyleSheet ss = CSSFactory.parse(TEST_MALFORMED4);
-        assertEquals("There are two rules", 2, ss.size());
+        assertEquals("There are three rules", 3, ss.size());
     }
 }

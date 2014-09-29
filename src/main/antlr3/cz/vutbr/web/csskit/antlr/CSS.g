@@ -153,7 +153,12 @@ import cz.vutbr.web.css.SupportedCSS;
             else if (mode == RecoveryMode.RULE)
                 return aposOpen==false && quotOpen==false && parenNest==0;
             else if (mode == RecoveryMode.DECL)
-                return aposOpen==false && quotOpen==false && parenNest==0 && curlyNest==state.curlyNest;
+            {
+                if (t.getType() == RCURLY) //if '}' is processed the curlyNest has been already decreased 
+                    return aposOpen==false && quotOpen==false && parenNest==0 && curlyNest==state.curlyNest-1;
+                else
+                    return aposOpen==false && quotOpen==false && parenNest==0 && curlyNest==state.curlyNest;
+            }
             else
                 return false;
         }
@@ -827,14 +832,11 @@ media_rule
  ;
 	
 unknown_atrule
-@init {
-  LexerState begin = getCurrentLexerState(retval.start);
-}
  : ATKEYWORD S* any* LCURLY S* any* RCURLY
  ;
  catch [RecognitionException re] {
      final BitSet follow = BitSet.of(CSSLexer.RCURLY);               
-     retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, LexerState.RecoveryMode.DECL, begin, re);
+     retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, LexerState.RecoveryMode.BALANCED, null, re);
  }
 	
 ruleset
@@ -866,7 +868,8 @@ declaration
 	;
 	catch [RecognitionException re] {
       final BitSet follow = BitSet.of(CSSLexer.SEMICOLON, CSSLexer.RCURLY); //recover on the declaration end or rule end
-      retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, LexerState.RecoveryMode.DECL, begin, re);             
+      //not greedy - the final ; or } must remain for properly finishing the declaration/rule
+      retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, LexerState.RecoveryMode.DECL, begin, re);             
 	}
 
 important

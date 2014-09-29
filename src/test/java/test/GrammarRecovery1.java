@@ -76,6 +76,10 @@ public class GrammarRecovery1 {
 	//invalid semicolon between the rules
 	public static final String TEST_INVALID_SEMICOLON =	" h1 { color: red; } ; h3 { color: blue; }";
 	
+	//declaration with no value
+	public static final String TEST_NO_VALUE = "#menu { background-color: #afa; null; color: red; }";
+	
+	
 	@BeforeClass
 	public static void init() {
 		log.info("\n\n\n == GrammarRecovery1 test at {} == \n\n\n", new Date());
@@ -207,4 +211,12 @@ public class GrammarRecovery1 {
 
 	}
 	
+    @Test
+    public void declarationNoValue() throws IOException, CSSException {
+        StyleSheet ss = CSSFactory.parse(TEST_NO_VALUE);
+
+        Assert.assertEquals("Stylesheet contains one rule", 1, ss.size());
+        Assert.assertEquals("There are two declarations in the rule", 2, ss.get(0).size());
+
+    }
 }
