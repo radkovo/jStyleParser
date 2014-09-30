@@ -924,9 +924,9 @@ funct
 valuepart
     : ( MINUS? IDENT -> MINUS? IDENT
       | CLASSKEYWORD -> CLASSKEYWORD
-      | MINUS? NUMBER -> MINUS? NUMBER
-      | MINUS? PERCENTAGE -> MINUS? PERCENTAGE
-      | MINUS? DIMENSION -> MINUS? DIMENSION
+      | (PLUS | MINUS)? NUMBER -> MINUS? NUMBER
+      | (PLUS | MINUS)? PERCENTAGE -> MINUS? PERCENTAGE
+      | (PLUS | MINUS)? DIMENSION -> MINUS? DIMENSION
       | string -> string
       | URI    -> URI
       | HASH -> HASH
@@ -940,9 +940,8 @@ valuepart
       | PERCENT -> PERCENT
       | EQUALS -> EQUALS
       | SLASH -> SLASH
-	    | PLUS -> PLUS
 	    | ASTERISK -> ASTERISK		 
-      | MINUS? funct -> MINUS? funct 
+      | (PLUS | MINUS)? funct -> MINUS? funct 
       | DASHMATCH -> DASHMATCH
       | LPAREN valuepart* RPAREN -> ^(PARENBLOCK valuepart*)
       | LBRACE valuepart* RBRACE -> ^(BRACEBLOCK valuepart*)
