@@ -115,22 +115,37 @@ public class ElementUtil {
         		case EQUALS:
         			return attributeValue.equals(value);
         		case INCLUDES:
-        			attributeValue = " " + attributeValue + " ";
-        			return attributeValue.matches(".* " + value + " .*");
+        		    if (value.isEmpty() || containsWhitespace(value))
+        		        return false;
+        		    else
+        		    {
+            			attributeValue = " " + attributeValue + " ";
+            			return attributeValue.matches(".* " + value + " .*");
+        		    }
         		case DASHMATCH:
         			return attributeValue.matches("^" + value + "(-.*|$)");
         		case CONTAINS:
-        			return attributeValue.matches(".*" + value + ".*");
+        			return !value.isEmpty() && attributeValue.matches(".*" + value + ".*");
         		case STARTSWITH:
-        			return attributeValue.matches("^" + value + ".*");
+        			return !value.isEmpty() && attributeValue.matches("^" + value + ".*");
                 case ENDSWITH:
-                    return attributeValue.matches(".*" + value + "$");
+                    return !value.isEmpty() && attributeValue.matches(".*" + value + "$");
         		default:
         			return true;
     		}
 	    }
 	    else
 	        return false;
+	}
+	
+	private static boolean containsWhitespace(String s)
+	{
+	    for (int i = 0; i < s.length(); i++)
+	    {
+	        if (Character.isWhitespace(s.charAt(i)))
+	                return true;
+	    }
+	    return false;
 	}
 	
 }
