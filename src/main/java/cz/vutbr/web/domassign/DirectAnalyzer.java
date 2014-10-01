@@ -194,7 +194,10 @@ public class DirectAnalyzer extends Analyzer
             if (combinator == null) {
                 retval = s.matches(e);
             } else if (combinator == Selector.Combinator.ADJACENT) {
-                Node adjacent = e.getPreviousSibling();
+                Node adjacent = e;
+                do {
+                    adjacent = adjacent.getPreviousSibling();
+                } while (adjacent != null && adjacent.getNodeType() != Node.ELEMENT_NODE);
                 retval = false;
                 if (adjacent != null && adjacent.getNodeType() == Node.ELEMENT_NODE)
                     retval = s.matches((Element) adjacent);
