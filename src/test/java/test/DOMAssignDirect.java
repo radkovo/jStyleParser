@@ -139,6 +139,27 @@ public class DOMAssignDirect {
     }
     
     @Test
+    public void combinators() throws SAXException, IOException {  
+        
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/selectors3.html"));
+        Document doc = ds.parse();
+        ElementMap elements = new ElementMap(doc);
+        
+        StyleSheet style = CSSFactory.getUsedStyles(doc, null, getClass().getResource("/simple/selectors3.html"),"screen");
+        DirectAnalyzer da = new DirectAnalyzer(style);
+        
+        NodeData i1 = getStyleById(elements, da, "i1");
+        NodeData i2 = getStyleById(elements, da, "i2");
+        NodeData i3 = getStyleById(elements, da, "i3");
+        NodeData i4 = getStyleById(elements, da, "i4");
+
+        assertThat("Descendant combinator", i1.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
+        assertThat("Child combinator", i2.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
+        assertThat("Adjacent sibling combinator", i3.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
+        assertThat("Generic sibling combinator", i4.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
+    }
+    
+    @Test
     public void inherit() throws SAXException, IOException {  
         
         DOMSource ds = new DOMSource(getClass().getResourceAsStream("/advanced/inherit.html"));

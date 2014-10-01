@@ -1,0 +1,23 @@
+p {
+	color: blue;
+}
+
+body #i1 {
+	color: green;
+}
+
+body > #i1 {
+	color: red;
+}
+
+div > #i2 {
+	color: green;
+}
+
+#i2 + p {
+	color: green;
+}
+
+#i1 ~ #i4 {
+	color: green;
+}
