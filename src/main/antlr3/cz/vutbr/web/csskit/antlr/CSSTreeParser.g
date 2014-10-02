@@ -14,6 +14,7 @@ import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.unbescape.css.CssEscape;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
@@ -125,6 +126,10 @@ import cz.vutbr.web.csskit.RuleArrayList;
 		
 	private String extractText(CommonTree token) {
         return token.getText();
+    }
+   
+  private String extractTextUnescaped(CommonTree token) {
+        return CssEscape.unescapeCss(token.getText());
     }
    
   private URL extractBase(CommonTree token) {
@@ -290,7 +295,7 @@ scope {
 
 import_uri returns [String s]
   : (uri=URI) { s = extractText(uri); }
-  | (str=STRING) { s = extractText(str); }
+  | (str=STRING) { s = extractTextUnescaped(str); }
   ;
 
 margin returns [RuleMargin m]
@@ -817,7 +822,7 @@ pseudo returns [Selector.PseudoPage pseudoPage]
 	;
 
 string returns [String s]
-	: st=STRING { $s= extractText(st);}
+	: st=STRING { $s=extractTextUnescaped(st);}
 	| INVALID_STRING {$s=null;}
 	;
   
