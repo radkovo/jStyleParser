@@ -2,7 +2,7 @@ p {
 	color: blue;
 }
 
-body #i1 {
+body div #i1 {
 	color: green;
 }
 
@@ -10,7 +10,7 @@ body > #i1 {
 	color: red;
 }
 
-div > #i2 {
+body > div > #i2 {
 	color: green;
 }
 

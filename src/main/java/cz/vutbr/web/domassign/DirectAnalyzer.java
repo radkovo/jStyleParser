@@ -183,6 +183,7 @@ public class DirectAnalyzer extends Analyzer
     {
         boolean retval = false;
         Selector.Combinator combinator = null;
+        Element current = e;
         // traverse simple selector backwards
         for (int i = sel.size() - 1; i >= 0; i--) {
             // last simple selector
@@ -192,46 +193,58 @@ public class DirectAnalyzer extends Analyzer
 
             // decide according to combinator anti-pattern
             if (combinator == null) {
-                retval = s.matches(e);
+                retval = s.matches(current);
             } else if (combinator == Selector.Combinator.ADJACENT) {
-                Node adjacent = e;
+                Node adjacent = current;
                 do {
                     adjacent = adjacent.getPreviousSibling();
                 } while (adjacent != null && adjacent.getNodeType() != Node.ELEMENT_NODE);
                 retval = false;
                 if (adjacent != null && adjacent.getNodeType() == Node.ELEMENT_NODE)
-                    retval = s.matches((Element) adjacent);
+                {
+                    current = (Element) adjacent; 
+                    retval = s.matches(current);
+                }
             } else if (combinator == Selector.Combinator.PRECEDING) {
-                Node preceding = e.getPreviousSibling();
+                Node preceding = current.getPreviousSibling();
                 retval = false;
                 do
                 {
                     if (preceding != null)
                     {
                         if (preceding.getNodeType() == Node.ELEMENT_NODE && s.matches((Element) preceding))
+                        {
+                            current = (Element) preceding;
                             retval = true;
+                        }
                         else
                             preceding = preceding.getPreviousSibling();
                     }
                 } while (!retval && preceding != null);
             } else if (combinator == Selector.Combinator.DESCENDANT) {
-                Node ancestor = e.getParentNode();
+                Node ancestor = current.getParentNode();
                 retval = false;
                 do
                 {
                     if (ancestor != null)
                     {
                         if (ancestor.getNodeType() == Node.ELEMENT_NODE && s.matches((Element) ancestor))
+                        {
+                            current = (Element) ancestor;
                             retval = true;
+                        }
                         else
                             ancestor = ancestor.getParentNode();
                     }
                 } while (!retval && ancestor != null);
             } else if (combinator == Selector.Combinator.CHILD) {
-                Node parent = e.getParentNode();
+                Node parent = current.getParentNode();
                 retval = false;
                 if (parent != null && parent.getNodeType() == Node.ELEMENT_NODE)
-                    retval = s.matches((Element) parent);
+                {
+                    current = (Element) parent;
+                    retval = s.matches(current);
+                }
             }
 
             // set combinator for next loop
