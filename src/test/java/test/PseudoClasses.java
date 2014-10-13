@@ -85,7 +85,7 @@ public class PseudoClasses {
         assertThat(l2.getValue(TermColor.class, "color"), is(tf.createColor(0,255,255)));
         assertThat(l3.getValue(TermColor.class, "color"), is(tf.createColor(0,0,170)));
     }
-
+    
     @Test
     public void pseudoClassMapNonStatic() throws SAXException, IOException {
 
@@ -133,7 +133,7 @@ public class PseudoClasses {
         assertThat(l2.getValue(TermColor.class, "color"), is(tf.createColor(0,255,255)));
         assertThat(l3.getValue(TermColor.class, "color"), is(tf.createColor(0,0,170)));
     }
-
+    
     private NodeData getStyleById(ElementMap elements, StyleMap decl, String id)
     {
         NodeData data = decl.get(elements.getElementById(id));

@@ -72,11 +72,11 @@ public class Analyzer {
 	public Analyzer(List<StyleSheet> sheets) {
 	    this.sheets = sheets;
 	}
-
+	
 	/**
 	 * Registers a new match condition to be used for matching the elements and
 	 * selector parts.
-	 * 
+	 *
 	 * @param matchCond
 	 *            the new match condition
 	 */
@@ -87,7 +87,7 @@ public class Analyzer {
 	/**
 	 * Obtains the match condition to be used for matching the elements and
 	 * selector parts. If the match condition is null, returns default match condition.
-	 * 
+	 *
 	 * @return the match condition used by the Analyzer.
 	 */
 	public final MatchCondition getMatchCondition() {

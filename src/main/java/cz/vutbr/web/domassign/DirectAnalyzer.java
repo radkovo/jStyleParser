@@ -193,7 +193,7 @@ public class DirectAnalyzer extends Analyzer
             return false;
         }
     }
-
+    
     protected boolean matchSelector(CombinedSelector sel, Element e)
     {
         boolean retval = false;

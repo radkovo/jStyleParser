@@ -493,7 +493,7 @@ public final class CSSFactory {
     /**
      * This is the same as {@link CSSFactory#assignDOM(Document, String, URL, MediaSpec, boolean)} but only the
      * media type is provided instead of the complete media specification.
-     * 
+     *
      * @param doc
      *            DOM tree
      * @param encoding
@@ -509,7 +509,6 @@ public final class CSSFactory {
      */
     public static final StyleMap assignDOM(Document doc, String encoding,
             URL base, String media, boolean useInheritance) {
-        
         return assignDOM(doc, encoding, base, new MediaSpec(media), useInheritance);
     }
 
@@ -523,7 +522,7 @@ public final class CSSFactory {
      *     element attribute. These styles behave the same way as the inline styles but they have the lowest priority
      *     (the values are used only when not redefined by any other way)
      *  </ul>
-     * 
+     *
      * @param doc
      *            DOM tree
      * @param encoding
@@ -561,7 +560,7 @@ public final class CSSFactory {
     /**
      * This is the same as {@link CSSFactory#assignDOM(Document, String, URL, MediaSpec, boolean)} but only the
      * media type is provided instead of the complete media specification.
-     *
+     * 
      * @param doc
      *            DOM tree
      * @param encoding
@@ -579,6 +578,7 @@ public final class CSSFactory {
      */
     public static final StyleMap assignDOM(Document doc, String encoding,
             URL base, String media, boolean useInheritance, final MatchCondition matchCond) {
+        
         return assignDOM(doc, encoding, base, new MediaSpec(media), useInheritance, matchCond);
     }
 
