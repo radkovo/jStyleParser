@@ -19,6 +19,7 @@ import org.w3c.dom.Node;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.MatchCondition;
 import cz.vutbr.web.css.MediaSpec;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.RuleSet;
@@ -184,6 +185,7 @@ public class DirectAnalyzer extends Analyzer
         boolean retval = false;
         Selector.Combinator combinator = null;
         Element current = e;
+        final MatchCondition matchCond = this.getMatchCondition();
         // traverse simple selector backwards
         for (int i = sel.size() - 1; i >= 0; i--) {
             // last simple selector
@@ -193,7 +195,7 @@ public class DirectAnalyzer extends Analyzer
 
             // decide according to combinator anti-pattern
             if (combinator == null) {
-                retval = s.matches(current);
+                retval = matchCond == null ? s.matches(current) : s.matches(current, matchCond);
             } else if (combinator == Selector.Combinator.ADJACENT) {
                 Node adjacent = current;
                 do {
@@ -203,22 +205,21 @@ public class DirectAnalyzer extends Analyzer
                 if (adjacent != null && adjacent.getNodeType() == Node.ELEMENT_NODE)
                 {
                     current = (Element) adjacent; 
-                    retval = s.matches(current);
+                    retval = matchCond == null ? s.matches(current) : s.matches(current, matchCond);
                 }
             } else if (combinator == Selector.Combinator.PRECEDING) {
                 Node preceding = current.getPreviousSibling();
                 retval = false;
                 do
                 {
-                    if (preceding != null)
-                    {
-                        if (preceding.getNodeType() == Node.ELEMENT_NODE && s.matches((Element) preceding))
-                        {
+                    if (preceding != null) {
+                        final boolean elementType = preceding.getNodeType() == Node.ELEMENT_NODE;
+                        if (elementType && (matchCond == null ? s.matches((Element) preceding) : s.matches((Element) preceding, matchCond))) {
                             current = (Element) preceding;
                             retval = true;
-                        }
-                        else
+                        } else {
                             preceding = preceding.getPreviousSibling();
+                        }
                     }
                 } while (!retval && preceding != null);
             } else if (combinator == Selector.Combinator.DESCENDANT) {
@@ -226,15 +227,14 @@ public class DirectAnalyzer extends Analyzer
                 retval = false;
                 do
                 {
-                    if (ancestor != null)
-                    {
-                        if (ancestor.getNodeType() == Node.ELEMENT_NODE && s.matches((Element) ancestor))
-                        {
-                            current = (Element) ancestor;
-                            retval = true;
+                    if (ancestor != null) {
+                        final boolean elementType = ancestor.getNodeType() == Node.ELEMENT_NODE;
+                        if (elementType && (matchCond == null ? s.matches((Element) ancestor) : s.matches((Element) ancestor, matchCond))) {
+                          current = (Element) ancestor;
+                          retval = true;
+                        } else {
+                          ancestor = ancestor.getParentNode();
                         }
-                        else
-                            ancestor = ancestor.getParentNode();
                     }
                 } while (!retval && ancestor != null);
             } else if (combinator == Selector.Combinator.CHILD) {
@@ -243,7 +243,7 @@ public class DirectAnalyzer extends Analyzer
                 if (parent != null && parent.getNodeType() == Node.ELEMENT_NODE)
                 {
                     current = (Element) parent;
-                    retval = s.matches(current);
+                    retval = matchCond == null ? s.matches(current) : s.matches(current, matchCond);
                 }
             }
 

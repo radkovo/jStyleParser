@@ -19,6 +19,7 @@ import org.w3c.dom.traversal.TreeWalker;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.MatchCondition;
 import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.MediaSpec;
 import cz.vutbr.web.css.NodeData;
@@ -53,6 +54,8 @@ public class Analyzer {
 	 */
 	protected Holder rules;
 
+	private MatchCondition matchCond = null;
+
 	/**
 	 * Creates the analyzer for a single style sheet.
 	 * @param sheet The stylesheet that will be used as the source of rules.
@@ -69,7 +72,28 @@ public class Analyzer {
 	public Analyzer(List<StyleSheet> sheets) {
 	    this.sheets = sheets;
 	}
-	
+
+	/**
+	 * Registers a new match condition to be used for matching the elements and
+	 * selector parts.
+	 * 
+	 * @param matchCond
+	 *            the new match condition
+	 */
+	public final void registerMatchCondition(MatchCondition matchCond) {
+		this.matchCond = matchCond;
+	}
+
+	/**
+	 * Obtains the match condition to be used for matching the elements and
+	 * selector parts. If the match condition is null, returns default match condition.
+	 * 
+	 * @return the match condition used by the Analyzer.
+	 */
+	public final MatchCondition getMatchCondition() {
+		return this.matchCond;
+	}
+
 	/**
 	 * Evaluates CSS properties of DOM tree
 	 * 
@@ -311,29 +335,29 @@ public class Analyzer {
 
 			// decide according to combinator anti-pattern
 			if (combinator == null) {
-				retval = s.matches(e);
+				retval = this.matchCond == null ? s.matches(e) : s.matches(e, this.matchCond);
 			} else if (combinator == Selector.Combinator.ADJACENT) {
 				Element adjacent = (Element) w.previousSibling();
 				retval = false;
 				if (adjacent != null)
-					retval = s.matches(adjacent);
+					retval = this.matchCond == null ? s.matches(adjacent) : s.matches(adjacent, this.matchCond);
             } else if (combinator == Selector.Combinator.PRECEDING) {
                 Element preceding;
                 retval = false;
                 while (!retval && (preceding = (Element) w.previousSibling()) != null) {
-                    retval = s.matches(preceding);
+                    retval = this.matchCond == null ? s.matches(preceding) : s.matches(preceding, this.matchCond);
                 }
 			} else if (combinator == Selector.Combinator.DESCENDANT) {
                 Element ancestor;
                 retval = false;
                 while (!retval && (ancestor = (Element) w.parentNode()) != null) {
-                    retval = s.matches(ancestor);
+                    retval = this.matchCond == null ? s.matches(ancestor) : s.matches(ancestor, this.matchCond);
                 }
 			} else if (combinator == Selector.Combinator.CHILD) {
                 Element parent = (Element) w.parentNode();
                 retval = false;
                 if (parent != null)
-                    retval = s.matches(parent);
+                    retval = this.matchCond == null ? s.matches(parent) : s.matches(parent, this.matchCond);
 			}
 
 			// set combinator for next loop
