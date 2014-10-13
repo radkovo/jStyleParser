@@ -320,7 +320,7 @@ public class Analyzer {
 		declarations.put(e, null, eldecl);
 	}
 
-	private boolean elementSelectorMatches(final Selector s, final Element e) {
+	protected boolean elementSelectorMatches(final Selector s, final Element e) {
 		return this.matchCond == null ? s.matches(e) : s.matches(e, matchCond);
 	}
 

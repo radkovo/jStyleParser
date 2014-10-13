@@ -179,11 +179,6 @@ public class DirectAnalyzer extends Analyzer
         return eldecl;
     }
 
-    private boolean elementSelectorMatches(final Selector s, final Element e) {
-        final MatchCondition matchCond = this.getMatchCondition();
-        return matchCond == null ? s.matches(e) : s.matches(e, matchCond);
-    }
-
     private boolean nodeSelectorMatches(final Selector s, final Node n) {
         if (n.getNodeType() == Node.ELEMENT_NODE) {
             final Element e = (Element) n;
