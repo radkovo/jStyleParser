@@ -487,7 +487,7 @@ public final class CSSFactory {
 	 */
 	public static final StyleMap assignDOM(Document doc, String encoding,
 			URL base, MediaSpec media, boolean useInheritance) {
-		return assignDOM(doc, encoding, base, media, useInheritance, getDefaultMatchCondition());
+		return assignDOM(doc, encoding, base, media, useInheritance, null);
 	}
 
     /**
@@ -552,7 +552,9 @@ public final class CSSFactory {
 		traversal.listTraversal(style);
 
 		Analyzer analyzer = new Analyzer(style);
-		analyzer.registerMatchCondition(matchCond);
+		if (matchCond != null) {
+			analyzer.registerMatchCondition(matchCond);
+		}
 		return analyzer.evaluateDOM(doc, media, useInheritance);
 	}
 
