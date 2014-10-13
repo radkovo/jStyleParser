@@ -222,7 +222,8 @@ public class DirectAnalyzer extends Analyzer
                 {
                     if (preceding != null)
                     {
-                        if (preceding.getNodeType() == Node.ELEMENT_NODE && this.nodeSelectorMatches(s, preceding)) {
+                        if (this.nodeSelectorMatches(s, preceding))
+                        {
                             current = (Element) preceding;
                             retval = true;
                         }
@@ -237,7 +238,8 @@ public class DirectAnalyzer extends Analyzer
                 {
                     if (ancestor != null)
                     {
-                        if (ancestor.getNodeType() == Node.ELEMENT_NODE && this.nodeSelectorMatches(s, ancestor)) {
+                        if (this.nodeSelectorMatches(s, ancestor))
+                        {
                             current = (Element) ancestor;
                             retval = true;
                         }
