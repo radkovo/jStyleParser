@@ -320,6 +320,10 @@ public class Analyzer {
 		declarations.put(e, null, eldecl);
 	}
 
+	private boolean elementSelectorMatches(final Selector s, final Element e) {
+		return this.matchCond == null ? s.matches(e) : s.matches(e, matchCond);
+	}
+
 	protected boolean matchSelector(CombinedSelector sel, Element e, TreeWalker w) {
 
 		// store current walker position
@@ -335,29 +339,29 @@ public class Analyzer {
 
 			// decide according to combinator anti-pattern
 			if (combinator == null) {
-				retval = this.matchCond == null ? s.matches(e) : s.matches(e, this.matchCond);
+				retval = this.elementSelectorMatches(s, e);
 			} else if (combinator == Selector.Combinator.ADJACENT) {
 				Element adjacent = (Element) w.previousSibling();
 				retval = false;
 				if (adjacent != null)
-					retval = this.matchCond == null ? s.matches(adjacent) : s.matches(adjacent, this.matchCond);
+					retval = this.elementSelectorMatches(s, adjacent);
             } else if (combinator == Selector.Combinator.PRECEDING) {
                 Element preceding;
                 retval = false;
                 while (!retval && (preceding = (Element) w.previousSibling()) != null) {
-                    retval = this.matchCond == null ? s.matches(preceding) : s.matches(preceding, this.matchCond);
+                    retval = this.elementSelectorMatches(s, preceding);
                 }
 			} else if (combinator == Selector.Combinator.DESCENDANT) {
                 Element ancestor;
                 retval = false;
                 while (!retval && (ancestor = (Element) w.parentNode()) != null) {
-                    retval = this.matchCond == null ? s.matches(ancestor) : s.matches(ancestor, this.matchCond);
+                    retval = this.elementSelectorMatches(s, ancestor);
                 }
 			} else if (combinator == Selector.Combinator.CHILD) {
                 Element parent = (Element) w.parentNode();
                 retval = false;
                 if (parent != null)
-                    retval = this.matchCond == null ? s.matches(parent) : s.matches(parent, this.matchCond);
+                    retval = this.elementSelectorMatches(s, parent);
 			}
 
 			// set combinator for next loop

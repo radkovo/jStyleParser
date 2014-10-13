@@ -179,13 +179,26 @@ public class DirectAnalyzer extends Analyzer
         return eldecl;
     }
 
-    
+    private boolean elementSelectorMatches(final Selector s, final Element e) {
+        final MatchCondition matchCond = this.getMatchCondition();
+        return matchCond == null ? s.matches(e) : s.matches(e, matchCond);
+    }
+
+    private boolean nodeSelectorMatches(final Selector s, final Node n) {
+        if (n.getNodeType() == Node.ELEMENT_NODE) {
+            final Element e = (Element) n;
+            final MatchCondition matchCond = this.getMatchCondition();
+            return matchCond == null ? s.matches(e) : s.matches(e, matchCond);
+        } else {
+            return false;
+        }
+    }
+
     protected boolean matchSelector(CombinedSelector sel, Element e)
     {
         boolean retval = false;
         Selector.Combinator combinator = null;
         Element current = e;
-        final MatchCondition matchCond = this.getMatchCondition();
         // traverse simple selector backwards
         for (int i = sel.size() - 1; i >= 0; i--) {
             // last simple selector
@@ -195,7 +208,7 @@ public class DirectAnalyzer extends Analyzer
 
             // decide according to combinator anti-pattern
             if (combinator == null) {
-                retval = matchCond == null ? s.matches(current) : s.matches(current, matchCond);
+                retval = this.elementSelectorMatches(s, current);
             } else if (combinator == Selector.Combinator.ADJACENT) {
                 Node adjacent = current;
                 do {
@@ -205,21 +218,21 @@ public class DirectAnalyzer extends Analyzer
                 if (adjacent != null && adjacent.getNodeType() == Node.ELEMENT_NODE)
                 {
                     current = (Element) adjacent; 
-                    retval = matchCond == null ? s.matches(current) : s.matches(current, matchCond);
+                    retval = this.elementSelectorMatches(s, current);
                 }
             } else if (combinator == Selector.Combinator.PRECEDING) {
                 Node preceding = current.getPreviousSibling();
                 retval = false;
                 do
                 {
-                    if (preceding != null) {
-                        final boolean elementType = preceding.getNodeType() == Node.ELEMENT_NODE;
-                        if (elementType && (matchCond == null ? s.matches((Element) preceding) : s.matches((Element) preceding, matchCond))) {
+                    if (preceding != null)
+                    {
+                        if (preceding.getNodeType() == Node.ELEMENT_NODE && this.nodeSelectorMatches(s, preceding)) {
                             current = (Element) preceding;
                             retval = true;
-                        } else {
-                            preceding = preceding.getPreviousSibling();
                         }
+                        else
+                            preceding = preceding.getPreviousSibling();
                     }
                 } while (!retval && preceding != null);
             } else if (combinator == Selector.Combinator.DESCENDANT) {
@@ -227,14 +240,14 @@ public class DirectAnalyzer extends Analyzer
                 retval = false;
                 do
                 {
-                    if (ancestor != null) {
-                        final boolean elementType = ancestor.getNodeType() == Node.ELEMENT_NODE;
-                        if (elementType && (matchCond == null ? s.matches((Element) ancestor) : s.matches((Element) ancestor, matchCond))) {
-                          current = (Element) ancestor;
-                          retval = true;
-                        } else {
-                          ancestor = ancestor.getParentNode();
+                    if (ancestor != null)
+                    {
+                        if (ancestor.getNodeType() == Node.ELEMENT_NODE && this.nodeSelectorMatches(s, ancestor)) {
+                            current = (Element) ancestor;
+                            retval = true;
                         }
+                        else
+                            ancestor = ancestor.getParentNode();
                     }
                 } while (!retval && ancestor != null);
             } else if (combinator == Selector.Combinator.CHILD) {
@@ -243,7 +256,7 @@ public class DirectAnalyzer extends Analyzer
                 if (parent != null && parent.getNodeType() == Node.ELEMENT_NODE)
                 {
                     current = (Element) parent;
-                    retval = matchCond == null ? s.matches(current) : s.matches(current, matchCond);
+                    retval = this.elementSelectorMatches(s, current);
                 }
             }
 
