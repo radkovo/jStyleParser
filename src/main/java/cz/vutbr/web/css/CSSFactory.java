@@ -487,6 +487,59 @@ public final class CSSFactory {
 	 */
 	public static final StyleMap assignDOM(Document doc, String encoding,
 			URL base, MediaSpec media, boolean useInheritance) {
+		return assignDOM(doc, encoding, base, media, useInheritance, null);
+	}
+
+    /**
+     * This is the same as {@link CSSFactory#assignDOM(Document, String, URL, MediaSpec, boolean)} but only the
+     * media type is provided instead of the complete media specification.
+     *
+     * @param doc
+     *            DOM tree
+     * @param encoding
+     *            The default encoding used for the referenced style sheets
+     * @param base
+     *            Base URL against which all files are searched
+     * @param media
+     *            Selected media type for style sheet
+     * @param useInheritance
+     *            Whether inheritance will be used to determine values
+     * @return Map between DOM element nodes and data structure containing CSS
+     *         information
+     */
+    public static final StyleMap assignDOM(Document doc, String encoding,
+            URL base, String media, boolean useInheritance) {
+        return assignDOM(doc, encoding, base, new MediaSpec(media), useInheritance);
+    }
+
+    /**
+     * Goes through a DOM tree and assigns the CSS declarations to the DOM elements.
+     * The following style specifications are evaluated:
+     * <ul>
+     * <li>The style sheets included using the <code>link</code> and <code>style</code> tags.
+     * <li>Inline styles specified using the <code>style</code> element attribute.
+     * <li><strong>Proprietary extension:</strong> Default styles defined using the <code>XDefaultStyle</code>
+     *     element attribute. These styles behave the same way as the inline styles but they have the lowest priority
+     *     (the values are used only when not redefined by any other way)
+     *  </ul>
+     *
+     * @param doc
+     *            DOM tree
+     * @param encoding
+     *            The default encoding used for the referenced style sheets
+     * @param base
+     *            Base URL against which all files are searched
+     * @param media
+     *            Current media specification used for evaluating the media queries
+     * @param useInheritance
+     *            Whether inheritance will be used to determine values
+     * @param matchCond
+     *            The match condition to match the against.
+     * @return Map between DOM element nodes and data structure containing CSS
+     *         information
+     */
+	public static final StyleMap assignDOM(Document doc, String encoding,
+			URL base, MediaSpec media, boolean useInheritance, final MatchCondition matchCond) {
 
 		Pair pair = new Pair(base, media);
 
@@ -498,6 +551,9 @@ public final class CSSFactory {
 		traversal.listTraversal(style);
 
 		Analyzer analyzer = new Analyzer(style);
+		if (matchCond != null) {
+			analyzer.registerMatchCondition(matchCond);
+		}
 		return analyzer.evaluateDOM(doc, media, useInheritance);
 	}
 
@@ -515,13 +571,15 @@ public final class CSSFactory {
      *            Selected media type for style sheet
      * @param useInheritance
      *            Whether inheritance will be used to determine values
+     * @param matchCond
+     *            The match condition to match the against.
      * @return Map between DOM element nodes and data structure containing CSS
      *         information
      */
     public static final StyleMap assignDOM(Document doc, String encoding,
-            URL base, String media, boolean useInheritance) {
+            URL base, String media, boolean useInheritance, final MatchCondition matchCond) {
         
-        return assignDOM(doc, encoding, base, new MediaSpec(media), useInheritance);
+        return assignDOM(doc, encoding, base, new MediaSpec(media), useInheritance, matchCond);
     }
 
     @Deprecated

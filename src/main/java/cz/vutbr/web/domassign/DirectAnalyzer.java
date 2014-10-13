@@ -19,6 +19,7 @@ import org.w3c.dom.Node;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.MatchCondition;
 import cz.vutbr.web.css.MediaSpec;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.RuleSet;
@@ -178,6 +179,15 @@ public class DirectAnalyzer extends Analyzer
         return eldecl;
     }
 
+    private boolean nodeSelectorMatches(final Selector s, final Node n) {
+        if (n.getNodeType() == Node.ELEMENT_NODE) {
+            final Element e = (Element) n;
+            final MatchCondition matchCond = this.getMatchCondition();
+            return matchCond == null ? s.matches(e) : s.matches(e, matchCond);
+        } else {
+            return false;
+        }
+    }
     
     protected boolean matchSelector(CombinedSelector sel, Element e)
     {
@@ -193,7 +203,7 @@ public class DirectAnalyzer extends Analyzer
 
             // decide according to combinator anti-pattern
             if (combinator == null) {
-                retval = s.matches(current);
+                retval = this.elementSelectorMatches(s, current);
             } else if (combinator == Selector.Combinator.ADJACENT) {
                 Node adjacent = current;
                 do {
@@ -203,7 +213,7 @@ public class DirectAnalyzer extends Analyzer
                 if (adjacent != null && adjacent.getNodeType() == Node.ELEMENT_NODE)
                 {
                     current = (Element) adjacent; 
-                    retval = s.matches(current);
+                    retval = this.elementSelectorMatches(s, current);
                 }
             } else if (combinator == Selector.Combinator.PRECEDING) {
                 Node preceding = current.getPreviousSibling();
@@ -212,7 +222,7 @@ public class DirectAnalyzer extends Analyzer
                 {
                     if (preceding != null)
                     {
-                        if (preceding.getNodeType() == Node.ELEMENT_NODE && s.matches((Element) preceding))
+                        if (this.nodeSelectorMatches(s, preceding))
                         {
                             current = (Element) preceding;
                             retval = true;
@@ -228,7 +238,7 @@ public class DirectAnalyzer extends Analyzer
                 {
                     if (ancestor != null)
                     {
-                        if (ancestor.getNodeType() == Node.ELEMENT_NODE && s.matches((Element) ancestor))
+                        if (this.nodeSelectorMatches(s, ancestor))
                         {
                             current = (Element) ancestor;
                             retval = true;
@@ -243,7 +253,7 @@ public class DirectAnalyzer extends Analyzer
                 if (parent != null && parent.getNodeType() == Node.ELEMENT_NODE)
                 {
                     current = (Element) parent;
-                    retval = s.matches(current);
+                    retval = this.elementSelectorMatches(s, current);
                 }
             }
 
