@@ -487,18 +487,7 @@ public final class CSSFactory {
 	 */
 	public static final StyleMap assignDOM(Document doc, String encoding,
 			URL base, MediaSpec media, boolean useInheritance) {
-
-		Pair pair = new Pair(base, media);
-
-		Traversal<StyleSheet> traversal = new CSSAssignTraversal(doc, encoding,
-				(Object) pair, NodeFilter.SHOW_ELEMENT);
-
-		StyleSheet style = (StyleSheet) getRuleFactory().createStyleSheet()
-				.unlock();
-		traversal.listTraversal(style);
-
-		Analyzer analyzer = new Analyzer(style);
-		return analyzer.evaluateDOM(doc, media, useInheritance);
+		return assignDOM(doc, encoding, base, media, useInheritance, getDefaultMatchCondition());
 	}
 
     /**
