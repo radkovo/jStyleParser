@@ -86,7 +86,7 @@ public class Analyzer {
 
 	/**
 	 * Obtains the match condition to be used for matching the elements and
-	 * selector parts. If the match condition is null, returns default match condition.
+	 * selector parts.
 	 *
 	 * @return the match condition used by the Analyzer.
 	 */
