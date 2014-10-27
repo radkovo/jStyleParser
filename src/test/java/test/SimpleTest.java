@@ -19,6 +19,7 @@ import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermInteger;
 import cz.vutbr.web.css.TermLength;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.css.TermURI;
@@ -85,6 +86,9 @@ public class SimpleTest {
 
 	// Test case for issue #55
 	public static final String TEST_POSITIVE_NUMBER1 = "p { text-indent: +10px; }";
+
+	// Test case for issue #56
+	private static final String TEST_INTEGER_Z_INDEX = "p { z-index: 10; }";
 	
 	@BeforeClass
 	public static void init()  {
@@ -260,5 +264,22 @@ public class SimpleTest {
 		
 		TermLength length = (TermLength) term;
 		assertThat(length, is(tf.createLength(10.0f, Unit.px)));
+	}
+
+	// Test for issue #56
+	@Test
+	public void testIntegerZIndex() throws IOException, CSSException   {
+		
+		StyleSheet ss = CSSFactory.parse(TEST_INTEGER_Z_INDEX);
+		assertEquals("There is one rule", 1, ss.size());
+		
+		Declaration dec = (Declaration) ss.get(0).get(0);
+		assertEquals("There is one declaration", 1, ss.get(0).size());
+		
+		Object term = dec.get(0);
+		assertTrue("Term value is Integer", term instanceof TermInteger);
+		
+		TermInteger zIndex = (TermInteger) term;
+		assertTrue("toString should return 10", "10".equals(zIndex.toString()));
 	}
 }
