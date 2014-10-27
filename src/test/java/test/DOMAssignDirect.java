@@ -5,7 +5,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 
 import org.junit.BeforeClass;
@@ -203,6 +205,31 @@ public class DOMAssignDirect {
 
         final NodeData secondNodeData = da.getElementStyle(elements.getElementById("p1"), null, "screen");
         assertThat(secondNodeData.getValue(TermLength.class, "line-height"), is(tf.createLength(1.0f, Unit.px)));
+    }
+
+    // Test for issue #49
+    @Test
+    public void spaceSeparatedAttributeSelector() throws SAXException, IOException, CSSException {
+
+        final String css = "p { color: green; }"
+                         + "[title~='hello world'] { color: red; }";
+
+        final String html = "<html><head><style>"
+                + css
+                + "</style></head><body>"
+                + "<p title='hello world' id='p1'>This should be green color.</p>"
+                + "</body></html> ";
+
+        final InputStream is = new ByteArrayInputStream(html.getBytes());
+        final DOMSource ds = new DOMSource(is);
+        final Document doc = ds.parse();
+        final ElementMap elements = new ElementMap(doc);
+        final StyleSheet style = CSSFactory.parse(css);
+
+        final DirectAnalyzer da = new DirectAnalyzer(style);
+        final NodeData nodeData1 = da.getElementStyle(elements.getElementById("p1"), null, "screen");
+
+        assertThat("Color", nodeData1.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
     }
 
     private NodeData getStyleById(ElementMap elements, DirectAnalyzer da, String id)
