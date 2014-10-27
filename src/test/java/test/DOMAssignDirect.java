@@ -232,6 +232,39 @@ public class DOMAssignDirect {
         assertThat("Color", nodeData1.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
     }
 
+    // Test for issue #51
+    @Test
+    public void emptyStringAttributeSelector() throws SAXException, IOException, CSSException {
+
+        final String css = "p { color: green; }"
+                         + "p#p1[class$=''] { color: red; }"
+                         + "p#p2[class^=''] { color: red; }"
+                         + "p#p3[class*=''] { color: red; }";
+
+        final String html = "<html><head><style>"
+                + css
+                + "</style></head><body>"
+                + "<p class='' id='p1'>This should be green color.</p>"
+                + "<p class='' id='p2'>This should be green color.</p>"
+                + "<p class='' id='p3'>This should be green color.</p>"
+                + "</body></html> ";
+
+        final InputStream is = new ByteArrayInputStream(html.getBytes());
+        final DOMSource ds = new DOMSource(is);
+        final Document doc = ds.parse();
+        final ElementMap elements = new ElementMap(doc);
+        final StyleSheet style = CSSFactory.parse(css);
+
+        final DirectAnalyzer da = new DirectAnalyzer(style);
+        final NodeData nodeData1 = da.getElementStyle(elements.getElementById("p1"), null, "screen");
+        final NodeData nodeData2 = da.getElementStyle(elements.getElementById("p2"), null, "screen");
+        final NodeData nodeData3 = da.getElementStyle(elements.getElementById("p3"), null, "screen");
+
+        assertThat("Color", nodeData1.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
+        assertThat("Color", nodeData2.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
+        assertThat("Color", nodeData3.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
+    }
+
     private NodeData getStyleById(ElementMap elements, DirectAnalyzer da, String id)
     {
         NodeData data = da.getElementStyle(elements.getElementById(id), null, "screen");
