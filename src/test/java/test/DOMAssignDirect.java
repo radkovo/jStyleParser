@@ -265,6 +265,27 @@ public class DOMAssignDirect {
         assertThat("Color", nodeData3.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
     }
 
+    // Test for issue #57
+    @Test
+    public void initialValueSpecifiedValueConflict() throws SAXException, IOException, CSSException {
+
+        final String css = "p { background: green; } p { background: 'red'; } p { color: white; }";
+        final String html = "<html><head><style>"
+                + css
+                + "</style></head><body><p id='p1'>This should be green color.</p></body></html> ";
+
+        final InputStream is = new ByteArrayInputStream(html.getBytes());
+        final DOMSource ds = new DOMSource(is);
+        final Document doc = ds.parse();
+        final ElementMap elements = new ElementMap(doc);
+        final StyleSheet style = CSSFactory.parse(css);
+
+        final DirectAnalyzer da = new DirectAnalyzer(style);
+        final NodeData nodeData = da.getElementStyle(elements.getElementById("p1"), null, "screen");
+        assertThat("Background color", nodeData.getValue(TermColor.class, "background-color"), is(tf.createColor(0,128,0)));
+        assertThat("Color", nodeData.getValue(TermColor.class, "color"), is(tf.createColor(255,255,255)));
+    }
+
     private NodeData getStyleById(ElementMap elements, DirectAnalyzer da, String id)
     {
         NodeData data = da.getElementStyle(elements.getElementById(id), null, "screen");
