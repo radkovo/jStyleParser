@@ -1,5 +1,7 @@
 package test;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -17,6 +19,8 @@ import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermLength;
+import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.css.TermURI;
 
 public class SimpleTest {
@@ -79,6 +83,8 @@ public class SimpleTest {
 	
 	public static String TEST_URI1 = "BODY { background-image: url(image.jpg); } ";
 
+	// Test case for issue #55
+	public static final String TEST_POSITIVE_NUMBER1 = "p { text-indent: +10px; }";
 	
 	@BeforeClass
 	public static void init()  {
@@ -238,4 +244,21 @@ public class SimpleTest {
 		TermURI uri = (TermURI) term;
 		assertEquals("URI has proper value", "image.jpg", uri.getValue());
 	}	
+
+	// Test for issue #55
+	@Test
+	public void testPositiveNumber1() throws IOException, CSSException   {
+		
+		StyleSheet ss = CSSFactory.parse(TEST_POSITIVE_NUMBER1);
+		assertEquals("There is one rule", 1, ss.size());
+		
+		Declaration dec = (Declaration) ss.get(0).get(0);
+		assertEquals("There is one declaration", 1, ss.get(0).size());
+		
+		Object term = dec.get(0);
+		assertTrue("Term value is Numeric", term instanceof TermLength);
+		
+		TermLength length = (TermLength) term;
+		assertThat(length, is(tf.createLength(10.0f, Unit.px)));
+	}
 }
