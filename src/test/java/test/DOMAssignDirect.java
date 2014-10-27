@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.NodeData;
@@ -187,6 +188,23 @@ public class DOMAssignDirect {
         
     }
     
+    // Test for issue #45
+    @Test
+    public void lineHeight() throws SAXException, IOException, CSSException {
+
+        final DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/line-height.html"));
+        final Document doc = ds.parse();
+        final ElementMap elements = new ElementMap(doc);
+        final StyleSheet style = CSSFactory.getUsedStyles(doc, null, getClass().getResource("/simple/line-height.html"),"screen");
+
+        final DirectAnalyzer da = new DirectAnalyzer(style);
+        final NodeData firstNodeData = da.getElementStyle(elements.getElementById("p1"), null, "screen");
+        assertThat(firstNodeData.getValue(TermLength.class, "line-height"), is(tf.createLength(1.0f, Unit.px)));
+
+        final NodeData secondNodeData = da.getElementStyle(elements.getElementById("p1"), null, "screen");
+        assertThat(secondNodeData.getValue(TermLength.class, "line-height"), is(tf.createLength(1.0f, Unit.px)));
+    }
+
     private NodeData getStyleById(ElementMap elements, DirectAnalyzer da, String id)
     {
         NodeData data = da.getElementStyle(elements.getElementById(id), null, "screen");
