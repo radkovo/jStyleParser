@@ -129,9 +129,9 @@ public class TermListImpl extends AbstractList<Term<?>> implements TermList {
 		return true;
 	}	
 
-	public Term shallowClone() {
+	public TermList shallowClone() {
 		try {
-			return (Term) super.clone();
+			return (TermList) super.clone();
 		} catch (CloneNotSupportedException e) {
 			throw new RuntimeException(e);
 		}

@@ -88,9 +88,10 @@ public class TermImpl<T> implements Term<T> {
 		return true;
 	}
 
-	public Term shallowClone() {
+	@SuppressWarnings("unchecked")
+    public Term<T> shallowClone() {
 		try {
-			return (Term) super.clone();
+			return (Term<T>) super.clone();
 		} catch (CloneNotSupportedException e) {
 			throw new RuntimeException(e);
 		}
