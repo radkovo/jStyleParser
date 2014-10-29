@@ -16,5 +16,11 @@ public class TermIntegerImpl extends TermLengthImpl implements TermInteger {
         setValue(Float.valueOf(value));
         return this;
     }
-	
+
+    @Override
+    public String toString()
+    {
+        return String.valueOf(getIntValue());
+    }
+
 }
