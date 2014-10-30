@@ -253,7 +253,7 @@ scope {
       (i=IDENT
         { name = extractText(i); }
       )?
-      (^(PSEUDO i=IDENT)
+      (^(PSEUDOCLASS i=IDENT)
         { pseudo = extractText(i); }
       )?
       decl=declarations
@@ -749,7 +749,12 @@ selpart
     :  h=HASH { $selector::s.add(rf.createID(extractText(h))); }
     | c=CLASSKEYWORD { $selector::s.add(rf.createClass(extractText(c))); }
 	| ^(ATTRIBUTE ea=attribute { $selector::s.add(ea);} )
-    | p=pseudo { $selector::s.add(p);}
+    | p=pseudo {
+        if (p != null)
+          $selector::s.add(p);
+        else
+          $combined_selector::invalid = true;
+      }
 	| INVALID_SELPART { $combined_selector::invalid = true;}  
     ;
  
@@ -799,25 +804,51 @@ pseudo returns [Selector.PseudoPage pseudoPage]
 @init {
 		logEnter("pseudo");
 }
-	: ^(PSEUDO i=IDENT)
+  /* pseudo classes */
+	: ^(PSEUDOCLASS i=IDENT)
 		{
 			$pseudoPage = rf.createPseudoPage(extractText(i), null);
 		}
-	| ^(PSEUDO f=FUNCTION i=IDENT)
+	| ^(PSEUDOCLASS f=FUNCTION i=IDENT)
 		{
 			$pseudoPage = rf.createPseudoPage(extractText(i), extractText(f));
 		}
-	| ^(PSEUDO f=FUNCTION m=MINUS? n=NUMBER)
+	| ^(PSEUDOCLASS f=FUNCTION m=MINUS? n=NUMBER)
 		{
       String exp = extractText(n);
       if (m != null) exp = "-" + exp;
 			$pseudoPage = rf.createPseudoPage(exp, extractText(f));
 		}
-  | ^(PSEUDO f=FUNCTION m=MINUS? n=INDEX)
+  | ^(PSEUDOCLASS f=FUNCTION m=MINUS? n=INDEX)
     {
       String exp = extractText(n);
       if (m != null) exp = "-" + exp;
       $pseudoPage = rf.createPseudoPage(exp, extractText(f));
+    }
+  /* pseudo elements */
+  | ^(PSEUDOELEM i=IDENT)
+    {
+      $pseudoPage = rf.createPseudoPage(extractText(i), null);
+      if ($pseudoPage == null || !$pseudoPage.getDeclaration().isPseudoElement())
+      {
+          log.error("pseudo class cannot be used as pseudo element");
+          $pseudoPage = null; /* pseudoClasses are not allowed here */
+      }
+    }
+  | ^(PSEUDOELEM f=FUNCTION i=IDENT)
+    {
+      log.error("pseudo element cannot be used as a function");
+      $pseudoPage = null; /* not allowed */
+    }
+  | ^(PSEUDOELEM f=FUNCTION m=MINUS? n=NUMBER)
+    {
+      log.error("pseudo element cannot be used as a function");
+      $pseudoPage = null; /* not allowed */
+    }
+  | ^(PSEUDOELEM f=FUNCTION m=MINUS? n=INDEX)
+    {
+      log.error("pseudo element cannot be used as a function");
+      $pseudoPage = null; /* not allowed */
     }
 	;
 

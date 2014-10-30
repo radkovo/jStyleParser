@@ -38,7 +38,8 @@ tokens {
 	RULE;	
 	SELECTOR;
 	ELEMENT;
-	PSEUDO;
+	PSEUDOCLASS;
+	PSEUDOELEM;
 	ADJACENT;
 	PRECEDING;
 	CHILD;
@@ -998,7 +999,8 @@ pseudo
   }
 
 pseudocolon
-	: COLON COLON? -> PSEUDO
+	: COLON COLON -> PSEUDOELEM
+	| COLON -> PSEUDOCLASS
 	;
 
 string
