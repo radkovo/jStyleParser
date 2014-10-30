@@ -133,6 +133,25 @@ public class PseudoClasses {
         assertThat(l2.getValue(TermColor.class, "color"), is(tf.createColor(0,255,255)));
         assertThat(l3.getValue(TermColor.class, "color"), is(tf.createColor(0,0,170)));
     }
+
+    // Test for issue #52
+    @Test
+    public void pseudoClassVsPseudoElementSelector() throws SAXException, IOException {
+
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/pseudo.html"));
+        Document doc = ds.parse();
+        ElementMap elements = new ElementMap(doc);
+
+        MatchConditionOnElements cond = new MatchConditionOnElements();
+        cond.addMatch(elements.getElementById("p1"), PseudoDeclaration.FIRST_CHILD);
+
+        StyleSheet style = CSSFactory.getUsedStyles(doc, null, createBaseFromFilename("data/simple/selectors.html"),"screen");
+        DirectAnalyzer da = new DirectAnalyzer(style);
+        da.registerMatchCondition(cond);
+
+        NodeData nodeData = getStyleById(elements, da, "p1");
+        assertThat(nodeData.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
+    }
     
     private NodeData getStyleById(ElementMap elements, StyleMap decl, String id)
     {

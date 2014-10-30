@@ -5,7 +5,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 
 import org.junit.BeforeClass;
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.NodeData;
@@ -187,6 +190,102 @@ public class DOMAssignDirect {
         
     }
     
+    // Test for issue #45
+    @Test
+    public void lineHeight() throws SAXException, IOException, CSSException {
+
+        final DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/line-height.html"));
+        final Document doc = ds.parse();
+        final ElementMap elements = new ElementMap(doc);
+        final StyleSheet style = CSSFactory.getUsedStyles(doc, null, getClass().getResource("/simple/line-height.html"),"screen");
+
+        final DirectAnalyzer da = new DirectAnalyzer(style);
+        final NodeData firstNodeData = da.getElementStyle(elements.getElementById("p1"), null, "screen");
+        assertThat(firstNodeData.getValue(TermLength.class, "line-height"), is(tf.createLength(1.0f, Unit.px)));
+
+        final NodeData secondNodeData = da.getElementStyle(elements.getElementById("p1"), null, "screen");
+        assertThat(secondNodeData.getValue(TermLength.class, "line-height"), is(tf.createLength(1.0f, Unit.px)));
+    }
+
+    // Test for issue #49
+    @Test
+    public void spaceSeparatedAttributeSelector() throws SAXException, IOException, CSSException {
+
+        final String css = "p { color: green; }"
+                         + "[title~='hello world'] { color: red; }";
+
+        final String html = "<html><head><style>"
+                + css
+                + "</style></head><body>"
+                + "<p title='hello world' id='p1'>This should be green color.</p>"
+                + "</body></html> ";
+
+        final InputStream is = new ByteArrayInputStream(html.getBytes());
+        final DOMSource ds = new DOMSource(is);
+        final Document doc = ds.parse();
+        final ElementMap elements = new ElementMap(doc);
+        final StyleSheet style = CSSFactory.parse(css);
+
+        final DirectAnalyzer da = new DirectAnalyzer(style);
+        final NodeData nodeData1 = da.getElementStyle(elements.getElementById("p1"), null, "screen");
+
+        assertThat("Color", nodeData1.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
+    }
+
+    // Test for issue #51
+    @Test
+    public void emptyStringAttributeSelector() throws SAXException, IOException, CSSException {
+
+        final String css = "p { color: green; }"
+                         + "p#p1[class$=''] { color: red; }"
+                         + "p#p2[class^=''] { color: red; }"
+                         + "p#p3[class*=''] { color: red; }";
+
+        final String html = "<html><head><style>"
+                + css
+                + "</style></head><body>"
+                + "<p class='' id='p1'>This should be green color.</p>"
+                + "<p class='' id='p2'>This should be green color.</p>"
+                + "<p class='' id='p3'>This should be green color.</p>"
+                + "</body></html> ";
+
+        final InputStream is = new ByteArrayInputStream(html.getBytes());
+        final DOMSource ds = new DOMSource(is);
+        final Document doc = ds.parse();
+        final ElementMap elements = new ElementMap(doc);
+        final StyleSheet style = CSSFactory.parse(css);
+
+        final DirectAnalyzer da = new DirectAnalyzer(style);
+        final NodeData nodeData1 = da.getElementStyle(elements.getElementById("p1"), null, "screen");
+        final NodeData nodeData2 = da.getElementStyle(elements.getElementById("p2"), null, "screen");
+        final NodeData nodeData3 = da.getElementStyle(elements.getElementById("p3"), null, "screen");
+
+        assertThat("Color", nodeData1.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
+        assertThat("Color", nodeData2.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
+        assertThat("Color", nodeData3.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
+    }
+
+    // Test for issue #57
+    @Test
+    public void initialValueSpecifiedValueConflict() throws SAXException, IOException, CSSException {
+
+        final String css = "p { background: green; } p { background: 'red'; } p { color: white; }";
+        final String html = "<html><head><style>"
+                + css
+                + "</style></head><body><p id='p1'>This should be green color.</p></body></html> ";
+
+        final InputStream is = new ByteArrayInputStream(html.getBytes());
+        final DOMSource ds = new DOMSource(is);
+        final Document doc = ds.parse();
+        final ElementMap elements = new ElementMap(doc);
+        final StyleSheet style = CSSFactory.parse(css);
+
+        final DirectAnalyzer da = new DirectAnalyzer(style);
+        final NodeData nodeData = da.getElementStyle(elements.getElementById("p1"), null, "screen");
+        assertThat("Background color", nodeData.getValue(TermColor.class, "background-color"), is(tf.createColor(0,128,0)));
+        assertThat("Color", nodeData.getValue(TermColor.class, "color"), is(tf.createColor(255,255,255)));
+    }
+
     private NodeData getStyleById(ElementMap elements, DirectAnalyzer da, String id)
     {
         NodeData data = da.getElementStyle(elements.getElementById(id), null, "screen");
