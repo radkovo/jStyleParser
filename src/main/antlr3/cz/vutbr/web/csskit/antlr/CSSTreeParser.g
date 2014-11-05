@@ -829,7 +829,12 @@ pseudo returns [Selector.PseudoPage pseudoPage]
   | ^(PSEUDOELEM i=IDENT)
     {
       $pseudoPage = rf.createPseudoPage(extractText(i), null);
-      if ($pseudoPage == null || !$pseudoPage.getDeclaration().isPseudoElement())
+      if ($pseudoPage == null || $pseudoPage.getDeclaration() == null)
+      {
+          log.error("invalid pseudo declaration: " + extractText(i));
+          $pseudoPage = null;
+      }
+      else if (!$pseudoPage.getDeclaration().isPseudoElement())
       {
           log.error("pseudo class cannot be used as pseudo element");
           $pseudoPage = null; /* pseudoClasses are not allowed here */
