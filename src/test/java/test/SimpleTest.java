@@ -91,11 +91,11 @@ public class SimpleTest {
 	private static final String TEST_INTEGER_Z_INDEX = "p { z-index: 10; }";
 
 	// Test case for issue #59
-	private static final String TEST_INVALID_PSEUDO_SELECTOR1 = "::selection {background: green}";
+	private static final String TEST_INVALID_PSEUDO_SELECTOR1 = "::selection {background: red}";
 
 	// Test case for issue #59
-	private static final String TEST_INVALID_PSEUDO_SELECTOR2 = "::selection {background: green}" +
-		"::notaselector {background: green}" +
+	private static final String TEST_INVALID_PSEUDO_SELECTOR2 = "::selection {background: red}" +
+		"::notaselector {background: red}" +
 		"p {background: green}";
 	
 	@BeforeClass
