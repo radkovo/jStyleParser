@@ -295,7 +295,7 @@ public class SimpleTest {
 	@Test
 	public void testInvalidPseudoSelector1() throws IOException, CSSException   {
 		StyleSheet ss = CSSFactory.parse(TEST_INVALID_PSEUDO_SELECTOR1);
-		assertEquals("One rule is set", 0, ss.size());
+		assertEquals("Zero rule is set", 0, ss.size());
 	}
 
 	// Test for issue #59
