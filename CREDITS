@@ -9,6 +9,7 @@ Karel Piwko <kapy>
 Jan Svercl
 
 Contributors:
+Uproot Labs <https://github.com/uprootlabs> - bug reports, fixes, test cases
 Ron Kuhnert <ron.kuhnert@googlemail.com> - property processing and API extensions
 Bert Frees - pseudoclass extensions, bugfixes
 Philip Borlin - maven integration and TravisCI integration 

@@ -170,7 +170,12 @@ CSSFactory.registerDefaultMatchCondition(cond);
 <em>//evaluate the DOM styles as normally</em>
 StyleMap decl = CSSFactory.assignDOM(doc, null, base, "screen", true);
 ...
-</pre></div><p>When the pseudo-class assignment changes, the match condition must be reconfigured and the DOM style must be recomputed.</p></div></div><div class="section" id="media"><h2>Media</h2><p>The style sheets are typically evaluated for some particular media. In jStyleParser the type and the features of the media
+</pre></div><p>When the pseudo-class assignment changes, the match condition must be reconfigured and the DOM style must be recomputed.</p><p>Alternatively, it is possible to pass the <code>MatchCondition</code> directly to the DOM analyzer instead of using the global
+<code>registerDefaultMatchCondition()</code> function. When the Analyzer is used for evaluating the DOM
+(<a href="#analyze">as discussed here</a>), the match condition may be registered using its
+<a href="api/cz/vutbr/web/domassign/Analyzer.html#registerMatchCondition(cz.vutbr.web.css.MatchCondition)" class="api"><code>registerMatchCondition</code></a> function.
+When using the <a href="#direct">similified method</a> (using CSSFactory), the match condition may be passed as an additional
+argument to the <a href="api/cz/vutbr/web/css/CSSFactory.html#assignDOM(org.w3c.dom.Document, java.lang.String, java.net.URL, cz.vutbr.web.css.MediaSpec, boolean, cz.vutbr.web.css.MatchCondition)" class="api"><code>CSSFactory.assignDOM()</code></a> method.</p></div></div><div class="section" id="media"><h2>Media</h2><p>The style sheets are typically evaluated for some particular media. In jStyleParser the type and the features of the media
 being used are specified using the <a href="api/cz/vutbr/web/css/MediaSpec.html" class="api"><code>MediaSpec</code></a> structure. It specifies the media type
 such as "screen" or "print" and the features such as display area size, device size, colors, etc. A simple media specification
 may be created as follows:</p><div class="code"><pre>

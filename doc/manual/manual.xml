@@ -255,6 +255,14 @@ StyleMap decl = CSSFactory.assignDOM(doc, null, base, "screen", true);
 ...
 </d:codebox>
 <p>When the pseudo-class assignment changes, the match condition must be reconfigured and the DOM style must be recomputed.</p>
+
+<p>Alternatively, it is possible to pass the <code>MatchCondition</code> directly to the DOM analyzer instead of using the global
+<code>registerDefaultMatchCondition()</code> function. When the Analyzer is used for evaluating the DOM
+(<d:ref target="analyze">as discussed here</d:ref>), the match condition may be registered using its
+<d:api class="cz/vutbr/web/domassign/Analyzer" anchor="registerMatchCondition(cz.vutbr.web.css.MatchCondition)">registerMatchCondition</d:api> function.
+When using the <d:ref target="direct">similified method</d:ref> (using CSSFactory), the match condition may be passed as an additional
+argument to the <d:api class="cz/vutbr/web/css/CSSFactory" anchor="assignDOM(org.w3c.dom.Document, java.lang.String, java.net.URL, cz.vutbr.web.css.MediaSpec, boolean, cz.vutbr.web.css.MatchCondition)">CSSFactory.assignDOM()</d:api> method.</p>
+
 </d:subsection>
 
 </d:section>

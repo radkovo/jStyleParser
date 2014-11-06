@@ -1,3 +1,16 @@
+Version 1.19 - Nov 6, 2014
+- Allow element.getAttribute() to return null for supporting more DOM parsers
+- Line height processing fix
+- background-position processing fix
+- Attribute selector matching fix (whitespace processing)
+- Allow unary + in numeric values
+- Several DirectAnalyzer fixes
+- Properly unescape CSS strings (using unbescape)
+- Support for MatchCondition at DOMAnalyzer level
+- Distinguish pseudo classes (:) and pseudo elements (::) according to CSS3 Selectors
+- Error recovery revision
+- Many new test cases mainly for the reported bugs
+
 Version 1.18 - Aug 28, 2014
 - New CSS3 pseudo classes support
 - Fix background-attachment and font-variant bugs
