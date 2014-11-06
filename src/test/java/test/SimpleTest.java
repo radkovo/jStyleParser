@@ -89,6 +89,14 @@ public class SimpleTest {
 
 	// Test case for issue #56
 	private static final String TEST_INTEGER_Z_INDEX = "p { z-index: 10; }";
+
+	// Test case for issue #59
+	private static final String TEST_INVALID_PSEUDO_SELECTOR1 = "::selection {background: green}";
+
+	// Test case for issue #59
+	private static final String TEST_INVALID_PSEUDO_SELECTOR2 = "::selection {background: green}" +
+		"::notaselector {background: green}" +
+		"p {background: green}";
 	
 	@BeforeClass
 	public static void init()  {
@@ -282,4 +290,30 @@ public class SimpleTest {
 		TermInteger zIndex = (TermInteger) term;
 		assertTrue("toString should return 10", "10".equals(zIndex.toString()));
 	}
+
+	// Test for issue #59
+	@Test
+	public void testInvalidPseudoSelector1() throws IOException, CSSException   {
+		StyleSheet ss = CSSFactory.parse(TEST_INVALID_PSEUDO_SELECTOR1);
+		assertEquals("One rule is set", 0, ss.size());
+	}
+
+	// Test for issue #59
+	@Test
+	public void testInvalidPseudoSelector2() throws IOException, CSSException   {
+		StyleSheet ss = CSSFactory.parse(TEST_INVALID_PSEUDO_SELECTOR2);
+		assertEquals("One rule is set", 1, ss.size());
+
+		RuleSet rule = (RuleSet) ss.get(0);
+
+		assertEquals("Rule contains one selector p ",
+				SelectorsUtil.createSelectors("p"),
+				rule.getSelectors());
+
+		assertEquals("Rule contains one declaration {background: green}",
+				DeclarationsUtil.appendDeclaration(null, "background",
+						tf.createColor(0, 128, 0)),
+				rule.asList());
+	}
+
 }
