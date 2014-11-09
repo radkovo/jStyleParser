@@ -18,7 +18,7 @@ this purpose:</p><ul>
 			which internally transforms the
 			<code>fileName</code> into an URL and		
 	</li>
-	<li><a href="api/cz/vutbr/web/css/CSSFactory.html#parse(java.lang.String)" class="api"><code>StyleSheet parse(String css)</code></a>,
+	<li><a href="api/cz/vutbr/web/css/CSSFactory.html#parseString(java.lang.String, java.net.URL)" class="api"><code>StyleSheet parseString(String css, URL base)</code></a>,
 			which can be used to parse embedded CSS declarations that is declarations between the &lt;style&gt; tags.
 	</li>
 </ul><p>During the parsing process, the parser automatically imports all the style sheets referenced using the <code>@import</code>

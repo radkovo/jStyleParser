@@ -31,7 +31,7 @@ this purpose:</p>
 			which internally transforms the
 			<code>fileName</code> into an URL and		
 	</li>
-	<li><d:api class="cz/vutbr/web/css/CSSFactory" anchor="parse(java.lang.String)">StyleSheet parse(String css)</d:api>,
+	<li><d:api class="cz/vutbr/web/css/CSSFactory" anchor="parseString(java.lang.String, java.net.URL)">StyleSheet parseString(String css, URL base)</d:api>,
 			which can be used to parse embedded CSS declarations that is declarations between the &lt;style&gt; tags.
 	</li>
 </ul>
