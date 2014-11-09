@@ -54,64 +54,64 @@ public class GrammarRecovery2 {
 	@Test
 	public void vendorSpecificUnderscore() throws IOException, CSSException 
 	{
-		StyleSheet ss = CSSFactory.parse(TEST_DECL1A);
+		StyleSheet ss = CSSFactory.parseString(TEST_DECL1A, null);
 		assertEquals("Both properties are accepted (second one is extension)", 2, ss.get(0).size());
-        ss = CSSFactory.parse(TEST_DECL1B);
+        ss = CSSFactory.parseString(TEST_DECL1B, null);
         assertEquals("Both properties are accepted (first one is extension)", 2, ss.get(0).size());
 	}
 
     @Test
     public void vendorSpecificDash() throws IOException, CSSException 
     {
-        StyleSheet ss = CSSFactory.parse(TEST_DECL2A);
+        StyleSheet ss = CSSFactory.parseString(TEST_DECL2A, null);
         assertEquals("Both properties are accepted (second one is extension)", 2, ss.get(0).size());
-        ss = CSSFactory.parse(TEST_DECL2B);
+        ss = CSSFactory.parseString(TEST_DECL2B, null);
         assertEquals("Both properties are accepted (first one is extension)", 2, ss.get(0).size());
     }
     
     @Test
     public void invalidCharColon() throws IOException, CSSException 
     {
-        StyleSheet ss = CSSFactory.parse(TEST_DECL3A);
+        StyleSheet ss = CSSFactory.parseString(TEST_DECL3A, null);
         assertEquals("One property is accepted (second one is invalid)", 1, ss.get(0).size());
-        ss = CSSFactory.parse(TEST_DECL3B);
+        ss = CSSFactory.parseString(TEST_DECL3B, null);
         assertEquals("One property is accepted (first one is invalid)", 1, ss.get(0).size());
     }
     
     @Test
     public void invalidCharAsterisk() throws IOException, CSSException 
     {
-        StyleSheet ss = CSSFactory.parse(TEST_DECL4A);
+        StyleSheet ss = CSSFactory.parseString(TEST_DECL4A, null);
         assertEquals("One property is accepted (second one is invalid)", 1, ss.get(0).size());
-        ss = CSSFactory.parse(TEST_DECL4B);
+        ss = CSSFactory.parseString(TEST_DECL4B, null);
         assertEquals("One property is accepted (first one is invalid)", 1, ss.get(0).size());
     }
 
     @Test
     public void invalidDirective() throws IOException, CSSException 
     {
-        StyleSheet ss = CSSFactory.parse(TEST_DECL5A);
+        StyleSheet ss = CSSFactory.parseString(TEST_DECL5A, null);
         assertEquals("One property is accepted (second one is invalid)", 1, ss.get(0).size());
-        ss = CSSFactory.parse(TEST_DECL5B);
+        ss = CSSFactory.parseString(TEST_DECL5B, null);
         assertEquals("One property is accepted (first one is invalid)", 1, ss.get(0).size());
     }
     
     @Test
     public void invalidSelector() throws IOException, CSSException 
     {
-        StyleSheet ss = CSSFactory.parse(TEST_DECL6A);
+        StyleSheet ss = CSSFactory.parseString(TEST_DECL6A, null);
         assertEquals("One declaration is accepted (second one is invalid)", 1, ss.size());
-        ss = CSSFactory.parse(TEST_DECL6B);
+        ss = CSSFactory.parseString(TEST_DECL6B, null);
         assertEquals("One declaration is accepted (first one is invalid)", 1, ss.size());
     }
     
     @Test
     public void invalidSelectorMedia() throws IOException, CSSException 
     {
-        StyleSheet ss = CSSFactory.parse(TEST_DECL7A);
+        StyleSheet ss = CSSFactory.parseString(TEST_DECL7A, null);
         assertEquals("Style sheet contains one media rule", 1, ss.size());
         assertEquals("One declaration is accepted (second one is invalid)", 1, ss.get(0).size());
-        ss = CSSFactory.parse(TEST_DECL7B);
+        ss = CSSFactory.parseString(TEST_DECL7B, null);
         assertEquals("Style sheet contains one media rule", 1, ss.size());
         assertEquals("One declaration is accepted (first one is invalid)", 1, ss.get(0).size());
     }
@@ -119,7 +119,7 @@ public class GrammarRecovery2 {
     @Test
     public void invalidSelectorSyntax() throws IOException, CSSException 
     {
-        StyleSheet ss = CSSFactory.parse(TEST_DECL8A);
+        StyleSheet ss = CSSFactory.parseString(TEST_DECL8A, null);
         assertEquals("Style sheet contains two rules (the middle one is invalid)", 2, ss.size());
     }
 }

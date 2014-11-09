@@ -224,7 +224,7 @@ public class DOMAssignDirect {
         final DOMSource ds = new DOMSource(is);
         final Document doc = ds.parse();
         final ElementMap elements = new ElementMap(doc);
-        final StyleSheet style = CSSFactory.parse(css);
+        final StyleSheet style = CSSFactory.parseString(css, null);
 
         final DirectAnalyzer da = new DirectAnalyzer(style);
         final NodeData nodeData1 = da.getElementStyle(elements.getElementById("p1"), null, "screen");
@@ -253,7 +253,7 @@ public class DOMAssignDirect {
         final DOMSource ds = new DOMSource(is);
         final Document doc = ds.parse();
         final ElementMap elements = new ElementMap(doc);
-        final StyleSheet style = CSSFactory.parse(css);
+        final StyleSheet style = CSSFactory.parseString(css, null);
 
         final DirectAnalyzer da = new DirectAnalyzer(style);
         final NodeData nodeData1 = da.getElementStyle(elements.getElementById("p1"), null, "screen");
@@ -278,7 +278,7 @@ public class DOMAssignDirect {
         final DOMSource ds = new DOMSource(is);
         final Document doc = ds.parse();
         final ElementMap elements = new ElementMap(doc);
-        final StyleSheet style = CSSFactory.parse(css);
+        final StyleSheet style = CSSFactory.parseString(css, null);
 
         final DirectAnalyzer da = new DirectAnalyzer(style);
         final NodeData nodeData = da.getElementStyle(elements.getElementById("p1"), null, "screen");

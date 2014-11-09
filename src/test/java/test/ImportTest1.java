@@ -58,11 +58,11 @@ public class ImportTest1 {
 
 	@Test
 	public void importTokenization() throws CSSException, IOException {
-		CSSFactory.parse(SIMPLE_IMPORT);
-		CSSFactory.parse(QUOT_IMPORT);
-		CSSFactory.parse(URL_IMPORT);
-		CSSFactory.parse(DOUBLE_IMPORT);
-		CSSFactory.parse(MEDIA_IMPORT);
+		CSSFactory.parseString(SIMPLE_IMPORT, null);
+		CSSFactory.parseString(QUOT_IMPORT, null);
+		CSSFactory.parseString(URL_IMPORT, null);
+		CSSFactory.parseString(DOUBLE_IMPORT, null);
+		CSSFactory.parseString(MEDIA_IMPORT, null);
 	}
 
 	@Test
@@ -137,7 +137,7 @@ public class ImportTest1 {
 	
 	@Test
 	public void testURLImport() throws CSSException, IOException {
-		CSSFactory.parse(EXTERN_IMPORT);
+		CSSFactory.parseString(EXTERN_IMPORT, null);
 	}
 	
 }

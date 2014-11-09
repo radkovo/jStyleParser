@@ -39,7 +39,7 @@ public class ParserDemo
         
         try
         {
-            StyleSheet style = CSSFactory.parse(css);
+            StyleSheet style = CSSFactory.parseString(css, null);
             
             //obtain the number of rules
             System.out.println("#of rules parsed: " + style.size());

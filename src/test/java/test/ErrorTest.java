@@ -33,7 +33,7 @@ public class ErrorTest {
     @Test 
     public void testString1() throws IOException, CSSException   {
         
-        StyleSheet ss = CSSFactory.parse(TEST_STRING1);
+        StyleSheet ss = CSSFactory.parseString(TEST_STRING1, null);
         
         assertEquals("One rule is set", 1, ss.size());
         

@@ -48,7 +48,7 @@ public class Media
     @Test
     public void simpleMedia() throws IOException, CSSException 
     {
-        StyleSheet ss = CSSFactory.parse(TEST_SIMPLE_MEDIA);
+        StyleSheet ss = CSSFactory.parseString(TEST_SIMPLE_MEDIA, null);
         assertEquals("There are three rules", 3, ss.size());
         assertEquals("There is one rule in media", 1, ss.get(1).size());
         
@@ -61,7 +61,7 @@ public class Media
     @Test
     public void mediaWithExpressions() throws IOException, CSSException 
     {
-        StyleSheet ss = CSSFactory.parse(TEST_MEDIA_EXPR);
+        StyleSheet ss = CSSFactory.parseString(TEST_MEDIA_EXPR, null);
         assertEquals("There are three rules", 3, ss.size());
         assertEquals("There is one rule in media", 1, ss.get(1).size());
         
@@ -76,7 +76,7 @@ public class Media
     @Test
     public void missingQuery() throws IOException, CSSException 
     {
-        StyleSheet ss = CSSFactory.parse(TEST_NO_QUERY);
+        StyleSheet ss = CSSFactory.parseString(TEST_NO_QUERY, null);
         assertEquals("There are three rules", 3, ss.size());
         assertEquals("There is one rule in media", 1, ss.get(1).size());
         
@@ -90,7 +90,7 @@ public class Media
         StyleSheet ss;
         List<MediaQuery> queries;
         
-        ss = CSSFactory.parse(TEST_MALFORMED1);
+        ss = CSSFactory.parseString(TEST_MALFORMED1, null);
         assertEquals("There are three rules", 3, ss.size());
         assertEquals("There is one rule in media", 1, ss.get(1).size());
         
@@ -106,7 +106,7 @@ public class Media
         StyleSheet ss;
         List<MediaQuery> queries;
         
-        ss = CSSFactory.parse(TEST_MALFORMED2);
+        ss = CSSFactory.parseString(TEST_MALFORMED2, null);
         assertEquals("There are three rules", 3, ss.size());
         assertEquals("There is one rule in media", 1, ss.get(1).size());
         
@@ -122,7 +122,7 @@ public class Media
         StyleSheet ss;
         List<MediaQuery> queries;
         
-        ss = CSSFactory.parse(TEST_MALFORMED3);
+        ss = CSSFactory.parseString(TEST_MALFORMED3, null);
         assertEquals("There are three rules", 3, ss.size());
         assertEquals("There is one rule in media", 1, ss.get(1).size());
         
@@ -135,7 +135,7 @@ public class Media
     @Test
     public void malformedQueries4() throws IOException, CSSException 
     {
-        StyleSheet ss = CSSFactory.parse(TEST_MALFORMED4);
+        StyleSheet ss = CSSFactory.parseString(TEST_MALFORMED4, null);
         assertEquals("There are three rules", 3, ss.size());
     }
 }

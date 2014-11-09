@@ -109,11 +109,11 @@ public class SimpleTest {
 		
 		StyleSheet ss;
 		
-		ss = CSSFactory.parse(TEST_CHARSET_STRING1);
+		ss = CSSFactory.parseString(TEST_CHARSET_STRING1, null);
 		
 		assertEquals("No rules are defined", 0, ss.size());
 
-		ss = CSSFactory.parse(TEST_CHARSET_STRING2);
+		ss = CSSFactory.parseString(TEST_CHARSET_STRING2, null);
 		
 		assertEquals("One rule is set", 1, ss.size());
 		
@@ -133,7 +133,7 @@ public class SimpleTest {
 	@Test 
 	public void testString1() throws IOException, CSSException   {
 		
-		StyleSheet ss = CSSFactory.parse(TEST_STRING1);
+		StyleSheet ss = CSSFactory.parseString(TEST_STRING1, null);
 		
 		assertEquals("One rule is set", 1, ss.size());
 		
@@ -155,7 +155,7 @@ public class SimpleTest {
 	@Test 
 	public void testRGBFunction1() throws IOException, CSSException   {
 		
-		StyleSheet ss = CSSFactory.parse(TEST_RGBFUNCTION1);
+		StyleSheet ss = CSSFactory.parseString(TEST_RGBFUNCTION1, null);
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);				
@@ -174,7 +174,7 @@ public class SimpleTest {
 	@Test 
 	public void testRGBFunction2() throws IOException, CSSException   {
 		
-		StyleSheet ss = CSSFactory.parse(TEST_RGBFUNCTION2);
+		StyleSheet ss = CSSFactory.parseString(TEST_RGBFUNCTION2, null);
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);				
@@ -192,7 +192,7 @@ public class SimpleTest {
 	@Test
 	public void testHashColor1() throws IOException, CSSException   {
 
-		StyleSheet ss = CSSFactory.parse(TEST_HASH_COLOR1);
+		StyleSheet ss = CSSFactory.parseString(TEST_HASH_COLOR1, null);
 		assertEquals("One rule is set", 1, ss.size());
 		
 		RuleSet rule = (RuleSet) ss.get(0);				
@@ -211,7 +211,7 @@ public class SimpleTest {
 	@Test
 	public void testHashColor2() throws IOException, CSSException   {
 		
-		StyleSheet ss = CSSFactory.parse(TEST_HASH_COLOR2);
+		StyleSheet ss = CSSFactory.parseString(TEST_HASH_COLOR2, null);
 		assertEquals("One rule is set", 1, ss.size());
 		
 		final RuleSet rule = (RuleSet) ss.get(0);				
@@ -228,7 +228,7 @@ public class SimpleTest {
 	
 	@Test
 	public void testUnit() throws IOException, CSSException {
-		StyleSheet ss = CSSFactory.parse(TEST_UNIT);
+		StyleSheet ss = CSSFactory.parseString(TEST_UNIT, null);
 		
 		assertEquals("There is one rule", 1, ss.size());
 		
@@ -237,14 +237,14 @@ public class SimpleTest {
 	@Test
 	public void testString2() throws IOException, CSSException   {
 		
-		StyleSheet ss = CSSFactory.parse(TEST_STRING2);
+		StyleSheet ss = CSSFactory.parseString(TEST_STRING2, null);
 		assertEquals("Six rules are set", 6, ss.size());
 	}
 	
 	@Test
 	public void testURI1() throws IOException, CSSException   {
 		
-		StyleSheet ss = CSSFactory.parse(TEST_URI1);
+		StyleSheet ss = CSSFactory.parseString(TEST_URI1, null);
 		assertEquals("There is one rule", 1, ss.size());
 		
 		Declaration dec = (Declaration) ss.get(0).get(0);
@@ -261,7 +261,7 @@ public class SimpleTest {
 	@Test
 	public void testPositiveNumber1() throws IOException, CSSException   {
 		
-		StyleSheet ss = CSSFactory.parse(TEST_POSITIVE_NUMBER1);
+		StyleSheet ss = CSSFactory.parseString(TEST_POSITIVE_NUMBER1, null);
 		assertEquals("There is one rule", 1, ss.size());
 		
 		Declaration dec = (Declaration) ss.get(0).get(0);
@@ -278,7 +278,7 @@ public class SimpleTest {
 	@Test
 	public void testIntegerZIndex() throws IOException, CSSException   {
 		
-		StyleSheet ss = CSSFactory.parse(TEST_INTEGER_Z_INDEX);
+		StyleSheet ss = CSSFactory.parseString(TEST_INTEGER_Z_INDEX, null);
 		assertEquals("There is one rule", 1, ss.size());
 		
 		Declaration dec = (Declaration) ss.get(0).get(0);
@@ -294,14 +294,14 @@ public class SimpleTest {
 	// Test for issue #59
 	@Test
 	public void testInvalidPseudoSelector1() throws IOException, CSSException   {
-		StyleSheet ss = CSSFactory.parse(TEST_INVALID_PSEUDO_SELECTOR1);
+		StyleSheet ss = CSSFactory.parseString(TEST_INVALID_PSEUDO_SELECTOR1, null);
 		assertEquals("Zero rule is set", 0, ss.size());
 	}
 
 	// Test for issue #59
 	@Test
 	public void testInvalidPseudoSelector2() throws IOException, CSSException   {
-		StyleSheet ss = CSSFactory.parse(TEST_INVALID_PSEUDO_SELECTOR2);
+		StyleSheet ss = CSSFactory.parseString(TEST_INVALID_PSEUDO_SELECTOR2, null);
 		assertEquals("One rule is set", 1, ss.size());
 
 		RuleSet rule = (RuleSet) ss.get(0);

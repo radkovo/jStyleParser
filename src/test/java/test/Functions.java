@@ -39,7 +39,7 @@ public class Functions {
 	@Test
 	public void vendorSpecificUnderscore() throws IOException, CSSException 
 	{
-		StyleSheet ss = CSSFactory.parse(TEST_DECL1A);
+		StyleSheet ss = CSSFactory.parseString(TEST_DECL1A, null);
 		assertEquals("Two properties are accepted", 2, ss.get(0).size());
 		
 		final RuleSet rule = (RuleSet) ss.get(0);
@@ -49,7 +49,7 @@ public class Functions {
 	@Test
 	public void vendorSpecificFunctions() throws IOException, CSSException 
 	{
-		StyleSheet ss = CSSFactory.parse(TEST_DECL2A);
+		StyleSheet ss = CSSFactory.parseString(TEST_DECL2A, null);
 		assertEquals("Two properties are accepted", 2, ss.get(0).size());
 		Declaration d = (Declaration) ss.get(0).get(0);
 		TermFunction f = (TermFunction) d.get(0);

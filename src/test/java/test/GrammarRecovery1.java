@@ -88,7 +88,7 @@ public class GrammarRecovery1 {
 	@Test
 	public void charsetCharsetWithoutSemicolon() throws IOException, CSSException {
 
-		StyleSheet ss = CSSFactory.parse(TEST_CHARSET_WITHOUT_SEMICOLON1);
+		StyleSheet ss = CSSFactory.parseString(TEST_CHARSET_WITHOUT_SEMICOLON1, null);
 		assertEquals("No rules are defined", 0, ss.size());
 	}
 
@@ -104,7 +104,7 @@ public class GrammarRecovery1 {
 	@Test
 	public void charsetWithoutSemicolonAndDoubleDAfter() throws IOException, CSSException {
 
-		StyleSheet ss = CSSFactory.parse(TEST_CHARSET_WITHOUT_SEMICOLON3);
+		StyleSheet ss = CSSFactory.parseString(TEST_CHARSET_WITHOUT_SEMICOLON3, null);
 
 		RuleSet rule = (RuleSet) ss.get(0);
 
@@ -119,7 +119,7 @@ public class GrammarRecovery1 {
 
 	@Test
 	public void unclosedString() throws IOException, CSSException {
-		StyleSheet ss = CSSFactory.parse(TEST_NOT_CLOSED_STRING);
+		StyleSheet ss = CSSFactory.parseString(TEST_NOT_CLOSED_STRING, null);
 
 		assertEquals("Contains one ruleset", 1, ss.size());
 
@@ -133,7 +133,7 @@ public class GrammarRecovery1 {
 
 	@Test
 	public void invalidAtKeyword() throws IOException, CSSException {
-		StyleSheet ss = CSSFactory.parse(TEST_INVALID_ATKEYWORD);
+		StyleSheet ss = CSSFactory.parseString(TEST_INVALID_ATKEYWORD, null);
 		assertTrue("Ruleset is empty", ss.isEmpty());
 
 	}
@@ -141,7 +141,7 @@ public class GrammarRecovery1 {
 	@Test
 	public void noTerms() throws IOException, CSSException {
 
-		StyleSheet ss = CSSFactory.parse(TEST_DECL5);
+		StyleSheet ss = CSSFactory.parseString(TEST_DECL5, null);
 
 		assertEquals("Contains one ruleset", 1, ss.size());
 
@@ -154,7 +154,7 @@ public class GrammarRecovery1 {
 
 	@Test
 	public void unexpectedEOF() throws IOException, CSSException {
-		StyleSheet ss = CSSFactory.parse(TEST_UNEXP_EOF);
+		StyleSheet ss = CSSFactory.parseString(TEST_UNEXP_EOF, null);
 
 		assertEquals("Contains one @media", 1, ss.size());
 
@@ -165,7 +165,7 @@ public class GrammarRecovery1 {
 
 	@Test
 	public void invalidAttributeOperator() throws IOException, CSSException {
-		StyleSheet ss = CSSFactory.parse(TEST_INVALID_ATTRIBUTE_OPERATOR);
+		StyleSheet ss = CSSFactory.parseString(TEST_INVALID_ATTRIBUTE_OPERATOR, null);
 
 		Assert.assertEquals("Stylesheet is empty", 0, ss.size());
 
@@ -173,7 +173,7 @@ public class GrammarRecovery1 {
 
 	@Test
 	public void invalidSelector() throws IOException, CSSException, SAXException {
-		StyleSheet sheet = CSSFactory.parse(TEST_INVALID_SELECTOR);
+		StyleSheet sheet = CSSFactory.parseString(TEST_INVALID_SELECTOR, null);
 
         DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/h1.html"));
         Document doc = ds.parse();
@@ -197,7 +197,7 @@ public class GrammarRecovery1 {
 
 	@Test
 	public void invalidParen() throws IOException, CSSException {
-		StyleSheet ss = CSSFactory.parse(TEST_INVALID_PAREN);
+		StyleSheet ss = CSSFactory.parseString(TEST_INVALID_PAREN, null);
 
 		Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
 
@@ -205,7 +205,7 @@ public class GrammarRecovery1 {
 	
 	@Test
 	public void invalidSemicolon() throws IOException, CSSException {
-		StyleSheet ss = CSSFactory.parse(TEST_INVALID_SEMICOLON);
+		StyleSheet ss = CSSFactory.parseString(TEST_INVALID_SEMICOLON, null);
 
 		Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
 
@@ -213,7 +213,7 @@ public class GrammarRecovery1 {
 	
     @Test
     public void declarationNoValue() throws IOException, CSSException {
-        StyleSheet ss = CSSFactory.parse(TEST_NO_VALUE);
+        StyleSheet ss = CSSFactory.parseString(TEST_NO_VALUE, null);
 
         Assert.assertEquals("Stylesheet contains one rule", 1, ss.size());
         Assert.assertEquals("There are two declarations in the rule", 2, ss.get(0).size());

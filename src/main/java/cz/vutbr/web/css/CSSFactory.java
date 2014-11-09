@@ -396,13 +396,40 @@ public final class CSSFactory {
 	 *             When exception during read occurs
 	 * @throws CSSException
 	 *             When exception during parse occurs
+	 * @deprecated
+	 *         This function does not specify the base URL. {@link #parseString(String, URL)} 
+	 *         should be used instead. 
 	 */
+	@Deprecated
 	public static final StyleSheet parse(String css) throws IOException,
 			CSSException {
 	    URL base = new URL("file:///base/url/is/not/specified"); //Cannot determine the base URI in this method but we need some base URI for relative URLs
 		return CSSParserFactory.parse(css, null, SourceType.EMBEDDED, base);
 	}
 
+    /**
+     * Parses text into a StyleSheet
+     * 
+     * @param css
+     *            Text with CSS declarations
+     * @param base
+     *            The URL to be used as a base for loading external resources. Base URL may
+     *            be {@code null} if there are no external resources in the CSS string
+     *            referenced by relative URLs. 
+     * @return Parsed StyleSheet
+     * @throws IOException
+     *             When exception during read occurs
+     * @throws CSSException
+     *             When exception during parse occurs
+     */
+	public static final StyleSheet parseString(String css, URL base) throws IOException,
+            CSSException {
+	    URL baseurl = base;
+	    if (baseurl == null)
+	        baseurl = new URL("file:///base/url/is/not/specified"); //prevent errors if there are still some relative URLs used
+        return CSSParserFactory.parse(css, null, SourceType.EMBEDDED, baseurl);
+    }
+    
     /**
      * Loads all the style sheets used from the specified DOM tree.
      * The following style specifications are evaluated:

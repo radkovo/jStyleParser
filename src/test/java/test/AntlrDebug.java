@@ -22,7 +22,7 @@ public class AntlrDebug {
 			//CSSFactory.parse(GrammarRecovery1.TEST_CHARSET_WITHOUT_SEMICOLON3);
 			//StyleSheet ss = CSSFactory.parse(SimpleTest.TEST_URI1);
             //StyleSheet ss = CSSFactory.parse("body { color: red; $font-weight: bold; font-style:italic; } h1 { font-size: 200% }");
-            StyleSheet ss = CSSFactory.parse("body { color: red; padding: expression(ms_setPadding()); font-style:italic; } h1 { font-size: 200% }");
+            StyleSheet ss = CSSFactory.parseString("body { color: red; padding: expression(ms_setPadding()); font-style:italic; } h1 { font-size: 200% }", null);
 			System.out.println(ss);
 		} catch (Exception e) {
 			System.err.println(e);
