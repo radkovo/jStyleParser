@@ -154,28 +154,32 @@ public class TermFactoryImpl implements TermFactory {
 
 	public TermNumeric<Float> createDimension(String value, int unary) {
 
-		for (TermNumeric.Unit unit : TermNumeric.Unit.values()) {
-			// try to find valid unit identifier
-			if (value.matches("^[0-9]*\\.?[0-9]+" + unit.value() + "$")) {
-				Float f = convertFloat(value, unit.value(), unary);
-				if (unit.isAngle())
-					return (TermNumeric<Float>) (new TermAngleImpl()).setUnit(
-							unit).setValue(f);
-				else if (unit.isFrequency())
-					return (TermNumeric<Float>) (new TermFrequencyImpl())
-							.setUnit(unit).setValue(f);
-				else if (unit.isLength())
-					return (TermNumeric<Float>) (new TermLengthImpl()).setUnit(
-							unit).setValue(f);
-                else if (unit.isResolution())
-                    return (TermNumeric<Float>) (new TermResolutionImpl()).setUnit(
-                            unit).setValue(f);
-				else if (unit.isTime())
-					return (TermNumeric<Float>) (new TermTimeImpl()).setUnit(
-							unit).setValue(f);
-			}
-
-		}
+	    try {
+    		for (TermNumeric.Unit unit : TermNumeric.Unit.values()) {
+    			// try to find valid unit identifier
+    			if (value.matches("^[0-9]*\\.?[0-9]+" + unit.value() + "$")) {
+    				Float f = convertFloat(value, unit.value(), unary);
+    				if (unit.isAngle())
+    					return (TermNumeric<Float>) (new TermAngleImpl()).setUnit(
+    							unit).setValue(f);
+    				else if (unit.isFrequency())
+    					return (TermNumeric<Float>) (new TermFrequencyImpl())
+    							.setUnit(unit).setValue(f);
+    				else if (unit.isLength())
+    					return (TermNumeric<Float>) (new TermLengthImpl()).setUnit(
+    							unit).setValue(f);
+                    else if (unit.isResolution())
+                        return (TermNumeric<Float>) (new TermResolutionImpl()).setUnit(
+                                unit).setValue(f);
+    				else if (unit.isTime())
+    					return (TermNumeric<Float>) (new TermTimeImpl()).setUnit(
+    							unit).setValue(f);
+    			}
+    
+    		}
+	    } catch (IllegalArgumentException e) {
+	        return null;
+	    }
 
 		return null;
 
