@@ -47,7 +47,7 @@ public class SimplePreparator implements Preparator {
 		}
 
 		// create rule set
-		RuleSet rs = rf.createSet(null);
+		RuleSet rs = rf.createSet();
 		rs.setSelectors(cslist);
 		rs.replaceAll(dlist);
 		log.info("Created RuleSet as with:\n{}", rs);
@@ -55,7 +55,7 @@ public class SimplePreparator implements Preparator {
 		// wrap
 		if (wrap) {
 			// swap numbers, so RuleMedia is created before RuleSet
-			RuleMedia rm = rf.createMedia(null);
+			RuleMedia rm = rf.createMedia();
 			log.debug("Wrapping RuleSet {} into RuleMedia: {}", rs, media);
 
 			rm.unlock();
@@ -78,7 +78,7 @@ public class SimplePreparator implements Preparator {
 		}
 
 		// create media at position of mark
-		RuleMedia rm = rf.createMedia(null);
+		RuleMedia rm = rf.createMedia();
 		rm.replaceAll(rules);
 		if (media != null && !media.isEmpty())
 			rm.setMediaQueries(media);
@@ -96,7 +96,7 @@ public class SimplePreparator implements Preparator {
 			return null;
 		}
 
-		RulePage rp = rf.createPage(null);
+		RulePage rp = rf.createPage();
         if (declarations != null)
             for (Declaration d : declarations)
                 rp.add(d);
@@ -119,7 +119,7 @@ public class SimplePreparator implements Preparator {
             return null;
         }
 
-        RuleMargin rm = rf.createMargin(area, null);
+        RuleMargin rm = rf.createMargin(area);
         rm.replaceAll(decl);
 
         log.info("Create @" + area + " with:\n" + rm);
@@ -134,7 +134,7 @@ public class SimplePreparator implements Preparator {
             return null;
         }
 
-        RuleViewport rp = rf.createViewport(null);
+        RuleViewport rp = rf.createViewport();
         rp.replaceAll(decl);
         log.info("Create @viewport as {}th with:\n{}", rp);
 
@@ -148,7 +148,7 @@ public class SimplePreparator implements Preparator {
             return null;
         }
 
-        RuleFontFace rp = rf.createFontFace(null);
+        RuleFontFace rp = rf.createFontFace();
         rp.replaceAll(decl);
         log.info("Create @font-face as with:\n{}", rp);
 
@@ -171,7 +171,7 @@ public class SimplePreparator implements Preparator {
 		if(pseudos!=null) sel.addAll(pseudos);
 		cs.add(sel);
 		
-		RuleSet rs = rf.createSet(null);
+		RuleSet rs = rf.createSet();
 		rs.replaceAll(dlist);
 		rs.setSelectors(Arrays.asList(cs));
 		

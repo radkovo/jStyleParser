@@ -16,9 +16,9 @@ import cz.vutbr.web.css.RuleViewport;
 public class RuleViewportImpl extends AbstractRuleBlock<Declaration> implements RuleViewport
 {
 
-    protected RuleViewportImpl(Priority priority) 
+    protected RuleViewportImpl() 
     {
-        super(priority);
+        super();
     }
     
     @Override 

@@ -20,8 +20,8 @@ public class RuleImportImpl extends AbstractRuleBlock<String> implements RuleImp
      * Creates empty RuleImport instance 
      * @param priority Priority mark
      */
-    protected RuleImportImpl(Priority priority) {
-    	super(priority);
+    protected RuleImportImpl() {
+    	super();
     	this.uri = "";
     }
     

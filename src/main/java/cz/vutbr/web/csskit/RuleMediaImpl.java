@@ -24,8 +24,7 @@ public class RuleMediaImpl extends AbstractRuleBlock<RuleSet> implements RuleMed
 	 * Creates an empty object to be filled by interface methods
 	 * @param priority Priority mark
 	 */
-	protected RuleMediaImpl(Priority priority) {
-		super(priority);
+	protected RuleMediaImpl() {
 		this.media = Collections.emptyList();
 	}    
     

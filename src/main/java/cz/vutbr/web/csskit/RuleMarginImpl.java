@@ -12,8 +12,7 @@ public class RuleMarginImpl extends AbstractRuleBlock<Declaration> implements Ru
 
 	private MarginArea marginArea;
 
-	protected RuleMarginImpl(String area, Priority priority) {
-		super(priority);
+	protected RuleMarginImpl(String area) {
 		for (MarginArea a : MarginArea.values()) {
 			if (a.value.equals(area)) {
 				marginArea = a;

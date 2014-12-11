@@ -2,7 +2,6 @@ package cz.vutbr.web.css;
 
 import org.w3c.dom.Element;
 
-import cz.vutbr.web.css.RuleBlock.Priority;
 import cz.vutbr.web.css.Selector.Operator;
 
 /**
@@ -32,7 +31,7 @@ public interface RuleFactory {
 	 * @return New CSS import rule
 	 */
 	@Deprecated
-	RuleImport createImport(Priority priority);
+	RuleImport createImport();
 
 	/**
 	 * Creates CSS rule set, that is collection of CSS declarations
@@ -46,14 +45,14 @@ public interface RuleFactory {
 	 * @param priority Priority mark
 	 * @return New CSS rule set
 	 */
-	RuleSet createSet(Priority priority);
+	RuleSet createSet();
 
 	/**
 	 * Creates CSS media page
 	 * @param priority Priority mark
 	 * @return New CSS media page
 	 */
-	RuleMedia createMedia(Priority priority);
+	RuleMedia createMedia();
 
 	/**
 	 * Creates a CSS media query
@@ -72,7 +71,7 @@ public interface RuleFactory {
 	 * @param priority Priority mark
 	 * @return New CSS page
 	 */
-	RulePage createPage(Priority priority);
+	RulePage createPage();
 	
 	/**
 	 * Creates CSS margin rule
@@ -80,21 +79,21 @@ public interface RuleFactory {
 	 * @param priority Priority mark
 	 * @return New CSS margin rule
 	 */
-	RuleMargin createMargin(String area, Priority priority);
+	RuleMargin createMargin(String area);
 
     /**
      * Creates CSS viewport rule.
      * @param priority Priority mark
      * @return New CSS viewport rule
      */
-    RuleViewport createViewport(Priority priority);
+    RuleViewport createViewport();
 
     /**
      * Creates CSS named font
      * @param priority Priority mark
      * @return New CSS font
      */
-    RuleFontFace createFontFace(Priority priority);
+    RuleFontFace createFontFace();
 
 	/**
 	 * Creates CSS combined selector, collection of (simple) selectors

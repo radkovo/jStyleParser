@@ -3,7 +3,6 @@ package cz.vutbr.web.csskit.antlr;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
@@ -19,7 +18,6 @@ import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleList;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.RuleBlock.Priority;
 
 /**
  * Handles construction of parser
@@ -31,11 +29,6 @@ public class CSSParserFactory {
 	private static final Logger log = LoggerFactory
 			.getLogger(CSSParserFactory.class);
 
-	/**
-	 * Last priority obtained from parsing. Next stylesheet will be started with this priority
-	 */
-	private static Priority lastPriority = null;
-	
 	/**
 	 * Encapsulates functionality associated with different source types.
 	 * 
@@ -230,7 +223,6 @@ public class CSSParserFactory {
 
 		Preparator preparator = new SimplePreparator(inline, inlinePriority);
         StyleSheet ret = parseAndImport(source, encoding, type, sheet, preparator, base, null);
-		lastPriority = ret.getLastMark();
 		return ret;
 	}
 
@@ -283,12 +275,8 @@ public class CSSParserFactory {
 	public static StyleSheet append(Object source, String encoding, SourceType type,
 			Element inline, boolean inlinePriority, StyleSheet sheet, URL base) throws IOException, CSSException {
 
-	    Priority start = sheet.getLastMark();
-	    if (start == null)
-	        start = lastPriority;
 		Preparator preparator = new SimplePreparator(inline, inlinePriority);
 		StyleSheet ret = parseAndImport(source, encoding, type, sheet, preparator, base, null);
-		lastPriority = ret.getLastMark();
 		return ret;
 	}
 
@@ -320,14 +308,6 @@ public class CSSParserFactory {
 					"Missing element for INLINE input");
 
 		return append(source, encoding, type, null, false, sheet, base);
-	}
-	
-	/**
-	 * Resets the rule priority to the initial state (completely new parsing)
-	 */
-	public static void resetPriority()
-	{
-	    lastPriority = null;
 	}
 	
 	/**
