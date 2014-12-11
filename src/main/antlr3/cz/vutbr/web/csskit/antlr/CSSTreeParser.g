@@ -37,9 +37,7 @@ import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermExpression;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
-import cz.vutbr.web.css.RuleBlock.Priority;
 
-import cz.vutbr.web.csskit.PriorityStrategy;
 import cz.vutbr.web.csskit.RuleArrayList;
 
 // @SuppressWarnings("unchecked")
@@ -82,24 +80,14 @@ import cz.vutbr.web.csskit.RuleArrayList;
 		return this;
 	}   
   
-  public StyleSheet addRulesToStyleSheet(StyleSheet sheet, PriorityStrategy ps)
+  public StyleSheet addRulesToStyleSheet(StyleSheet sheet)
   {
     if (rules != null)
     {
       for (RuleBlock<?> rule : rules)
       {
-          rule.setPriority(ps.getAndIncrement());
-          if (rule instanceof RuleMedia) //@media: assign priority to contained rules
-          {
-            if (rule instanceof RuleMedia)
-            {
-                for (RuleSet inrule : (RuleMedia) rule)
-                    inrule.setPriority(ps.getAndIncrement());
-            }
-          }
           sheet.add(rule); 
       }
-      sheet.markLast(ps.markAndIncrement());
     }
     return sheet;
   }
