@@ -7,7 +7,7 @@ package cz.vutbr.web.domassign;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,8 +24,8 @@ import cz.vutbr.web.css.MediaSpec;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.Selector.PseudoDeclaration;
+import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.csskit.ElementUtil;
 
 /**
@@ -101,7 +101,7 @@ public class DirectAnalyzer extends Analyzer
 
         // create set of possible candidates applicable to given element
         // set is automatically filtered to not contain duplicates
-        Set<RuleSet> candidates = new HashSet<RuleSet>();
+        Set<RuleSet> candidates = new LinkedHashSet<RuleSet>();
 
         // match element classes
         for (String cname : ElementUtil.elementClasses(e)) {
@@ -133,19 +133,14 @@ public class DirectAnalyzer extends Analyzer
         // others
         candidates.addAll(holder.get(HolderItem.OTHER, null));
 
-        // transform to list to speed up traversal
-        // and sort rules in order as they were found in CSS definition
-        List<RuleSet> clist = new ArrayList<RuleSet>(candidates);
-        Collections.sort(clist);
-
         log.debug("Totally {} candidates.", candidates.size());
-        log.trace("With values: {}", clist);
+        log.trace("With values: {}", candidates);
 
         // resulting list of declaration for this element with no pseudo-selectors (main list)(local cache)
         List<Declaration> eldecl = new ArrayList<Declaration>();
         
         // for all candidates
-        for (RuleSet rule : clist) {
+        for (RuleSet rule : candidates) {
             
             StyleSheet sheet = rule.getStyleSheet();
             StyleSheet.Origin origin = (sheet == null) ? StyleSheet.Origin.AGENT : sheet.getOrigin();
