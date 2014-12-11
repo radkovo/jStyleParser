@@ -28,8 +28,8 @@ import cz.vutbr.web.css.CSSProperty.FontFamily;
 import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.StyleMap;
 
-public class GrammarRecovery1 {
-	private static Logger log = LoggerFactory.getLogger(GrammarRecovery1.class);
+public class GrammarRecovery1Test {
+	private static Logger log = LoggerFactory.getLogger(GrammarRecovery1Test.class);
 
 	public static final TermFactory tf = CSSFactory.getTermFactory();
 
