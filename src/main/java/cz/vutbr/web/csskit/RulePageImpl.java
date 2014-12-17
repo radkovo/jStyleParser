@@ -21,8 +21,8 @@ public class RulePageImpl extends AbstractRuleBlock<Rule<?>> implements RulePage
 	protected String name;
 	protected String pseudo;
 	
-	protected RulePageImpl(Priority priority) {
-		super(priority);
+	protected RulePageImpl() {
+		super();
 		this.name = null;
 		this.pseudo = null;
 		replaceAll(new ArrayList<Rule<?>>());

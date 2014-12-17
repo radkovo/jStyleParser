@@ -26,9 +26,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @author burgetr
  */
-public class Media
+public class MediaTest
 {
-    private static Logger log = LoggerFactory.getLogger(Media.class);
+    private static Logger log = LoggerFactory.getLogger(MediaTest.class);
 
     public static final String TEST_SIMPLE_MEDIA = "p { color: red; } @media screen, print { p { color: blue; } } em { color: green; }";
     public static final String TEST_MEDIA_EXPR = "p { color: red; } @media screen AND (min-width: 100px) AND (max-width: 500px), print { p { color: blue; } } em { color: green; }";

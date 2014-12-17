@@ -3,7 +3,6 @@ package cz.vutbr.web.csskit.antlr;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
@@ -19,8 +18,6 @@ import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleList;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.RuleBlock.Priority;
-import cz.vutbr.web.csskit.PriorityStrategy;
 
 /**
  * Handles construction of parser
@@ -32,11 +29,6 @@ public class CSSParserFactory {
 	private static final Logger log = LoggerFactory
 			.getLogger(CSSParserFactory.class);
 
-	/**
-	 * Last priority obtained from parsing. Next stylesheet will be started with this priority
-	 */
-	private static Priority lastPriority = null;
-	
 	/**
 	 * Encapsulates functionality associated with different source types.
 	 * 
@@ -229,10 +221,8 @@ public class CSSParserFactory {
 		StyleSheet sheet = (StyleSheet) CSSFactory.getRuleFactory()
 				.createStyleSheet().unlock();
 
-		PriorityStrategy ps = new AtomicPriorityStrategy(lastPriority);
 		Preparator preparator = new SimplePreparator(inline, inlinePriority);
-        StyleSheet ret = parseAndImport(source, encoding, type, sheet, preparator, ps, base, null);
-		lastPriority = ret.getLastMark();
+        StyleSheet ret = parseAndImport(source, encoding, type, sheet, preparator, base, null);
 		return ret;
 	}
 
@@ -285,13 +275,8 @@ public class CSSParserFactory {
 	public static StyleSheet append(Object source, String encoding, SourceType type,
 			Element inline, boolean inlinePriority, StyleSheet sheet, URL base) throws IOException, CSSException {
 
-	    Priority start = sheet.getLastMark();
-	    if (start == null)
-	        start = lastPriority;
-		PriorityStrategy ps = new AtomicPriorityStrategy(start);
 		Preparator preparator = new SimplePreparator(inline, inlinePriority);
-		StyleSheet ret = parseAndImport(source, encoding, type, sheet, preparator, ps, base, null);
-		lastPriority = ret.getLastMark();
+		StyleSheet ret = parseAndImport(source, encoding, type, sheet, preparator, base, null);
 		return ret;
 	}
 
@@ -326,19 +311,11 @@ public class CSSParserFactory {
 	}
 	
 	/**
-	 * Resets the rule priority to the initial state (completely new parsing)
-	 */
-	public static void resetPriority()
-	{
-	    lastPriority = null;
-	}
-	
-	/**
 	 * Parses the source using the given infrastructure and returns the resulting style sheet.
 	 * The imports are handled recursively.
 	 */
 	private static StyleSheet parseAndImport(Object source, String encoding, SourceType type,
-	        StyleSheet sheet, Preparator preparator, PriorityStrategy ps, URL base, List<MediaQuery> media)
+	        StyleSheet sheet, Preparator preparator, URL base, List<MediaQuery> media)
 	        throws CSSException, IOException
 	{
         CSSTreeParser parser = createTreeParser(source, encoding, type, preparator, base, media);
@@ -354,7 +331,7 @@ public class CSSParserFactory {
             {    
                 URL url = DataURLHandler.createURL(base, path);
                 try {
-                    parseAndImport(url, encoding, SourceType.URL, sheet, preparator, ps, url, imedia);
+                    parseAndImport(url, encoding, SourceType.URL, sheet, preparator, url, imedia);
                 } catch (IOException e) {
                     log.warn("Couldn't read imported style sheet: {}", e.getMessage());
                 }
@@ -363,7 +340,7 @@ public class CSSParserFactory {
                 log.trace("Skipping import {} (media not matching)", path);
         }
 
-	    return parser.addRulesToStyleSheet(sheet, ps);
+	    return parser.addRulesToStyleSheet(sheet);
 	}
 	
 	// creates the tree parser
@@ -459,84 +436,4 @@ public class CSSParserFactory {
         }
 	}
 	
-	//========================================================================================================================
-	
-	// priority strategy using atomic incrementing
-	private static final class AtomicPriorityStrategy implements
-			PriorityStrategy {
-
-		private final AtomicInteger counter;
-
-		public AtomicPriorityStrategy(Priority last) {
-			if (last == null)
-				this.counter = new AtomicInteger(0);
-			else if (!(last instanceof PriorityImpl))
-				throw new ClassCastException(
-						"Unable to continue with priority class provided: "
-								+ last.getClass());
-			else
-				this.counter = new AtomicInteger(((PriorityImpl) last).priority);
-		}
-
-		public Priority getAndIncrement() {
-			return new PriorityImpl(counter.incrementAndGet());
-		}
-
-		public Priority markAndIncrement() {
-			return new PriorityImpl(counter.incrementAndGet());
-		}
-
-	}
-
-	// not atomic priority strategy
-	@SuppressWarnings("unused")
-	private static final class SimplePriorityStrategy implements
-			PriorityStrategy {
-
-		private int counter;
-
-		public SimplePriorityStrategy(Priority last) {
-			if (!(last instanceof PriorityImpl))
-				throw new ClassCastException(
-						"Unable to continue with priority class provided: "
-								+ last.getClass());
-
-			this.counter = ((PriorityImpl) last).priority;
-		}
-
-		public Priority getAndIncrement() {
-			return new PriorityImpl(counter++);
-		}
-
-		public Priority markAndIncrement() {
-			return new PriorityImpl(counter++);
-		}
-	}
-
-	// priority using integer value
-	private static final class PriorityImpl implements Priority {
-
-		final int priority;
-
-		public PriorityImpl(int priority) {
-			this.priority = priority;
-		}
-
-		public int compareTo(Priority o) {
-			/*if (!(o instanceof PriorityImpl))
-				throw new ClassCastException(
-						"Unable to compare with different instance of priority: "
-								+ o.getClass());*/
-
-			PriorityImpl other = (PriorityImpl) o;
-
-			return this.priority - other.priority;
-		}
-
-		@Override
-		public String toString() {
-			return String.valueOf(priority);
-		}
-	}
-
 }

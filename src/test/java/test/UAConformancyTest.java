@@ -22,8 +22,8 @@ import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.StyleMap;
 
-public class UAConformancy {
-	private static Logger log = LoggerFactory.getLogger(UAConformancy.class);
+public class UAConformancyTest {
+	private static Logger log = LoggerFactory.getLogger(UAConformancyTest.class);
 
 	private static TermFactory tf = CSSFactory.getTermFactory();
 	private static StyleMap decl;
@@ -34,12 +34,12 @@ public class UAConformancy {
 	public static void init() throws CSSException, IOException, SAXException {
 		log.info("\n\n\n == UAConformancy test at {} == \n\n\n", new Date());
 
-        DOMSource ds = new DOMSource(UAConformancy.class.getResourceAsStream("/invalid/style.html"));
+        DOMSource ds = new DOMSource(UAConformancyTest.class.getResourceAsStream("/invalid/style.html"));
         Document doc = ds.parse();
 
 		em = new ElementMap(doc);
 
-		StyleSheet sheet = CSSFactory.parse(UAConformancy.class.getResource("/invalid/style.css"), null);
+		StyleSheet sheet = CSSFactory.parse(UAConformancyTest.class.getResource("/invalid/style.css"), null);
 
 		Analyzer analyzer = new Analyzer(sheet);
 		decl = analyzer.evaluateDOM(doc, "screen", true);

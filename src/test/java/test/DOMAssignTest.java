@@ -25,8 +25,8 @@ import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.domassign.StyleMap;
 
-public class DOMAssign {
-	private static final Logger log = LoggerFactory.getLogger(DOMAssign.class);
+public class DOMAssignTest {
+	private static final Logger log = LoggerFactory.getLogger(DOMAssignTest.class);
 	
 	private static TermFactory tf = CSSFactory.getTermFactory();
 	

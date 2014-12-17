@@ -25,13 +25,14 @@ import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermLength;
+import cz.vutbr.web.css.TermInteger;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.domassign.DirectAnalyzer;
 import cz.vutbr.web.domassign.StyleMap;
 
-public class DOMAssignDirect {
-	private static final Logger log = LoggerFactory.getLogger(DOMAssignDirect.class);
+public class DOMAssignDirectTest {
+	private static final Logger log = LoggerFactory.getLogger(DOMAssignDirectTest.class);
 	
 	private static TermFactory tf = CSSFactory.getTermFactory();
 	

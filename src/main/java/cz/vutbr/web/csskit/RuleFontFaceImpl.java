@@ -16,9 +16,9 @@ import cz.vutbr.web.css.RuleFontFace;
 public class RuleFontFaceImpl extends AbstractRuleBlock<Declaration> implements RuleFontFace 
 {
     
-    protected RuleFontFaceImpl(Priority priority) 
+    protected RuleFontFaceImpl() 
     {
-        super(priority);
+        super();
     }
     
     @Override 

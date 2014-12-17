@@ -7,29 +7,8 @@ package cz.vutbr.web.css;
  *
  * @param <T> Internal content of rule
  */
-public interface RuleBlock<T> extends Rule<T>, Comparable<RuleBlock<?>>{
+public interface RuleBlock<T> extends Rule<T>{
 
-	/**
-	 * Priority mark object.
-	 * @author kapy
-	 *
-	 */
-	public static interface Priority extends Comparable<Priority> {
-	}
-	
-	/**
-	 * Sets priority for current object
-	 * @param priority New objects priority
-	 * @return Modified instance
-	 */
-	public RuleBlock<T> setPriority(Priority priority);
-	
-	/**
-	 * Returns priority associated with this object
-	 * @return Priority associated
-	 */
-	public Priority getPriority();
-	
 	/**
 	 * Sets the owner style sheet for this rule.
 	 * @param sheet The stylesheet where this rule is contained.

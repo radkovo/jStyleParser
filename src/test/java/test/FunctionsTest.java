@@ -18,8 +18,8 @@ import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermFunction;
 
-public class Functions {
-	private static Logger log = LoggerFactory.getLogger(GrammarRecovery1.class);
+public class FunctionsTest {
+	private static Logger log = LoggerFactory.getLogger(FunctionsTest.class);
 
 	public static final TermFactory tf = CSSFactory.getTermFactory();
 

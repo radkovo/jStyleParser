@@ -24,9 +24,9 @@ import cz.vutbr.web.css.Term.Operator;
 import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.StyleMap;
 
-public class AdvancedCSS {
+public class AdvancedCSSTest {
 
-	private static Logger log = LoggerFactory.getLogger(AdvancedCSS.class);
+	private static Logger log = LoggerFactory.getLogger(AdvancedCSSTest.class);
 
 	private static TermFactory tf = CSSFactory.getTermFactory();
 
@@ -41,10 +41,10 @@ public class AdvancedCSS {
 
 		log.info("\n\n\n == AdvancedTest test at {} == \n\n\n", new Date());
 
-        DOMSource ds = new DOMSource(AdvancedCSS.class.getResourceAsStream("/advanced/style.html"));
+        DOMSource ds = new DOMSource(AdvancedCSSTest.class.getResourceAsStream("/advanced/style.html"));
         doc = ds.parse();
 
-		sheet = CSSFactory.parse(AdvancedCSS.class.getResource("/advanced/style.css"), null);
+		sheet = CSSFactory.parse(AdvancedCSSTest.class.getResource("/advanced/style.css"), null);
 
 		analyzer = new Analyzer(sheet);
 		decl = analyzer.evaluateDOM(doc, "all", true);

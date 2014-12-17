@@ -16,8 +16,8 @@ public class RuleSetImpl extends AbstractRuleBlock<Declaration> implements RuleS
 
 	protected List<CombinedSelector> selectors;
 	
-	protected RuleSetImpl(Priority priority) {
-		super(priority);
+	protected RuleSetImpl() {
+		super();
 		this.selectors = Collections.emptyList();
 	}
 	
@@ -26,7 +26,7 @@ public class RuleSetImpl extends AbstractRuleBlock<Declaration> implements RuleS
 	 * @param rs RuleSet to share selectors and declarations with 
 	 */
 	protected RuleSetImpl(RuleSet rs) {
-		super(rs.getPriority());
+		super();
 		this.selectors = rs.getSelectors();
 		this.replaceAll(rs.asList());
 	}

@@ -19,7 +19,6 @@ import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.RuleViewport;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.RuleBlock.Priority;
 import cz.vutbr.web.css.Selector.ElementAttribute;
 import cz.vutbr.web.css.Selector.ElementClass;
 import cz.vutbr.web.css.Selector.ElementDOM;
@@ -66,15 +65,15 @@ public class RuleFactoryImpl implements RuleFactory {
 	 * @see cz.vutbr.web.css.RuleFactory#createImport()
 	 */
 	@Deprecated
-	public RuleImport createImport(Priority priority) {
-		return new RuleImportImpl(priority);
+	public RuleImport createImport() {
+		return new RuleImportImpl();
 	}
 
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createMedia()
 	 */
-	public RuleMedia createMedia(Priority priority) {
-		return new RuleMediaImpl(priority);
+	public RuleMedia createMedia() {
+		return new RuleMediaImpl();
 	}
 
 	public MediaQuery createMediaQuery() {
@@ -88,23 +87,23 @@ public class RuleFactoryImpl implements RuleFactory {
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createPage()
 	 */
-	public RulePage createPage(Priority priority) {
-		return new RulePageImpl(priority);
+	public RulePage createPage() {
+		return new RulePageImpl();
 	}
 	
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createMargin()
 	 */
-	public RuleMargin createMargin(String area, Priority priority) {
-		return new RuleMarginImpl(area, priority);
+	public RuleMargin createMargin(String area) {
+		return new RuleMarginImpl(area);
 	}
 
-    public RuleViewport createViewport(Priority priority) {
-        return new RuleViewportImpl(priority);
+    public RuleViewport createViewport() {
+        return new RuleViewportImpl();
     }
     
-	public RuleFontFace createFontFace(Priority priority) {
-	    return new RuleFontFaceImpl(priority);
+	public RuleFontFace createFontFace() {
+	    return new RuleFontFaceImpl();
 	}
 	
 	/* (non-Javadoc)
@@ -117,8 +116,8 @@ public class RuleFactoryImpl implements RuleFactory {
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createSet()
 	 */
-	public RuleSet createSet(Priority priority) {
-		return new RuleSetImpl(priority);
+	public RuleSet createSet() {
+		return new RuleSetImpl();
 	}
 
 	/* (non-Javadoc)

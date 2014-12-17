@@ -30,9 +30,8 @@ import org.xml.sax.SAXException;
  * 
  * @author burgetr
  */
-public class DOMAssignMedia
-{
-    private static final Logger log = LoggerFactory.getLogger(DOMAssignMedia.class);
+public class DOMAssignMediaTest {
+    private static final Logger log = LoggerFactory.getLogger(DOMAssignMediaTest.class);
     
     private static TermFactory tf = CSSFactory.getTermFactory();
     
