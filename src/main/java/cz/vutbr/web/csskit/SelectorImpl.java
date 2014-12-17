@@ -505,15 +505,20 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		 */
 		protected boolean positionMatches(int pos, int[] n)
 		{
-            try {
-                int an = pos - n[1];
-                if (n[0] == 0)
-                    return an == 0;
-                else
-                    return an * n[0] >= 0 && an % n[0] == 0;
-            } catch (NumberFormatException ex) {
-                return false;
-            }
+		    if (n != null)
+		    {
+                try {
+                    int an = pos - n[1];
+                    if (n[0] == 0)
+                        return an == 0;
+                    else
+                        return an * n[0] >= 0 && an % n[0] == 0;
+                } catch (NumberFormatException ex) {
+                    return false;
+                }
+		    }
+		    else //no indices specified (syntax error or missing values)
+		        return false;
 		}
 		
 		/**
