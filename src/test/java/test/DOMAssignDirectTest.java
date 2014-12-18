@@ -25,7 +25,6 @@ import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermLength;
-import cz.vutbr.web.css.TermInteger;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.domassign.DirectAnalyzer;
@@ -294,4 +293,24 @@ public class DOMAssignDirectTest {
         return data;
     }
     
+    // Test for issue #62. The first rule's selector is incomplete, but it shouldn't throw an exception.
+    @Test
+    public void incompleteNthChild() throws SAXException, IOException, CSSException {
+
+        final String css = "div:nth-child { background: red; }   div {background: green}";
+        final String html = "<html><head><style>"
+                + css
+                + "</style></head><body><div id='d1'><p>Lorem Ipsum</p></div></body></html> ";
+
+        final InputStream is = new ByteArrayInputStream(html.getBytes());
+        final DOMSource ds = new DOMSource(is);
+        final Document doc = ds.parse();
+        final ElementMap elements = new ElementMap(doc);
+        final StyleSheet style = CSSFactory.parseString(css, null);
+
+        final DirectAnalyzer da = new DirectAnalyzer(style);
+        final NodeData nodeData = da.getElementStyle(elements.getElementById("d1"), null, "screen");
+        assertThat("Background color", nodeData.getValue(TermColor.class, "background-color"), is(tf.createColor(0,128,0)));
+    }
+
 }
