@@ -341,6 +341,29 @@ public interface CSSProperty {
 		}
 	}
 
+    public enum BackgroundSize implements CSSProperty {
+        list_values(""), CONTAIN("contain"), COVER("cover"), INHERIT("inherit");
+
+        private String text;
+
+        private BackgroundSize(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+    
 	public enum Border implements CSSProperty {
 		component_values(""), INHERIT("inherit");
 

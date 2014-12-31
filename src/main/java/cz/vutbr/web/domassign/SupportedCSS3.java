@@ -26,6 +26,7 @@ import cz.vutbr.web.css.CSSProperty.BackgroundColor;
 import cz.vutbr.web.css.CSSProperty.BackgroundImage;
 import cz.vutbr.web.css.CSSProperty.BackgroundPosition;
 import cz.vutbr.web.css.CSSProperty.BackgroundRepeat;
+import cz.vutbr.web.css.CSSProperty.BackgroundSize;
 import cz.vutbr.web.css.CSSProperty.Border;
 import cz.vutbr.web.css.CSSProperty.BorderCollapse;
 import cz.vutbr.web.css.CSSProperty.BorderColor;
@@ -131,6 +132,11 @@ public class SupportedCSS3 implements SupportedCSS {
 		DEFAULT_UA_BACKGROUND_POSITION.add(tf.createPercent(0.0f));
 		DEFAULT_UA_BACKGROUND_POSITION.add(tf.createPercent(0.0f));
 	}
+    private static final TermList DEFAULT_UA_BACKGROUND_SIZE = tf.createList(2);
+    static {
+        DEFAULT_UA_BACKGROUND_SIZE.add(tf.createIdent("auto"));
+        DEFAULT_UA_BACKGROUND_SIZE.add(tf.createIdent("auto"));
+    }
 	private static final TermList DEFAULT_UA_BORDER_RADIUS = tf.createList(2);
     static {
         DEFAULT_UA_BORDER_RADIUS.add(tf.createLength(0.0f));
@@ -352,6 +358,8 @@ public class SupportedCSS3 implements SupportedCSS {
 		props.put("background-image", BackgroundImage.NONE);
 		props.put("background-position", BackgroundPosition.list_values);
 		values.put("background-position", DEFAULT_UA_BACKGROUND_POSITION);
+		props.put("background-size", BackgroundSize.list_values);
+        values.put("background-size", DEFAULT_UA_BACKGROUND_SIZE);
 		props.put("background-repeat", BackgroundRepeat.REPEAT);
 
 		// elements

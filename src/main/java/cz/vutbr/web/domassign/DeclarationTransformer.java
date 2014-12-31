@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
+import cz.vutbr.web.css.CSSProperty.BackgroundSize;
 import cz.vutbr.web.css.CSSProperty.BorderRadius;
 import cz.vutbr.web.css.CSSProperty.GenericCSSPropertyProxy;
 import cz.vutbr.web.css.CSSProperty.Opacity;
@@ -688,6 +689,14 @@ public class DeclarationTransformer {
 		return background.tryMultiTermVariant(BackgroundVariator.POSITION,
 				properties, values, d.toArray(new Term<?>[0]));
 	}
+
+    @SuppressWarnings("unused")
+    private boolean processBackgroundSize(Declaration d,
+            Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        final Variator background = new BackgroundVariator();
+        return background.tryMultiTermVariant(BackgroundVariator.SIZE,
+                properties, values, d.toArray(new Term<?>[0]));
+    }
 
 	@SuppressWarnings("unused")
 	private boolean processBorder(Declaration d,
@@ -2158,7 +2167,7 @@ public class DeclarationTransformer {
 	 * <pre>
 	 * [ <'background-color'> || <'background-image'> 
 	 * 		|| <'background-repeat'> || <'background-attachment'> 
-	 * 		|| <'background-position'>
+	 * 		|| <'background-position'> [ / <background-size> ]?
 	 * ] 
 	 * | inherit
 	 * </pre>
@@ -2172,9 +2181,10 @@ public class DeclarationTransformer {
 		public static final int REPEAT = 2;
 		public static final int ATTACHMENT = 3;
 		public static final int POSITION = 4;
+		public static final int SIZE = 5;
 
 		public BackgroundVariator() {
-			super(5);
+			super(6);
 			names.add("background-color");
 			types.add(BackgroundColor.class);
 			names.add("background-image");
@@ -2185,6 +2195,8 @@ public class DeclarationTransformer {
 			types.add(BackgroundAttachment.class);
 			names.add("background-position");
 			types.add(BackgroundPosition.class);
+			names.add("background-size");
+			types.add(BackgroundSize.class);
 		}
 
 		@Override
@@ -2223,17 +2235,25 @@ public class DeclarationTransformer {
 				// try this and next term, but consider terms size
 				BackgroundPosition bp = null;
 				Term<?>[] vv = {null, null}; //horizontal and vertical position
-				for (; (i <= i + 1) && (i < terms.size()); i++) {
+				for (; i < terms.size(); i++) {
 					Term<?> term = terms.get(i);
-					if (term instanceof TermIdent) {
-						bp = genericPropertyRaw(BackgroundPosition.class,
-								allowedBackground, (TermIdent) term);
-						if (bp != null)
-							storeBackgroundPosition(vv, bp, term);
-					} else if (term instanceof TermPercent) {
-						storeBackgroundPosition(vv, null, term);
-					} else if (term instanceof TermLength)
-						storeBackgroundPosition(vv, null, term);
+					if (term.getOperator() != Operator.SLASH)
+					{
+    					if (term instanceof TermIdent) {
+    						bp = genericPropertyRaw(BackgroundPosition.class,
+    								allowedBackground, (TermIdent) term);
+    						if (bp != null)
+    							storeBackgroundPosition(vv, bp, term);
+    					} else if (term instanceof TermPercent) {
+    						storeBackgroundPosition(vv, null, term);
+    					} else if (term instanceof TermLength) {
+    						storeBackgroundPosition(vv, null, term);
+    					}
+    					else //not recognized value
+    					    break;
+					}
+					else //slash found - this value belongs to size rather than position
+					    break;
 				}
 
 				//create term list from the values, replace unspecified values by center
@@ -2263,6 +2283,56 @@ public class DeclarationTransformer {
 				values.put(names.get(POSITION), list);
 				return true;
 
+            case SIZE:
+
+                final EnumSet<BackgroundSize> allowedSize = EnumSet
+                        .complementOf(EnumSet.of(
+                                BackgroundSize.list_values,
+                                BackgroundSize.INHERIT));
+
+                // try this and next term, but consider terms size
+                BackgroundSize bs = null;
+                Term<?>[] sz = {null, null}; //horizontal and vertical size
+                int vi = 0; //current value index
+                for (; i < terms.size() && vi < 2; i++) {
+                    Term<?> term = terms.get(i);
+                    if (term instanceof TermIdent) {
+                        bs = genericPropertyRaw(BackgroundSize.class,
+                                allowedSize, (TermIdent) term);
+                        if (bs != null) {
+                            //contain and cover have only one occurence
+                            properties.put(names.get(SIZE), bs);
+                            values.remove(names.get(SIZE)); //only keyword, no value
+                            return true;
+                        } else if (term.getValue().equals("auto")) {
+                            sz[vi++] = term;
+                        }
+                    } else if (term instanceof TermPercent || term instanceof TermLength) {
+                        //TODO this allows integers with no unit as lengths
+                        sz[vi++] = term;
+                    }
+                    else
+                        break; //something that cannot be assigned
+                }
+
+                //check the number of values
+                if (sz[0] == null)
+                    return false; //no values set
+                else if (sz[1] == null)
+                    sz[1] = tf.createIdent("auto");
+                else //if used two elements, inform master
+                    iteration.inc();
+                
+                //create term list from the values, replace unspecified values by center
+                TermList szlist = tf.createList(2);
+                szlist.add(sz[0]);
+                szlist.add(sz[1]);
+
+                // store list
+                properties.put(names.get(SIZE), BackgroundSize.list_values);
+                values.put(names.get(SIZE), szlist);
+                return true;
+                
 			default:
 				return false;
 			}
@@ -2302,6 +2372,24 @@ public class DeclarationTransformer {
 		                break;
 		    }
 		}
+
+        @Override
+        protected boolean variantCondition(int variant, IntegerRef iteration)
+        {
+            switch (variant)
+            {
+                case POSITION:
+                    if (variantPassed[SIZE])
+                        return false;
+                    return terms.get(iteration.get()).getOperator() != Operator.SLASH;
+                case SIZE:
+                    if (!variantPassed[POSITION])
+                        return false;
+                    return terms.get(iteration.get()).getOperator() == Operator.SLASH;
+                default:
+                    return true;
+            }
+        }		
 		
 	}
 
