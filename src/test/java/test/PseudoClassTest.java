@@ -27,8 +27,8 @@ import cz.vutbr.web.csskit.MatchConditionOnElements;
 import cz.vutbr.web.domassign.DirectAnalyzer;
 import cz.vutbr.web.domassign.StyleMap;
 
-public class PseudoClasses {
-	private static final Logger log = LoggerFactory.getLogger(PseudoClasses.class);
+public class PseudoClassTest {
+	private static final Logger log = LoggerFactory.getLogger(PseudoClassTest.class);
 	
 	private static TermFactory tf = CSSFactory.getTermFactory();
 	
