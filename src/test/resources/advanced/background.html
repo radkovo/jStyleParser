@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Simple document</title>
+<!-- <link type="text/css" rel="stylesheet" href="bgimg.css"> -->
+<style type="text/css">
+	.cont {
+		background-color: #aaa;
+		position: relative;
+		border: 1px solid black;
+	}
+	.example {
+		border: 5px solid blue;
+		width: 300px;
+		height: 200px;
+		margin: 100px 100px;
+		padding: 10px;
+	}
+	#bg1 {
+		background-color: blue;
+		background-image: url("bgimg.png");
+		background-repeat: no-repeat;
+		background-position: 25px 25px;
+		background-size: 1px 10%;
+	}
+	#bg2 {
+		background: yellow url('bgimg.png') bottom right / cover no-repeat;
+	}
+	#bg3 {
+		background: green url('bgimg.png') 10pt center / 20px no-repeat;
+	}
+</style>
+</head>
+<body>
+<h1>A simple document</h1>
+<div class="cont">
+<div class="example" id="bg1">
+  Hello World
+</div>
+<div class="example" id="bg2">
+  Hello World
+</div>
+<div class="example" id="bg3">
+  Hello World
+</div>
+</div>
+</body>
+</html>
