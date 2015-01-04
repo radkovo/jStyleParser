@@ -5,7 +5,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 
 import org.junit.BeforeClass;
@@ -15,9 +17,11 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.NodeData;
+import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermLength;
@@ -180,6 +184,40 @@ public class DOMAssignTest {
         
     }
     
+    // Test for issue #11 on GitHub. Respect the specified order of rule-blocks even if the selectors don't match in the same order.
+    @Test
+    public void respectSpecifiedOrder() throws SAXException, IOException, CSSException {
+
+        final String css =
+    	    ".red {color: red}"+
+    	    ".blue{color: blue}";
+        final String html = "<html><head><style>"
+                + css
+                + "</style></head><body>"
+                + "  <p id='p1' class='red blue'>Lorem Ipsum</p>"
+                + "  <p id='p2' class='blue red'>Lorem Ipsum</p>"
+                + "</div></body></html> ";
+
+        final InputStream is = new ByteArrayInputStream(html.getBytes());
+        final DOMSource ds = new DOMSource(is);
+        final Document doc = ds.parse();
+        final ElementMap elements = new ElementMap(doc);
+        final StyleSheet style = CSSFactory.parseString(css, null);
+        StyleMap decl = CSSFactory.assignDOM(doc, null, null, "screen", true);
+
+        // Test p1
+        {
+          final NodeData nodeData = decl.get(elements.getElementById("p1"));
+          assertThat("Color", nodeData.getValue(TermColor.class, "color"), is(tf.createColor(0,0,0xff)));
+        }
+
+        // Test p2
+        {
+          final NodeData nodeData = decl.get(elements.getElementById("p2"));
+          assertThat("Color", nodeData.getValue(TermColor.class, "color"), is(tf.createColor(0,0,0xff)));
+        }
+    }
+
     private NodeData getStyleById(ElementMap elements, StyleMap decl, String id)
     {
         NodeData data = decl.get(elements.getElementById(id));
