@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,6 +47,9 @@ public class Analyzer {
 
 	/** The style sheets to be processed. */
 	protected List<StyleSheet> sheets;
+	
+	/** Rule order counter */
+	protected int currentOrder;
 	
 	/**
 	 * Holds maps of declared rules classified into groups of
@@ -226,12 +228,12 @@ public class Analyzer {
 		
 		// create set of possible candidates applicable to given element
 		// set is automatically filtered to not contain duplicates
-		Set<RuleSet> candidates = new LinkedHashSet<RuleSet>();
+		Set<OrderedRule> candidates = new HashSet<OrderedRule>();
 
 		// match element classes
 		for (String cname : ElementUtil.elementClasses(e)) {
 			// holder contains rule with given class
-			List<RuleSet> rules = holder.get(HolderItem.CLASS, cname.toLowerCase());
+			List<OrderedRule> rules = holder.get(HolderItem.CLASS, cname.toLowerCase());
 			if (rules != null)
 				candidates.addAll(rules);
 		}
@@ -240,7 +242,7 @@ public class Analyzer {
 		// match IDs
 		String id = ElementUtil.elementID(e);
 		if (id != null && id.length() != 0) {
-			List<RuleSet> rules = holder.get(HolderItem.ID, id.toLowerCase());
+			List<OrderedRule> rules = holder.get(HolderItem.ID, id.toLowerCase());
 			if (rules != null)
 				candidates.addAll(rules);
 		}
@@ -249,7 +251,7 @@ public class Analyzer {
 		// match elements
 		String name = ElementUtil.elementName(e);
 		if (name != null) {
-			List<RuleSet> rules = holder.get(HolderItem.ELEMENT, name.toLowerCase());
+			List<OrderedRule> rules = holder.get(HolderItem.ELEMENT, name.toLowerCase());
 			if (rules != null)
 				candidates.addAll(rules);
 		}
@@ -257,9 +259,14 @@ public class Analyzer {
 
 		// others
 		candidates.addAll(holder.get(HolderItem.OTHER, null));
-
+		
+	    // transform to list to speed up traversal
+		// and sort rules in order as they were found in CSS definition
+		List<OrderedRule> clist = new ArrayList<OrderedRule>(candidates);
+		Collections.sort(clist);
+		
 		log.debug("Totally {} candidates.", candidates.size());
-		log.trace("With values: {}", candidates);
+		log.trace("With values: {}", clist);
 
 		// resulting list of declaration for this element with no pseudo-selectors (main list)(local cache)
 		List<Declaration> eldecl = new ArrayList<Declaration>();
@@ -268,8 +275,9 @@ public class Analyzer {
 		Set<PseudoDeclaration> pseudos = new HashSet<PseudoDeclaration>();
 
 		// for all candidates
-		for (RuleSet rule : candidates) {
-			
+		for (OrderedRule orule : clist) {
+		    
+			final RuleSet rule = orule.getRule();
 			StyleSheet sheet = rule.getStyleSheet();
 			if (sheet == null)
 			    log.warn("No source style sheet set for rule: {}", rule.toString());
@@ -508,10 +516,9 @@ public class Analyzer {
 	 * @param value
 	 *            Value to be inserted
 	 */
-	private void insertClassified(Holder holder, List<HolderSelector> hs,
-			RuleSet value) {
+	private void insertClassified(Holder holder, List<HolderSelector> hs, RuleSet value) {
 		for (HolderSelector h : hs)
-			holder.insert(h.item, h.key, value);
+			holder.insert(h.item, h.key, new OrderedRule(value, currentOrder++));
 	}
 
 	/**
@@ -551,6 +558,33 @@ public class Analyzer {
 	}
 
 	/**
+	 * Represents a ruleset and its order in the corresponding style sheet.
+	 * 
+	 * @author burgetr
+	 */
+	protected class OrderedRule implements Comparable<OrderedRule> {
+	    private RuleSet rule;
+        private int order;
+	    
+        public OrderedRule(RuleSet rule, int order) {
+            this.rule = rule;
+            this.order = order;
+        }
+
+        public RuleSet getRule() {
+            return rule;
+        }
+
+        public int getOrder() {
+            return order;
+        }
+
+        public int compareTo(OrderedRule o) {
+            return getOrder() - o.getOrder();
+        }
+	}
+	
+	/**
 	 * Holds list of maps of list. This is used to classify rulesets into
 	 * structure which is easily accessible by analyzator
 	 * 
@@ -560,23 +594,22 @@ public class Analyzer {
 	protected static class Holder {
 
 		/** HolderItem.* except OTHER are stored there */
-		private List<Map<String, List<RuleSet>>> items;
+		private List<Map<String, List<OrderedRule>>> items;
 
 		/** OTHER rules are stored there */
-		private List<RuleSet> others;
+		private List<OrderedRule> others;
 
 		public Holder() {
 			// create list of items
-			this.items = new ArrayList<Map<String, List<RuleSet>>>(HolderItem
-					.values().length - 1);
+			this.items = new ArrayList<Map<String, List<OrderedRule>>>(HolderItem.values().length - 1);
 
 			// fill maps in list
 			for (HolderItem hi : HolderItem.values()) {
 				// this is special case, it is not map
 				if (hi == HolderItem.OTHER)
-					others = new ArrayList<RuleSet>();
+					others = new ArrayList<OrderedRule>();
 				else
-					items.add(new HashMap<String, List<RuleSet>>());
+					items.add(new HashMap<String, List<OrderedRule>>());
 			}
 		}
 
@@ -605,7 +638,7 @@ public class Analyzer {
 				}
 				else {
 					
-					Map<String, List<RuleSet>> oneMap, twoMap, unionMap;
+					Map<String, List<OrderedRule>> oneMap, twoMap, unionMap;
 					oneMap = one.items.get(hi.type);
 					twoMap = two.items.get(hi.type);
 					unionMap = union.items.get(hi.type);
@@ -638,7 +671,7 @@ public class Analyzer {
 		 * @param value
 		 *            Value to be store inside
 		 */
-		public void insert(HolderItem item, String key, RuleSet value) {
+		public void insert(HolderItem item, String key, OrderedRule value) {
 
 			// check others and if so, insert item
 			if (item == HolderItem.OTHER) {
@@ -647,10 +680,10 @@ public class Analyzer {
 			}
 
 			// create list if empty
-			Map<String, List<RuleSet>> map = items.get(item.type);
-			List<RuleSet> list = map.get(key);
+			Map<String, List<OrderedRule>> map = items.get(item.type);
+			List<OrderedRule> list = map.get(key);
 			if (list == null) {
-				list = new ArrayList<RuleSet>();
+				list = new ArrayList<OrderedRule>();
 				map.put(key, list);
 			}
 
@@ -668,7 +701,7 @@ public class Analyzer {
 		 * @return List of rules or <code>null</code> if not found under given
 		 *         combination of key and item
 		 */
-		public List<RuleSet> get(HolderItem item, String key) {
+		public List<OrderedRule> get(HolderItem item, String key) {
 
 			// check others
 			if (item == HolderItem.OTHER)

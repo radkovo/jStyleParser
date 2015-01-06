@@ -7,7 +7,7 @@ package cz.vutbr.web.domassign;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -101,12 +101,12 @@ public class DirectAnalyzer extends Analyzer
 
         // create set of possible candidates applicable to given element
         // set is automatically filtered to not contain duplicates
-        Set<RuleSet> candidates = new LinkedHashSet<RuleSet>();
+        Set<OrderedRule> candidates = new HashSet<OrderedRule>();
 
         // match element classes
         for (String cname : ElementUtil.elementClasses(e)) {
             // holder contains rule with given class
-            List<RuleSet> rules = holder.get(HolderItem.CLASS, cname.toLowerCase());
+            List<OrderedRule> rules = holder.get(HolderItem.CLASS, cname.toLowerCase());
             if (rules != null)
                 candidates.addAll(rules);
         }
@@ -115,7 +115,7 @@ public class DirectAnalyzer extends Analyzer
         // match IDs
         String id = ElementUtil.elementID(e);
         if (id != null && id.length() != 0) {
-            List<RuleSet> rules = holder.get(HolderItem.ID, id.toLowerCase());
+            List<OrderedRule> rules = holder.get(HolderItem.ID, id.toLowerCase());
             if (rules != null)
                 candidates.addAll(rules);
         }
@@ -124,7 +124,7 @@ public class DirectAnalyzer extends Analyzer
         // match elements
         String name = ElementUtil.elementName(e);
         if (name != null) {
-            List<RuleSet> rules = holder.get(HolderItem.ELEMENT, name.toLowerCase());
+            List<OrderedRule> rules = holder.get(HolderItem.ELEMENT, name.toLowerCase());
             if (rules != null)
                 candidates.addAll(rules);
         }
@@ -133,15 +133,21 @@ public class DirectAnalyzer extends Analyzer
         // others
         candidates.addAll(holder.get(HolderItem.OTHER, null));
 
+        // transform to list to speed up traversal
+        // and sort rules in order as they were found in CSS definition
+        List<OrderedRule> clist = new ArrayList<OrderedRule>(candidates);
+        Collections.sort(clist);
+        
         log.debug("Totally {} candidates.", candidates.size());
-        log.trace("With values: {}", candidates);
+        log.trace("With values: {}", clist);
 
         // resulting list of declaration for this element with no pseudo-selectors (main list)(local cache)
         List<Declaration> eldecl = new ArrayList<Declaration>();
         
         // for all candidates
-        for (RuleSet rule : candidates) {
+        for (OrderedRule orule : clist) {
             
+            final RuleSet rule = orule.getRule();
             StyleSheet sheet = rule.getStyleSheet();
             StyleSheet.Origin origin = (sheet == null) ? StyleSheet.Origin.AGENT : sheet.getOrigin();
             
