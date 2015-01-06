@@ -562,9 +562,9 @@ public class Analyzer {
 	 * 
 	 * @author burgetr
 	 */
-	protected class OrderedRule implements Comparable<OrderedRule> {
-	    private RuleSet rule;
-        private int order;
+	protected final class OrderedRule implements Comparable<OrderedRule> {
+	    private final RuleSet rule;
+        private final int order;
 	    
         public OrderedRule(RuleSet rule, int order) {
             this.rule = rule;
