@@ -313,4 +313,39 @@ public class DOMAssignDirectTest {
         assertThat("Background color", nodeData.getValue(TermColor.class, "background-color"), is(tf.createColor(0,128,0)));
     }
 
+    // Test for issue #11 on GitHub. Respect the specified order of rule-blocks even if the selectors don't match in the same order.
+    @Test
+    public void respectSpecifiedOrder() throws SAXException, IOException, CSSException {
+
+        final String css =
+    	    ".red {color: red}"+
+    	    ".blue{color: blue}";
+        final String html = "<html><head><style>"
+                + css
+                + "</style></head><body>"
+                + "  <p id='p1' class='red blue'>Lorem Ipsum</p>"
+                + "  <p id='p2' class='blue red'>Lorem Ipsum</p>"
+                + "</div></body></html> ";
+
+        final InputStream is = new ByteArrayInputStream(html.getBytes());
+        final DOMSource ds = new DOMSource(is);
+        final Document doc = ds.parse();
+        final ElementMap elements = new ElementMap(doc);
+        final StyleSheet style = CSSFactory.parseString(css, null);
+
+        final DirectAnalyzer da = new DirectAnalyzer(style);
+
+        // Test p1
+        {
+          final NodeData nodeData = da.getElementStyle(elements.getElementById("p1"), null, "screen");
+          assertThat("Color", nodeData.getValue(TermColor.class, "color"), is(tf.createColor(0,0,0xff)));
+        }
+
+        // Test p2
+        {
+          final NodeData nodeData = da.getElementStyle(elements.getElementById("p2"), null, "screen");
+          assertThat("Color", nodeData.getValue(TermColor.class, "color"), is(tf.createColor(0,0,0xff)));
+        }
+    }
+
 }
