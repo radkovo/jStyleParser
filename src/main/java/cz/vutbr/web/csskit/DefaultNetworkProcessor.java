@@ -18,7 +18,7 @@ import cz.vutbr.web.css.NetworkProcessor;
  * 
  * @author burgetr
  */
-public class DefautNetworkProcessor implements NetworkProcessor
+public class DefaultNetworkProcessor implements NetworkProcessor
 {
 
     @Override
