@@ -9,13 +9,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.Charset;
-import java.util.zip.GZIPInputStream;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CharStream;
+
+import cz.vutbr.web.css.NetworkProcessor;
 
 /**
  * Wraps ANTLR stream with useful decorations,
@@ -45,6 +45,11 @@ public class CSSInputStream implements CharStream {
      */
     private URL url;
     
+    /**
+     * Network processor used for obtaining data from URLs
+     */
+    private NetworkProcessor network;
+    
 	/**
 	 * Source input stream for URL streams, null for string streams
 	 */
@@ -69,7 +74,7 @@ public class CSSInputStream implements CharStream {
 		return stream;
 	}
 	
-	public static CSSInputStream urlStream(URL source, String encoding) throws IOException {
+	public static CSSInputStream urlStream(URL source, NetworkProcessor network, String encoding) throws IOException {
 		CSSInputStream stream = new CSSInputStream();
 		
 		stream.base = source;
@@ -78,12 +83,7 @@ public class CSSInputStream implements CharStream {
 		else
             stream.encoding = Charset.defaultCharset().name();
 		
-        URLConnection con = source.openConnection();
-        InputStream is;
-        if ("gzip".equalsIgnoreCase(con.getContentEncoding()))
-            is = new GZIPInputStream(con.getInputStream());
-        else
-            is = con.getInputStream();
+        InputStream is = network.fetch(source);
         stream.input = new ANTLRInputStream(is, stream.encoding);
         stream.source = is;
         stream.url = source;
@@ -250,7 +250,7 @@ public class CSSInputStream implements CharStream {
     	    {
                 source.close();
     	        encoding = enc;
-                CSSInputStream newstream = urlStream(url, encoding);
+                CSSInputStream newstream = urlStream(url, network, encoding);
     	        input = newstream.input;
     	    }
 	    }

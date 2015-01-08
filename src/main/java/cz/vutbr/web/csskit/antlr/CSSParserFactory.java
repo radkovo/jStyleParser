@@ -16,6 +16,7 @@ import org.w3c.dom.Element;
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.MediaQuery;
+import cz.vutbr.web.css.NetworkProcessor;
 import cz.vutbr.web.css.RuleList;
 import cz.vutbr.web.css.StyleSheet;
 
@@ -65,7 +66,7 @@ public class CSSParserFactory {
 			}
 
 			@Override
-			public CSSInputStream getInput(Object source, String encoding) throws IOException {
+			public CSSInputStream getInput(Object source, NetworkProcessor network, String encoding) throws IOException {
 				return CSSInputStream.stringStream((String) source);
 			}
 
@@ -99,7 +100,7 @@ public class CSSParserFactory {
 			}
 
 			@Override
-			public CSSInputStream getInput(Object source, String encoding) throws IOException {
+			public CSSInputStream getInput(Object source, NetworkProcessor network, String encoding) throws IOException {
 				return CSSInputStream.stringStream((String) source);
 			}
 
@@ -133,8 +134,8 @@ public class CSSParserFactory {
 			}
 
 			@Override
-			public CSSInputStream getInput(Object source, String encoding) throws IOException {
-				return CSSInputStream.urlStream((URL) source, encoding);
+			public CSSInputStream getInput(Object source, NetworkProcessor network, String encoding) throws IOException {
+				return CSSInputStream.urlStream((URL) source, network, encoding);
 			}
 
 		};
@@ -148,7 +149,7 @@ public class CSSParserFactory {
 		 * @throws IOException
 		 *             When file is not found or other IO exception occurs
 		 */
-		public abstract CSSInputStream getInput(Object source, String encoding)
+		public abstract CSSInputStream getInput(Object source, NetworkProcessor network, String encoding)
 				throws IOException;
 
 		/**
@@ -215,14 +216,14 @@ public class CSSParserFactory {
 	 * @throws CSSException
 	 *             When unrecoverable exception during parsing occurs
 	 */
-	public static StyleSheet parse(Object source, String encoding, SourceType type,
+	public static StyleSheet parse(Object source, NetworkProcessor network, String encoding, SourceType type,
 			Element inline, boolean inlinePriority, URL base) throws IOException, CSSException {
 
 		StyleSheet sheet = (StyleSheet) CSSFactory.getRuleFactory()
 				.createStyleSheet().unlock();
 
 		Preparator preparator = new SimplePreparator(inline, inlinePriority);
-        StyleSheet ret = parseAndImport(source, encoding, type, sheet, preparator, base, null);
+        StyleSheet ret = parseAndImport(source, network, encoding, type, sheet, preparator, base, null);
 		return ret;
 	}
 
@@ -243,13 +244,13 @@ public class CSSParserFactory {
 	 * @throws IllegalArgumentException
 	 *             When type of source is INLINE
 	 */
-	public static StyleSheet parse(Object source, String encoding, SourceType type, URL base)
+	public static StyleSheet parse(Object source, NetworkProcessor network, String encoding, SourceType type, URL base)
 			throws IOException, CSSException {
 		if (type == SourceType.INLINE)
 			throw new IllegalArgumentException(
 					"Missing element for INLINE input");
 
-		return parse(source, encoding, type, null, false, base);
+		return parse(source, network, encoding, type, null, false, base);
 	}
 
 	/**
@@ -272,11 +273,11 @@ public class CSSParserFactory {
 	 * @throws CSSException
 	 *             When unrecoverable exception during parsing occurs
 	 */
-	public static StyleSheet append(Object source, String encoding, SourceType type,
+	public static StyleSheet append(Object source, NetworkProcessor network, String encoding, SourceType type,
 			Element inline, boolean inlinePriority, StyleSheet sheet, URL base) throws IOException, CSSException {
 
 		Preparator preparator = new SimplePreparator(inline, inlinePriority);
-		StyleSheet ret = parseAndImport(source, encoding, type, sheet, preparator, base, null);
+		StyleSheet ret = parseAndImport(source, network, encoding, type, sheet, preparator, base, null);
 		return ret;
 	}
 
@@ -301,24 +302,24 @@ public class CSSParserFactory {
 	 * @throws IllegalArgumentException
 	 *             When type of source is INLINE
 	 */
-	public static StyleSheet append(Object source, String encoding, SourceType type,
+	public static StyleSheet append(Object source, NetworkProcessor network, String encoding, SourceType type,
 			StyleSheet sheet, URL base) throws IOException, CSSException {
 		if (type == SourceType.INLINE)
 			throw new IllegalArgumentException(
 					"Missing element for INLINE input");
 
-		return append(source, encoding, type, null, false, sheet, base);
+		return append(source, network, encoding, type, null, false, sheet, base);
 	}
 	
 	/**
 	 * Parses the source using the given infrastructure and returns the resulting style sheet.
 	 * The imports are handled recursively.
 	 */
-	private static StyleSheet parseAndImport(Object source, String encoding, SourceType type,
+	private static StyleSheet parseAndImport(Object source, NetworkProcessor network, String encoding, SourceType type,
 	        StyleSheet sheet, Preparator preparator, URL base, List<MediaQuery> media)
 	        throws CSSException, IOException
 	{
-        CSSTreeParser parser = createTreeParser(source, encoding, type, preparator, base, media);
+        CSSTreeParser parser = createTreeParser(source, network, encoding, type, preparator, base, media);
         type.parse(parser);
         
         for (int i = 0; i < parser.getImportPaths().size(); i++)
@@ -331,7 +332,7 @@ public class CSSParserFactory {
             {    
                 URL url = DataURLHandler.createURL(base, path);
                 try {
-                    parseAndImport(url, encoding, SourceType.URL, sheet, preparator, url, imedia);
+                    parseAndImport(url, network, encoding, SourceType.URL, sheet, preparator, url, imedia);
                 } catch (IOException e) {
                     log.warn("Couldn't read imported style sheet: {}", e.getMessage());
                 }
@@ -344,10 +345,10 @@ public class CSSParserFactory {
 	}
 	
 	// creates the tree parser
-	private static CSSTreeParser createTreeParser(Object source, String encoding, SourceType type,
+	private static CSSTreeParser createTreeParser(Object source, NetworkProcessor network, String encoding, SourceType type,
 			Preparator preparator, URL base, List<MediaQuery> media) throws IOException, CSSException {
 
-		CSSInputStream input = type.getInput(source, encoding);
+		CSSInputStream input = type.getInput(source, network, encoding);
 		input.setBase(base);
 		CommonTokenStream tokens = feedLexer(input);
 		CommonTree ast = feedParser(tokens, type);
