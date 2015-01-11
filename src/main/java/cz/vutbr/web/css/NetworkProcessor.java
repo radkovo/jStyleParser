@@ -21,7 +21,7 @@ public interface NetworkProcessor
      * 
      * @param url Resource URL.
      * @return input stream that reads resource contents
-     * @throws IOException
+     * @throws IOException when the stream cannot be obtained for any reason
      */
     public InputStream fetch(URL url) throws IOException;
     
