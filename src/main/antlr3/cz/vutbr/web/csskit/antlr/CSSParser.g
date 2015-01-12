@@ -1,0 +1,634 @@
+/*
+ * CSS.g 
+ * Copyright (c) 2008 Karel Piwko
+ * Copyright (c) 2008-2014 Radek Burget
+ *
+ * jStyleParser is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *  
+ * jStyleParser is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *  
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jStyleParser. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
+ 
+/**
+ * A basic CSS grammar.
+ */
+parser grammar CSSParser;
+
+options {
+	output = AST;
+	tokenVocab=CSSLexer;
+	k = 2;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////// P A R S E R /////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+@header { 
+package cz.vutbr.web.csskit.antlr;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cz.vutbr.web.css.StyleSheet;
+import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.SupportedCSS;
+import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
+}
+
+@members {
+    private static Logger log = LoggerFactory.getLogger(CSSParser.class);
+    
+    private static SupportedCSS css = CSSFactory.getSupportedCSS();
+    
+    private int functLevel = 0;
+    
+    /**
+     * This function must be called to initialize parser's state.
+     * Because we can't change directly generated constructors.
+     */
+    public CSSParser init() {
+    	return this;
+    }
+    
+    @Override
+    public void emitErrorMessage(String msg) {
+    	log.info("ANTLR: {}", msg);
+	}    
+
+	private Object invalidReplacement(int ttype, String ttext) {
+		
+		Object root = (Object) adaptor.nil();
+		Object node = (Object) adaptor.create(ttype, ttext);
+		
+		adaptor.addChild(root, node);	
+		
+		if(log.isDebugEnabled()) {
+			log.debug("Invalid fallback with: {}", TreeUtil.toStringTree((CommonTree) root));
+		}
+		
+		return root;	
+	}
+
+	/**
+	 * Recovers and logs error, prepares tree part replacement
+	 */ 
+	private Object invalidFallback(int ttype, String ttext, RecognitionException re) {
+	    reportError(re);
+		recover(input, re);
+		return invalidReplacement(ttype, ttext);
+	}
+	
+	/**
+	 * Recovers and logs error, using custom follow set,
+	 * prepares tree part replacement
+	 */ 
+	private Object invalidFallbackGreedy(int ttype, String ttext, BitSet follow, RecognitionException re) {
+		reportError(re);
+		if ( state.lastErrorIndex==input.index() ) {
+			// uh oh, another error at same token index; must be a case
+	 		// where LT(1) is in the recovery token set so nothing is
+            // consumed; consume a single token so at least to prevent
+            // an infinite loop; this is a failsafe.
+            input.consume();
+        }
+    state.lastErrorIndex = input.index();
+    beginResync();
+		consumeUntilGreedy(input, follow);
+    endResync();
+		return invalidReplacement(ttype, ttext);
+		
+    }
+	
+	/**
+	 * Consumes token until lexer state is balanced and
+	 * token from follow is matched. Matched token is also consumed
+	 */ 
+	private void consumeUntilGreedy(TokenStream input, BitSet follow) {
+		CSSToken t = null;
+		do{
+		  Token next = input.LT(1);
+		  if (next instanceof CSSToken)
+		      t= (CSSToken) input.LT(1);
+		  else
+		      break; /* not a CSSToken, probably EOF */
+		  log.trace("Skipped greedy: {} follow: {}", t, follow);
+		  // consume token even if it will match
+		  input.consume();
+		}while(!(t.getLexerState().isBalanced() && follow.member(t.getType())));
+	} 
+
+  /**
+   * Recovers and logs error inside a function, using custom follow set,
+   * prepares tree part replacement
+   */ 
+  private Object invalidFallbackGreedy(int ttype, String ttext, BitSet follow, LexerState.RecoveryMode mode, LexerState ls, RecognitionException re) {
+    reportError(re);
+    if ( state.lastErrorIndex==input.index() ) {
+      // uh oh, another error at same token index; must be a case
+      // where LT(1) is in the recovery token set so nothing is
+            // consumed; consume a single token so at least to prevent
+            // an infinite loop; this is a failsafe.
+            input.consume();
+        }
+    state.lastErrorIndex = input.index();
+    beginResync();
+    consumeUntilGreedy(input, follow, mode, ls);
+    endResync();
+    return invalidReplacement(ttype, ttext);
+    
+    }
+  
+  /**
+   * Consumes token until lexer state is function-balanced and
+   * token from follow is matched. Matched token is also consumed
+   */ 
+  private void consumeUntilGreedy(TokenStream input, BitSet follow, LexerState.RecoveryMode mode, LexerState ls) {
+    CSSToken t = null;
+    do{
+      Token next = input.LT(1);
+      if (next instanceof CSSToken)
+          t= (CSSToken) input.LT(1);
+      else
+          break; /* not a CSSToken, probably EOF */
+      log.trace("Skipped greedy: {}", t);
+      // consume token even if it will match
+      input.consume();
+    }while(!(t.getLexerState().isBalanced(mode, ls, t) && follow.member(t.getType())));
+  }
+  
+  /**
+   * Recovers and logs error inside a function, using custom follow set,
+   * prepares tree part replacement
+   */ 
+  private Object invalidFallback(int ttype, String ttext, BitSet follow, LexerState.RecoveryMode mode, LexerState ls, RecognitionException re) {
+    reportError(re);
+    if ( state.lastErrorIndex==input.index() ) {
+      // uh oh, another error at same token index; must be a case
+      // where LT(1) is in the recovery token set so nothing is
+            // consumed; consume a single token so at least to prevent
+            // an infinite loop; this is a failsafe.
+            input.consume();
+        }
+    state.lastErrorIndex = input.index();
+    beginResync();
+    consumeUntil(input, follow, mode, ls);
+    endResync();
+    return invalidReplacement(ttype, ttext);
+    
+    }
+  
+  /**
+   * Consumes token until lexer state is function-balanced and
+   * token from follow is matched.
+   */ 
+  private void consumeUntil(TokenStream input, BitSet follow, LexerState.RecoveryMode mode, LexerState ls) {
+    CSSToken t = null;
+    boolean finish = false;
+    do{
+      Token next = input.LT(1);
+      if (next instanceof CSSToken)
+          t= (CSSToken) input.LT(1);
+      else
+          break; /* not a CSSToken, probably EOF */
+      // consume token if does not match
+      finish = (t.getLexerState().isBalanced(mode, ls, t) && follow.member(t.getType()));
+      if (!finish)
+      { 
+          log.trace("Skipped: {}", t);
+          input.consume();
+      }
+    }while(!finish);
+  }
+    
+  /**
+   * Obtains the current lexer state from current token
+   */
+  private LexerState getCurrentLexerState(Token t)
+  {
+      if (t instanceof CSSToken)
+          return ((CSSToken) t).getLexerState();
+      else
+          return null;
+  }
+     
+  //this switches the single token insertion / deletion off because it interferes with our own error recovery
+  protected Object recoverFromMismatchedToken(IntStream input, int ttype, BitSet follow)
+      throws RecognitionException
+  {
+      throw new MismatchedTokenException(ttype, input);
+  }
+   
+}
+
+/** Inline style contained in the 'style' attribute */
+// since declarations can match empty string
+// force at least one inlineset to exist
+//TODO: The COLON in the possible pseudo class selector of inlineset (a CSS3 thing) conflicts with the
+//colon recognized as the start of an invalid property (noprop) which is used in some nasty CSS hacks.
+//For now, the CSS3 feature is broken in favor of the hack recovery 
+inlinestyle
+	: S*  (declarations -> ^(INLINESTYLE declarations) 
+		     | inlineset+ -> ^(INLINESTYLE inlineset+)
+			)
+	;
+
+stylesheet
+	: ( CDO | CDC | S | nostatement | statement )* 
+		-> ^(STYLESHEET statement*)
+	;
+	
+statement   
+	: ruleset | atstatement
+	;
+
+atstatement
+	: CHARSET
+	| IMPORT S* import_uri S* media? SEMICOLON
+	  -> ^(IMPORT media? import_uri)  
+	| page
+  | VIEWPORT S*
+    LCURLY S* declarations
+    RCURLY -> ^(VIEWPORT declarations)
+	| FONTFACE S*
+	  LCURLY S* declarations
+	  RCURLY -> ^(FONTFACE declarations)
+	| MEDIA S* media? 
+		LCURLY S* (media_rule S*)* RCURLY -> ^(MEDIA media? media_rule*)	
+	| unknown_atrule -> INVALID_STATEMENT
+	;
+	catch [RecognitionException re] {
+      	final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
+	      retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
+	  		"INVALID_STATEMENT", follow, re);							
+	}
+
+import_uri
+  : (STRING | URI)
+  ;
+
+page
+	: PAGE S* (( IDENT | IDENT page_pseudo | page_pseudo) S*) ?
+		LCURLY S*
+		declarations margin_rule*
+		RCURLY
+		-> ^(PAGE IDENT? page_pseudo? declarations ^(SET margin_rule*))
+	;
+
+page_pseudo
+	: pseudocolon^ IDENT
+	;
+
+margin_rule
+	: MARGIN_AREA S* LCURLY S* declarations RCURLY S* -> ^(MARGIN_AREA declarations)
+	;
+
+/** A ruleset in the inline style according to
+    http://www.w3.org/TR/css-style-attr */
+inlineset
+	: (pseudo S* (COMMA S* pseudo S*)*)?
+      LCURLY
+	  	declarations
+	  RCURLY	
+	  -> ^(RULE pseudo* declarations)
+	;
+	
+media
+ : media_query (COMMA S* media_query)*
+    -> ^(MEDIA_QUERY media_query)+
+ ;
+ catch [RecognitionException re] {
+     final BitSet follow = BitSet.of(CSSLexer.COMMA, CSSLexer.LCURLY, CSSLexer.SEMICOLON);               
+     retval.tree = invalidFallback(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, LexerState.RecoveryMode.BALANCED, null, re);
+ }
+
+media_query
+ : (media_term S!*)+
+ ;
+
+media_term
+ : (IDENT | media_expression)
+ | nomediaquery -> INVALID_STATEMENT
+ ;
+ catch [RecognitionException re] {
+     final BitSet follow = BitSet.of(CSSLexer.COMMA, CSSLexer.LCURLY, CSSLexer.SEMICOLON);               
+     retval.tree = invalidFallback(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, LexerState.RecoveryMode.RULE, null, re);
+ }
+
+media_expression
+ : LPAREN S* IDENT S* (COLON S* terms)? RPAREN
+    -> ^(DECLARATION IDENT terms)
+ ;
+ catch [RecognitionException re] {
+		 final BitSet follow = BitSet.of(CSSLexer.RPAREN, CSSLexer.SEMICOLON);               
+		 retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
+		   "INVALID_STATEMENT", follow, re);
+ }
+
+media_rule
+ : ruleset
+ | atstatement -> INVALID_STATEMENT
+ ;
+	
+unknown_atrule
+ : ATKEYWORD S* any* LCURLY S* any* RCURLY
+ ;
+ catch [RecognitionException re] {
+     final BitSet follow = BitSet.of(CSSLexer.RCURLY);               
+     retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, LexerState.RecoveryMode.BALANCED, null, re);
+ }
+	
+ruleset
+	: combined_selector (COMMA S* combined_selector)* 
+	  LCURLY S* 
+	  	declarations
+	  RCURLY
+	  -> ^(RULE combined_selector+ declarations)
+	| norule -> INVALID_STATEMENT
+	;
+	catch [RecognitionException re] {
+      final BitSet follow = BitSet.of(CSSLexer.RCURLY);
+      //we don't require {} to be balanced here because of possible parent 'media' sections that may remain open => RecoveryMode.RULE
+	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT,	"INVALID_STATEMENT", follow, LexerState.RecoveryMode.RULE, null, re);
+	}
+
+declarations
+	: declaration? (SEMICOLON S* declaration? )*
+	  -> ^(SET declaration*)
+	;
+
+declaration
+@init {
+  LexerState begin = getCurrentLexerState(retval.start);
+  log.trace("Decl begin: " + begin);
+}
+	: property COLON S* terms? important? -> ^(DECLARATION important? property terms?)
+	| noprop any* -> INVALID_DECLARATION /* if first character in the declaration is invalid (various dirty hacks) */
+	;
+	catch [RecognitionException re] {
+      final BitSet follow = BitSet.of(CSSLexer.SEMICOLON, CSSLexer.RCURLY); //recover on the declaration end or rule end
+      //not greedy - the final ; or } must remain for properly finishing the declaration/rule
+      retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, LexerState.RecoveryMode.DECL, begin, re);             
+	}
+
+important
+  : EXCLAMATION S* IMPORTANT S* -> IMPORTANT
+  ;
+  catch [RecognitionException re] {
+      final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
+      retval.tree = invalidFallback(CSSLexer.INVALID_DIRECTIVE, "INVALID_DIRECTIVE", follow, LexerState.RecoveryMode.RULE, null, re);
+  }
+
+property    
+	: MINUS? IDENT S* -> MINUS? IDENT
+	;
+	
+terms	       
+	: term+
+	-> ^(VALUE term+)
+	;
+	catch [RecognitionException re] {
+		if (functLevel == 0)
+		{
+	      final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
+		    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
+		  		"INVALID_STATEMENT", follow, re);
+		}
+		else
+		{
+        final BitSet follow = BitSet.of(CSSLexer.RPAREN, CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
+        retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, LexerState.RecoveryMode.FUNCTION, null, re);
+		}
+	}
+	
+term
+    : valuepart -> valuepart
+    | LCURLY S* (any | SEMICOLON S*)* RCURLY -> CURLYBLOCK
+    | ATKEYWORD S* -> ATKEYWORD
+    ;	
+
+/** other functions than expression */
+funct
+@init {
+	functLevel++;
+}
+@after {
+	functLevel--;
+}
+  : EXPRESSION -> EXPRESSION
+	| FUNCTION S* terms? RPAREN -> ^(FUNCTION terms?)
+	;
+
+/** a part of a property value */
+valuepart
+    : ( MINUS? IDENT -> MINUS? IDENT
+      | CLASSKEYWORD -> CLASSKEYWORD
+      | (PLUS | MINUS)? NUMBER -> MINUS? NUMBER
+      | (PLUS | MINUS)? PERCENTAGE -> MINUS? PERCENTAGE
+      | (PLUS | MINUS)? DIMENSION -> MINUS? DIMENSION
+      | string -> string
+      | URI    -> URI
+      | HASH -> HASH
+      | UNIRANGE -> UNIRANGE
+      | INCLUDES -> INCLUDES
+      | COLON -> COLON
+      | COMMA -> COMMA
+      | GREATER -> GREATER
+      | LESS -> LESS
+      |	QUESTION -> QUESTION
+      | PERCENT -> PERCENT
+      | EQUALS -> EQUALS
+      | SLASH -> SLASH
+	    | ASTERISK -> ASTERISK		 
+      | (PLUS | MINUS)? funct -> MINUS? funct 
+      | DASHMATCH -> DASHMATCH
+      | LPAREN valuepart* RPAREN -> ^(PARENBLOCK valuepart*)
+      | LBRACE valuepart* RBRACE -> ^(BRACEBLOCK valuepart*)
+    ) !S*
+  ;
+
+combined_selector    
+	: selector ((combinator) selector)*
+	;
+	catch [RecognitionException re] {
+	  log.warn("INVALID COMBINED SELECTOR");
+	  reportError(re);
+      recover(input,re);
+	}
+
+combinator
+	: GREATER S* -> CHILD
+	| PLUS S* -> ADJACENT
+	| TILDE S* -> PRECEDING
+	| S -> DESCENDANT
+	;
+
+selector
+    : (IDENT | ASTERISK)  selpart* S*
+    	-> ^(SELECTOR ^(ELEMENT IDENT?) selpart*)
+    | selpart+ S*
+        -> ^(SELECTOR selpart+)
+    ;
+    catch [RecognitionException re] {
+      retval.tree = invalidFallback(CSSLexer.INVALID_SELECTOR, "INVALID_SELECTOR", re);
+	  }
+
+selpart	
+    :  HASH
+    | CLASSKEYWORD
+	  | LBRACE S* attribute RBRACE -> ^(ATTRIBUTE attribute)
+    | pseudo
+    | INVALID_SELPART
+    ;
+    catch [RecognitionException re] {
+      retval.tree = invalidFallback(CSSLexer.INVALID_SELPART, "INVALID_SELPART", re);
+	  }
+
+attribute
+	: IDENT S!*
+	  ((EQUALS | INCLUDES | DASHMATCH | STARTSWITH | ENDSWITH | CONTAINS) S!* (IDENT | string) S!*)?
+	;
+
+pseudo
+	: pseudocolon^ (IDENT | FUNCTION S!* (IDENT | MINUS? NUMBER | MINUS? INDEX) S!* RPAREN!)
+	;
+  catch [RecognitionException re] {
+     retval.tree = invalidFallback(CSSLexer.INVALID_SELPART, "INVALID_SELPART", re);
+  }
+
+pseudocolon
+	: COLON COLON -> PSEUDOELEM
+	| COLON -> PSEUDOCLASS
+	;
+
+string
+	: STRING
+	| INVALID_STRING
+	;
+	
+	
+any
+	: ( IDENT -> IDENT
+	  | CLASSKEYWORD -> CLASSKEYWORD
+	  | NUMBER -> NUMBER
+	  | PERCENTAGE ->PERCENTAGE
+	  | DIMENSION -> DIMENSION
+	  | string -> string
+      | URI    -> URI
+      | HASH -> HASH
+      | UNIRANGE -> UNIRANGE
+      | INCLUDES -> INCLUDES
+      | COLON -> COLON
+      | COMMA -> COMMA
+      | GREATER -> GREATER
+      | LESS -> LESS
+      |	QUESTION -> QUESTION
+      | PERCENT -> PERCENT
+      | EQUALS -> EQUALS
+      | SLASH -> SLASH
+      | EXCLAMATION -> EXCLAMATION
+	  | MINUS -> MINUS
+	  | PLUS -> PLUS
+	  | ASTERISK -> ASTERISK		 
+      | FUNCTION S* any* RPAREN -> ^(FUNCTION any*) 
+      | DASHMATCH -> DASHMATCH
+      | LPAREN any* RPAREN -> ^(PARENBLOCK any*)
+      | LBRACE any* RBRACE -> ^(BRACEBLOCK any*)
+    ) !S*;
+
+/** What cannot be contained directly in the stylesheet (ignored) */
+nostatement
+  : ( RCURLY -> RCURLY
+      | SEMICOLON -> SEMICOLON
+      | QUOT -> QUOT
+      | APOS -> APOS
+    );
+
+/** invalid start of a property */
+noprop
+	: ( CLASSKEYWORD -> CLASSKEYWORD
+     | NUMBER -> NUMBER
+	   | COMMA -> COMMA
+	   | GREATER -> GREATER
+	   | LESS -> LESS
+	   | QUESTION -> QUESTION
+	   | PERCENT -> PERCENT
+	   | EQUALS -> EQUALS
+	   | SLASH -> SLASH
+	   | EXCLAMATION -> EXCLAMATION
+	   | PLUS -> PLUS
+	   | ASTERISK -> ASTERISK		 
+	   | DASHMATCH -> DASHMATCH
+	   | INCLUDES -> INCLUDES
+	   | COLON -> COLON
+	   | STRING_CHAR -> STRING_CHAR
+     | CTRL -> CTRL
+	   | INVALID_TOKEN -> INVALID_TOKEN
+    ) !S*;
+
+/** invalid start of a rule */
+norule
+  : ( NUMBER -> NUMBER
+	    | PERCENTAGE ->PERCENTAGE
+	    | DIMENSION -> DIMENSION
+	    | string -> string
+      | URI    -> URI
+      | UNIRANGE -> UNIRANGE
+      | INCLUDES -> INCLUDES
+      | COMMA -> COMMA
+      | GREATER -> GREATER
+      | LESS -> LESS
+      | QUESTION -> QUESTION
+      | PERCENT -> PERCENT
+      | EQUALS -> EQUALS
+      | SLASH -> SLASH
+      | EXCLAMATION -> EXCLAMATION
+	    | MINUS -> MINUS
+	    | PLUS -> PLUS
+      | DASHMATCH -> DASHMATCH
+      | RPAREN -> RPAREN
+      | CTRL -> CTRL
+      | POUND //that is not HASH (not an identifier)
+      | HAT
+      | AMPERSAND
+    );
+
+/** invalid start of a media query */    
+nomediaquery
+  : ( NUMBER -> NUMBER
+      | PERCENTAGE ->PERCENTAGE
+      | DIMENSION -> DIMENSION
+      | string -> string
+      | URI    -> URI
+      | UNIRANGE -> UNIRANGE
+      | INCLUDES -> INCLUDES
+      | GREATER -> GREATER
+      | LESS -> LESS
+      | QUESTION -> QUESTION
+      | PERCENT -> PERCENT
+      | EQUALS -> EQUALS
+      | SLASH -> SLASH
+      | EXCLAMATION -> EXCLAMATION
+      | MINUS -> MINUS
+      | PLUS -> PLUS
+      | DASHMATCH -> DASHMATCH
+      | RPAREN -> RPAREN
+      | CTRL -> CTRL
+      | COLON -> COLON
+      | ASTERISK -> ASTERISK
+      | FUNCTION -> FUNCTION
+      | POUND //that is not HASH (not an identifier)
+      | HAT
+      | AMPERSAND
+    );
+
