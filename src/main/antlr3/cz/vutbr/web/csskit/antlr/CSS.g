@@ -48,7 +48,6 @@ tokens {
 	SET;
 	DECLARATION;	
 	VALUE;
-	IMPORTANT;
 	MEDIA_QUERY;
 	
 	INVALID_STRING;
@@ -874,7 +873,7 @@ declaration
 	}
 
 important
-  : EXCLAMATION S* 'important' S* -> IMPORTANT
+  : EXCLAMATION S* IMPORTANT S* -> IMPORTANT
   ;
   catch [RecognitionException re] {
       final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
@@ -1090,9 +1089,9 @@ norule
       | DASHMATCH -> DASHMATCH
       | RPAREN -> RPAREN
       | CTRL -> CTRL
-      | '#' //that is not HASH (not an identifier)
-      | '^'
-      | '&'
+      | POUND //that is not HASH (not an identifier)
+      | HAT
+      | AMPERSAND
     );
 
 /** invalid start of a media query */    
@@ -1119,14 +1118,18 @@ nomediaquery
       | COLON -> COLON
       | ASTERISK -> ASTERISK
       | FUNCTION -> FUNCTION
-      | '#' //that is not HASH (not an identifier)
-      | '^'
-      | '&'
+      | POUND //that is not HASH (not an identifier)
+      | HAT
+      | AMPERSAND
     );
     
 /////////////////////////////////////////////////////////////////////////////////
 // TOKENS //
 /////////////////////////////////////////////////////////////////////////////////
+
+IMPORTANT
+    : 'important'
+    ;
 
 /** Identifier */
 IDENT	
@@ -1227,7 +1230,7 @@ STRING
 
 /** Hash, either color or other */
 HASH
-	: '#' NAME_MACR	
+	: POUND NAME_MACR	
 	;
 
 /** An element index in the an+b form */
@@ -1367,6 +1370,18 @@ PLUS
 
 ASTERISK
 	: '*'
+	;
+
+POUND
+	: '#'
+	;
+
+AMPERSAND
+	: '&'
+	;
+
+HAT
+	: '^'
 	;
 
 /** White character */		
