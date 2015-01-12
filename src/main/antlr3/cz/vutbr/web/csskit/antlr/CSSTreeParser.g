@@ -9,8 +9,6 @@ options {
 package cz.vutbr.web.csskit.antlr;
 
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +23,8 @@ import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleList;
 import cz.vutbr.web.css.RuleMargin;
-import cz.vutbr.web.css.RuleMedia;
-import cz.vutbr.web.css.RulePage;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
@@ -40,7 +34,6 @@ import cz.vutbr.web.css.TermIdent;
 
 import cz.vutbr.web.csskit.RuleArrayList;
 
-// @SuppressWarnings("unchecked")
 }
 
 @members {
@@ -48,7 +41,6 @@ import cz.vutbr.web.csskit.RuleArrayList;
 
 	private static RuleFactory rf = CSSFactory.getRuleFactory();
 	private static TermFactory tf = CSSFactory.getTermFactory();
-	private static SupportedCSS css = CSSFactory.getSupportedCSS();
 
 	private enum MediaQueryState { START, TYPE, AND, EXPR, TYPEOREXPR }
 
@@ -79,18 +71,6 @@ import cz.vutbr.web.csskit.RuleArrayList;
 		this.preventImports = false;
 		return this;
 	}   
-  
-  public StyleSheet addRulesToStyleSheet(StyleSheet sheet)
-  {
-    if (rules != null)
-    {
-      for (RuleBlock<?> rule : rules)
-      {
-          sheet.add(rule); 
-      }
-    }
-    return sheet;
-  }
   
   public RuleList getRules()
   {

@@ -23,7 +23,7 @@ public class CSSToken extends CommonToken {
 	/**
 	 * Current lexer state
 	 */
-	protected CSSLexer.LexerState ls;
+	protected CSSLexerState ls;
 	
 	/** Base URL for URIs */
 	protected URL base;
@@ -46,9 +46,9 @@ public class CSSToken extends CommonToken {
 	 * @param type Type of token
 	 * @param state State of lexer, which will be copied
 	 */
-	public CSSToken(int type, CSSLexer.LexerState state) {
+	public CSSToken(int type, CSSLexerState state) {
 		super(type);
-		this.ls = new CSSLexer.LexerState(state);
+		this.ls = new CSSLexerState(state);
 	}
 	
 	/**
@@ -59,9 +59,9 @@ public class CSSToken extends CommonToken {
 	 * @param start Start position in stream
 	 * @param stop End position in stream
 	 */
-	public CSSToken(int type, CSSLexer.LexerState state, int start, int stop) {
+	public CSSToken(int type, CSSLexerState state, int start, int stop) {
 		super(type);
-		this.ls = new CSSLexer.LexerState(state);
+		this.ls = new CSSLexerState(state);
 		this.start = start;
 		this.stop = stop;
 	}
@@ -71,7 +71,7 @@ public class CSSToken extends CommonToken {
 	 * @param state Current lexer state
 	 * @return Modified CSSToken
 	 */
-	public CSSToken setLexerState(CSSLexer.LexerState state) {
+	public CSSToken setLexerState(CSSLexerState state) {
 		this.ls = state;
 		return this;
 	}
@@ -80,7 +80,7 @@ public class CSSToken extends CommonToken {
 	 * Gets lexer state at creation of token
 	 * @return the lexer state
 	 */
-	public CSSLexer.LexerState getLexerState() {
+	public CSSLexerState getLexerState() {
 		return ls;	
 	}
 

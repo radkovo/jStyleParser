@@ -39,25 +39,21 @@ package cz.vutbr.web.csskit.antlr;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.CSSFactory;
-import cz.vutbr.web.css.SupportedCSS;
-import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
 }
 
 @members {
     private static Logger log = LoggerFactory.getLogger(CSSParser.class);
     
-    private static SupportedCSS css = CSSFactory.getSupportedCSS();
-    
     private int functLevel = 0;
+    
+    private CSSTreeNodeRecovery tnr;
     
     /**
      * This function must be called to initialize parser's state.
      * Because we can't change directly generated constructors.
      */
     public CSSParser init() {
+        this.tnr = new CSSTreeNodeRecovery(this, input, state, adaptor, log);
     	return this;
     }
     
@@ -65,156 +61,11 @@ import cz.vutbr.web.csskit.antlr.CSSLexer.LexerState;
     public void emitErrorMessage(String msg) {
     	log.info("ANTLR: {}", msg);
 	}    
-
-	private Object invalidReplacement(int ttype, String ttext) {
-		
-		Object root = (Object) adaptor.nil();
-		Object node = (Object) adaptor.create(ttype, ttext);
-		
-		adaptor.addChild(root, node);	
-		
-		if(log.isDebugEnabled()) {
-			log.debug("Invalid fallback with: {}", TreeUtil.toStringTree((CommonTree) root));
-		}
-		
-		return root;	
-	}
-
-	/**
-	 * Recovers and logs error, prepares tree part replacement
-	 */ 
-	private Object invalidFallback(int ttype, String ttext, RecognitionException re) {
-	    reportError(re);
-		recover(input, re);
-		return invalidReplacement(ttype, ttext);
-	}
-	
-	/**
-	 * Recovers and logs error, using custom follow set,
-	 * prepares tree part replacement
-	 */ 
-	private Object invalidFallbackGreedy(int ttype, String ttext, BitSet follow, RecognitionException re) {
-		reportError(re);
-		if ( state.lastErrorIndex==input.index() ) {
-			// uh oh, another error at same token index; must be a case
-	 		// where LT(1) is in the recovery token set so nothing is
-            // consumed; consume a single token so at least to prevent
-            // an infinite loop; this is a failsafe.
-            input.consume();
-        }
-    state.lastErrorIndex = input.index();
-    beginResync();
-		consumeUntilGreedy(input, follow);
-    endResync();
-		return invalidReplacement(ttype, ttext);
-		
-    }
-	
-	/**
-	 * Consumes token until lexer state is balanced and
-	 * token from follow is matched. Matched token is also consumed
-	 */ 
-	private void consumeUntilGreedy(TokenStream input, BitSet follow) {
-		CSSToken t = null;
-		do{
-		  Token next = input.LT(1);
-		  if (next instanceof CSSToken)
-		      t= (CSSToken) input.LT(1);
-		  else
-		      break; /* not a CSSToken, probably EOF */
-		  log.trace("Skipped greedy: {} follow: {}", t, follow);
-		  // consume token even if it will match
-		  input.consume();
-		}while(!(t.getLexerState().isBalanced() && follow.member(t.getType())));
-	} 
-
-  /**
-   * Recovers and logs error inside a function, using custom follow set,
-   * prepares tree part replacement
-   */ 
-  private Object invalidFallbackGreedy(int ttype, String ttext, BitSet follow, LexerState.RecoveryMode mode, LexerState ls, RecognitionException re) {
-    reportError(re);
-    if ( state.lastErrorIndex==input.index() ) {
-      // uh oh, another error at same token index; must be a case
-      // where LT(1) is in the recovery token set so nothing is
-            // consumed; consume a single token so at least to prevent
-            // an infinite loop; this is a failsafe.
-            input.consume();
-        }
-    state.lastErrorIndex = input.index();
-    beginResync();
-    consumeUntilGreedy(input, follow, mode, ls);
-    endResync();
-    return invalidReplacement(ttype, ttext);
-    
-    }
-  
-  /**
-   * Consumes token until lexer state is function-balanced and
-   * token from follow is matched. Matched token is also consumed
-   */ 
-  private void consumeUntilGreedy(TokenStream input, BitSet follow, LexerState.RecoveryMode mode, LexerState ls) {
-    CSSToken t = null;
-    do{
-      Token next = input.LT(1);
-      if (next instanceof CSSToken)
-          t= (CSSToken) input.LT(1);
-      else
-          break; /* not a CSSToken, probably EOF */
-      log.trace("Skipped greedy: {}", t);
-      // consume token even if it will match
-      input.consume();
-    }while(!(t.getLexerState().isBalanced(mode, ls, t) && follow.member(t.getType())));
-  }
-  
-  /**
-   * Recovers and logs error inside a function, using custom follow set,
-   * prepares tree part replacement
-   */ 
-  private Object invalidFallback(int ttype, String ttext, BitSet follow, LexerState.RecoveryMode mode, LexerState ls, RecognitionException re) {
-    reportError(re);
-    if ( state.lastErrorIndex==input.index() ) {
-      // uh oh, another error at same token index; must be a case
-      // where LT(1) is in the recovery token set so nothing is
-            // consumed; consume a single token so at least to prevent
-            // an infinite loop; this is a failsafe.
-            input.consume();
-        }
-    state.lastErrorIndex = input.index();
-    beginResync();
-    consumeUntil(input, follow, mode, ls);
-    endResync();
-    return invalidReplacement(ttype, ttext);
-    
-    }
-  
-  /**
-   * Consumes token until lexer state is function-balanced and
-   * token from follow is matched.
-   */ 
-  private void consumeUntil(TokenStream input, BitSet follow, LexerState.RecoveryMode mode, LexerState ls) {
-    CSSToken t = null;
-    boolean finish = false;
-    do{
-      Token next = input.LT(1);
-      if (next instanceof CSSToken)
-          t= (CSSToken) input.LT(1);
-      else
-          break; /* not a CSSToken, probably EOF */
-      // consume token if does not match
-      finish = (t.getLexerState().isBalanced(mode, ls, t) && follow.member(t.getType()));
-      if (!finish)
-      { 
-          log.trace("Skipped: {}", t);
-          input.consume();
-      }
-    }while(!finish);
-  }
     
   /**
    * Obtains the current lexer state from current token
    */
-  private LexerState getCurrentLexerState(Token t)
+  private CSSLexerState getCurrentLexerState(Token t)
   {
       if (t instanceof CSSToken)
           return ((CSSToken) t).getLexerState();
@@ -269,7 +120,7 @@ atstatement
 	;
 	catch [RecognitionException re] {
       	final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
-	      retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
+	      retval.tree = tnr.invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
 	  		"INVALID_STATEMENT", follow, re);							
 	}
 
@@ -309,7 +160,7 @@ media
  ;
  catch [RecognitionException re] {
      final BitSet follow = BitSet.of(CSSLexer.COMMA, CSSLexer.LCURLY, CSSLexer.SEMICOLON);               
-     retval.tree = invalidFallback(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, LexerState.RecoveryMode.BALANCED, null, re);
+     retval.tree = tnr.invalidFallback(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, CSSLexerState.RecoveryMode.BALANCED, null, re);
  }
 
 media_query
@@ -322,7 +173,7 @@ media_term
  ;
  catch [RecognitionException re] {
      final BitSet follow = BitSet.of(CSSLexer.COMMA, CSSLexer.LCURLY, CSSLexer.SEMICOLON);               
-     retval.tree = invalidFallback(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, LexerState.RecoveryMode.RULE, null, re);
+     retval.tree = tnr.invalidFallback(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, CSSLexerState.RecoveryMode.RULE, null, re);
  }
 
 media_expression
@@ -331,7 +182,7 @@ media_expression
  ;
  catch [RecognitionException re] {
 		 final BitSet follow = BitSet.of(CSSLexer.RPAREN, CSSLexer.SEMICOLON);               
-		 retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
+		 retval.tree = tnr.invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
 		   "INVALID_STATEMENT", follow, re);
  }
 
@@ -345,7 +196,7 @@ unknown_atrule
  ;
  catch [RecognitionException re] {
      final BitSet follow = BitSet.of(CSSLexer.RCURLY);               
-     retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, LexerState.RecoveryMode.BALANCED, null, re);
+     retval.tree = tnr.invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, CSSLexerState.RecoveryMode.BALANCED, null, re);
  }
 	
 ruleset
@@ -359,7 +210,7 @@ ruleset
 	catch [RecognitionException re] {
       final BitSet follow = BitSet.of(CSSLexer.RCURLY);
       //we don't require {} to be balanced here because of possible parent 'media' sections that may remain open => RecoveryMode.RULE
-	    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT,	"INVALID_STATEMENT", follow, LexerState.RecoveryMode.RULE, null, re);
+	    retval.tree = tnr.invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT,	"INVALID_STATEMENT", follow, CSSLexerState.RecoveryMode.RULE, null, re);
 	}
 
 declarations
@@ -369,7 +220,7 @@ declarations
 
 declaration
 @init {
-  LexerState begin = getCurrentLexerState(retval.start);
+  CSSLexerState begin = getCurrentLexerState(retval.start);
   log.trace("Decl begin: " + begin);
 }
 	: property COLON S* terms? important? -> ^(DECLARATION important? property terms?)
@@ -378,7 +229,7 @@ declaration
 	catch [RecognitionException re] {
       final BitSet follow = BitSet.of(CSSLexer.SEMICOLON, CSSLexer.RCURLY); //recover on the declaration end or rule end
       //not greedy - the final ; or } must remain for properly finishing the declaration/rule
-      retval.tree = invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, LexerState.RecoveryMode.DECL, begin, re);             
+      retval.tree = tnr.invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, CSSLexerState.RecoveryMode.DECL, begin, re);             
 	}
 
 important
@@ -386,7 +237,7 @@ important
   ;
   catch [RecognitionException re] {
       final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
-      retval.tree = invalidFallback(CSSLexer.INVALID_DIRECTIVE, "INVALID_DIRECTIVE", follow, LexerState.RecoveryMode.RULE, null, re);
+      retval.tree = tnr.invalidFallback(CSSLexer.INVALID_DIRECTIVE, "INVALID_DIRECTIVE", follow, CSSLexerState.RecoveryMode.RULE, null, re);
   }
 
 property    
@@ -401,13 +252,13 @@ terms
 		if (functLevel == 0)
 		{
 	      final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
-		    retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
+		    retval.tree = tnr.invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
 		  		"INVALID_STATEMENT", follow, re);
 		}
 		else
 		{
         final BitSet follow = BitSet.of(CSSLexer.RPAREN, CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
-        retval.tree = invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, LexerState.RecoveryMode.FUNCTION, null, re);
+        retval.tree = tnr.invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, CSSLexerState.RecoveryMode.FUNCTION, null, re);
 		}
 	}
 	
@@ -480,7 +331,7 @@ selector
         -> ^(SELECTOR selpart+)
     ;
     catch [RecognitionException re] {
-      retval.tree = invalidFallback(CSSLexer.INVALID_SELECTOR, "INVALID_SELECTOR", re);
+      retval.tree = tnr.invalidFallback(CSSLexer.INVALID_SELECTOR, "INVALID_SELECTOR", re);
 	  }
 
 selpart	
@@ -491,7 +342,7 @@ selpart
     | INVALID_SELPART
     ;
     catch [RecognitionException re] {
-      retval.tree = invalidFallback(CSSLexer.INVALID_SELPART, "INVALID_SELPART", re);
+      retval.tree = tnr.invalidFallback(CSSLexer.INVALID_SELPART, "INVALID_SELPART", re);
 	  }
 
 attribute
@@ -503,7 +354,7 @@ pseudo
 	: pseudocolon^ (IDENT | FUNCTION S!* (IDENT | MINUS? NUMBER | MINUS? INDEX) S!* RPAREN!)
 	;
   catch [RecognitionException re] {
-     retval.tree = invalidFallback(CSSLexer.INVALID_SELPART, "INVALID_SELPART", re);
+     retval.tree = tnr.invalidFallback(CSSLexer.INVALID_SELPART, "INVALID_SELPART", re);
   }
 
 pseudocolon
