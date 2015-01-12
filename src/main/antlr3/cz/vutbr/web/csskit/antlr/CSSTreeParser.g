@@ -1,7 +1,7 @@
 tree grammar CSSTreeParser;
 
 options {
-	tokenVocab=CSS;
+	tokenVocab=CSSLexer;
 	ASTLabelType=CommonTree;
 }
 
