@@ -27,6 +27,9 @@ this purpose:</p>
 			Transforms data available at the given <code>url</code>, expecting given <code>encoding</code>,
 			or taking the default one if it is not provided.,			
 	</li>
+	<li><d:api class="cz/vutbr/web/css/CSSFactory" anchor="parse(java.net.URL, cz.vutbr.web.css.NetworkProcessor, java.lang.String)">StyleSheet parse(URL url, NetworkProcessor network, String encoding)</d:api> 
+			that has the same effect as above with providing a custom <code>NetworkProcessor</code> (see below), 			
+	</li>
 	<li><d:api class="cz/vutbr/web/css/CSSFactory" anchor="parse(java.lang.String, java.lang.String)">StyleSheet parse(String fileName, String encoding)</d:api>,
 			which internally transforms the
 			<code>fileName</code> into an URL and		
@@ -38,6 +41,10 @@ this purpose:</p>
 <p>During the parsing process, the parser automatically imports all the style sheets referenced using the <code>@import</code>
 rules. See the <d:ref target="media">Media</d:ref> section for further reference about how to limit this behavior to certain
 media only or disable it completely.</p>
+
+<p>For obtaining the imported style sheets referenced by their URLs, it is possible to provide a custom implementation
+of a <d:api class="cz/vutbr/web/css/NetworkProcessor">NetworkProcessor</d:api> that simply provides obtaining an <code>InputStream</code> from the given URL.
+The default built-in <code>NetworkProcessor</code> is based on the standard Java <code>URLConnection</code> infrastructure.</p>
 
 <p>The result of the parsing is a <d:api class="cz/vutbr/web/css/StyleSheet">StyleSheet</d:api> object that is generally a collection
 of <em>rules</em> discovered in the style sheet. It can be also used as the input for the DOM <d:api class="cz/vutbr/web/domassign/Analyzer">Analyzer</d:api> as described
@@ -123,6 +130,14 @@ provides the following method:</p>
 <p>It automatically downloads and parses all the internal and external style sheets referenced from a DOM for the given media and 
 runs the style mapping to the given DOM. It creates and assigns a <code>NodeData</code> to each element in the DOM document <code>doc</code> for the 
 given medium <code>media</code>. While searching for externally stored CSS style sheets, base URL <code>base</code> is used.</p>
+
+<p>There exist several variants of the <code>assignDOM()</code> method in the
+<d:api class="cz/vutbr/web/css/CSSFactory">CSSFactory</d:api> class that allow to specify
+a custom <code>MatchCondition</code> for matching pseudoclasses (as discussed in the
+<d:ref target="pseudoclasses">pseudoclasses section</d:ref>) and/or a custom
+<code>NetworkProcessor</code> for obtaining the imported style sheets as discussed
+in the <d:ref target="parsing">parsing section</d:ref>.</p>
+
 </d:subsection>
 
 <d:subsection id="dom">

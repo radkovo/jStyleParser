@@ -14,6 +14,9 @@ this purpose:</p><ul>
 			Transforms data available at the given <code>url</code>, expecting given <code>encoding</code>,
 			or taking the default one if it is not provided.,			
 	</li>
+	<li><a href="api/cz/vutbr/web/css/CSSFactory.html#parse(java.net.URL, cz.vutbr.web.css.NetworkProcessor, java.lang.String)" class="api"><code>StyleSheet parse(URL url, NetworkProcessor network, String encoding)</code></a> 
+			that has the same effect as above with providing a custom <code>NetworkProcessor</code> (see below), 			
+	</li>
 	<li><a href="api/cz/vutbr/web/css/CSSFactory.html#parse(java.lang.String, java.lang.String)" class="api"><code>StyleSheet parse(String fileName, String encoding)</code></a>,
 			which internally transforms the
 			<code>fileName</code> into an URL and		
@@ -23,7 +26,9 @@ this purpose:</p><ul>
 	</li>
 </ul><p>During the parsing process, the parser automatically imports all the style sheets referenced using the <code>@import</code>
 rules. See the <a href="#media">Media</a> section for further reference about how to limit this behavior to certain
-media only or disable it completely.</p><p>The result of the parsing is a <a href="api/cz/vutbr/web/css/StyleSheet.html" class="api"><code>StyleSheet</code></a> object that is generally a collection
+media only or disable it completely.</p><p>For obtaining the imported style sheets referenced by their URLs, it is possible to provide a custom implementation
+of a <a href="api/cz/vutbr/web/css/NetworkProcessor.html" class="api"><code>NetworkProcessor</code></a> that simply provides obtaining an <code>InputStream</code> from the given URL.
+The default built-in <code>NetworkProcessor</code> is based on the standard Java <code>URLConnection</code> infrastructure.</p><p>The result of the parsing is a <a href="api/cz/vutbr/web/css/StyleSheet.html" class="api"><code>StyleSheet</code></a> object that is generally a collection
 of <em>rules</em> discovered in the style sheet. It can be also used as the input for the DOM <a href="api/cz/vutbr/web/domassign/Analyzer.html" class="api"><code>Analyzer</code></a> as described
 below in the <a href="#dom">DOM Analysis</a> section.</p><div class="subsection" id="sheet"><h3>Parsed style sheet processing</h3><p>When the DOM Analyzer feature is not used, the parsed style sheed may be manually traversed in order to obtain the contained
 rules and declarations. The most important data structures are the following:</p><ul>
@@ -72,7 +77,12 @@ provides the following method:</p><ul>
 			URL base, MediaSpec media, boolean useInheritance)</code></a></li>
 </ul><p>It automatically downloads and parses all the internal and external style sheets referenced from a DOM for the given media and 
 runs the style mapping to the given DOM. It creates and assigns a <code>NodeData</code> to each element in the DOM document <code>doc</code> for the 
-given medium <code>media</code>. While searching for externally stored CSS style sheets, base URL <code>base</code> is used.</p></div><div class="subsection" id="dom"><h3>Retrieving the Style of DOM Elements</h3><p> 
+given medium <code>media</code>. While searching for externally stored CSS style sheets, base URL <code>base</code> is used.</p><p>There exist several variants of the <code>assignDOM()</code> method in the
+<a href="api/cz/vutbr/web/css/CSSFactory.html" class="api"><code>CSSFactory</code></a> class that allow to specify
+a custom <code>MatchCondition</code> for matching pseudoclasses (as discussed in the
+<a href="#pseudoclasses">pseudoclasses section</a>) and/or a custom
+<code>NetworkProcessor</code> for obtaining the imported style sheets as discussed
+in the <a href="#parsing">parsing section</a>.</p></div><div class="subsection" id="dom"><h3>Retrieving the Style of DOM Elements</h3><p> 
 When the analyzing part is done for the style sheet, the computed mapping between DOM elements and
 the <a href="api/cz/vutbr/web/css/NodeData.html" class="api"><code>NodeData</code></a> structures representing their styles is available
 as a <a href="api/cz/vutbr/web/domassign/StyleMap.html" class="api"><code>StyleMap</code></a> structure. This structure extends the standard Java
