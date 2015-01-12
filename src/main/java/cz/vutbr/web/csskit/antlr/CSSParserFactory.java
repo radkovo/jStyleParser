@@ -17,7 +17,10 @@ import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.NetworkProcessor;
+import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleList;
+import cz.vutbr.web.css.RuleMedia;
+import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
 
 /**
@@ -341,7 +344,18 @@ public class CSSParserFactory {
                 log.trace("Skipping import {} (media not matching)", path);
         }
 
-	    return parser.addRulesToStyleSheet(sheet);
+	    return addRulesToStyleSheet(parser.getRules(), sheet);
+	}
+	
+	private static StyleSheet addRulesToStyleSheet(RuleList rules, StyleSheet sheet) {
+		if (rules != null)
+		{
+			for (RuleBlock<?> rule : rules)
+			{
+				sheet.add(rule);
+			}
+		}
+		return sheet;
 	}
 	
 	// creates the tree parser
