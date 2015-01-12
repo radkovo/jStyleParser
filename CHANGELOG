@@ -1,3 +1,11 @@
+Version 1.20 - Jan 13, 2014
+- API change: use parseString(String, URL) instead of parse(String)
+- More efficient and stateles rule sorting (removes PriorityStrategy mechanism)
+- Custom NetworkProcessor mechanism for handling URL resources
+- Fix exceptions during dimension value creation
+- Fix exceptions in malformed index selectors
+- basic background-size support
+
 Version 1.19 - Nov 6, 2014
 - Allow element.getAttribute() to return null for supporting more DOM parsers
 - Line height processing fix
