@@ -5,10 +5,6 @@ options {
 	ASTLabelType=CommonTree;
 }
 
-@header {
-package cz.vutbr.web.csskit.antlr;
-}
-
 @members {
 	private org.slf4j.Logger log;
 
