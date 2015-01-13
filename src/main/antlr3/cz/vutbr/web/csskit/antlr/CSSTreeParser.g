@@ -37,7 +37,7 @@ import cz.vutbr.web.csskit.RuleArrayList;
 }
 
 @members {
-	private static Logger log = LoggerFactory.getLogger(CSSTreeParser.class);
+	private Logger log;
 
 	private static RuleFactory rf = CSSFactory.getRuleFactory();
 	private static TermFactory tf = CSSFactory.getTermFactory();
@@ -62,14 +62,14 @@ import cz.vutbr.web.csskit.RuleArrayList;
    *    of parsing and imported style sheet) or null when no wrapping is required.
    * @return The initialized tree parser 
    */
-  public CSSTreeParser init(Preparator preparator, List<MediaQuery> wrapMedia) {
+  public void init(Preparator preparator, List<MediaQuery> wrapMedia) {
 		this.preparator = preparator;
 		this.wrapMedia = wrapMedia;
 		this.rules = null;
 		this.importMedia = new ArrayList<List<MediaQuery>>();
 		this.importPaths = new ArrayList<String>();
 		this.preventImports = false;
-		return this;
+		this.log = LoggerFactory.getLogger(getClass());
 	}   
   
   public RuleList getRules()

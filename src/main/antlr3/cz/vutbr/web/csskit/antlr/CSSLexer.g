@@ -70,7 +70,7 @@ import cz.vutbr.web.css.CSSException;
 @members {
     
 
-    private static Logger log = LoggerFactory.getLogger(CSSLexer.class);
+    private Logger log;
     
     // number of already processed tokens (for checking the beginning of the style sheet)
     private int tokencnt = 0;
@@ -85,12 +85,12 @@ import cz.vutbr.web.css.CSSException;
      * This function must be called to initialize lexer's state.
      * Because we can't change directly generated constructors.
      */
-    public CSSLexer init() {
+    public void init() {
+        this.log = LoggerFactory.getLogger(getClass());
         this.ls = new CSSLexerState();
-        this.tf = new CSSTokenFactory(input, state, ls);
+        this.tf = new CSSTokenFactory(input, state, ls, getClass());
         this.tr = new CSSTokenRecovery(this, input, state, ls, log);
         this.er = new CSSExpressionReader(input, log);
-	    return this;
     }
     
     @Override

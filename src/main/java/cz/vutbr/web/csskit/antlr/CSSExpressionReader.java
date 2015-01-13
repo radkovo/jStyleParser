@@ -1,6 +1,8 @@
 package cz.vutbr.web.csskit.antlr;
 
 import org.antlr.runtime.CharStream;
+import org.antlr.runtime.Lexer;
+import org.antlr.runtime.Token;
 
 import org.slf4j.Logger;
 
@@ -48,7 +50,7 @@ public class CSSExpressionReader {
 				inQuot = false;
 				inApos = false;
 			}
-			else if(c==CSSLexer.EOF) {
+			else if(c==Token.EOF) {
 				log.info("Unexpected EOF during consumeUntilBalanced, EOF not consumed");
 				return ret.toString();
 			}

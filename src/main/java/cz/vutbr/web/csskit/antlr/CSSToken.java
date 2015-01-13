@@ -1,9 +1,13 @@
 package cz.vutbr.web.csskit.antlr;
 
 import java.net.URL;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonToken;
+import org.antlr.runtime.Lexer;
+import org.antlr.runtime.Token;
 
 /**
  * Token with encapsulation of LexerState during parse.
@@ -28,6 +32,15 @@ public class CSSToken extends CommonToken {
 	/** Base URL for URIs */
 	protected URL base;
 	
+	// token types
+	public static final int FUNCTION = 1;
+	public static final int URI = 2;
+	public static final int STRING = 3;
+	public static final int CLASSKEYWORD = 4;
+	public static final int HASH = 5;
+	
+	private final TypeMapper typeMapper;
+	
 	/**
 	 * Creates CSSToken, this is base {@code emit()} constructor
 	 * @param input Input stream
@@ -36,8 +49,9 @@ public class CSSToken extends CommonToken {
 	 * @param start Start position in stream
 	 * @param stop End position in stream
 	 */
-	public CSSToken(CharStream input, int type, int channel, int start, int stop) {
+	public CSSToken(CharStream input, int type, int channel, int start, int stop, Class<? extends Lexer> lexerClass) {
 		super(input, type, channel, start, stop);
+		typeMapper = new TypeMapper(CSSToken.class, lexerClass, "FUNCTION", "URI", "STRING", "CLASSKEYWORD", "HASH");
 	}
 	
 	/**
@@ -46,9 +60,8 @@ public class CSSToken extends CommonToken {
 	 * @param type Type of token
 	 * @param state State of lexer, which will be copied
 	 */
-	public CSSToken(int type, CSSLexerState state) {
-		super(type);
-		this.ls = new CSSLexerState(state);
+	public CSSToken(int type, CSSLexerState state, Class<? extends Lexer> lexerClass) {
+		this(type, state, 0, 0, lexerClass);
 	}
 	
 	/**
@@ -59,11 +72,9 @@ public class CSSToken extends CommonToken {
 	 * @param start Start position in stream
 	 * @param stop End position in stream
 	 */
-	public CSSToken(int type, CSSLexerState state, int start, int stop) {
-		super(type);
+	public CSSToken(int type, CSSLexerState state, int start, int stop, Class<? extends Lexer> lexerClass) {
+		this(null, type, Token.DEFAULT_CHANNEL, start, stop, lexerClass);
 		this.ls = new CSSLexerState(state);
-		this.start = start;
-		this.stop = stop;
 	}
 
 	/**
@@ -176,16 +187,22 @@ public class CSSToken extends CommonToken {
 		// sets text from input if not text directly available
 		text = super.getText();
 		
-		switch(type) {
-			case CSSLexer.FUNCTION:
+		int t;
+		try {
+			t = typeMapper.inverse().get(type);
+		} catch (NullPointerException e) {
+			return text;
+		}
+		switch (t) {
+			case FUNCTION:
 				return text.substring(0, text.length()-1);
-			case CSSLexer.URI:
+			case URI:
 				return extractURI(text);
-			case CSSLexer.STRING:
+			case STRING:
 				return extractSTRING(text);
-			case CSSLexer.CLASSKEYWORD:
+			case CLASSKEYWORD:
 				return extractCLASSKEYWORD(text);
-			case CSSLexer.HASH:
+			case HASH:
 				return extractHASH(text);	
 			default:
 				return text;
@@ -202,6 +219,38 @@ public class CSSToken extends CommonToken {
     	return sb.toString();
     }
 	
-	
-
+	/**
+	 * Convert between type values defined in two classes.
+	 */
+	public static class TypeMapper {
+		private final Map<Integer,Integer> map;
+		private final TypeMapper inverse;
+		private TypeMapper(Map<Integer,Integer> map, TypeMapper inverse) {
+			this.map = map;
+			this.inverse = inverse;
+		}
+		public TypeMapper(Class<?> classA, Class<?> classB, String... fieldNames) {
+			map = new TreeMap<Integer,Integer>();
+			Map<Integer,Integer> inverseMap = new TreeMap<Integer,Integer>();
+			for (String f : fieldNames) {
+				try {
+					int a = classA.getField(f).getInt(null);
+					int b = classB.getField(f).getInt(null);
+					map.put(a, b);
+					inverseMap.put(b, a);
+				} catch (IllegalAccessException e) {
+					throw new RuntimeException(e);
+				} catch (NoSuchFieldException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			inverse = new TypeMapper(inverseMap, this);
+		}
+		public int get(int type) throws NullPointerException {
+			return map.get(type);
+		}
+		public TypeMapper inverse() {
+			return inverse;
+		}
+	}
 }

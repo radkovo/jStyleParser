@@ -412,7 +412,8 @@ public class CSSParserFactory {
 		// AST nodes have payloads that point into token stream
 		nodes.setTokenStream(source);
 		CSSTreeParser parser = new CSSTreeParser(nodes);
-		return parser.init(preparator, media);
+		parser.init(preparator, media);
+		return parser;
 	}
 
     //========================================================================================================================
