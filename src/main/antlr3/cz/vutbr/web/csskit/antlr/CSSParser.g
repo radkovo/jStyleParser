@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 }
 
 @members {
-    private static Logger log = LoggerFactory.getLogger(CSSParser.class);
+    private Logger log;
     
     private int functLevel = 0;
     
@@ -52,9 +52,9 @@ import org.slf4j.LoggerFactory;
      * This function must be called to initialize parser's state.
      * Because we can't change directly generated constructors.
      */
-    public CSSParser init() {
+    public void init() {
+        this.log = LoggerFactory.getLogger(getClass());
         this.tnr = new CSSTreeNodeRecovery(this, input, state, adaptor, log);
-    	return this;
     }
     
     @Override
@@ -119,8 +119,8 @@ atstatement
 	| unknown_atrule -> INVALID_STATEMENT
 	;
 	catch [RecognitionException re] {
-      	final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
-	      retval.tree = tnr.invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
+      	final BitSet follow = BitSet.of(RCURLY, SEMICOLON);								
+	      retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT, 
 	  		"INVALID_STATEMENT", follow, re);							
 	}
 
@@ -159,8 +159,8 @@ media
     -> ^(MEDIA_QUERY media_query)+
  ;
  catch [RecognitionException re] {
-     final BitSet follow = BitSet.of(CSSLexer.COMMA, CSSLexer.LCURLY, CSSLexer.SEMICOLON);               
-     retval.tree = tnr.invalidFallback(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, CSSLexerState.RecoveryMode.BALANCED, null, re);
+     final BitSet follow = BitSet.of(COMMA, LCURLY, SEMICOLON);               
+     retval.tree = tnr.invalidFallback(INVALID_STATEMENT, "INVALID_STATEMENT", follow, CSSLexerState.RecoveryMode.BALANCED, null, re);
  }
 
 media_query
@@ -172,8 +172,8 @@ media_term
  | nomediaquery -> INVALID_STATEMENT
  ;
  catch [RecognitionException re] {
-     final BitSet follow = BitSet.of(CSSLexer.COMMA, CSSLexer.LCURLY, CSSLexer.SEMICOLON);               
-     retval.tree = tnr.invalidFallback(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, CSSLexerState.RecoveryMode.RULE, null, re);
+     final BitSet follow = BitSet.of(COMMA, LCURLY, SEMICOLON);               
+     retval.tree = tnr.invalidFallback(INVALID_STATEMENT, "INVALID_STATEMENT", follow, CSSLexerState.RecoveryMode.RULE, null, re);
  }
 
 media_expression
@@ -181,8 +181,8 @@ media_expression
     -> ^(DECLARATION IDENT terms)
  ;
  catch [RecognitionException re] {
-		 final BitSet follow = BitSet.of(CSSLexer.RPAREN, CSSLexer.SEMICOLON);               
-		 retval.tree = tnr.invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
+		 final BitSet follow = BitSet.of(RPAREN, SEMICOLON);               
+		 retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT, 
 		   "INVALID_STATEMENT", follow, re);
  }
 
@@ -195,8 +195,8 @@ unknown_atrule
  : ATKEYWORD S* any* LCURLY S* any* RCURLY
  ;
  catch [RecognitionException re] {
-     final BitSet follow = BitSet.of(CSSLexer.RCURLY);               
-     retval.tree = tnr.invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, CSSLexerState.RecoveryMode.BALANCED, null, re);
+     final BitSet follow = BitSet.of(RCURLY);               
+     retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT, "INVALID_STATEMENT", follow, CSSLexerState.RecoveryMode.BALANCED, null, re);
  }
 	
 ruleset
@@ -208,9 +208,9 @@ ruleset
 	| norule -> INVALID_STATEMENT
 	;
 	catch [RecognitionException re] {
-      final BitSet follow = BitSet.of(CSSLexer.RCURLY);
+      final BitSet follow = BitSet.of(RCURLY);
       //we don't require {} to be balanced here because of possible parent 'media' sections that may remain open => RecoveryMode.RULE
-	    retval.tree = tnr.invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT,	"INVALID_STATEMENT", follow, CSSLexerState.RecoveryMode.RULE, null, re);
+	    retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT,	"INVALID_STATEMENT", follow, CSSLexerState.RecoveryMode.RULE, null, re);
 	}
 
 declarations
@@ -227,17 +227,17 @@ declaration
 	| noprop any* -> INVALID_DECLARATION /* if first character in the declaration is invalid (various dirty hacks) */
 	;
 	catch [RecognitionException re] {
-      final BitSet follow = BitSet.of(CSSLexer.SEMICOLON, CSSLexer.RCURLY); //recover on the declaration end or rule end
+      final BitSet follow = BitSet.of(SEMICOLON, RCURLY); //recover on the declaration end or rule end
       //not greedy - the final ; or } must remain for properly finishing the declaration/rule
-      retval.tree = tnr.invalidFallback(CSSLexer.INVALID_DECLARATION, "INVALID_DECLARATION", follow, CSSLexerState.RecoveryMode.DECL, begin, re);             
+      retval.tree = tnr.invalidFallback(INVALID_DECLARATION, "INVALID_DECLARATION", follow, CSSLexerState.RecoveryMode.DECL, begin, re);             
 	}
 
 important
   : EXCLAMATION S* IMPORTANT S* -> IMPORTANT
   ;
   catch [RecognitionException re] {
-      final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
-      retval.tree = tnr.invalidFallback(CSSLexer.INVALID_DIRECTIVE, "INVALID_DIRECTIVE", follow, CSSLexerState.RecoveryMode.RULE, null, re);
+      final BitSet follow = BitSet.of(RCURLY, SEMICOLON);               
+      retval.tree = tnr.invalidFallback(INVALID_DIRECTIVE, "INVALID_DIRECTIVE", follow, CSSLexerState.RecoveryMode.RULE, null, re);
   }
 
 property    
@@ -251,14 +251,14 @@ terms
 	catch [RecognitionException re] {
 		if (functLevel == 0)
 		{
-	      final BitSet follow = BitSet.of(CSSLexer.RCURLY, CSSLexer.SEMICOLON);								
-		    retval.tree = tnr.invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, 
+	      final BitSet follow = BitSet.of(RCURLY, SEMICOLON);								
+		    retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT, 
 		  		"INVALID_STATEMENT", follow, re);
 		}
 		else
 		{
-        final BitSet follow = BitSet.of(CSSLexer.RPAREN, CSSLexer.RCURLY, CSSLexer.SEMICOLON);               
-        retval.tree = tnr.invalidFallbackGreedy(CSSLexer.INVALID_STATEMENT, "INVALID_STATEMENT", follow, CSSLexerState.RecoveryMode.FUNCTION, null, re);
+        final BitSet follow = BitSet.of(RPAREN, RCURLY, SEMICOLON);               
+        retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT, "INVALID_STATEMENT", follow, CSSLexerState.RecoveryMode.FUNCTION, null, re);
 		}
 	}
 	
@@ -331,7 +331,7 @@ selector
         -> ^(SELECTOR selpart+)
     ;
     catch [RecognitionException re] {
-      retval.tree = tnr.invalidFallback(CSSLexer.INVALID_SELECTOR, "INVALID_SELECTOR", re);
+      retval.tree = tnr.invalidFallback(INVALID_SELECTOR, "INVALID_SELECTOR", re);
 	  }
 
 selpart	
@@ -342,7 +342,7 @@ selpart
     | INVALID_SELPART
     ;
     catch [RecognitionException re] {
-      retval.tree = tnr.invalidFallback(CSSLexer.INVALID_SELPART, "INVALID_SELPART", re);
+      retval.tree = tnr.invalidFallback(INVALID_SELPART, "INVALID_SELPART", re);
 	  }
 
 attribute
@@ -354,7 +354,7 @@ pseudo
 	: pseudocolon^ (IDENT | FUNCTION S!* (IDENT | MINUS? NUMBER | MINUS? INDEX) S!* RPAREN!)
 	;
   catch [RecognitionException re] {
-     retval.tree = tnr.invalidFallback(CSSLexer.INVALID_SELPART, "INVALID_SELPART", re);
+     retval.tree = tnr.invalidFallback(INVALID_SELPART, "INVALID_SELPART", re);
   }
 
 pseudocolon
