@@ -7,48 +7,21 @@ options {
 
 @header {
 package cz.vutbr.web.csskit.antlr;
-
-import java.net.URL;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.unbescape.css.CssEscape;
-
-import cz.vutbr.web.css.CSSFactory;
-import cz.vutbr.web.css.CombinedSelector;
-import cz.vutbr.web.css.Declaration;
-import cz.vutbr.web.css.MediaExpression;
-import cz.vutbr.web.css.MediaQuery;
-import cz.vutbr.web.css.RuleBlock;
-import cz.vutbr.web.css.RuleFactory;
-import cz.vutbr.web.css.RuleList;
-import cz.vutbr.web.css.RuleMargin;
-import cz.vutbr.web.css.RuleSet;
-import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.Term;
-import cz.vutbr.web.css.TermColor;
-import cz.vutbr.web.css.TermFactory;
-import cz.vutbr.web.css.TermExpression;
-import cz.vutbr.web.css.TermFunction;
-import cz.vutbr.web.css.TermIdent;
-
-import cz.vutbr.web.csskit.RuleArrayList;
-
 }
 
 @members {
-	private Logger log;
+	private org.slf4j.Logger log;
 
-	private static RuleFactory rf = CSSFactory.getRuleFactory();
-	private static TermFactory tf = CSSFactory.getTermFactory();
+	private cz.vutbr.web.css.RuleFactory rf = cz.vutbr.web.css.CSSFactory.getRuleFactory();
+	private cz.vutbr.web.css.TermFactory tf = cz.vutbr.web.css.CSSFactory.getTermFactory();
 
 	private enum MediaQueryState { START, TYPE, AND, EXPR, TYPEOREXPR }
 
     // block preparator
-	private Preparator preparator;
-	private List<MediaQuery> wrapMedia;
-	private RuleList rules;
-	private List<List<MediaQuery>> importMedia;
+	private cz.vutbr.web.csskit.antlr.Preparator preparator;
+	private List<cz.vutbr.web.css.MediaQuery> wrapMedia;
+	private cz.vutbr.web.css.RuleList rules;
+	private List<List<cz.vutbr.web.css.MediaQuery>> importMedia;
 	private List<String> importPaths;
 	
 	//prevent imports inside the style sheet
@@ -62,22 +35,22 @@ import cz.vutbr.web.csskit.RuleArrayList;
    *    of parsing and imported style sheet) or null when no wrapping is required.
    * @return The initialized tree parser 
    */
-  public void init(Preparator preparator, List<MediaQuery> wrapMedia) {
+  public void init(cz.vutbr.web.csskit.antlr.Preparator preparator, List<cz.vutbr.web.css.MediaQuery> wrapMedia) {
 		this.preparator = preparator;
 		this.wrapMedia = wrapMedia;
 		this.rules = null;
-		this.importMedia = new ArrayList<List<MediaQuery>>();
+		this.importMedia = new ArrayList<List<cz.vutbr.web.css.MediaQuery>>();
 		this.importPaths = new ArrayList<String>();
 		this.preventImports = false;
-		this.log = LoggerFactory.getLogger(getClass());
+		this.log = org.slf4j.LoggerFactory.getLogger(getClass());
 	}   
   
-  public RuleList getRules()
+  public cz.vutbr.web.css.RuleList getRules()
   {
     return rules;
   }
   
-  public List<List<MediaQuery>> getImportMedia()
+  public List<List<cz.vutbr.web.css.MediaQuery>> getImportMedia()
   {
     return importMedia;
   } 
@@ -97,17 +70,17 @@ import cz.vutbr.web.csskit.RuleArrayList;
     }
    
   private String extractTextUnescaped(CommonTree token) {
-        return CssEscape.unescapeCss(token.getText());
+        return org.unbescape.css.CssEscape.unescapeCss(token.getText());
     }
    
-  private URL extractBase(CommonTree token) {
-      CSSToken ct = (CSSToken) token.getToken();
+  private java.net.URL extractBase(CommonTree token) {
+      cz.vutbr.web.csskit.antlr.CSSToken ct = (cz.vutbr.web.csskit.antlr.CSSToken) token.getToken();
       return ct.getBase();
   }
     	
-  private Declaration.Source extractSource(CommonTree token) {
-      CSSToken ct = (CSSToken) token.getToken();
-      Declaration.Source src = new Declaration.Source(ct.getBase(), ct.getLine(), ct.getCharPositionInLine());
+  private cz.vutbr.web.css.Declaration.Source extractSource(CommonTree token) {
+      cz.vutbr.web.csskit.antlr.CSSToken ct = (cz.vutbr.web.csskit.antlr.CSSToken) token.getToken();
+      cz.vutbr.web.css.Declaration.Source src = new cz.vutbr.web.css.Declaration.Source(ct.getBase(), ct.getLine(), ct.getCharPositionInLine());
       return src;
   }   
 		
@@ -120,10 +93,10 @@ import cz.vutbr.web.csskit.RuleArrayList;
     }
 }
 
-inlinestyle returns [RuleList rules]
+inlinestyle returns [cz.vutbr.web.css.RuleList rules]
 @init {
 	logEnter("inlinestyle");
-	$rules = this.rules = new RuleArrayList();
+	$rules = this.rules = new cz.vutbr.web.csskit.RuleArrayList();
 } 
 @after {
 	log.debug("\n***\n{}\n***\n", $rules);	   
@@ -131,7 +104,7 @@ inlinestyle returns [RuleList rules]
 }
 	: 	^(INLINESTYLE decl=declarations) 
 		{
-			RuleBlock<?> rb = preparator.prepareInlineRuleSet(decl, null);
+			cz.vutbr.web.css.RuleBlock<?> rb = preparator.prepareInlineRuleSet(decl, null);
 			if(rb!=null) {
 			     $rules.add(rb);
 			}
@@ -144,10 +117,10 @@ inlinestyle returns [RuleList rules]
 /**
  * Stylesheet, main rule
  */
-stylesheet returns [RuleList rules]
+stylesheet returns [cz.vutbr.web.css.RuleList rules]
 @init {
 	logEnter("stylesheet");
-  $rules = this.rules = new RuleArrayList();
+  $rules = this.rules = new cz.vutbr.web.csskit.RuleArrayList();
 } 
 @after {
 	log.debug("\n***\n{}\n***\n", $rules);
@@ -161,7 +134,7 @@ stylesheet returns [RuleList rules]
 /**
  * Statement, main contents unit
  */	
-statement returns [RuleBlock<?> stm]
+statement returns [cz.vutbr.web.css.RuleBlock<?> stm]
 scope {
     boolean invalid;
 	
@@ -179,22 +152,22 @@ scope {
       log.debug("Statement is invalid");
 	logLeave("statement");
 }
-	: rs=ruleset {$stm=(RuleBlock<?>) rs;} 
-	| ats=atstatement {$stm=(RuleBlock<?>) ats;}
+	: rs=ruleset {$stm=rs;} 
+	| ats=atstatement {$stm=ats;}
 	| INVALID_STATEMENT { $statement::invalid = true; }
 	;
 	
 
-atstatement returns [RuleBlock<?> stmnt]
+atstatement returns [cz.vutbr.web.css.RuleBlock<?> stmnt]
 scope {
-	RuleBlock<?> stm;
+	cz.vutbr.web.css.RuleBlock<?> stm;
 }
 @init {
     logEnter("atstatement");
 	$statement::insideAtstatement=true;
 	$atstatement::stm = $stmnt = null;
-	List<RuleSet> rules = null;
-	List<RuleMargin> margins = null;
+	List<cz.vutbr.web.css.RuleSet> rules = null;
+	List<cz.vutbr.web.css.RuleMargin> margins = null;
 	String name = null;
 	String pseudo = null;
 }
@@ -227,7 +200,7 @@ scope {
       decl=declarations
       ^(SET (m=margin {
         if (m!=null) {
-          if (margins == null) margins = new ArrayList<RuleMargin>();
+          if (margins == null) margins = new ArrayList<cz.vutbr.web.css.RuleMargin>();
           margins.add(m);
           log.debug("Inserted margin rule #{} into @page", margins.size()+1);
         }
@@ -243,11 +216,11 @@ scope {
     { $stmnt = preparator.prepareRuleFontFace(decl); this.preventImports = true; }
 	| ^(MEDIA (mediaList=media)? 
 			(  rs=ruleset {
-					   if(rules==null) rules = new ArrayList<RuleSet>();				
+					   if(rules==null) rules = new ArrayList<cz.vutbr.web.css.RuleSet>();				
 					   if(rs!=null) {
 						   // this cast should be safe, because when inside of @statetement, oridinal ruleset
 						   // is returned
-					       rules.add((RuleSet)rs);
+					       rules.add((cz.vutbr.web.css.RuleSet)rs);
 						   log.debug("Inserted ruleset ({}) into @media", rules.size());
 					   }
 					}
@@ -266,7 +239,7 @@ import_uri returns [String s]
   | (str=STRING) { s = extractTextUnescaped(str); }
   ;
 
-margin returns [RuleMargin m]
+margin returns [cz.vutbr.web.css.RuleMargin m]
 @init {
     logEnter("margin");
 }
@@ -278,10 +251,10 @@ margin returns [RuleMargin m]
 		{ $m = preparator.prepareRuleMargin(extractText(area).substring(1), decl); }
 	;
 
-media returns [List<MediaQuery> queries] 
+media returns [List<cz.vutbr.web.css.MediaQuery> queries] 
 @init {
    logEnter("media");
-   $queries = new ArrayList<MediaQuery>();
+   $queries = new ArrayList<cz.vutbr.web.css.MediaQuery>();
 }
 @after {
    log.debug("Totally returned {} media queries.", $queries.size());							  
@@ -292,9 +265,9 @@ media returns [List<MediaQuery> queries]
     } )+
 	;
 
-mediaquery returns [MediaQuery query]
+mediaquery returns [cz.vutbr.web.css.MediaQuery query]
 scope {
-    MediaQuery q;
+    cz.vutbr.web.css.MediaQuery q;
     MediaQueryState state;
     boolean invalid;
 }
@@ -375,7 +348,7 @@ mediaterm
       })
    ;
 
-mediaexpression returns [MediaExpression expr]
+mediaexpression returns [cz.vutbr.web.css.MediaExpression expr]
 @init {
     logEnter("mediaquery");
     $expr = rf.createMediaExpression();
@@ -391,10 +364,10 @@ mediaexpression returns [MediaExpression expr]
       }
     ;
 
-inlineset returns [RuleBlock<?> is]
+inlineset returns [cz.vutbr.web.css.RuleBlock<?> is]
 @init {
      logEnter("inlineset");
-	 List<Selector.PseudoPage> pplist = new ArrayList<Selector.PseudoPage>();
+	 List<cz.vutbr.web.css.Selector.PseudoPage> pplist = new ArrayList<cz.vutbr.web.css.Selector.PseudoPage>();
 }
 @after {
      logLeave("inlineset");   
@@ -408,10 +381,10 @@ inlineset returns [RuleBlock<?> is]
  * The most common block in CSS file,
  * set of declarations with selector
  */  
-ruleset returns [RuleBlock<?> stmnt]
+ruleset returns [cz.vutbr.web.css.RuleBlock<?> stmnt]
 @init {
     logEnter("ruleset"); 
-    List<CombinedSelector> cslist = new ArrayList<CombinedSelector>();
+    List<cz.vutbr.web.css.CombinedSelector> cslist = new ArrayList<cz.vutbr.web.css.CombinedSelector>();
 }
 @after {
     if($statement::invalid) {
@@ -438,10 +411,10 @@ ruleset returns [RuleBlock<?> stmnt]
 /**
  * Multiple CSS declarations
  */ 
-declarations returns [List<Declaration> decl]
+declarations returns [List<cz.vutbr.web.css.Declaration> decl]
 @init {
 		  logEnter("declarations");
-		  $decl = new ArrayList<Declaration>();
+		  $decl = new ArrayList<cz.vutbr.web.css.Declaration>();
 }
 @after {
 		   logLeave("declarations");
@@ -459,9 +432,9 @@ declarations returns [List<Declaration> decl]
 /**
  * CSS declaration
  */
-declaration returns [Declaration decl]
+declaration returns [cz.vutbr.web.css.Declaration decl]
 scope {
-    Declaration d;
+    cz.vutbr.web.css.Declaration d;
     boolean invalid;
 } 
 @init {
@@ -510,17 +483,17 @@ property
 /**
  * Term of CSSDeclaration
  */
-terms returns [List<Term<?>> tlist]
+terms returns [List<cz.vutbr.web.css.Term<?>> tlist]
 scope {
-    List<Term<?>> list;
-    Term<?> term;
-    Term.Operator op;
+    List<cz.vutbr.web.css.Term<?>> list;
+    cz.vutbr.web.css.Term<?> term;
+    cz.vutbr.web.css.Term.Operator op;
     int unary;
     boolean dash;
 }   
 @init {
     logEnter("terms");
-    $terms::list = $tlist = new ArrayList<Term<?>>();
+    $terms::list = $tlist = new ArrayList<cz.vutbr.web.css.Term<?>>();
     $terms::term = null;
     $terms::op = null;
     $terms::unary = 1;
@@ -543,7 +516,7 @@ term
           $terms::term.setOperator($terms::op);
           $terms::list.add($terms::term);
           // reinitialization
-          $terms::op = Term.Operator.SPACE;
+          $terms::op = cz.vutbr.web.css.Term.Operator.SPACE;
           $terms::unary = 1;
           $terms::dash = false;
           $terms::term = null;
@@ -556,16 +529,16 @@ term
 valuepart
 @after{
     // convert color
-    Term<?> term = $terms::term;
+    cz.vutbr.web.css.Term<?> term = $terms::term;
     if(term!=null) {
-        TermColor colorTerm = null;
-        if(term instanceof TermIdent) {
-            colorTerm = tf.createColor((TermIdent)term);
+        cz.vutbr.web.css.TermColor colorTerm = null;
+        if(term instanceof cz.vutbr.web.css.TermIdent) {
+            colorTerm = tf.createColor((cz.vutbr.web.css.TermIdent)term);
             if (colorTerm != null)
                 term = colorTerm;
         }
-        else if(term instanceof TermFunction) {
-            colorTerm = tf.createColor((TermFunction)term);
+        else if(term instanceof cz.vutbr.web.css.TermFunction) {
+            colorTerm = tf.createColor((cz.vutbr.web.css.TermFunction)term);
             if(colorTerm != null)
                 term = colorTerm;
         }
@@ -600,23 +573,23 @@ valuepart
     | UNIRANGE  {$declaration::invalid = true;}
     | INCLUDES  {$declaration::invalid = true;}
     | COLON     {$declaration::invalid = true;}
-    | COMMA     {$terms::op = Term.Operator.COMMA;}    
+    | COMMA     {$terms::op = cz.vutbr.web.css.Term.Operator.COMMA;}    
     | GREATER   {$declaration::invalid = true;}
     | LESS      {$declaration::invalid = true;}
     | QUESTION  {$declaration::invalid = true;}
     | PERCENT   {$declaration::invalid = true;}
     | EQUALS    {$declaration::invalid = true;}
-    | SLASH     {$terms::op = Term.Operator.SLASH;}
+    | SLASH     {$terms::op = cz.vutbr.web.css.Term.Operator.SLASH;}
 		| PLUS		  {$declaration::invalid = true;}
 		| ASTERISK  {$declaration::invalid = true;}
 		| e=EXPRESSION {
 		    String exprval = extractText(e);
-        TermExpression expr = tf.createExpression(exprval.substring(11,exprval.length()-1)); //strip the 'expression()'
+        cz.vutbr.web.css.TermExpression expr = tf.createExpression(exprval.substring(11,exprval.length()-1)); //strip the 'expression()'
         $terms::term = expr;
 		}
     | (MINUS {$terms::unary=-1;})? ^(f=FUNCTION t=terms?) {
         // create function
-        TermFunction function = tf.createFunction();
+        cz.vutbr.web.css.TermFunction function = tf.createFunction();
         function.setFunctionName(extractText(f));
         if ($terms::unary == -1) //if started with minus, add the minus to the function name
             function.setFunctionName('-' + function.getFunctionName());
@@ -632,13 +605,13 @@ valuepart
 /**
  * Construction of selector
  */
-combined_selector returns [CombinedSelector combinedSelector]
+combined_selector returns [cz.vutbr.web.css.CombinedSelector combinedSelector]
 scope {
     boolean invalid;
 }
 @init {
 	logEnter("combined_selector");	  
-	$combinedSelector = (CombinedSelector) rf.createCombinedSelector().unlock();
+	$combinedSelector = (cz.vutbr.web.css.CombinedSelector) rf.createCombinedSelector().unlock();
 }
 @after {  
     // entire ruleset is not valid when selector is not valid
@@ -669,24 +642,24 @@ scope {
 	 )*
 	;
 
-combinator returns [Selector.Combinator combinator]
+combinator returns [cz.vutbr.web.css.Selector.Combinator combinator]
 @init{ logEnter("combinator"); }
 @after{ logLeave("combinator"); }
-	: CHILD {$combinator=Selector.Combinator.CHILD;}
-	| ADJACENT {$combinator=Selector.Combinator.ADJACENT;}
-  | PRECEDING {$combinator=Selector.Combinator.PRECEDING;}
-	| DESCENDANT {$combinator=Selector.Combinator.DESCENDANT;}
+	: CHILD {$combinator=cz.vutbr.web.css.Selector.Combinator.CHILD;}
+	| ADJACENT {$combinator=cz.vutbr.web.css.Selector.Combinator.ADJACENT;}
+  | PRECEDING {$combinator=cz.vutbr.web.css.Selector.Combinator.PRECEDING;}
+	| DESCENDANT {$combinator=cz.vutbr.web.css.Selector.Combinator.DESCENDANT;}
 	;
 
 
-selector returns [Selector sel]
+selector returns [cz.vutbr.web.css.Selector sel]
 scope {
-	Selector s;
+	cz.vutbr.web.css.Selector s;
 }
 @init {
 	logEnter("selector");
-	$selector::s=$sel=(Selector)rf.createSelector().unlock();
-	Selector.ElementName en = rf.createElement(Selector.ElementName.WILDCARD);
+	$selector::s=$sel=(cz.vutbr.web.css.Selector)rf.createSelector().unlock();
+	cz.vutbr.web.css.Selector.ElementName en = rf.createElement(cz.vutbr.web.css.Selector.ElementName.WILDCARD);
 }
 @after {
 	logLeave("selector");
@@ -726,12 +699,12 @@ selpart
 	| INVALID_SELPART { $combined_selector::invalid = true;}  
     ;
  
-attribute returns [Selector.ElementAttribute elemAttr]
+attribute returns [cz.vutbr.web.css.Selector.ElementAttribute elemAttr]
 @init {
     logEnter("attribute");
     String attribute = null;
 	String value = null;
-	Selector.Operator op = Selector.Operator.NO_OPERATOR;
+	cz.vutbr.web.css.Selector.Operator op = cz.vutbr.web.css.Selector.Operator.NO_OPERATOR;
 	boolean isStringValue = false;
 }
 @after{
@@ -745,12 +718,12 @@ attribute returns [Selector.ElementAttribute elemAttr]
     logLeave("attribute");
 }
 	: i=IDENT {attribute=extractText(i); }
-	  ((EQUALS {op=Selector.Operator.EQUALS; } 
-	   | INCLUDES {op=Selector.Operator.INCLUDES; } 
-	   | DASHMATCH {op=Selector.Operator.DASHMATCH; }
-     | CONTAINS {op=Selector.Operator.CONTAINS; }
-     | STARTSWITH {op=Selector.Operator.STARTSWITH; }
-     | ENDSWITH {op=Selector.Operator.ENDSWITH; }
+	  ((EQUALS {op=cz.vutbr.web.css.Selector.Operator.EQUALS; } 
+	   | INCLUDES {op=cz.vutbr.web.css.Selector.Operator.INCLUDES; } 
+	   | DASHMATCH {op=cz.vutbr.web.css.Selector.Operator.DASHMATCH; }
+     | CONTAINS {op=cz.vutbr.web.css.Selector.Operator.CONTAINS; }
+     | STARTSWITH {op=cz.vutbr.web.css.Selector.Operator.STARTSWITH; }
+     | ENDSWITH {op=cz.vutbr.web.css.Selector.Operator.ENDSWITH; }
 	   ) 
 	   (i=IDENT {
 		value=extractText(i);
@@ -768,7 +741,7 @@ attribute returns [Selector.ElementAttribute elemAttr]
 	   ))?
 	; 
 	
-pseudo returns [Selector.PseudoPage pseudoPage]
+pseudo returns [cz.vutbr.web.css.Selector.PseudoPage pseudoPage]
 @init {
 		logEnter("pseudo");
 }
