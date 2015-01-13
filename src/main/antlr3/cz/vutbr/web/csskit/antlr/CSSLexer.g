@@ -56,41 +56,32 @@ tokens {
 
 @header {
 package cz.vutbr.web.csskit.antlr;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.nio.charset.IllegalCharsetNameException;
-
-import cz.vutbr.web.css.CSSException;
-
 }
 
 @members {
     
 
-    private Logger log;
+    private org.slf4j.Logger log;
     
     // number of already processed tokens (for checking the beginning of the style sheet)
     private int tokencnt = 0;
     
     // current lexer state
-    private CSSLexerState ls;
-    private CSSTokenFactory tf;
-    private CSSTokenRecovery tr;
-    private CSSExpressionReader er;
+    private cz.vutbr.web.csskit.antlr.CSSLexerState ls;
+    private cz.vutbr.web.csskit.antlr.CSSTokenFactory tf;
+    private cz.vutbr.web.csskit.antlr.CSSTokenRecovery tr;
+    private cz.vutbr.web.csskit.antlr.CSSExpressionReader er;
     
     /**
      * This function must be called to initialize lexer's state.
      * Because we can't change directly generated constructors.
      */
     public void init() {
-        this.log = LoggerFactory.getLogger(getClass());
-        this.ls = new CSSLexerState();
-        this.tf = new CSSTokenFactory(input, state, ls, getClass());
-        this.tr = new CSSTokenRecovery(this, input, state, ls, log);
-        this.er = new CSSExpressionReader(input, log);
+        this.log = org.slf4j.LoggerFactory.getLogger(getClass());
+        this.ls = new cz.vutbr.web.csskit.antlr.CSSLexerState();
+        this.tf = new cz.vutbr.web.csskit.antlr.CSSTokenFactory(input, state, ls, getClass());
+        this.tr = new cz.vutbr.web.csskit.antlr.CSSTokenRecovery(this, input, state, ls, log);
+        this.er = new cz.vutbr.web.csskit.antlr.CSSExpressionReader(input, log);
     }
     
     @Override
@@ -172,20 +163,20 @@ CHARSET
 	: '@charset' S* s=STRING_MACR S* SEMICOLON 
 	  {
 	    // we have to trim manually
-	    String enc = CSSToken.extractSTRING($s.getText());
+	    String enc = cz.vutbr.web.csskit.antlr.CSSToken.extractSTRING($s.getText());
 	    //System.err.println("CHARSET"+tokencnt);
 	    if (tokencnt <= 1) //we are at the beginning of the style sheet
 	    {
 			    try {
 			           log.warn("Changing charset to {}", enc);
-			          ((CSSInputStream) input).setEncoding(enc);
+			          ((cz.vutbr.web.csskit.antlr.CSSInputStream) input).setEncoding(enc);
 			          //input = setCharStream(new ANTLFileStream(input.getSourceName(), enc));
 			        }
-			        catch(IllegalCharsetNameException icne) {
+			        catch(java.nio.charset.IllegalCharsetNameException icne) {
 			        	log.warn("Could not change to unsupported charset!", icne);
-			        	throw new RuntimeException(new CSSException("Unsupported charset: " + enc));
+			        	throw new RuntimeException(new cz.vutbr.web.css.CSSException("Unsupported charset: " + enc));
 			        }
-			        catch (IOException e) {
+			        catch (java.io.IOException e) {
                 log.warn("Could not change to unsupported charset!", e);
 			        }
 			 }
