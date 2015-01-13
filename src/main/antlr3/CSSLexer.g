@@ -54,10 +54,6 @@ tokens {
 	INVALID_DIRECTIVE;
 }
 
-@header {
-package cz.vutbr.web.csskit.antlr;
-}
-
 @members {
     
 
