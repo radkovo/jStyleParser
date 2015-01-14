@@ -34,172 +34,156 @@ public class CSSParserFactory {
 			.getLogger(CSSParserFactory.class);
 
 	/**
-	 * Encapsulates functionality associated with different source types.
-	 * 
-	 * @author kapy
-	 * 
+	 * Source types.
 	 */
 	public static enum SourceType {
-		INLINE {
-			@Override
-			public CommonTree getAST(CSSParser parser) throws CSSException {
-				try {
-					CSSParser.inlinestyle_return retval = parser.inlinestyle();
-					return (CommonTree) retval.getTree();
-				} catch (RecognitionException re) {
-					throw encapsulateException(re,
-							"Unable to parse inline CSS style");
-				} catch (RuntimeException re) {
-					throw encapsulateException(re,
-							"Unable to parse inline CSS style");
-				}
-			}
-
-			@Override
-			public RuleList parse(CSSTreeParser parser) throws CSSException {
-				try {
-					return parser.inlinestyle();
-				} catch (RecognitionException re) {
-					throw encapsulateException(re,
-							"Unable to parse inline CSS style [AST]");
-				} catch (RuntimeException re) {
-					throw encapsulateException(re,
-							"Unable to parse inline CSS style [AST]");
-				}
-			}
-
-			@Override
-			public CSSInputStream getInput(Object source, NetworkProcessor network, String encoding) throws IOException {
-				return CSSInputStream.stringStream((String) source);
-			}
-
-		},
-		EMBEDDED {
-			@Override
-			public CommonTree getAST(CSSParser parser) throws CSSException {
-				try {
-					CSSParser.stylesheet_return retval = parser.stylesheet();
-					return (CommonTree) retval.getTree();
-				} catch (RecognitionException re) {
-					throw encapsulateException(re,
-							"Unable to parse embedded CSS style");
-				} catch (RuntimeException re) {
-					throw encapsulateException(re,
-							"Unable to parse embedded CSS style");
-				}
-			}
-
-			@Override
-			public RuleList parse(CSSTreeParser parser) throws CSSException {
-				try {
-					return parser.stylesheet();
-				} catch (RecognitionException re) {
-					throw encapsulateException(re,
-							"Unable to parse embedded CSS style [AST]");
-				} catch (RuntimeException re) {
-					throw encapsulateException(re,
-							"Unable to parse embedded CSS style [AST]");
-				}
-			}
-
-			@Override
-			public CSSInputStream getInput(Object source, NetworkProcessor network, String encoding) throws IOException {
-				return CSSInputStream.stringStream((String) source);
-			}
-
-		},
-		URL {
-			@Override
-			public CommonTree getAST(CSSParser parser) throws CSSException {
-				try {
-					CSSParser.stylesheet_return retval = parser.stylesheet();
-					return (CommonTree) retval.getTree();
-				} catch (RecognitionException re) {
-					throw encapsulateException(re,
-							"Unable to parse URL CSS style");
-				} catch (RuntimeException re) {
-					throw encapsulateException(re,
-							"Unable to parse URL CSS style");
-				}
-			}
-
-			@Override
-			public RuleList parse(CSSTreeParser parser) throws CSSException {
-				try {
-					return parser.stylesheet();
-				} catch (RecognitionException re) {
-					throw encapsulateException(re,
-							"Unable to parse file CSS style [AST]");
-				} catch (RuntimeException re) {
-					throw encapsulateException(re,
-							"Unable to parse file CSS style [AST]");
-				}
-			}
-
-			@Override
-			public CSSInputStream getInput(Object source, NetworkProcessor network, String encoding) throws IOException {
-				return CSSInputStream.urlStream((URL) source, network, encoding);
-			}
-
-		};
-
-		/**
-		 * Creates input for CSSLexer
-		 * 
-		 * @param source
-		 *            Source, either raw data (String) or URL 
-		 * @return Created stream
-		 * @throws IOException
-		 *             When file is not found or other IO exception occurs
-		 */
-		public abstract CSSInputStream getInput(Object source, NetworkProcessor network, String encoding)
-				throws IOException;
-
-		/**
-		 * Creates AST tree for CSSTreeParser
-		 * 
-		 * @param parser
-		 *            Source parser
-		 * @return Created AST tree
-		 * @throws CSSException
-		 *             When unrecoverable exception during parse occurs.
-		 *             RuntimeException are also encapsulated at this point
-		 */
-		public abstract CommonTree getAST(CSSParser parser) throws CSSException;
-
-		/**
-		 * Creates StyleSheet from AST tree
-		 * 
-		 * @param parser
-		 *            Parser
-		 * @return Created StyleSheet
-		 * @throws CSSException
-		 *             When unrecoverable exception during parse occurs.
-		 *             RuntimeException are also encapsulated at this point
-		 */
-		public abstract RuleList parse(CSSTreeParser parser)
-				throws CSSException;
-
-		/**
-		 * Creates new CSSException which encapsulates cause
-		 * 
-		 * @param t
-		 *            Cause
-		 * @param msg
-		 *            Message
-		 * @return New CSSException
-		 */
-		private static CSSException encapsulateException(Throwable t, String msg) {
-			log.error("THROWN:", t);
-			return new CSSException(msg, t);
+		INLINE,
+		EMBEDDED,
+		URL
+	}
+	
+	/**
+	 * Creates input for CSSLexer
+	 * 
+	 * @param source
+	 *            Source, either raw data (String) or URL 
+	 * @return Created stream
+	 * @throws IOException
+	 *             When file is not found or other IO exception occurs
+	 */
+	protected static CSSInputStream getInput(Object source, NetworkProcessor network, String encoding, SourceType type) throws IOException {
+		switch (type) {
+		case INLINE:
+		case EMBEDDED:
+			return CSSInputStream.stringStream((String) source);
+		case URL:
+			return CSSInputStream.urlStream((URL) source, network, encoding);
+		default:
+			throw new RuntimeException("Coding error");
 		}
+	}
+	
+	/**
+	 * Creates AST tree for CSSTreeParser
+	 * 
+	 * @param parser
+	 *            Source parser
+	 * @return Created AST tree
+	 * @throws CSSException
+	 *             When unrecoverable exception during parse occurs.
+	 *             RuntimeException are also encapsulated at this point
+	 */
+	private static CommonTree getAST(CSSParser parser, SourceType type) throws CSSException {
+		switch (type) {
+		case INLINE:
+			try {
+				CSSParser.inlinestyle_return retval = parser.inlinestyle();
+				return (CommonTree) retval.getTree();
+			} catch (RecognitionException re) {
+				throw encapsulateException(re,
+						"Unable to parse inline CSS style");
+			} catch (RuntimeException re) {
+				throw encapsulateException(re,
+						"Unable to parse inline CSS style");
+			}
+		case EMBEDDED:
+			try {
+				CSSParser.stylesheet_return retval = parser.stylesheet();
+				return (CommonTree) retval.getTree();
+			} catch (RecognitionException re) {
+				throw encapsulateException(re,
+						"Unable to parse embedded CSS style");
+			} catch (RuntimeException re) {
+				throw encapsulateException(re,
+						"Unable to parse embedded CSS style");
+			}
+		case URL:
+			try {
+				CSSParser.stylesheet_return retval = parser.stylesheet();
+				return (CommonTree) retval.getTree();
+			} catch (RecognitionException re) {
+				throw encapsulateException(re,
+						"Unable to parse URL CSS style");
+			} catch (RuntimeException re) {
+				throw encapsulateException(re,
+						"Unable to parse URL CSS style");
+			}
+		default:
+			throw new RuntimeException("Coding error");
+		}
+	}
+	
+	/**
+	 * Creates StyleSheet from AST tree
+	 * 
+	 * @param parser
+	 *            Parser
+	 * @return Created StyleSheet
+	 * @throws CSSException
+	 *             When unrecoverable exception during parse occurs.
+	 *             RuntimeException are also encapsulated at this point
+	 */
+	private static RuleList parse(CSSTreeParser parser, SourceType type) throws CSSException {
+		switch (type) {
+		case INLINE:
+			try {
+				return parser.inlinestyle();
+			} catch (RecognitionException re) {
+				throw encapsulateException(re,
+						"Unable to parse inline CSS style [AST]");
+			} catch (RuntimeException re) {
+				throw encapsulateException(re,
+						"Unable to parse inline CSS style [AST]");
+			}
+		case EMBEDDED:
+			try {
+				return parser.stylesheet();
+			} catch (RecognitionException re) {
+				throw encapsulateException(re,
+						"Unable to parse embedded CSS style [AST]");
+			} catch (RuntimeException re) {
+				throw encapsulateException(re,
+						"Unable to parse embedded CSS style [AST]");
+			}
+		case URL:
+			try {
+				return parser.stylesheet();
+			} catch (RecognitionException re) {
+				throw encapsulateException(re,
+						"Unable to parse file CSS style [AST]");
+			} catch (RuntimeException re) {
+				throw encapsulateException(re,
+						"Unable to parse file CSS style [AST]");
+			}
+		default:
+			throw new RuntimeException("Coding error");
+		}
+	}
+	
+	/**
+	 * Creates new CSSException which encapsulates cause
+	 * 
+	 * @param t
+	 *            Cause
+	 * @param msg
+	 *            Message
+	 * @return New CSSException
+	 */
+	protected static CSSException encapsulateException(Throwable t, String msg) {
+		log.error("THROWN:", t);
+		return new CSSException(msg, t);
 	}
 
     //========================================================================================================================
 	
-	// disable instantiation
-	private CSSParserFactory() {
-		throw new AssertionError();
+	private static CSSParserFactory instance;
+	
+	protected CSSParserFactory() {}
+	
+	public static CSSParserFactory getInstance() {
+		if(instance == null)
+			instance = new CSSParserFactory();
+		return instance;
 	}
 
 	/**
@@ -219,7 +203,7 @@ public class CSSParserFactory {
 	 * @throws CSSException
 	 *             When unrecoverable exception during parsing occurs
 	 */
-	public static StyleSheet parse(Object source, NetworkProcessor network, String encoding, SourceType type,
+	public StyleSheet parse(Object source, NetworkProcessor network, String encoding, SourceType type,
 			Element inline, boolean inlinePriority, URL base) throws IOException, CSSException {
 
 		StyleSheet sheet = (StyleSheet) CSSFactory.getRuleFactory()
@@ -247,7 +231,7 @@ public class CSSParserFactory {
 	 * @throws IllegalArgumentException
 	 *             When type of source is INLINE
 	 */
-	public static StyleSheet parse(Object source, NetworkProcessor network, String encoding, SourceType type, URL base)
+	public StyleSheet parse(Object source, NetworkProcessor network, String encoding, SourceType type, URL base)
 			throws IOException, CSSException {
 		if (type == SourceType.INLINE)
 			throw new IllegalArgumentException(
@@ -276,7 +260,7 @@ public class CSSParserFactory {
 	 * @throws CSSException
 	 *             When unrecoverable exception during parsing occurs
 	 */
-	public static StyleSheet append(Object source, NetworkProcessor network, String encoding, SourceType type,
+	public StyleSheet append(Object source, NetworkProcessor network, String encoding, SourceType type,
 			Element inline, boolean inlinePriority, StyleSheet sheet, URL base) throws IOException, CSSException {
 
 		Preparator preparator = new SimplePreparator(inline, inlinePriority);
@@ -305,7 +289,7 @@ public class CSSParserFactory {
 	 * @throws IllegalArgumentException
 	 *             When type of source is INLINE
 	 */
-	public static StyleSheet append(Object source, NetworkProcessor network, String encoding, SourceType type,
+	public StyleSheet append(Object source, NetworkProcessor network, String encoding, SourceType type,
 			StyleSheet sheet, URL base) throws IOException, CSSException {
 		if (type == SourceType.INLINE)
 			throw new IllegalArgumentException(
@@ -318,12 +302,12 @@ public class CSSParserFactory {
 	 * Parses the source using the given infrastructure and returns the resulting style sheet.
 	 * The imports are handled recursively.
 	 */
-	private static StyleSheet parseAndImport(Object source, NetworkProcessor network, String encoding, SourceType type,
+	protected StyleSheet parseAndImport(Object source, NetworkProcessor network, String encoding, SourceType type,
 	        StyleSheet sheet, Preparator preparator, URL base, List<MediaQuery> media)
 	        throws CSSException, IOException
 	{
         CSSTreeParser parser = createTreeParser(source, network, encoding, type, preparator, base, media);
-        type.parse(parser);
+        parse(parser, type);
         
         for (int i = 0; i < parser.getImportPaths().size(); i++)
         {
@@ -347,7 +331,7 @@ public class CSSParserFactory {
 	    return addRulesToStyleSheet(parser.getRules(), sheet);
 	}
 	
-	private static StyleSheet addRulesToStyleSheet(RuleList rules, StyleSheet sheet) {
+	protected static StyleSheet addRulesToStyleSheet(RuleList rules, StyleSheet sheet) {
 		if (rules != null)
 		{
 			for (RuleBlock<?> rule : rules)
@@ -362,7 +346,7 @@ public class CSSParserFactory {
 	private static CSSTreeParser createTreeParser(Object source, NetworkProcessor network, String encoding, SourceType type,
 			Preparator preparator, URL base, List<MediaQuery> media) throws IOException, CSSException {
 
-		CSSInputStream input = type.getInput(source, network, encoding);
+		CSSInputStream input = getInput(source, network, encoding, type);
 		input.setBase(base);
 		CommonTokenStream tokens = feedLexer(input);
 		CommonTree ast = feedParser(tokens, type);
@@ -398,7 +382,7 @@ public class CSSParserFactory {
 	{
 		CSSParser parser = new CSSParser(source);
 		parser.init();
-		return type.getAST(parser);
+		return getAST(parser, type);
 	}
 
 	// initializes tree parser
@@ -423,7 +407,7 @@ public class CSSParserFactory {
 	 * @param query The query string
 	 * @return List of media queries found.
 	 */
-	public static List<MediaQuery> parseMediaQuery(String query)
+	public List<MediaQuery> parseMediaQuery(String query)
 	{
 	    try
         {
