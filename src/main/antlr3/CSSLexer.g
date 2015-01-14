@@ -64,10 +64,10 @@ tokens {
     private int tokencnt = 0;
     
     // current lexer state
-    private cz.vutbr.web.csskit.antlr.CSSLexerState ls;
-    private cz.vutbr.web.csskit.antlr.CSSTokenFactory tf;
-    private cz.vutbr.web.csskit.antlr.CSSTokenRecovery tr;
-    private cz.vutbr.web.csskit.antlr.CSSExpressionReader er;
+    protected cz.vutbr.web.csskit.antlr.CSSLexerState ls;
+    protected cz.vutbr.web.csskit.antlr.CSSTokenFactory tf;
+    protected cz.vutbr.web.csskit.antlr.CSSTokenRecovery tr;
+    protected cz.vutbr.web.csskit.antlr.CSSExpressionReader er;
     
     /**
      * This function must be called to initialize lexer's state.

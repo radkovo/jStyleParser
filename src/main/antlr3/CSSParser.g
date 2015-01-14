@@ -39,7 +39,7 @@ options {
     
     private int functLevel = 0;
     
-    private cz.vutbr.web.csskit.antlr.CSSTreeNodeRecovery tnr;
+    protected cz.vutbr.web.csskit.antlr.CSSTreeNodeRecovery tnr;
     
     /**
      * This function must be called to initialize parser's state.
