@@ -109,12 +109,12 @@ atstatement
 	  RCURLY -> ^(FONTFACE declarations)
 	| MEDIA S* media? 
 		LCURLY S* (media_rule S*)* RCURLY -> ^(MEDIA media? media_rule*)	
-	| unknown_atrule -> INVALID_STATEMENT
+	| unknown_atrule
 	;
 	catch [RecognitionException re] {
       	final BitSet follow = BitSet.of(RCURLY, SEMICOLON);								
-	      retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT, 
-	  		"INVALID_STATEMENT", follow, re);							
+	      retval.tree = tnr.invalidFallbackGreedy(INVALID_ATSTATEMENT, 
+	  		"INVALID_ATSTATEMENT", follow, re);							
 	}
 
 import_uri
@@ -185,11 +185,12 @@ media_rule
  ;
 	
 unknown_atrule
- : ATKEYWORD S* any* LCURLY S* any* RCURLY
+ : ATKEYWORD S* any* LCURLY S* any* RCURLY -> INVALID_ATSTATEMENT
  ;
  catch [RecognitionException re] {
      final BitSet follow = BitSet.of(RCURLY);               
-     retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT, "INVALID_STATEMENT", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.BALANCED, null, re);
+     retval.tree = tnr.invalidFallbackGreedy(INVALID_ATSTATEMENT,
+         "INVALID_ATSTATEMENT", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.BALANCED, null, re);
  }
 	
 ruleset
