@@ -8,13 +8,13 @@ options {
 @members {
 	private org.slf4j.Logger log;
 
-	private cz.vutbr.web.css.RuleFactory rf = cz.vutbr.web.css.CSSFactory.getRuleFactory();
-	private cz.vutbr.web.css.TermFactory tf = cz.vutbr.web.css.CSSFactory.getTermFactory();
+	protected cz.vutbr.web.css.RuleFactory rf = cz.vutbr.web.css.CSSFactory.getRuleFactory();
+	protected cz.vutbr.web.css.TermFactory tf = cz.vutbr.web.css.CSSFactory.getTermFactory();
 
 	private enum MediaQueryState { START, TYPE, AND, EXPR, TYPEOREXPR }
 
     // block preparator
-	private cz.vutbr.web.csskit.antlr.Preparator preparator;
+	protected cz.vutbr.web.csskit.antlr.Preparator preparator;
 	private List<cz.vutbr.web.css.MediaQuery> wrapMedia;
 	private cz.vutbr.web.css.RuleList rules;
 	private List<List<cz.vutbr.web.css.MediaQuery>> importMedia;
