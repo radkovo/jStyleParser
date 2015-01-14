@@ -58,6 +58,11 @@ public final class CSSFactory {
 	private static final String DEFAULT_NODE_DATA_IMPL = "cz.vutbr.web.domassign.SingleMapNodeData";
 
 	/**
+	 * Default instance of CSSParcerFactory
+	 */
+	private static CSSParserFactory pf;
+	
+	/**
 	 * Default instance of TermFactory implementation
 	 */
 	private static TermFactory tf;
@@ -139,7 +144,28 @@ public final class CSSFactory {
     {
         CSSFactory.autoImportMedia = autoImportMedia;
     }
+	
+	/**
+	 * Registers new CSSParserFactory instance
+	 *
+	 * @param factory
+	 *            New CSSParserFactory
+	 */
+	public static final void registerCSSParserFactory(CSSParserFactory factory) {
+		pf = factory;
+	}
 
+	/**
+	 * Returns CSSParserFactory registered in step above
+	 *
+	 * @return CSSParserFactory registered
+	 */
+	private static final CSSParserFactory getCSSParserFactory() {
+		if (pf == null)
+			pf = CSSParserFactory.getInstance();
+		return pf;
+	}
+	
     /**
 	 * Registers new TermFactory instance
 	 * 
@@ -361,7 +387,7 @@ public final class CSSFactory {
 	 */
 	public static final StyleSheet parse(URL url, String encoding)
 			throws CSSException, IOException {
-		return CSSParserFactory.parse(url, new DefaultNetworkProcessor(), encoding, SourceType.URL, url);
+		return getCSSParserFactory().parse(url, new DefaultNetworkProcessor(), encoding, SourceType.URL, url);
 	}
 
     /**
@@ -381,7 +407,7 @@ public final class CSSFactory {
      */
     public static final StyleSheet parse(URL url, NetworkProcessor network, String encoding)
             throws CSSException, IOException {
-        return CSSParserFactory.parse(url, network, encoding, SourceType.URL, url);
+        return getCSSParserFactory().parse(url, network, encoding, SourceType.URL, url);
     }
 
 	/**
@@ -425,7 +451,7 @@ public final class CSSFactory {
 	public static final StyleSheet parse(String css) throws IOException,
 			CSSException {
 	    URL base = new URL("file:///base/url/is/not/specified"); //Cannot determine the base URI in this method but we need some base URI for relative URLs
-		return CSSParserFactory.parse(css, new DefaultNetworkProcessor(),
+		return getCSSParserFactory().parse(css, new DefaultNetworkProcessor(),
 		        null, SourceType.EMBEDDED, base);
 	}
 
@@ -471,7 +497,7 @@ public final class CSSFactory {
         URL baseurl = base;
         if (baseurl == null)
             baseurl = new URL("file:///base/url/is/not/specified"); //prevent errors if there are still some relative URLs used
-        return CSSParserFactory.parse(css, network, null, SourceType.EMBEDDED, baseurl);
+        return getCSSParserFactory().parse(css, network, null, SourceType.EMBEDDED, baseurl);
     }
     
     /**
@@ -717,6 +743,7 @@ public final class CSSFactory {
 	 */
 	private static final class CSSAssignTraversal extends Traversal<StyleSheet> {
 
+		private static CSSParserFactory pf = getCSSParserFactory();
 	    private String encoding;
 	    
 		public CSSAssignTraversal(Document doc, String encoding, Object source, int whatToShow) {
@@ -738,28 +765,28 @@ public final class CSSFactory {
 			try {
 				// embedded style-sheet
 				if (isEmbeddedStyleSheet(elem, media)) {
-					result = CSSParserFactory.append(extractElementText(elem), network, null,
+					result = pf.append(extractElementText(elem), network, null,
 							SourceType.EMBEDDED, result, base);
 					log.debug("Matched embedded CSS style");
 				}
 				// linked style-sheet
 				else if (isLinkedStyleSheet(elem, media)) {
 				    URL uri = DataURLHandler.createURL(base, ElementUtil.getAttribute(elem, "href"));
-					result = CSSParserFactory.append(uri, network, encoding, SourceType.URL,
+					result = pf.append(uri, network, encoding, SourceType.URL,
 							result, uri);
 					log.debug("Matched linked CSS style");
 				}
 				// in-line style and default style
 				else {
     				    if (elem.getAttribute("style") != null && elem.getAttribute("style").length() > 0) {
-        					result = CSSParserFactory.append(
+        					result = pf.append(
         							elem.getAttribute("style"), network,
         							null, SourceType.INLINE,
         							elem, true, result, base);
         					log.debug("Matched inline CSS style");
     				    }
                         if (elem.getAttribute("XDefaultStyle") != null && elem.getAttribute("XDefaultStyle").length() > 0) {
-                            result = CSSParserFactory.append(
+                            result = pf.append(
                                     elem.getAttribute("XDefaultStyle"), network,
                                     null, SourceType.INLINE,
                                     elem, false, result, base);
@@ -817,7 +844,7 @@ public final class CSSFactory {
 		        attr = attr.trim();
 		        if (attr.length() > 0)
 		        {
-		            List<MediaQuery> ql = CSSParserFactory.parseMediaQuery(attr);
+		            List<MediaQuery> ql = pf.parseMediaQuery(attr);
 		            if (ql != null)
 		            {
 		                for (MediaQuery q : ql)
