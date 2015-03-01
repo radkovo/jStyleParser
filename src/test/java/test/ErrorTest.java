@@ -17,7 +17,7 @@ import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermFactory;
 
 public class ErrorTest {
-    private static Logger log = LoggerFactory.getLogger(ErrorTest.class);
+    private static final Logger log = LoggerFactory.getLogger(ErrorTest.class);
     
     public static final TermFactory tf = CSSFactory.getTermFactory();
     

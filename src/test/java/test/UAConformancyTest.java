@@ -23,7 +23,7 @@ import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.StyleMap;
 
 public class UAConformancyTest {
-	private static Logger log = LoggerFactory.getLogger(UAConformancyTest.class);
+	private static final Logger log = LoggerFactory.getLogger(UAConformancyTest.class);
 
 	private static TermFactory tf = CSSFactory.getTermFactory();
 	private static StyleMap decl;

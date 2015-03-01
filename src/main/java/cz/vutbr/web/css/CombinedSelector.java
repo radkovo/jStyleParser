@@ -18,7 +18,7 @@ public interface CombinedSelector extends Rule<Selector> {
      * Gets last Selector stored in list,
      * so its values are easily read
      * @return Last Selector or null, 
-     * @throws OperationNotSupportedException In case that there is no simple selector inside
+     * @throws UnsupportedOperationException In case that there is no simple selector inside
      */
     public Selector getLastSelector() throws UnsupportedOperationException;
     
@@ -46,9 +46,9 @@ public interface CombinedSelector extends Rule<Selector> {
 		 * @author kapy
 		 *
 		 */
-		public enum Level { A,	B, C, D	};
-		
-		/**
+		public enum Level { A,	B, C, D	}
+
+        /**
 		 * Compare specificities
 		 */
 		public int compareTo(Specificity o);

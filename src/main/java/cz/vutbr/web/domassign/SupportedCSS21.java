@@ -109,16 +109,16 @@ import cz.vutbr.web.css.CSSProperty.ZIndex;
  * 
  */
 public class SupportedCSS21 implements SupportedCSS {
-	private static Logger log = LoggerFactory.getLogger(SupportedCSS21.class);
+	private static final Logger log = LoggerFactory.getLogger(SupportedCSS21.class);
 
 	private static final int TOTAL_SUPPORTED_DECLARATIONS = 116;
 
 	private static final TermFactory tf = CSSFactory.getTermFactory();
 
 	private static final CSSProperty DEFAULT_UA_FONT_FAMILY = FontFamily.SANS_SERIF;
-	private static final CSSProperty DEFAULT_UA_TEXT_ALIGN = TextAlign.BY_DIRECTION;;
-	private static final Term<?> DEFAULT_UA_COLOR = tf.createColor("#000000");;
-	private static final Term<?> DEFAULT_UA_TEXT_IDENT = tf.createLength(0.0f);
+	private static final CSSProperty DEFAULT_UA_TEXT_ALIGN = TextAlign.BY_DIRECTION;
+    private static final Term<?> DEFAULT_UA_COLOR = tf.createColor("#000000");
+    private static final Term<?> DEFAULT_UA_TEXT_IDENT = tf.createLength(0.0f);
 	private static final Term<?> DEFAULT_UA_MARGIN = tf.createLength(0.0f);
 	private static final Term<?> DEFAULT_UA_PADDING = tf.createLength(0.0f);
 	private static final Term<?> DEFAULT_UA_MIN_WIDTH = tf.createLength(0.0f);
@@ -143,9 +143,9 @@ public class SupportedCSS21 implements SupportedCSS {
 			.createNumber(50.0f);
 	private static final Term<?> DEFAULT_UA_STRESS = tf.createNumber(50.0f);
 
-	private static final CSSProperty DEFAULT_UA_VOICE_FAMILY = VoiceFamily.MALE;;
+	private static final CSSProperty DEFAULT_UA_VOICE_FAMILY = VoiceFamily.MALE;
 
-	private final static SupportedCSS21 instance;
+    private final static SupportedCSS21 instance;
 	static {
 		instance = new SupportedCSS21();
 	}

@@ -37,7 +37,7 @@ import cz.vutbr.web.domassign.Traversal;
 @Ignore
 public class NodeDataVariantTest {
 
-	private static Logger log = LoggerFactory.getLogger(NodeDataVariantTest.class);
+	private static final Logger log = LoggerFactory.getLogger(NodeDataVariantTest.class);
 
 	private static SupportedCSS css = CSSFactory.getSupportedCSS();
 

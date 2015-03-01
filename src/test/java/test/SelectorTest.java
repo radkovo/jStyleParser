@@ -1,10 +1,10 @@
 package test;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,8 +22,8 @@ import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermNumeric;
 
-public class SelectorTest extends TestCase {
-	private static Logger log = LoggerFactory.getLogger(SelectorTest.class);
+public class SelectorTest {
+	private static final Logger log = LoggerFactory.getLogger(SelectorTest.class);
 
 	private static final TermFactory tf = CSSFactory.getTermFactory();
 	private static final RuleFactory rf = CSSFactory.getRuleFactory();

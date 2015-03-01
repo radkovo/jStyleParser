@@ -22,7 +22,7 @@ import cz.vutbr.web.css.CSSFactory;
  */
 public class DataURLHandler extends URLStreamHandler 
 {
-    private static Logger log = LoggerFactory.getLogger(CSSFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(CSSFactory.class);
 
     protected String mime = "text/plain";
     protected String charset = "US-ASCII";

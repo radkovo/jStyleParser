@@ -372,7 +372,7 @@ public class Analyzer {
 			combinator = s.getCombinator();
 
 			// leave loop if not matched
-			if (retval == false)
+			if (!retval)
 				break;
 		}
 

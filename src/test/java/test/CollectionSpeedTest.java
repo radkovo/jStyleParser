@@ -45,7 +45,7 @@ import cz.vutbr.web.css.TermFactory;
 @Ignore
 public class CollectionSpeedTest {
 
-	private static Logger log = LoggerFactory.getLogger(CollectionSpeedTest.class);
+	private static final Logger log = LoggerFactory.getLogger(CollectionSpeedTest.class);
 
 	private static final SupportedCSS css = CSSFactory.getSupportedCSS();
 	private static final TermFactory tf = CSSFactory.getTermFactory();

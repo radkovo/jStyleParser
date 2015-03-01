@@ -26,7 +26,7 @@ import cz.vutbr.web.domassign.StyleMap;
 
 public class AdvancedCSSTest {
 
-	private static Logger log = LoggerFactory.getLogger(AdvancedCSSTest.class);
+	private static final Logger log = LoggerFactory.getLogger(AdvancedCSSTest.class);
 
 	private static TermFactory tf = CSSFactory.getTermFactory();
 

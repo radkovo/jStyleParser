@@ -19,7 +19,7 @@ import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermFunction;
 
 public class FunctionsTest {
-	private static Logger log = LoggerFactory.getLogger(FunctionsTest.class);
+	private static final Logger log = LoggerFactory.getLogger(FunctionsTest.class);
 
 	public static final TermFactory tf = CSSFactory.getTermFactory();
 

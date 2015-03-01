@@ -164,9 +164,9 @@ public class ColorCard {
         map.put("whitesmoke", new TermColorImpl(0xf5, 0xf5, 0xf5));
         map.put("yellow", new TermColorImpl(0xff, 0xff, 0x00));
         map.put("yellowgreen", new TermColorImpl(0x9a, 0xcd, 0x32));
-	};
+	}
 
-	/**
+    /**
 	 * Return color by its name
 	 * @param name Name of color
 	 * @return Color if found, <code>null</code> otherwise

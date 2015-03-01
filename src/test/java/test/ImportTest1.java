@@ -29,7 +29,7 @@ import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.StyleMap;
 
 public class ImportTest1 {
-	private static Logger log = LoggerFactory.getLogger(ImportTest1.class);
+	private static final Logger log = LoggerFactory.getLogger(ImportTest1.class);
 
 	private static Document doc;
 

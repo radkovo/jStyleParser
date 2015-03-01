@@ -27,5 +27,5 @@ public interface StyleSheet extends Rule<RuleBlock<?>>{
      * The origin of the style sheet (user agent, user, or author). 
      * @author radek
      */
-    public enum Origin { AUTHOR, AGENT, USER };
+    public enum Origin { AUTHOR, AGENT, USER }
 }
