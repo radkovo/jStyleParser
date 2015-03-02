@@ -17,8 +17,7 @@ public class RuleImportImpl extends AbstractRuleBlock<String> implements RuleImp
     protected String uri;
     
     /** 
-     * Creates empty RuleImport instance 
-     * @param priority Priority mark
+     * Creates empty RuleImport instance
      */
     protected RuleImportImpl() {
     	super();

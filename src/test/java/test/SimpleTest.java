@@ -25,7 +25,7 @@ import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.css.TermURI;
 
 public class SimpleTest {
-	private static Logger log = LoggerFactory.getLogger(SimpleTest.class);
+	private static final Logger log = LoggerFactory.getLogger(SimpleTest.class);
 	
 	public static final TermFactory tf = CSSFactory.getTermFactory();
 	
@@ -82,7 +82,7 @@ public class SimpleTest {
 		"	color: #0F0;}\n" +
 		"\n";
 	
-	public static String TEST_URI1 = "BODY { background-image: url(image.jpg); } ";
+	public static final String TEST_URI1 = "BODY { background-image: url(image.jpg); } ";
 
 	// Test case for issue #55
 	public static final String TEST_POSITIVE_NUMBER1 = "p { text-indent: +10px; }";

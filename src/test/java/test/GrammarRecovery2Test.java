@@ -16,7 +16,7 @@ import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermFactory;
 
 public class GrammarRecovery2Test {
-	private static Logger log = LoggerFactory.getLogger(GrammarRecovery2Test.class);
+	private static final Logger log = LoggerFactory.getLogger(GrammarRecovery2Test.class);
 
 	public static final TermFactory tf = CSSFactory.getTermFactory();
 

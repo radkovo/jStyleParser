@@ -262,7 +262,7 @@ public class DirectAnalyzer extends Analyzer
             combinator = s.getCombinator();
 
             // leave loop if not matched
-            if (retval == false)
+            if (!retval)
                 break;
         }
         return retval;

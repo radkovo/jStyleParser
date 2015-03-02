@@ -39,7 +39,7 @@ import cz.vutbr.web.domassign.Traversal;
 
 public class AnalyzerTest {
 
-	private static Logger log = LoggerFactory.getLogger(AnalyzerTest.class);
+	private static final Logger log = LoggerFactory.getLogger(AnalyzerTest.class);
 
 	private static final SupportedCSS css = CSSFactory.getSupportedCSS();
 

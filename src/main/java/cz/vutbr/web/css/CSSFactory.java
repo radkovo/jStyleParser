@@ -361,7 +361,7 @@ public final class CSSFactory {
 	 */
 	public static final StyleSheet parse(URL url, String encoding)
 			throws CSSException, IOException {
-		return CSSParserFactory.parse((Object) url, new DefaultNetworkProcessor(), encoding, SourceType.URL, url);
+		return CSSParserFactory.parse(url, new DefaultNetworkProcessor(), encoding, SourceType.URL, url);
 	}
 
     /**
@@ -381,7 +381,7 @@ public final class CSSFactory {
      */
     public static final StyleSheet parse(URL url, NetworkProcessor network, String encoding)
             throws CSSException, IOException {
-        return CSSParserFactory.parse((Object) url, network, encoding, SourceType.URL, url);
+        return CSSParserFactory.parse(url, network, encoding, SourceType.URL, url);
     }
 
 	/**
@@ -500,7 +500,7 @@ public final class CSSFactory {
         SourceData pair = new SourceData(base, network, media);
 
         Traversal<StyleSheet> traversal = new CSSAssignTraversal(doc, encoding,
-                (Object) pair, NodeFilter.SHOW_ELEMENT);
+                pair, NodeFilter.SHOW_ELEMENT);
 
         StyleSheet style = (StyleSheet) getRuleFactory().createStyleSheet().unlock();
         traversal.listTraversal(style);
@@ -519,8 +519,6 @@ public final class CSSFactory {
      *            Base URL against which all files are searched
      * @param media
      *            Selected media for style sheet
-     * @param network
-     *            The network processor used for accessing the URL resources
      * @return the rules of all the style sheets used in the document including the inline styles
      */
     public static final StyleSheet getUsedStyles(Document doc, String encoding, URL base, MediaSpec media)
@@ -665,7 +663,7 @@ public final class CSSFactory {
         SourceData pair = new SourceData(base, network, media);
 
         Traversal<StyleSheet> traversal = new CSSAssignTraversal(doc, encoding,
-                (Object) pair, NodeFilter.SHOW_ELEMENT);
+                pair, NodeFilter.SHOW_ELEMENT);
 
         StyleSheet style = (StyleSheet) getRuleFactory().createStyleSheet()
                 .unlock();

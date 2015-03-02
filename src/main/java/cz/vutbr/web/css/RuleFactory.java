@@ -27,7 +27,6 @@ public interface RuleFactory {
 
 	/**
 	 * Creates CSS import rule
-	 * @param priority Priority mark
 	 * @return New CSS import rule
 	 */
 	@Deprecated
@@ -40,16 +39,13 @@ public interface RuleFactory {
 	 * In current implementation of parser they are used to pass 
 	 * integer value by parser to preserve rule ordering according
 	 * to their occurrence in CSS style sheet.
-	 * 
-	 * 
-	 * @param priority Priority mark
+	 *
 	 * @return New CSS rule set
 	 */
 	RuleSet createSet();
 
 	/**
 	 * Creates CSS media page
-	 * @param priority Priority mark
 	 * @return New CSS media page
 	 */
 	RuleMedia createMedia();
@@ -68,7 +64,6 @@ public interface RuleFactory {
 	
 	/**
 	 * Creates CSS named page
-	 * @param priority Priority mark
 	 * @return New CSS page
 	 */
 	RulePage createPage();
@@ -76,21 +71,18 @@ public interface RuleFactory {
 	/**
 	 * Creates CSS margin rule
 	 * @param area Margin area
-	 * @param priority Priority mark
 	 * @return New CSS margin rule
 	 */
 	RuleMargin createMargin(String area);
 
     /**
      * Creates CSS viewport rule.
-     * @param priority Priority mark
      * @return New CSS viewport rule
      */
     RuleViewport createViewport();
 
     /**
      * Creates CSS named font
-     * @param priority Priority mark
      * @return New CSS font
      */
     RuleFontFace createFontFace();

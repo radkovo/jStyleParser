@@ -66,11 +66,11 @@ public class AbstractRule<T> extends AbstractList<T> implements Rule<T> {
 	public boolean add(T o) {
 	    hash = 0;
 		return list.add(o);
-	};
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
+	}
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
 	@Override
 	public int hashCode() {
 	    if (hash == 0)
