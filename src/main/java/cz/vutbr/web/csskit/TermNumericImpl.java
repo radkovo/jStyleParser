@@ -2,7 +2,7 @@ package cz.vutbr.web.csskit;
 
 import cz.vutbr.web.css.TermNumeric;
 
-public class TermNumericImpl<T> extends TermImpl<T> implements TermNumeric<T> {
+public class TermNumericImpl<T extends Number> extends TermImpl<T> implements TermNumeric<T> {
 
 	protected Unit unit;
 	
@@ -25,7 +25,13 @@ public class TermNumericImpl<T> extends TermImpl<T> implements TermNumeric<T> {
     public String toString() {
 		StringBuilder sb = new StringBuilder();
 		if(operator!=null) sb.append(operator.value());
-		if(value!=null) sb.append(value);
+		if (value != null) {
+			if ((double)value.intValue() == value.doubleValue()) {
+				sb.append(value.intValue());
+			} else {
+				sb.append(value);
+			}
+		}
 		if(unit!=null) sb.append(unit.value());
 		return sb.toString();
     }
