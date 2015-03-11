@@ -7,7 +7,7 @@ package cz.vutbr.web.css;
  *
  * @param <T> Type of value stored in term
  */
-public interface TermNumeric<T> extends Term<T> {
+public interface TermNumeric<T extends Number> extends Term<T> {
 	
 	/**
 	 * These are available units in CSS
