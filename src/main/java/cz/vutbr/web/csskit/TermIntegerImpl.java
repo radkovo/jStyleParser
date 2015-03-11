@@ -20,6 +20,8 @@ public class TermIntegerImpl extends TermLengthImpl implements TermInteger {
     @Override
     public String toString()
     {
+        if (operator != null)
+            return operator.value() + getIntValue();
         return String.valueOf(getIntValue());
     }
 
