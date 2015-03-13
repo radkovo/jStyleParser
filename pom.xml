@@ -101,26 +101,6 @@
 		</resources>
 		
 		<plugins>
-			<!--
-				include grammar files in sources
-			-->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>src/main/antlr3</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -138,11 +118,30 @@
 				</configuration>
 			</plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.7</version>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.7</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<resources>
+								<resource>
+									<directory>src/main/antlr3</directory>
+									<includes>
+										<include>*.g</include>
+									</includes>
+								</resource>
+							</resources>
+							<outputDirectory>target/generated-sources/antlr3</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -179,6 +178,12 @@
 						<goals>
 							<goal>jar-no-fork</goal>
 						</goals>
+						<configuration>
+							<excludes>
+								<exclude>*.tokens</exclude>
+								<exclude>placeholder</exclude>
+							</excludes>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -201,7 +206,7 @@
 				</executions>
 			</plugin>
 					
-          	<plugin>
+			<plugin>
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr3-maven-plugin</artifactId>
 				<version>3.5.2</version>
@@ -210,35 +215,15 @@
 						<goals>
 							<goal>antlr</goal>
 						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			
-			<!-- <plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.8</version>
-				<executions>
-					<execution>
-						<phase>process-sources</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
 						<configuration>
-							<target>
-								<echo message="package cz.vutbr.web.csskit.antlr;${line.separator}${line.separator}" file="target/antrun/header"/>
-								<move todir="target/generated-sources/antlr3/cz/vutbr/web/csskit/antlr">
-									<fileset dir="target/generated-sources/antlr3">
-										<include name="*.java"/>
-									</fileset>
-									<filterchain>
-										<concatfilter prepend="target/antrun/header"/>
-									</filterchain>
-								</move>
-							</target>
+							<excludes>
+								<exclude>*.g</exclude>
+							</excludes>
+							<libDirectory>target/generated-sources/antlr3</libDirectory>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>  -->
+			</plugin>
 			
 		</plugins>
 		

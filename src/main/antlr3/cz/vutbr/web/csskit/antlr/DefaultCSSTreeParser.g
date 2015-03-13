@@ -13,13 +13,9 @@ package cz.vutbr.web.csskit.antlr;
 import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleList;
 import cz.vutbr.web.csskit.antlr.Preparator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 }
 
 @members {
-    private static Logger log = LoggerFactory.getLogger(DefaultCSSTreeParser.class);
-    
     public void init(Preparator preparator, List<MediaQuery> wrapMedia) {
         gCSSTreeParser.init(preparator, wrapMedia);
     }

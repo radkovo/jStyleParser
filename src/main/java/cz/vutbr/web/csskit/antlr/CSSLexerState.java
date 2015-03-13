@@ -71,7 +71,7 @@ public class CSSLexerState {
 			return aposOpen==false && quotOpen==false && parenNest==0;
 		else if (mode == RecoveryMode.DECL)
 		{
-			if (t.getType() == CSSLexer.RCURLY) //if '}' is processed the curlyNest has been already decreased 
+			if (t.getType() == DefaultCSSLexer.RCURLY) //if '}' is processed the curlyNest has been already decreased 
 				return aposOpen==false && quotOpen==false && parenNest==0 && curlyNest==state.curlyNest-1;
 			else
 				return aposOpen==false && quotOpen==false && parenNest==0 && curlyNest==state.curlyNest;

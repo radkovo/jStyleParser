@@ -15,6 +15,16 @@ import CSSLexer;
         emit(t);
         return t;
     }
+    
+    @Override
+    public Token nextToken(){
+       Token token = gCSSLexer.tr.nextToken();
+       if (token.getType() == S)
+           gCSSLexer.tokencnt++;
+       if(((CommonToken)token).getStartIndex() < 0)
+           token = nextToken();
+       return token;
+    }
 }
 
 DUMMY: '@@dummy@@' ;

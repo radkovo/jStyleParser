@@ -73,11 +73,11 @@ public class CSSParserFactory {
 	 *             When unrecoverable exception during parse occurs.
 	 *             RuntimeException are also encapsulated at this point
 	 */
-	private static CommonTree getAST(CSSParser parser, SourceType type) throws CSSException {
+	private static CommonTree getAST(DefaultCSSParser parser, SourceType type) throws CSSException {
 		switch (type) {
 		case INLINE:
 			try {
-				CSSParser.inlinestyle_return retval = parser.inlinestyle();
+				DefaultCSSParser_CSSParser.inlinestyle_return retval = parser.inlinestyle();
 				return (CommonTree) retval.getTree();
 			} catch (RecognitionException re) {
 				throw encapsulateException(re,
@@ -88,7 +88,7 @@ public class CSSParserFactory {
 			}
 		case EMBEDDED:
 			try {
-				CSSParser.stylesheet_return retval = parser.stylesheet();
+				DefaultCSSParser_CSSParser.stylesheet_return retval = parser.stylesheet();
 				return (CommonTree) retval.getTree();
 			} catch (RecognitionException re) {
 				throw encapsulateException(re,
@@ -99,7 +99,7 @@ public class CSSParserFactory {
 			}
 		case URL:
 			try {
-				CSSParser.stylesheet_return retval = parser.stylesheet();
+				DefaultCSSParser_CSSParser.stylesheet_return retval = parser.stylesheet();
 				return (CommonTree) retval.getTree();
 			} catch (RecognitionException re) {
 				throw encapsulateException(re,
@@ -123,7 +123,7 @@ public class CSSParserFactory {
 	 *             When unrecoverable exception during parse occurs.
 	 *             RuntimeException are also encapsulated at this point
 	 */
-	private static RuleList parse(CSSTreeParser parser, SourceType type) throws CSSException {
+	private static RuleList parse(DefaultCSSTreeParser parser, SourceType type) throws CSSException {
 		switch (type) {
 		case INLINE:
 			try {
@@ -306,7 +306,7 @@ public class CSSParserFactory {
 	        StyleSheet sheet, Preparator preparator, URL base, List<MediaQuery> media)
 	        throws CSSException, IOException
 	{
-        CSSTreeParser parser = createTreeParser(source, network, encoding, type, preparator, base, media);
+        DefaultCSSTreeParser parser = createTreeParser(source, network, encoding, type, preparator, base, media);
         parse(parser, type);
         
         for (int i = 0; i < parser.getImportPaths().size(); i++)
@@ -343,7 +343,7 @@ public class CSSParserFactory {
 	}
 	
 	// creates the tree parser
-	private static CSSTreeParser createTreeParser(Object source, NetworkProcessor network, String encoding, SourceType type,
+	private static DefaultCSSTreeParser createTreeParser(Object source, NetworkProcessor network, String encoding, SourceType type,
 			Preparator preparator, URL base, List<MediaQuery> media) throws IOException, CSSException {
 
 		CSSInputStream input = getInput(source, network, encoding, type);
@@ -361,7 +361,7 @@ public class CSSParserFactory {
 		// because of Java limitation
 		// to change method contract with different type of exception
 		try {
-			CSSLexer lexer = new CSSLexer(source);
+			DefaultCSSLexer lexer = new DefaultCSSLexer(source);
 			lexer.init();
 			return new CommonTokenStream(lexer);
 		} catch (RuntimeException re) {
@@ -380,13 +380,13 @@ public class CSSParserFactory {
 	private static CommonTree feedParser(CommonTokenStream source, SourceType type)
 	        throws CSSException 
 	{
-		CSSParser parser = new CSSParser(source);
+		DefaultCSSParser parser = new DefaultCSSParser(source);
 		parser.init();
 		return getAST(parser, type);
 	}
 
 	// initializes tree parser
-	private static CSSTreeParser feedAST(CommonTokenStream source, CommonTree ast, Preparator preparator, List<MediaQuery> media) 
+	private static DefaultCSSTreeParser feedAST(CommonTokenStream source, CommonTree ast, Preparator preparator, List<MediaQuery> media) 
 	{
 		if (log.isTraceEnabled()) {
 			log.trace("Feeding tree parser with AST:\n{}", TreeUtil.toStringTree(ast));
@@ -395,7 +395,7 @@ public class CSSParserFactory {
 		CommonTreeNodeStream nodes = new CommonTreeNodeStream(ast);
 		// AST nodes have payloads that point into token stream
 		nodes.setTokenStream(source);
-		CSSTreeParser parser = new CSSTreeParser(nodes);
+		DefaultCSSTreeParser parser = new DefaultCSSTreeParser(nodes);
 		parser.init(preparator, media);
 		return parser;
 	}
@@ -417,12 +417,12 @@ public class CSSParserFactory {
             //lexer
             CommonTokenStream tokens = feedLexer(input);
             //run parser - create AST
-            CSSParser parser = new CSSParser(tokens);
+            DefaultCSSParser parser = new DefaultCSSParser(tokens);
             parser.init();
-            CSSParser.media_return retval = parser.media();
+            DefaultCSSParser_CSSParser.media_return retval = parser.media();
             CommonTree ast = (CommonTree) retval.getTree();
             //tree parser
-            CSSTreeParser tparser = feedAST(tokens, ast, null, null);
+            DefaultCSSTreeParser tparser = feedAST(tokens, ast, null, null);
             return tparser.media();
         } catch (IOException e) {
             log.error("I/O error during media query parsing: {}", e.getMessage());

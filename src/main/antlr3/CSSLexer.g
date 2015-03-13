@@ -61,7 +61,7 @@ tokens {
     private org.slf4j.Logger log;
     
     // number of already processed tokens (for checking the beginning of the style sheet)
-    private int tokencnt = 0;
+    protected int tokencnt = 0;
     
     // current lexer state
     protected cz.vutbr.web.csskit.antlr.CSSLexerState ls;
