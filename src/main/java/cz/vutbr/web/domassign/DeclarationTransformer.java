@@ -266,7 +266,7 @@ public class DeclarationTransformer {
 	 *            used
 	 * @param term
 	 *            TermIdent to be transfered to property
-	 * @return CSSProperty of type <T> or <code>null</code>
+	 * @return CSSProperty of type &lt;T&gt; or <code>null</code>
 	 */
 	public <T extends CSSProperty> T genericPropertyRaw(Class<T> type,
 			Set<T> intersection, TermIdent term) {
@@ -287,7 +287,7 @@ public class DeclarationTransformer {
 	 * properties map under key property
 	 * 
 	 * @param <T>
-	 *            Enum & CSSProperty limitation
+	 *            Enum &amp; CSSProperty limitation
 	 * @param type
 	 *            Type of enum which instance is retrieved
 	 * @param term

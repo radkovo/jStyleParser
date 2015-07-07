@@ -2,7 +2,7 @@ package cz.vutbr.web.css;
 
 /**
  * Holds value of numeric type. This could be integer or float
- * according to <T>.
+ * according to &lt;T&gt;.
  * @author kapy
  *
  * @param <T> Type of value stored in term

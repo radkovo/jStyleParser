@@ -157,7 +157,7 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     /**
      * Matches simple selector against DOM element
      * @param e Element
-     * @return <code>true</true> in case of match
+     * @return <code>true</code> in case of match
      */
     public boolean matches(Element e);
     
@@ -165,7 +165,7 @@ public interface Selector extends Rule<Selector.SelectorPart> {
      * Matches simple selector against DOM element with an additional condition
      * @param e Element
      * @param cond An additional condition to be applied
-     * @return <code>true</true> in case of match
+     * @return <code>true</code> in case of match
      */
     public boolean matches(Element e, MatchCondition cond);
     
