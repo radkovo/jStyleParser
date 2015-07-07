@@ -143,6 +143,12 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     public PseudoDeclaration getPseudoElement();
     
     /**
+     * Checks where the specified pseudo declaration is in this selector
+     * @return <code>true</code> if the selector has the specified pseudo declaration
+     */
+    public boolean hasPseudoDeclaration(final PseudoDeclaration pd);
+
+    /**
      * Modifies specificity according to CSS standard
      * @param spec Specificity to be modified
      */

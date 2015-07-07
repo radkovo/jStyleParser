@@ -96,6 +96,19 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
         return ret;
     }
     
+    public boolean hasPseudoDeclaration(final PseudoDeclaration pd) {
+        for(SelectorPart item : list) {
+            if(item instanceof PseudoPage)
+            {
+                final PseudoDeclaration ret = ((PseudoPage)item).getDeclaration();
+                if (ret == pd) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    	
     public boolean matches(Element e) {
     	
 		// check other items of simple selector
