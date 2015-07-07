@@ -82,18 +82,16 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     }
     
     public PseudoDeclaration getPseudoElement() {
-        PseudoDeclaration ret = null;
         for(SelectorPart item : list) {
             if(item instanceof PseudoPage)
             {
-                ret = ((PseudoPage)item).getDeclaration();
-                if (ret.isPseudoElement())
-                    break; //pseudo-elements may only be appended after the last simple selector of the selector
-                else
-                    ret = null; //not interested in pseudo-classes
+                final PseudoDeclaration ret = ((PseudoPage)item).getDeclaration();
+                if (ret.isPseudoElement()) {
+                    return ret; //pseudo-elements may only be appended after the last simple selector of the selector
+                }
             }
         }
-        return ret;
+        return null;
     }
     
     public boolean hasPseudoDeclaration(final PseudoDeclaration pd) {
