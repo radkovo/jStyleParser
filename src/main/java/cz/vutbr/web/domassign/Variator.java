@@ -100,9 +100,9 @@ public abstract class Variator {
 	 * <li><code>margin-right: inherit</code></li>
 	 * <li><code>margin-bottom: inherit</code></li>
 	 * <li><code>margin-left: inherit</code></li>
-	 * <ul>
+	 * </ul>
 	 * 
-	 * <br/> <code>margin: 0px inherit</code> is invalid value.
+	 * <code>margin: 0px inherit</code> is invalid value.
 	 * 
 	 * @param variant
 	 *            Number of variant or identifier of all variants
@@ -167,22 +167,22 @@ public abstract class Variator {
 	 * Check if variant, which was passed is able to be located in place where it was 
 	 * found.
 	 * 
-	 * Example:<br/>
+	 * Example:
 	 * We have declaration:
 	 * <code>font: 12px/14px sans-serif</code>
-	 * Then according to grammar:<br/>
+	 * Then according to grammar:
 	 * <pre>
 	 * 	[ 
-	 * 		[ <'font-style'> || <'font-variant'> || <'font-weight'> ]? 
-	 * 		<'font-size'> 
-	 * 		[ / <'line-height'> ]? 
-	 * 		<'font-family'> 
+	 * 		[ &lt;'font-style'&gt; || &lt;'font-variant'&gt; || &lt;'font-weight'&gt; ]? 
+	 * 		&lt;'font-size'&gt; 
+	 * 		[ / &lt;'line-height'&gt; ]? 
+	 * 		&lt;'font-family'&gt; 
 	 *  ] 
 	 *  | caption | icon | menu | message-box | 
 	 *  small-caption | status-bar | inherit
 	 * </pre> 
 	 * <ol>
-	 * <li><code>12px</code> is assigned to </i>font-size</i></li>
+	 * <li><code>12px</code> is assigned to <i>font-size</i></li>
 	 * <li><code>14px</code> is checked to have SLASH operator before 
 	 * and check to whether <i>font-size</i> was defined before it</li>
 	 * <li><code>sans-serif</code> is tested to have at least 

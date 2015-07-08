@@ -20,11 +20,8 @@ import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.MatchCondition;
-import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.MediaSpec;
 import cz.vutbr.web.css.NodeData;
-import cz.vutbr.web.css.Rule;
-import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.Selector.PseudoDeclaration;
@@ -388,139 +385,10 @@ public class Analyzer {
 	protected void classifyAllSheets(MediaSpec mediaspec)
 	{
 	    rules = new Holder();
-	    for (StyleSheet sheet : sheets)
-	        classifyRules(sheet, mediaspec);
+
+	    AnalyzerUtil.classifyAllSheets(sheets, rules, mediaspec);
 	}
 	
-	/**
-	 * Divides rules in sheet into different categories to be easily and more
-	 * quickly parsed afterward
-	 * 
-	 * @param sheet The style sheet to be classified
-     * @param mediaspec The specification of the media for evaluating the media queries.
-	 */
-	protected void classifyRules(StyleSheet sheet, MediaSpec mediaspec) {
-
-		// create a new holder if it does not exist
-		if (rules == null) {
-			rules = new Holder();
-		}
-
-		for (Rule<?> rule : sheet) {
-			// this rule conforms to all media
-			if (rule instanceof RuleSet) {
-				RuleSet ruleset = (RuleSet) rule;
-				for (CombinedSelector s : ruleset.getSelectors()) {
-					insertClassified(rules, classifySelector(s), ruleset);
-				}
-			}
-			// this rule conforms to different media
-			else if (rule instanceof RuleMedia) {
-				RuleMedia rulemedia = (RuleMedia) rule;
-
-				boolean mediaValid = false;
-                if(rulemedia.getMediaQueries()==null || rulemedia.getMediaQueries().isEmpty()) {
-                    //no media queries actually
-                    mediaValid = mediaspec.matchesEmpty();
-                } else {
-                    //find a matching query
-    				for (MediaQuery media : rulemedia.getMediaQueries()) {
-                        if (mediaspec.matches(media)) {
-                            mediaValid = true;
-                            break;
-                        }
-    				}
-                }
-				
-                if (mediaValid)
-                {
-    				// for all rules in media set
-    				for (RuleSet ruleset : rulemedia) {
-    					// for all selectors in there
-    					for (CombinedSelector s : ruleset.getSelectors()) {
-   							insertClassified(rules, classifySelector(s), ruleset);
-    					}
-    				}
-                }
-			}
-		}
-
-		// logging
-		if (log.isDebugEnabled()) {
-			log.debug("For media \"{}\" we have {} rules", mediaspec, rules.contentCount());
-			if(log.isTraceEnabled()) {
-				log.trace("Detailed view: \n{}", rules);
-			}
-		}
-
-	}
-
-	/**
-	 * Classify CSS rule according its selector for to be of specified item(s)
-	 * 
-	 * @param selector
-	 *            CombinedSelector of rules
-	 * @return List of HolderSelectors to which selectors conforms
-	 */
-	private List<HolderSelector> classifySelector(CombinedSelector selector) {
-
-		List<HolderSelector> hs = new ArrayList<HolderSelector>();
-
-		try {
-			// last simple selector decided about all selector
-			Selector last = selector.getLastSelector();
-
-			// is element or other (wildcard)
-			String element = last.getElementName();
-			if (element != null) {
-				// wildcard
-				if (Selector.ElementName.WILDCARD.equals(element))
-					hs.add(new HolderSelector(HolderItem.OTHER, null));
-				// element
-				else
-					hs.add(new HolderSelector(HolderItem.ELEMENT, element
-							.toLowerCase()));
-			}
-
-			// is class name
-			String className = last.getClassName();
-			if (className != null)
-				hs.add(new HolderSelector(HolderItem.CLASS, className
-						.toLowerCase()));
-
-			// is id
-			String id = last.getIDName();
-			if (id != null)
-				hs.add(new HolderSelector(HolderItem.ID, id.toLowerCase()));
-
-			// is in others
-			if (hs.size() == 0)
-				hs.add(new HolderSelector(HolderItem.OTHER, null));
-
-			return hs;
-
-		} catch (UnsupportedOperationException e) {
-			log
-					.error("CombinedSelector does not include any selector, this should not happen!");
-			return Collections.emptyList();
-		}
-	}
-
-	/**
-	 * Inserts rules into holder
-	 * 
-	 * @param holder
-	 *            Wrap to be inserted
-	 * @param hs
-	 *            Wrap's selector and key
-	 * @param value
-	 *            Value to be inserted
-	 */
-	private void insertClassified(Holder holder, List<HolderSelector> hs, RuleSet value) {
-		for (HolderSelector h : hs)
-			holder.insert(h.item, h.key, new OrderedRule(value, currentOrder++));
-	}
-
 	/**
 	 * Decides about holder item
 	 * 
@@ -547,7 +415,7 @@ public class Analyzer {
 	 * @author kapy
 	 * 
 	 */
-	protected class HolderSelector {
+	protected static class HolderSelector {
 		public HolderItem item;
 		public String key;
 
@@ -562,7 +430,7 @@ public class Analyzer {
 	 * 
 	 * @author burgetr
 	 */
-	protected final class OrderedRule implements Comparable<OrderedRule> {
+	public static final class OrderedRule implements Comparable<OrderedRule> {
 	    private final RuleSet rule;
         private final int order;
 	    
@@ -582,6 +450,12 @@ public class Analyzer {
         public int compareTo(OrderedRule o) {
             return getOrder() - o.getOrder();
         }
+
+        @Override
+        public String toString() {
+        	return "OR" + order + ", " + rule;
+        }
+        
 	}
 	
 	/**
