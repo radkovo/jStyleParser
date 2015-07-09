@@ -15,7 +15,7 @@ public interface RuleSet extends RuleBlock<Declaration>, PrettyOutput {
 	 * 
 	 * @return Selectors for this rule
 	 */
-	public List<CombinedSelector> getSelectors();
+	public CombinedSelector[] getSelectors();
 
 	/**
 	 * Sets selectors for this CSS declarations

@@ -3,6 +3,7 @@ package test;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -119,7 +120,7 @@ public class SimpleTest {
 		
 		RuleSet rule = (RuleSet) ss.get(0);				
 		
-		assertEquals("Rule contains one selector BODY ", 
+		assertArrayEquals("Rule contains one selector BODY ", 
 				SelectorsUtil.createSelectors("BODY"), 
 				rule.getSelectors());
 		
