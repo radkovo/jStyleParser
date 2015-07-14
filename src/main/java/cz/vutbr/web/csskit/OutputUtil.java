@@ -69,6 +69,31 @@ public class OutputUtil {
 	}
 	
 	/**
+	 * Appends all elements of <code>array</code> to buffer, separated by delimiter
+	 * @param <T> Type of elements stored in <code>array</code>
+	 * @param sb StringBuilder to be modified
+	 * @param array Array of elements
+	 * @param delimiter Delimiter to separate elements
+	 * @return Modified <code>sb</code> to allow chaining
+	 */
+	public static <T> StringBuilder appendArray(StringBuilder sb, T[] array, String delimiter) {
+		
+		boolean firstRun = true;
+		
+		for(T elem: array) {
+			if(!firstRun) 
+				sb.append(delimiter);
+			else 
+				firstRun = false;
+			
+			sb.append(elem.toString());
+		}
+		
+		return sb;
+		
+	}
+	
+	/**
 	 * Appends all elements of <code>list</code> to buffer, separated by delimiter
 	 * @param <T> Type of elements stored in <code>list</code>
 	 * @param sb StringBuilder to be modified

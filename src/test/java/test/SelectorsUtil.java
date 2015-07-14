@@ -44,13 +44,13 @@ public class SelectorsUtil {
 	 * @param elements list of element names
 	 * @return a list of selectors
 	 */
-	public static List<CombinedSelector> createSelectors(String...elements) {
+	public static CombinedSelector[] createSelectors(String...elements) {
 		
 		List<CombinedSelector> list = new ArrayList<CombinedSelector>();
 		for(String e: elements)
 			list.add(createCS(e));
 	
-		return list;
+		return list.toArray(new CombinedSelector[list.size()]);
 	}
 	
 	/**

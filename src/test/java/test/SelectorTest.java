@@ -1,6 +1,7 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.io.IOException;
 import java.util.Date;
@@ -70,7 +71,7 @@ public class SelectorTest {
 
 		RuleSet rule = (RuleSet) ss.get(0);
 
-		assertEquals("Rule contains two selectors H1, DIV  ", SelectorsUtil
+		assertArrayEquals("Rule contains two selectors H1, DIV  ", SelectorsUtil
 				.createSelectors("H1", "DIV"), rule.getSelectors());
 
 		assertEquals("Rule contains one declaration {display:block;}",
@@ -91,7 +92,7 @@ public class SelectorTest {
 		SelectorsUtil.appendSimpleSelector(cslist, "H1", null);
 		SelectorsUtil.appendDescendant(cslist, "P");
 
-		assertEquals("Rule contains one combined selectors H1 P  ", cslist,
+		assertArrayEquals("Rule contains one combined selectors H1 P  ", cslist.toArray(),
 				rule.getSelectors());
 
 		assertEquals("Rule contains one declaration {display:inline;}",
@@ -111,7 +112,7 @@ public class SelectorTest {
 		SelectorsUtil.appendSimpleSelector(cslist, "DIV", null);
 		SelectorsUtil.appendAdjacent(cslist, "P");
 
-		assertEquals("Rule contains one combined selectors DIV+P ", cslist,
+		assertArrayEquals("Rule contains one combined selectors DIV+P ", cslist.toArray(),
 				rule.getSelectors());
 
 		assertEquals("Rule contains one declaration {color:blue;}",
@@ -132,7 +133,7 @@ public class SelectorTest {
         SelectorsUtil.appendSimpleSelector(cslist, "DIV", null);
         SelectorsUtil.appendPreceding(cslist, "P");
 
-        assertEquals("Rule contains one combined selectors DIV~P ", cslist,
+        assertArrayEquals("Rule contains one combined selectors DIV~P ", cslist.toArray(),
                 rule.getSelectors());
 
         assertEquals("Rule contains one declaration {color:blue;}",
@@ -160,9 +161,9 @@ public class SelectorTest {
 		SelectorsUtil.appendSimpleSelector(cslist, "FORM", null);
 		SelectorsUtil.appendAdjacent(cslist, "DIV");
 
-		assertEquals(
+		assertArrayEquals(
 				"Rule contains four combined selectors DIV>P, SPAN, A, FORM+DIV ",
-				cslist, rule.getSelectors());
+				cslist.toArray(), rule.getSelectors());
 
 		assertEquals("Rule contains one declaration {color:white;}",
 				DeclarationsUtil.appendDeclaration(null, "color", tf
@@ -181,7 +182,7 @@ public class SelectorTest {
 		SelectorsUtil.appendSimpleSelector(cslist, null, null, rf
 				.createClass("fit"));
 
-		assertEquals("Rule contains one class selector .fit", cslist, rule
+		assertArrayEquals("Rule contains one class selector .fit", cslist.toArray(), rule
 				.getSelectors());
 
 		assertEquals("Rule contains one declaration { width: 80%;}",
@@ -201,7 +202,7 @@ public class SelectorTest {
 		SelectorsUtil.appendSimpleSelector(cslist, null, null, rf
 				.createID("krysa"));
 
-		assertEquals("Rule contains one ID selector #krysa", cslist, rule
+		assertArrayEquals("Rule contains one ID selector #krysa", cslist.toArray(), rule
 				.getSelectors());
 
 		assertEquals("Rule contains one declaration { font-size: 100px;}",
@@ -223,8 +224,8 @@ public class SelectorTest {
 				.createID("krysa"), rf.createAttribute("krysa", true,
 				Selector.Operator.EQUALS, "id"));
 
-		assertEquals("Rule contains one ID selector #krysa[id='krysa']",
-				cslist, rule.getSelectors());
+		assertArrayEquals("Rule contains one ID selector #krysa[id='krysa']",
+				cslist.toArray(), rule.getSelectors());
 
 		assertEquals("Rule contains one declaration { text-align: right }",
 				DeclarationsUtil.appendDeclaration(null, "text-align", tf
@@ -245,9 +246,9 @@ public class SelectorTest {
 						Selector.Operator.EQUALS, "href"), rf.createAttribute(
 				"fit", false, Selector.Operator.DASHMATCH, "id"));
 
-		assertEquals(
+		assertArrayEquals(
 				"Rule contains one ID attributed selector A[href='fit.vutbr.cz'][id|=fit]",
-				cslist, rule.getSelectors());
+				cslist.toArray(), rule.getSelectors());
 
 		assertEquals("Rule contains one declaration { text-align: left; }",
 				DeclarationsUtil.appendDeclaration(null, "text-align", tf
@@ -266,7 +267,7 @@ public class SelectorTest {
 		SelectorsUtil.appendSimpleSelector(cslist, null, null, rf
 				.createPseudoPage("hover", null));
 
-		assertEquals("Rule contains one pseudoselector :hover", cslist, rule
+		assertArrayEquals("Rule contains one pseudoselector :hover", cslist.toArray(), rule
 				.getSelectors());
 
 		assertEquals(
@@ -288,8 +289,8 @@ public class SelectorTest {
 				.createPseudoPage("fr", "lang"));
 		SelectorsUtil.appendChild(cslist, "Q");
 
-		assertEquals("Rule contains one combined pseudoselector :lang(fr)>Q",
-				cslist, rule.getSelectors());
+		assertArrayEquals("Rule contains one combined pseudoselector :lang(fr)>Q",
+				cslist.toArray(), rule.getSelectors());
 
 		List<Term<?>> terms = DeclarationsUtil.appendTerm(null, null, tf
 				.createString("« "));
@@ -311,8 +312,8 @@ public class SelectorTest {
 		SelectorsUtil.appendSimpleSelector(cslist, "P", null, rf
 				.createClass("special"), rf.createPseudoPage("before", null));
 
-		assertEquals("Rule 1 contains one combined selector P.special:before",
-				cslist, ((RuleSet) ss.get(0)).getSelectors());
+		assertArrayEquals("Rule 1 contains one combined selector P.special:before",
+				cslist.toArray(), ((RuleSet) ss.get(0)).getSelectors());
 
 		assertEquals(
 				"Rule 2 contains one declaration { content: \"Special! \"}",
@@ -326,9 +327,9 @@ public class SelectorTest {
 				.createClass("special"), rf.createPseudoPage("first-letter",
 				null));
 
-		assertEquals(
+		assertArrayEquals(
 				"Rule 2 contains one combined selector P.special:first-letter",
-				cslist, ((RuleSet) ss.get(1)).getSelectors());
+				cslist.toArray(), ((RuleSet) ss.get(1)).getSelectors());
 
 		assertEquals("Rule 2 contains one declaration { color: #ffd800}",
 				DeclarationsUtil.appendDeclaration(null, "color", tf
@@ -346,7 +347,7 @@ public class SelectorTest {
 		SelectorsUtil.appendSimpleSelector(cslist, "*", null, rf
 				.createClass("home"));
 
-		assertEquals("Rule 1 contains one combined selector *.home", cslist,
+		assertArrayEquals("Rule 1 contains one combined selector *.home", cslist.toArray(),
 				((RuleSet) ss.get(0)).getSelectors());
 
 		List<Term<?>> terms = DeclarationsUtil.appendTerm(null, null, tf
@@ -367,12 +368,12 @@ public class SelectorTest {
 
 		RuleSet rule = (RuleSet) ss.get(0);
 
-		List<CombinedSelector> cslist = rule.getSelectors();
+		CombinedSelector[] cslist = rule.getSelectors();
 
-		assertEquals("Rule rule contains two selectors", 2, cslist.size());
+		assertEquals("Rule rule contains two selectors", 2, cslist.length);
 
 		// H1
-		CombinedSelector s = cslist.get(0);
+		CombinedSelector s = cslist[0];
 
 		assertEquals("CombinedSelector 1 contains one simple selector", 1, s
 				.size());
@@ -381,7 +382,7 @@ public class SelectorTest {
 				.getElementName());
 
 		// DIV
-		s = cslist.get(1);
+		s = cslist[1];
 
 		assertEquals("CombinedSelector 2 contains one simple selector", 1, s
 				.size());
@@ -401,7 +402,7 @@ public class SelectorTest {
 				.createAttribute(null, false, Selector.Operator.NO_OPERATOR,
 						"href"));
 
-		assertEquals("Rule 1 contains one combined selector *[href]", cslist,
+		assertArrayEquals("Rule 1 contains one combined selector *[href]", cslist.toArray(),
 				((RuleSet) ss.get(0)).getSelectors());
 
 		List<Term<?>> terms = DeclarationsUtil.appendTerm(null, null, tf

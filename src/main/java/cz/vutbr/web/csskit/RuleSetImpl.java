@@ -14,11 +14,16 @@ import cz.vutbr.web.css.CombinedSelector;
  */
 public class RuleSetImpl extends AbstractRuleBlock<Declaration> implements RuleSet {
 
-	protected List<CombinedSelector> selectors;
+	protected CombinedSelector[] selectors;
 	
 	protected RuleSetImpl() {
 		super();
-		this.selectors = Collections.emptyList();
+		this.selectors = new CombinedSelector[0];
+	}
+	
+	public RuleSetImpl(CombinedSelector[] selectors) {
+		super();
+		this.selectors = selectors;
 	}
 	
 	/**
@@ -35,7 +40,7 @@ public class RuleSetImpl extends AbstractRuleBlock<Declaration> implements RuleS
     /**
 	 * @return the selectors
 	 */
-	public List<CombinedSelector> getSelectors() {
+	public CombinedSelector[] getSelectors() {
 		return selectors;
 	}
 
@@ -44,7 +49,7 @@ public class RuleSetImpl extends AbstractRuleBlock<Declaration> implements RuleS
 	 * @return Modified instance
 	 */
 	public RuleSet setSelectors(List<CombinedSelector> selectors) {
-		this.selectors = selectors;
+		this.selectors = selectors.toArray(new CombinedSelector[selectors.size()]);
 		return this;
 	}
 
@@ -60,7 +65,7 @@ public class RuleSetImpl extends AbstractRuleBlock<Declaration> implements RuleS
     	
     	// append selectors
     	sb = OutputUtil.appendTimes(sb, OutputUtil.DEPTH_DELIM, depth);
-    	sb = OutputUtil.appendList(sb, selectors, OutputUtil.SELECTOR_DELIM);
+    	sb = OutputUtil.appendArray(sb, selectors, OutputUtil.SELECTOR_DELIM);
 
     	// append rules (declarations)
     	sb.append(OutputUtil.RULE_OPENING);
