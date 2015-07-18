@@ -57,4 +57,9 @@ public class MatchConditionImpl implements MatchCondition
         else
             return false;
     }
+    
+    @Override
+    public Object clone() {
+    	return new MatchConditionImpl(pseudo);
+    }
 }

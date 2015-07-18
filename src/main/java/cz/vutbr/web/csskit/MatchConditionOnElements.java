@@ -153,4 +153,24 @@ public class MatchConditionOnElements implements MatchCondition
         else
             return false;
     }
+
+    @Override
+    public Object clone() {
+    	final MatchConditionOnElements clone = new MatchConditionOnElements();
+    	if (elements != null) {
+    		clone.elements = new HashMap<Element, Set<PseudoDeclaration>>();
+    		for (final Element e : elements.keySet()) {
+                final HashSet<PseudoDeclaration> clonedDeclarations = new HashSet<PseudoDeclaration>(elements.get(e));
+    			clone.elements.put(e, clonedDeclarations);
+    		}
+    	}
+    	if (names != null) {
+    		clone.names = new HashMap<String, Set<PseudoDeclaration>>();
+			for (final String n : names.keySet()) {
+                final HashSet<PseudoDeclaration> clonedDeclarations = new HashSet<PseudoDeclaration>(names.get(n));
+    			clone.names.put(n, clonedDeclarations);
+    		}
+    	}
+		return clone;
+    }
 }

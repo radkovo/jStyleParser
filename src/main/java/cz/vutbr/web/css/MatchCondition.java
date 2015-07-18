@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
  * 
  * @author burgetr
  */
-public interface MatchCondition
+public interface MatchCondition extends Cloneable
 {
     
     /**
