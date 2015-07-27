@@ -87,7 +87,8 @@ public class RulePageImpl extends AbstractRuleBlock<Rule<?>> implements RulePage
     	
     	// append declarations and margin rules
     	sb.append(OutputUtil.RULE_OPENING);
-    	List<PrettyOutput> rules = (List)list;
+    	@SuppressWarnings({ "unchecked", "rawtypes" })
+        List<PrettyOutput> rules = (List)list;
     	sb = OutputUtil.appendList(sb, rules, OutputUtil.EMPTY_DELIM, depth + 1);
     	sb.append(OutputUtil.RULE_CLOSING).append(OutputUtil.PAGE_CLOSING);
     

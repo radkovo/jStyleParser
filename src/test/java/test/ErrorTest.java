@@ -1,6 +1,7 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.io.IOException;
 import java.util.Date;
@@ -39,7 +40,7 @@ public class ErrorTest {
         
         RuleSet rule = (RuleSet) ss.get(0);             
         
-        assertEquals("Rule contains one selector BODY ", 
+        assertArrayEquals("Rule contains one selector BODY ", 
                 SelectorsUtil.createSelectors("BODY"), 
                 rule.getSelectors());
         

@@ -26,6 +26,7 @@ import cz.vutbr.web.css.StyleSheet;
  */
 public class DirectAnalyzer extends Analyzer
 {
+    @SuppressWarnings("unused")
     private static final Logger log = LoggerFactory.getLogger(DirectAnalyzer.class);
 
     /**

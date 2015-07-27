@@ -140,7 +140,7 @@ public class SimpleTest {
 		
 		RuleSet rule = (RuleSet) ss.get(0);				
 		
-		assertEquals("Rule contains one selector BODY ", 
+		assertArrayEquals("Rule contains one selector BODY ", 
 				SelectorsUtil.createSelectors("BODY"), 
 				rule.getSelectors());
 		
@@ -161,7 +161,7 @@ public class SimpleTest {
 		
 		RuleSet rule = (RuleSet) ss.get(0);				
 		
-		assertEquals("Rule contains one selector BODY ", 
+		assertArrayEquals("Rule contains one selector BODY ", 
 				SelectorsUtil.createSelectors("BODY"), 
 				rule.getSelectors());
 		
@@ -180,7 +180,7 @@ public class SimpleTest {
 		
 		RuleSet rule = (RuleSet) ss.get(0);				
 		
-		assertEquals("Rule contains one selector BODY ", 
+		assertArrayEquals("Rule contains one selector BODY ", 
 				SelectorsUtil.createSelectors("BODY"), 
 				rule.getSelectors());
 		
@@ -198,7 +198,7 @@ public class SimpleTest {
 		
 		RuleSet rule = (RuleSet) ss.get(0);				
 		
-		assertEquals("Rule contains one selector BODY ", 
+		assertArrayEquals("Rule contains one selector BODY ", 
 				SelectorsUtil.createSelectors("BODY"), 
 				rule.getSelectors());
 		
@@ -217,7 +217,7 @@ public class SimpleTest {
 		
 		final RuleSet rule = (RuleSet) ss.get(0);				
 		
-		assertEquals("Rule contains two selectors DIV, P", 
+		assertArrayEquals("Rule contains two selectors DIV, P", 
 				SelectorsUtil.createSelectors("DIV", "P"), 
 				rule.getSelectors());
 		
@@ -307,7 +307,7 @@ public class SimpleTest {
 
 		RuleSet rule = (RuleSet) ss.get(0);
 
-		assertEquals("Rule contains one selector p ",
+		assertArrayEquals("Rule contains one selector p ",
 				SelectorsUtil.createSelectors("p"),
 				rule.getSelectors());
 

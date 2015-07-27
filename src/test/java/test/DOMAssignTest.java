@@ -21,7 +21,6 @@ import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.NodeData;
-import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermLength;
@@ -202,7 +201,6 @@ public class DOMAssignTest {
         final DOMSource ds = new DOMSource(is);
         final Document doc = ds.parse();
         final ElementMap elements = new ElementMap(doc);
-        final StyleSheet style = CSSFactory.parseString(css, null);
         StyleMap decl = CSSFactory.assignDOM(doc, null, null, "screen", true);
 
         // Test p1

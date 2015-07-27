@@ -1,6 +1,5 @@
 package cz.vutbr.web.csskit;
 
-import java.util.Collections;
 import java.util.List;
 
 import cz.vutbr.web.css.Declaration;
