@@ -563,7 +563,7 @@ public class DeclarationTransformer {
 						lengthIdentification, sanify, properties, values);
 	}
 
-    protected <T extends CSSProperty> boolean genericIntegerOrLength( //TODO
+    protected <T extends CSSProperty> boolean genericIntegerOrLength(
             Class<T> type, T integerIdentification, T lengthIdentification, boolean sanify,
             Declaration d, Map<String, CSSProperty> properties,
             Map<String, Term<?>> values) {
