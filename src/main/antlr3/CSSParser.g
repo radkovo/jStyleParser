@@ -171,7 +171,7 @@ media_term
 
 media_expression
  : LPAREN S* IDENT S* (COLON S* terms)? RPAREN
-    -> ^(DECLARATION IDENT terms)
+    -> ^(DECLARATION IDENT terms?)
  ;
  catch [RecognitionException re] {
 		 final BitSet follow = BitSet.of(RPAREN, SEMICOLON);               

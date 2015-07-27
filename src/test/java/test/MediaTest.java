@@ -32,6 +32,7 @@ public class MediaTest
 
     public static final String TEST_SIMPLE_MEDIA = "p { color: red; } @media screen, print { p { color: blue; } } em { color: green; }";
     public static final String TEST_MEDIA_EXPR = "p { color: red; } @media screen AND (min-width: 100px) AND (max-width: 500px), print { p { color: blue; } } em { color: green; }";
+    public static final String TEST_MEDIA_EXPR_NO_VALUE = "@media (transform-3d) { p { color: blue; } } em { color: green; }";
     public static final String TEST_NO_QUERY = "p { color: red; } @media { p { color: blue; } } em { color: green; }";
     
     //Malformed media queries from http://www.w3.org/TR/css3-mediaqueries/#error-handling
@@ -71,6 +72,20 @@ public class MediaTest
         assertEquals("There are two expressions", 2, queries.get(0).size());
         assertEquals("The first expression is for min-width", "min-width", queries.get(0).get(0).getFeature()); 
         assertEquals("The first expression has one term", 1, queries.get(0).get(0).size()); 
+    }
+    
+    @Test
+    public void expressionWithNoValue() throws IOException, CSSException 
+    {
+        StyleSheet ss = CSSFactory.parseString(TEST_MEDIA_EXPR_NO_VALUE, null);
+        assertEquals("There are two rules", 2, ss.size());
+        assertEquals("There is one rule in media", 1, ss.get(0).size());
+        
+        List<MediaQuery> queries = ((RuleMedia) ss.get(0)).getMediaQueries();
+        assertEquals("There is one media query", 1, queries.size());
+        assertEquals("There is one expression", 1, queries.get(0).size());
+        assertEquals("The expression is for transform-3d", "transform-3d", queries.get(0).get(0).getFeature()); 
+        assertEquals("The expression has no terms", 0, queries.get(0).get(0).size()); 
     }
     
     @Test
