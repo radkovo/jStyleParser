@@ -876,7 +876,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		}
 		
     	public ElementAttribute setValue(String value) {
-            this.value = value == null ? value : value.replaceAll("\\\\", "");
+            this.value = value == null ? null : value.replace("\\", "");
             return this;
     	}
 		
