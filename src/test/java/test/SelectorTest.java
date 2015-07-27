@@ -1,7 +1,8 @@
 package test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.Date;
@@ -11,14 +12,18 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
+import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermNumeric;
@@ -230,6 +235,25 @@ public class SelectorTest {
 		assertEquals("Rule contains one declaration { text-align: right }",
 				DeclarationsUtil.appendDeclaration(null, "text-align", tf
 						.createIdent("right")), rule.asList());
+	}
+
+	@Test
+	public void testTypeAttrib() throws CSSException, IOException, SAXException {
+	    final String TEST_TYPE_ATTRIB_ESCAPED = "script[type=text\\/plain] { text-align: right}";
+
+		final StyleSheet ss = CSSFactory.parseString(TEST_TYPE_ATTRIB_ESCAPED, null);
+		assertEquals("One rule is set", 1, ss.size());
+
+		final RuleSet rule = (RuleSet) ss.get(0);
+		assertEquals("One combined selector", rule.getSelectors().length, 1);
+		final CombinedSelector cs = rule.getSelectors()[0];
+		assertEquals("One selector", cs.size(), 1);
+
+		final Selector s = cs.get(0);
+        DOMSource ds = new DOMSource("<script type='text/plain'>Hello world</script>");
+        Document doc = ds.parse();
+        final Element scriptElement = (Element) doc.getElementsByTagName("script").item(0);
+		assertTrue("selector matches", s.matches(scriptElement));
 	}
 
 	@Test
