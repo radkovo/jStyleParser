@@ -239,7 +239,7 @@ public class SelectorTest {
 
 	@Test
 	public void testTypeAttrib() throws CSSException, IOException, SAXException {
-	    final String TEST_TYPE_ATTRIB_ESCAPED = "script[type=text\\/plain] { text-align: right}";
+		final String TEST_TYPE_ATTRIB_ESCAPED = "script[type=text\\/plain] { text-align: right}";
 
 		final StyleSheet ss = CSSFactory.parseString(TEST_TYPE_ATTRIB_ESCAPED, null);
 		assertEquals("One rule is set", 1, ss.size());
@@ -250,9 +250,9 @@ public class SelectorTest {
 		assertEquals("One selector", cs.size(), 1);
 
 		final Selector s = cs.get(0);
-        DOMSource ds = new DOMSource("<script type='text/plain'>Hello world</script>");
-        Document doc = ds.parse();
-        final Element scriptElement = (Element) doc.getElementsByTagName("script").item(0);
+		DOMSource ds = new DOMSource("<script type='text/plain'>Hello world</script>");
+		Document doc = ds.parse();
+		final Element scriptElement = (Element) doc.getElementsByTagName("script").item(0);
 		assertTrue("selector matches", s.matches(scriptElement));
 	}
 
