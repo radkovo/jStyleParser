@@ -86,6 +86,7 @@ import cz.vutbr.web.css.CSSProperty.PageBreakInside;
 import cz.vutbr.web.css.CSSProperty.Position;
 import cz.vutbr.web.css.CSSProperty.Quotes;
 import cz.vutbr.web.css.CSSProperty.Right;
+import cz.vutbr.web.css.CSSProperty.TabSize;
 import cz.vutbr.web.css.CSSProperty.TableLayout;
 import cz.vutbr.web.css.CSSProperty.TextAlign;
 import cz.vutbr.web.css.CSSProperty.TextDecoration;
@@ -562,6 +563,34 @@ public class DeclarationTransformer {
 						lengthIdentification, sanify, properties, values);
 	}
 
+    protected <T extends CSSProperty> boolean genericIntegerOrLength( //TODO
+            Class<T> type, T integerIdentification, T lengthIdentification, boolean sanify,
+            Declaration d, Map<String, CSSProperty> properties,
+            Map<String, Term<?>> values) {
+
+        if (d.size() != 1)
+            return false;
+        
+        Term<?> term = d.get(0);
+        if (term instanceof TermIdent)
+        {
+            T property = genericPropertyRaw(type, null, (TermIdent) term);
+            if (!property.equalsInherit())
+                return false;
+            else
+            {
+                properties.put(d.getProperty(), property);
+                return true;
+            }
+        }
+        else
+        {
+            return genericTerm(TermInteger.class, term, d.getProperty(),
+                            integerIdentification, sanify, properties, values)
+                    || genericTermLength(term, d.getProperty(), lengthIdentification, sanify, properties, values);
+        }
+    }
+    
 	protected <T extends Enum<T> & CSSProperty> boolean genericOneIdentOrLengthOrPercent(
 			Class<T> type, T lengthIdentification, T percentIdentification,
 			boolean sanify, Declaration d, Map<String, CSSProperty> properties,
@@ -1066,6 +1095,13 @@ public class DeclarationTransformer {
 		return font.tryOneTermVariant(FontVariator.LINE_HEIGHT, d, properties,
 				values);
 	}
+
+    @SuppressWarnings("unused")
+    private boolean processTabSize(Declaration d,
+            Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return genericIntegerOrLength(TabSize.class, TabSize.integer,
+                TabSize.length, false, d, properties, values);
+    }
 
 	@SuppressWarnings("unused")
 	private boolean processTop(Declaration d,

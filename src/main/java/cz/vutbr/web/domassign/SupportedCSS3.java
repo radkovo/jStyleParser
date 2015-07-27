@@ -15,6 +15,7 @@ import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.CSSProperty.BorderRadius;
 import cz.vutbr.web.css.CSSProperty.Height;
 import cz.vutbr.web.css.CSSProperty.Opacity;
+import cz.vutbr.web.css.CSSProperty.TabSize;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFactory;
@@ -123,6 +124,7 @@ public class SupportedCSS3 implements SupportedCSS {
     private static final Term<?> DEFAULT_UA_COLOR = tf.createColor("#000000");
     private static final Term<?> DEFAULT_UA_OPACITY = tf.createNumber(1.0f);
 	private static final Term<?> DEFAULT_UA_TEXT_IDENT = tf.createLength(0.0f);
+	private static final Term<?> DEFAULT_UA_TAB_SIZE = tf.createInteger(8);
 	private static final Term<?> DEFAULT_UA_MARGIN = tf.createLength(0.0f);
 	private static final Term<?> DEFAULT_UA_PADDING = tf.createLength(0.0f);
 	private static final Term<?> DEFAULT_UA_MIN_WIDTH = tf.createLength(0.0f);
@@ -272,6 +274,8 @@ public class SupportedCSS3 implements SupportedCSS {
 		props.put("vertical-align", VerticalAlign.BASELINE);
 		props.put("direction", Direction.LTR);
 		props.put("unicode-bidi", UnicodeBidi.NORMAL);
+		props.put("tab-size", TabSize.integer);
+		values.put("tab-size", DEFAULT_UA_TAB_SIZE);
 
 		// layout box
 		props.put("margin", Margin.component_values);

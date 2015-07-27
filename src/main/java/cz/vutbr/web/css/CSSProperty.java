@@ -732,7 +732,30 @@ public interface CSSProperty {
 			return text;
 		}
 	}
+	
+    public enum TabSize implements CSSProperty {
+        integer(""), length(""), INHERIT("inherit");
 
+        private String text;
+
+        private TabSize(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return true;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+    
 	public enum CaptionSide implements CSSProperty {
 		TOP("top"), BOTTOM("bottom"), INHERIT("inherit");
 
