@@ -188,10 +188,10 @@ scope {
 	  }
   | ^(PAGE
       (i=IDENT
-        { name = extractText(i); }
+        { name = extractTextUnescaped(i); }
       )?
       (^(PSEUDOCLASS i=IDENT)
-        { pseudo = extractText(i); }
+        { pseudo = extractTextUnescaped(i); }
       )?
       decl=declarations
       ^(SET (m=margin {
@@ -237,7 +237,7 @@ unknown_atrule returns [cz.vutbr.web.css.RuleBlock<?> stmnt]
     ;
 
 import_uri returns [String s]
-  : (uri=URI) { s = extractText(uri); }
+  : (uri=URI) { s = extractTextUnescaped(uri); }
   | (str=STRING) { s = extractTextUnescaped(str); }
   ;
 
@@ -250,7 +250,7 @@ margin returns [cz.vutbr.web.css.RuleMargin m]
 }
 	: ^(area = MARGIN_AREA
 		decl=declarations)
-		{ $m = preparator.prepareRuleMargin(extractText(area).substring(1), decl); }
+		{ $m = preparator.prepareRuleMargin(extractTextUnescaped(area).substring(1), decl); }
 	;
 
 media returns [List<cz.vutbr.web.css.MediaQuery> queries] 
@@ -294,7 +294,7 @@ scope {
 
 mediaterm
   : (i=IDENT {
-            String m = extractText(i);
+            String m = extractTextUnescaped(i);
             MediaQueryState state = $mediaquery::state;
             if (m.equalsIgnoreCase("ONLY") && state == MediaQueryState.START)
             {
@@ -478,8 +478,8 @@ property
 	log.debug("Setting property: {}", $declaration::d.getProperty());	   
     logLeave("property");
 }    
-  : i = IDENT { $declaration::d.setProperty(extractText(i)); $declaration::d.setSource(extractSource(i)); }
-  | MINUS i = IDENT { $declaration::d.setProperty("-" + extractText(i)); $declaration::d.setSource(extractSource(i)); }
+  : i = IDENT { $declaration::d.setProperty(extractTextUnescaped(i)); $declaration::d.setSource(extractSource(i)); }
+  | MINUS i = IDENT { $declaration::d.setProperty("-" + extractTextUnescaped(i)); $declaration::d.setSource(extractSource(i)); }
   ;
 
 /**
@@ -550,7 +550,7 @@ valuepart
         }                    
     }
 }
-    : (MINUS {$terms::dash=true;})? i=IDENT   {$terms::term = tf.createIdent(extractText(i), $terms::dash);}
+    : (MINUS {$terms::dash=true;})? i=IDENT   {$terms::term = tf.createIdent(extractTextUnescaped(i), $terms::dash);}
     | CLASSKEYWORD {$declaration::invalid = true;}
 	  | (MINUS {$terms::unary=-1;})? n=NUMBER    {$terms::term = tf.createNumeric(extractText(n), $terms::unary);}
     | (MINUS {$terms::unary=-1;})? p=PERCENTAGE  { $terms::term = tf.createPercent(extractText(p), $terms::unary);}
@@ -566,7 +566,7 @@ valuepart
 			{ if(s!=null) $terms::term = tf.createString(s);
 			  else $declaration::invalid=true;
 			}
-    | u=URI       {$terms::term = tf.createURI(extractText(u), extractBase(u));}
+    | u=URI       {$terms::term = tf.createURI(extractTextUnescaped(u), extractBase(u));}
     | h=HASH    
 	    {$terms::term = tf.createColor(extractText(h));
 	     if($terms::term==null)
@@ -590,14 +590,32 @@ valuepart
         $terms::term = expr;
 		}
     | (MINUS {$terms::unary=-1;})? ^(f=FUNCTION t=terms?) {
-        // create function
-        cz.vutbr.web.css.TermFunction function = tf.createFunction();
-        function.setFunctionName(extractText(f));
-        if ($terms::unary == -1) //if started with minus, add the minus to the function name
-            function.setFunctionName('-' + function.getFunctionName());
-        if (t != null)
-        	function.setValue(t);
-        $terms::term = function;
+        final String fname = extractTextUnescaped(f);
+        if (fname.equalsIgnoreCase("url"))
+        {
+          // the function name is url() after escaping - create an URI
+          if ($terms::unary == -1 || t == null || t.size() != 1)
+            $declaration::invalid = true;
+          else
+          {
+            cz.vutbr.web.css.Term<?> term = t.get(0);
+            if (term instanceof cz.vutbr.web.css.TermString) 
+              $terms::term = tf.createURI(((cz.vutbr.web.css.TermString) term).getValue(), extractBase(f));
+            else
+              $declaration::invalid = true;
+          }
+        }
+        else
+        {
+	        // create function
+	        cz.vutbr.web.css.TermFunction function = tf.createFunction();
+	        function.setFunctionName(fname);
+	        if ($terms::unary == -1) //if started with minus, add the minus to the function name
+	            function.setFunctionName('-' + function.getFunctionName());
+	        if (t != null)
+	        	function.setValue(t);
+	        $terms::term = function;
+	      }
     }
     | DASHMATCH {$declaration::invalid = true;}
     | ^(PARENBLOCK any*) {$declaration::invalid = true;}
@@ -668,7 +686,7 @@ scope {
 }
     : ^(SELECTOR 
         ^(ELEMENT 
-          (i=IDENT { en.setName(extractText(i)); }
+          (i=IDENT { en.setName(extractTextUnescaped(i)); }
           )?         
          ){
 		  log.debug("Adding element name: {}.", en.getName());
@@ -689,8 +707,8 @@ selpart
 @after {
     logLeave("selpart");
 }
-    :  h=HASH { $selector::s.add(rf.createID(extractText(h))); }
-    | c=CLASSKEYWORD { $selector::s.add(rf.createClass(extractText(c))); }
+    :  h=HASH { $selector::s.add(rf.createID(extractTextUnescaped(h))); }
+    | c=CLASSKEYWORD { $selector::s.add(rf.createClass(extractTextUnescaped(c))); }
 	| ^(ATTRIBUTE ea=attribute { $selector::s.add(ea);} )
     | p=pseudo {
         if (p != null)
@@ -719,7 +737,7 @@ attribute returns [cz.vutbr.web.css.Selector.ElementAttribute elemAttr]
 	}
     logLeave("attribute");
 }
-	: i=IDENT {attribute=extractText(i); }
+	: i=IDENT {attribute=extractTextUnescaped(i); }
 	  ((EQUALS {op=cz.vutbr.web.css.Selector.Operator.EQUALS; } 
 	   | INCLUDES {op=cz.vutbr.web.css.Selector.Operator.INCLUDES; } 
 	   | DASHMATCH {op=cz.vutbr.web.css.Selector.Operator.DASHMATCH; }
@@ -728,7 +746,7 @@ attribute returns [cz.vutbr.web.css.Selector.ElementAttribute elemAttr]
      | ENDSWITH {op=cz.vutbr.web.css.Selector.Operator.ENDSWITH; }
 	   ) 
 	   (i=IDENT {
-		value=extractText(i);
+		value=extractTextUnescaped(i);
 		isStringValue=false;
 		}
 	   | s=string {
@@ -750,31 +768,31 @@ pseudo returns [cz.vutbr.web.css.Selector.PseudoPage pseudoPage]
   /* pseudo classes */
 	: ^(PSEUDOCLASS i=IDENT)
 		{
-			$pseudoPage = rf.createPseudoPage(extractText(i), null);
+			$pseudoPage = rf.createPseudoPage(extractTextUnescaped(i), null);
 		}
 	| ^(PSEUDOCLASS f=FUNCTION i=IDENT)
 		{
-			$pseudoPage = rf.createPseudoPage(extractText(i), extractText(f));
+			$pseudoPage = rf.createPseudoPage(extractTextUnescaped(i), extractTextUnescaped(f));
 		}
 	| ^(PSEUDOCLASS f=FUNCTION m=MINUS? n=NUMBER)
 		{
       String exp = extractText(n);
       if (m != null) exp = "-" + exp;
-			$pseudoPage = rf.createPseudoPage(exp, extractText(f));
+			$pseudoPage = rf.createPseudoPage(exp, extractTextUnescaped(f));
 		}
   | ^(PSEUDOCLASS f=FUNCTION m=MINUS? n=INDEX)
     {
       String exp = extractText(n);
       if (m != null) exp = "-" + exp;
-      $pseudoPage = rf.createPseudoPage(exp, extractText(f));
+      $pseudoPage = rf.createPseudoPage(exp, extractTextUnescaped(f));
     }
   /* pseudo elements */
   | ^(PSEUDOELEM i=IDENT)
     {
-      $pseudoPage = rf.createPseudoPage(extractText(i), null);
+      $pseudoPage = rf.createPseudoPage(extractTextUnescaped(i), null);
       if ($pseudoPage == null || $pseudoPage.getDeclaration() == null)
       {
-          log.error("invalid pseudo declaration: " + extractText(i));
+          log.error("invalid pseudo declaration: " + extractTextUnescaped(i));
           $pseudoPage = null;
       }
       else if (!$pseudoPage.getDeclaration().isPseudoElement())
