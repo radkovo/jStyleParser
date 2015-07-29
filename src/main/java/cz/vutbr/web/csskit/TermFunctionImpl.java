@@ -1,5 +1,7 @@
 package cz.vutbr.web.csskit;
 
+import org.unbescape.css.CssEscape;
+
 import cz.vutbr.web.css.TermFunction;
 
 /**
@@ -48,7 +50,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
 		// append operator
 		if(operator!=null) sb.append(operator.value());
 		
-		sb.append(functionName).append(OutputUtil.FUNCTION_OPENING);
+		sb.append(CssEscape.escapeCssIdentifier(functionName)).append(OutputUtil.FUNCTION_OPENING);
 		sb = OutputUtil.appendList(sb, value, OutputUtil.EMPTY_DELIM)
 			.append(OutputUtil.FUNCTION_CLOSING);
 		

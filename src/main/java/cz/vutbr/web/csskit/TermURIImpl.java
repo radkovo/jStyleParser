@@ -2,6 +2,8 @@ package cz.vutbr.web.csskit;
 
 import java.net.URL;
 
+import org.unbescape.css.CssEscape;
+
 import cz.vutbr.web.css.TermURI;
 
 /**
@@ -51,7 +53,9 @@ public class TermURIImpl extends TermImpl<String> implements TermURI {
     	StringBuilder sb = new StringBuilder();
     	
     	if(operator!=null) sb.append(operator.value());
-    	sb.append(OutputUtil.URL_OPENING).append(value).append(OutputUtil.URL_CLOSING);
+    	sb.append(OutputUtil.URL_OPENING)
+    	    .append(CssEscape.escapeCssString(value))
+    	    .append(OutputUtil.URL_CLOSING);
     	
     	return sb.toString();
     }

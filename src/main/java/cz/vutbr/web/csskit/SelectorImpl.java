@@ -2,6 +2,7 @@ package cz.vutbr.web.csskit;
 
 import java.util.HashMap;
 
+import org.unbescape.css.CssEscape;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -211,7 +212,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		
 		@Override
 		public String toString() {
-			return name;
+			return CssEscape.escapeCssIdentifier(name);
 		}
 
 		/* (non-Javadoc)
@@ -282,7 +283,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	
     	@Override
     	public String toString() {
-    		return "." + className;
+    		return "." + CssEscape.escapeCssIdentifier(className);
     	}
 
 		/* (non-Javadoc)
@@ -664,7 +665,8 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			
 			if(functionName!=null) 
 				sb.append(functionName).append(OutputUtil.FUNCTION_OPENING);
-			if(value!=null)		sb.append(value);
+			if(value!=null)
+			    sb.append(CssEscape.escapeCssIdentifier(value));
 			if(functionName!=null)
 				sb.append(OutputUtil.FUNCTION_CLOSING);
 			
@@ -772,7 +774,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	    	
     	@Override
     	public String toString() {
-    		return "#" + id;
+    		return "#" + CssEscape.escapeCssIdentifier(id);
     	}
 
 		/* (non-Javadoc)
@@ -887,13 +889,15 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     		sb.append(OutputUtil.ATTRIBUTE_OPENING).append(attribute);
     		sb.append(operator.value());
 
-    		if(isStringValue && value!=null)
-    			sb.append(OutputUtil.STRING_OPENING);
-    		
-    		if(value != null) sb.append(value);
-    		
-    		if(isStringValue && value!=null)
-    			sb.append(OutputUtil.STRING_CLOSING);
+    		if (value != null) {
+        		if (isStringValue) {
+        			sb.append(OutputUtil.STRING_OPENING);
+        			sb.append(CssEscape.escapeCssString(value));
+        			sb.append(OutputUtil.STRING_CLOSING);
+        		} else {
+                    sb.append(CssEscape.escapeCssIdentifier(value));
+        		}
+    		}
 
     		sb.append(OutputUtil.ATTRIBUTE_CLOSING);
     		

@@ -1,5 +1,7 @@
 package cz.vutbr.web.csskit;
 
+import org.unbescape.css.CssEscape;
+
 import cz.vutbr.web.css.TermString;
 
 /**
@@ -33,7 +35,9 @@ public class TermStringImpl extends TermImpl<String> implements TermString {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		if(operator!=null) sb.append(operator.value());
-		sb.append(OutputUtil.STRING_OPENING).append(value).append(OutputUtil.STRING_CLOSING);
+		sb.append(OutputUtil.STRING_OPENING)
+		    .append(CssEscape.escapeCssString(value))
+		    .append(OutputUtil.STRING_CLOSING);
 		
 		return sb.toString();
 	}

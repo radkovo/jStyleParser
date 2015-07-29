@@ -7,6 +7,8 @@ package cz.vutbr.web.csskit;
 
 import java.util.Locale;
 
+import org.unbescape.css.CssEscape;
+
 import cz.vutbr.web.css.MediaExpression;
 import cz.vutbr.web.css.Term;
 
@@ -36,7 +38,7 @@ public class MediaExpressionImpl extends AbstractRule<Term<?>> implements MediaE
         StringBuilder sb = new StringBuilder();
         
         sb.append(OutputUtil.MEDIA_EXPR_OPENING);
-        sb.append(getFeature()).append(OutputUtil.MEDIA_FEATURE_DELIM);
+        sb.append(CssEscape.escapeCssIdentifier(getFeature())).append(OutputUtil.MEDIA_FEATURE_DELIM);
         sb = OutputUtil.appendList(sb, list, OutputUtil.SPACE_DELIM);
         sb.append(OutputUtil.MEDIA_EXPR_CLOSING);
         

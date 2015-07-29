@@ -7,6 +7,8 @@ package cz.vutbr.web.csskit;
 
 import java.util.Locale;
 
+import org.unbescape.css.CssEscape;
+
 import cz.vutbr.web.css.MediaExpression;
 import cz.vutbr.web.css.MediaQuery;
 
@@ -65,7 +67,7 @@ public class MediaQueryImpl extends AbstractRule<MediaExpression> implements Med
         
         if (getType() != null)
         {
-            sb.append(getType());
+            sb.append(CssEscape.escapeCssIdentifier(getType()));
             if (!isEmpty())
                 sb.append(OutputUtil.QUERY_DELIM);
         }
