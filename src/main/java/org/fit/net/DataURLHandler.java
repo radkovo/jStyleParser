@@ -69,7 +69,7 @@ public class DataURLHandler extends URLStreamHandler
                 bytes = URLDecoder.decode(data, charset).getBytes(charset);
             else
                 try {
-                    bytes = Base64Coder.decode(URLDecoder.decode(data, charset));
+                    bytes = Base64Coder.decode(data);
                 } catch (Exception e) {
                     throw new IOException("Couldn't decode base64 data", e);
                 }
