@@ -54,8 +54,7 @@ public abstract class Traversal<T>
         walker.setCurrentNode(checkpoint);
 
         // traverse children:
-        for (Node n = walker.firstChild(); n != null; n = walker
-                .nextSibling()) {
+        for (Node n = walker.firstChild(); n != null; n = walker.nextSibling()) {
             levelTraversal(result);
         }
 
@@ -63,8 +62,7 @@ public abstract class Traversal<T>
         walker.setCurrentNode(checkpoint);
     }
 
-    protected abstract void processNode(T result, Node current,
-            Object source);
+    protected abstract void processNode(T result, Node current, Object source);
 
     public Traversal<T> reset(TreeWalker walker, Object source) {
         this.walker = walker;
