@@ -49,9 +49,8 @@ public abstract class Traversal<T>
     public void levelTraversal(T result) {
 
         // this method can change position in walker
-        Node current, checkpoint = null;
-        current = checkpoint = walker.getCurrentNode();
-        processNode(result, current, source);
+        final Node checkpoint = walker.getCurrentNode();
+        processNode(result, checkpoint, source);
         walker.setCurrentNode(checkpoint);
 
         // traverse children:
