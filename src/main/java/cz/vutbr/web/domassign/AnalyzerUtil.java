@@ -78,7 +78,7 @@ public final class AnalyzerUtil {
             if (classRules != null)
                 candidates.addAll(classRules);
         }
-        log.trace("After CLASSes {} total candidates.", candidates.size());
+        // log.trace("After CLASSes {} total candidates.", candidates.size());
 
         // match IDs
         final String id = ElementUtil.elementID(e);
@@ -87,7 +87,7 @@ public final class AnalyzerUtil {
             if (idRules != null)
                 candidates.addAll(idRules);
         }
-        log.trace("After IDs {} total candidates.", candidates.size());
+        // log.trace("After IDs {} total candidates.", candidates.size());
         
         // match elements
         final String name = ElementUtil.elementName(e);
@@ -96,14 +96,15 @@ public final class AnalyzerUtil {
             if (nameRules != null)
                 candidates.addAll(nameRules);
         }
-        log.trace("After ELEMENTs {} total candidates.", candidates.size());
+        // log.trace("After ELEMENTs {} total candidates.", candidates.size());
 
         // others
         candidates.addAll(holder.get(HolderItem.OTHER, null));
 
         final int totalCandidates = candidates.size();
         final int netCandidates = elementRuleSets == null ? totalCandidates : totalCandidates + elementRuleSets.length;
-        log.debug("Totally {} candidates.", totalCandidates);
+
+        // log.debug("Totally {} candidates.", totalCandidates);
 
         // transform to array to speed up traversal
         // and sort rules in order as they were found in CSS definition
