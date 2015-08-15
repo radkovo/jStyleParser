@@ -118,7 +118,8 @@ public final class AnalyzerUtil {
           }
         }
 
-        log.trace("With values: {}", Arrays.toString(clist));
+        // NOTE: The following trace statement creates a lot of memory pressure
+        // log.trace("With values: {}", Arrays.toString(clist));
 
         return clist;
 	}
