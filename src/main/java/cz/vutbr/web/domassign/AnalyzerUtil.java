@@ -50,9 +50,14 @@ public final class AnalyzerUtil {
      * @return
      */
     public static OrderedRule[] getApplicableRules(final List<StyleSheet> sheets, final Element element, final MediaSpec mediaspec) {
+	    final Holder rules = getClassifiedRules(sheets, mediaspec);
+	    return getApplicableRules(element, rules, null);
+    }
+
+    public static Holder getClassifiedRules(final List<StyleSheet> sheets, final MediaSpec mediaspec) {
 	    final Holder rules = new Holder();
 	    AnalyzerUtil.classifyAllSheets(sheets, rules, mediaspec);
-	    return getApplicableRules(element, rules);
+	    return rules;
     }
 
     public static NodeData getElementStyle(Element el, PseudoDeclaration pseudo, MatchCondition matchCond, OrderedRule[] applicableRules)
@@ -60,7 +65,7 @@ public final class AnalyzerUtil {
     	return makeNodeData(computeDeclarations(el, pseudo, applicableRules, matchCond));
     }
 
-	private static OrderedRule[] getApplicableRules(final Element e, final Holder holder)
+	public static OrderedRule[] getApplicableRules(final Element e, final Holder holder, final RuleSet[] elementRuleSets)
 	{
         // create set of possible candidates applicable to given element
         // set is automatically filtered to not contain duplicates
@@ -73,7 +78,7 @@ public final class AnalyzerUtil {
             if (classRules != null)
                 candidates.addAll(classRules);
         }
-        log.trace("After CLASSes {} total candidates.", candidates.size());
+        // log.trace("After CLASSes {} total candidates.", candidates.size());
 
         // match IDs
         final String id = ElementUtil.elementID(e);
@@ -82,7 +87,7 @@ public final class AnalyzerUtil {
             if (idRules != null)
                 candidates.addAll(idRules);
         }
-        log.trace("After IDs {} total candidates.", candidates.size());
+        // log.trace("After IDs {} total candidates.", candidates.size());
         
         // match elements
         final String name = ElementUtil.elementName(e);
@@ -91,20 +96,31 @@ public final class AnalyzerUtil {
             if (nameRules != null)
                 candidates.addAll(nameRules);
         }
-        log.trace("After ELEMENTs {} total candidates.", candidates.size());
+        // log.trace("After ELEMENTs {} total candidates.", candidates.size());
 
         // others
         candidates.addAll(holder.get(HolderItem.OTHER, null));
 
         final int totalCandidates = candidates.size();
-        log.debug("Totally {} candidates.", totalCandidates);
+        final int netCandidates = elementRuleSets == null ? totalCandidates : totalCandidates + elementRuleSets.length;
+
+        // log.debug("Totally {} candidates.", totalCandidates);
 
         // transform to array to speed up traversal
         // and sort rules in order as they were found in CSS definition
-        final OrderedRule[] clist = (OrderedRule[]) candidates.toArray(new OrderedRule[totalCandidates]);
-        Arrays.sort(clist);
+        final OrderedRule[] clist = (OrderedRule[]) candidates.toArray(new OrderedRule[netCandidates]);
+        Arrays.sort(clist, 0, totalCandidates);
 
-        log.trace("With values: {}", Arrays.toString(clist));
+        // Append the element rules
+        if (elementRuleSets != null) {
+          final int lastOrder = clist[totalCandidates-1].getOrder();
+          for (int i = 0; i < elementRuleSets.length; i++) {
+            clist[totalCandidates + i] = new OrderedRule(elementRuleSets[i], lastOrder + i);
+          }
+        }
+
+        // NOTE: The following trace statement creates a lot of memory pressure
+        // log.trace("With values: {}", Arrays.toString(clist));
 
         return clist;
 	}

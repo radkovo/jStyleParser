@@ -465,7 +465,7 @@ public class Analyzer {
 	 * @author kapy
 	 * 
 	 */
-	protected static class Holder {
+	public static class Holder {
 
 		/** HolderItem.* except OTHER are stored there */
 		private List<Map<String, List<OrderedRule>>> items;
