@@ -341,6 +341,8 @@ public class SupportedCSS3 implements SupportedCSS {
 		values.put("min-height", DEFAULT_UA_MIN_HEIGHT);
 		props.put("max-height", MaxHeight.NONE);
 		props.put("overflow", Overflow.VISIBLE);
+        props.put("overflow-x", Overflow.VISIBLE);
+        props.put("overflow-y", Overflow.VISIBLE);
 		props.put("clip", Clip.AUTO);
 
 		// positioning

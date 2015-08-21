@@ -1471,6 +1471,18 @@ public class DeclarationTransformer {
 		return genericOneIdent(Overflow.class, d, properties);
 	}
 
+    @SuppressWarnings("unused")
+    private boolean processOverflowX(Declaration d,
+            Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return genericOneIdent(Overflow.class, d, properties);
+    }
+
+    @SuppressWarnings("unused")
+    private boolean processOverflowY(Declaration d,
+            Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return genericOneIdent(Overflow.class, d, properties);
+    }
+
 	@SuppressWarnings("unused")
 	private boolean processPaddingTop(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
