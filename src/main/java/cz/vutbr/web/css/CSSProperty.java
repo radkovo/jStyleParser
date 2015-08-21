@@ -1421,8 +1421,8 @@ public interface CSSProperty {
 	}
 
 	public enum Overflow implements CSSProperty {
-		VISIBLE("visible"), HIDDEN("hidden"), SCROLL("scroll"), AUTO("auto"), INHERIT(
-				"inherit");
+		VISIBLE("visible"), HIDDEN("hidden"), CLIP("clip"), SCROLL("scroll"),
+		    AUTO("auto"), INHERIT("inherit");
 
 		private String text;
 
