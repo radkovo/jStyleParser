@@ -113,7 +113,7 @@ public final class AnalyzerUtil {
 
         // Append the element rules
         if (elementRuleSets != null) {
-          final int lastOrder = clist[totalCandidates-1].getOrder();
+          final int lastOrder = totalCandidates > 0 ? clist[totalCandidates-1].getOrder() : 0;
           for (int i = 0; i < elementRuleSets.length; i++) {
             clist[totalCandidates + i] = new OrderedRule(elementRuleSets[i], lastOrder + i);
           }
