@@ -140,8 +140,9 @@ public final class AnalyzerUtil {
 	 */
 	static void classifyAllSheets(final List<StyleSheet> sheets, final Holder rules, final MediaSpec mediaspec)
 	{
+		final Counter orderCounter = new Counter();
 	    for (final StyleSheet sheet : sheets)
-	        classifyRules(sheet, mediaspec, rules);
+	        classifyRules(sheet, mediaspec, rules, orderCounter);
 	}
 	
 	static boolean elementSelectorMatches(final Selector s, final Element e, final MatchCondition matchCond) {
@@ -448,9 +449,9 @@ public final class AnalyzerUtil {
 	 * 
 	 * @param sheet The style sheet to be classified
      * @param mediaspec The specification of the media for evaluating the media queries.
+	 * @param orderCounter 
 	 */
-	private static void classifyRules(final StyleSheet sheet, final MediaSpec mediaspec, final Holder rules) {
-		final Counter orderCounter = new Counter();
+	private static void classifyRules(final StyleSheet sheet, final MediaSpec mediaspec, final Holder rules, final Counter orderCounter) {
 
 		for (final Rule<?> rule : sheet) {
 			// this rule conforms to all media
