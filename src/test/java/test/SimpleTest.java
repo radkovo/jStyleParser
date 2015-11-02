@@ -51,7 +51,7 @@ public class SimpleTest {
 		"BODY { color: rgb(192,64,32);}";
 	
 	public static final String TEST_RGBFUNCTION2 =
-		"BODY { color: rgb(50%,128,30%);} ";
+		"BODY { color: rgb(50%,40%,30%);} ";
 	
 	public static final String TEST_UNIT =
 		"BODY { margin: 5em; }";
@@ -184,9 +184,9 @@ public class SimpleTest {
 				SelectorsUtil.createSelectors("BODY"), 
 				rule.getSelectors());
 		
-		assertEquals("Rule contains one declaration {color: rgb(50%,128,30%);}",
+		assertEquals("Rule contains one declaration {color: rgb(50%,40%,30%);}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
-						tf.createColor(127, 128, 76)),
+						tf.createColor(127, 102, 76)),
 				rule.asList());
 	}
 	
