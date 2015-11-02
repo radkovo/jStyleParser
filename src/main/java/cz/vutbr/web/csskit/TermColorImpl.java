@@ -119,23 +119,30 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
     	if ((COLOR_RGB_NAME.equals(func.getFunctionName()) && func.size() == COLOR_PARAMS_COUNT)
     	   || COLOR_RGBA_NAME.equals(func.getFunctionName()) && func.size() == COLOR_PARAMS_COUNT + 1) {
     		
+            boolean percVals = false;
+            boolean intVals = false;
     		int[] rgb = new int[COLOR_PARAMS_COUNT];
     		for(int i = 0; i < COLOR_PARAMS_COUNT; i++) {
     		    Term<?> term = func.get(i);
     			// term is number and numeric
     			if(term instanceof TermInteger ) {
     				rgb[i] = ((TermInteger)term).getIntValue();
+    				intVals = true;
     			}
     			// term is percent
     			else if(term instanceof TermPercent) {
-    				int value = ((TermPercent) term).getValue().intValue();
+    				final int value = ((TermPercent) term).getValue().intValue();
     				rgb[i] = (value * MAX_VALUE) / PERCENT_CONVERSION;
+    				percVals = true;
     			}
     			// not valid term
     			else {
     				return null;
     			}
     		}
+    		
+    		if (percVals && intVals) //do not allow both percentages and int values combined
+    		    return null;
     		
     		// limits
     		for(int i = 0; i < rgb.length; i++) {
