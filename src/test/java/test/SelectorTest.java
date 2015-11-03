@@ -42,6 +42,7 @@ public class SelectorTest {
 	public static final String TEST_CLASS = ".fit { width: 80%;}";
 
 	public static final String TEST_ID = "#krysa { font-size: 100px;}";
+    public static final String TEST_INVALID_ID = "#1krysa { font-size: 100px;}";
 
 	public static final String TEST_ATTRIB = "A[href='fit.vutbr.cz'][id|=fit] { text-align: left;}";
 
@@ -210,6 +211,14 @@ public class SelectorTest {
 						.createLength(100.0f).setUnit(TermNumeric.Unit.px)),
 				rule.asList());
 	}
+
+    @Test
+    public void testInvalidID() throws CSSException, IOException {
+
+        StyleSheet ss = CSSFactory.parseString(TEST_INVALID_ID, null);
+        assertEquals("No rule is set", 0, ss.size());
+
+    }
 
 	@Test
 	public void testIDAttrib() throws CSSException, IOException {

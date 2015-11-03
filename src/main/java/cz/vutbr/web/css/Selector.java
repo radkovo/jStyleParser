@@ -225,6 +225,9 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     public interface ElementID extends SelectorPart {
     	public String getID();
     	public ElementID setID(String id);
+    	
+    	/** Checks whether the ID corresponds to the CSS limitations (does not start with a number) */
+    	public boolean isValidID();
     }
     
     public interface ElementDOM extends SelectorPart {

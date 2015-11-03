@@ -703,11 +703,18 @@ scope {
 selpart
 @init {
 	logEnter("selpart");
+	cz.vutbr.web.css.Selector.ElementID ident = null;
 }
 @after {
     logLeave("selpart");
 }
-    :  h=HASH { $selector::s.add(rf.createID(extractTextUnescaped(h))); }
+    :  h=HASH {
+          ident = rf.createID(extractTextUnescaped(h));
+          if (ident != null)
+            $selector::s.add(ident);
+          else
+            $combined_selector::invalid = true;
+       }
     | c=CLASSKEYWORD { $selector::s.add(rf.createClass(extractTextUnescaped(c))); }
 	| ^(ATTRIBUTE ea=attribute { $selector::s.add(ea);} )
     | p=pseudo {
