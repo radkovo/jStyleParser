@@ -233,11 +233,14 @@ public class TermFactoryImpl implements TermFactory {
 			throws IllegalArgumentException {
 
 		try {
-			// trim & lowercase
-			value = value.trim().toLowerCase();
-			// trim units from value
-			if (unit != null)
-				value = value.replaceAll(unit + "$", "");
+            if (unit != null)
+            {
+    			// trim & lowercase
+    			value = value.trim().toLowerCase();
+    			// trim units from value
+                if (value.endsWith(unit))
+                    value = value.substring(0, value.length() - unit.length());
+            }
 
 			return Float.parseFloat(value) * unary;
 		} catch (NumberFormatException e) {
@@ -252,11 +255,14 @@ public class TermFactoryImpl implements TermFactory {
 			throws IllegalArgumentException {
 
 		try {
-			// trim & lowercase
-			value = value.trim().toLowerCase();
-			// trim units from value
-			if (unit != null)
-				value = value.replaceAll(unit + "$", "");
+		    if (unit != null)
+		    {
+        		// trim & lowercase
+        		value = value.trim().toLowerCase();
+        		// trim units from value
+        		if (value.endsWith(unit))
+        		    value = value.substring(0, value.length() - unit.length());
+		    }
 
 			long lval = Long.valueOf(value) * unary;
 			if (lval > Integer.MAX_VALUE)
