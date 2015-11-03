@@ -258,7 +258,13 @@ public class TermFactoryImpl implements TermFactory {
 			if (unit != null)
 				value = value.replaceAll(unit + "$", "");
 
-			return Integer.valueOf(value) * unary;
+			long lval = Long.valueOf(value) * unary;
+			if (lval > Integer.MAX_VALUE)
+			    return Integer.MAX_VALUE;
+			else if (lval < Integer.MIN_VALUE)
+			    return Integer.MIN_VALUE;
+			else
+			    return (int) lval;
 		} catch (NumberFormatException e) {
 			throw new IllegalArgumentException(
 					"Invalid number format " + value, e);
