@@ -19,7 +19,9 @@ import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
+import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermInteger;
 import cz.vutbr.web.css.TermLength;
 import cz.vutbr.web.css.TermNumeric.Unit;
@@ -53,6 +55,9 @@ public class SimpleTest {
 	public static final String TEST_RGBFUNCTION2 =
 		"BODY { color: rgb(50%,40%,30%);} ";
 	
+    public static final String TEST_RGBFUNCTION_INVALID =
+            "BODY { color: rgb(50%,100,0);} ";
+        
 	public static final String TEST_UNIT =
 		"BODY { margin: 5em; }";
 	
@@ -190,6 +195,23 @@ public class SimpleTest {
 				rule.asList());
 	}
 	
+    @Test 
+    public void testRGBFunctionInvalid() throws IOException, CSSException   {
+        
+        StyleSheet ss = CSSFactory.parseString(TEST_RGBFUNCTION_INVALID, null);
+        assertEquals("One rule is set", 1, ss.size());
+        
+        RuleSet rule = (RuleSet) ss.get(0);             
+        
+        assertArrayEquals("Rule contains one selector BODY ", 
+                SelectorsUtil.createSelectors("BODY"), 
+                rule.getSelectors());
+        
+        assertEquals("Rule contains one declaration", 1, rule.size());
+        Term<?> value = rule.get(0).get(0);
+        assertTrue("Assigned value is TermFunction (not TermColor)", value instanceof TermFunction);
+    }
+    
 	@Test
 	public void testHashColor1() throws IOException, CSSException   {
 
