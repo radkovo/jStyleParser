@@ -146,11 +146,7 @@ public class RuleFactoryImpl implements RuleFactory {
 
 	
 	public ElementID createID(String id) {
-		final ElementID ret = new SelectorImpl.ElementIDImpl(id);
-		if (ret.isValidID())
-		    return ret;
-		else
-		    return null;
+		return new SelectorImpl.ElementIDImpl(id);
 	}
 	
 	public PseudoPage createPseudoPage(String pseudo, String functionName) {

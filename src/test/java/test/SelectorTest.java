@@ -43,6 +43,7 @@ public class SelectorTest {
 
 	public static final String TEST_ID = "#krysa { font-size: 100px;}";
     public static final String TEST_INVALID_ID = "#1krysa { font-size: 100px;}";
+    public static final String TEST_ESCAPED_ID = "#\\31krysa { font-size: 100px;}";
 
 	public static final String TEST_ATTRIB = "A[href='fit.vutbr.cz'][id|=fit] { text-align: left;}";
 
@@ -218,6 +219,27 @@ public class SelectorTest {
         StyleSheet ss = CSSFactory.parseString(TEST_INVALID_ID, null);
         assertEquals("No rule is set", 0, ss.size());
 
+    }
+
+    @Test
+    public void testEscapedID() throws CSSException, IOException {
+
+        StyleSheet ss = CSSFactory.parseString(TEST_ESCAPED_ID, null);
+        assertEquals("One rule is set", 1, ss.size());
+
+        RuleSet rule = (RuleSet) ss.get(0);
+
+        List<CombinedSelector> cslist = SelectorsUtil.appendCS(null);
+        SelectorsUtil.appendSimpleSelector(cslist, null, null, rf
+                .createID("1krysa"));
+
+        assertArrayEquals("Rule contains one ID selector #1krysa", cslist.toArray(), rule
+                .getSelectors());
+
+        assertEquals("Rule contains one declaration { font-size: 100px;}",
+                DeclarationsUtil.appendDeclaration(null, "font-size", tf
+                        .createLength(100.0f).setUnit(TermNumeric.Unit.px)),
+                rule.asList());
     }
 
 	@Test

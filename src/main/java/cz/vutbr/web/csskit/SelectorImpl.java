@@ -771,10 +771,6 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	public String getID() {
     		return id;
     	}
-    	
-    	public boolean isValidID() {
-    	    return !id.isEmpty() && !Character.isDigit(id.charAt(0));
-    	}
     	    	
     	@Override
     	public String toString() {

@@ -68,7 +68,15 @@ options {
   private String extractTextUnescaped(CommonTree token) {
         return org.unbescape.css.CssEscape.unescapeCss(token.getText());
     }
-   
+
+  private String extractIdUnescaped(CommonTree token) {
+        final String id = token.getText();
+        if (!id.isEmpty() && !Character.isDigit(id.charAt(0)))
+            return org.unbescape.css.CssEscape.unescapeCss(id);
+        else
+            return null;
+    }
+
   private java.net.URL extractBase(CommonTree token) {
       cz.vutbr.web.csskit.antlr.CSSToken ct = (cz.vutbr.web.csskit.antlr.CSSToken) token.getToken();
       return ct.getBase();
@@ -703,15 +711,15 @@ scope {
 selpart
 @init {
 	logEnter("selpart");
-	cz.vutbr.web.css.Selector.ElementID ident = null;
+	String ident = null;
 }
 @after {
     logLeave("selpart");
 }
     :  h=HASH {
-          ident = rf.createID(extractTextUnescaped(h));
+          idents = extractIdUnescaped(h);
           if (ident != null)
-            $selector::s.add(ident);
+            $selector::s.add(rf.createID(ident));
           else
             $combined_selector::invalid = true;
        }
