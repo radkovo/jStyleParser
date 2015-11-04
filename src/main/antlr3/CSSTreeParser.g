@@ -717,7 +717,7 @@ selpart
     logLeave("selpart");
 }
     :  h=HASH {
-          idents = extractIdUnescaped(h);
+          ident = extractIdUnescaped(h);
           if (ident != null)
             $selector::s.add(rf.createID(ident));
           else
