@@ -26,6 +26,7 @@ import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermFloatValue;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermInteger;
@@ -439,7 +440,7 @@ public class DeclarationTransformer {
 					if (zero.compareTo((Integer) term.getValue()) > 0) {
 						// return false is also possibility
 						// but we will change to zero
-						((TermInteger) term).setValue(zero);
+						((TermInteger) term).setZero();
 					}
 				}
 				// check for float
@@ -448,7 +449,7 @@ public class DeclarationTransformer {
 					if (zero.compareTo((Float) term.getValue()) > 0) {
 						// return false is also possibility
 						// but we will change to zero
-						((TermNumber) term).setValue(zero);
+                        ((TermFloatValue) term).setZero();
 					}
 				}
 			}

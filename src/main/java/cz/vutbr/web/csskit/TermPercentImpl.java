@@ -10,7 +10,7 @@ import cz.vutbr.web.css.TermPercent;
  * @version 1.0 * Construction moved to parser
  * 				 * Rewritten toString() method
  */
-public class TermPercentImpl extends TermNumericImpl<Float> implements TermPercent {
+public class TermPercentImpl extends TermFloatValueImpl implements TermPercent {
 
     protected TermPercentImpl() {
     }

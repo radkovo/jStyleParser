@@ -10,7 +10,7 @@ package cz.vutbr.web.css;
  * 
  * @author burgetr
  */
-public interface TermLengthOrPercent extends TermNumeric<Float>
+public interface TermLengthOrPercent extends TermFloatValue
 {
     
     public boolean isPercentage();

@@ -9,7 +9,7 @@ package cz.vutbr.web.css;
  * A term representing a resolution.
  * @author burgetr
  */
-public interface TermResolution extends TermNumeric<Float>
+public interface TermResolution extends TermFloatValue
 {
 
 }

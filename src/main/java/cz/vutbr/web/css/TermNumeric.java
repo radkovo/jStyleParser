@@ -87,4 +87,10 @@ public interface TermNumeric<T extends Number> extends Term<T> {
 	 */
     public TermNumeric<T> setUnit(Unit unit);
 
+    /**
+     * Sets the value to zero.
+     * @return Modified object to allow chaining
+     */
+    public TermNumeric<T> setZero();
+    
 }

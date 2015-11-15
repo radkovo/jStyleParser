@@ -7,7 +7,7 @@ import cz.vutbr.web.css.TermNumber;
  * @author Jan Svercl, VUT Brno, 2008
  * 			modified by Karel Piwko
  */
-public class TermNumberImpl extends TermNumericImpl<Float> implements TermNumber {
+public class TermNumberImpl extends TermFloatValueImpl implements TermNumber {
 
 	protected TermNumberImpl() {
 	}

@@ -2,7 +2,7 @@ package cz.vutbr.web.csskit;
 
 import cz.vutbr.web.css.TermFrequency;
 
-public class TermFrequencyImpl extends TermNumericImpl<Float> implements TermFrequency {
+public class TermFrequencyImpl extends TermFloatValueImpl implements TermFrequency {
 
 	protected TermFrequencyImpl() {
 	}

@@ -5,6 +5,6 @@ package cz.vutbr.web.css;
  * @author kapy
  *
  */
-public interface TermFrequency extends TermNumeric<Float> {
+public interface TermFrequency extends TermFloatValue {
 
 }

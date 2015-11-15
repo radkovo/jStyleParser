@@ -5,6 +5,6 @@ package cz.vutbr.web.css;
  * @author Jan Svercl, VUT Brno, 2008
  * @author Karel Piwko, 2008
  */
-public interface TermNumber extends TermNumeric<Float> {
+public interface TermNumber extends TermFloatValue {
 
 }

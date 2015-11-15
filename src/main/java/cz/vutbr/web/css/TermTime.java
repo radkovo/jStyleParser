@@ -5,6 +5,6 @@ package cz.vutbr.web.css;
  * @author kapy
  *
  */
-public interface TermTime extends TermNumeric<Float> {
+public interface TermTime extends TermFloatValue {
 
 }

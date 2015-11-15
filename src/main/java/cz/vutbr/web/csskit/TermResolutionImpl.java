@@ -11,7 +11,7 @@ import cz.vutbr.web.css.TermResolution;
  * 
  * @author burgetr
  */
-public class TermResolutionImpl extends TermNumericImpl<Float> implements TermResolution
+public class TermResolutionImpl extends TermFloatValueImpl implements TermResolution
 {
     
     protected TermResolutionImpl() 
