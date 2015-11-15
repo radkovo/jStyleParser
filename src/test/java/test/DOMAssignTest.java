@@ -216,6 +216,26 @@ public class DOMAssignTest {
         }
     }
 
+    @Test
+    public void invalidValues() throws SAXException, IOException {  
+        
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/invval.html"));
+        Document doc = ds.parse();
+        ElementMap elements = new ElementMap(doc);
+        
+        StyleMap decl = CSSFactory.assignDOM(doc, null, getClass().getResource("/simple/invval.html"), "screen", true);
+        
+        NodeData data = decl.get(elements.getElementById("test"));
+        assertNotNull("Data for #test exist", data);
+        
+        assertThat("Reference border width parsed", data.getValue(TermLength.class, "border-top-width"), is(tf.createLength(3.0f, Unit.px)));
+        assertThat("Negative zero treated as zero", data.getValue(TermLength.class, "border-right-width"), is(tf.createLength(0.0f, Unit.px)));
+        assertThat("Reference padding parsed", data.getValue(TermLength.class, "padding-bottom"), is(tf.createLength(1.0f, Unit.em)));
+        assertThat("Negative padding ignored", data.getValue(TermLength.class, "padding-top"), is(tf.createLength(1.0f, Unit.em)));
+        assertThat("Reference margin parsed", data.getValue(TermLength.class, "margin-top"), is(tf.createLength(2.0f, Unit.em)));
+        assertThat("Negative margin accepted", data.getValue(TermLength.class, "margin-bottom"), is(tf.createLength(-5.0f, Unit.em)));
+    }
+    
     private NodeData getStyleById(ElementMap elements, StyleMap decl, String id)
     {
         NodeData data = decl.get(elements.getElementById(id));
