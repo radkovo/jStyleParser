@@ -140,7 +140,7 @@ in the <d:ref target="parsing">parsing section</d:ref>.</p>
 
 </d:subsection>
 
-<d:subsection id="dom">
+<d:subsection id="domstyle">
 <d:title>Retrieving the Style of DOM Elements</d:title>
 <p> 
 When the analyzing part is done for the style sheet, the computed mapping between DOM elements and
