@@ -86,7 +86,20 @@ public class SingleMapNodeData implements NodeData {
 		return getValue(clazz, name, true);
 	}
 
-	public <T extends Term<?>> T getValue(Class<T> clazz, String name,
+    public String getAsString(String name, boolean includeInherited) {
+        Quadruple q = map.get(name);
+        if(q==null) return null;
+        
+        CSSProperty prop = q.curProp;
+        Term<?> value = q.curValue;
+        if (prop == null && includeInherited) {
+            prop = q.inhProp;
+            value = q.inhValue;
+        }
+        return (value == null ? prop.toString() : value.toString());
+    }
+
+    public <T extends Term<?>> T getValue(Class<T> clazz, String name,
 			boolean includeInherited) {
 		
 		Quadruple q = map.get(name);

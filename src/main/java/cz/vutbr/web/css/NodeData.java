@@ -89,6 +89,18 @@ public interface NodeData {
 			boolean includeInherited);
 
 	/**
+	 * Returns a string representation of the property value.
+	 * 
+	 * @param name
+	 *             Property name
+	 * @param includeInherited
+	 *             Whether to include inherited properties or not
+	 * @return The string representation of the assigned property value
+	 * or {@code null} when the property is not defined.
+	 */
+	public String getAsString(String name, boolean includeInherited);
+	
+	/**
 	 * Accepts values from parent as its own. <code>null</code> parent is
 	 * allowed, than instance is returned unchanged.
 	 * 

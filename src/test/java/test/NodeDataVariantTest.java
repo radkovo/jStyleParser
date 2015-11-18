@@ -273,6 +273,10 @@ public class NodeDataVariantTest {
 			return null;
 		}
 
+	    public String getAsString(String name, boolean includeInherited) {
+	        return null;
+	    }
+	    
 		public NodeData push(Declaration d) {
 			return this;
 		}

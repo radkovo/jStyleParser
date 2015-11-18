@@ -113,6 +113,23 @@ public class QuadrupleMapNodeData implements NodeData {
 		return getValue(clazz, name, true);
 	}
 	
+    public String getAsString(String name, boolean includeInherited) {
+        boolean usedInherited = false;
+        CSSProperty prop = propertiesOwn.get(name);
+        if (prop == null && includeInherited) {
+            prop = propertiesInh.get(name);
+            usedInherited = true;
+        }
+        if (prop == null)
+            return null;
+        else if (!prop.toString().isEmpty())
+            return prop.toString();
+        else {
+            Term<?> val = usedInherited ? valuesInh.get(name) : valuesOwn.get(name);
+            return (val == null) ? null : val.toString();
+        }
+    }
+    
 	public NodeData push(Declaration d) {
 		
 		Map<String,CSSProperty> properties = 
