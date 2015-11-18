@@ -73,11 +73,13 @@ public class SingleMapNodeData implements NodeData {
         if(q==null) return null;
         
         if(includeInherited) {
-            if(q.curValue!=null) return q.curValue;
-            return q.inhValue;
+            if(q.curProp!=null)
+                return q.curValue;
+            else
+                return q.inhValue;
         }
-        
-        return q.curValue;
+        else
+            return q.curValue;
     }
     
 	public <T extends Term<?>> T getValue(Class<T> clazz, String name) {
@@ -91,11 +93,13 @@ public class SingleMapNodeData implements NodeData {
 		if(q==null) return null;
 		
 		if(includeInherited) {
-			if(q.curValue!=null) return clazz.cast(q.curValue);
-			return clazz.cast(q.inhValue);
+			if(q.curProp!=null)
+			    return clazz.cast(q.curValue);
+			else
+			    return clazz.cast(q.inhValue);
 		}
-		
-		return clazz.cast(q.curValue);
+		else
+		    return clazz.cast(q.curValue);
 	}
 
 	public NodeData push(Declaration d) {
