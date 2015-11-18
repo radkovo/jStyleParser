@@ -1,0 +1,2366 @@
+body, h1, h2, h3, h4, h5, p, ul, ol, menu, li, table, td, th, form, iframe {margin:0; padding:0}
+h1, h2, h3, h4, h5 {font-size:1em; font-weight:400}
+img {border:0}
+body {position:relative; font-size:75%; font-family:Arial, Helvetica, sans-serif; line-height:1.33; color:#000; background:#FFF}
+table, form, input, select, td {font-size:100%}
+th, td { text-align:left}
+input, textarea, select {font:12px Arial, sans-serif}
+sub, sup {font-size:0.75em}
+sub {vertical-align:sub;}
+sup {vertical-align:top;}
+a {color:#13375E}
+a:hover {color:#B9151C}
+
+.h, .hid, .q-js .qh {display:none}
+.block { display:block}
+.vh {visibility:hidden}
+.o-hid {overflow:hidden}
+.cr, .cr a {color:#EE333E !important}
+.cp {cursor:pointer}
+.fl {float:left}
+.fr {float:right}
+.fc {clear:both}
+.fcw {float:left; clear:both; width:100%}
+.fca, .fc0, .fc1, .fc3, .fc5, .fc9, .fc13, .fc15, .fc18, .fc22, .fc-art {overflow:hidden; clear:both; float:none; margin:0; padding:0; line-height:1em}
+.fca {font-size:5px; height:5px}
+.fc0, .fc1 {display:block; font-size:0; height:0; line-height:0}
+.fc3 {font-size:3px; height:3px}
+.fc5 {font-size:5px; height:5px}
+.fc9, .fc-art, .fc10 {font-size:9px; height:9px; line-height:9px} /* zachovani kompatibility */
+.fc13 {font-size:13px; height:13px}
+.fc15 {font-size:15px; height:15px}
+.fc18 {font-size:18px; height:18px}
+.fc22 {font-size:22px; height:22px}
+.tal {text-align:left}
+.tac {text-align:center}
+.tar {text-align:right}
+.taj {text-align:justify}
+.ttu {text-transform:uppercase}
+.ttn {text-transform:none !important}
+.vat {vertical-align:top}
+.vam {vertical-align:middle}
+.vab {vertical-align:bottom}
+.nw {white-space:nowrap;}
+.nb {border:none}
+.static {position:static}
+.relative {position:relative}
+.imp {color:#F00 !important}
+.bgtrans {background:transparent}
+.i {font-style:italic}
+.b, .subtit {font-weight:bold}
+.w25, .quarter {width:25%}
+.w30 {width:30%} 
+.w33 {width:33%}
+.w49 {width:49%}
+.w50, .half {width:50%}
+.w66 {width:66%}
+.full {width:100%}
+.ml10 {margin-left:10px}
+.mr10 {margin-right:10px}
+.mb10 {margin-bottom:10px}
+
+.sm, .fsm, .f89, .f95 {font-size:83%}
+.f92 {font-size:92%}
+.fn {font-size:100%}
+.f117 {font-size:117%}
+.f125 {font-size:125%}
+
+/* reklamy */
+.r-head { position:relative; height:12px; line-height:12px; margin-right:17px; padding:0 1px; font-size:9px !important; text-align:right; color:#666; }
+.col-d .r-head { width:139px}
+.r-head span { position:absolute; top:0; right:0; z-index:1; width:100%; height:12px; background:url('/o/sph/reklama_top.gif') right top no-repeat}
+.r-head span.partner { background:url('/o/sph/partner-serveru.gif') right top no-repeat}
+
+.r-body { border:1px solid #E6E6E6}
+
+.r-b-in div { margin:auto}
+.col-r {margin-right:2px;}
+.col-r .r-body { border: 1px solid #D3D3D3; width:100%}
+.col-r .fca { font-size: 1px; height: 1px; background: #D3D3D3; }
+.col-r .r-body .r-head { display: none; }
+.col-r .r-body .r-body { border: 0; text-align: center; margin: 7px 0; }
+.col-r .r-body .r-body table { border: 0; margin:0 auto }
+.col-r .r-body .r-body .r-b-in { width: 150px; margin: auto; }
+.col-r .hid { display:block}
+.r-b-in table {border:0; padding:0;}
+
+.col-d img { vertical-align:middle; =vertical-align:top; background:#FFF;}
+
+
+/* pro mizeni mezirek ve FF */
+.r-body object, .r-body embed, .r-body iframe {display:block; margin:auto}
+
+.ahead {display:table !important; width:700px; height:117px; margin:0 auto 3px; }
+.ahead .r-body {line-height: 0}
+.ahead .r-head { margin-top:3px}
+table.ahead { border:0; border-collapse:collapse; }
+table.ahead td { vertical-align:top; }
+
+.m1 { width:470px; margin:0 auto; }  
+.m11, .m12, .m17 { width:302px; margin:0 auto;}
+.m19 {margin-bottom:20px}
+.m54 {width:970px; margin:0 auto 15px}
+.m202 { width:470px}
+.m202 br { display:none}
+
+#adsintersticialelement { left: 0; min-height: 100% !important; top: 0;  }
+
+.rollout-banner, .ahead { z-index: 9; position:relative }
+.rollout img, .rollout-banner img, .video-banner img {border: 0}
+.rollout, .rollout-banner, .video-banner {position: absolute; overflow: hidden}
+.rollout .maly, .rollout-banner .maly, video-banner .maly {display: block}
+.rollout .velky, .rollout-banner .velky, .video-banner .velky {display: none}
+.rozvinuto .maly {display: none}
+.rozvinuto .velky {display: block !important}
+
+/*reklama partner*/
+.m-partner-min .r-head, .m-partner-mid .r-head, .m-partner-big .r-head {text-align: center; font-size:10px; text-transform: uppercase; color: #8E8E8E}
+.m-partner-min .r-head {float: right; display: inline; min-width: 96px; _width: 96px; background: url("/o/sph/reklama_top96.gif") no-repeat bottom right}
+.m-partner-mid .r-head {float: right; display: inline; min-width: 139px; _width: 139px; margin-right:5px; background: url("/o/sph/reklama_top139.gif") no-repeat bottom right}
+.m-partner-big .r-head {float: right; display: inline; min-width: 156px; _width: 156px; margin:0; background: url("/o/sph/reklama_top158.gif") no-repeat bottom center}
+.m-partner-min .r-head span, .m-partner-mid .r-head span, .m-partner-big .r-head span {display:none}
+.m-partner-min .r-body, .m-partner-mid .r-body, .m-partner-big .r-body {clear:both}
+
+/* reklama r-bwin */
+.r-bwin { line-height: 11px}
+.r-bwin input {margin:0; height:0}
+.r-bwin td { text-align: left}
+
+.m35 {text-align:center}
+.m35 .r-head { width:745px; margin:0 auto; text-align:right;}
+.m35 .r-body { width:745px; margin:0 auto; text-align:left;}
+.m-ukazse .r-body {border:0}
+
+.takeit-468-140 { width:468px; height:140px; overflow:hidden; background:#0963AA url('http://www.takeit.cz/picture/obory/blue/ta-468-140-bq-tk.gif') repeat-x; }
+
+/* specialitka pro automodul a bonus web v col-d */
+.banner-top .entry img { display:block}
+
+/* layout */
+body {text-align:center;}
+#main {position:relative; width:1000px; margin:0 auto; text-align:left;}
+#main-repeat {position:relative; width:1000px; margin:0 auto; text-align:left;}
+.counters {position:absolute; top:-5000px; left:-5000px; z-index:1; text-align:left;} 
+.content { min-height:100px; _height:100px; margin-bottom:1em; padding:20px 0 0; background: url('/o/lidovky_ln3b/portal/bg-content.gif') no-repeat}
+
+body a { color:#1A68B5; text-decoration:none; outline: 0;}
+body a:hover { color:#000; text-decoration:underline; _visibility: visible;}
+
+.m-bg-1 {margin:0 auto; background:transparent url("/u/n3/shadeFFF.gif") repeat-y scroll 50% 0;}
+.m-bg-4 {width:1000px; margin:0 auto; background:#FFFFFF none repeat scroll 0 0; text-align:left;}
+.q-imac body, .q-imac .m-bg-1, .q-imac .m-bg-4 { background-image:none !important; }
+
+#main {width:100%; position:relative; margin:0 auto; text-align:center;}
+
+.half-l { float:left; width:48%;}
+.half-r { float:right; width:48%;}
+
+/* prepinac */
+.q-js .arts-1, .q-js .arts-2, .q-js .arts-3, .q-js .arts-4, .q-js .arts-5, .q-js .arts-6, .q-js .arts-7, .q-js .arts-8, .q-js .arts-9, .q-js .arts-10 {display:none}
+.q-js .prep-1 .arts-1, .q-js .prep-2 .arts-2, .q-js .prep-3 .arts-3, .q-js .prep-4 .arts-4, .q-js .prep-5 .arts-5, .q-js .prep-6 .arts-6, .q-js .prep-7 .arts-7, .q-js .prep-8 .arts-8, .q-js .prep-9 .arts-9, .q-js .prep-10 .arts-10 {display:block}
+
+/* reklama */
+.r-head {height:11px; line-height:11px; margin:0 0 1px 0; text-align:right;} 
+.r-head span {height:11px; background: url('/u/n4/r-head.gif') no-repeat top right; }
+#etarget .r-head span {background-position: 6px top; }
+
+/* imagebox */
+#imagebox  {float: right; margin-top: -114px; visibility: hidden; width: 300px; margin-right: 190px;}
+.imgbox  {color: #666666; display: block; font-size: 11px; height: 60px; line-height: 15px; margin: 0; overflow: hidden; padding: 0 0 0 70px; position: relative; text-decoration: none; width: 228px;}
+.imgbox img {border: 1px solid #D2D2D2; left: 0; position: absolute; top: 2px;}
+.imgbox-heading  {color: #3463B1; font-size: 12px; text-decoration: underline;}
+.imgbox-p  {color: #666666; display: block; text-decoration: none;}
+.imgbox-site  {color: #008000;  text-decoration: none;}
+.imgbox:hover .imgbox-heading {color: #008000; text-decoration: underline;}
+.foto-iframe-ads .imgbox:hover .imgbox-heading {color: #AADDFF;}
+.imgbox:hover .imgbox-p {color: #666666;}
+.imgbox:hover .imgbox-site {color: #3463B1;  text-decoration: underline;}
+#imagebox  .r-head span {background-position: 0 0;}
+#imagebox  .r-head {text-align: left;}
+
+.col-d .m-partner-ln .r-head {width:152px; margin-bottom:2px;}
+.col-d .m-partner-ln .r-body {border:#d3d3d3 1px solid;}
+.m-partner-ln .r-head span {background: url('/o/lidovky_ln3b/portal/r-head-partner.gif') no-repeat scroll right top;}
+.content .r-body { margin:0 0 1.5em}
+.r-body { border: medium none; }
+.m-1 {margin-left:-8px; border:0;}
+.col-d .entry img {display: block;margin: 10px auto 2px;}
+.col-d .entry a {text-decoration: underline;}
+.col-r .fca {display: none;}
+.col-d .r-head {width:auto;}
+
+#reality-idnes.b-box .servis {height:40px; margin-bottom:10px; border-bottom:#d0d1d2 1px solid; text-align:right;}
+#reality-idnes.b-box .servis h3 {padding-top:8px; padding-right:3px; font-size:117%; font-weight:bold;}
+#reality-idnes.b-box .servis img {float:left; }
+#reality-idnes.b-box .art {min-height:70px; border-bottom:#d0d1d2 1px solid; }
+#reality-idnes.b-box .art h3 {margin-bottom:4px;}
+#reality-idnes.b-box .art span {font-size:108%;}
+#reality-idnes.b-box .art span span {color:#d2071e; font-size:92%;}
+#reality-idnes.b-box .half-l {width:39%;}
+#reality-idnes.b-box .half-r {width:60%;}
+#reality-idnes.b-box p.art {display:block; min-height:0; margin-top:1em; padding-bottom:1em; text-align:right;}
+
+/* hlavicka */
+#portal {position:relative; z-index:2; width:100%; padding-top:90px; background: url('/o/lidovky_ln3b/portal/header.gif') repeat-x;}
+#portal h1, #portal .logow {position:absolute; top:24px; left:16px; z-index:3; }
+#portal h1 a span {display: none;}
+#portal .logow a span {display: none;}
+#portal img {_behavior:url("http://g.lidovky.cz/css/ln3/png-fix.htc"); }
+#portal h4 {display:none}
+#portal ul, #portal menu {list-style:none;}
+#portal li { float:left}
+#portal .head-app {position:absolute; top:0; left:194px; z-index:2000; display:block; width:103px; height:88px; overflow:hidden;}
+#portal .head-app img {_behavior:url("http://g.lidovky.cz/css/ln3/png-fix.htc"); }
+ul#toplinks {position:absolute; top:8px; right:0; z-index:2; overflow:hidden; }
+ul#toplinks li {float:left; margin-left:-1px; padding:0 8px; background: url('/o/lidovky_ln3b/portal/linka2.gif') no-repeat 0 50%;}
+ul#toplinks a {font-weight:bold; color:#444; text-decoration:none;}
+ul#toplinks a:hover {text-decoration:underline;}
+ul#toplinks li.login {margin-left:10px; padding-left:20px; background:url('/o/lidovky_ln3b/portal/logman.gif') no-repeat;}
+ul#toplinks li.login a {color:#1a68b5;}
+ul#toplinks #tl-pes {padding-right:26px; background-image: url('/o/lidovky_ln3b/portal/ico-portal.png'); _background-image: url('/o/lidovky_ln3b/portal/ico-portal.gif'); background-repeat: no-repeat; background-position:100% -108px;}
+ul#toplinks #tl-news {background-image: url('/o/lidovky_ln3b/portal/ico-portal.png'); _background-image: url('/o/lidovky_ln3b/portal/ico-portal.gif'); background-repeat: no-repeat; padding-right:25px; background-position:100% -146px; color:#1a68b5;}
+#day {position:absolute; top:64px; left:312px; z-index:2; width:370px; font-size:92%;}
+#day strong {font-weight:normal; padding-right:2em;}
+#portal form {position:absolute; top:60px; right:5px; z-index:1;}
+#portal form input {vertical-align:middle;}
+#portal form input.portal_fnd {border:#d0d1d2 1px solid; padding:4px 3px 3px 3px;}
+#portal #search { width:230px; padding:3px; border:1px solid #D0D1D2}
+#portal menu { clear:both; float:left; width:100%; }
+#webs, #webs2 {position:relative; width:100%; overflow:hidden}
+#webs li, #webs2 li { margin-left:-1px; padding:2px 1px 0; }
+#webs a, #webs2 a {float:left; padding:1px 10px 3px; font-weight:bold; text-decoration:none;}
+#webs a:hover, #webs2 a:hover { text-decoration:underline; }
+#webs {background:#4C5E83 url('/o/lidovky_ln3b/portal/normal1.gif') repeat-x; border-top:1px solid #BBB;}
+#webs li {background:url('/o/lidovky_ln3b/portal/linka1.gif') no-repeat 0 50%;}
+#webs li#ln_hp {background: none;}
+#webs li#ln_hp a {padding-left:28px; background: url('/o/lidovky_ln3b/portal/listtype1.gif') no-repeat 12px 50%;}
+#webs a {color:#FFF; padding-top:1px;}
+#webs a:hover {text-decoration:underline; }
+#webs .act a {color:#555; background:#FFF}
+#webs2 {background:#FFF url('/o/lidovky_ln3b/portal/normal2.gif') repeat-x 0 100%; border-bottom:1px solid #BBB}
+#webs2 li {background: url('/o/lidovky_ln3b/portal/linka2.gif') no-repeat 0 50%; }
+#webs2 li.first {background: none; }
+#webs2 li.new-slot { padding-right:28px;}
+#webs2 li.new-slot span, #webs li.new-slot span {height:20px; width:30px; position:absolute; top:6px; padding-left:2px; background:url(/o/lidovky_ln3b/portal/new.gif) no-repeat scroll 100% 0%; cursor:pointer; }
+#webs li.new-slot span {background:url(/o/lidovky_ln3b/portal/new.gif) no-repeat scroll 100% 5%;}
+#webs li.new-slot {padding-right:30px;}
+#webs li.new-slot.act a {}
+#webs2 a {color:#54709F;}
+#webs2 .act a {color:#555;}
+
+/* portal adbox 220x41px */
+#portal.adbox #day {width:170px; top:40px; left:330px;}
+#portal.adbox #krilupa {position:absolute; width:220px; height:40px; top:38px; left:520px; z-index:2; }
+#portal.adbox #lnapp {position:absolute; width:234px; height:66px; top:24px; left:520px; z-index:2; }
+#portal.adbox form {top:54px;}
+
+/* paticka */
+#footer {clear:both; width:100%; margin:0; padding-bottom:1em;}
+#footer .fr a {font-weight:bold}
+#copy {clear:both; margin:0; color:#515151;}
+#footer img { margin-top:-1em}
+
+/* kolotoc - oci */
+#eyes {float:left; width:926px !important; clear:none; position:relative; margin:0 0 1em; height:190px; overflow:hidden;}
+#eyes h2 { margin:0 0 0.2em; color:#D2071E; font-size:150%; font-family: Georgia, "Times New Roman", Times, serif; }
+#eyes li h3 a, #eyes li h3 a:hover { padding:2px 6px 0; color:#444; text-decoration:none; }
+#eyes li h3 a:hover {color:#222; text-decoration:underline}
+#eyes img {margin-bottom:4px; border:0; }
+#eyes ul {float:left; list-style:none; clear:both; width:2000px; padding:0; margin:0; background:url('http://g.idnes.cz/o/lidovky_ln3b/portal/caroussel-bg.gif') repeat 0px 0px; border:0; border-bottom:#d0d1d2 1px solid; overflow:hidden; }
+#eyes ul li {float:left; list-style:none; width:185px; min-height:189px; height:189px; margin:0; padding:0; border:0; }
+#eyes ul li h3 {margin:0 0 6px 1px; padding:0 0 8px; background:#E3E6ED url('/o/lidovky_ln3b/portal/eyes-h3.gif') repeat-x 0 100%; border-top:#d0d1d2 1px solid; font-weight:bold; text-align:center; }
+#eyes ul li a, #eyes ul li a:hover {display:block; cursor:pointer; text-decoration:none; overflow:hidden;}
+#eyes ul li a:hover span {text-decoration:underline;}
+#eyes ul li a span {display:block; overflow:hidden; height:40px; margin-left:6px; margin-right:6px; font-size:117%; font-weight:bold;}
+#eyes ul li a span.transform { display:inline; height:auto; margin-right:0; margin-bottom:8px;}
+#eyes ul li a span.transform br { display:none;}
+#eyes ul li a span.transform img { width:174px; _height:99px; margin-top:0;}
+#eyes ul li.e-idnes span.transform img {margin-top:-30px; _margin-top:0;}
+.eyes-move-l, .eyes-move-r {width:37px; float:left; height:190px; display:block;}
+.eyes-move-r {float:right; width:37px;}
+.eyes-move-l a, .eyes-move-r a {width:37px; height:190px; display:block; cursor:pointer; background:url('http://g.idnes.cz/o/lidovky_ln3b/portal/caroussel-move.gif') no-repeat;}
+.eyes-move-r a {background-position: -97px 0px;}
+.eyes-move-l a:hover {background-position: -51px 0px;}
+.eyes-move-r a:hover {background-position: -148px 0px;}
+
+/* layout */
+.col-a {float:left; width:474px; min-height:400px; margin-right: 36px;}
+.col-b {float:left; width:302px;  position: relative; z-index:100;}
+.col-d {float:right; width:158px;  position: relative; z-index: 100;}
+.col-ab {float:left; width:812px;} 
+.col-ab .col-a {margin-right:0; min-height:0;}
+.col-ab .col-a .bg-line-1, .col-ab .col-a .bg-line-2 {background:none;}
+.col-ab .col-b {float:right; margin-left:0;}  
+.gal-a {float:left; width:460px; position:relative;}
+.gal-b {float:right; width:476px;}
+.col-abc {float:left;  width:808px; margin:0 0px 0 0; position:relative; }
+.col-abc #col-ab {float:left; overflow:hidden; width:463px; position:relative; padding-top:5px; }
+.col-abc #col-c {float:left; width:302px; margin:5px 0 0 43px; overflow:hidden; }
+.col-adb .col-ad {float:left; min-height:1em; width:664px;}
+.col-adb .col-b {float:right; margin-right:0; margin-left:0;}
+
+/* fotograf */
+.content.fotograf .col-a {width:632px; margin-right:0;}
+.content.fotograf .col-a .bg-line-1 {background: url('/o/lidovky_ln3b/portal/bg-fot-a.gif') repeat-y;}
+.content.fotograf .col-b {float:right;}
+
+
+/** RUBRIKA A CLANEK **/
+
+/* pravidla ohraniceni */
+.col-a .bg-line-1 {background: url('/o/lidovky_ln3b/portal/bg-col-a.gif') repeat-y;}
+.col-a .bg-line-2 {padding:0 7px 5px; background: url('/o/lidovky_ln3b/portal/dot-three.gif') repeat-x 0 100%;}
+.col-ab .bg-line-1 {background: url('/o/lidovky_ln3b/portal/bg-col-ab.gif') repeat-y;}
+.col-ab .bg-line-2 {padding:0 7px 5px; background: url('/o/lidovky_ln3b/portal/dot-three.gif') repeat-x 0 100%;}
+.col-adb .col-ad .bg-line-1 {background: url('/o/lidovky_ln3b/portal/bg-col-ad.gif') repeat-y;}
+.col-adb .col-ad .bg-line-2 {padding:0 7px 5px; background: url('/o/lidovky_ln3b/portal/dot-three.gif') repeat-x 0 100%;}
+.col-ab .col-a .cont { margin-right : 14px;}
+
+
+/* vypis clanku */
+ h2.page { display: block; margin-bottom:10px; padding:1px 0; font-weight:bold; font-size:117%; color:#FFF; background:#6D92BE url('/o/lidovky_ln3b/portal/h2-460.gif') repeat-y 50% 0; text-align:center; text-transform:uppercase }
+.col-adb h2.page {background-color:#455c8c;}
+.col-adb h2.page a {color: #fff;}
+.art { margin:0 0 1em}
+.art h3, .art h2 { margin:0 0 8px; /* clear:both; */ font-size:175%; font-family:Georgia, "Times New Roman", Times, serif; line-height:117%;}
+.col-b .art h3 { font-size : 142%;}
+.art img { float:left; margin-right:10px;}
+.opener img { float:none; display:block; margin:0;}
+.art a.more { padding-left:1em; color:#D2071E; text-decoration:none; white-space:nowrap; text-transform: uppercase; font-size:83%; _line-height:1.62; }
+.art a.more span {text-decoration: underline;}
+.art a.more:hover span {color:#000;}
+.art a.more:hover u {color:#000; }
+.art-info .brisk, .brisk { margin-right:4px; padding:1px 0.5em; font-size:11px; font-weight:bold; color:#FFF; background:#D2071E; white-space:nowrap  }
+.art-info .commercial, .commercial { padding:1px 0; color:#000; background:none}
+.art p.tar { display:block; margin-top:2px; text-align:right; font-size:92%; color:#888 }
+.alone {padding-bottom:4px; padding-left:12px; background:url('/o/lidovky_ln3b/portal/listtype4.gif') no-repeat 0 0.4em;}
+.list-art .art {padding:0 0 6px; background: url('/o/lidovky_ln3b/portal/dot-line.gif') repeat-x 0 100%;}
+.list-art.hlavni .art {padding:0 0 6px; background: none;}
+.list-art .art p.tar a {color:#888;}
+.list-art .art p.tar a:hover {color:#000;}
+.bigger h3, .bigger h2 { font-size: 226%; }
+.opener img {padding-bottom:6px;}
+.opener h3.redlining a, .opener h2.redlining a  { color: #d2071e;}
+.opener h3.redlining a:hover, .opener h2.redlining a:hover {color: #000;}
+.mark-foto-text, .mark-video-text {display:inline-block; height:12px; margin-left:4px; }
+.mark-foto-text {width:16px; background:url('/o/lidovky_ln3b/portal/info-photo.gif') no-repeat 0 50%;}
+.mark-video-text {width:12px; background:url('/o/lidovky_ln3b/portal/info-video.gif') no-repeat 0 50%;}
+
+/* vypis clanku - poutani videa */
+.mark-video {position:relative; width:460px; }
+.mark-video a, a.mark-video {display:block; margin-bottom:6px; _margin-bottom:0px;  text-decoration:none; cursor:pointer; cursor:hand; }
+.mark-video img, .mark-video img.gal {margin:0; float:none; }
+.mark-video span {position:absolute; bottom:10px; =bottom:7px; right:2px; z-index:2; width:90px; height:67px; background:url('/o/lidovky_ln3b/ico/play-sph.png') no-repeat; _background:none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://g.idnes.cz/o/lidovky_ln3b/ico/play-sph.png', sizingMethod='scale'); }
+.lnmala {float:left; width:100px; height:75px; margin:0 10px 0 0}
+.lnmala span {width:41px; height:31px; bottom:4px; right:2px; background:url('/o/lidovky_ln3b/ico/play-lnmala.png') no-repeat; _background:none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader (src='http://g.idnes.cz/o/lidovky_ln3b/ico/play-lnmala.png', sizingMethod='scale');}
+.midi {float:left; width:80px; height:60px; margin:0;}
+.midi span {width:30px; height:23px; bottom:1px; right:1px; background:url('/o/lidovky_ln3b/ico/play-midi.png') no-repeat; _background:none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader (src='http://g.idnes.cz/o/lidovky_ln3b/ico/play-midi.png', sizingMethod='scale');}
+.sph {float:left; width:380px; height:217px; margin:0}
+.sph span {width:90px; height:67px; bottom:10px; right:5px; background:url('/o/lidovky_ln3b/ico/play-sph.png') no-repeat; _background:none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader (src='http://g.idnes.cz/o/lidovky_ln3b/ico/play-sph.png', sizingMethod='scale');}
+.lnbox1 {float:left; width:240px; height:137px; margin:0;}
+.lnbox1 span {width:56px; height:42px; bottom:4px; right:2px; background:url('/o/lidovky_ln3b/ico/play-lnbox1.png') no-repeat; _background:none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader (src='http://g.idnes.cz/o/lidovky_ln3b/ico/play-lnbox1.png', sizingMethod='scale');}
+.alone-video span {float:left; display:block; width:41px; height:31px; margin-right:5px; cursor:pointer; background:url('/o/lidovky_ln3b/ico/play-midi.png') no-repeat; _background:none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader (src='http://g.idnes.cz/o/lidovky_ln3b/ico/play-midi.png', sizingMethod='scale');}
+.alone-video {line-height:2.21em;}
+
+/* emblemy pro col-b */
+.col-b .b-box-3 .marks.art h3 {float:right; width:180px;}
+.col-b .b-box-3 .marks.art a.mark {display:block; width:110px; height:92px; float:left;}
+.col-b .b-box-3 .marks.art a.mark img {position:absolute; margin-right:0px; z-index:1;}
+.col-b .b-box-3 .marks.art a.mark span {display:block; position:absolute; margin:10px 0 0 2px; width:41px; height:31px;  z-index:5;}
+
+.col-b .b-box-3 .marks.art a.mark.r1 span {background:url('/o/lidovky_ln3b/ico/mark-rank-1.png') no-repeat; _background:none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader (src='http://g.idnes.cz/o/lidovky_ln3b/ico/mark-rank-1.png', sizingMethod='scale');}
+.col-b .b-box-3 .marks.art a.mark.r2 span {background:url('/o/lidovky_ln3b/ico/mark-rank-2.png') no-repeat; _background:none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader (src='http://g.idnes.cz/o/lidovky_ln3b/ico/mark-rank-2.png', sizingMethod='scale');}
+.col-b .b-box-3 .marks.art a.mark.r3 span {background:url('/o/lidovky_ln3b/ico/mark-rank-3.png') no-repeat; _background:none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader (src='http://g.idnes.cz/o/lidovky_ln3b/ico/mark-rank-3.png', sizingMethod='scale');}
+.col-b .b-box-3 .marks.art a.mark.video span {margin-top:49px; margin-left:65px; background:url('/o/lidovky_ln3b/ico/play-lnmala.png') no-repeat; _background:none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader (src='http://g.idnes.cz/o/lidovky_ln3b/ico/play-lnmala.png', sizingMethod='scale');}
+
+
+/* vypis clanku double (galerie a videa) */
+.list-art.double .half-l {width:240px; overflow:hidden;}
+.list-art.double .half-r {width:210px;}
+.list-art.double .half-l .mark-video {position:relative; }
+.list-art.double .half-l .mark-video img {float:left; margin-right:6px; position:relative;}
+.list-art.double .half-l .mark-video span {height:74px; left:16%; top:34px; margin:0; } 
+
+
+/* clanek - obsah */
+.art-full h1, .art-full h2 {margin-bottom:12px; line-height:1.33; font-size:200%; font-family: Georgia, "Times New Roman", Times, serif; }
+.art-full .art-info {margin:0 0 0.5em;}
+.art-full .time { color:#666; font-family: Georgia, "Times New Roman", Times, serif; font-size:92%}
+.art-full .opener { margin-bottom:1em; font-size:117%; font-weight:bold}
+.art-full .text { font-size:117%}
+.art-full .text p, .text p, .text table {margin-bottom:1em;}
+.art-full .text img.fl {float:left; margin:4px 10px 1em 0; _margin-right:7px;}
+.art-full .text img.fr {float:right; margin:4px 0 1em 10px; _margin-left:7px;}
+.art-full .text ol {margin-left:40px;}
+.art-full .authors { margin-bottom:1em; text-align:right; font-weight:bold;}
+.art-full .authors .name {margin-left:10px;}
+.art-full a:hover.ico-zoom {text-decoration:none;}
+.art-full .autor {display:block; margin-top:-2px; margin-bottom:6px; padding: 1px 3px; background:#eee; text-align:right;}
+
+.art-full .text h3.tit, .art-full .text h3.imp,
+ .art-full .text h2.tit, .art-full .text h2.imp  {font-size:117%; font-weight:bold;}
+.art-full .text h3.imp, .art-full .text h4.cit.imp,
+.art-full .text h2.imp, .art-full .text h3.cit.imp {color:#d2071e !important;}
+.art-full .text h4.cit,
+.art-full .text h3.cit {font-style:italic; color:#444;}
+.art-full .text h4.cit, .art-full .text h4.cit.imp,
+.art-full .text h3.cit, .art-full .text h3.cit.imp  {margin-bottom:1em;}
+
+.art-full .equip, .art-full .equip-fl {width:auto; margin-bottom:1em; font-size:12px;}
+.art-full .equip table, .art-full .equip-fl table, .art-full .equip-fr table {margin:0; border-collapse:collapse;}
+.art-full .equip td, .art-full .equip-fl td, .art-full .equip-fr td {padding:0; border:0; border-bottom:1px solid #E3E3E3}
+.art-full .equip-tv {margin-bottom:0.5em;}
+.art-full .equip td.equ-img { padding:0; border:0 none;}
+.art-full .equ-img a {height:auto; line-height:17px; padding:0; text-decoration:none;}
+.art-full .equ-img .ico-zoom {text-align:right;}
+.art-full .equ-img img {display:block; }
+.art-full .equ-img a span { margin:0;}
+.art-full .equ-img .autor {margin:0; background-color:#f5f5f5; display:block; font-size:92%; line-height:17px; min-height:17px; padding:0 4px; text-align:right;}
+.art-full .equ-img p {font-size:11px; padding:2px 0 0 0px; border-bottom:#f5f5f5;}
+
+/* clanek - souvisejici */
+.art-full .related { margin:0 0 2em;}
+.art-full .related h3 { margin-bottom:1em; font-size:125%; font-weight:bold; color:#444;}
+.art-full .related h3 span {padding:0 0 6px; background:url('/o/lidovky_ln3b/portal/dot-three.gif') repeat-x 0 100%; }
+.art-full .related li { list-style: none; margin:0 0 0.5em 34px; padding-left: 16px; background: url('/o/lidovky_ln3b/portal/listtype4.gif') no-repeat 0 0.4em; font-family: Georgia, "Times New Roman", Times New Roman, serif; font-size: 108%;}
+.art-full .related li p { font-family: Arial;}
+.art-full .related .more-art { color:#777; font-size:117%; display:block; margin-top:14px; font-weight:bold;}
+
+/* clanek - fotogalerie */
+.fotogal-in-art { margin:0 0 2em;}
+.fotogal-in-art h3 { margin-bottom:1em; font-size:125%; font-weight:bold; color:#444}
+.fotogal-in-art h3 span {padding:0 0 6px; background:url('/o/lidovky_ln3b/portal/dot-three.gif') repeat-x 0 100%; }
+.content .overimg-4 { width:460px; overflow:hidden; margin:0 0 1em; line-height:1;} 
+.content .overimg-4 span { display:block; width:500px}
+.content .overimg-4 img { float:left; width:100px; height:75px; margin:0 20px 0 0;} 
+
+/* clanek - online */
+.art-full #on-line-in-art {border-bottom:#C8C8C8 1px dashed; padding-bottom:4px; font-size:92%; }
+.art-full #on-line-in-art h3 {display:block; margin:0 0 6px; padding:2px 4px; border-top:1px dashed #C8C8C8; border-bottom:4px solid #6D92BE; color:#000000; font-family:Georgia,"Times New Roman",Times,serif; font-size:117%; background:#FFFFFF none repeat; text-transform:uppercase;}
+.art-full #on-line-in-art #on-line-top {padding:7px 0 7px 9px; background:#666; color:#FFFFFF; font-weight:bold; }
+.art-full #on-line-in-art #on-line-data .c2 {background:#F5F5F5;}
+.art-full #on-line-in-art #on-line-data .c3 {background:#1A68B5; color:#FFFFFF; min-height:10px; _color:#000; _background:#fff; _font-weight:bold;}
+.art-full #on-line-in-art #on-line-data .time {float:left; width:52px; padding:6px 0; font-weight:bold; font-size:100%; text-align:center; color:#000000; font-family:Arial, Sans-Serif}
+.art-full #on-line-in-art #on-line-data .event {float:right; padding:6px 0; width:400px; overflow:hidden;}
+.art-full #on-line-in-art #on-line-data .event span {padding:0; display:block;}
+.art-full #on-line-in-art .ico-r {clear:both;}
+.art-full #on-line-in-art .event span.iconline {display:block; float:left; width:15px; height:15px; margin-right:4px; background-repeat:no-repeat;}
+
+
+/* clanek - video */
+.video-flv embed { background: url('/u/flv/lidovky-video-nav.png') 50% 100% no-repeat; display: block; }
+.video-flv-in { background: url('/u/flv/lidovky-video-nav.png') 50% 100% no-repeat; height: 100%; width: 100% }
+.no-video-flv { background: #222 url('/u/flv/lidovky-no-video-nav.png') 0 100% repeat-x; color: #FFF; font-size: 150%; font-weight: bold; text-align: center; zoom: 1; }
+.no-video-flv span { padding-top: 3em; line-height: 1.5em; display: block; width: 100%; }
+.no-video-flv a { color: #4E9DE6; font-size: 120%; }
+.no-video-flv a:hover { color: #FFF; }
+
+/* clanek - sdileni */
+.art-full .art-add {margin-bottom:20px}
+.art-full .art-add ul, .art-add li {float:left; list-style:none; background:#F3F3F3}
+.art-full .art-add ul {width:100%}
+.art-full .art-add li {padding:0 10px}
+.art-full .art-add a {float:left}
+.art-full .art-add li.to-top {float:right; background:#D0D1D2; padding:0}
+.art-full .art-add li.to-top a.ico-top {padding:0 10px}
+.art-full .art-add li.to-top a.ico-top span {margin:5px 0 0}
+.art-full .art-add ul.link.fs92 li div a span {height:16px; line-height:16px; margin-right:4px; background-color:#fff; background-repeat:no-repeat;}
+.art-full .art-add ul.link.fs92 li div a {margin-right:6px;}
+.art-full .art-add ul.link {width:452px; padding:2px 3px; background:none; border:1px solid #F3F3F3; border-top:0; }
+.art-full .art-add .link li {padding:0 6px; background:none}
+.art-full .art-add .link .fl {float:left}
+.art-full .art-add .link a {font-weight:normal}
+.art-full .art-add .ico-linkuj span, .art-add .link .ico-google span, .art-add .link .ico-facebook span, .art-add .link .ico-jagg span, .art-add .link .ico-smesk span,
+.art-full .art-add a:hover.ico-linkuj span, .art-add a:hover.ico-google span, .art-add a:hover.ico-facebook span, .art-add a:hover.ico-jagg span, .art-add a:hover.ico-smesk span {background-color:#FFF}
+.art-full .art-add .fs92 li {font-size:92%}
+
+/* clanek - poslat mailem */
+.art-full .online-ico .inside-page iframe {width:100%; margin-top:10px;} /*top*/
+.art-full .art-full .inside-page iframe {width:100%; margin-top:10px;} /* tip redakci */
+
+/* clanek - etarget*/
+#etarget .r-body {padding-top:12px; text-align:left; background:#fcfcfc;}
+#etarget .etarget-in {padding:10px 10px 0}
+#etarget h3 {float:left; margin-left:10px; _margin-left:5px; font-weight:bold}
+#etarget .r-bodyx .tar { margin-left:10px; text-align:left;}
+#etarget .r-bodyx .tar a { color:#555; }
+#etarget .title {margin-bottom:1em} 
+#etarget .title a {font-weight:bold; line-height:1.33; color:#000; text-decoration:underline;} 
+#etarget .url {font-size:92%;}
+
+/* clanek - diskuse */
+#moot2 { clear:both; overflow:hidden}
+#moot2 h2 { width:100%; margin:0 0 4px; padding:1px 0; font-weight:bold; font-size:117%; color:#FFF; background:#6D92BE url('/o/lidovky_ln3b/portal/h2-460.gif') repeat-y 50% 0; text-align:center; text-transform:uppercase }
+#moot2 h2 a { color:#FFF;}
+#moot2 .box-in .list { padding:10px 0 10px 10px; background:#F3F3F3}
+#moot2 div.top, #moot2 div.di {height:1.6em; overflow:hidden;}
+#moot2 .name, #moot2 .subj, #moot2 .time, #moot2 .date { float:left;  height:1.6em; line-height:1.6em; overflow:hidden; color:#000}
+#moot2 .name { width:98px; margin-right:16px; }
+#moot2 .subj { width:205px; padding:0; font-weight:bold;}
+#moot2 span.l, #moot2 span.i, #moot2 span.t, #moot2 span.n { float:left; width:13px; height:1.65em; line-height:1;}
+#moot2 span.l { background: url('/o/technet_n3/lti.gif') no-repeat 0 50%; }
+#moot2 span.t { background: url('/o/technet_n3/lti.gif') no-repeat 50% 50%; }
+#moot2 span.i { background: url('/o/technet_n3/lti.gif') no-repeat 100% 50%; }
+#moot2 span.n { background:0; }
+#moot2 .date { width:65px; font-weight:normal; text-align: right; }
+#moot2 .time { width:36px; margin:0 7px 0 12px; font-weight:normal; text-align:right; }
+#moot2 .nr { padding:10px 0 5px 0; color:#777; font-size:92%}
+
+#abcd-moot2 #moot2 h2 {background:#455C8C url(/o/lidovky_ln3b/portal/h2-460.gif) repeat-y scroll 50% 0;}
+
+
+/*** B-BOXY ***/
+/* spolecne definice b-boxu */
+.b-box, .b-box-2, .col-b .r-body, .b-box-3 { margin:0 0 18px}
+.b-box h2 { width:100%; margin:0 0 6px; padding:1px 0; font-weight:bold; font-size:117%; color:#FFF; background:#6D92BE url('/o/lidovky_ln3b/portal/h2-302.gif') repeat-y 50% 0; text-align:center; }
+.b-box h2 a { color:#FFF;}
+.b-box .author a {color:#d2071a; text-transform:uppercase;}
+.b-box .author .arrow {font-family: Verdana; font-weight:bold;}
+.b-box .list-art .art.opener img {width:100px; height:75px; padding:0px 10px 0 0; float:left;}
+.b-box .list-art .art.opener .mark-video span {background:none;}
+.b-box .list-art .art.opener .lnbox1 {width:auto; height:auto;}
+.b-box-2 , .b-box-3 {border:1px solid #D0D1D2;}
+.b-box-2 .box-in {margin:4px;}
+.b-box-2 .ico-r {margin-right:6px;}
+.b-box-2 h2 { line-height:1.6em; margin:0 0 0.5em; padding:0 0 6px; color:#444; background:#E3E6ED url('/o/lidovky_ln3b/portal/eyes-h3.gif') repeat-x 0 100%; font-weight:bold;}
+.b-box-2 h2 span, .b-box-2 h2 a { padding-left:20px; color:#444; background:url('/o/lidovky_ln3b/portal/listtype3.gif') no-repeat 4px 0.3em;}
+.b-box-3 h2 {padding:4px 0 11px 8px; background:#dcdfe5 url(/o/lidovky_ln3b/portal/h2-box3.gif) repeat-x; font-size:158%; font-family: Georgia, "Times New Roman", Times, serif; font-weight:normal;}
+.b-box-3 h2 a {color:#444;}
+.b-box-3 .art .lnmala {margin: 0;}
+.b-box-3 .art .lnmala span {bottom: 14px; right: 6px;}
+
+/* b-box-2 hodnoceni dvojsloupec */
+.b-box-2.double-charts h3 {font-weight:bold; margin-bottom:5px; border-bottom:#e3e6ed 1px solid;}
+.b-box-2.double-charts .art {font-size:92%;}
+.b-box-2.double-charts .art img, .b-box-2.double-charts .half-r h3 {margin-right:5px;}
+.b-box-2.double-charts .half-l .art, .b-box-2.double-charts .half-l h3 {margin-left:5px;}
+.b-box-2.double-charts .half-r a {color:#d2071e;}
+.b-box-2.double-charts .half-r a:hover {color:#000;}
+.b-box-2.double-charts .ico-r {clear:both; margin-right:5px;}
+
+/* b-box-2 selector */
+.b-box-2.selector h2 {margin-bottom:0;}
+.b-box-2.selector .select-box {padding:6px 6px 14px 6px; background: #f5f5f5 url(/o/lidovky_ln3b/portal/eyes-h3.gif) repeat-x scroll 0 100%;}
+.b-box-2.selector .select-box label {display:block; margin-bottom:2px; font-weight:bold; color:#666;}
+.b-box-2.selector .select-box select {float:left; width:170px; padding:2px 2px 2px 1px; font-size:100%;}
+.b-box-2.selector .select-box .send {float:right;}
+.b-box-2.selector table {padding:4px;}
+.b-box-2.selector table tr td {padding:2px; border-bottom:#f5f5f5 1px solid;}
+
+/* b-box-3 tabulky */
+.b-box-3 .small-table {border-collapse:collapse; font-size:11px; margin:5px 4px 0px 5px; width:291px; background:#f5f5f5;}
+.b-box-3 .small-table td {margin:0; padding:2px 4px 4px 3px; border-bottom:#f5f5f5 1px solid; border:#fff 1px solid; vertical-align:bottom;}
+.b-box-3 .small-table td img {margin-right:2px;}
+.b-box-3 .small-table.vat td {vertical-align:top;}
+
+.b-box-3 .match-table {border-collapse:collapse; font-size:92%;}
+.b-box-3 .match-table td {padding:5px 0px 3px 0px; border-bottom:#ddd 1px solid;}
+.b-box-3 .match-table td.time {width:50px; padding-left:10px;}
+.b-box-3 .match-table td.vl {width:21px; padding-right:4px;}
+.b-box-3 .match-table td.team.tar {padding-right:4px;}
+.b-box-3 .match-table thead tr {background:#e1e1e1; font-weight:bold;}
+.b-box-3 .match-table thead td.time {width:120px;}
+.b-box-3 .match-table tbody tr {background: #fafafa url('/o/lidovky_ln3b/portal/match-table-tr.gif') repeat-x;  }
+.b-box-3 .match-table td.vl.tal {padding-left:6px;}
+.b-box-3 .match-table td.matches {width:25px;}
+.b-box-3 .match-table td.game {width:15px;}
+.b-box-3 .match-table td.game.tar {width:20px;}
+.b-box-3 .match-table td.points {width:25px; padding-right:5px; }
+
+/* výsledková tabulka v èlánku */
+.art-full h2 { margin: 0; font-size: 130%;}
+.art-full #t-gr {margin: 0;}
+.art-full .b-box-3 .match-table td.game {width: 30px; text-align: center;}
+.art-full .b-box-3 .match-table td.points {padding-right: 0; text-align: center; width: 35px;}
+.art-full .b-box-3 .match-table td.matches {text-align: center;}
+.art-full .b-box-3 .match-table td.game.empt {width: 5px;}
+.art-full .b-box-3 .match-table thead td.time {padding-left: 5px;}
+
+.b-box-3 .groups {height:24px; padding-top:6px; font-size:92%;}
+.b-box-3 .groups .half-l {width:110px; padding-left:10px; font-weight:bold;}
+.b-box-3 .groups .half-r {width:164px; }
+.b-box-3 .groups .half-r span.group {display:block; float:left; width:17px; height:17px; margin-right:3px; background-image:url('/o/lidovky_ln3b/portal/match-table-group.gif'); background-repeat:no-repeat; text-align:center; color:#fff; font-weight:bold; cursor:pointer;}
+.b-box-3 .groups.small-margin .half-r span.group {margin-right:1px;}
+.b-box-3 .groups .half-r span.group#gr-a {background-position: 0px 0px;}
+.b-box-3 .groups .half-r span.group#gr-b {background-position: -20px 0px;}
+.b-box-3 .groups .half-r span.group#gr-c {background-position: -40px 0px;}
+.b-box-3 .groups .half-r span.group#gr-d {background-position: -60px 0px;}
+.b-box-3 .groups .half-r span.group#gr-e {background-position: -80px 0px;}
+.b-box-3 .groups .half-r span.group#gr-f {background-position: -100px 0px;}
+.b-box-3 .groups .half-r span.group#gr-g {background-position: -120px 0px;}
+.b-box-3 .groups .half-r span.group#gr-h {background-position: -140px 0px;}
+.b-box-3 .groups .half-r span.group#gr-i {background-position: -160px 0px;}
+.b-box-3 .groups .half-r span.group.active#gr-a {background-position: 0px -18px;}
+.b-box-3 .groups .half-r span.group.active#gr-b {background-position: -20px -18px;}
+.b-box-3 .groups .half-r span.group.active#gr-c {background-position: -40px -18px;}
+.b-box-3 .groups .half-r span.group.active#gr-d {background-position: -60px -18px;}
+.b-box-3 .groups .half-r span.group.active#gr-e {background-position: -80px -18px;}
+.b-box-3 .groups .half-r span.group.active#gr-f {background-position: -100px -18px;}
+.b-box-3 .groups .half-r span.group.active#gr-g {background-position: -120px -18px;}
+.b-box-3 .groups .half-r span.group.active#gr-h {background-position: -140px -18px;}
+.b-box-3 .groups .half-r span.group.active#gr-i {background-position: -160px -18px;}
+
+#tv-program.b-box-3 table {margin-top:4px; border-collapse:collapse;}
+#tv-program.b-box-3 table tr.c0 {background:#f5f5f5;}
+#tv-program.b-box-3 table tr td {height:30px; padding-left:4px;}
+#tv-program.b-box-3 table tr td img {width:22px;}
+#tv-program.b-box-3 table tr td.time {width:35px; color:#666; font-weight:bold;}
+#tv-program.b-box-3 table tr td.logo-tv {width:40px; padding-left:0; border-right:#fff 2px solid; text-align:center;}
+
+
+/* b-box-3 */
+.b-box-3 div.art {height:90px; overflow:hidden; margin:0px; background: #f5f5f5 url(/o/lidovky_ln3b/portal/box3-art-bg.gif) repeat-x bottom left;}
+.b-box-3 div.art.trafika {height:auto; _height:290px;}
+.b-box-3 div.art.two {height:auto; _height:190px;}
+.b-box-3 div.art.three {height:auto; _height:290px;}
+.b-box-3 .art img {float:left; margin:8px; }
+.b-box-3 .art h3 {clear:none; padding-top:5px; padding-right:5px; }
+
+.b-box-3 .art a {position:relative; display:block; float:left; height:92px; width:110px;}
+.b-box-3 .art a img {margin-right:0; position:absolute; z-index:1;}
+.b-box-3 .art h3 {float:right; width:180px; }
+.b-box-3 .art h3 a, .b-box-3 .art span.author a, #sportip.b-box-3 .art p a.more {display:inline; float:none; height:auto; width:auto;}
+.b-box-3 .art span.author {float:right; width:184px; }
+.b-box-3#sportip .art h3 {float:none; width:auto;}
+.b-box-3.shooter .art a {display:inline; float:none; height:auto; width:auto;}
+
+.b-box-3 ul {padding:5px 0;  list-style-image:none; list-style-position:outside; list-style-type:none; }
+.b-box-3 li {display:block; margin:0 0 4px; padding:0 5px 0 20px; color:#666666; background:transparent url(/o/lidovky_ln3b/portal/listtype4.gif) no-repeat scroll 5px 0.4em;}
+.b-box-3 li a {color:#666666;}
+.b-box-3 li.continue {background-image:none; margin-bottom:0;}
+.b-box-3 div.art span.author a {display:block; padding-top:5px; margin-bottom:-1px; color:#d2071e; text-transform:uppercase;}
+.b-box-3 .ico-r {margin-right:5px;}
+.b-box-3.wall .img-wall {float:left; width:85px;}
+.b-box-3.wall .art .img-wall a {float:none; position:static;}
+.b-box-3.wall ul {float:right; width:205px;}
+.b-box-3.wall ul li {background:url("/o/lidovky_ln3b/portal/listtype4.gif") no-repeat scroll 5px 0.4em transparent; color:#666666; display:block; margin:0 0 4px; padding:0 5px 0 20px;}
+.b-box-3.wall ul li a {float:none;}
+
+
+/* b-box-3 vip */
+.b-box-3.vip-tipy .bg {display:block; background:url('/o/lidovky_ln3b/portal/b-box-vip.gif') repeat-y 116px 40px; _background:none;}
+.b-box-3.vip-tipy .fl {display:block; width:115px; height:154px; }
+.b-box-3.vip-tipy .fr {display:block; width:183px; overflow:hidden; _background:url('/o/lidovky_ln3b/portal/b-box-vip.gif') repeat-y 0px 0px;}
+.b-box-3.vip-tipy .fl img {margin:1px 0px 0px 1px;}
+.b-box-3.vip-tipy .fr p {margin:10px 8px 10px 13px; font-family:Arial, Sans-Serif;}
+.b-box-3.vip-tipy .fr p.match, .b-box-3.vip-tipy .fr p.results {margin-bottom:5px; padding:2px 0px 3px 0; border-top:#eee 1px solid; border-bottom:#eee 1px solid; font-family:Verdana, Helvetica, Arial, Sans-Serif; font-size:11px;}
+.b-box-3.vip-tipy .fr p.match .tip {float:right; font-size:22px; font-weight:bold; font-family:Arial;}
+.b-box-3.vip-tipy .fr .next {margin-right:10px; margin-top:0; padding-top:0; text-align:right; font-weight:bold; }
+.b-box-3.vip-tipy .fr p.results {font-family:Arial, Sans-Serif; font-size:12px;}
+.b-box-3.vip-tipy .fr p.results strong {display:block; margin-bottom:3px;}
+
+
+/* switch-box, pohonne hmoty on-line (on-line-add-top)*/
+#switch-box-1, #pohone-hmoty, #on-line-add-top-content { position:relative; width:300px; }
+#switch-box-1 .when, #pohone-hmoty .when { display:none}
+.q-js #switch-box-1 .when, .q-js #pohone-hmoty .when { display:block; position:absolute; right:1px; top:0; z-index:1; line-height:1.6em; background:#E3E6ED}
+#switch-box-1 .when a, #pohone-hmoty .when a { float:left; border-left:1px solid #D0D1D2; color:#666; text-align:center; overflow:hidden }
+#switch-box-1 .sel-1 { width:2.4em;}
+#switch-box-1 .sel-2, #switch-box-1 .sel-3, #pohone-hmoty .sel-2, #pohone-hmoty .sel-3 {width:3em}
+#switch-box-1 .prep-1 .sel-1, #switch-box-1 .prep-2 .sel-2, #switch-box-1 .prep-3 .sel-3 {color:#333; font-weight:bold;}
+#pohone-hmoty .prep-1 .sel-1, #pohone-hmoty .prep-2 .sel-2, #pohone-hmoty .prep-3 .sel-3 {color:#333; font-weight:bold;}
+#switch-box-1 ul, #pohone-hmoty ul, #on-line-add-top-content ul {list-style:none;}
+#switch-box-1 li, #pohone-hmoty li, #on-line-add-top-content li, #reality-idnes li {display:block; _height:1em; margin:0 0 4px; padding:0 5px 0 20px; color:#666; background:url('/o/lidovky_ln3b/portal/listtype4.gif') no-repeat 5px 0.4em; /*font-size:92%*/}
+#switch-box-1 li a, #pohone-hmoty li a, #on-line-add-top-content a { color:#666;}
+#switch-box-1.prep-1 .sel-1, #switch-box-1.prep-2 .sel-2, #switch-box-1.prep-3 .sel-3 {color:#333; font-weight:bold;}
+#pohone-hmoty.prep-1 .sel-1, #pohone-hmoty.prep-2 .sel-2, #pohone-hmoty.prep-3 .sel-3 {color:#333; font-weight:bold;}
+#pohone-hmoty .sel-1 { width:4em}
+#pohone-hmoty .sel-2 { width:4em}
+#pohone-hmoty p { text-align:right; margin:0 30px 10px}
+
+/* galerie */
+.col-b .b-box .galerie, #col-c .b-box .galerie  { clear:both; margin-bottom:10px; }
+.col-b .b-box .galerie span, #col-c .b-box .galerie span {display:block;float:left;height:75px;margin-bottom:1px;margin-right:1px;overflow:hidden;width:100px;}
+.col-b .b-box .galerie span.n, #col-c .b-box .galerie span.n {margin:0;}
+
+/* ankety */
+#anketa .box-in {padding:10px; font-size:108%;}
+#anketa .box-in a.more { padding-left:1em; color:#D2071E; text-decoration:none; white-space:nowrap; text-transform: uppercase; font-size:75%; _line-height:1.62; }
+#anketa .box-in a.more:hover u { color:#000;}
+#anketa .b-box-2, #anketa-in-art .b-box-2 {border:0; padding:0; margin:0; background:none}
+#anketa p {margin:0 0 12px}
+.vote {padding-bottom:1px; position:relative;}
+.vote .vote {width:100%; margin-bottom:12px; padding-bottom:0}
+.vote .vote a, .vote .vote .vcl {display:block; padding-right:4em; color:#D2071E; font-weight:bold}
+.vote .vote .rate {position:absolute; top:0; right:0; color:#777}
+.vote .vote .eb {height:10px; font-size:2px; line-height:10px; margin:2px 0 0; padding:0; border:0; background:#E3E6ED}
+.vote .vote .vb {height:10px; font-size:2px; background:#1A68B5}
+.vote a:hover {color : #000;}
+.content .art-full #anketa-in-art {padding-bottom:10px; margin-bottom:12px;}
+.content .art-full #anketa-in-art .vote {font-size:13px;}
+.content .art-full #anketa-in-art h3 {font-weight:normal;}
+.content .art-full #anketa-in-art p {margin-bottom:12px; font-size:92%;}
+.content .art-full #anketa-in-art .box-in {font-size:125%; }
+
+
+/* poutani self-promo */
+#self-promo {width:100%; margin-bottom:22px}
+#self-promo { min-height:400px;_height:400px;}
+#self-promo .webs, #self-box .webs {float:left; overflow:hidden; position:relative; width:100%; background:#343534 url('/o/poutani/normal.gif') repeat-x;}
+#self-promo .w-top {position:absolute; top:0; left:0; width:300px; height:1px; line-height:1px; overflow:hidden; border:1px solid #FFF; border-width:0px 1px; font-size:1px; }
+#self-promo .webs ul {font-family:Tahoma,Arial,sans-serif; font-size:92%; min-height:22px;}
+#self-promo .webs li {float:left; margin-left:-1px; padding:0 1px; background:url('/o/poutani/linka.gif') no-repeat 0% 50%; line-height:21px; list-style:none;}
+#self-promo .webs a, #self-box .webs a {float:left; padding:0pt 0.64em 1px; font-weight:bold; text-decoration:none; color:#FFF}
+#self-promo .webs a:hover {background:#212021 url('/o/poutani/hover.gif') repeat-x left top; color:#FFF}
+#self-promo.prep-1 #jobdnes, #self-promo.prep-1 #jobdnes a, #self-promo.prep-1 #jobdnes a:hover {position:relative; color:#3C3C3C; background:#FFF url('/o/poutani/active-left.gif') repeat-x}
+#self-promo.prep-3 #topkontakt, #self-promo.prep-3 #topkontakt a, #self-promo.prep-3 #topkontakt a:hover{position:relative; color:#000; background:#D1E5F4 url('/o/poutani/topkontakt/tk-prechod.gif') repeat-x}
+#self-promo.prep-2 #auto-modul, #self-promo.prep-2 #auto-modul a, #self-promo.prep-2 #auto-modul a:hover, #self-promo.prep-4 #ireality, #self-promo.prep-4 #ireality a, #self-promo.prep-4 #ireality a:hover, #self-promo.prep-5 #idovolena, #self-promo.prep-5 #idovolena a, #self-promo.prep-5 #idovolena a:hover {position:relative; color:#3C3C3C; background:#FFF url('/o/poutani/active.gif') repeat-x}
+#self-promo .arts-1, #self-promo .arts-2, #self-promo .arts-3, #self-promo .arts-4, #self-promo .arts-5 {width:300px; border:1px solid #D2D2D2; border-top:0; color:#000; background:#FFF; overflow:hidden}
+/* JobDNES */
+#self-promo .arts-1 {padding-top:12px}
+#self-promo .arts-1 div.logo { padding:10px 10px 15px; border-bottom:1px solid #D2D2D2;font-size:108%; text-align:right;  }
+#self-promo .arts-1 div.logo img {float:left}
+#self-promo .arts-1 .box-in-job {padding:10px 10px 4px; border-bottom:1px solid #D2D2D2; background:#FFF url('/o/poutani/self-promo/bg-reality.gif') repeat-x}
+#self-promo .arts-1 .box-in-job .who { width:278px; margin:0 0 12px; padding:6px 0; border:1px solid #BBB; background:#FFF; text-align:center;}
+#self-promo .arts-1 .box-in-job h3 { height:auto; margin:0 0 1em; padding:0; border:0; text-transform:none; color:#13375E; font-size:125%; font-weight:bold;}
+#self-promo .arts-1 .box-in-job a:hover, #self-promo .arts-1 .ico a:hover, #self-promo .arts-1 .box-in-job h3 a {color:#13375E}
+#self-promo .arts-1 .box-in-job a, #self-promo .arts-1 .ico a, #self-promo .arts-1 .box-in-job h3 a:hover {color:#B9151C}
+#self-promo .arts-1 .box-in-job p { font-size:100%; margin:0 0 1em;}
+#self-promo .arts-1 .box-in-job p.fee {  font-size:125%; font-weight:bold;}
+#self-promo .arts-1 .box-in-job p.fee span {color:#B9151C; font-size:1.1em; }
+#self-promo .arts-1 .ico { padding:5px; background:#F3F3F3}
+#self-promo .arts-1 .ico a { padding:0 5px}
+#self-promo .arts-1 h2.logo span {position:absolute; top:0; left:0; z-index:1; display:block; width:100%; height:100%; background:#FFF url('/o/poutani/box_logo.gif') no-repeat; cursor:pointer}
+#self-promo .arts-1 h2.logo {float:right; width:108px; height:22px; margin-right:20px; _margin-right:10px; padding:0; border:none; background:none;  }
+#self-promo .arts-1 h2.logo a {position:relative; display:block; width:108px; height:22px;}
+#self-promo .arts-1 h2.logo span {position:absolute; top:0; left:0; z-index:1; display:block; width:100%; height:100%; background:#FFF url('/o/poutani/box_logo.gif') no-repeat; cursor:pointer}
+#self-promo .arts-1 .box-in { padding:0;} 
+#self-promo .arts-1 .line1, #self-promo .arts-1 .line2, #self-promo .arts-1 .line3  { min-height:87px; _height:87px; padding: 8px 12px 4px; line-height:1.33; font-weight:bold; background:#FFF url('/o/poutani/bg-line.gif') repeat-x} 
+#self-promo .arts-1 h3 {height:16px; padding-left:12px; border-bottom:2px solid #749D00; color:#FFF; text-transform:uppercase}
+#self-promo .arts-1 h3 span {padding:2px 10px; font-size:92%; background-color:#749D00; line-height:1.46}
+#self-promo .arts-1 a {color:#547500}
+#self-promo .arts-1 h4 {margin-bottom:2px; font-weight:bold}
+#self-promo .arts-1 p {margin-bottom:2px; font-size:92%;}
+#self-promo .arts-1 .b-plus {overflow:hidden; float:right; width:112px; text-align:center; background:url('/o/poutani/self-promo/banner-jobdnes.gif') no-repeat}
+#self-promo .arts-1 .b-plus p {min-height:232px; _height:232px; padding:48px 5px 0; line-height:1.28; font-size:150%;  font-weight:bold; color:#FFF}
+#self-promo .arts-1 .b-plus a {font-size:117%; font-weight:bold; color:#FFF}
+#self-promo .arts-1 .b-plus a:hover {color:#0A66A1}
+#self-promo .arts-1 .fl {float:left; width:188px; background:#FFF; overflow:hidden;}
+#self-promo .line1 .wage-text, #self-promo .line2 .wage-text, #self-promo .line3 .wage-text {display:block; color:#333; font-size:83%}
+#self-promo .line1 .wage, #self-promo .line2 .wage, #self-promo .line3 .wage {display:block; color:#D87407; font-size:150%; font-weight:bold; line-height:1.22}
+#self-promo .arts-1 .search {padding:8px 10px; background-color:#749D00}
+#self-promo .arts-1 .form {float:left; width:157px; padding:2px 22px 2px 0; border-right:2px solid #FFF}
+#self-promo .arts-1 .search p {color:#FFF; padding-left:187px; font-weight:bold}
+#self-promo .arts-1 .search span {display:block; color:#000; font-size:134%}
+#self-promo .arts-1 select {width:100%; margin-bottom:3px; font-size:92%}
+#self-promo .arts-1 .submit {margin-bottom:2px; font-size:92%}
+/* Automodul */
+#self-promo .arts-2 .logo {float:right; position:relative; z-index:1; width:197px; height:32px; margin:17px 18px 7px}
+#self-promo .arts-2 .logo a {display:block; width:100%; height:100%; cursor:pointer}
+#self-promo .arts-2 .logo span {position:absolute; top:0; left:0; width:100%; height:100%; background:#FFF url('/o/poutani/automodul/boxik_automodul.gif') no-repeat}
+#self-promo .suit {margin:0 10px 12px; clear:both; font-size:142%; font-weight:bold}
+#self-promo .suit span {color:#EE342A; text-decoration:underline}
+#self-promo .arts-2 .box-in {padding:7px 10px 0; border-top:2px solid #445B6E; background:url('/o/poutani/automodul/boxik_grad.gif') repeat-x}
+#self-promo .arts-2 .box-in a {color:#5C7792}
+#self-promo .arts-2 h3 {display:block; margin-bottom:10px; font-size:117%; font-weight:bold; line-height:1.2}
+#self-promo .arts-2 img {float:left; width:100%; margin-bottom:7px}
+#self-promo .arts-2 table {width:100%; margin-bottom:4px; border-collapse:collapse; clear:both}
+#self-promo .arts-2 td {width:50%; padding:1px 5px}
+#self-promo .arts-2 .price {font-weight:bold; color:#C00}
+#self-promo .arts-2 .ico-r {height:26px; margin-bottom:7px; }
+#self-promo .arts-2 .ico-r a.ico-next { float:right; width:49%;}
+#self-promo .arts-2 .ico-r a:hover { color:#C00}
+#self-promo .arts-2 .ico-r a span {background-color:#DD4200}
+#self-promo .arts-2 .ico-r a:hover span {background-color:#445B6E}
+#self-promo .arts-2 .form {clear:both; padding:14px 10px 12px; background-color:#445B6E; font-size:92%}
+#self-promo .arts-2 form {width:100%}
+#self-promo .arts-2 label {float:left; margin-right:5px; line-height:22px; color:#FFF; text-transform:uppercase}
+#self-promo .arts-2 #vyhl_fullt {width:115px}
+#self-promo .arts-2 .submit {margin-top:-1px}
+/* TOPkontakt */
+#self-promo .arts-3 h2.logo {padding:6px; border-bottom:1px solid #D2D2D2; background:#D1E5F4; text-align:center;}
+#self-promo .arts-3 h2.logo a {position:relative; display:block; width:132px; height:41px; margin:0 auto;}
+#self-promo .arts-3 h2.logo span {position:absolute; top:0; left:0; z-index:1; display:block; width:100%; height:100%; background:url('/o/poutani/topkontakt/tk-logo4.gif') no-repeat; cursor:pointer;}
+#self-promo .arts-3 .box-in {padding:0; background:#ECF4FA}
+#self-promo .arts-3 .thumb {position:relative; clear:both; padding:0; overflow:hidden;}
+#self-promo .arts-3 .thumb-img {position:absolute; top:5px; left:10px; z-index:1; border:1px solid #D2D2D2}
+#self-promo .arts-3 .thumb-img img {width:50px; height:50px; border:0; -ms-interpolation-mode:bicubic;}
+#self-promo .arts-3 .thumb-logo {position:absolute; top:10px; left:10px; z-index:1; line-height:0.8;}
+#self-promo .arts-3 .thumb-logo .logo {width:50px; height:50px; border:1px solid #D2D2D2; -ms-interpolation-mode:bicubic;}
+#self-promo .arts-3 .thumb-right {min-height:68px; _height:68px; padding:8px 10px 8px 75px;}
+#self-promo .arts-3 .thumb-right h4 {margin:0 0 0.2em; font-size:117%;}
+#self-promo .arts-3 .thumb-right h4 a {color:#3463B1}
+#self-promo .arts-3 .part-logo {width:52px; height:17px}
+#self-promo .arts-3 form {display:block; margin-top:5px; padding:15px; border-top:1px solid #D2D2D2; background:#21549B}
+#self-promo .arts-3 form .search-input {width:180px; margin-right:4px;}
+#self-promo .arts-3 .tk-art {=zoom:1; padding:10px; border-bottom:1px solid #D2D2D2; background:#D1E5F4;}
+.arts-3 .tk-art h4 { margin:0 0 0.2em; font-size:92%}
+.arts-3 .tk-art h4 b { font-size:108%}
+.arts-3 .tk-art h4 i { font-style:normal; color:#CA2F23;}
+.arts-3 .tk-art p a { text-decoration:none; color:#CA2F23;}
+.arts-3 .tk-art p a img { float:left; margin-right:10px; border:1px solid #D2D2D2;}
+.arts-3 .tk-art p a span { text-decoration:underline; }
+#self-promo .arts-3 .whence {=zoom:1; margin:0 0 8px; padding:10px; border-bottom:1px solid #D2D2D2; background:#D1E5F4;}
+#self-promo .arts-3 .whence li { list-style:none; padding:0.2em 0 0.2em 65px; background:url('/o/poutani/topkontakt/arrow_red.gif') no-repeat 55px 0.5em }
+#self-promo .arts-3 .whence a { color:#0000FE}
+#self-promo .arts-3 .box-bot { padding:8px 10px 8px 75px; border-top:1px solid #D2D2D2; background:#D1E5F4; font-size:108%; font-weight:bold}
+#self-promo .arts-3 .box-bot a { padding-right:16px; color:#13375E; background:url('/o/poutani/topkontakt/arrow2_red.gif') no-repeat 100% 50%}
+/*reality*/
+#self-promo .arts-4 a {color:#2949DF}
+#self-promo .arts-4 .logo {position:relative; min-height:66px; _height:66px; font-size:117%; font-weight:bold; text-align:right; border-bottom:1px solid #D2D2D2}
+#self-promo .arts-4 .logo p {padding:32px 10px 0}
+#self-promo .arts-4 .logo img {position:absolute; z-index:1; top:10px; left:10px}
+#self-promo .arts-4 .box-in {padding:10px 10px 4px; border-bottom:1px solid #D2D2D2; background:#FFF url('/o/poutani/self-promo/bg-reality.gif') repeat-x}
+#self-promo .arts-4 .reality  {display:block; margin:0 0 0.5em; font-size:117%; font-weight:bold}
+#self-promo .arts-4 .reality img {display:block; margin:0 auto 6px; border:1px solid #000}
+#self-promo .arts-4 .box-in p {margin-bottom:0.5em}
+#self-promo .arts-4 .price {padding:0 0 0 10px; font-size:118%; font-weight:bold; color:#EB5757}
+#self-promo .arts-4 .realpropety {padding:6px 10px;  border-top:1px solid #FFF; background:#DEEEF4}
+#self-promo .arts-4 .realpropety p {margin-bottom:0.5em; font-weight:bold}
+#self-promo .arts-4 ul {float:left; width:100%; margin-bottom:0.5em}
+#self-promo .arts-4 li {float:left; width:49%; line-height:1.5; list-style:none}
+#self-promo .arts-4 li.fc0 {overflow:hidden; height:0; line-height:0; font-size:0}
+#self-promo .arts-4 .ico-r {margin-top:0}
+/*dovolena*/
+#self-promo .arts-5 a {color:#2949DF}
+#self-promo .arts-5 .logo {position:relative; min-height:66px; _height:66px; font-size:117%; font-weight:bold; text-align:right; border-bottom:1px solid #D2D2D2}
+#self-promo .arts-5 .logo p {padding:29px 10px 0 110px}
+#self-promo .arts-5 .logo img {position:absolute; z-index:1; top:6px; left:5px}
+#self-promo .arts-5 .box-in {padding:10px 10px 4px; border-bottom:1px solid #D2D2D2; background:#FFF url('/o/poutani/self-promo/bg-reality.gif') repeat-x}
+#self-promo .arts-5 .dovolena  {display:block; margin:0 0 0.5em; font-size:117%; font-weight:bold}
+#self-promo .arts-5 .dovolena img {display:block; margin:0 auto 6px; border:1px solid #000}
+#self-promo .arts-5 .box-in p {margin-bottom:0.5em}
+#self-promo .arts-5 .price {padding:0 0 0 10px; font-size:118%; font-weight:bold; color:#EB5757}
+#self-promo .arts-5 .dovolenapropety {padding:6px 10px;  border-top:1px solid #FFF; background:#E5E5E5}
+#self-promo .arts-5 .dovolenapropety p {margin-bottom:0.5em; font-weight:bold}
+#self-promo .arts-5 ul {float:left; width:100%; margin-bottom:0.5em}
+#self-promo .arts-5 li {float:left; width:49%; line-height:1.5; list-style:none}
+#self-promo .arts-5 li.fc0 {overflow:hidden; height:0; line-height:0; font-size:0}
+#self-promo .arts-5 .ico-r {margin-top:0}
+
+/* poutani self-box */
+#self-box {width:100%; min-height:215px; _height:215px; margin-bottom:22px}
+#self-box .arts-1, #self-box .arts-2, #self-box .arts-3, #self-box .arts-4, #self-box .arts-5 {position:relative; z-index:1; width:458px; border:1px solid #D2D2D2; border-radius:6px; color:#000; background:#FFF; overflow:hidden}
+#self-box-nav { position:relative; z-index:2; float:left; height:23px; overflow:hidden; margin-bottom:-1px; padding:0 40px 0 6px; font:bold 11px/23px Tahoma,Arial,sans-serif;}
+#self-box-nav li { display:inline;}
+#self-box-nav li * {height:23px; line-height:23px; float:left; cursor:pointer; cursor:hand;}
+#self-box-nav a {padding-left:20px; color:#666; background:url('/u/n4/self-box-nav.gif') 0 -23px; text-decoration:none;}
+#self-box-nav a:hover { color:#333;}
+#self-box-nav .bg-1 {padding-right:20px}
+#self-box-nav .bg-2 {background:url('/u/n4/self-box-nav.gif') -40px 0; min-width:2em; margin-right:-20px; padding:0 .1em; } 
+#self-box-nav #self-box-a1 {background:url('/u/n4/self-box-nav.gif') 0 0} 
+#self-box-nav #self-box-a5 .bg-1 {background:url('/u/n4/self-box-nav.gif') 100% 0; padding-right:40px;} 
+#self-box.prep-1 #self-box-a1,
+#self-box.prep-2 #self-box-a2,
+#self-box.prep-3 #self-box-a3, 
+#self-box.prep-4 #self-box-a4, 
+#self-box.prep-5 #self-box-a5 {color:#333; background-position:0 -69px; } 
+#self-box.prep-1 #self-box-a1 .bg-1,
+#self-box.prep-2 #self-box-a2 .bg-1,
+#self-box.prep-3 #self-box-a3 .bg-1, 
+#self-box.prep-4 #self-box-a4 .bg-1, 
+#self-box.prep-5 #self-box-a5 .bg-1 {background:url('/u/n4/self-box-nav.gif') 100% -69px; padding-right:40px;margin-right:-20px;position:relative}
+#self-box.prep-1 #self-box-a1 .bg-2,
+#self-box.prep-2 #self-box-a2 .bg-2,
+#self-box.prep-3 #self-box-a3 .bg-2, 
+#self-box.prep-4 #self-box-a4 .bg-2, 
+#self-box.prep-5 #self-box-a5 .bg-2 {background-position:-40px -46px; margin-right:-20px; } 
+#self-box.prep-1 #self-box-a1 {background-position: 0 -46px} 
+#self-box.prep-5 #self-box-a5 .bg-1 {background-position: right -46px; } 
+#self-box .box-in {position:relative; min-height:175px; _height:175px; padding:10px 10px 6px;}
+
+#self-box .self-in { position:relative; min-height:123px;_height:123px; margin:0 0 4px 182px; padding:0 0 6px; border-bottom:1px solid #CCC; line-height:1.25;}
+#self-box .self-in h3 { margin:0 0 4px; font-size:133%; font-weight:bold;}
+#self-box .self-in p { font-size:100%}
+#self-box .self-in .imgabs img { position:absolute; top:0; left:-182px; z-index:1; width:172px; height:129px; background-position:50% 50%; background-repeat:no-repeat; }
+#self-box .self-in .logo-sme { float:right; margin:0 0 0 10px;}
+#self-box .self-in .price { color:#3463B1; font-weight:bold; }
+#self-box .propety { float:left; margin:0; padding:2px 0; list-style:none; overflow:hidden;}
+#self-box .propety li {float:left; list-style:none; margin:0 8px 0 -8px; padding:1px 8px; border-left:1px solid #CCC;}
+#self-box .propety a { text-decoration:none}
+#self-box .more { float:right; font-size:117%; font-weight:bold;}
+#self-box .more a { color:#C00}
+#self-box .more a:hover { color:#000}
+
+#self-box .arts-1 .self-in { min-height:83px; padding-top:40px; }
+#self-box .arts-1 .logo-sme { position:absolute; top:0; right:0; z-index:1;}
+#self-box .arts-2 .self-in { min-height:75px; padding-top:48px; }
+#self-box .arts-2 .logo-sme { position:absolute; top:0; right:0; z-index:1;}
+#self-box .arts-4 .logo-sme { position:absolute; bottom:6px; right:0; z-index:1;}
+#self-box .arts-5 .logo-sme { position:absolute; bottom:4px; right:0; z-index:1;}
+
+#self-box-prep-3 .self-in { min-height:87px; padding-bottom:42px;}
+#self-box-prep-3 .self-in p { font-size:100%;}
+#self-box-prep-3 .logo-sme { position:absolute; top:-36px; right:0; z-index:1;}
+#self-box-prep-3 .propety-out { padding:3px 10px 0 0; font-weight:bold;}
+#self-box-prep-3 .self-in .imgabs { display:block; padding:16px 0 0; background:url('/o/poutani/topkontakt/selfbox-tk-art2.gif') no-repeat; font-size:117%; font-weight:bold;}
+#self-box-prep-3 .tk-art { /*float:left; width:122px;*/}
+#self-box-prep-3 .tk-art h4 { margin:4px 0 0; font-size:92%}
+#self-box-prep-3 .thumbs { display:none;}
+#self-box-prep-3 .whence { position:relative; margin:0;}
+
+/*ver2*/
+#self-box-prep-3 .tk-discount, #self-box-prep-3 .tk-art {display:none}
+#self-box-prep-3 .thumbs {display:block}
+#self-box-prep-3 .self-in {margin:0 0 4px}
+
+#self-box-prep-3 sup {font-size: 100%; vertical-align: baseline;}   
+#self-box-prep-3 .thumb {position:relative; clear:both; padding:0 0 2px; overflow:hidden;}
+#self-box-prep-3 .thumb-logo {position:absolute; top:6px; left:10px; z-index:1; line-height:.8;}
+#self-box-prep-3 .thumb-logo .logo {width:50px; height:50px; border:1px solid #D2D2D2; -ms-interpolation-mode:bicubic;}
+#self-box-prep-3 .tk-discount {float:left; width:122px}
+#self-box-prep-3 .view-disc {display:inline-block; margin:0 0 4px; font-size:108%; font-weight:bold; color:#C00}
+#self-box-prep-3 :hover.view-disc {color:#000}
+#self-box-prep-3 .next-disc {display:block; padding:0 0 0 14px; margin:0 0 4px; text-decoration:none; background:url("/o/poutani/topkontakt/plus.png") no-repeat 0 3px}
+#self-box-prep-3 .imgabs-disc {font-size:117%; font-weight:bold; text-decoration:none;}
+#self-box-prep-3 .imgabs-disc .tdu {text-decoration:underline}
+#self-box-prep-3 .imgabs-disc img {position:absolute; z-index:1; top:0; left:-182px; width:172px; height:129px;}
+#self-box-prep-3 .imgabs-disc .percent { overflow:hidden; position:absolute; z-index:2; top:0; left:-72px; display:block; width:62px; height:32px; line-height:32px; text-align:center; font-size:18px; font-weight:bold; cursor:pointer; color:#FFF; background:url("/o/poutani/topkontakt/bg-shadow-red.gif") no-repeat}
+#self-box-prep-3 .line {overflow:hidden; height:1px; margin:4px 10px 2px; font-size:0; line-height:0; background:#CCC}
+#self-box-prep-3 .thumb-art, #self-box-prep-3 .thumb-firm, #self-box-prep-3 .thumb-advantage { overflow:hidden; height:54px; padding:3px 0 3px 10px; margin:0 10px; background-position:0 5px; background-repeat:no-repeat}
+#self-box-prep-3 .thumb-art {font-size:117%; background-image:url("/o/poutani/topkontakt/tk-vertikal-clanek.gif")}
+#self-box-prep-3 .thumb-art img {float:left; margin:1px 10px 0 0; width:70px; height:52px;}
+#self-box-prep-3 .thumb-firm {background-image:url("/o/poutani/topkontakt/tk-vertikal-firma.gif")}
+#self-box-prep-3 .thumb-firm .thumb-logo {top:5px}
+#self-box-prep-3 .thumb-firm .thumb-right {padding:2px 0 0 62px}
+#self-box-prep-3 .thumb-advantage {position:relative; padding-left:90px; font-size:117%; background-image:url("/o/poutani/topkontakt/tk-vertickal-vyhody.gif")}
+#self-box-prep-3 .thumb-advantage .top {margin:0 0 2px; font-weight:bold; color:#C00}
+#self-box-prep-3 .thumb-advantage .top a {color:#C00; white-space: nowrap;}
+#self-box-prep-3 .thumb-advantage .top a:hover {color:#000}
+#self-box-prep-3 .thumb-advantage img {position:absolute; z-index:1; top:4px; left:10px; width:70px; height:52px;}
+#self-box-prep-3 .propety a {color:#C00}
+#self-box-prep-3 .propety a:hover {color:#000}
+
+/* ikonky odkazu */
+.content .ico, .content .ico-r, .eyes-ico {font-size:12px}
+.ico {text-align:left;}
+.ico-r {text-align:right;}
+.nav {font-weight:bold;line-height:26px; text-align:center; margin: 6px 0px; padding-top:6px;}
+.nav .ico {float:left;}
+.nav .ico-r {float:right;}
+.nav .ico, .nav .ico-r {width:11em;}
+.list-item .nav .ico, .list-item .nav .ico-r {width:9em;}
+.vh {visibility:hidden;}
+.ico a, .ico-r a {/*display:inline; */ height:26px; line-height:26px; white-space:nowrap; font-size:100%; font-weight:bold}
+.ico a span, .ico-r a span {float:left; width:17px; height:17px; line-height:16px; margin:5px 8px 0 0; _margin:5px 5px 0 0; color:#1a68b5; background-color:#1a68b5; background-repeat:no-repeat; text-decoration:none; font-size:0 /*kvuli tecce*/; cursor:pointer; cursor:hand;}
+.ico-r a span {float:right; margin:5px 0 0 8px; _margin:5px 0 0 5px;}
+.ico-down span {background-image:url('/o/lidovky_ln3b/ico/arrow-down.gif')}
+.ico-left span, .ico-prev span {background-image:url('/o/lidovky_ln3b/ico/arrow-left.gif')}
+.ico-right span, .ico-next span {background-image:url('/o/lidovky_ln3b/ico/arrow-right.gif')}
+.ico-first span {background-image:url('/o/lidovky_ln3b/ico/first.gif')}
+.ico-last span {background-image:url('/o/lidovky_ln3b/ico/last.gif')}
+.ico-top span {background-image:url('/o/lidovky_ln3b/ico/arrow-top.gif')}
+.ico-att span {background-image:url('/o/lidovky_ln3b/ico/att.gif')}
+.ico-asc span {background-image:url('/o/lidovky_ln3b/ico/asc.gif')}
+.ico-des span {background-image:url('/o/lidovky_ln3b/ico/des.gif')}
+.ico-audio span {background-image:url('/o/lidovky_ln3b/ico/audio.gif')}
+.ico-back span {background-image:url('/o/lidovky_ln3b/ico/back.gif')}
+.ico-close span {background-image:url('/o/lidovky_ln3b/ico/close.gif')}
+.ico-doc span {background-image:url('/o/lidovky_ln3b/ico/document.gif')}
+.ico-favs span {background-image:url('/o/lidovky_ln3b/ico/favs.gif')}
+.ico-foto span {background-image:url('/o/lidovky_ln3b/ico/foto.gif')}
+.ico-help span {background-image:url('/o/lidovky_ln3b/ico/help.gif')}
+.ico-home span {background-image:url('/o/lidovky_ln3b/ico/home.gif')}
+.ico-info span {background-image:url('/o/lidovky_ln3b/ico/info.gif')}
+.ico-insert span {background-image:url('/o/lidovky_ln3b/ico/insert.gif')}
+.ico-libra span {background-image:url('/o/lidovky_ln3b/ico/libra.gif')}
+.ico-link span {background-image:url('/o/lidovky_ln3b/ico/link.gif')}
+.ico-list span {background-image:url('/o/lidovky_ln3b/ico/list.gif')}
+.ico-mail span {background-image:url('/o/lidovky_ln3b/ico/mail.gif')}
+.ico-mobil span {background-image:url('/o/lidovky_ln3b/ico/mobil.gif')}
+.ico-moot span {background-image:url('/o/lidovky_ln3b/ico/moot.gif')}
+.ico-ok span {background-image:url('/o/lidovky_ln3b/ico/ok.gif')}
+.ico-newin span {background-image:url('/o/lidovky_ln3b/ico/newin.gif')}
+.ico-print span {background-image:url('/o/lidovky_ln3b/ico/print.gif')}
+.ico-refresh span {background-image:url('/o/lidovky_ln3b/ico/refresh.gif')}
+.ico-rss span {background-image:url('/o/lidovky_ln3b/ico/rss.gif')}
+.ico-save span {background-image:url('/o/lidovky_ln3b/ico/save.gif')}
+.ico-send span, .ico-forward span {background-image:url('/o/lidovky_ln3b/ico/send.gif')}
+.ico-star span {background-image:url('/o/lidovky_ln3b/ico/star.gif')}
+.ico-talk span {background-image:url('/o/lidovky_ln3b/ico/talk.gif')}
+.ico-tip span {background-image:url('/o/lidovky_ln3b/ico/tip.gif')}
+.ico-trash span {background-image:url('/o/lidovky_ln3b/ico/trash.gif')}
+.ico-unpack span {background-image:url('/o/lidovky_ln3b/ico/unpack.gif')}
+.ico-video span, .ico-play span {background-image:url('/o/lidovky_ln3b/ico/play.gif')}
+.ico-voice span {background-image:url('/o/lidovky_ln3b/ico/voice.gif')}
+.ico-zoom span {background-image:url('/o/lidovky_ln3b/ico/zoom.gif')}
+.ico-facebook span {background-image:url('/u/ico/facebook.gif')}
+.ico-google span {background-image:url('/u/ico/google.gif')}
+.ico-jagg span {background-image:url('/u/ico/jagg.png')}
+.ico-linkuj span {background-image:url('/u/ico/linkuj.gif')}
+.ico-twitter span {background-image:url('/o/lidovky_ln3b/ico/twitter.gif')}
+.ico-smesk span {background-image:url('/u/ico/smesk.gif')}
+.ico-down, .ico-left, .ico-prev, .ico-right, .ico-next, .ico-first, .ico-last, .ico-top, .ico-att, .ico-asc, .ico-des, .ico-audio, .ico-back, .ico-close, .ico-doc, .ico-favs, .ico-foto, .ico-help, .ico-home, .ico-info, .ico-insert, .ico-libra, .ico-link, .ico-list, .ico-mail, .ico-mobil, .ico-moot, .ico-ok, .ico-newin, .ico-print, .ico-refresh, .ico-rss, .ico-save, .ico-send, .ico-forward, .ico-star, .ico-talk, .ico-tip, .ico-trash, .ico-unpack, .ico-video, .ico-play, .ico-voice, .ico-zoom, .ico-facebook, .ico-google, .ico-jagg, .ico-linkuj, .ico-smesk {display:block}
+.ico a:hover span, .ico-r a:hover span {color:#000; background-color:#000; filter:none;}
+#vedecke-blogy .ico-r {margin:-10px 0;}
+
+/*ico vyjimka IE6*/
+.ico .ico-jagg span {_background:none; _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='http://g.idnes.cz/u/ico/jagg.png', sizingMethod='scale');}
+.ico a:hover.ico-jagg span {_background:none; _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='http://g.idnes.cz/u/ico/jagg.png', sizingMethod='scale');}
+
+/* VYBAVA CLANKU */
+.content table.complete {border-collapse:collapse; background:#eaebec; width:100%;}
+.content table.complete tbody, .content table.complete tbody tr, .content table.complete tbody td  {display:block; width:100%;}
+.content table.complete tbody {padding-bottom:1px;}
+.content table.complete h3 {display:block; margin:0 0 6px; padding:2px 4px; border-top:#c8c8c8 1px dashed; border-bottom:#6d92be 4px solid; background:#ffffff; font-family:Georgia,"Times New Roman",Times,serif; font-size:117%; color:#000;}
+.content table.complete p.title, .content table.complete div p, .content table.complete .only-text {padding:4px 4px 0 4px;}
+.content table.complete p.title {margin:0; font-size:117%; font-family:Georgia, "Times New Roman", Times, serif;}
+.content table.complete h3 span span, .content table.complete h3 a span, .content table.complete a span {background-color:#1a68b5;background-repeat:no-repeat;color:#1a68b5;float:left;font-size:0;height:17px;line-height:16px;margin:3px 8px 0 0;white-space:normal;width:17px;}
+.content table.complete-half-r {float:right; width:228px; margin-left:10px; background-color:#6d92be; color:#ffffff;}
+.content table.complete-half-r h3 {border-bottom:#27394e 4px solid; }
+.content table.complete-half-r a {color:#ffffff;}
+.content table.complete-half-l {float:left; width:228px; margin-right:10px; background-color:#6d92be; color:#ffffff;}
+.content table.complete-half-l h3 {border-bottom:#27394e 4px solid; }
+.content table.complete-half-l a {color:#ffffff;}
+.content table.complete table tr {display:table-row;} 
+.content table.complete table td {display:table-cell; width:100px;}
+.content table.complete .ico a, .content table.complete .ico-r a {white-space:normal; line-height:22px;}
+
+.content table.complete-dual-l {float:left; width:280px; margin-right:10px; background-color:#6d92be; color:#ffffff;}
+.content table.complete-dual-l h3 {border-bottom:#27394e 4px solid; }
+.content table.complete-dual-l a {color:#ffffff;}
+
+.content .table-box table {border-collapse:collapse; margin-bottom:10px;}
+.content .table-box table th {display:none;}
+.content .table-box table td {padding:4px;}
+.content .table-box table tr.c0, .table-box table tbody.c0 {background:#666; color:#fff; font-weight:bold;}
+.content .table-box table tr.c1, .table-box table tbody.c1 {background:#eee;}
+.content .table-box table tr.c3, .table-box table tbody.c3 {background:#fff url('http://g.idnes.cz/o/lidovky_ln3b/portal/normal2.gif') repeat-x scroll 0 100%;}
+
+.art-full .text ul, .content .text ol {margin-bottom:1em;}
+.art-full .text ul li  {margin:0 0 0 1em; padding:0.1em 0 0.1em 1em; list-style-type:none; list-style-position:outside; background:transparent url(/o/zpr/li_sqr_a.gif) no-repeat scroll 0 0.55em;}
+.art-full .text ul ul, .art-full .text ol ol {margin-bottom:0;}
+.art-full .text ul li li {margin:0 0 0 1em; padding-left:1em; list-style-type:none; list-style-position:outside; background:transparent url(/o/zpr/li_sqr_b.gif) no-repeat scroll 0 0.55em;}
+
+/* komercni sdeleni */
+.art-full .commerce h2.page {font-family:Arial, Sans-Serif; font-size:117%;}
+.art-full .commerce {overflow:hidden;}
+.art-full .commerce .text {_width:448px; overflow:hidden;}
+.art-full .commerce .commerce-top, .art-full .commerce .text {margin-bottom:10px; background:#e3e6ed; padding:6px; _width:448px;}
+.art-full .commerce .commerce-top .art-info {display:none;}
+.art-full .commerce .commerce-top h1 {color:#d2071e; font-family:Arial, Sans-Serif;}
+.art-full .commerce .ico.art-add {margin-bottom:0px;}
+.art-full .commerce .commerce-info, .related .commerce-info {border-bottom:#d2071e 7px solid; margin-bottom:20px; padding-bottom:2px; font-weight:bold;}
+.art-full .commerce .equip-tv {margin-left:-6px; }
+.commerce-entry {clear:both; margin-top:15px; padding-bottom:10px; border-bottom:#f5f5f5 1px solid;}
+.commerce-entry h4 {padding-bottom:10px; font-size:125%; font-weight:bold;}
+.commerce-entry img {float:left; margin-right:15px;}
+.commerce-entry ul {float:left;}
+.commerce-entry li {margin-left:14px;}
+.commerce-entry .viewall {display:block; margin-top:15px;}
+.commerce-entry .viewall a {font-weight:bold; font-family:Arial, Sans-Serif; color:#d2071e; margin-left:14px;}
+
+/* kamaradky z letne v clanku */
+.content table.complete .letnacky .first {float:left; width:120px;}
+.content table.complete .letnacky .second {float:right; width:330px;}
+.content table.complete .letnacky .first img {padding-left:5px;}
+.content table.complete .letnacky .second h2 { margin:0 10px 10px 0; padding:3px 0px 4px 0px; border:#d0d1d2 1px solid; border-left:0; border-right:0; font-size:117%;}
+.content table.complete .letnacky .second p {padding-left:0px; font-size:92%;}
+
+/* poutaky */
+.content table.complete h3 a, .content table.complete-half-r h3 a, .content table.complete-half-l h3 a {color:#1a68b5;}
+.content div.patwrite, .content div.lnwrite, .content div.lnwrite2 {min-height:160px;padding-top:30px; padding-left:5px; padding-right:200px; font-family:Georgia, "Times New Roman", Times, serif; color:#444; background:url(/o/lidovky_ln3b/poutaky/lidove_noviny.jpg?p=2) no-repeat; font-size:117%;}
+.content div.patwrite {background:url(/o/lidovky_ln3b/poutaky/patek.jpg) no-repeat;}
+.content div.weatherbox {min-height:80px; margin-top:10px; margin-bottom:10px; padding-top:10px; padding-left:120px; padding-right:90px; background:url(http://g.idnes.cz/o/lidovky/pocasi/banner-pocasi.jpg) no-repeat; font-family:Georgia, "Times New Roman", Times, serif; color:#444;}
+.content div.patwrite p, .content div.lnwrite p, .content div.weatherbox p, .content div.lnwrite2 p  {margin:0; padding:0;}
+.content div.lnwrite2 {padding:0; margin-bottom:15px; _height:165px;}
+.content div.lnwrite2 p {display:block; position:relative;}
+.content div.lnwrite2 p:hover {text-decoration:underline;}
+.content div.lnwrite2 p a {display:block; min-height:165px; _height:165px; cursor:pointer;}
+.content div.lnwrite2 p a span {position:absolute; left:14px; top:30px; width:235px; font-weight:bold;}
+
+.content div.reference-dolezal {height:90px; min-height:90px; padding-top:6px; background: url('/o/lidovky_ln3b/poutaky/dolezal.jpg') no-repeat; }
+.content div.reference-dolezal .in {margin-left:114px; border-top:#f5f5f5 1px solid; border-bottom:#f5f5f5 1px solid;}
+.content div.reference-dolezal.ari {background: url('/o/lidovky_ln3b/poutaky/ari.jpg') no-repeat; }
+.content div.reference-dolezal.penas {background: url('/o/lidovky_ln3b/poutaky/penas.jpg') no-repeat; }
+.content div.reference-dolezal.kolar {background: url('/o/lidovky_ln3b/poutaky/kolar.jpg') no-repeat; }
+.content div.reference-dolezal.weiss {background: url('/o/lidovky_ln3b/poutaky/weiss.jpg') no-repeat; }
+.content div.reference-dolezal.stindl {background: url('/o/lidovky_ln3b/poutaky/stindl.jpg') no-repeat; }
+.content div.reference-dolezal.palata {background: url('/o/lidovky_ln3b/poutaky/palata.jpg') no-repeat; }
+.content div.reference-dolezal.zlamalova {background: url('/o/lidovky_ln3b/poutaky/zlamalova.jpg') no-repeat; }
+.content div.reference-dolezal.prochazkova {background: url('/o/lidovky_ln3b/poutaky/prochazkova.jpg') no-repeat; }
+.content div.reference-dolezal.kamaradky {background: url('/o/lidovky_ln3b/poutaky/kamaradky.jpg') no-repeat; }
+.content div.reference-dolezal.capek {background: url('/o/lidovky_ln3b/poutaky/capek.jpg') no-repeat; }
+.content div.reference-dolezal.supova {background: url('/o/lidovky_ln3b/poutaky/supova.jpg') no-repeat; }
+.content div.reference-dolezal.prochazkova {background: url('/o/lidovky_ln3b/poutaky/prochazkova.jpg') no-repeat; }
+.content div.reference-dolezal.kamberaweiss {background: url('/o/lidovky_ln3b/poutaky/kamberaweiss.jpg') no-repeat; }
+.content div.reference-dolezal.rynda {background: url('/o/lidovky_ln3b/poutaky/rynda.jpg') no-repeat; }
+.content div.reference-dolezal.etzler {background: url('/o/lidovky_ln3b/poutaky/etzler.jpg') no-repeat; }
+.content div.reference-dolezal.bednarova {background: url('/o/lidovky_ln3b/poutaky/bednarova.jpg') no-repeat; }
+.content div.reference-dolezal.bumprask {background: url('/o/lidovky_ln3b/poutaky/bumprask.jpg') no-repeat; }
+.content div.reference-dolezal.diarinvestora {background: url('/o/lidovky_ln3b/poutaky/diarinvestora.jpg') no-repeat; }
+.content div.reference-dolezal.putna {background: url('/o/lidovky_ln3b/poutaky/putna.jpg') no-repeat; }
+.content div.reference-dolezal.knihovna {height:150px; min-height:150px; background: url('/o/lidovky_ln3b/poutaky/knihovna.jpg') no-repeat 0px 2px; }
+.content div.reference-dolezal.knihovna p {line-height:1.6em; color:#7b7a7a; font-size:92%;}
+.content div.reference-dolezal.knihovna p a {color:#9e2b1e;}
+.content div.reference-dolezal.autoweb {height:90px; min-height:90px; background: url('/o/lidovky_ln3b/poutaky/autoweb.jpg') no-repeat top left; }
+.content div.reference-dolezal.autoweb .in {border:0;}
+.content div.reference-dolezal.autoweb p {margin-left:184px; margin-top:20px; border-top:#f5f5f5 1px solid; border-bottom:#f5f5f5 1px solid; line-height:1.6em; color:#7b7a7a; font-size:92%;}
+.content div.reference-dolezal.autoweb p a {color:#9e2b1e;}
+.content div.reference-dolezal.autoweb-image {height:90px; min-height:90px; background:none;}
+.content div.reference-dolezal.autoweb-image p {margin-left:284px; margin-top:27px; border-top:#f5f5f5 1px solid; border-bottom:#f5f5f5 1px solid; line-height:1.6em; color:#7b7a7a; font-size:92%;}
+.content div.reference-dolezal.autoweb-image p a {color:#9e2b1e;}
+.content div.reference-dolezal.denik-matky {background:transparent url('/o/lidovky_ln3b/poutaky/denik-matky.jpg') no-repeat;}
+.content div.reference-dolezal h2 {font-size:117%; margin-bottom:4px; font-weight:bold;}
+.content div.reference-dolezal p {margin-bottom:4px;}
+
+/* poutaky uni */
+.content div.mooring {clear:both;}
+.content div.mooring .photo {float:left; width:115px;}
+.content div.mooring .text-cont {float:right; width:345px; margin-top:1px; border-top:#f5f5f5 1px solid; border-bottom:#f5f5f5 1px solid; text-align:left;}
+.content div.mooring .text-cont h2 {font-size:117%; margin-bottom:4px; font-weight:bold;}
+.content div.mooring .text-cont p {margin-bottom:4px;}
+
+/* ---- CUSTOMIZATION (BD PANEL) ---- */
+.col-bd {float:right; width:490px; position:relative; overflow:hidden; z-index:999;}
+.col-bd.ads {overflow:visible; z-index: 1000;}
+
+/* bleskovky spolecne */
+.col-bd .shooter h2 {display:block; height:25px; cursor:pointer;}
+.col-bd .shooter a h2{color:#444;}
+.col-bd .shooter a h2:hover {text-decoration:underline;}
+.col-bd .shooter .art {background:none; height:auto;}
+.col-bd .shooter .art span.b {padding-right:6px; float:left;}
+.col-bd .shooter .art span.iconline {display:block; float:left; width:15px; height:15px; margin-right:4px; background-position:0 0; background-repeat:no-repeat;}
+.col-bd .shooter .day {clear:both; padding: 10px 10px 10px 0; border-top:0; margin-bottom:0; background:#fff;}
+.col-bd .shooter .day.sec {padding-top:0;}
+.col-bd .shooter .day .date {float:left;  width:66px; text-align:center; font-family:Georgia,"Times New Roman",Times,serif;}
+.col-bd .shooter .sec .date {_height:50px;}
+.col-bd .shooter .day .text {float:right; width:410px;}
+.col-bd .shooter .day .date .view {display:block; background:url(/o/lidovky_ln3b/portal/shooter-date-2011.jpg) top center no-repeat;}
+.col-bd .shooter .day .date .view .da {display:block; padding-top:12px;}
+.col-bd .shooter .day .date .view .mo {display:block; padding-top:5px; font-size:92%;}
+.col-bd .shooter .ico-r {margin-right:4px;}
+
+/* po spusteni se zrusi .shooter-new */
+.col-bd .shooter .viewport {float:left; width:485px; height:130px; overflow:hidden; position:relative;}
+.col-bd .shooter .viewport.simple {height:70px;}
+.col-bd .shooter .viewport ul.overview {list-style-type:none; position:absolute; margin:0; padding:0;}
+.col-bd .shooter .viewport ul.overview li {float:left; height:130px; width:484px; margin:0; padding:0; background:none;}
+.col-bd .shooter .viewport.simple ul.overview li {height:90px;}
+
+/* ---- ARTICLE EXTRA BOX ---- */
+#zebricek-politiku {margin-bottom:2em;}
+#zebricek-politiku table {margin-bottom:0;}
+#zebricek-politiku tr.c0 td {border-bottom:#fff 6px solid; color:#fff; width:auto;}
+#zebricek-politiku tr.c0 td.jmeno {}
+#zebricek-politiku td {vertical-align:top; padding:6px 0px 3px 0;}
+#zebricek-politiku td.poradi {width:20px; text-align:right; font-weight:bold;}
+#zebricek-politiku td.foto {width:60px; text-align:center;}
+#zebricek-politiku td.jmeno {width:240px; color:#444;}
+#zebricek-politiku td.jmeno a {font-weight:bold;}
+#zebricek-politiku td.znamka {width:60px; text-align:center;}
+#zebricek-politiku td.hlasy {width:70px; padding-right:4px; text-align:right; color:#444;}
+#zebricek-politiku tr.trop td.jmeno a {color:#d2071e;}
+#zebricek-politiku tr.trop td.jmeno a:hover {color:#000;}
+#zebricek-politiku #table-view-complete {background:#1a68b5; text-align:right; font-weight:bold; line-height:26px; color:#fff; font-size:92%;}
+#zebricek-politiku #table-view-complete span {cursor:pointer; display:block; background:url('http://g.idnes.cz/o/lidovky_ln3b/ico/arrow-down.gif') 440px 5px no-repeat; padding-right:25px;}
+#zebricek-politiku #table-view-trop {border-bottom:#d2071e 5px solid; text-align:right; font-weight:bold;  line-height:26px; color:#d2071e; font-size:92%;}
+#zebricek-politiku #table-view-trop span {cursor:pointer; display:block; background:url('http://g.idnes.cz/o/lidovky_ln3b/ico/arrow-down-red.gif') 440px 5px no-repeat; padding-right:25px;}
+
+/* ---- SOCIAL PLUGIN ---- */
+#social-plugins {position: absolute; top:0; width:65px; z-index:10002; background:#f5f5f5; -moz-border-radius-topleft: 3px; -moz-border-radius-topright: 3px;-moz-border-radius-bottomleft: 3px;-moz-border-radius-bottomright: 3px;}
+#social-plugins .item {padding: 5px;}
+#social-plugins .item a {color: #1A68B5;}
+#social-plugins .tw {background: #edeff2;}
+#mail-form {width:323px; position: absolute; top:0; left:79px; padding:0; border:2px solid #6b8fbb; background:none repeat scroll 0 0 #FCFCFC; -moz-border-radius: 3px 3px 3px 3px; -webkit-border-radius: 3px; }
+#mail-link {display:block; width:55px; height:20px; outline:0 none; background: url("http://g.idnes.cz/o/lidovky_ln3b/portal/socmedia-email.jpg") no-repeat scroll 0 0 transparent; }
+#mail-link:hover {background: url("http://g.idnes.cz/o/lidovky_ln3b/portal/socmedia-email.jpg") no-repeat scroll left bottom transparent;}
+#mail-form .top-part {background: #6b8fbb url("http://g.idnes.cz/o/lidovky_ln3b/portal/mail-icon.gif") no-repeat 7px 8px; padding: 5px 8px 5px 55px; color: #FFF; text-align: left;}
+#mail-form .bottom-part {padding: 10px 7px;}
+#mail-form .top-part h2 {font-size: 15px; margin: 0; font-weight: bold;}
+#mail-form .off-link {float: right; display: block; height: 19px; width: 19px; background: #6b8fbb url("http://g.idnes.cz/o/lidovky_ln3b/portal/closer.gif") no-repeat;}
+#mail-form .off-link:hover {background-position: 0 -19px;}
+#mail-form input, #mail-form textarea {padding: 1px 3px 2px 3px; border: 1px solid #E1E1E1; background: #edeff2; color: #8c8c8c; -moz-border-radius: 2px; -webkit-border-radius: 2px;}
+#mail-form #adresat { width: 300px; height: 25px; margin-bottom: 10px; }
+#mail-form #odemail, #mail-form #odjmeno {width:139px; height:25px; margin-bottom:10px;}
+#mail-form #komentar {width:300px; height:60px; margin-bottom:10px; }
+#mail-form #diakritika {position:relative; left:-4px; border: 0; background: 0;}
+#mail-form .checkboxes {float: left; width: 190px;}
+#mail-form .send-button {float: right; width: 95px;}
+#mail-form .send-button input {width: 94px; height: 26px; font-weight: bold; font-family: "Trebuchet MS"; color: #FFF; border: 0; margin-top: 5px; cursor:pointer; background: url("http://g.idnes.cz/o/lidovky_ln3b/portal/send-icon.gif") no-repeat;}
+#mail-form .send-button input:hover {background-position: 0 -26px;}
+#mail-form label, #mail-form .comment {font-size: 11px; color: #555;}
+#mail-form .star {color: #D2071E;}
+#social-plugins .FBConnectButton_Small .FBConnectButton_Text {padding: 2px 4px 3px;}
+
+.inside-page iframe {width:100%;}
+
+
+
+/*  PATICKA  */
+#footer {color: #444;background: #e5e7ee url('/o/lidovky_ln3b/portal/paticka/footer_bg.gif') repeat-x; padding: 0;}
+#footer a{color: #444;}
+#footer h3{margin: 15px 0 5px 0; font-weight: bold;}
+#footer ul{list-style: none outside none;}
+#footer ul li {line-height: 20px;}
+
+
+#topf{padding: 15px 0;text-align: center;line-height: 20px;}
+#topf a{font-weight: bold; margin: 0 6px;}
+
+#middlef{border-bottom: 1px solid #ececec;border-top: 1px solid #dcdcdc; margin: 0 15px;padding-bottom: 15px;}
+
+#weather {width: 250px; float: left;margin-left: 110px;display: inline;}
+#weather img {margin: 0;}
+#weather .day-prev {height: 70px;}
+#weather .day-prev .left span {clear: both; display: block; color: #fff; font-size: 16px; font-weight: bold;}
+#weather .left {float: left; width: 70px; text-align: center; }
+#weather .left img {_behavior:url("http://g.lidovky.cz/css/ln3/png-fix.htc"); }
+#weather .right {float: right; width: 170px;}
+#weather .right a {color: #444;}
+#weather .weather-night {    background: url("/o/lidovky_ln3b/pocasi/night-dark.gif") no-repeat scroll 0 2px transparent;display: block; margin-top: 8px; padding-left: 20px;}
+
+#weather .weather-bio {    background: url("/o/lidovky_ln3b/pocasi/bio-dark.gif") no-repeat scroll 0 2px transparent;display: block;  padding-left: 20px;}
+#weather .day-prev {background: url('/o/lidovky_ln3b/pocasi/square.gif') no-repeat;}
+
+#socmedia {width: 150px; float: left;}
+
+#socmedia ul li a {padding-left: 15px; }
+#socmedia .fb {background: url('/o/lidovky_ln3b/portal/paticka/fbf.gif') no-repeat;}
+#socmedia .tw {background: url('/o/lidovky_ln3b/portal/paticka/twitter.gif') no-repeat;}
+#socmedia .mob {background: url('/o/lidovky_ln3b/portal/paticka/mob.gif') no-repeat;}
+#socmedia .rss {background: url('/o/lidovky_ln3b/portal/paticka/rss.gif') no-repeat 0 3px;}
+#socmedia .kt {background: url('/o/lidovky_ln3b/portal/paticka/mail.gif') no-repeat 0 3px;}
+#other {width: 200px; float: left;}
+#other ul li {background: url('/o/lidovky_ln3b/portal/paticka/listtype6.gif') no-repeat 0 7px; padding-left: 15px;}
+
+#other .portal_fnd {background: url('/o/lidovky_ln3b/portal/paticka/search-input.gif') no-repeat; border: 0; padding: 0 3px; width: 123px; font-size: 11px; height: 18px; color: #444444;}
+#other form input {vertical-align: middle;}
+
+#search { float: left; width: 170px;}
+#search input {vertical-align: middle; margin-right: 5px;}
+.portal_fnd {border: 1px solid #c4c6ca; background: #fff;  -moz-border-radius: 2px 2px 2px 2px; }
+
+#bottomf {padding: 10px 0;text-align: center;font-size: 10px;color: #444444;line-height: 20px;}
+#bottomf a {margin: 0 3px; color: #444444; text-decoration: underline;}
+#bottomf a:hover {text-decoration: none;}
+
+/* Boxy ve sloupci C */
+.box-special {border: 1px solid #a5a5a5; margin-bottom: 15px;position: relative;}
+.box-special .text-s {background: #a5a5a5; padding: 5px; position: relative; z-index: 2;}
+.box-special .text-s h3 {font-size: 120%; font-weight: bold; margin-bottom: 3px;}
+.box-special .text-s h3 a {color: #000;}
+.box-special .text-s p.per-s a{color: #fff;}
+.box-special p.inf-s {color: #000; background: #d6d6d6; opacity: 0.8; width: 146px; filter: alpha(opacity=80); -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)"; padding: 5px; display: none; z-index: 1; position:absolute; left:0; bottom: 0;}
+.box-special .img-s {height: 135px; width: 156px; overflow: hidden; position:relative;}
+
+/* cerveny box na upozorneni */
+.warning-message {background: #FDF3F4 url("/o/lidovky_ln3b/portal/warning-icon.gif") no-repeat 17px 11px; border: 1px solid #d2071e; color: #d2071e; padding: 10px 10px 10px 40px; margin-bottom: 20px; }
+.information-message {background:  #E7F2FD url("/o/lidovky_ln3b/portal/information-icon.gif") no-repeat scroll 17px 10px; border: 1px solid #1A68B5; color: #1A68B5; margin-bottom: 20px; padding: 10px 10px 10px 40px;}
+
+/* dalsi clanky z rubriky */
+.next-art {margin: 10px 0 0 28px;}
+.next-art a.img-art {display: block; float: left; height: 92px; position: relative; width: 110px;margin-bottom: 0;}
+.next-art a img {float: left; margin: 8px;}
+.next-art h3.title-art {float: right; width: 310px; margin: 7px 0 0 0; font-weight: bold;  font-size: 125%;}
+#dalsiclanky .more-art {color: #444; display: block; font-size: 117%;font-weight: bold; margin-top: 14px;}
+#dalsiclanky h3.more-art span {background: url("/o/lidovky_ln3b/portal/dot-three.gif") repeat-x scroll 0 100% transparent;padding: 0 0 6px;}
+#dalsiclanky .lnmala span {bottom: 12px;right: 6px;}
+
+/* dalsi clanky z rubriky */
+#dalsiclanky.lnp180 .next-art {margin: 10px 0 0 0px;}
+#dalsiclanky.lnp180 .next-art a.img-art {display: block; float: left; height: 116px; position: relative; width: 190px;margin-bottom: 0;}
+#dalsiclanky.lnp180 .next-art a img {float: left; margin: 8px; height: 100px; width: 174px;}
+#dalsiclanky.lnp180 .next-art h3.title-art {float: right;    font-size: 134%; font-weight: bold; line-height: 1.6; margin: 7px 0 0; width: 265px;}
+#dalsiclanky.lnp180 .more-art {color: #444; display: block; font-size: 117%;font-weight: bold; margin-top: 14px;}
+#dalsiclanky.lnp180 h3.more-art span {background: url("/o/lidovky_ln3b/portal/dot-three.gif") repeat-x scroll 0 100% transparent;padding: 0 0 6px;}
+#dalsiclanky.lnp180 .lnmala span {bottom: 12px;right: 6px;} 
+#dalsiclanky.lnp180 .next-art a.img-art.lnmala {margin: 0;}
+#dalsiclanky.lnp180 .next-art a.img-art.lnmala span {bottom: 20px;right: 20px;} 
+/* B ariho abeceda */
+.col-b .b-box-dc.abeceda .art {height:115px; min-height:115px;}
+
+
+/* B galerie art */
+.col-b .b-box-dc.abeceda {color:#666;}
+.col-b .b-box-dc.abeceda h2, .col-b .b-box-dc.abeceda h3 {font-family:Georgia ,"Times New Roman",Times,serif; }
+.col-b .b-box-dc.abeceda h2 a, .col-b .b-box-dc.abeceda h2 a:hover {color:#1a68b5;}
+.col-b .b-box-dc.abeceda h2 {display:block; margin-bottom:1px; padding:3px 0; color:#fff; font-size:175%; background:url("/o/lidovky_ln3b/portal/dobra-chut/h2-302.gif") repeat-x scroll 0 0 #DDDEE0; text-align:center;}
+.col-b .b-box-dc .gal {height:75px;}
+.col-b .b-box-dc .gal span {display:block; float:left; width:100px; height:75px; margin-bottom:1px; margin-right:1px; overflow:hidden;}
+.col-b .b-box-dc .gal span.n {margin:0;}
+.col-b .b-box-dc .art {padding: 5px; border:#f5f5f5 1px solid; background:#fff url(/o/lidovky_ln3b/portal/dobra-chut/b-box-art.gif) repeat-x bottom left;}
+
+/* topkontakt reklama */
+#topkontakt-ahead {margin-top:0; left: -15px;}
+#topkontakt-ahead span.r-head {display:none;} 
+#topkontakt-ahead li h4 {width:160px;}
+.r-body img {display: block;  margin: auto;}
+
+
+/* SUBSCRIPTION */
+.subscription {height: 180px; padding-top: 5px; width: 460px; margin-bottom: 10px;}
+.subscription .item { float: left; width: 82px; margin: 0 3px; height: 145px;}
+.subscription .item a{background: #fff; display: block; width: 70px; height: 140px; height: 145px;  font-family: Calibri; padding: 2px 5px 0px 5px; margin: 0 3px; border: 1px solid #7a8ec0; border-bottom: none; -moz-border-radius-topleft: 3px; -moz-border-radius-topright: 3px; -webkit-border-radius-topleft: 3px; -webkit-border-radius-topright: 3px;}
+.subscription .item a:hover {background: #c8deec; text-decoration: none;}
+.subscription .item strong {font-size: 90%; color: #3d6099;}
+.subscription .item p {font-size: 80%; line-height: 115%; margin-bottom: 9px; color: #3767a6;}
+.subscription .item img {_behavior:url("http://g.lidovky.cz/css/ln3/png-fix.htc"); }
+.subscription .item .last-pic {position: relative; top: -3px;}
+.subscription .front-pic {float: left; margin: 0 3px;}
+.subscription .bottom {background: #004e96; text-align: center;  position: relative; z-index: 100;}
+.subscription .bottom img {display: block;}
+
+/* SUBSCRIPTION2 */
+.subscription2 {display: none; width: 460px; height: 314px; background: #e9e9e9 url('http://g.idnes.cz/o/lidovky_ln3b/poutaky/predplatne/title_bg.png') no-repeat; position: relative;}
+.subscription2 a {position: absolute; top: 80px; z-index: 0; width: 155px; height: 234px; background: url('http://g.idnes.cz/o/lidovky_ln3b/poutaky/predplatne/docist_Lidovky.jpg') no-repeat; }
+.subscription2 a span {display: none;}
+.subscription2 .sms-tel {left: 0; background-position: 0 0;}
+.subscription2 .zkouska {left: 152px; background-position: -152px 0;}
+.subscription2 .schranka {right: 0; background-position: -302px 0; width: 158px;}
+.subscription2 .sms-tel:hover {background-position: 0 -234px; z-index: 100;}
+.subscription2 .zkouska:hover {background-position: -152px -234px; z-index: 100;}
+.subscription2 .schranka:hover {background-position: -302px -234px; z-index: 100;}
+
+.col-b .r-body {border: 1px solid #D3D3D3;}
+
+/* Reklama 300x50 - rubrika sport */
+#tkbsSuper300 img {float: left; margin: 5px 10px 5px 5px;}
+
+/* NOVÁ GRAFIKA BOXU, OBRÁZKU V ÈLÁNKU */
+/* defaul style "Pøes celou šíøku stránky 460px" */
+.content table.complete {background: #eaebec;}
+.content table.complete tbody td {padding: 10px 10px 3px; width: auto; font-size: 90%;}
+.content table.complete h3, .content table.complete h2 {color: #444; border: 0; border-bottom: 2px solid #1A68B5; margin: 0; background: none; padding: 0 0 2px 0; font-size: 131%;}
+.content table.complete div p, .content table.complete p.title  {font-size: 110%; line-height: 130%; color: #444; padding: 0; margin: 8px 0; font-family: Arial;}
+.content table.complete a {color: #1A68B5;}
+.content table.complete em {color: #444;}
+.content table.complete hr {border-bottom: 1px solid #1A68B5; border-top: 1px solid #1A68B5;}
+.content table.complete ul, .content table.complete ol  {margin: 8px 0; color: #444; list-style-position: inside;}
+.content table.complete ul li {background: url("http://g.lidovky.cz/o/lidovky_ln3b/portal/listtype6.gif") no-repeat 0 7px; margin: 0; padding: 0 5px 0 13px;}
+.content table.complete .imagelist-lngal, .content table.complete .overimg-1  {margin-top: 6px;}
+.content table.complete .imagelist-lngal .cell, .content table.complete .overimg-1  {width: 440px;}
+.content table.complete .imagelist-lngal .cell img, .content table.complete .overimg-1 img {width: 440px;}
+
+.ico-right span, .ico-next span , .ico-doc span, .ico-info span, .ico-down span, .ico-up span, .ico-foto span, .ico-talk span, .ico-down span, .ico-help span, .ico-tip span {background-repeat:no-repeat;}
+.content table.complete .imagelist .cell p, .imagelist .cell p, .imagelist p   {font-size: 12px; color: #666; margin: 0 0 8px 0;}
+.content table.complete .imagelist-lnbox1 {float: left; margin: 0 10px 5px 0; _margin: 8px 10px 5px 0; &margin: 8px 10px 5px 0; _width: 220px;}
+.content table.complete .imagelist-lnbox1 .cell p {margin: 0;}
+
+
+/* style for "N4 / Vpravo" */
+.content table.complete-half-r {float: right; margin: 10px 0 10px 10px; width: 230px;}    
+.content table.complete-half-r .imagelist-lnbox1 {float: none; margin: 5px 0 5px 0;}
+.content table.complete-half-r h3, .content table.complete-half-l h3,
+.content table.complete-half-r h2, .content table.complete-half-l h2  {margin-bottom: 6px;}
+
+
+/* style for table */    
+.content .table-in-art table {border-collapse: collapse; width: 100%;}
+.content .table-in-art table caption {font-size: 110%; font-weight: bold; margin-bottom: 5px;}
+.content .table-in-art th {background: #666666; color: #fff; padding: 4px;}  
+.content .table-in-art tr.c2 {background: #F5F5F5;}    
+.content .table-in-art td {padding: 4px;}
+
+
+/* style for image */  
+.imagelist-lnbox1 .cell {width: 220px; margin-left: 20px; float: left;}
+.imagelist-lnbox1 .cell img {width: 220px;}
+.imagelist-lnbox1 .cell-first {margin: 0;} 
+.imagelist-lnmala .cell {width: 140px; margin-left: 20px; float: left;}
+.imagelist-lnmala .cell-first {margin: 0;} 
+
+.imagelist.imagelist-fl {float: left; }
+.imagelist-lnmala.imagelist-fl  .cell {width: 100px; margin: 0 15px 10px 0;}
+.imagelist.imagelist-fr {float: right; }
+.imagelist-lnmala.imagelist-fr  .cell {width: 100px; margin: 0 0 10px 15px;}
+
+li.r-webz i {color: #888; float: left; font-size: 9px; font-style: normal; padding: 0 0 0 6px; line-height: 1.9;}
+li.r-webz ol {background: none repeat scroll 0 50% transparent; border: 0 none; display: block; float: left; margin: 0; overflow: hidden; position: static;}
+
+/* dilci upravy */  
+/* tlacitko k diskusi */  
+.disc-butt { margin: 5px 0 10px;}
+.disc-butt a {background: url('/o/lidovky_ln3b/portal/redesign/disc-butt.png') no-repeat; font-size: 120%; padding-left: 23px; text-decoration: underline;}
+.disc-butt a:hover { text-decoration: none;}
+
+/* socialni ikony, tlacitka pod clankem */  
+#socials {float: left; margin: 10px 0 0 0;}
+#what-next {float: right; margin: 10px 0 0 0;}
+#socials .item {float: left; margin-right: 15px;}
+#what-next .item {float: left; margin-left: 20px;}
+#what-next .item a {display: block;  color: #444; height: 18px; padding-top: 44px; background: url('/o/lidovky_ln3b/portal/redesign/icons-to-do.png') no-repeat center 15px; text-align: center;}
+#what-next .item a:hover {text-decoration: none;}
+#what-next .item a.ico-mail {background-position: 0 0; width: 56px; }
+#what-next .item a.ico-print {background-position: -56px 0; width: 55px;}
+#what-next .item a.ico-tip {background-position: -111px 0; width: 76px;}
+#what-next .item a.ico-close {background-position: -187px 0; width: 56px; }
+#what-next .item a.ico-mail:hover {background-position: -0 -72px; }
+#what-next .item a.ico-print:hover {background-position: -56px -72px;}
+#what-next .item a.ico-tip:hover {background-position: -111px -72px; }
+#what-next .item a.ico-close:hover {background-position: -187px -72px; }
+
+/* APP ikonky u clanku a v zahlavi */  
+a.app-ico {position: relative; display: block; }        
+a.app-ico .dark, a.app-ico .light {position: absolute; top: 7px; right: 7px; display: block; width: 54px; height: 82px; border: 0; }
+a.app-ico .dark {background: url('http://data.lidovky.cz/lidovky/shp/app_icons/APP_viceBlack.png') no-repeat;}
+a.app-ico .light  {background: url('http://data.lidovky.cz/lidovky/shp/app_icons/APP_viceBila.png') no-repeat;}
+#krilupa a {display: block;}
+#krilupa a span.text{position: absolute; top:3px; left: 41px; width: 145px; color: #1A68B5; font-weight: bold; font-size: 12px;}
+#krilupa a span.time{position: absolute; top:19px; left: 143px; color: #FFF; font-weight: bold; font-size: 14px;}
+.search_button {background: url("http://g.lidovky.cz/o/lidovky_ln3b/buttons/lupa.gif") no-repeat;     border: 0 none; height: 24px; width: 24px; cursor: pointer;}
+.ico a:hover span.dark, .ico-r a:hover span.dark, .ico a:hover span.light, .ico-r a:hover span.light {background-color: transparent;}
+
+/* Mapa stránek */  
+
+.sitemap .half-l {width: 42%;}
+.sitemap h2 { font-size: 280%; margin: 0px 0 30px 80px; padding-top: 20px; font-weight: bold;}
+.sitemap ul {list-style: none;}
+.sitemap ul li{margin-left: 80px; padding-left: 15px; line-height: 1.4; font-size: 16px; background: url("http://g.lidovky.cz/o/lidovky_ln3b/portal/listtype6.gif") no-repeat 0 7px;}
+.sitemap ul li ul {margin: 5px 0; }
+.sitemap ul li ul li{font-size: 14px; margin-left: 25px;  background: url("http://g.lidovky.cz/o/lidovky_ln3b/portal/listtype6.gif") no-repeat 0 7px;}
+.sitemap ul li ul li ul li{ line-height: 1.6; margin-left: 25px;  font-size: 12px; background: url("http://g.lidovky.cz/o/lidovky_ln3b/portal/listtype4.gif") no-repeat 0 5px;}
+
+/* reklama megaboard */ 
+.ahead {height: 110px;}
+.ahead .r-body {margin: 4px 14px 0 0; position: relative; left: 6px;}
+.ahead .r-head {float: right; height: 0; margin-top:0; right: -5px;}
+.ahead .r-head span {background: url("/u/n4/r-head-vertical.png") no-repeat scroll right top; height: 57px; width: 14px;  right: -2px; margin-top: 7px;}
+.ahead .r-body a img {margin-top: 0px !important;}
+
+/* doplnujici stranky - diskuse, online rozhovory atd */
+input, textarea, select { line-height:normal; font-family:Arial,sans-serif; font-size:12px; font-variant:normal; font-style:normal;}
+
+/* oldschool nav */
+.searchpage .nav .col1, .col-abc .nav .col1 {float:left; width:11em; text-align:left;}
+.searchpage .nav .col2, .col-abc .nav .col2 {float:left; width:16em; }
+.searchpage .nav .col3, .col-abc .nav .col3 {float:right; width:11em; text-align:right;}
+.searchpage .nav a .vh, .col-abc .nav a .vh {visibility:visible;}
+.searchpage .nav .col1 .arr a span, .col-abc .nav .col1 .arr a span { display:none;}
+.searchpage .nav .col3 .arr a span, .col-abc .nav .col3 .arr a span { display:none;}
+
+/** POP-UP general **/
+.list-with-form { width:100%; background:#f3f3f3; padding-top:10px; }
+.list-with-form h2 { line-height:1.6em; margin:0 0 0.5em; padding:0 0 6px 10px; font-weight:bold; color:#444444; background:#E3E6ED url(/o/lidovky_ln3b/portal/eyes-h3.gif) repeat-x scroll 0 100%; }
+.list-with-form a span.closer {float:right; cursor:hand; width:17px; height:17px; margin-right:5px; background: url(http://g.idnes.cz/o/lidovky_ln3b/ico/h2-closer.jpg) no-repeat;}
+.list-with-form a:hover span.closer {float:right; width:17px; height:17px; background:url(http://g.idnes.cz/o/lidovky_ln3b/ico/h2-closer-over.jpg) no-repeat;}
+.list-with-form p { color:#444444; font-weight:bold; }
+.list-with-form label { display:block; margin: 0px 0 0 0; color:#444; font-size:92%; text-transform:uppercase; text-align:left;}
+.list-with-form .relative { position:relative; width:100%;}
+.list-with-form ol li { margin:0 0 0.5em 2.5em; }
+.list-with-form #d-editor-status, .list-with-form .comment { position:absolute; right:0; top:0; z-index:1; padding-left:0.5em; font-size:92%; text-align:right;}
+.list-with-form #d-editor-status.forms-textlimit-warning { width:100%; color:#B9151C; background:#fff;}
+.list-with-form .inputs input, .list-with-form .inputs .de-area { width:100%; margin:0 0 1em; border:1px solid #CCCCCC; background:#eee; }
+.list-with-form .inputs .half-l { float:left; width:49%; }
+.list-with-form .inputs .half-r { float:right; width:49%; }
+.list-with-form .fl { float:left; width:220px; padding-left:10px; }
+.list-with-form .fr { float:left; margin-left:15px; }
+.list-with-form .fl .captcha { width:220px;}
+.list-with-form .inputs .de-area { height:100px; overflow:auto;}
+.list-with-form .inputs .checkboxes {margin:0 0 1em;}
+.list-with-form .inputs .checkboxes p {margin:0; line-height:150%;}
+.list-with-form .inputs .checkboxes input { width:auto; margin:0 3px 0 0; border:0 none; background:transparent none repeat scroll 0 0; vertical-align:middle;}
+.list-with-form .inputs .checkboxes label { display:inline; text-transform:none; }
+.list-with-form .full .captcha { width:100%; border:#d0d1d2 1px solid; background-color:#fff; text-align:center; }
+.list-with-form .full .captcha .half-l { float:left; width:49%; border:#d0d1d2 1px solid; background-color:#fff; text-align:left; }
+.list-with-form .captcha input { width:100%; }
+.list-with-form form { margin:0; padding:0px 0 10px 0; border-top:#d0d1d2 1px solid; background:#f3f3f3; text-align:left;}
+.list-with-form form.bonz p { font-size:125%; font-weight:bold; }
+.list-with-form label { clear:both; width:220px; }
+.list-with-form #overeni { display:block; clear:both; width:180px; border:#d0d1d2 1px solid; }
+.list-with-form .txt {width:450px; font-size:87%;}
+.list-with-form .bt-out {margin-top:15px;}
+.list-with-form form .close {float:right; margin:0 7px 0 0;}
+.list-with-form .inputs .posledni .bt-out .bt {margin-bottom:10px;}
+.voice label {clear:both; margin-bottom:10px; padding-left:8px; }
+
+
+/* pop-up emailing */
+.list-with-form .emailing p {padding:0 10px 15px 10px;}
+.list-with-form .emailing .inputs p {padding:0;}
+.list-with-form .emailing .inputs .relative textarea {background:#fff;}
+.list-with-form .emailing .inputs .relative .checkboxes {float:right; width:180px;}
+.list-with-form .emailing .relative .captcha.voice {padding:0 10px 0 10px;}
+.list-with-form .emailing .relative .fl .captcha.voice {padding:0;}
+.list-with-form .emailing .relative .captcha.voice img {border:#d0d1d2 1px solid; background:#fff;}
+.list-with-form .emailing .relative .captcha.voice label {clear:both; margin:10px 0 0 0; padding:0;}
+.list-with-form .emailing .relative .bt-out {float:right; width:100%; text-align:right;}
+.list-with-form .emailing .relative .bt-out .bt {float:none; clear:both; width:8em; margin:10px 10px 10px 0; padding:0; border:1px solid #ccc;}
+.list-with-form .emailing .relative.posledni .bt-out .bt {margin:0 0 10px 0;}
+.list-with-form .emailing .ico-r.close {float:right;}
+.list-with-form .emailing .warning {margin:0 10px 10px 10px;}
+.list-with-form .emailing .warning-out {background:#6485b2;}
+.list-with-form .emailing .warning-out .warning {margin-left:0px; margin-right:0px;}
+.list-with-form .emailing .warning li {list-style-type:none;}
+.list-with-form .emailing .warning h2 { margin:0; padding:0; color:#fff; background:none;}
+
+/** DISKUSE **/
+.col-ab .col-a .moot-art { border-bottom:#d0d1d2 1px solid; }
+.col-ab .col-a .moot-art .art h3 a { color:#d2071e; }
+.col-ab .col-a .moot-art .art h3 a:hover { color:#000; }
+.col-ab .col-a .moot-art .ico { float:left; width:10em; }
+.col-ab .col-a .moot-art .ico a { color:#1a68b5; }
+.col-ab .col-a .moot-art ul { float:right; margin-left:-1em; }
+.col-ab .col-a .moot-art li { float:left; height:26px; margin-left:1em; line-height:26px; list-style:none; font-weight:bold;}
+.col-ab .col-a .moot-form { position:static; width:100%; height:auto; z-index:1;}
+.col-ab .col-a .moot-form form { padding: 1em 0px 1em 0px; }
+.col-ab .col-a .moot-form .inputs input { width:99%; margin:0 0 1em; border:1px solid #d0d1d2; background:#f5f5f5; vertical-align:middle; }
+.col-ab .col-a .moot-form .inputs .de-area { width:458px; _width:456px; height:170px; border:1px solid #d0d1d2; overflow:auto; background-color:#f5f5f5; }
+.col-ab .col-a .moot-form .inputs .editor-status {font-size : 92%;}
+.col-ab .col-a .moot-form .bt { float:right; right:0; margin-bottom:1em; }
+
+.col-ab .col-a .moot-form .half-l {float:left; width:42%;}
+.col-ab .col-a .moot-form .half-r {float:right; width:57%; text-align:right;}
+.col-ab .col-a .moot-form .half-l img {float:left; width:50px; height:50px; margin-right:5px;}
+.col-ab .col-a .moot-form .half-r label {display:block; padding-left:7px; text-align:left;}
+.col-ab .col-a .moot-form .half-l input {width:180px; padding:5px 0 5px 3px;}
+.col-ab .col-a .moot-form .half-r input {width:250px; padding:5px 0 5px 3px;}
+.col-ab .col-a #moot-editor .relative {position:static;}
+.bg-line-2 .hr { width:100%; height:20px; background: url('/o/lidovky_ln3b/portal/dot-three.gif') 0 100% repeat-x; }
+.red {color:#d2071e;}
+
+/* odpoved */
+.col-ab .col-a .moot-reaction h3 { margin-top:10px; margin-bottom:1em; color:#444; font-family: Georgia, "Times New Roman", Times, serif; font-size:167%; font-weight:normal; }
+.col-ab .col-a .moot-reaction h3 span {padding:0 0 6px; background:url('/o/lidovky_ln3b/portal/dot-three.gif') 0 100% repeat-x; }
+.col-ab .col-a .moot-reaction .comment { padding:6px; margin-right:1px; background-color:#e3e6ed; }
+.col-ab .col-a .moot-reaction .comment h4 { margin-bottom:4px; font-weight:bold; }
+
+/* moot-list */
+.zoom2 { font-size:100%; }
+.moot-list {width:100%; padding-top:10px; overflow:hidden;}
+.moot-list .r-body {margin-bottom:10px;}
+.moot-list h3 {margin:0 0 10px 10px; font-size:117%; font-weight:bold;}
+.moot-list .nav { margin-left:7px; }
+.moot-list .line { margin:0 0px 1em 5px; padding-top:1px; font-size:12px;}
+.moot-list .line .order {float:right;}
+.moot-list .line li {float:left; display:block; padding-right:5px; list-style-image:none; list-style-position:outside; list-style-type:none;}
+.moot-list .line li a {font-weight:bold;}
+.moot-list .inside-page {margin:0px -7px 0 -7px;}
+.moot-list .inside-page iframe { width:100%; margin:0; }
+.say {padding:7px 7px 0; zoom:1;}
+.re iframe { width:100%;}
+.say .picture {float:left; margin-right:10px;}
+.say .number {color:#7292B5;}
+.say .name {color:#000;}
+.say .name small {color:#777;}
+.say h5 {font-size:108%; font-weight:bold;}
+.say table {margin:0; padding:0; border:0 none; border-collapse:collapse; overflow:hidden; }
+.moot-list .new, .moot-list .re, .moot-form .new {margin-bottom:10px;}
+.new .say {background:#f5f5f5;}
+.re .say {border-left:3px solid #e3e6ed;}
+.say ul {float:right;}
+.say li {float:left; height:26px; line-height:26px; margin-left:10px; list-style-image:none; list-style-position:outside; list-style-type:none;}
+.say li.ico-r {width:7em;}
+.say .bg-color {_width:100%; margin: 0 -10px; padding:0 10px;}
+.new .bg-color { margin-top:5px; background-color:#e3e6ed;}
+.re .bg-color {_width:100%; margin:5px -10px 0; padding:0 10px; background-color:#e3e6ed;}
+.chat .say {padding:10px;}
+.chat .say .bg-color, .chat .new .bg-color, .chat .re .bg-color {background:transparent none repeat scroll 0 0;}
+.chat .say .bg-color, .chat .re .bg-color {margin:0;}
+.say .ico div {height:26px; line-height:26px; font-size:12px; font-weight:bold;white-space:nowrap;}
+.say .ico div span {float:left; width:17px; height:17px; line-height:16px; margin:5px 8px 0 0;_margin:5px 5px 0 0; background-color:#555; background-repeat:no-repeat; color:#555555; text-decoration:none;}
+.moot-list .nav {margin-right:7px;}
+.moot-form #moot-editor p.response {float:left; margin-top:2px; text-align:left; line-height:1.0em; font-size:92%; }
+.moot-form #moot-editor p.response input {float:left; width:auto; margin-right:5px; background:none; border:0; }
+.moot-form #moot-editor p.editor-status {float:right; margin-top:2px; }
+
+.moot-table {width:100%; margin:0 0 22px; border:0; border-collapse:collapse; font-size:117%}
+.moot-table td, .moot-table th {padding:4px 10px; vertical-align:top}
+.moot-table th {padding:6px 10px; white-space:nowrap; color:#444; background:#D3DDE8; font-weight:bold;}
+.moot-table .c1 {background:#eee}
+.moot-table .c2 {background:#fff}
+.moot-table .vlakno {padding-left:44px}
+.q-js .vlakno-tr, .vlakno-a-hide, .vlakno-a-show, .q-js .moot-table-show .vlakno-a-show {display:none}
+.moot-table-show .vlakno-a-hide, .q-js .vlakno-a-show {display:inline}
+.moot-table-show .vlakno-tr {display:table-row; =display:block;}
+
+.diskuse-upozorneni {margin-bottom:14px; padding:10px; background:#d2071e; color:#fff;}
+.diskuse-upozorneni a.more {color:#fff;}
+.diskuse-upozorneni a:hover.more {text-decoration:none;}
+.diskuse-upozorneni a:hover.more u {text-decoration:underline; color:#ddd;}
+
+.moot-list .new {border-top:#e3e6eD 1px solid;}
+.say .name small {display:none;}
+.say .name {font-weight:bold; color:#d2071e; padding-right:10px; border-right:#ccc 5px solid;}
+.say .time {font-size:92%; color:#777;}
+.re .say {background:#f9f9f9;}
+
+
+/* seznam diskusi */
+.moot-headline h2 {display:block; margin-bottom:10px; padding:1px 0; color:#ffffff; font-size:117%; font-weight:bold; text-align:center; text-transform:uppercase; background:#455c8c url(/o/lidovky_ln3b/portal/h2-460.gif) repeat-y scroll 50% 0;}
+.moot-headline form {margin-bottom:10px; font-weight:bold;}
+.moot-headline form select {margin:0 5px;}
+.moot-headline form .bt {background:#f0f0f0; border:#ccc 1px solid;}
+.moot-headline p.comment {display:none;}
+
+.moot-list table.moot-table {font-size:100%;}
+.moot-list table.moot-table thead th { background-color:#e5e5e5; color:#000; padding: 4px 10px;}
+.moot-list table.moot-table tfoot td { color:#444; padding-top:10px; text-align:right; font-size:92%;}
+.moot-list table.moot-table .c1 {background:#f5f5f5;}
+
+
+/* diskusni pop-up nahlasovak */
+.inside-page iframe {width:100%;}
+.emailing .star { color:#d2071e;}
+.emailing { min-height:400px; height:400px;}
+.list-with-form .emailing .inputs {padding:0 10px 0px 10px;}
+.list-with-form .emailing input,.list-with-form .emailing #komentar { background:#fff;}
+.list-with-form .emailing .ico-r { margin-right:10px;}
+.list-with-form .emailing .comment { font-weight : normal;}
+.list-with-form .emailing .relative .checkboxes p.comment { position:static; padding:0; text-align:left;}
+.list-with-form .emailing .fl { margin-right:30px; padding:0;}
+.list-with-form .emailing p { font-weight:normal; }
+.list-with-form .emailing { position:static; }
+.list-with-form .emailing h2 { line-height:1.6em; margin:0 0 0.5em; padding:0 0 6px 10px;  }
+.list-with-form .fl.tal .captcha img {background:#fff; border:#ccc 1px solid;}
+.voice input, .voice #overeni {float:left;margin-right:5px;}
+.voice .ico-voice {float:left; display:inline; position:relative;white-space:nowrap;z-index:1; height:17px; line-height:17px; margin-top:1px; font-size:100%; font-weight:bold; }
+.voice .ico-voice span.alter-text {position:absolute; top:-1000px; left:-1000px; z-index:2; width:auto; height:auto; background:transparent none repeat scroll 0 50%; color:#000000; font-size:100%;}
+.voice .ico-voice span {float:left; width:17px; height:17px; line-height:16px; color:#555555; background-color:#1a68b5; cursor:pointer; font-size:0; text-decoration:none;}
+.voice a.ico-voice:hover span {background-color:#000;}
+.voice a:hover .alter-text {color:#fff;}
+
+
+/* kodex diskutera */
+#kodex .box-in { padding:0 0.6em 0.6em; color:#777; }
+
+
+/* on-line rozhovory a poradny */
+.online-art, .online-list {position:static;}
+.online-art h3, .online-art .art-functions, .online-list h3, .online-form h3 {font-family:Georgia, "Times New Roman", Times, serif;} 
+.online-art h3 { font-size:226%; margin-bottom:8px;}
+.online-art .single {margin-bottom:12px;}
+.online-art .art-status {margin-bottom:10px; padding:4px; color:#fff; background:#6485b2;}
+.online-art .art-status h3 {line-height:1.5em; margin:0; padding:0; font-size:117%; font-family:Arial, Sans-Serif; font-weight:bold;}
+.online-art .art-info {margin-bottom:10px; padding-left:4px; white-space:normal; font-size:117%;}
+.online-art .art-functions {margin-bottom:40px; padding-left:4px; color:#777; font-size:92%; text-align:right;}
+.online-list h3, .online-form h3  {margin-bottom:14px; color:#1a171b; font-size:167%;}
+.online-list h3 span, .online-form h3 span {padding:0 0 6px; background: url(/o/lidovky_ln3b/portal/dot-three.gif) repeat-x 0 100%;}
+.online-list .quest {margin:0 0 1em; padding:10px; color:#000; background:#f6f6f6;}
+.online-list .answ {margin:0 0 2em 40px; color:#666; overflow:hidden;}
+.online-list .th {display:block; font-weight:bold;}
+.online-ico .art-add {margin:0;}
+
+.online-form .inputs input, .online-form .de-area { width:100%; margin-bottom:1em; border:1px solid #d0d1d2; background:#f5f5f5; }
+.online-form .relative { position:relative; width:100%; }
+.online-form label { display:block; font-size:100%;font-weight:bold;}
+.online-form .bt { float:right; }
+.online-form #d-editor-status { position:absolute; right:0; top:0; z-index:1; text-align:right; font-size:92%;padding-left:0.5em;}
+.online-form #d-editor-status.forms-textlimit-warning {background:#fff; color:#d2071e; width:100%;}
+.online-form input { margin-bottom:1em; }
+.online-form #odesilatel {width:50%;}
+.online-form .de-area {height:100px; overflow:auto;}
+
+.online-art .art-functions .packed {display:none;}
+.online-art .art-functions #list-pack ol { margin-top:20px; list-style-type:none; font-size:117%; font-family:arial, Sans-Serif; text-align:left;}
+.online-art .art-functions #list-pack ol li { padding-left:16px; background:transparent url(/o/lidovky_ln3b/portal/listtype4.gif) no-repeat scroll 0 0.4em;}
+
+
+/* poradny vstup a seznam poraden */
+.poradny h3, .online-list .poradna .fr h4 {font-family:Georgia, "Times New Roman", Times, serif; }
+.poradny h3 { font-size:167%; margin-bottom:8px;}
+.poradny .welcome { margin-bottom:20px; font-size:1.2em;}
+.poradny .hr { margin-bottom:20px; height:10px;}
+.online-list {clear:both;}
+.online-list .poradna { margin-bottom:20px;}
+.online-list .poradna img {float:left; margin-top:6px;}
+.online-list .poradna .fr {width:350px;}
+.online-list .poradna .fr h4 {font-size:175%;}
+.online-list .related { margin:10px 0 0 0;}
+.online-list .related li { margin-bottom:0.3em; font-size:100%;}
+.online-list .small .fr h4 { padding: 1px 0 4px 0; font-size:134%; }
+.online-list .small .fr .more { color:#d2071e; white-space:nowrap;}
+.online-list .small .fr a.more { color:#d2071e; text-decoration:none; font-size:87%; text-transform:uppercase; white-space:nowrap;}
+.online-list .small .fr a:hover.more u { color:#000;}
+
+/* stranka s vyhledavanim */
+.searchpage .search { min-height:27px; height:27px; margin-bottom:10px;}
+.searchpage .search .keywords { width:220px; border:#d0d1d2 1px solid; padding:4px;}
+.searchpage .search .bt { margin-left:6px; padding-top:1px;}
+.searchpage .data { margin-bottom:15px;}
+.searchpage .data h3 { font-size : 142%; font-family:Georgia, "Times New Roman", Times, serif;}
+.searchpage .data .time { margin-bottom:4px; color:#444444; font-size:92%; font-family:Georgia, "Times New Roman", Times, serif;}
+.searchpage .googlesearch { background:#f5f5f5; padding:5px;}
+.searchpage .googlesearch h3 { font-size:117%;}
+.searchpage .related ul {margin-top:10px;}
+.searchpage .related li {margin:0 0 0 20px; font-family: Arial, Sans-Serif;}
+
+/* redakce */
+.redakce h3 {margin-bottom:20px; color:#1a171b; font-size:167%; font-family:Georgia, "Times New Roman", Times, serif;}
+.redakce h3 span {padding:0 0 6px; background: url(/o/lidovky_ln3b/portal/dot-three.gif) repeat-x 0 100%;}
+.redakce .detail {margin-bottom:10px;}
+.redakce .detail h4 { padding:2px 0 2px 3px; background:#f5f5f5; font-weight:bold;}
+.redakce .detail .info { float:right; width:350px;}
+.redakce .detail .info .fl { padding-left:3px;}
+.redakce .art-list .art h3 { margin-bottom : 8px;}
+.redakce h4 { margin-bottom:4px; font-weight:bold; }
+.redakce ul.telefony { list-style-type:none; margin-bottom:20px; }
+.redakce ul.telefony li { min-height:17px; margin-top:5px; padding-bottom:5px; border-bottom:#f5f5f5 1px solid; }
+.redakce ul.telefony li span { display:block; float:left; }
+.redakce ul.telefony li span.name { width:190px; }
+.redakce ul.telefony li span.p1 { width:220px; }
+.redakce ul.telefony li span.p2 { width:220px;}
+
+/* vedecke blogy */
+.vedecke-blogy h4 {margin-bottom:6px; padding:3px 0px; background:#f5f5f5; font-weight:bold;}
+
+/* KVIZY */
+#poradny #porad-vypis h2 { display: block; margin-bottom:10px; padding:1px 0; font-weight:bold; font-size:117%; color:#FFF; background:#6D92BE url('/o/lidovky_ln3b/portal/h2-460.gif') repeat-y 50% 0; text-align:center; text-transform:uppercase }
+.test-art {margin-bottom:20px;}
+.test-art h3 {margin-bottom:12px; padding:0 0 6px; background:transparent url(/o/lidovky_ln3b/portal/dot-three.gif) repeat-x scroll 0 100%; color:#1A171B; font-size:167%; font-family:Georgia,"Times New Roman",Times,serif; }
+.test-art table tr td img {margin-right:10px;}
+.test-art .test-form div h3 {display:inline; padding:0 0 6px; background:transparent url(/o/lidovky_ln3b/portal/dot-three.gif) repeat-x scroll 0 100%; color:#1A171B; font-size:167%; font-family:Georgia,"Times New Roman",Times,serif; }
+.test-art .test-form div form {clear:both; margin-top:15px; }
+.test-art .test-form div form .button {margin: 1em 0 1em 12px; border:#ccc 1px solid;}
+.test-art .test-form div form .tf-inp {margin: 4px 0 0 12px;}
+.test-art .test-form div form .tf-inp-in {margin-top:5px; padding-bottom:5px; border-bottom:#f5f5f5 1px solid;}
+.test-art .test-answer {margin-bottom:12px;}
+.test-art .test-answer p {padding:6px 12px; background:#f5f5f5; line-height:1.5em;}
+.test-art .test-answer p .imp {font-weight:bold; font-variant:small-caps; color:#d2071e !important;}
+.test-art .test-answer p .itest-red .imp  {color:#d2071e !important;}
+.test-art .test-answer p .itest-blue .imp {color:#1a68b5 !important;}
+
+.test-form-foto .tf-title {margin-bottom:6px; font-size:117%;}
+.test-form-foto .tf-inp-in {clear:both; margin-bottom:4px; padding-bottom:4px; border-bottom:#d0d1d2 1px solid;}
+.test-form-foto .tf-inp-in input {float:left; width:20px;}
+.test-form-foto .tf-inp-in label {float:left;}
+.test-form-foto .tf-inp-in .choice {float:right; width:430px; text-align:left;}
+.test-form-foto .tf-inp-in .choice img {float:left; margin-right:6px;}
+
+
+.test-form .pas-form.general {margin-top:10px;}
+.quest h2 {padding:2px 0 6px; border-top:#f5f5f5 1px solid; color:#1A171B; font-weight:bold; font-size:143%;}
+.quest h5 {margin:0px 0 6px 0; font-weight:bold; color:#444;}
+.quest ol {margin: 0px 0px 20px 40px; color:#444;}
+.quest ol li {margin-bottom:3px;}
+
+.test-survey {margin-bottom:10px;}
+.test-survey p {padding:6px 12px; background:#f5f5f5; line-height:1.5em;}
+.test-survey p .ts-true {color:#1a68b5; font-weight:bold; font-size:142%;}
+.test-survey p .ts-quest {font-weight:bold; }
+.test-survey table {clear:both; margin:12px 0;}
+.test-survey table .c1.b td { padding-bottom:6px; font-family:Georgia,"Times New Roman",Times,serif; font-size:167%; font-weight:normal; color:#1a171b; }
+.test-survey table .tar.wid-a {width:50px; text-align:left; vertical-align:top;}
+.test-survey table .tal.wid-b {vertical-align:top;}
+
+
+
+/* vysvedceni*/
+#vysvedceni {padding-bottom:1em; text-align:center; border:none; background:none;}
+#vysvedceni h2 {color:#000; text-transform:none}
+#vysvedceni .box-in {width:588px; margin:auto; }
+#vysvedceni .vys-top {height:4px; line-height:0; background: url('/o/zpr/vysvedceni/bg-top.gif') no-repeat bottom left; font-size:0;}
+#vysvedceni .vys-bottom {height:4px; line-height:0; background: url('/o/zpr/vysvedceni/bg-bottom.gif') no-repeat top left; font-size:0}
+#vysvedceni .vys-middlet {padding:22px 26px 0; background: url('/o/zpr/vysvedceni/bg-middlet.gif') repeat-y top left; }
+#vysvedceni .vys-copy {height:30px; background: url('/o/zpr/vysvedceni/vys_copy.png') no-repeat 0 2px}
+#vysvedceni .vys-midin {padding:0 22px 33px; border:4px solid #ECECEC; color:#3C3C3C; background: url('/o/zpr/vysvedceni/vys_pattern.gif') repeat top left;}
+#vysvedceni .vys-top2 {min-height:38px; _height:38px; padding-top:18px; }
+#vysvedceni .vys-top2 span {font-size:150%;}
+#vysvedceni .vys-mid2 {padding:113px 0 0; background: url('/o/zpr/vysvedceni/vys_lev.gif') no-repeat top center; } 
+#vysvedceni .vys-mid2 p {margin-bottom:7px; line-height:1.3; font-size:150%; font-weight:500; }
+#vysvedceni .vys-midin table {border-collapse:collapse;}
+#vysvedceni .vys-midin td, #vysvedceni .vys-midin th {padding:6px 6px; border:1px solid #999; text-align:left; font-size:142%; vertical-align:middle; line-height:1;}
+#vysvedceni .vys-midin td.tar, #vysvedceni .vys-midin th.tar {width:1%; text-align:right; }
+#vysvedceni .vys-celk {color:#B9151C; font-weight:bold; }
+
+
+/* znamkovani */
+#vys-znamk {padding:10px 10px 0; background: url('/u/n3/art_dots.gif') repeat-x left bottom; }
+#vys-znamk h3 {margin-bottom:0.5em; padding:4px 0; background: url('/u/n3/art_dots.gif') repeat-x left bottom; font-size:133%; }
+#vys-znamk table {width:100%; margin-bottom:10px; border-collapse:collapse; }
+#vys-znamk th {text-align:left; font-size:113%; font-weight:normal;}
+#vys-znamk td {width:50px; text-align:right; font-weight:bold;}
+#vys-znamk th, #vys-znamk td {padding:6px 4px 6px 0; vertical-align:middle;}
+#vys-znamk td label {float:right; line-height:20px; }
+
+/* odeslat */
+#vys-odeslat {padding:10px 0 10px 10px};
+#vys-odeslat .captcha  {float:left; width:200px}
+#vys-odeslat label {text-transform:uppercase;}
+#vys-odeslat .vc-kod {float:left; width:108px; padding:40px 0 0 10px; _padding:36px 0 0 10px;}
+#vys-odeslat .vc-kod input {width:98px; margin-right:10px; background-color:#eee; border:1px solid #ccc; }
+#vys-odeslat .vc-submit {float:left; width:200px; padding:55px 0 0 0; _padding:51px 0 0 0; }	
+
+/* celkova znamka */
+#vys-celk {margin:0 0 1em; padding:10px 0;}
+#vys-celk h3 {display:inline; margin-bottom:0.5em; padding-bottom:6px; color:#1A171B; font-family:Georgia,"Times New Roman",Times,serif; font-size:167%;}
+#vys-celk h3 {background:transparent url(/o/lidovky_ln3b/portal/dot-three.gif) repeat-x 0 100%;}
+#vys-celk .vc-first {clear:both; background:#f5f5f5;}
+#vys-celk ul {width:100%; list-style-type:none; }
+/*#vys-celk li {display:block; min-height:129px; _height:129px; margin: 10px 0; padding-bottom:10px; border-bottom:#eee 1px solid;} JU */
+#vys-celk li {display:block; min-height:129px; _height:129px; margin: 10px 0; padding-bottom:10px;}
+#vys-celk li img {float:left; margin:0; padding:0;}
+#vys-celk .vc-text {min-height:40px; _height:40px; margin-left:188px; }
+#vys-celk .vc-text h4 {padding-top:4px; font-size:117%; font-weight:bold; }
+#vys-celk .vc-text p {display:block; min-height:22px; _height:22px; line-height:normal; font-size:92%;}
+#vys-celk .vc-vote {margin-left:188px; margin-right:10px;}
+#vys-celk .vote .vote {margin-bottom:0;}
+#vys-celk .zk-num {display:block; margin-left:188px; font-size:350%; font-weight:bold; color:#d0d1d2;}
+#vys-celk .vc-first .vote .vote .eb  {background-color:#fff; }
+#vys-celk .vc-first .vote .vote .vb {background:#d2071e;}
+#vys-celk .vc-first span {color:#d2071e;}
+
+#vys-celk .relative.full .captcha.voice {padding:10px 10px 0 0;}
+#vys-celk .relative.full .captcha.voice img {float:left; margin:0 10px 6px 0; background:#fff; border:#d0d1d2 1px solid;}
+#vys-celk .relative.full .captcha.voice label {margin:0; padding:0;}
+#vys-celk .relative.full .bt-out { text-align:right; }
+
+/* znamkovani politiku */
+#znamk-polit {padding:0 0 4px 0; margin-bottom:1em; background:url('/u/n3/art_dots.gif') repeat-x left bottom; margin-bottom:0.5em}
+#znamk-polit h3 {font-size:133%; margin-bottom:0.5em; background:none;}
+#znamk-polit .box-in {width:100%; overflow:hidden; }
+#znamk-polit .box-in2 {width:700px; }
+/*#znamk-polit .zp-box {float:left; display:inline; position:relative; width:200px; margin-right:57px; margin-bottom:28px; padding-top:172px} JU */
+#znamk-polit .zp-box {float:left; display:inline; position:relative; width:200px; margin-right:57px; margin-bottom:28px; padding-top:120px}
+#znamk-polit .zp-box .vote .vote .eb {margin-top:10px; clear:both;}
+#znamk-polit img {position:absolute; top:0;}
+#znamk-polit h4, #znamk-polit p {font-size:92%; line-height:normal;}
+#znamk-polit h4 {font-weight:bold;}
+/*#znamk-polit ul {position:absolute; top:138px; =top:134px; width:220px;} JU */
+#znamk-polit ul {position:absolute; top:75px; width:220px;}
+#znamk-polit li {float:left; display:inline; width:1.5em; text-align:center; margin-right:20px;}
+#znamk-polit li input {float:left; width:100%; margin:0; padding:0; margin-bottom:3px; =margin-bottom:0;}
+#znamk-polit li label {width:1.5em; clear:both; text-align:center; }
+#znamk-polit .vstamp {display:block; position:relative; padding-top:8px; color:#000; font-size:92%;}
+#znamk-polit .vote .vote .rate {top:3px; font-size:142%; font-weight:bold; color:#444;}
+#znamk-polit .vote .vote {margin-bottom:6px;}
+
+
+/* odeslat */
+#vys-odeslat {padding:10px 0 10px 10px}
+#vys-odeslat .captcha  {float:left; width:200px}
+#vys-odeslat label {text-transform:uppercase;}
+#vys-odeslat .vc-kod {float:left; width:108px; padding:40px 0 0 10px; _padding:36px 0 0 10px;}
+#vys-odeslat .vc-kod input {width:98px; margin-right:10px; background-color:#eee; border:1px solid #ccc; }
+#vys-odeslat .vc-submit {float:left; width:200px; padding:55px 0 0 0; _padding:51px 0 0 0; }	
+
+/* SOUTEZ */
+.soutez p {margin-bottom:10px;}
+.soutez h3 { margin-bottom:10px; color:#1A171B; font-family:Georgia,"Times New Roman",Times,serif; font-size:167%;}
+.soutez h3 span {background:transparent url(/o/lidovky_ln3b/portal/dot-three.gif) repeat-x scroll 0 100%; padding:0 0 6px;}
+.soutez ul {margin:20px 0; list-style-type:none;}
+.soutez li {margin-left:12px; margin-top:5px; padding-bottom:5px; border-bottom:#f5f5f5 1px solid; }
+.soutez ul.list li {margin-left:0;}
+.soutez #art-big h1 { display: block; margin-bottom:10px; padding:1px 0; font-weight:bold; font-size:117%; color:#fff; background:#6D92BE url('/o/lidovky_ln3b/portal/h2-460.gif') repeat-y 50% 0; text-align:center; text-transform:uppercase }
+.soutez h4 {margin-bottom:10px;}
+.soutez {margin-bottom:10px;}
+.soutez p.warning span.popis {display:block; margin-top:10px; }
+.soutez form .quest h2.head, .soutez .contact h2.head {padding-bottom:4px; margin-top:20px; margin-bottom:10px; font-size:117%;font-weight:bold; border-bottom:#f5f5f5 1px solid;}
+.soutez form .quest p {font-weight:bold;}
+.soutez .tf-inp-in {margin-bottom:5px; }
+.soutez .contact {margin-bottom:10px;}
+.soutez .contact p label {display:block; width:150px;}
+.soutez .contact p input {margin-bottom:10px;}
+.soutez .contact p input.textpole {margin-top:2px; width:200px;}
+.soutez .contact .button {border:1px solid #ccc; }
+.soutez .error p {font-weight:bold;} 
+
+/* ANKETY */
+.anketa-art .perex {font-size:108%; margin-bottom:25px;}
+ul.multi-ul {list-style-type:none;}
+.multi-ul .th {display:inline; line-height:2.4em; padding:0 0 6px; background:url(/o/lidovky_ln3b/portal/dot-three.gif) repeat-x scroll 0 100%; font-family:Georgia, "Times New Roman", Times, serif; font-size:167%; color:#1A171B;}
+.multi-ul .c1 {padding:5px; background-color:#f5f5f5;}
+.multi-ul .c2 {padding:5px; }
+
+.col-a .anketa-art h3 {margin-bottom: 12px; font-size:175%; font-family:Georgia,"Times New Roman",Times,serif;}
+.col-a .anketa-info {float:left; margin-top:6px;}
+.col-a .anketa-list {clear:both; width:460px; padding-top:15px; padding-bottom:16px;}
+.col-a .anketa-list .relative {clear:both; margin-top:20px;}
+.col-a .anketa-list .relative .captcha {width:200px;}
+.col-a .anketa-list .relative .captcha label {padding-left:0;}
+.col-a .anketa-list .relative .captcha img {background:#f5f5f5;}
+.col-a .anketa-list .relative .captcha #overeni {margin-bottom:10px;}
+.col-a .anketa-list .relative .bt-out {float:right; width:200px; text-align:left; margin:-32px 0 10px 0;}
+.col-a .anketa.warning {float:right; width:200px; padding-top:15px; margin-bottom:20px; }
+.col-a .anketa.warning h2 {font-weight:bold;}
+.col-a .a-line {border-bottom:#e3e6ed 1px solid;}
+
+
+/* DOPISY */
+.dopisy .welcome {margin-bottom:20px; padding:5px; background:#f5f5f5;}
+.dopisy .art-list {margin-top:20px;}
+.dopisy .art-list .art h3 {margin-bottom:4px;}
+.dopisy .art .time { margin-bottom:4px; color:#444; font-family:Georgia,"Times New Roman",Times,serif; font-size:92%; }
+.warning.dopisy a {color:#fff;}
+
+/* AUDIO */
+.statement.exhibit p {margin-top:5px; padding-bottom:5px; border-bottom:#f5f5f5 1px solid;}
+
+div#multimedia {margin-top:10px; padding-top:80px; background: url(http://g.lidovky.cz/o/lidovky_ln3b/lidovky-logo.png) no-repeat top center; _background:none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://g.lidovky.cz/o/lidovky_ln3b/lidovky-logo.png', sizingMethod='scale');}
+div#multimedia .logo {display:none;}
+div#multimedia .col-a {width:400px; padding-left:10px;}
+div#multimedia .col-a, div#multimedia .col-b {text-align:left; }
+div#multimedia .col-a .text {margin-bottom:10px; border-bottom:#d0d1d2 1px solid;}
+div#multimedia .col-a .text h1 {margin-top:15px; font-family:Georgia,"Times New Roman",Times,serif; font-size:142%;}
+div#multimedia .col-a .text p.author {margin-top:10px; text-align:right;}
+div#multimedia .col-a .text p.author span.b {padding-right:4px;}
+div#multimedia .col-a .setting ul {list-style-type:none;}
+div#multimedia .col-a a.new, div#multimedia .col-a a.preview {padding:0;}
+div#multimedia .col-b {width:200px; }
+div#multimedia .col-b .lst {min-height:100px; padding-left:10px; border-left:#d0d1d2 1px solid;}
+div#multimedia .col-b .lst h2 {margin-bottom:4px; font-weight:bold; font-size:117%;}
+div#multimedia .col-b .lst ul {list-style-type:none;}
+
+
+#games #okno {clear:both; width:460px; margin-bottom:20px; padding:0;}
+#games #okno #okno_main {float:left; position:relative; z-index:0; width:100%; margin:0; padding:0; _padding-left:4px; border:0; background:#fff; text-align:left; }
+#games #okno #okno_main a {color:#1a68b5;}
+#games #okno #okno_main a:hover {color:#000;}
+#games #okno #okno_main a:hover#hra {text-decoration:none;}
+#games #okno h2.h-tit {display:block; margin:0 0 10px 0; padding:1px 0; border:0; height:1.35em; background:#6D92BE url(/o/lidovky_ln3b/portal/h2-460.gif) repeat-y scroll 50% 0; color:#FFFFFF; font-size:117%; font-weight:bold; text-align:center; text-transform:uppercase;}
+#games #okno h2.h-tit a {line-height:1.33em; height:1.33em;}
+#games #okno h2.h-tit span.redlining {background:none;}
+#games #okno h2.h-tit span.redlining .bg-l {background:none;}
+#games #okno h2.h-tit span.redlining .bg-l .bg-r {background:none; line-height:1.33em;}
+#games #okno #okno_main center {display:block; text-align:center;}
+#games #okno #okno_main strong {color:#000;}
+#games #okno #okno_main #hra {width:20%; text-align:center;}
+#games #okno #okno_main #hra img {display:inline; margin-bottom:0;}
+#games #okno #okno_main #hra a center {text-align:right;}
+#games #okno #okno_main #hra span {display:block; }
+#games #okno center iframe {width:460px;}
+#games #okno #okno_main iframe {width:466px;}
+
+/* warning */
+.warning {display:block; clear:both; margin-bottom:10px; padding:4px; color:#fff; background:#6485b2;}
+.warning h2 {display:block; width:452px; line-height:1.5em; margin:0; padding:0; font-size:117%; font-family:Arial, Sans-Serif; font-weight:bold; text-transform:uppercase;}
+.warning p {width:452px;}
+
+
+/* diktát */
+#diktat {background: #f5f5f5; padding: 8px 8px 15px 8px; margin-top: 40px; margin-bottom:6px; line-height: 2em;}
+#diktat span { position:relative; zoom:1; color:#d2071e; text-decoration:underline; cursor:pointer; cursor:hand; }
+#diktat span.s-moznostmi {text-decoration:none;}
+#diktat span.s-moznostmi a {text-decoration: none;}
+#diktat span.s-moznostmi a:hover {text-decoration: underline;}
+#diktat-moznosti { position:absolute; top:100%; left:0; padding: 1px 1px; background: #d2071e; z-index:2; line-height:1.2em; font-weight:bold;}
+#diktat-moznosti a { display: block; padding: 0.2em 0.3em; color:#fff; text-align:center; }
+#diktat input {float: right; cursor:pointer;}
+p.hodnoceni {line-height:1.5em; margin: 15px 0; padding:6px 12px; background:#F5F5F5; font-weight:bold;}
+#diktat-solution {margin-top:10px;}
+a.preview, a.new {font-weight:bold; padding-left:6px; }
+a.new {padding-left:20px;}
+.diktat-submit { margin:10px 0 0 12px; border:1px solid #CCCCCC; }
+
+#diktat-solution { margin-top:6px; margin-bottom:6px; padding:8px 8px 15px 8px; line-height:2em; background:#f5f5f5; }
+#diktat-solution span.error { color:#d2071e; font-weight:bold;}
+
+/* fotospoust */
+#spoust table {margin-bottom:10px; border:1px solid #d0d1d2; text-align:left; border-collapse:collapse;}
+#spoust table tr td {padding:6px; text-align:left; }
+#spoust table table tr td {padding:0; text-align:left; }
+#spoust table table strong {display:block;}
+#spoust table table {border:none; border-collapse:separate;}
+#spoust table table td {width:30%;}
+#spoust .add table img {width:280px;}
+#spoust .add table table img {width:auto;}
+#osobnost.item-in-r h2.h-tit span.redlining {display:block; background:#E3E6ED url(/o/lidovky_ln3b/portal/eyes-h3.gif) repeat-x scroll 0 100%; color:#444444; font-weight:bold; line-height:1.6em; padding:0 0 6px; border-top:1px solid #d0d1d2; border-left:1px solid #d0d1d2; border-right:1px solid #d0d1d2; }
+#osobnost.item-in-r h2.h-tit span.redlining span span {background:transparent url(/o/lidovky_ln3b/portal/listtype3.gif) no-repeat scroll 4px 0.3em;color:#444444;padding-left:20px;}
+
+#fotospoust .box-in {padding:6px;}
+#fotospoust .box-in p { color:#777; font-size:92%;}
+#fotospoust .box-in .vyhra { margin-bottom:10px; padding:5px; color:#000; font-size:100%; font-weight:bold; }
+#fotospoust table.winners {margin-top:10px; border-collapse:collapse;}
+#fotospoust table.winners .round { width:110px; font-weight:bold; }
+#fotospoust table.winners tr td {padding-top:3px; padding-bottom:5px; vertical-align:top; border-bottom:#f5f5f5 1px solid; }
+
+/* newsletter */
+.newsletter .x.xc1 .xt h3 { display:inline; padding:0 0 6px; color:#1A171B; font-family:Georgia,"Times New Roman",Times,serif; font-size:167%; background:transparent url(/o/lidovky_ln3b/portal/dot-three.gif) repeat-x scroll 0 100%;}
+.newsletter .x.xc1 .xbi { margin:10px 0; padding:4px; background:#f5f5f5; }
+.newsletter table tr td { padding:3px 0; text-align:left; }
+.newsletter br { display:none;}
+
+/* strelnice */
+.shooter h3, .shooter h2.page, .shooter .hour .time, .shooter .day .date, shooter h2.page {font-family:Georgia,"Times New Roman",Times,serif;}
+.shooter h2.page {height:130px; text-align:left; font-weight:normal; font-size:26px; text-transform:none; display:block; padding:0; color:#000; background:none;}
+.shooter h2.page span {height:130px; display:block; font-size:34px; position:absolute; width:460px; background:url(http://g.idnes.cz/o/lidovky_ln3b/portal/header-ln_nazory.jpg) no-repeat;}
+.shooter h2.page span#header-ln_nazory {background:url('http://g.idnes.cz/o/lidovky_ln3b/portal/header-ln_nazory.jpg') no-repeat;}
+.shooter h2.page span#header-ln_kultura {background:url('http://g.idnes.cz/o/lidovky_ln3b/portal/header-ln_kultura.jpg') no-repeat;}
+.shooter h2.page span#header-ln-media {background:url('http://g.idnes.cz/o/lidovky_ln3b/portal/header-ln_media.jpg') no-repeat;}
+.shooter h2.page span#header-ln-doprava {background:url('http://g.idnes.cz/o/lidovky_ln3b/portal/header-ln_doprava.jpg') no-repeat;}
+.shooter h2.page span.flash {background: #6D92BE url(/o/lidovky_ln3b/portal/h2-460.gif) repeat-y scroll 50% 0; height:auto; display:block; font-size:14px; font-weight:bold; text-align:center; text-transform:uppercase; color:#fff; font-family:Arial, Sans-Serif; padding:1px 0;}
+
+
+.shooter h3 {margin-bottom:14px; font-size:167%; color:#1A171B; }
+.shooter h3 span {padding:0 0 6px; background:transparent url(/o/lidovky_ln3b/portal/dot-three.gif) repeat-x scroll 0 100%;}
+.shooter .hour, .shooter .day {clear:both; margin-bottom:20px;}
+.shooter .hour .time {float:left; width:70px; padding-top:36px; text-align:center; background:url(/o/lidovky_ln3b/portal/shooter-time.jpg) top center no-repeat;}
+.shooter .day .date {float:left; width:70px; text-align:center; }
+.shooter .hour .text, .shooter .day .text {float:right; width:388px; }
+.shooter .day .text span.b {display:block;}
+.shooter .day .text span.zdroj, .shooter .hour .text span.zdroj {margin-left:10px; font-weight:bold; }
+.shooter .day .date .view {display:block; background:url(/o/lidovky_ln3b/portal/shooter-date-2010.jpg) top center no-repeat;}
+.shooter .day .date.r2009 .view {background:url(/o/lidovky_ln3b/portal/shooter-date-2009.jpg) top center no-repeat;}
+.shooter .day .date.r2010 .view {background:url(/o/lidovky_ln3b/portal/shooter-date-2010.jpg) top center no-repeat; height: 31px;}
+.shooter .day .date.r2011 .view {background:url(/o/lidovky_ln3b/portal/shooter-date-2011.jpg) top center no-repeat; height: 31px;}
+.shooter .day .date.r2012 .view {background:url(/o/lidovky_ln3b/portal/shooter-date-2012.jpg) top center no-repeat;}
+.shooter .day .date .view .da {display:block; padding-top:14px;}
+.shooter .day .date .view .mo {display:block; padding-top:5px;}
+
+/* mujpas */
+#mujpas .inp {margin-bottom:20px;}
+#mujpas .inp .text {float:left; font-weight:bold; line-height:190%; width:120px;}
+#mujpas .inp input {float:left; }
+#mujpas .inp input.w200, #mujpas .inp input.w100 {padding:3px; border:#d0d1d2 1px solid; background-color:#fff;}
+#mujpas .w100 {width:100px;}
+#mujpas .w200 {width:200px;}
+#mujpas #pam_name {margin-left:120px;}
+#mujpas input.prihlasit {margin-left:120px;}
+#mujpas .xbi .em {color:#d2071e;}
+
+
+/* infografiky */
+#infografika-window {overflow:hidden;}
+#infografika-window .half-l {margin-left:13px; line-height:2em; }
+#infografika-window .half-r {margin-right:13px; line-height:2em; text-align:right;}
+#infografika-window .half-l h2, #infografika-window .thumbs h2 {font-size:175%; font-family:Georgia, "Times New Roman", Times, serif;}
+#infografika-window .thumbs h2 {margin-left:12px;}
+#infografika-window .thumbs .hr {width:auto; height:6px; margin:0px 15px 10px 11px;}
+#infografika-window .half-r select {padding:2px; font-weight:bold;}
+#infografika-window .top-thumb {margin-bottom:10px; text-align:center; }
+#infografika-window .top-thumb a {display:block; width:799px; overflow:hidden; text-decoration:none;}
+#infografika-window .top-thumb a span { text-decoration:underline;}
+#infografika-window .thumbs {clear:both; padding-left:3px;}
+#infografika-window .thumb {width:264px; float:left; }
+#infografika-window .thumb img {width:240px; height:137px;}
+#infografika-window .thumb .ct {margin:10px 12px 20px 12px;}
+#infografika-window .thumb h3 {margin:0 0 1px; padding:3px 0; background:#6D92BE url(/o/lidovky_ln3b/portal/h2-302.gif) repeat-y scroll 50% 0; color:#fff;  font-weight:bold; text-align:center;}
+#infografika-window .thumb a {color:#fff;}
+#infografika-window .ico-r {margin-right:15px; margin-bottom:6px;}
+#infografika-window .mark-magnifier {position:relative; display:block; width:240px; height:137px; margin-bottom:0; cursor:pointer; text-decoration:none;}
+#infografika-window .mark-magnifier img { float:none; margin:0;}
+#infografika-window .mark-magnifier span {position:absolute; right:2px; bottom:4px; z-index:2; width:56px; height:42px; background:url(/o/lidovky_ln3b/ico/magnify.png) no-repeat; _background:none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://g.idnes.cz/o/lidovky_ln3b/ico/magnify.png', sizingMethod='scale');}
+#infografika-window .top-thumb .mark-magnifier {height:auto;}
+
+/* magazin patek */
+.b-box .patek-top {display:block; width:302px; height:195px; background:url('http://g.idnes.cz/o/lidovky_ln3b/poutaky/patek-podklad.jpg') no-repeat; cursor:pointer;}
+.b-box .patek-bottom {display:block; width:320px; padding:1px 2px 18px 0; text-align:center; font-weight:bold; background:url('http://g.idnes.cz/o/lidovky_ln3b/poutaky/patek-podklad-bottom.jpg') no-repeat; cursor:pointer;}
+
+/* KNIHA ROKU */
+.alphabet {color:#ddd; font-size:92%; background:#f5f5f5; padding:3px 0px 3px 5px;}
+.alphabet a {font-size:108%; font-weight:bold;}
+.alphabet a.selected {color:#000; font-weight:bold;}
+
+.tag-cloud {margin:0px 5px 10px 5px; text-align: justify; }
+.tag-cloud a.size1 {font-size:117%; }
+.tag-cloud a.size2 {font-size:144%; }
+.tag-cloud a.size3 {font-size:160%; }
+.tag-cloud a.size4 {font-size:185%; }
+.tag-cloud a.size5 {font-size:220%; }
+
+.kniha-autor .auth-not {margin-bottom:5px;}
+.kniha-autor .auth-not h3 {font-weight:bold; font-size:117%;}
+.kniha-autor .auth-not h3 span {margin-left:10px; color:#777; font-weight:normal; font-size:92%;}
+.kniha-autor .auth-rev {margin-bottom:10px; padding-bottom:5px; border-bottom:#f5f5f5 1px solid; }
+.kniha-autor .auth-rev div {margin-bottom:5px; color:#444;}
+
+.kniha-roku-opener {padding-bottom:7px; border-bottom:#f5f5f5 5px solid; margin-bottom:3px;}
+
+/* SHARE BOX */
+#sharebox {width:458px; background:#fdfdfd url('http://g.idnes.cz/o/lidovky_ln3b/portal/art/sharebox-bg.gif') repeat-x; border:1px solid #ededed; }
+#sharebox .newsletter {float:left; width:220px; padding-right:10px; margin:10px; border-right:1px solid #ededed; color:#444444; }
+#sharebox .newsletter p {background: url('http://g.idnes.cz/o/lidovky_ln3b/portal/art/news-icon.png') no-repeat; padding:5px 0 7px 75px; margin:0 0 5px 0; }
+#sharebox .newsletter p strong {color:#d2071e;}
+#sharebox .newsletter input {vertical-align:middle; }
+#sharebox .newsletter form {margin:0;}
+#sharebox .newsletter .in {background:#fdfdfd url('http://g.idnes.cz/o/lidovky_ln3b/portal/art/news-input.gif') no-repeat; width:153px; height:27px; padding:0 5px; margin-right:3px; border:0;}
+#sharebox .scm {float:left; width: 200px;}
+#sharebox .fb {border-bottom:1px solid #ededed; margin-bottom:10px;}  
+#sharebox .tw {float:left; height:32px; border-right:1px solid #ededed; margin-right:15px; padding-right:15px;}
+#sharebox .rss {float:left; height:32px;}
+#sharebox .tw a, #sharebox .rss a {display:block; font-weight:bold; color:#1a68b5; padding:8px 45px 10px 0; }
+#sharebox .tw a {background: url('http://g.idnes.cz/o/lidovky_ln3b/portal/art/tw-icon.png') no-repeat right 0;}
+#sharebox .rss a {background: url('http://g.idnes.cz/o/lidovky_ln3b/portal/art/rss-icon.png') no-repeat right 0;}
+
+/* Vylety */
+.box-info {background: #f5f5f5; border-top: 1px solid #d0d1d2; border-bottom: 1px solid #d0d1d2; padding: 10px; margin-bottom: 10px; height:25px;}
+.box-info strong {font-size: 110%; color: #444; }
+.box-info #stext {margin: 0 10px; border: 1px solid #a5acb2; height: 18px;}
+.box-info .location {margin: 0 10px; border: 1px solid #a5acb2; padding: 2px; } 
+.box-info .send {vertical-align: bottom; }
+.box-info a span {font-weight:bold; padding-top:3px; display:block; }
+.trip-menu {margin-bottom: 10px;}
+.trip-menu a {position: relative; opacity: 0.7; filter: alpha(opacity = 70); display: block; float: left; margin-right: 10px;}
+.trip-menu a.last {margin: 0}
+.trip-menu a.current {opacity: 1; filter: alpha(opacity = 100);}
+.trip-menu a span{position: absolute; top: 0; left:0; display: none; width: 155px; height:20px; background: url('/o/lidovky_ln3b/portal/trip-menu-current.png')no-repeat center 0;}
+.trip-menu a.current span, .trip-menu a:hover span{display: block;}
+.trip-box {float: left;margin-bottom: 10px; border-bottom: 1px solid #eee; width: 208px; height: 170px; padding-right: 13px;}
+.trip-box a strong{font-family: Geogia, serif;color: #444; font-size: 125%;}
+.trip-box a:hover {text-decoration: none;}
+.trip-box a:hover strong {text-decoration: underline;}
+.trip-box a img {display: block;}
+.vylety {width: 665px;}
+    
+.trip-info-wrap {display: none; padding: 10px 10px 20px 10px;}
+.trip-info {background: #fff; }
+.trip-header {border-bottom: 1px solid #606060; margin-bottom: 10px;}
+.trip-header h2 {float: left; font-family: Georgia; color: #606060;  font-size: 180%;  margin-top: 10px;}
+.trip-header .location {float: right; margin-bottom: 10px; margin-top:-5px; height:42px;}
+.trip-header .location strong {color: #606060; font-size: 150%; display: block; float: left; margin: 18px 10px 0 0; }
+.trip-foto {width: 460px; float: left; position: relative;}
+.trip-foto img {display: block;}
+.trip-foto a {background: #000; background: url('/o/lidovky_ln3b/portal/bg70.png') repeat; padding: 11px; position: absolute; bottom: 0; right: 0; text-decoration: underline; color: #fff; font-weight: bold;}
+.trip-foto a:hover {color: #fff; text-decoration: none;}
+.trip-foto .additional-info {padding-top:15px; color:#606060; line-height:138%;}
+     
+.nejvylet .trip-panel {float:left; width:320px;}
+.nejvylet .trip-panel .tips {margin-top: 10px;}
+.nejvylet .trip-panel .tips ul {list-style-type: none;}
+.nejvylet .trip-panel .tips li{font-size: 100%; margin-bottom: 10px; padding-left: 25px; line-height: 140%;  background: url("/o/lidovky_ln3b/portal/listtype4.gif") no-repeat scroll 4px 4px;}
+.nejvylet .trip-text {width:440px;}
+.nejvylet .trip-panel .trip-title{padding: 2px 25px 10px;margin-top: 15px; color: #606060; font-weight: bold; background: url("/o/lidovky_ln3b/portal/info-icon.gif") no-repeat; border-bottom: 1px solid #ECECEC;}
+
+.trip-text {width: 315px; float: right; line-height: 138%;}
+.trip-text .tips {margin-bottom: 20px;}
+.trip-text .tips ul {list-style-type: none;}
+.trip-text .tips li{font-size: 100%; margin:0 10px 10px 0; padding-left: 25px; line-height: 140%;  background: url("/o/lidovky_ln3b/portal/listtype4.gif") no-repeat scroll 4px 5px;}
+.trip-text .trip-title{padding: 2px 25px 10px;margin-bottom: 10px; color: #606060; font-weight: bold; background: url("/o/lidovky_ln3b/portal/info-icon.gif") no-repeat; border-bottom: 1px solid #ECECEC;}
+.trip-text table {border-collapse: collapse; color: #606060; width: 100%;}
+.trip-text table a {color: #606060; text-decoration: underline;}
+.trip-text table td, .trip-text table th{border-bottom: 1px solid #ececec; padding: 10px 0px;}
+.trip-text table th {width: 65px;}
+.trip-text table .nob{border-bottom: 0;}
+.lower_ent {background: url('/o/lidovky_ln3b/portal/snizene_vstupne.gif') no-repeat; padding-left: 15px; margin-left: 10px;}
+.family_ent {background: url('/o/lidovky_ln3b/portal/rodinne_vstupne.gif') no-repeat; padding-left: 25px;  margin-left: 10px;} 
+.trip-box.last {padding: 0;}
+#moot2 h2 {background-color: #455C8C;}
+
+#tips-list  {height: 280px; margin-bottom: 10px; overflow: hidden; position: relative;}
+.tr-all  {position: absolute; right: 0; top: 0; }
+.tr-all .tr{background: url('/o/lidovky_ln3b/portal/tip_list_bg.png') repeat-y right 0; text-align: right; padding-left: 30px; width: 302px; _width: 310px; height: 70px;   _background: none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://g.lidovky.cz/o/lidovky_ln3b/portal/tip_list_bg.png', sizingMethod='scale');}
+.tr-all .tr.active {background: url('/o/lidovky_ln3b/portal/tip_list_active.png') no-repeat right 0;   _background: none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://g.lidovky.cz/o/lidovky_ln3b/portal/tip_list_active.png', sizingMethod='scale');}
+.tr-all .tr a {font-family: Georgia;  color: black;   height: 65px; display: block; font-size: 120%; line-height: 140%; outline: 0;}
+.tr-all .tr a img {display: block;}
+.tr-all .tr a.fl {width: 185px; margin: 5px 5px 0 5px}
+.tr-all .tr a:hover {text-decoration: none;}
+.tr-all .tr.active a {font-weight: bold;}
+
+.trip-info-welcome {background:#f5f5f5; margin:0px 0px 10px 0;}
+.trip-info-welcome h3 {padding:5px 5px 0px 5px; font-size:117%; font-weight:bold;}
+.trip-info-welcome p {padding:5px;}
+
+
+/* RSS */
+.rss-channels {font-size:117%;}
+.rss-channels p {padding:0 0 10px 0;}
+.rss-channels p.warning {padding:5px; font-size:92%;}
+.rss-channels h3 {margin:10px 0; font-size:143%; font-family:Georgia;}
+.rss-channels h4 {margin-bottom:5px; font-weight:bold; font-size:117%;}
+.rss-channels table {margin-bottom:1em; border-collapse:collapse;}
+.rss-channels table tr td.name {width:150px; padding:4px 0px; border-bottom:#f5f5f5 1px dotted;}
+
+
+
+
+.table-box .c1 tr.c3 {border-top:#d0d1d2 1px solid; background:#E3E6ED url(/o/lidovky_ln3b/portal/eyes-h3.gif) repeat-x scroll 0 100%; }
+.table-box .c1 tr.c3 td {padding: 5px 0px 8px 4px; text-transform:uppercase; }
+
+/* BD nastaveni */
+.col-bd #volby-home h2 {display:block; height:45px; margin-bottom:12px;}
+.col-bd #volby-home h2 span {position:absolute; width:100%; height:45px; background:url('/o/lidovky_ln3b/volby/volby_09_psp_logo.jpg') no-repeat 0px -45px;}
+.col-bd #volby-home h2 a:hover span {position:absolute; width:100%; height:45px; background:url('/o/lidovky_ln3b/volby/volby_09_psp_logo.jpg') no-repeat 0px 0px; cursor:pointer;}
+.col-bd #volby-home.final h2 span {background:url('/o/lidovky_ln3b/volby/volby_10_psp_logo.jpg') no-repeat 0px 0px;}
+.col-bd #volby-home.final h2 a:hover span {background:url('/o/lidovky_ln3b/volby/volby_10_psp_logo.jpg') no-repeat 0px -45px;}
+
+.b-box-2.double-charts {height:230px;}
+
+/* A, B, BD universal loga stran */
+.lic.ods {background:url('/o/lidovky_ln3b/volby/loga/ods.jpg') no-repeat;}
+.lic.cssd {background:url('/o/lidovky_ln3b/volby/loga/cssd.jpg') no-repeat;}
+.lic.kscm {background:url('/o/lidovky_ln3b/volby/loga/kscm.jpg') no-repeat;}
+.lic.top09 {background:url('/o/lidovky_ln3b/volby/loga/top09.jpg') no-repeat;}
+.lic.top {background:url('/o/lidovky_ln3b/volby/loga/top09.jpg') no-repeat;}
+.lic.kducsl {background:url('/o/lidovky_ln3b/volby/loga/kducsl.jpg') no-repeat;}
+.lic.sz {background:url('/o/lidovky_ln3b/volby/loga/sz.jpg') no-repeat;}
+.lic.vv {background:url('/o/lidovky_ln3b/volby/loga/vv.jpg') no-repeat;}
+.lic.suverenita {background:url('/o/lidovky_ln3b/volby/loga/suverenita.jpg') no-repeat;}
+.lic.spoz {background:url('/o/lidovky_ln3b/volby/loga/spoz.jpg') no-repeat;}
+
+/* BD mapka spany */
+.col-bd ul li {color:#666; font-size:11px; text-align:left; font-size:12px;}
+.col-bd ul li span {float:left; display:block; font-size:12px; color:#000; }
+.col-bd ul li span.str {width:60px; text-align:left;}
+.col-bd ul li span.mand {width:20px; padding-right:12px; text-align:right; }
+.col-bd ul li span.kand {float:none; text-align:left;}
+
+/* BD korekce pro kolotoc */
+.col-bd .shooter {height:180px;}
+.col-bd .shooter .viewport.simple {height:140px;}
+.col-bd .shooter .viewport.simple ul.overview li {height:70px;}
+.col-bd .shooter ul li span {float:none; color:#666;}
+
+/* BD lidri stran */
+.col-bd #lidri {height:280px; min-height:280px;}
+.col-bd #lidri.lidri {height:270px; min-height:270px;}
+.col-bd #lidri .half-l {width:45%;}
+.col-bd #lidri .half-r {width:52%;}
+.col-bd #lidri .half-l h3 {padding:5px 0 5px 20px; font-weight:bold; text-transform:uppercase;}
+.col-bd #lidri .half-r h3 {padding:5px 0 5px 15px; font-weight:bold; text-transform:uppercase;}
+.col-bd #lidri .half-l ul {margin-bottom:10px; padding-left:20px; list-style-type:none;}
+.col-bd #lidri .half-l ul li {padding-left:40px; line-height:26px; border-bottom:#eee 1px solid;}
+.col-bd #lidri .ico-r {margin-right:6px;}
+.col-bd #lidri .half-r .select {display:block; font-size:92%; padding-top:6px; padding-left:14px; color:#666; }
+.col-bd #lidri .half-l ul li.thead .str, .col-bd #lidri .half-l ul li.thead .mand {color:#666; font-size:100%;}
+
+/* BD mapka cr */
+.col-bd .mapka-bg {position:relative; z-index:1; background:url('/o/lidovky_ln3b/volby/mapa-cr.gif') no-repeat; background-position:0px 0px;}
+.col-bd .mapka {position:relative; z-index:2; width:240px; height:150px; margin:15px 0; background:url('/o/lidovky_ln3b/volby/mapa-cr.gif') no-repeat; background-position:0px 0px;}
+.col-bd .mapka img {position:relative; z-index:10;}
+.col-bd .mapka span {position:absolute; top:0px; left:140px; width:100px; padding:2px 0px 2px 4px; border:#ddd 1px solid; background:#f5f5f5; color:#444; font-size:92%; font-weight:bold;}
+.col-bd .mapka-img area {cursor:pointer; }
+
+/* B prepinace */
+.col-b .b-box-2 ul.when {float:right; line-height:1.6em; list-style-type:none; background:#E3E6ED;}
+.col-b .b-box-2 ul.when li {float:left; width:70px; overflow:hidden; border-left:1px solid #D0D1D2; text-align:center; color:#666666; font-size:92%;}
+.col-b .b-box-2 ul.when li span {cursor:pointer;}
+.col-b .b-box-2 ul.when li.b {color:#000;}
+.col-b .b-box-2 div.v06-select img {width:300px;}
+
+/* B volby06 */
+.col-b .b-box-2#pref-grafy .ico-r {margin-right:4px;}
+.col-b .b-box-2#volby06 ul.when li {width:55px;}
+
+/* B galerie */
+.col-b .galerie { clear:both; margin-bottom:10px;}
+.col-b .galerie span {display:block; float:left; width:100px;height:75px; margin-bottom:1px; margin-right:1px; overflow:hidden;}
+.col-b .galerie span.n {margin:0; }
+
+/* D menu*/
+.col-d .b-box-2 .box-in ul {margin:0; padding:0 0 6px; list-style-type:none; }
+.col-d .b-box-2 .box-in ul li {padding:2px 6px; border-bottom:1px solid #F5F5F5; font-weight:bold;}
+.col-d .b-box-2 .box-in ul li.selected {background:#F5F5F5;}
+.col-d .b-box-2 .box-in .ico-r {margin-right:4px;}
+
+.col-d .b-box-2.volebni {border-right:0; border-bottom:0; border-left:0;}
+.col-d .b-box-2.volebni h2 {margin-bottom:0; border-right:#d0d1d2 1px solid; border-left:#d0d1d2 1px solid;}
+.col-d .b-box-2.volebni .box-in {margin:0; background:#f9f9f9 url('/o/lidovky_ln3b/volby/volebni-box-mid.jpg') repeat-y top left;}
+.col-d .b-box-2.volebni .box-in .foot {padding:6px 6px 0px 6px; background:url('/o/lidovky_ln3b/volby/volebni-box-foot.jpg') no-repeat bottom right;}
+.col-d .b-box-2.volebni .box-in .foot h3 {color:#000; font-weight:bold; font-size:100%; margin-bottom:6px;}
+.col-d .b-box-2.volebni .box-in .foot ul {padding-bottom:10px; color:#666; }
+.col-d .b-box-2.volebni .box-in .foot ul li {font-weight:normal;}
+.col-d .b-box-2.volebni .box-in .foot .more {line-height:24px;}
+.col-d .b-box-2.volebni .box-in .foot .more a {margin:0px 5px;}
+
+.col-d .b-box-2.programy {height:128px; min-height:128px;}
+
+/* D - countdown */
+.col-d .b-box-2.countdown {background:#f9f9f9; color:#666;}
+.col-d .b-box-2.countdown span.days {background:#fff; margin:0px 0px 5px 5px; font-size:17px; font-weight:bold; color:#d2071e; padding:3px 5px; border:#ccc 1px solid;}
+.col-d .b-box-2.countdown span.days-t {color:#d2071e; font-weight:bold;}
+.col-d .b-box-2.countdown span.hours {background:#fff; margin:0px 5px 5px 0px; font-size:15px; font-weight:bold; padding:3px 2px 3px 5px; border:#ccc 1px solid;}
+
+/* A menu */
+.col-a .volby-menu {margin-bottom:10px; border-bottom:#f5f5f5 1px solid;}
+.col-a .volby-menu ul {float:left;}
+.col-a .refresh {float:right; margin-bottom:5px;}
+.col-a .refresh a {display:block; width:104px; height:33px;}
+.col-a .refresh a span {display:block; position:absolute; width:104px; height:33px; background:url(/o/lidovky_ln3b/portal/obnovit_static.gif) no-repeat; cursor:pointer;}
+.col-a .refresh a.loading span {background:url(/o/lidovky_ln3b/portal/obnovit_anim.gif) no-repeat;}
+.col-a .volby-menu ul li {float:left; margin:3px 10px 5px 0; padding-right:10px; list-style-type:none; text-transform:uppercase; background:url(/o/lidovky_ln3b/volby/volby-menu-li-a.gif) no-repeat center right;}
+.col-a .volby-menu ul li a {font-size:150%;}
+.col-a .volby-menu ul li a.act {color:#666; background:url(/o/lidovky_ln3b/volby/volby-menu-li-a-act.gif) repeat-x bottom left; border:#e7e7e7 1px solid; padding:1px 8px 2px 8px; -moz-border-radius:4px;}
+.col-a .volby-menu.second .info {float:left; padding-top:3px; font-weight:bold;}
+.col-a .volby-menu.second ul {float:right;}
+.col-a .volby-menu.second ul li {margin-top:0;}
+.col-a .volby-menu.komunal .info {float:left; width:300px; padding-top:6px;}
+.col-a .volby-menu.komunal select {float:right; width:120px; margin-bottom:5px; padding:2px;}
+
+.volby-menu #link-3, .volby-menu #link-5 {background:none; padding-right:0; margin-right:0;}
+
+/* A prepinace - predvolebni */
+.col-a .warning {_width:452px; color:#444; background:#f5f5f5; border:#eee 1px solid;}
+.col-a .warning.info h2 {color:#d2071e;}
+.col-a .table-box .half-l {width:100px;}
+.col-a .table-box .half-r {width:300px;}
+.col-a .table-box .half-r ul { float:right; margin:0; padding:0; list-style-type:none;}
+.col-a .table-box .half-r ul li { float:left; margin-left:1px; }
+.col-a .table-box .half-r ul li span { background:#666666; color:#FFFFFF; display:block; width:70px; line-height:25px; text-align:center; cursor:pointer;}
+.col-a .table-box .half-r ul li.aa span, .col-a .table-box .half-r ul li.aaa span { background:#666666 url(/o/lidovky_ln3b/portal/ear-69-left.gif) no-repeat left top;}
+.col-a .table-box .half-r ul li span:hover {cursor:pointer;}
+.col-a .table-box .half-r ul li.bb span:hover, .col-a .table-box .half-r ul li.cc span:hover, .col-a .table-box .half-r ul li.jsh span:hover {background:#454545;}
+.col-a .table-box .half-r ul li.aa span:hover,.col-a .table-box .half-r ul li.aaa span:hover {background: #454545 url('/o/lidovky_ln3b/portal/ear-69-left.gif') no-repeat 0px -31px;}
+.col-a .table-box .half-r ul li.jsh.act {font-weight:bold;}
+.col-a h2.page.special {text-align:left; padding:3px 5px; background:#E3E6ED; color:#444;}
+
+/* A prepinace - volby start */
+/*.col-a #volby-switch.table-box .half-l {width:200px;}
+.col-a #volby-switch.table-box .half-r {width:230px;} */
+.col-a #volby-switch.table-box .half-r ul li.aa span {width:144px;}
+.col-a #volby-switch select {float:left; padding:2px; margin-bottom:2px;}
+.col-a #volby-switch input {float:left; margin-left:5px; margin-bottom:2px;}
+
+/* A profil strany */
+.col-a .leader-photo {float:right; width:110px; text-align:right;}
+.col-a .leader-photo img {padding-top:5px; padding-right:5px; }
+.col-a .leader-photo span {display:block; width:110px; height:85px; background:#eee;}
+.col-a ul.info-strana {float:left; width:320px; list-style-type:none;}
+.col-a ul.info-strana li {padding: 5px 0; color:#444; border-bottom:#eee 1px solid;}
+.col-a ul.info-strana li.lic strong {padding-left:30px; font-size:117%;}
+.col-a ul.info-strana li.social-networks {border-bottom:0;}
+.col-a ul.info-strana li.social-networks a {float:left; display:block; margin-right:6px;}
+.col-a ul.info-strana li.social-networks a span {display:block; width:25px; height:25px;}
+.col-a ul.info-strana li.social-networks a span.facebook {background:url('/o/lidovky_ln3b/volby/socials/facebook.gif') no-repeat;}
+.col-a ul.info-strana li.social-networks a span.twitter {background:url('/o/lidovky_ln3b/volby/socials/twitter.gif') no-repeat;}
+.col-a ul.info-strana li.social-networks a span.youtube {background:url('/o/lidovky_ln3b/volby/socials/youtube.gif') no-repeat;}
+
+/* A program strany, program stran */
+.col-a .online-list.volebni h3 {margin-top:20px;}
+.col-a .online-list.volebni .half-l, .col-a .online-list .half-r { margin-bottom:16px;}
+.col-a .online-list.volebni .half-l h4, .col-a .online-list .half-r h4 {font-weight:bold; border-bottom:#eee 1px solid;}
+.col-a .online-list.volebni tr.c1 {background:#f5f5f5;}
+.col-a .online-list.volebni td {padding:7px 4px;}
+
+/* A kandidati */
+.col-a .candidates {margin:10px 0 20px 0;}
+.col-a .candidates .cand {margin-bottom:10px; border-bottom:#f5f5f5 1px solid;}
+.col-a .candidates .cand .fl {width:350px; background:#fff;}
+.col-a .candidates .cand .fl .fl.photo {width:100px;}
+.col-a .candidates .cand .fl .fr.name {width:244px; font-size:100%; text-align:left;}
+.col-a .candidates .cand .fl img {float:left; margin:3px 6px 0 0;}
+.col-a .candidates .cand .fr {width:100px; text-align:right; font-size:150%;}
+.col-a .candidates .cand .fr small {margin-right:3px; font-size:67%; color:#aaa;}
+.col-a .candidates .cand span.senat-proc {display:block; height:13px; background:url('/o/lidovky_ln3b/stripes/2010/default.gif') repeat-x; -webkit-border-top-right-radius: 3px; -webkit-border-bottom-right-radius: 3px; -moz-border-radius-topright: 3px; -moz-border-radius-bottomright: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px;}
+.col-a .candidates .cand .cssd span.senat-proc {background:url('/o/lidovky_ln3b/stripes/2010/cssd.gif') repeat-x;}
+.col-a .candidates .cand .top09 span.senat-proc {background:url('/o/lidovky_ln3b/stripes/2010/top.gif') repeat-x;}
+.col-a .candidates .cand .ods span.senat-proc {background:url('/o/lidovky_ln3b/stripes/2010/ods.gif') repeat-x;}
+.col-a .candidates .cand .kscm span.senat-proc {background:url('/o/lidovky_ln3b/stripes/2010/kscm.gif') repeat-x;}
+.col-a .candidates .cand .vv span.senat-proc {background:url('/o/lidovky_ln3b/stripes/2010/vv.gif') repeat-x;}
+.col-a .candidates .cand .kdu span.senat-proc {background:url('/o/lidovky_ln3b/stripes/2010/kdu.gif') repeat-x;}
+.col-a .candidates .cand .sz span.senat-proc {background:url('/o/lidovky_ln3b/stripes/2010/sz.gif') repeat-x;}
+.col-a .candidates .cand .nez span.senat-proc {background:url('/o/lidovky_ln3b/stripes/2010/nez.gif') repeat-x;}
+
+/* A lidr strany */
+#lidr-komentare .comment-box {clear:both; margin-top:10px; padding-top:6px; }
+#lidr-komentare .comment-box h3 {margin-bottom:10px;  font-size:125%; font-weight:bold;}
+#lidr-komentare .comment-box .commentator {margin-bottom:10px; padding-bottom:10px; border-bottom:#eee 1px solid;}
+#lidr-komentare .comment-box .commentator .half-l {width:55px;}
+#lidr-komentare .comment-box .commentator .half-l img {width:50px; margin-top:1px;}
+#lidr-komentare .comment-box .commentator .half-r {width:400px;}
+#lidr-komentare .comment-box .commentator .half-r span {display:block; font-size:92%; color:#777;}
+#lidr-komentare .comment-box .commentator .half-r span small {padding-left:3px; padding-right:3px; color:#eee; font-size:108%;}
+
+#lidr-profil .profile {float:left; width:240px;}
+#lidr-profil .rating {float:right; width:200px; height:230px; margin-top:10px; background:url('http://g.lidovky.cz/o/lidovky_ln3b/facebook/volby/termometr-small.jpg') no-repeat top left;}
+#lidr-profil ul {margin-bottom:3px;}
+#lidr-profil li {margin-top:10px; padding-left:0; border-bottom:#d0d1d2 1px solid; color:#000; background:none; list-style-type:none;}
+#lidr-profil li span {float:right;width:135px;}
+#lidr-profil li span.legend {float:left;width:100px;}
+#lidr-profil li span a {margin-right:20px; color:#1a68b5;}
+#lidr-profil li span a:hover {color:#000;}
+#lidr-profil .rating-box {min-height:200px;}
+#lidr-profil .rating .termometr {margin-left:40px; background-repeat:no-repeat; background-position: 0px 9px;}
+#lidr-profil .rating .termometr.blue {height:143px; margin-top:35px; color:#1a68b5; background-image:url('http://g.idnes.cz/o/lidovky_ln3b/facebook/volby/termoarrow-blue.jpg');}
+#lidr-profil .rating .termometr.lila {height:108px; margin-top:70px; color:#6B396c; background-image:url('http://g.idnes.cz/o/lidovky_ln3b/facebook/volby/termoarrow-lila.jpg');}
+#lidr-profil .rating .termometr.red {height:73px; margin-top:105px; color:#d2071e; background-image:url('http://g.idnes.cz/o/lidovky_ln3b/facebook/volby/termoarrow-red.jpg');}
+#lidr-profil .rating .termometr div {padding-left:30px; font-size:27px;}
+#lidr-profil .rating .termometr div span {display:block; font-size:11px; color:#777;}
+#lidr-profil .rate h3 {margin-bottom:4px;}
+#lidr-profil .rate img {margin-top:9px;}
+
+.content #kraje-vysledky .table-box table tr.c1, .content #kraje-vysledky .table-box table tr.c2, .content #kraje-vysledky .table-box table tr.c3 {background:#fff; border-bottom:#f5f5f5 1px solid;}
+.content #kraje-vysledky .table-box table tr.c3 {border-bottom:0; border-top:#fff 1px solid;}
+.content #kraje-vysledky .table-box table tr.c3 td {padding:4px; background:#e3e6ed;}
+.content #kraje-vysledky td.lic {padding-left:40px;}
+
+.col-a .navig {margin-bottom:5px; padding:2px 0px 2px 4px; border-bottom:1px solid #bbb; font-size:14px; background:#fff url(/o/lidovky_ln3b/portal/normal2.gif) repeat-x scroll 0 100%;}
+.col-a .navig a {font-size:12px;}
+
+#volby06.b-box-2 .ico-r {margin-right:6px;}
+.ico-r {margin-top:-6px;}
+
+/* SENATNI KRESLA*/
+.valdstejn {margin-top:10px; margin-bottom:20px;}
+.valdstejn .seats {float:left; width:35px;}
+.valdstejn .seats span {display:block; width:35px; height:35px; background-image:url('http://g.idnes.cz/o/lidovky_ln3b/volby/senatori_set.jpg'); background-repeat:no-repeat; background-position:-245px 0; cursor:pointer;}
+.valdstejn .seats span.ods {background-position:-70px 0px;}
+.valdstejn .seats span.cssd {background-position:-210px 0px;}
+.valdstejn .seats span.kscm {background-position:0 0;}
+.valdstejn .seats span.kdu {background-position:-35px 0px;}
+.valdstejn .seats span.nez {background-position:-105px 0px;}
+.valdstejn .seats span.default {background-position:-245px 0px;}
+.valdstejn .seats span.xxx {background-position:-315px 0px;}
+.valdstejn .seats span.top09 {background-position:-140px 0px;}
+.valdstejn .seats span.sz {background-position:-175px 0px;}
+.valdstejn .seats span.vv {background-position:-280px 0px;}
