@@ -17,7 +17,8 @@ public class ElementUtil {
 	
 	public static String getAttribute(Element e, String name)
 	{
-	    return e.hasAttribute(name) ? e.getAttribute(name) : "";
+	    final String ret = e.getAttribute(name);
+	    return (ret == null) ? "" : ret;
 	}
 	
 	public static Collection<String> elementClasses(Element e) 
@@ -37,23 +38,6 @@ public class ElementUtil {
 	    }
 	    else
 	        return Collections.emptyList();
-	}
-	
-	public static boolean matchesClassOld(Element e, String className) 
-	{
-        if (e.hasAttribute(CLASS_ATTR))
-        {
-            String classNames = getAttribute(e, CLASS_ATTR).toLowerCase();
-            int len = className.length();
-    	    int start = classNames.indexOf(className.toLowerCase());
-    	    if (start == -1)
-    	        return false;
-    	    else
-    	        return ((start == 0 || Character.isWhitespace(classNames.charAt(start - 1))) &&
-    	                (start + len == classNames.length() || Character.isWhitespace(classNames.charAt(start + len))));
-        }
-        else
-            return false;
 	}
 	
 	public static boolean matchesClass(Element e, String className)
@@ -81,8 +65,7 @@ public class ElementUtil {
 	
 	public static String elementID(Element e) 
 	{
-		String id = getAttribute(e, ID_ATTR);
-		return id;
+		return getAttribute(e, ID_ATTR);
 	}
 	
 	public static boolean matchesID(Element e, String id) 
@@ -92,8 +75,7 @@ public class ElementUtil {
 	
 	public static String elementName(Element e) 
 	{
-		String name = e.getNodeName();
-		return name;
+		return e.getNodeName();
 	}
 	
 	public static boolean matchesName(Element e, String name)
@@ -106,7 +88,7 @@ public class ElementUtil {
 	
 	public static boolean matchesAttribute(Element e, String name, String value, Selector.Operator o) 
 	{
-	    Node attributeNode = e.getAttributeNode(name);
+	    final Node attributeNode = e.getAttributeNode(name);
 	    if (attributeNode != null && o != null)
 	    {
     	    String attributeValue = attributeNode.getNodeValue();

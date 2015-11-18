@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
@@ -127,10 +128,11 @@ public class SingleMapNodeData implements NodeData {
 		// in case of false do not insert anything
 		if(!result) return this;
 		
-		for(String key: properties.keySet()) {
+		for(Entry<String, CSSProperty> entry : properties.entrySet()) {
+		    final String key = entry.getKey();
 			Quadruple q = map.get(key);
 			if(q==null) q = new Quadruple();
-			q.curProp = properties.get(key);
+			q.curProp = entry.getValue();
 			q.curValue = terms.get(key);
 			q.curSource = d;
 			// remove operator
@@ -145,8 +147,9 @@ public class SingleMapNodeData implements NodeData {
 	
 	public NodeData concretize() {
 		
-		for(String key: map.keySet()) {
-			Quadruple q = map.get(key);
+		for(Map.Entry<String, Quadruple> entry : map.entrySet()) {
+		    final String key = entry.getKey();
+			final Quadruple q = entry.getValue();
 			
 			// replace current with inherited or defaults
 			if(q.curProp!=null && q.curProp.equalsInherit()) {
@@ -158,8 +161,9 @@ public class SingleMapNodeData implements NodeData {
 				
 				if(q.inhValue==null) q.curValue = css.getDefaultValue(key);
 				else q.curValue = q.inhValue;
+				
+	            map.put(key, q);
 			}
-			map.put(key, q);
 		}
 		return this;
 	}
@@ -177,8 +181,9 @@ public class SingleMapNodeData implements NodeData {
 		SingleMapNodeData nd = (SingleMapNodeData) parent;
 		
 		// inherit values
-		for(String key:nd.map.keySet()) {
-			Quadruple qp = nd.map.get(key);
+		for(Entry<String, Quadruple> entry : nd.map.entrySet()) {
+		    final String key = entry.getKey();
+			final Quadruple qp = entry.getValue();
 			Quadruple q = map.get(key);
 			
 			// create new quadruple if this do not contain one
@@ -186,12 +191,14 @@ public class SingleMapNodeData implements NodeData {
 			if(q==null) q = new Quadruple();
 			
 			boolean forceInherit = (q.curProp != null && q.curProp.equalsInherit());
+			boolean changed = false;
 			
 			//try the inherited value of the parent
 			if(qp.inhProp!=null && (qp.inhProp.inherited() || forceInherit)) {
 				q.inhProp = qp.inhProp;
 				q.inhValue = qp.inhValue;
 				q.inhSource = qp.inhSource;
+				changed = true;
 			}
 			
 			//try the declared property of the parent
@@ -199,10 +206,11 @@ public class SingleMapNodeData implements NodeData {
 				q.inhProp = qp.curProp;
 				q.inhValue = qp.curValue;
                 q.inhSource = qp.curSource;
+                changed = true;
 			}
 			// insert/replace only if contains inherited/original 
 			// value			
-			if(!q.isEmpty())
+			if(changed && !q.isEmpty())
 			    map.put(key, q);
 		}
 		return this;
