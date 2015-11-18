@@ -125,13 +125,18 @@ public class QuadrupleMapNodeData implements NodeData {
 		// in case of false do not insert anything
 		if(!result) return this;
 		
-		this.propertiesOwn.putAll(properties);
+		//set the sources and store the properties
+        for(Entry<String,CSSProperty> entry: properties.entrySet()) {
+            propertiesOwn.put(entry.getKey(), entry.getValue());
+            sourcesOwn.put(entry.getKey(), d);
+        }
 		
-		// remove operators from terms and set the sources
+		// remove operators from terms and store the values
 		for(Entry<String,Term<?>> entry: terms.entrySet()) {
-			entry.getValue().setOperator(null);
-			valuesOwn.put(entry.getKey(), entry.getValue());
-			sourcesOwn.put(entry.getKey(), d);
+		    Term<?> t = entry.getValue();
+		    if (t.getOperator() != null)
+		        t = t.shallowClone().setOperator(null);
+			valuesOwn.put(entry.getKey(), t);
 		}
 		
 		return this;
@@ -153,31 +158,29 @@ public class QuadrupleMapNodeData implements NodeData {
 		// inherit values
 		for(String key:nd.propertiesInh.keySet()) {
 			CSSProperty value = nd.propertiesInh.get(key);
-			if(value.inherited()) {
+			CSSProperty cur = this.propertiesOwn.get(key);
+			if(value.inherited() || (cur != null && cur.equalsInherit())) {
 				this.propertiesInh.put(key, value);
 				// remove old value to be sure
 				this.valuesInh.remove(key);
 				Term<?> term = nd.valuesInh.get(key);
+				if(term!=null) this.valuesInh.put(key, term);
 				Declaration src = nd.sourcesInh.get(key);
-				if(term!=null) {
-					this.valuesInh.put(key, term);
-					this.sourcesInh.put(key, src);
-				}
+				if (src != null) this.sourcesInh.put(key, src);
 			}
 		}
 		
 		for(String key:nd.propertiesOwn.keySet()) {
 			CSSProperty value = nd.propertiesOwn.get(key);
-			if(value.inherited()) {
+			CSSProperty cur = this.propertiesOwn.get(key);
+			if(value.inherited() || (cur != null && cur.equalsInherit())) {
 				this.propertiesInh.put(key, value);
 				// remove old value to be sure
 				this.valuesInh.remove(key);
 				Term<?> term = nd.valuesOwn.get(key);
-                Declaration src = nd.sourcesOwn.get(key);
-				if(term!=null) {
-					this.valuesInh.put(key, term);
-                    this.sourcesInh.put(key, src);
-				}
+				if(term!=null) this.valuesInh.put(key, term);
+				Declaration src = nd.sourcesOwn.get(key);
+				if(src!=null) this.sourcesInh.put(key, src);
 			}
 		}		
 	
@@ -209,6 +212,9 @@ public class QuadrupleMapNodeData implements NodeData {
 				Term<?> value = valuesInh.get(key);
 				if(value==null) value = css.getDefaultValue(key);
 				if(value!=null) valuesOwn.put(key, value);
+				
+				Declaration source = sourcesInh.get(key);
+				if(source!=null) sourcesOwn.put(key, source);
 			}
 		}
 		
