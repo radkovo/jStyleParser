@@ -18,7 +18,6 @@ import org.w3c.dom.Text;
 import org.w3c.dom.traversal.NodeFilter;
 
 import cz.vutbr.web.csskit.DefaultNetworkProcessor;
-import cz.vutbr.web.csskit.ElementUtil;
 import cz.vutbr.web.csskit.MatchConditionImpl;
 import cz.vutbr.web.csskit.antlr.CSSParserFactory;
 import cz.vutbr.web.csskit.antlr.CSSParserFactory.SourceType;
@@ -38,6 +37,7 @@ import cz.vutbr.web.domassign.Traversal;
  * <code>cz.vutbr.web.domassign.SupportedCSS3</code>
  * <code>cz.vutbr.web.csskit.RuleFactoryImpl</code>
  * <code>cz.vutbr.web.domassign.SingleMapNodeData</code>
+ * <code>cz.vutbr.web.csskit.ElementMatcherSafeCI</code>
  * 
  * Other usage of this factory is to parse either string or file into
  * StyleSheet.
@@ -56,6 +56,7 @@ public final class CSSFactory {
 	private static final String DEFAULT_RULE_FACTORY = "cz.vutbr.web.csskit.RuleFactoryImpl";
     private static final String DEFAULT_DECLARATION_TRANSFORMER = "cz.vutbr.web.domassign.DeclarationTransformer";
 	private static final String DEFAULT_NODE_DATA_IMPL = "cz.vutbr.web.domassign.SingleMapNodeData";
+	private static final String DEFAULT_ELEMENT_MATCHER = "cz.vutbr.web.csskit.ElementMatcherSafeCI";
 
 	/**
 	 * Default instance of CSSParcerFactory
@@ -81,6 +82,11 @@ public final class CSSFactory {
 	 * Default instance of DeclarationTransformer
 	 */
 	private static DeclarationTransformer dt;
+	
+	/**
+	 * Used ElementMatcher instance.
+	 */
+	private static ElementMatcher matcher;
 	
 	/**
 	 * Used NodeData class
@@ -303,6 +309,26 @@ public final class CSSFactory {
         }
 
         return dt;
+    }
+    
+    public static final void registerElementMatcher(ElementMatcher newElementMatcher) {
+        matcher = newElementMatcher;
+    }
+    
+    public static final ElementMatcher getElementMatcher() {
+        if (matcher == null) {
+            try {
+                @SuppressWarnings("unchecked")
+                Class<? extends ElementMatcher> clazz = (Class<? extends ElementMatcher>) Class.forName(DEFAULT_ELEMENT_MATCHER);
+                registerElementMatcher(clazz.newInstance());
+                log.debug("Retrived {} as default ElementMatcher implementation.", DEFAULT_ELEMENT_MATCHER);
+            } catch (Exception e) {
+                log.error("Unable to get ElementMatcher from default", e);
+                throw new RuntimeException(
+                        "No ElementMatcher implementation registered!", e);
+            }
+        }
+        return matcher;
     }
     
     /**
@@ -745,10 +771,12 @@ public final class CSSFactory {
 
 		private static CSSParserFactory pf = getCSSParserFactory();
 	    private String encoding;
+	    private final ElementMatcher matcher;
 	    
 		public CSSAssignTraversal(Document doc, String encoding, Object source, int whatToShow) {
 			super(doc, source, whatToShow);
 			this.encoding = encoding;
+			this.matcher = getElementMatcher();
 		}
 
 		@Override
@@ -771,7 +799,7 @@ public final class CSSFactory {
 				}
 				// linked style-sheet
 				else if (isLinkedStyleSheet(elem, media)) {
-				    URL uri = DataURLHandler.createURL(base, ElementUtil.getAttribute(elem, "href"));
+				    URL uri = DataURLHandler.createURL(base, matcher.getAttribute(elem, "href"));
 					result = pf.append(uri, network, encoding, SourceType.URL,
 							result, uri);
 					log.debug("Matched linked CSS style");
@@ -801,15 +829,15 @@ public final class CSSFactory {
 
 		}
 
-		private static boolean isEmbeddedStyleSheet(Element e, MediaSpec media) {
+		private boolean isEmbeddedStyleSheet(Element e, MediaSpec media) {
 			return "style".equalsIgnoreCase(e.getNodeName())
 					&& isAllowedMedia(e, media);
 		}
 
-		private static boolean isLinkedStyleSheet(Element e, MediaSpec media) {
+		private boolean isLinkedStyleSheet(Element e, MediaSpec media) {
 			return e.getNodeName().equalsIgnoreCase("link")
-			        && (ElementUtil.getAttribute(e, "rel").toLowerCase().contains("stylesheet"))
-					&& (ElementUtil.getAttribute(e, "type").isEmpty() || "text/css".equalsIgnoreCase(ElementUtil.getAttribute(e, "type")))
+			        && (matcher.getAttribute(e, "rel").toLowerCase().contains("stylesheet"))
+					&& (matcher.getAttribute(e, "type").isEmpty() || "text/css".equalsIgnoreCase(matcher.getAttribute(e, "type")))
 					&& isAllowedMedia(e, media);
 		}
 
@@ -838,7 +866,7 @@ public final class CSSFactory {
 		 * @return {@code true} if allowed, {@code false} otherwise
 		 */
 		private static boolean isAllowedMedia(Element e, MediaSpec media) {
-		    String attr = ElementUtil.getAttribute(e, "media");
+		    String attr = e.getAttribute("media");
 		    if (attr != null && attr.length() > 0)
 		    {
 		        attr = attr.trim();

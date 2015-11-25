@@ -19,6 +19,7 @@ import org.w3c.dom.traversal.TreeWalker;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.ElementMatcher;
 import cz.vutbr.web.css.MatchCondition;
 import cz.vutbr.web.css.MediaSpec;
 import cz.vutbr.web.css.NodeData;
@@ -26,7 +27,6 @@ import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.Selector.PseudoDeclaration;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.csskit.ElementUtil;
 
 /**
  * Analyzer allows to apply the given style to any document.
@@ -55,6 +55,7 @@ public class Analyzer {
 	protected Holder rules;
 
 	private MatchCondition matchCond = null;
+	private final ElementMatcher matcher;
 
 	/**
 	 * Creates the analyzer for a single style sheet.
@@ -63,6 +64,7 @@ public class Analyzer {
 	public Analyzer(StyleSheet sheet) {
 	    sheets = new ArrayList<StyleSheet>(1);
 	    sheets.add(sheet);
+	    matcher = CSSFactory.getElementMatcher();
 	}
 
 	/**
@@ -71,6 +73,7 @@ public class Analyzer {
 	 */
 	public Analyzer(List<StyleSheet> sheets) {
 	    this.sheets = sheets;
+        matcher = CSSFactory.getElementMatcher();
 	}
 	
 	/**
@@ -228,7 +231,7 @@ public class Analyzer {
 		Set<OrderedRule> candidates = new HashSet<OrderedRule>();
 
 		// match element classes
-		for (String cname : ElementUtil.elementClasses(e)) {
+		for (String cname : matcher.elementClasses(e)) {
 			// holder contains rule with given class
 			List<OrderedRule> rules = holder.get(HolderItem.CLASS, cname.toLowerCase());
 			if (rules != null)
@@ -237,7 +240,7 @@ public class Analyzer {
 		log.trace("After CLASSes {} total candidates.", candidates.size());
 
 		// match IDs
-		String id = ElementUtil.elementID(e);
+		String id = matcher.elementID(e);
 		if (id != null && id.length() != 0) {
 			List<OrderedRule> rules = holder.get(HolderItem.ID, id.toLowerCase());
 			if (rules != null)
@@ -246,7 +249,7 @@ public class Analyzer {
 		log.trace("After IDs {} total candidates.", candidates.size());
 		
 		// match elements
-		String name = ElementUtil.elementName(e);
+		String name = matcher.elementName(e);
 		if (name != null) {
 			List<OrderedRule> rules = holder.get(HolderItem.ELEMENT, name.toLowerCase());
 			if (rules != null)

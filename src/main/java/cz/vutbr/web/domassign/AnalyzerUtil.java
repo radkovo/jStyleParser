@@ -25,7 +25,6 @@ import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.Selector.PseudoDeclaration;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.csskit.ElementUtil;
 import cz.vutbr.web.domassign.Analyzer.Holder;
 import cz.vutbr.web.domassign.Analyzer.HolderItem;
 import cz.vutbr.web.domassign.Analyzer.HolderSelector;
@@ -72,7 +71,7 @@ public final class AnalyzerUtil {
         final Set<OrderedRule> candidates = new HashSet<OrderedRule>();
 
         // match element classes
-        for (final String cname : ElementUtil.elementClasses(e)) {
+        for (final String cname : CSSFactory.getElementMatcher().elementClasses(e)) {
             // holder contains rule with given class
             final List<OrderedRule> classRules = holder.get(HolderItem.CLASS, cname.toLowerCase());
             if (classRules != null)
@@ -81,7 +80,7 @@ public final class AnalyzerUtil {
         // log.trace("After CLASSes {} total candidates.", candidates.size());
 
         // match IDs
-        final String id = ElementUtil.elementID(e);
+        final String id = CSSFactory.getElementMatcher().elementID(e);
         if (id != null && id.length() != 0) {
             final List<OrderedRule> idRules = holder.get(HolderItem.ID, id.toLowerCase());
             if (idRules != null)
@@ -90,7 +89,7 @@ public final class AnalyzerUtil {
         // log.trace("After IDs {} total candidates.", candidates.size());
         
         // match elements
-        final String name = ElementUtil.elementName(e);
+        final String name = CSSFactory.getElementMatcher().elementName(e);
         if (name != null) {
             final List<OrderedRule> nameRules = holder.get(HolderItem.ELEMENT, name.toLowerCase());
             if (nameRules != null)

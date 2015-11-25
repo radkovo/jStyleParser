@@ -9,6 +9,7 @@ import org.w3c.dom.NodeList;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
+import cz.vutbr.web.css.ElementMatcher;
 import cz.vutbr.web.css.MatchCondition;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.CombinedSelector.Specificity;
@@ -182,10 +183,12 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
      */
     public static class ElementNameImpl implements ElementName {    	 
 		
-    	private String name; 
+    	private String name;
+    	private final ElementMatcher matcher;
     	
     	protected ElementNameImpl(String name) {
     		setName(name);
+    		matcher = CSSFactory.getElementMatcher();
     	}
     	
 		public void computeSpecificity(CombinedSelector.Specificity spec) {
@@ -195,7 +198,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		
 		public boolean matches(Element e, MatchCondition cond) {
 			if(name!=null && WILDCARD.equals(name)) return true;
-			return ElementUtil.matchesName(e, name);
+			return matcher.matchesName(e, name);
 		}	
 		
 		public String getName() {
@@ -256,9 +259,11 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     public static class ElementClassImpl implements ElementClass {
 
     	private String className;
+        private final ElementMatcher matcher;
     	
     	protected ElementClassImpl(String className) {
     		setClassName(className);
+            matcher = CSSFactory.getElementMatcher();
     	}
     	
     	public void computeSpecificity(Specificity spec) {
@@ -266,7 +271,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	}
     	
     	public boolean matches(Element e, MatchCondition cond) {
-    		return ElementUtil.matchesClass(e, className);
+    		return matcher.matchesClass(e, className);
     	}
     	
 		public String getClassName() {
@@ -747,9 +752,11 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     public static class ElementIDImpl implements ElementID {
     	
     	private String id;
+    	private final ElementMatcher matcher;
     	
     	protected ElementIDImpl(String value) {
     		setID(value);
+            matcher = CSSFactory.getElementMatcher();
     	}
     	
     	public void computeSpecificity(Specificity spec) {
@@ -757,7 +764,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		}    	
     	
     	public boolean matches(Element e, MatchCondition cond) {
-    		return ElementUtil.matchesID(e, id);
+    		return matcher.matchesID(e, id);
     	}
     	
     	public ElementID setID(String id) {
@@ -825,11 +832,14 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	private String value;
     	private boolean isStringValue;
     	
+    	private final ElementMatcher matcher;
+    	
     	protected ElementAttributeImpl(String value, boolean isStringValue, Operator operator, String attribute) {
     		this.isStringValue = isStringValue;
     		this.operator = operator;
     		this.attribute = attribute;
     		setValue(value);
+            matcher = CSSFactory.getElementMatcher();
     	}
     	
     	/**
@@ -870,7 +880,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		}
 		
 		public boolean matches(Element e, MatchCondition cond) {
-			return ElementUtil.matchesAttribute(e, attribute, value, operator);
+			return matcher.matchesAttribute(e, attribute, value, operator);
 		}
     	
 		public String getValue() {
