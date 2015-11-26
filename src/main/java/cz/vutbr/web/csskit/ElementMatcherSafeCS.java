@@ -16,7 +16,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * A case-sensitive, safe implementation of the element matcher. It should be compatible with any
+ * A case-sensitive matcher that corresponds to the XHTML mode matching. 
+ * 
+ * This is a safe implementation of the element matcher. It should be compatible with any
  * DOM implementation. On the other hand, its performance is slightly worse because of some
  * additional tests required due to the differences among the DOM implementations. 
  * 

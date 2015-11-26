@@ -16,7 +16,9 @@ import cz.vutbr.web.css.ElementMatcher;
 import cz.vutbr.web.css.Selector;
 
 /**
- * A case-insensitive, safe implementation of the element matcher. It should be compatible with any
+ * A case-insensitive matcher that corresponds to the HTML quirks mode matching. 
+ * 
+ * This is a safe implementation of the element matcher. It should be compatible with any
  * DOM implementation. On the other hand, its performance is slightly worse because of some
  * additional tests required due to the differences among the DOM implementations. 
  * 

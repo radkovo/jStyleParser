@@ -16,7 +16,9 @@ import cz.vutbr.web.css.ElementMatcher;
 import cz.vutbr.web.css.Selector;
 
 /**
- * A case-sensitive, safe implementation of the element matcher. This implementation requires
+ * A case-sensitive matcher that corresponds to the XHTML mode matching. 
+ * 
+ * This is a simplified implementation of the element matcher. This implementation requires
  * that the {@code Element.getAttribute()} method provided by the DOM implementation returns
  * an empty string (not {@code null}) when the attribute is not defined. 
  * 

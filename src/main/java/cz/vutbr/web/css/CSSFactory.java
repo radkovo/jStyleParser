@@ -37,7 +37,7 @@ import cz.vutbr.web.domassign.Traversal;
  * <code>cz.vutbr.web.domassign.SupportedCSS3</code>
  * <code>cz.vutbr.web.csskit.RuleFactoryImpl</code>
  * <code>cz.vutbr.web.domassign.SingleMapNodeData</code>
- * <code>cz.vutbr.web.csskit.ElementMatcherSafeCI</code>
+ * <code>cz.vutbr.web.csskit.ElementMatcherSafeStd</code>
  * 
  * Other usage of this factory is to parse either string or file into
  * StyleSheet.
@@ -56,7 +56,7 @@ public final class CSSFactory {
 	private static final String DEFAULT_RULE_FACTORY = "cz.vutbr.web.csskit.RuleFactoryImpl";
     private static final String DEFAULT_DECLARATION_TRANSFORMER = "cz.vutbr.web.domassign.DeclarationTransformer";
 	private static final String DEFAULT_NODE_DATA_IMPL = "cz.vutbr.web.domassign.SingleMapNodeData";
-	private static final String DEFAULT_ELEMENT_MATCHER = "cz.vutbr.web.csskit.ElementMatcherSafeCI";
+	private static final String DEFAULT_ELEMENT_MATCHER = "cz.vutbr.web.csskit.ElementMatcherSafeStd";
 
 	/**
 	 * Default instance of CSSParcerFactory
