@@ -1,0 +1,36 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+<title>Title</title>
+<style type="text/css">
+/*
+HTML standards mode:
+    tag names: case insensitive
+    classes and ids: case sensitive
+    pseudo classes: case insensitive
+*/
+
+li { color: red; }
+LI { color: green; }
+
+.second { color: green; }
+.SECOND { color: red; }
+
+#selected { color: green; }
+#SELECTED { color: red; }
+
+li:last-child { color: red; }
+li:LAST-CHILD { color: green; }
+
+</style>
+</head>
+<body>
+<h1>Case Sensitivity: HTML standards mode</h1>
+<ul id="list">
+<li>Element names</li>
+<li class="second">Classes</li>
+<li id="selected">Identifiers</li>
+<li>Pseudo classes</li>
+</ul>
+</body>
+</html>
