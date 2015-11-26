@@ -87,6 +87,7 @@ public class CSSInputStream implements CharStream {
         stream.input = new ANTLRInputStream(is, stream.encoding);
         stream.source = is;
         stream.url = source;
+        stream.network = network;
 		
 		return stream;
 	}
