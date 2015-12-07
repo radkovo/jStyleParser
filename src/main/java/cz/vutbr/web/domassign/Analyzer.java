@@ -54,7 +54,7 @@ public class Analyzer {
 	 */
 	protected Holder rules;
 
-	private MatchCondition matchCond = null;
+	private MatchCondition matchCond;
 	private final ElementMatcher matcher;
 
 	/**
@@ -64,6 +64,7 @@ public class Analyzer {
 	public Analyzer(StyleSheet sheet) {
 	    sheets = new ArrayList<StyleSheet>(1);
 	    sheets.add(sheet);
+	    matchCond = CSSFactory.getDefaultMatchCondition();
 	    matcher = CSSFactory.getElementMatcher();
 	}
 
@@ -73,6 +74,7 @@ public class Analyzer {
 	 */
 	public Analyzer(List<StyleSheet> sheets) {
 	    this.sheets = sheets;
+        matchCond = CSSFactory.getDefaultMatchCondition();
         matcher = CSSFactory.getElementMatcher();
 	}
 	
@@ -325,7 +327,7 @@ public class Analyzer {
 	}
 
 	protected boolean elementSelectorMatches(final Selector s, final Element e) {
-		return this.matchCond == null ? s.matches(e) : s.matches(e, matchCond);
+		return s.matches(e, matchCond);
 	}
 
 	protected boolean matchSelector(CombinedSelector sel, Element e, TreeWalker w) {

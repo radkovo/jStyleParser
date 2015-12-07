@@ -145,13 +145,12 @@ public final class AnalyzerUtil {
 	}
 	
 	static boolean elementSelectorMatches(final Selector s, final Element e, final MatchCondition matchCond) {
-		return matchCond == null ? s.matches(e) : s.matches(e, matchCond);
+		return s.matches(e, matchCond);
 	}
 
     private static boolean nodeSelectorMatches(final Selector s, final Node n, final MatchCondition matchCond) {
         if (n.getNodeType() == Node.ELEMENT_NODE) {
-            final Element e = (Element) n;
-            return matchCond == null ? s.matches(e) : s.matches(e, matchCond);
+            return s.matches((Element) n, matchCond);
         } else {
             return false;
         }
