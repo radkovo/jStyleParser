@@ -15,6 +15,7 @@ import org.w3c.dom.Node;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.ElementMatcher;
 import cz.vutbr.web.css.MatchCondition;
 import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.MediaSpec;
@@ -59,9 +60,9 @@ public final class AnalyzerUtil {
 	    return rules;
     }
 
-    public static NodeData getElementStyle(Element el, PseudoDeclaration pseudo, MatchCondition matchCond, OrderedRule[] applicableRules)
+    public static NodeData getElementStyle(Element el, PseudoDeclaration pseudo, final ElementMatcher matcher, MatchCondition matchCond, OrderedRule[] applicableRules)
     {
-    	return makeNodeData(computeDeclarations(el, pseudo, applicableRules, matchCond));
+    	return makeNodeData(computeDeclarations(el, pseudo, applicableRules, matcher, matchCond));
     }
 
 	public static OrderedRule[] getApplicableRules(final Element e, final Holder holder, final RuleSet[] elementRuleSets)
@@ -144,19 +145,19 @@ public final class AnalyzerUtil {
 	        classifyRules(sheet, mediaspec, rules, orderCounter);
 	}
 	
-	static boolean elementSelectorMatches(final Selector s, final Element e, final MatchCondition matchCond) {
-		return s.matches(e, matchCond);
+	static boolean elementSelectorMatches(final Selector s, final Element e, final ElementMatcher matcher, final MatchCondition matchCond) {
+		return s.matches(e, matcher, matchCond);
 	}
 
-    private static boolean nodeSelectorMatches(final Selector s, final Node n, final MatchCondition matchCond) {
+    private static boolean nodeSelectorMatches(final Selector s, final Node n, final ElementMatcher matcher, final MatchCondition matchCond) {
         if (n.getNodeType() == Node.ELEMENT_NODE) {
-            return s.matches((Element) n, matchCond);
+            return s.matches((Element) n, matcher, matchCond);
         } else {
             return false;
         }
     }
     
-	static List<Declaration> computeDeclarations(final Element e, final PseudoDeclaration pseudo, final OrderedRule[] clist, final MatchCondition matchCond) {
+	static List<Declaration> computeDeclarations(final Element e, final PseudoDeclaration pseudo, final OrderedRule[] clist, final ElementMatcher matcher, final MatchCondition matchCond) {
 		// resulting list of declaration for this element with no pseudo-selectors (main list)(local cache)
         final List<Declaration> eldecl = new ArrayList<Declaration>();
         
@@ -170,7 +171,7 @@ public final class AnalyzerUtil {
             // for all selectors inside
             for (final CombinedSelector s : rule.getSelectors()) {
                 
-                if (!AnalyzerUtil.matchSelector(s, e, matchCond)) {
+                if (!AnalyzerUtil.matchSelector(s, e, matcher, matchCond)) {
                     log.trace("CombinedSelector \"{}\" NOT matched!", s);
                     continue;
                 }
@@ -209,11 +210,11 @@ public final class AnalyzerUtil {
 		return false;
 	}
 
-    public static boolean hasPseudoSelectorForAncestor(final OrderedRule[] rules, final Element e, final Element targetAncestor, final MatchCondition matchCond, PseudoDeclaration pd)
+    public static boolean hasPseudoSelectorForAncestor(final OrderedRule[] rules, final Element e, final Element targetAncestor, final ElementMatcher matcher, final MatchCondition matchCond, PseudoDeclaration pd)
     {
 		for (final OrderedRule rule : rules) {
 			for (final CombinedSelector cs : rule.getRule().getSelectors()) {
-				if (hasPseudoSelectorForAncestor(cs, e, targetAncestor, matchCond, pd)) {
+				if (hasPseudoSelectorForAncestor(cs, e, targetAncestor, matcher, matchCond, pd)) {
 					return true;
 				}
 			}
@@ -221,7 +222,7 @@ public final class AnalyzerUtil {
 		return false;
     }
 
-    private static boolean hasPseudoSelectorForAncestor(final CombinedSelector sel, final Element e, final Element targetAncestor, final MatchCondition matchCond, PseudoDeclaration pd)
+    private static boolean hasPseudoSelectorForAncestor(final CombinedSelector sel, final Element e, final Element targetAncestor, final ElementMatcher matcher, final MatchCondition matchCond, PseudoDeclaration pd)
     {
         boolean retval = false;
         Selector.Combinator combinator = null;
@@ -233,7 +234,7 @@ public final class AnalyzerUtil {
 
             // decide according to combinator anti-pattern
             if (combinator == null) {
-                retval = elementSelectorMatches(s, current, matchCond);
+                retval = elementSelectorMatches(s, current, matcher, matchCond);
             } else if (combinator == Selector.Combinator.ADJACENT) {
                 Node adjacent = current;
                 do {
@@ -243,7 +244,7 @@ public final class AnalyzerUtil {
                 if (adjacent != null && adjacent.getNodeType() == Node.ELEMENT_NODE)
                 {
                     current = (Element) adjacent; 
-                    retval = elementSelectorMatches(s, current, matchCond);
+                    retval = elementSelectorMatches(s, current, matcher, matchCond);
                 }
             } else if (combinator == Selector.Combinator.PRECEDING) {
                 Node preceding = current.getPreviousSibling();
@@ -252,7 +253,7 @@ public final class AnalyzerUtil {
                 {
                     if (preceding != null)
                     {
-                        if (nodeSelectorMatches(s, preceding, matchCond))
+                        if (nodeSelectorMatches(s, preceding, matcher, matchCond))
                         {
                             current = (Element) preceding;
                             retval = true;
@@ -268,7 +269,7 @@ public final class AnalyzerUtil {
                 {
                     if (ancestor != null)
                     {
-                        if (nodeSelectorMatches(s, ancestor, matchCond))
+                        if (nodeSelectorMatches(s, ancestor, matcher, matchCond))
                         {
                             current = (Element) ancestor;
                             retval = true;
@@ -283,7 +284,7 @@ public final class AnalyzerUtil {
                 if (parent != null && parent.getNodeType() == Node.ELEMENT_NODE)
                 {
                     current = (Element) parent;
-                    retval = elementSelectorMatches(s, current, matchCond);
+                    retval = elementSelectorMatches(s, current, matcher, matchCond);
                 }
             }
 
@@ -300,7 +301,7 @@ public final class AnalyzerUtil {
         return false;
     }
 
-    protected static boolean matchSelector(final CombinedSelector sel, final Element e, final MatchCondition matchCond)
+    protected static boolean matchSelector(final CombinedSelector sel, final Element e, final ElementMatcher matcher, final MatchCondition matchCond)
     {
         boolean retval = false;
         Selector.Combinator combinator = null;
@@ -314,7 +315,7 @@ public final class AnalyzerUtil {
 
             // decide according to combinator anti-pattern
             if (combinator == null) {
-                retval = elementSelectorMatches(s, current, matchCond);
+                retval = elementSelectorMatches(s, current, matcher, matchCond);
             } else if (combinator == Selector.Combinator.ADJACENT) {
                 Node adjacent = current;
                 do {
@@ -324,7 +325,7 @@ public final class AnalyzerUtil {
                 if (adjacent != null && adjacent.getNodeType() == Node.ELEMENT_NODE)
                 {
                     current = (Element) adjacent; 
-                    retval = elementSelectorMatches(s, current, matchCond);
+                    retval = elementSelectorMatches(s, current, matcher, matchCond);
                 }
             } else if (combinator == Selector.Combinator.PRECEDING) {
                 Node preceding = current.getPreviousSibling();
@@ -333,7 +334,7 @@ public final class AnalyzerUtil {
                 {
                     if (preceding != null)
                     {
-                        if (nodeSelectorMatches(s, preceding, matchCond))
+                        if (nodeSelectorMatches(s, preceding, matcher, matchCond))
                         {
                             current = (Element) preceding;
                             retval = true;
@@ -349,7 +350,7 @@ public final class AnalyzerUtil {
                 {
                     if (ancestor != null)
                     {
-                        if (nodeSelectorMatches(s, ancestor, matchCond))
+                        if (nodeSelectorMatches(s, ancestor, matcher, matchCond))
                         {
                             current = (Element) ancestor;
                             retval = true;
@@ -364,7 +365,7 @@ public final class AnalyzerUtil {
                 if (parent != null && parent.getNodeType() == Node.ELEMENT_NODE)
                 {
                     current = (Element) parent;
-                    retval = elementSelectorMatches(s, current, matchCond);
+                    retval = elementSelectorMatches(s, current, matcher, matchCond);
                 }
             }
 

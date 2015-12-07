@@ -55,7 +55,7 @@ public class Analyzer {
 	protected Holder rules;
 
 	private MatchCondition matchCond;
-	private final ElementMatcher matcher;
+	private ElementMatcher matcher;
 
 	/**
 	 * Creates the analyzer for a single style sheet.
@@ -98,6 +98,26 @@ public class Analyzer {
 	public final MatchCondition getMatchCondition() {
 		return this.matchCond;
 	}
+
+    /**
+     * Registers a new element matcher to be used for matching the elements and
+     * selector parts.
+     *
+     * @param matcher
+     *            the new element matcher
+     */
+    public final void registerElementMatcher(ElementMatcher matcher) {
+        this.matcher = matcher;
+    }
+
+    /**
+     * Obtains the matcher to be used for matching the elements.
+     *
+     * @return the matcher used by the Analyzer.
+     */
+    public final ElementMatcher getElementMatcher() {
+        return matcher;
+    }
 
 	/**
 	 * Evaluates CSS properties of DOM tree
@@ -327,7 +347,7 @@ public class Analyzer {
 	}
 
 	protected boolean elementSelectorMatches(final Selector s, final Element e) {
-		return s.matches(e, matchCond);
+		return s.matches(e, matcher, matchCond);
 	}
 
 	protected boolean matchSelector(CombinedSelector sel, Element e, TreeWalker w) {

@@ -57,7 +57,7 @@ public class DirectAnalyzer extends Analyzer
     public NodeData getElementStyle(Element el, PseudoDeclaration pseudo, MediaSpec media)
     {
         final OrderedRule[] applicableRules = AnalyzerUtil.getApplicableRules(sheets, el, media);
-        return AnalyzerUtil.getElementStyle(el, pseudo, getMatchCondition(), applicableRules);
+        return AnalyzerUtil.getElementStyle(el, pseudo, getElementMatcher(), getMatchCondition(), applicableRules);
     }
 
     /**

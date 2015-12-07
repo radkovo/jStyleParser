@@ -113,7 +113,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	
 		// check other items of simple selector
 		for(SelectorPart item : list) {
-			if(item == null || !item.matches(e, CSSFactory.getDefaultMatchCondition())) //null in case of syntax error (missing term)
+			if(item == null || !item.matches(e, CSSFactory.getElementMatcher(), CSSFactory.getDefaultMatchCondition())) //null in case of syntax error (missing term)
 				return false;
 		}
 		
@@ -121,11 +121,11 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		return true;
     }
     
-    public boolean matches(Element e, MatchCondition cond) {
+    public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond) {
         
         // check other items of simple selector
         for(SelectorPart item : list) {
-            if(item == null || !item.matches(e, cond)) //null in case of syntax error (missing term)
+            if(item == null || !item.matches(e, matcher, cond)) //null in case of syntax error (missing term)
                 return false;
         }
         // we passed checking
@@ -184,11 +184,9 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     public static class ElementNameImpl implements ElementName {    	 
 		
     	private String name;
-    	private final ElementMatcher matcher;
     	
     	protected ElementNameImpl(String name) {
     		setName(name);
-    		matcher = CSSFactory.getElementMatcher();
     	}
     	
 		public void computeSpecificity(CombinedSelector.Specificity spec) {
@@ -196,7 +194,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 				spec.add(Level.D);
 		}
 		
-		public boolean matches(Element e, MatchCondition cond) {
+		public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond) {
 			if(name!=null && WILDCARD.equals(name)) return true;
 			return matcher.matchesName(e, name);
 		}	
@@ -259,18 +257,16 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     public static class ElementClassImpl implements ElementClass {
 
     	private String className;
-        private final ElementMatcher matcher;
     	
     	protected ElementClassImpl(String className) {
     		setClassName(className);
-            matcher = CSSFactory.getElementMatcher();
     	}
     	
     	public void computeSpecificity(Specificity spec) {
     		spec.add(Level.C);
     	}
     	
-    	public boolean matches(Element e, MatchCondition cond) {
+    	public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond) {
     		return matcher.matchesClass(e, className);
     	}
     	
@@ -409,7 +405,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 
 		}		
 		
-		public boolean matches(Element e, MatchCondition cond) {
+		public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond) {
 			
 			if(declaration != null) { //null declaration means some unknown or unimplemented pseudo
 				switch (declaration) {
@@ -752,18 +748,16 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     public static class ElementIDImpl implements ElementID {
     	
     	private String id;
-    	private final ElementMatcher matcher;
     	
     	protected ElementIDImpl(String value) {
     		setID(value);
-            matcher = CSSFactory.getElementMatcher();
     	}
     	
     	public void computeSpecificity(Specificity spec) {
     		spec.add(Level.B);
 		}    	
     	
-    	public boolean matches(Element e, MatchCondition cond) {
+    	public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond) {
     		return matcher.matchesID(e, id);
     	}
     	
@@ -832,14 +826,11 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	private String value;
     	private boolean isStringValue;
     	
-    	private final ElementMatcher matcher;
-    	
     	protected ElementAttributeImpl(String value, boolean isStringValue, Operator operator, String attribute) {
     		this.isStringValue = isStringValue;
     		this.operator = operator;
     		this.attribute = attribute;
     		setValue(value);
-            matcher = CSSFactory.getElementMatcher();
     	}
     	
     	/**
@@ -879,7 +870,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			spec.add(Level.C);
 		}
 		
-		public boolean matches(Element e, MatchCondition cond) {
+		public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond) {
 			return matcher.matchesAttribute(e, attribute, value, operator);
 		}
     	
@@ -990,7 +981,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		        spec.add(Level.A);
 		}
 
-		public boolean matches(Element e, MatchCondition cond) {
+		public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond) {
 			return elem.equals(e);
 		}
 
