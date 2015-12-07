@@ -93,10 +93,7 @@ public class ElementMatcherSimpleCI implements ElementMatcher
     
     public boolean matchesName(final Element e, final String name)
     {
-        if (name == null)
-            return false;
-        else
-            return name.equalsIgnoreCase(e.getNodeName());
+        return name.equalsIgnoreCase(e.getNodeName());
     }
     
     public boolean matchesAttribute(final Element e, final String name, final String value, final Selector.Operator o) 

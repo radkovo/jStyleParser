@@ -23,10 +23,7 @@ public class ElementMatcherSimpleStd extends ElementMatcherSimpleCS
     @Override
     public boolean matchesName(Element e, String name)
     {
-        if (name == null)
-            return false;
-        else
-            return name.equalsIgnoreCase(elementName(e));
+        return name.equalsIgnoreCase(elementName(e));
     }
 
 }

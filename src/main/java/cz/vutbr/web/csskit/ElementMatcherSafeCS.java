@@ -94,10 +94,7 @@ public class ElementMatcherSafeCS implements ElementMatcher
     
     public boolean matchesName(Element e, String name)
     {
-        if (name == null)
-            return false;
-        else
-            return name.equals(elementName(e));
+        return name.equals(elementName(e));
     }
     
     public boolean matchesAttribute(Element e, String name, String value, Selector.Operator o) 

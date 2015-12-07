@@ -92,10 +92,7 @@ public class ElementMatcherSimpleCS implements ElementMatcher
     
     public boolean matchesName(final Element e, final String name)
     {
-        if (name == null)
-            return false;
-        else
-            return name.equals(e.getNodeName());
+        return name.equals(e.getNodeName());
     }
     
     public boolean matchesAttribute(final Element e, final String name, final String value, final Selector.Operator o) 

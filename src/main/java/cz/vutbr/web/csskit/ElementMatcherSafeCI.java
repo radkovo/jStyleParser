@@ -95,10 +95,7 @@ public class ElementMatcherSafeCI implements ElementMatcher
     
     public boolean matchesName(Element e, String name)
     {
-        if (name == null)
-            return false;
-        else
-            return name.equalsIgnoreCase(elementName(e));
+        return name.equalsIgnoreCase(elementName(e));
     }
     
     public boolean matchesAttribute(Element e, String name, String value, Selector.Operator o) 
