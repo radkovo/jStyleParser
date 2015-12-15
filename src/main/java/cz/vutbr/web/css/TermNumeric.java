@@ -26,6 +26,7 @@ public interface TermNumeric<T extends Number> extends Term<T> {
     	vmax("vmax"),
     	cm("cm"),
     	mm("mm"),
+    	q("q"),
         in("in"),
     	pt("pt"),
     	pc("pc"),
@@ -55,7 +56,7 @@ public interface TermNumeric<T extends Number> extends Term<T> {
     	
     	public boolean isLength() {
     		return this==px || this==ex || this==em || this==cm
-    		|| this==mm || this==pt || this==pc || this==in
+    		|| this==q || this==mm || this==pt || this==pc || this==in
     		|| this==ch || this==rem || this==vw || this==vh
     		|| this==vmin || this==vmax;
     	}

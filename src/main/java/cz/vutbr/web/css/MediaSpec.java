@@ -679,6 +679,8 @@ public class MediaSpec
                 return (nval * dpi) / 2.54f;
             case mm:
                 return (nval * dpi) / 25.4f;
+            case q:
+                return (nval * dpi) / (2.54f*40f);
             case pc:
                 return (nval * 12 * dpi) / 72.0f;
             case px:
