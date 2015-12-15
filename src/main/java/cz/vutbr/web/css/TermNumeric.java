@@ -55,10 +55,26 @@ public interface TermNumeric<T extends Number> extends Term<T> {
     	}
     	
     	public boolean isLength() {
-    		return this==px || this==ex || this==em || this==cm
-    		|| this==q || this==mm || this==pt || this==pc || this==in
-    		|| this==ch || this==rem || this==vw || this==vh
-    		|| this==vmin || this==vmax;
+            switch (this) {
+                case pt:
+                case in:
+                case cm:
+                case mm:
+                case q:
+                case pc:
+                case px:
+                case em:
+                case ex:
+                case ch:
+                case rem:
+                case vw:
+                case vh:
+                case vmin:
+                case vmax:
+                    return true;
+                default:
+                    return false;
+            }
     	}
     	
     	public boolean isTime() {
