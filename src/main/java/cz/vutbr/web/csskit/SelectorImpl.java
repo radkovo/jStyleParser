@@ -9,6 +9,7 @@ import org.w3c.dom.NodeList;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
+import cz.vutbr.web.css.ElementMatcher;
 import cz.vutbr.web.css.MatchCondition;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.CombinedSelector.Specificity;
@@ -112,7 +113,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	
 		// check other items of simple selector
 		for(SelectorPart item : list) {
-			if(item == null || !item.matches(e, CSSFactory.getDefaultMatchCondition())) //null in case of syntax error (missing term)
+			if(item == null || !item.matches(e, CSSFactory.getElementMatcher(), CSSFactory.getDefaultMatchCondition())) //null in case of syntax error (missing term)
 				return false;
 		}
 		
@@ -120,11 +121,11 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		return true;
     }
     
-    public boolean matches(Element e, MatchCondition cond) {
+    public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond) {
         
         // check other items of simple selector
         for(SelectorPart item : list) {
-            if(item == null || !item.matches(e, cond)) //null in case of syntax error (missing term)
+            if(item == null || !item.matches(e, matcher, cond)) //null in case of syntax error (missing term)
                 return false;
         }
         // we passed checking
@@ -182,7 +183,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
      */
     public static class ElementNameImpl implements ElementName {    	 
 		
-    	private String name; 
+    	private String name;
     	
     	protected ElementNameImpl(String name) {
     		setName(name);
@@ -193,9 +194,9 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 				spec.add(Level.D);
 		}
 		
-		public boolean matches(Element e, MatchCondition cond) {
+		public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond) {
 			if(name!=null && WILDCARD.equals(name)) return true;
-			return ElementUtil.matchesName(e, name);
+			return matcher.matchesName(e, name);
 		}	
 		
 		public String getName() {
@@ -265,8 +266,8 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     		spec.add(Level.C);
     	}
     	
-    	public boolean matches(Element e, MatchCondition cond) {
-    		return ElementUtil.matchesClass(e, className);
+    	public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond) {
+    		return matcher.matchesClass(e, className);
     	}
     	
 		public String getClassName() {
@@ -404,7 +405,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 
 		}		
 		
-		public boolean matches(Element e, MatchCondition cond) {
+		public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond) {
 			
 			if(declaration != null) { //null declaration means some unknown or unimplemented pseudo
 				switch (declaration) {
@@ -756,8 +757,8 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     		spec.add(Level.B);
 		}    	
     	
-    	public boolean matches(Element e, MatchCondition cond) {
-    		return ElementUtil.matchesID(e, id);
+    	public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond) {
+    		return matcher.matchesID(e, id);
     	}
     	
     	public ElementID setID(String id) {
@@ -869,8 +870,8 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			spec.add(Level.C);
 		}
 		
-		public boolean matches(Element e, MatchCondition cond) {
-			return ElementUtil.matchesAttribute(e, attribute, value, operator);
+		public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond) {
+			return matcher.matchesAttribute(e, attribute, value, operator);
 		}
     	
 		public String getValue() {
@@ -980,7 +981,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		        spec.add(Level.A);
 		}
 
-		public boolean matches(Element e, MatchCondition cond) {
+		public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond) {
 			return elem.equals(e);
 		}
 

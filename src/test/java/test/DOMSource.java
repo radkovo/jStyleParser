@@ -73,8 +73,15 @@ public class DOMSource
     {
         DOMParser parser = new DOMParser(new HTMLConfiguration());
         parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
+        parser.setProperty("http://cyberneko.org/html/properties/names/attrs", "lower");
         if (charset != null)
             parser.setProperty("http://cyberneko.org/html/properties/default-encoding", charset);
+        
+        //preparation for filters, not used now
+        /*XMLDocumentFilter attributeFilter = new DOMAttributeFilter();
+        XMLDocumentFilter[] filters = { attributeFilter };
+        parser.setProperty("http://cyberneko.org/html/properties/filters", filters);*/        
+        
         parser.parse(new org.xml.sax.InputSource(is));
         doc = parser.getDocument();
         return doc;

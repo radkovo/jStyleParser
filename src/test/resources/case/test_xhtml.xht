@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+     
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>Title</title>
+<style type="text/css">
+/*
+XHTML mode:
+    tag names: case sensitive
+    classes and ids: case sensitive
+    pseudo classes: case insensitive
+*/
+
+li { color: green; }
+LI { color: red; }
+
+.second { color: green; }
+.SECOND { color: red; }
+
+#selected { color: green; }
+#SELECTED { color: red; }
+
+li:last-child { color: red; }
+li:LAST-CHILD { color: green; }
+
+</style>
+</head>
+<body>
+<h1>Case Sensitivity: XHTML mode</h1>
+<ul id="list">
+<li>Element names</li>
+<li class="second">Classes</li>
+<li id="selected">Identifiers</li>
+<li>Pseudo classes</li>
+</ul>
+</body>
+</html>

@@ -155,7 +155,8 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     public void computeSpecificity(CombinedSelector.Specificity spec);
     
     /**
-     * Matches simple selector against DOM element
+     * Matches simple selector against DOM element using the default element matcher
+     * and the default match condition registered in CSSFactory.
      * @param e Element
      * @return <code>true</code> in case of match
      */
@@ -164,10 +165,11 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     /**
      * Matches simple selector against DOM element with an additional condition
      * @param e Element
+     * @param matcher Element matcher to be used
      * @param cond An additional condition to be applied
      * @return <code>true</code> in case of match
      */
-    public boolean matches(Element e, MatchCondition cond);
+    public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond);
     
     /**
      * Interface for handling items
@@ -175,7 +177,7 @@ public interface Selector extends Rule<Selector.SelectorPart> {
      *
      */
     public interface SelectorPart { 	
-    	public boolean matches(Element e, MatchCondition cond);
+    	public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond);
     	public void computeSpecificity(CombinedSelector.Specificity spec);
     }
     

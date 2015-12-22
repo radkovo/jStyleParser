@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">     
+<html>
+<head>
+<title>Title</title>
+<style type="text/css">
+/*
+HTML quirks mode:
+    tag names: case insensitive
+    classes and ids: case insensitive
+    pseudo classes: case insensitive
+*/
+
+li { color: red; }
+LI { color: green; }
+
+.second { color: red; }
+.SECOND { color: green; }
+
+#selected { color: red; }
+#SELECTED { color: green; }
+
+li:last-child { color: red; }
+li:LAST-CHILD { color: green; }
+
+</style>
+</head>
+<body>
+<h1>Case Sensitivity: HTML quirks mode</h1>
+<ul id="list">
+<li>Element names</li>
+<li class="second">Classes</li>
+<li id="selected">Identifiers</li>
+<li>Pseudo classes</li>
+</ul>
+</body>
+</html>
