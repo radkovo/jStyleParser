@@ -2,8 +2,8 @@
     <wb-module deploy-name="CSSParser">
         <wb-resource deploy-path="/" source-path="/src/main/java"/>
         <wb-resource deploy-path="/" source-path="/src/main/resources"/>
-        <wb-resource deploy-path="/" source-path="/src/main/antlr3"/>
         <wb-resource deploy-path="/" source-path="/target/generated-sources/antlr3"/>
         <wb-resource deploy-path="/" source-path="/src/test/resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/antlr3"/>
     </wb-module>
 </project-modules>
