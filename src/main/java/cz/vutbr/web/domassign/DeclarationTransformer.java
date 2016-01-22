@@ -21,6 +21,7 @@ import cz.vutbr.web.css.CSSProperty.BackgroundSize;
 import cz.vutbr.web.css.CSSProperty.BorderRadius;
 import cz.vutbr.web.css.CSSProperty.GenericCSSPropertyProxy;
 import cz.vutbr.web.css.CSSProperty.Opacity;
+import cz.vutbr.web.css.CSSProperty.Transform;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
@@ -1150,6 +1151,43 @@ public class DeclarationTransformer {
 				Left.percentage, ValueRange.ALLOW_ALL, d, properties, values);
 	}
 
+    @SuppressWarnings("unused")
+    private boolean processTransform(Declaration d,
+            Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+
+        // just a simple value (e.g. "none")
+        if (d.size() == 1 && genericOneIdent(Transform.class, d, properties)) {
+            return true;
+        } else {
+
+            // valid function names
+            final Set<String> validFuncNames = new HashSet<String>(Arrays
+                    .asList("matrix", "translate", "translatex", "translatey", 
+                            "scale", "scalex", "scaley", "rotate", "skew", "skewx",
+                            "skewy", "matrix3d", "translate3d", "translateZ",
+                            "scale3d", "scalez", "rotate3d", "rotatex", "rotatey",
+                            "rotatez", "perspective"));
+
+            TermList list = tf.createList();
+
+            for (Term<?> t : d.asList()) {
+                if (t instanceof TermFunction
+                        && validFuncNames.contains(((TermFunction) t)
+                                .getFunctionName().toLowerCase()))
+                    list.add(t);
+                else
+                    return false;
+            }
+            // there is nothing in list after parsing
+            if (list.isEmpty())
+                return false;
+
+            properties.put("transform", Content.list_values);
+            values.put("transform", list);
+            return true;
+        }
+    }
+    
 	@SuppressWarnings("unused")
 	private boolean processWidth(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {

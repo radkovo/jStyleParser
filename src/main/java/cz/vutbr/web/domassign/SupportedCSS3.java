@@ -16,6 +16,7 @@ import cz.vutbr.web.css.CSSProperty.BorderRadius;
 import cz.vutbr.web.css.CSSProperty.Height;
 import cz.vutbr.web.css.CSSProperty.Opacity;
 import cz.vutbr.web.css.CSSProperty.TabSize;
+import cz.vutbr.web.css.CSSProperty.Transform;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFactory;
@@ -356,6 +357,7 @@ public class SupportedCSS3 implements SupportedCSS {
 		props.put("clear", Clear.NONE);
 		props.put("z-index", ZIndex.AUTO);
 		props.put("visibility", Visibility.VISIBLE);
+		props.put("transform", Transform.NONE);
 
 		// background
 		props.put("background", Background.component_values);

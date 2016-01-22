@@ -2031,6 +2031,29 @@ public interface CSSProperty {
 		}
 	}
 
+    public enum Transform implements CSSProperty {
+        list_values(""), NONE("none"), INHERIT("inherit");
+
+        private String text;
+
+        private Transform(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+    
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
 	public enum UnicodeBidi implements CSSProperty {
 		NORMAL("normal"), EMDEB("embed"), BIDI_OVERRIDE("bidi-override"), INHERIT(
 				"inherit");
