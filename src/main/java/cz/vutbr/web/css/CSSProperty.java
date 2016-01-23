@@ -2054,6 +2054,29 @@ public interface CSSProperty {
         }
     }
 
+    public enum TransformOrigin implements CSSProperty {
+        list_values(""), INHERIT("inherit");
+
+        private String text;
+
+        private TransformOrigin(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+    
 	public enum UnicodeBidi implements CSSProperty {
 		NORMAL("normal"), EMDEB("embed"), BIDI_OVERRIDE("bidi-override"), INHERIT(
 				"inherit");
