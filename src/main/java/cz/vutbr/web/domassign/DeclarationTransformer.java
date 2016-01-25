@@ -22,6 +22,7 @@ import cz.vutbr.web.css.CSSProperty.BorderRadius;
 import cz.vutbr.web.css.CSSProperty.GenericCSSPropertyProxy;
 import cz.vutbr.web.css.CSSProperty.Opacity;
 import cz.vutbr.web.css.CSSProperty.Transform;
+import cz.vutbr.web.css.CSSProperty.TransformOrigin;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
@@ -1183,7 +1184,7 @@ public class DeclarationTransformer {
             if (list.isEmpty())
                 return false;
 
-            properties.put("transform", Content.list_values);
+            properties.put("transform", Transform.list_values);
             values.put("transform", list);
             return true;
         }
@@ -1295,7 +1296,7 @@ public class DeclarationTransformer {
             list.add(hpos);
             list.add(vpos);
             list.add(zpos);
-            properties.put("transform-origin", Content.list_values);
+            properties.put("transform-origin", TransformOrigin.list_values);
             values.put("transform-origin", list);
             return true;
         }
