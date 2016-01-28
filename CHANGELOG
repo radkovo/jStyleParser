@@ -1,3 +1,12 @@
+Version 1.22 - Jan 28, 2016
+- A generic ElementMatcher mechanism for implementing alternative ways
+  of selector to element matching
+- Ready to use element matchers for XHTML, HTML-standard and HTML-quirks mode
+- New 'transform' and 'transform-origin' properties supported
+- Property inheritance fixes
+- Avoid negative zeroes in CSS floating point values
+- Style sheet @import fixed
+
 Version 1.21 - Nov 5, 2015
 - Significant grammar extensibility improvements
 - CSS escaping properly supported
