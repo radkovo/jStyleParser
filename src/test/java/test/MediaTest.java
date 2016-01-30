@@ -7,6 +7,7 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.Date;
@@ -18,6 +19,7 @@ import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.MediaSpecNone;
+import cz.vutbr.web.css.MediaSpecAll;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -159,6 +161,7 @@ public class MediaTest
     @Test
     public void matchesEmpty()
     {
+        assertTrue("MediaSpecAll matches the empty media query", (new MediaSpecAll()).matchesEmpty());
         assertFalse("MediaSpecNone does not match the empty media query", (new MediaSpecNone()).matchesEmpty());
     }
 }
