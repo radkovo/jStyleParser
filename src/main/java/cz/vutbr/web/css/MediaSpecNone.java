@@ -40,6 +40,12 @@ public class MediaSpecNone extends MediaSpec
     {
         return false;
     }
+    
+    @Override
+    public boolean matchesEmpty()
+    {
+        return false;
+    }
 
     @Override
     public String toString()
