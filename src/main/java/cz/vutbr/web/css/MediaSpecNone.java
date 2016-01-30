@@ -20,7 +20,6 @@ public class MediaSpecNone extends MediaSpec
     public MediaSpecNone()
     {
         super("!");
-        setMatchEmpty(false); //do not match empty media queries
     }
 
     @Override
