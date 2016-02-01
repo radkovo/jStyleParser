@@ -115,9 +115,6 @@ public class MediaSpec
     /** 1 for a grid device, 0 for bitmap device */
     protected int grid;
     
-    /** Matches an empty media query? */
-    protected boolean matchEmpty;
-    
     /**
      * Creates a new media specification with the given media type and default values of the features.
      * @param type The media type (e.g. "screen")
@@ -126,7 +123,6 @@ public class MediaSpec
     {
         loadDefaults();
         this.type = type.trim().toLowerCase(Locale.ENGLISH);
-        this.matchEmpty = true; //normally, an empty media query means any media
     }
 
     /**
@@ -366,15 +362,6 @@ public class MediaSpec
     public boolean isPortrait()
     {
         return height >= width; //http://www.w3.org/TR/css3-mediaqueries/#orientation
-    }
-    
-    /**
-     * Sets whether this media specification should match empty media queries.
-     * @param matchEmpty {@code true} when this media specification should match empty media queries (this is the default)
-     */
-    public void setMatchEmpty(boolean matchEmpty)
-    {
-        this.matchEmpty = matchEmpty;
     }
     
     //===============================================================================================
