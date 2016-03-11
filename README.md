@@ -2,7 +2,6 @@ jStyleParser
 ============
 
 [![Build Status](https://travis-ci.org/radkovo/jStyleParser.png)](https://travis-ci.org/radkovo/jStyleParser)
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/radkovo/jStyleParser?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 jStyleParser parses CSS2 and CSS3 into structures which can be assigned to DOM elements.
 While handling errors, it is a user agent conforming to specification.
