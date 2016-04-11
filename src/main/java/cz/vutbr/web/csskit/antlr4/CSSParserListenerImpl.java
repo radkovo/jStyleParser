@@ -39,6 +39,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     //temp variables for construction
     CombinedSelector tmpCombinedSelector;
+    private boolean tmpCombinedSelectorInvalid;
     Selector tmpSelector;
     List<CombinedSelector> tmpCombinedSelectorList;
     List<Declaration> tmpDeclarations;
@@ -485,13 +486,20 @@ public class CSSParserListenerImpl implements CSSParserListener {
     @Override
     public void enterCombined_selector(CSSParser.Combined_selectorContext ctx) {
         String combinedSelector = ctx.getText();
-        logEnter("combinedselector : : " + combinedSelector);
+        logEnter("combinedselector : " + combinedSelector);
+        tmpCombinedSelectorInvalid = false;
         tmpCombinedSelector = (CombinedSelector) rf.createCombinedSelector().unlock();
     }
 
     @Override
     public void exitCombined_selector(CSSParser.Combined_selectorContext ctx) {
-        tmpCombinedSelectorList.add(tmpCombinedSelector);
+        if(!tmpCombinedSelectorInvalid) {
+            tmpCombinedSelectorList.add(tmpCombinedSelector);
+            log.debug("Returing combined selector: {}.", tmpCombinedSelector);
+        }
+        else{
+            log.debug("Combined selector is invalid");
+        }
         tmpCombinator = null;
     }
 
@@ -579,8 +587,14 @@ public class CSSParserListenerImpl implements CSSParserListener {
     /////////////
     @Override
     public void enterSelpartId(CSSParser.SelpartIdContext ctx) {
-        enterSelpart(ctx);
-        tmpSelector.add(rf.createID(unescapeString(ctx.getText())));
+        logEnter("selpart id: " + ctx.getText());
+        String id = extractIdUnescaped(ctx.getText());
+        if(id != null) {
+            tmpSelector.add(rf.createID(unescapeString(ctx.getText())));
+        }
+        else{
+            tmpCombinedSelectorInvalid = true;
+        }
     }
 
     @Override
@@ -590,8 +604,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void enterSelpartClass(CSSParser.SelpartClassContext ctx) {
-        log.debug("Enter selpart - class {}", ctx.getText());
-        enterSelpart(ctx);
+        logEnter("selpart class: " + ctx.getText());
         tmpSelector.add(rf.createClass(unescapeString(ctx.getText())));
     }
 
@@ -602,7 +615,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void enterSelpartAttrib(CSSParser.SelpartAttribContext ctx) {
-        enterSelpart(ctx);
+        logEnter("selpart attrib: " + ctx.getText());
         //do nothing
     }
 
@@ -613,7 +626,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void enterSelpartPseudo(CSSParser.SelpartPseudoContext ctx) {
-        enterSelpart(ctx);
+        logEnter("selpart pseudo: " + ctx.getText());
     }
 
     @Override
@@ -623,18 +636,12 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void enterSelpartInvalid(CSSParser.SelpartInvalidContext ctx) {
-        enterSelpart(ctx);
+        logEnter("Selpart invalid" + ctx.getText());
     }
 
     @Override
     public void exitSelpartInvalid(CSSParser.SelpartInvalidContext ctx) {
         //do nothing
-    }
-
-
-    // on enter every selpart submethod
-    private void enterSelpart(ParserRuleContext ctx) {
-        logEnter("selpart: " + ctx.getText());
     }
 
     @Override
@@ -1155,6 +1162,13 @@ public class CSSParserListenerImpl implements CSSParserListener {
     @SuppressWarnings("unused")
     private String extractTextUnescaped(String text) {
         return unescapeString(text);
+    }
+    private String extractIdUnescaped(String text) {
+        final String id = text;
+        if (!id.isEmpty() && !Character.isDigit(id.charAt(0)))
+            return org.unbescape.css.CssEscape.unescapeCss(id);
+        else
+            return null;
     }
 
     private String unescapeString(String text) {
