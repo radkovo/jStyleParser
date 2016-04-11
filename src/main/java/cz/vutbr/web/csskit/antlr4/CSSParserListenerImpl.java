@@ -1206,10 +1206,8 @@ public class CSSParserListenerImpl implements CSSParserListener {
     private List<ParseTree> filterSpaceTokens(List<ParseTree> inputArrayList) {
         return inputArrayList.stream().filter(
                 item -> (
-                        (
-                                item instanceof TerminalNode &&
-                                        ((TerminalNodeImpl) item).getSymbol().getType() != CSSLexer.S) ||
-                                !(item instanceof TerminalNode)
+                        !(item instanceof TerminalNode) ||
+                                ((TerminalNodeImpl) item).getSymbol().getType() != CSSLexer.S
                 )
         ).collect(Collectors.toList());
     }
