@@ -229,7 +229,6 @@ public class CSSParserFactory {
      * @param query The query string
      * @return List of media queries found.
      */
-    //TODO;
     public List<MediaQuery> parseMediaQuery(String query) {
         try {
             //input from string
