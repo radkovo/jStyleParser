@@ -145,7 +145,6 @@ public class CSSTokenRecovery {
 
                         if(lexer._input.LA(1) == -1) {
                             lexer._hitEOF = true;
-                            System.out.println("hit eof");
                         }
 
                         if(lexer._type == 0) {
