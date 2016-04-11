@@ -184,7 +184,6 @@ public class CSSParserListenerImpl implements CSSParserListener {
             }
         } else {
             if (tmpAtStatementOrRuleSetScope.stm == null) {
-                //Todo: stmtIsValid a tmpAtStatementOrRuleSetScope.stm == null sjednotit !
                 log.error("exitStatement | stmt not valid ");
             } else {
                 log.debug("exitStatement | ADDING statement {}", tmpAtStatementOrRuleSetScope.stm);
@@ -435,7 +434,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
             terms_stack.peek().term = tf.createNumeric(ctx.NUMBER().getText(), terms_stack.peek().unary);
         } else if (ctx.URI() != null) {
             log.debug("VP - uri");
-            terms_stack.peek().term = tf.createURI(unescapeString(ctx.URI().getText()));//todo check
+            terms_stack.peek().term = tf.createURI(unescapeString(ctx.URI().getText()));
         } else if (ctx.funct() != null) {
             terms_stack.peek().term = null;
             //served in function
@@ -711,7 +710,6 @@ public class CSSParserListenerImpl implements CSSParserListener {
             stmtIsValid = false;
         }
         logEnter("pseudo: " + ctx.getText());
-        //todo: check if is attribute building
         // childcount == 2
         //first item is pseudocolon | : or ::
         Boolean isPseudoElem = ctx.getChild(0).getText().length() != 1;
@@ -754,7 +752,6 @@ public class CSSParserListenerImpl implements CSSParserListener {
                 tmpPseudo = rf.createPseudoPage(value, func);
             }
         }
-        //todo: kdyz bude tmpPseudo null, tak co potom
         //kontrola, zda probehla sematicka kontrola spravne
         if (tmpPseudo != null) {
             log.debug("Setting pseudo: {}", tmpPseudo.toString());
@@ -1159,7 +1156,6 @@ public class CSSParserListenerImpl implements CSSParserListener {
         spacesCounter -= 2;
     }
 
-    @SuppressWarnings("unused")
     private String extractTextUnescaped(String text) {
         return unescapeString(text);
     }
