@@ -177,9 +177,7 @@ CHARSET
 	: '@charset' S* STRING_MACR S* SEMICOLON
 	  {
 	    // we have to trim manually
-	    System.out.println(getText());
 	    String enc = cz.vutbr.web.csskit.antlr4.CSSToken.extractSTRING(getText());
-	    System.err.println("CHARSET "+tokencnt);
 	    if (tokencnt <= 1) //we are at the beginning of the style sheet
 	    {
             try {
