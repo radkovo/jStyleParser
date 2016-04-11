@@ -113,13 +113,13 @@
 						<configuration>
 							<resources>
 								<resource>
-									<directory>src/main/antlr3</directory>
+									<directory>src/main/antlr4</directory>
 									<includes>
 										<include>*.g</include>
 									</includes>
 								</resource>
 							</resources>
-							<outputDirectory>target/generated-sources/antlr3</outputDirectory>
+							<outputDirectory>target/generated-sources/antlr4</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -190,18 +190,18 @@
 					
 			<plugin>
 				<groupId>org.antlr</groupId>
-				<artifactId>antlr3-maven-plugin</artifactId>
-				<version>3.5.2</version>
+				<artifactId>antlr4-maven-plugin</artifactId>
+				<version>4.5.3</version>
 				<executions>
 					<execution>
 						<goals>
-							<goal>antlr</goal>
+							<goal>antlr4</goal>
 						</goals>
 						<configuration>
 							<excludes>
 								<exclude>*.g</exclude>
 							</excludes>
-							<libDirectory>target/generated-sources/antlr3</libDirectory>
+							<libDirectory>target/generated-sources/antlr4</libDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -238,8 +238,9 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.antlr</groupId>
-			<artifactId>antlr-runtime</artifactId>
-			<version>3.5.2</version>
+			<artifactId>antlr4-maven-plugin</artifactId>
+			<version>4.5.3</version>
+			<type>maven-plugin</type>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
