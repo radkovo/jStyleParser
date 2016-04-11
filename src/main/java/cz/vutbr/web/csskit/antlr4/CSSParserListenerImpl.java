@@ -872,9 +872,14 @@ public class CSSParserListenerImpl implements CSSParserListener {
         if (ctx.CHARSET() != null) {
 
         } else if (ctx.IMPORT() != null) {
-            log.debug("Adding import: {}", ctx.import_uri().getText());
-            importMedia.add(mediaQueryList);
-            importPaths.add(ctx.import_uri().getText());
+            String iuri = ctx.import_uri().getText();
+            if (!this.preventImports) {
+                log.debug("Adding import: {}", iuri);
+                importMedia.add(mediaQueryList);
+                importPaths.add(iuri);
+            } else {
+                log.debug("Ignoring import: {}", iuri);
+            }
 
         } else if (ctx.page() != null) {
 
