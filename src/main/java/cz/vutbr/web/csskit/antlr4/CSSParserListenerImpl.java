@@ -112,13 +112,12 @@ public class CSSParserListenerImpl implements CSSParserListener {
         return importMedia;
     }
 
-    private void logEnter(String msg) {
-        log.info("Enter: " + generateSpaces(spacesCounter) + "{}", msg);
+    private void logEnter(String entry) {
+        log.trace("Enter: " + generateSpaces(spacesCounter) + "{}", entry);
     }
 
-    private void logLeave(String msg) {
-        log.info("Leave: " + generateSpaces(spacesCounter) + "{}", msg);
-//        spacesCounter -= 2;
+    private void logLeave(String leaving) {
+        log.trace("Leave: " + generateSpaces(spacesCounter) + "{}", leaving);
     }
 
 
