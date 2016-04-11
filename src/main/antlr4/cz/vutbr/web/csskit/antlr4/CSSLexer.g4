@@ -7,7 +7,7 @@
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *  
+ *
  * jStyleParser is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -24,81 +24,96 @@
 lexer grammar CSSLexer;
 
 tokens {
-	STYLESHEET;
-	INLINESTYLE;
-	ATBLOCK;
-	CURLYBLOCK;
-	PARENBLOCK;
-	BRACEBLOCK;
-	RULE;	
-	SELECTOR;
-	ELEMENT;
-	PSEUDOCLASS;
-	PSEUDOELEM;
-	ADJACENT;
-	PRECEDING;
-	CHILD;
-	DESCENDANT;
-	ATTRIBUTE;
-	SET;
-	DECLARATION;	
-	VALUE;
-	MEDIA_QUERY;
-	
-	INVALID_STRING;
-	INVALID_SELECTOR;
-	INVALID_SELPART;
-	INVALID_DECLARATION;
-	INVALID_STATEMENT;
-	INVALID_ATSTATEMENT;
-	INVALID_IMPORT;
-	INVALID_DIRECTIVE;
+	STYLESHEET,
+	INLINESTYLE,
+	ATBLOCK,
+	CURLYBLOCK,
+	PARENBLOCK,
+	BRACEBLOCK,
+	RULE,
+	SELECTOR,
+	ELEMENT,
+	PSEUDOCLASS,
+	PSEUDOELEM,
+	ADJACENT,
+	PRECEDING,
+	CHILD,
+	DESCENDANT,
+	ATTRIBUTE,
+	SET,
+	DECLARATION,
+	VALUE,
+	MEDIA_QUERY,
+
+	INVALID_STRING,
+	INVALID_SELECTOR,
+	INVALID_SELPART,
+	INVALID_DECLARATION,
+	INVALID_STATEMENT,
+	INVALID_ATSTATEMENT,
+	INVALID_IMPORT,
+	INVALID_DIRECTIVE
 }
-
-@members {
-    
-
+@header{
+    import cz.vutbr.web.csskit.antlr4.*;
+}
+@members{
+    // CSSLexer.g4 members start
+    int count = 0;
     private org.slf4j.Logger log;
-    
+
     // number of already processed tokens (for checking the beginning of the style sheet)
     protected int tokencnt = 0;
-    
     // current lexer state
-    protected cz.vutbr.web.csskit.antlr.CSSLexerState ls;
-    protected cz.vutbr.web.csskit.antlr.CSSTokenFactory tf;
-    protected cz.vutbr.web.csskit.antlr.CSSTokenRecovery tr;
-    protected cz.vutbr.web.csskit.antlr.CSSExpressionReader er;
-    
+    protected cz.vutbr.web.csskit.antlr4.CSSLexerState ls;
+
+    /**
+      * token facctory for generating custom tokens (CSSToken)
+      */
+    protected CSSTokenFactory tf;
+    protected cz.vutbr.web.csskit.antlr4.CSSTokenRecovery tr;
+    protected cz.vutbr.web.csskit.antlr4.CSSExpressionReader er;
+
     /**
      * This function must be called to initialize lexer's state.
      * Because we can't change directly generated constructors.
      */
     public void init() {
         this.log = org.slf4j.LoggerFactory.getLogger(getClass());
-        this.ls = new cz.vutbr.web.csskit.antlr.CSSLexerState();
-        this.tf = new cz.vutbr.web.csskit.antlr.CSSTokenFactory(input, state, ls, getClass());
-        this.tr = new cz.vutbr.web.csskit.antlr.CSSTokenRecovery(this, input, state, ls, log);
-        this.er = new cz.vutbr.web.csskit.antlr.CSSExpressionReader(input, log);
+//        this.log.info("init called");
+        this.ls = new cz.vutbr.web.csskit.antlr4.CSSLexerState();
+        //initialize CSSTokenFactory
+        this.tf = new CSSTokenFactory(_tokenFactorySourcePair, this, ls, getClass());
+        this.tr = new cz.vutbr.web.csskit.antlr4.CSSTokenRecovery(this, _input, ls, log);
+        this.er = new cz.vutbr.web.csskit.antlr4.CSSExpressionReader(_input, log);
     }
-    
+
     @Override
     public void reset() {
         throw new UnsupportedOperationException();
     }
-    
+
+    /**
+      * Overrides inputStream to avoid setting input
+      * stream after construction
+      */
     @Override
-    public void setCharStream(CharStream input) {
+    public void setInputStream(IntStream input) {
         throw new UnsupportedOperationException();
     }
-    
+    //   anltrv3 old method
+    //    @Override
+    //    public void setCharStream(CharStream input) {
+    //        throw new UnsupportedOperationException();
+    //    }
+
     /**
-     * Overrides next token to match includes and to 
+     * Overrides next token to match includes and to
      * recover from EOF
      */
-	@Override 
+	@Override
     public Token nextToken(){
        Token token = tr.nextToken();
-
        //count non-empty tokens for eventual checking of the style sheet start
        if (token.getType() == S) {
            tokencnt++;
@@ -107,7 +122,6 @@ tokens {
        // Skip first token after switching on another input.
        if(((CommonToken)token).getStartIndex() < 0)
          token = nextToken();
-        
        return token;
     }
 
@@ -121,21 +135,23 @@ tokens {
         return t;
 	}
 
-	@Override
+//	@Override
     public void emitErrorMessage(String msg) {
     	log.info("ANTLR: {}", msg);
     }
-    
+
     /**
      * Does special token recovery for some cases
-     */ 
-    @Override
+     */
+//    @Override
     public void recover(RecognitionException re) {
-        if (!tr.recover())
-            super.recover(re);
+        log.info("ANTLR recover");
+//        if (!tr.recover())
+//            super.recover(re);
     }
+    // CSSLexer.g4 members end
 }
-    
+
 /////////////////////////////////////////////////////////////////////////////////
 // TOKENS //
 /////////////////////////////////////////////////////////////////////////////////
@@ -150,37 +166,41 @@ IDENT
 	;	
 
 CHARSET
-@init {
-	tr.expecting(CHARSET);
-}
-@after {
-	tr.end();
-}
-	
-	: '@charset' S* s=STRING_MACR S* SEMICOLON 
+//@init {
+//	System.out.println("eee");
+//  tr.expecting(CHARSET);
+//}
+//@after {
+//	tr.end();
+//}
+
+	: '@charset' S* STRING_MACR S* SEMICOLON
 	  {
 	    // we have to trim manually
-	    String enc = cz.vutbr.web.csskit.antlr.CSSToken.extractSTRING($s.getText());
-	    //System.err.println("CHARSET"+tokencnt);
+	    System.out.println(getText());
+	    String enc = cz.vutbr.web.csskit.antlr4.CSSToken.extractSTRING(getText());
+	    System.err.println("CHARSET "+tokencnt);
 	    if (tokencnt <= 1) //we are at the beginning of the style sheet
 	    {
-			    try {
-			           log.warn("Changing charset to {}", enc);
-			          ((cz.vutbr.web.csskit.antlr.CSSInputStream) input).setEncoding(enc);
-			          //input = setCharStream(new ANTLFileStream(input.getSourceName(), enc));
-			        }
-			        catch(java.nio.charset.IllegalCharsetNameException icne) {
-			        	log.warn("Could not change to unsupported charset!", icne);
-			        	throw new RuntimeException(new cz.vutbr.web.css.CSSException("Unsupported charset: " + enc));
-			        }
-			        catch (java.io.IOException e) {
+            try {
+                log.warn("Changing charset to {}", enc);
+                ((cz.vutbr.web.csskit.antlr4.CSSInputStream) _input).setEncoding(enc);
+                //input = setCharStream(new ANTLFileStream(input.getSourceName(), enc));
+            }
+            catch(java.nio.charset.IllegalCharsetNameException icne) {
+                log.warn("Could not change to unsupported charset!", icne);
+                throw new RuntimeException(new cz.vutbr.web.css.CSSException("Unsupported charset: " + enc));
+            }
+            catch (java.io.IOException e) {
                 log.warn("Could not change to unsupported charset!", e);
-			        }
-			 }
-			 else
-			      log.warn("Ignoring @charset rule not at the beginning of the style sheet");
+            }
+        }
+        else{
+            log.warn("Ignoring @charset rule not at the beginning of the style sheet");
+        }
 	  }
 	;
+
 
 IMPORT
 	: '@import' 
@@ -232,13 +252,16 @@ CLASSKEYWORD
 
 /** String including 'decorations' */
 STRING
-@init{
-	tr.expecting(STRING);
-}
-@after {
-	tr.end();
-}
+//@init{
+//	tr.expecting(STRING);
+//}
+//@after {
+//	tr.end();
+//}
 	: STRING_MACR
+	;
+UNCLOSED_STRING
+	: UNCLOSED_STRING_MACR
 	;
 
 /** Hash, either color or other */
@@ -334,27 +357,33 @@ LESS
     ;    	
 
 LCURLY
-	: '{'  {ls.curlyNest++;}
+	: '{'
+	{ls.curlyNest++;}
 	;
 
 RCURLY	
-	: '}'  { if(ls.curlyNest>0) ls.curlyNest--;}
+	: '}'
+	{ if(ls.curlyNest>0) ls.curlyNest--;}
 	;
 
 APOS
-	: '\'' { ls.aposOpen=!ls.aposOpen; }
+	: '\''
+	{ ls.aposOpen=!ls.aposOpen; }
 	;
 
 QUOT
-	: '"'  { ls.quotOpen=!ls.quotOpen; }
+	: '"'
+	{ ls.quotOpen=!ls.quotOpen; }
 	;
 	
 LPAREN
-	: '('  {ls.parenNest++; }
+	: '('
+	{ls.parenNest++; }
 	;
 
 RPAREN
-	: ')'  { if(ls.parenNest>0) ls.parenNest--; }
+	: ')'
+	{ if(ls.parenNest>0) ls.parenNest--; }
 	;		
 
 LBRACE
@@ -397,22 +426,26 @@ HAT
 	: '^'
 	;
 
-/** White character */		
+/** White character */
+
 S
 	: W_CHAR+
 	;
 
 COMMENT	
-	: '/*' ( options {greedy=false;} : .)* '*/' { $channel = HIDDEN; }
+//	: '/*' ( options {greedy=false;} : .)* '*/' { $channel = HIDDEN; } //= ANTLRv3
+    : '/*' .*? '*/' -> channel(HIDDEN)  //= ANTLR v4
 	;
 
 SL_COMMENT
-	: '//' ( options {greedy=false;} : .)* ('\n' | '\r' ) { $channel=HIDDEN; }
-	;		
+//	: '//' ( options {greedy=false;} : .)* ('\n' | '\r' ) { $channel=HIDDEN; } //= ANTLRv3
+	: '//' .*? ('\n' | '\r' ) -> channel(HIDDEN) //= ANTLRv4
+	;
 
 /** Expression function */
 EXPRESSION
-  : 'expression(' { er.read(); }
+  : 'expression('
+//  { er.read(); }
   ;
   
 /** Other Function beginning */	
@@ -496,13 +529,17 @@ NUMBER_MACR
   	: ('0'..'9')+ | (('0'..'9')* '.' ('0'..'9')+)
   	;
 
-fragment 
+//fragment - commented due ANTLR4 error  | fragment rule STRING_MACR contains an action or command which can never be executed
 STRING_MACR
-	: QUOT (STRING_CHAR | APOS {ls.aposOpen=false;} )* QUOT 
-	| APOS (STRING_CHAR | QUOT {ls.quotOpen=false;} )* APOS
-  	;
+    : QUOT (STRING_CHAR | APOS {ls.aposOpen=false;} )* QUOT
+    | APOS (STRING_CHAR | QUOT {ls.quotOpen=false;} )* APOS
+    ;
+UNCLOSED_STRING_MACR
+    : QUOT (STRING_CHAR | APOS {ls.aposOpen=false;} )*
+    | APOS (STRING_CHAR | QUOT {ls.quotOpen=false;} )*
+    ;
 
-fragment
+//fragment
 STRING_CHAR
 	:  (URI_CHAR | ' ' | '(' | ')' | ('\\' NL_CHAR))
 	;
