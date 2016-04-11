@@ -1,14 +1,8 @@
-package cz.vutbr.web.csskit.antlr;
+package cz.vutbr.web.csskit.antlr4;
 
-import org.antlr.runtime.BitSet;
-import org.antlr.runtime.Parser;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.RecognizerSharedState;
-import org.antlr.runtime.Token;
-import org.antlr.runtime.TokenStream;
+import org.antlr.runtime.*;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.TreeAdaptor;
-
 import org.slf4j.Logger;
 
 public class CSSTreeNodeRecovery {
@@ -20,10 +14,10 @@ public class CSSTreeNodeRecovery {
 	private final Logger log;
 	
 	public CSSTreeNodeRecovery(Parser parser,
-	                           TokenStream input,
-	                           RecognizerSharedState state,
-	                           TreeAdaptor adaptor,
-	                           Logger log) {
+							   TokenStream input,
+							   RecognizerSharedState state,
+							   TreeAdaptor adaptor,
+							   Logger log) {
 		this.parser = parser;
 		this.input = input;
 		this.state = state;

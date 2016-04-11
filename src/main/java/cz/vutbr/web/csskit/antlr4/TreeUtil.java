@@ -1,4 +1,4 @@
-package cz.vutbr.web.csskit.antlr;
+package cz.vutbr.web.csskit.antlr4;
 
 import org.antlr.runtime.tree.CommonTree;
 
