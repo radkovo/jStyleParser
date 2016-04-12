@@ -338,6 +338,11 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void exitDeclaration(CSSParser.DeclarationContext ctx) {
+        if (ctx.terms() != null) {
+//            log.debug("Totally added {} terms", terms_stack.peek().list.size());
+            tmpDeclarationScope.d.replaceAll(tmpTermList);
+
+        }
         if (!tmpDeclarationScope.invalid) {
             log.debug("Returning declaration: {}.", tmpDeclarationScope.d);
             tmpDeclarations.add(tmpDeclarationScope.d);
@@ -396,9 +401,8 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void exitTerms(CSSParser.TermsContext ctx) {
-        log.debug("Totally added {} terms", terms_stack.peek().list.size());
         tmpTermList = terms_stack.peek().list;
-        tmpDeclarationScope.d.replaceAll(terms_stack.peek().list);
+        log.debug("Totally added {} terms", tmpTermList.size());
         terms_stack.pop();
         logLeave("terms");
     }
@@ -460,13 +464,16 @@ public class CSSParserListenerImpl implements CSSParserListener {
                 }
             } else {
                 TermFunction function = tf.createFunction();
-                log.debug("function name to " + fname);
+                //log.debug("function name to " + fname);
                 function.setFunctionName(fname);
                 if (terms_stack.peek().unary == -1) //if started with minus, add the minus to the function name
                     function.setFunctionName('-' + function.getFunctionName());
-                if (tmpTermList != null)
+                if (tmpTermList != null) {
+                  //  log.debug("setting function value to : {}", tmpTermList);
                     function.setValue(tmpTermList);
+                }
                 terms_stack.peek().term = function;
+                log.debug("Setting function: {}", function.toString());
 
             }
             //function
@@ -537,20 +544,19 @@ public class CSSParserListenerImpl implements CSSParserListener {
         }
 
         //save valuepartr to termslist
-        if (/*!declartionstack.invalid && */ terms_stack.peek().term != null) {
-            log.debug("adding valuepart " + ctx.getText());
+        if (!tmpDeclarationScope.invalid && terms_stack.peek().term != null) {
+            log.debug("adding valuepart " + terms_stack.peek().term);
             //set operator and add term to term list
             terms_stack.peek().term.setOperator(terms_stack.peek().op);
             terms_stack.peek().list.add(terms_stack.peek().term);
-            tmpTermList.add(terms_stack.peek().term);
             //reinitialization
             terms_stack.peek().op = Term.Operator.SPACE;
             terms_stack.peek().unary = 1;
             terms_stack.peek().dash = false;
+            terms_stack.peek().term = null;
         } else {
             log.debug("tmpTermScope.term is null");
         }
-        terms_stack.peek().term = null;
         logLeave("valuePart");
     }
 
@@ -943,6 +949,8 @@ public class CSSParserListenerImpl implements CSSParserListener {
         } else if (ctx.VIEWPORT() != null) {
 
         } else if (ctx.FONTFACE() != null) {
+            tmpAtStatementOrRuleSetScope.stm = preparator.prepareRuleFontFace(tmpDeclarations);
+            this.preventImports = true;
 
         } else if (ctx.MEDIA() != null) {
             log.debug("exitAtstatement MEDIA");
