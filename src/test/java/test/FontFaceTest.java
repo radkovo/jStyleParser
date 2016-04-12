@@ -24,7 +24,13 @@ public class FontFaceTest {
                     "  font-family: 'MyWebFont';\n" +
                     "  src: url('myfont.woff2') format('woff2');\n" +
                     "}";
-
+    public static final String TEST_STRING2 =
+            "@font-face {\n" +
+                    "  font-family: 'MyWebFont';\n" +
+                    "  src: url('myfont.woff2') format('woff2'),\n" +
+                    "       url('myfont.woff') format('woff'),\n" +
+                    "       url('myfont.ttf') format('truetype');\n" +
+                    "}";
 
     @BeforeClass
     public static void init() {
@@ -45,6 +51,24 @@ public class FontFaceTest {
         assertEquals("Rule contains 2 declarations ", 2, rule.size());
         assertEquals("Rule contains font-family declaration", "font-family: 'MyWebFont';\n", rule.get(0).toString());
         assertEquals("Rule contains scr declaration", "src: url('myfont.woff2') format('woff2');\n", rule.get(1).toString());
+
+    }
+
+    @Test
+    public void testFFMultiSrc() throws IOException, CSSException {
+        log.info("input:\n\n\n" + TEST_STRING2 + "\n\n\n");
+        StyleSheet ss;
+
+        ss = CSSFactory.parseString(TEST_STRING2, null);
+
+        assertEquals("One rule is set", 1, ss.size());
+
+        RuleFontFace rule = (RuleFontFace) ss.get(0);
+        assertEquals("Rule contains 2 declarations ", 2, rule.size());
+        assertEquals("Rule contains font-family declaration", "font-family: 'MyWebFont';\n", rule.get(0).toString());
+        assertEquals("Rule contains scr declaration",
+                "src: url('myfont.woff2') format('woff2'), url('myfont.woff') format('woff'), url('myfont.ttf') format('truetype');\n",
+                rule.get(1).toString());
 
     }
 
