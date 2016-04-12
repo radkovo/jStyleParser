@@ -947,6 +947,8 @@ public class CSSParserListenerImpl implements CSSParserListener {
         } else if (ctx.page() != null) {
 
         } else if (ctx.VIEWPORT() != null) {
+            tmpAtStatementOrRuleSetScope.stm = preparator.prepareRuleViewport(tmpDeclarations);
+            this.preventImports = true;
 
         } else if (ctx.FONTFACE() != null) {
             tmpAtStatementOrRuleSetScope.stm = preparator.prepareRuleFontFace(tmpDeclarations);
