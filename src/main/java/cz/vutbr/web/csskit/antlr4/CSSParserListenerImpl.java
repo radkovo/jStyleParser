@@ -624,7 +624,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void exitSelectorWithIdOrAsterisk(CSSParser.SelectorWithIdOrAsteriskContext ctx) {
-        exitSelector(ctx);
+        exitSelector();
     }
 
     @Override
@@ -634,7 +634,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void exitSelectorWithoutIdOrAsterisk(CSSParser.SelectorWithoutIdOrAsteriskContext ctx) {
-        exitSelector(ctx);
+        exitSelector();
     }
 
     // on every enterSelector submethod
@@ -647,8 +647,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     }
 
     // on every exitSelecotr submethod
-    private void exitSelector(CSSParser.SelectorContext ctx) {
-
+    private void exitSelector() {
         tmpCombinedSelector.add(tmpSelector);
     }
 
@@ -826,9 +825,6 @@ public class CSSParserListenerImpl implements CSSParserListener {
         if (tmpPseudo != null) {
             log.debug("Setting pseudo: {}", tmpPseudo.toString());
             tmpSelector.add(tmpPseudo);
-        } else {
-            //tmpDeclarationScope == null
-//            tmpDeclarationScope.invalid = true;
         }
     }
 
