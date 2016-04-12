@@ -32,6 +32,21 @@ public class FontFaceTest {
                     "       url('myfont.ttf') format('truetype');\n" +
                     "}";
 
+    public static final String TEST_STRING3 =
+            "@font-face {\n" +
+                    "  font-family: 'MyWebFont';\n" +
+                    "  src: url('webfont.eot'); /* IE9 Compat Modes */\n" +
+                    "  src: url('webfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */\n" +
+                    "       url('webfont.woff2') format('woff2'), /* Super Modern Browsers */\n" +
+                    "       url('webfont.woff') format('woff'), /* Pretty Modern Browsers */\n" +
+                    "       url('webfont.ttf')  format('truetype'), /* Safari, Android, iOS */\n" +
+                    "       url('webfont.svg#svgFontName') format('svg'); /* Legacy iOS */\n" +
+                    "}\n" +
+                    "" +
+                    "body {\n" +
+                    "  font-family: 'MyWebFont', Fallback, sans-serif;\n" +
+                    "}";
+
     @BeforeClass
     public static void init() {
         log.info("\n\n\n == FontFaceTest test at {} == \n\n\n", new Date());
@@ -72,4 +87,22 @@ public class FontFaceTest {
 
     }
 
+    @Test
+    public void testFFMultiSrc2() throws IOException, CSSException {
+
+        log.info("input:\n\n\n" + TEST_STRING3 + "\n\n\n");
+        StyleSheet ss;
+
+        ss = CSSFactory.parseString(TEST_STRING3, null);
+
+        assertEquals("Two rules are set", 2, ss.size());
+
+        RuleFontFace rule = (RuleFontFace) ss.get(0);
+        assertEquals("Rule contains 3 declarations ", 3, rule.size());
+        assertEquals("Rule contains font-family declaration", "font-family: 'MyWebFont';\n", rule.get(0).toString());
+//        assertEquals("Rule contains scr declaration",
+//                "src: url('myfont.woff2') format('woff2'), url('myfont.woff') format('woff'), url('myfont.ttf') format('truetype');\n",
+//                rule.get(1).toString());
+
+    }
 }
