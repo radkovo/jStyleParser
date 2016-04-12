@@ -20,10 +20,12 @@ public class CSSParserListenerImpl implements CSSParserListener {
     private RuleFactory rf = CSSFactory.getRuleFactory();
     private TermFactory tf = CSSFactory.getTermFactory();
 
+    private enum MediaQueryState {START, TYPE, AND, EXPR, TYPEOREXPR}
+
     // structures after parsing
-    private List<String> importPaths;
-    private List<List<MediaQuery>> importMedia;
-    private RuleList rules;
+    private List<String> importPaths = new ArrayList<>();
+    private List<List<MediaQuery>> importMedia = new ArrayList<>();
+    private RuleList rules = new RuleArrayList();
 
     // block preparator
     private Preparator preparator;
@@ -33,7 +35,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     private boolean preventImports = false;
 
     //logger
-    private org.slf4j.Logger log;
+    private org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(getClass());
 
 
     //temp variables for construction
@@ -48,16 +50,8 @@ public class CSSParserListenerImpl implements CSSParserListener {
     private List<RuleMargin> tmpMargins;
     private RuleMargin tmpMarginRule;
 
-    //    TermsScope tmpTermScope;
-    private static class terms_scope {
-        List<cz.vutbr.web.css.Term<?>> list;
-        cz.vutbr.web.css.Term<?> term;
-        cz.vutbr.web.css.Term.Operator op;
-        int unary;
-        boolean dash;
-    }
 
-    private Stack<terms_scope> terms_stack = new Stack<terms_scope>();
+    private Stack<terms_scope> terms_stack = new Stack<>();
     private List<cz.vutbr.web.css.Term<?>> tmpTermList;
 
     private Boolean stmtIsValid = false;
@@ -67,27 +61,125 @@ public class CSSParserListenerImpl implements CSSParserListener {
     private MediaExpression tmpMediaExpression = null;
     private boolean isInlineStyle = false;
 
+    private static class terms_scope {
+        List<Term<?>> list;
+        Term<?> term;
+        Term.Operator op;
+        int unary;
+        boolean dash;
+    }
+
+    private static class mediaquery_scope {
+        cz.vutbr.web.css.MediaQuery q;
+        MediaQueryState state;
+        boolean invalid;
+    }
+
+    private String extractTextUnescaped(String text) {
+        return unescapeString(text);
+    }
+
+    /**
+     * check if string is valid ID
+     *
+     * @param id ID to validate and unescapes
+     * @return unescaped id or null
+     */
+    private String extractIdUnescaped(String id) {
+        if (!id.isEmpty() && !Character.isDigit(id.charAt(0))) {
+            return org.unbescape.css.CssEscape.unescapeCss(id);
+        }
+        return null;
+    }
+
+    private String unescapeString(String text) {
+        return org.unbescape.css.CssEscape.unescapeCss(text);
+    }
+
+    private Declaration.Source extractSource(CSSToken ct) {
+        return new Declaration.Source(ct.getBase(), ct.getLine(), ct.getCharPositionInLine());
+    }
+
+    private URL extractBase(TerminalNode node) {
+        CSSToken ct = (CSSToken) node.getSymbol();
+        return ct.getBase();
+    }
+
+    private static class declaration_scope {
+        cz.vutbr.web.css.Declaration d;
+        boolean invalid;
+    }
+
+    private declaration_scope getDeclarationScopeAndInit() {
+        declaration_scope tmp = new declaration_scope();
+        tmp.d = rf.createDeclaration();
+        tmp.invalid = false;
+        tmp.d.unlock();
+        return tmp;
+    }
+
+    private static class atstatement_scope {
+        cz.vutbr.web.css.RuleBlock<?> stm;
+    }
+
+    /**
+     * remove terminal node emtpy tokens from input list
+     *
+     * @param inputArrayList original list
+     * @return list without terminal node type = S (space)
+     */
+    private List<ParseTree> filterSpaceTokens(List<ParseTree> inputArrayList) {
+        return inputArrayList.stream().filter(
+                item -> (
+                        !(item instanceof TerminalNode) ||
+                                ((TerminalNodeImpl) item).getSymbol().getType() != CSSLexer.S
+                )
+        ).collect(Collectors.toList());
+    }
+
+    /**
+     * check if rule context contains error node
+     *
+     * @param ctx rule context
+     * @return contains context error node
+     */
+    private boolean ctxHasErrorNode(ParserRuleContext ctx) {
+        for (int i = 0; i < ctx.children.size(); i++) {
+            if (ctx.getChild(i) instanceof ErrorNode) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     // list of context childern without spaces modified on enterEveryRule generated from ctx.childern
     private List childernWithoutSpaces;
 
+    /**
+     * Constructor
+     *
+     * @param preparator The preparator to be used for creating the rules.
+     * @param wrapMedia  The media queries to be used for wrapping the created rules (e.g. in case
+     *                   of parsing and imported style sheet) or null when no wrapping is required.
+     */
     public CSSParserListenerImpl(Preparator preparator, List<MediaQuery> wrapMedia) {
         this.preparator = preparator;
         this.wrapMedia = wrapMedia;
-        this.importPaths = new ArrayList<>();
-        this.importMedia = new ArrayList<>();
-        this.rules = new RuleArrayList();
-        this.log = org.slf4j.LoggerFactory.getLogger(getClass());
     }
 
     //used in parseMediaQuery
     public CSSParserListenerImpl() {
-        this.log = org.slf4j.LoggerFactory.getLogger(getClass());
     }
 
     //counter of spaces for pretty debug printing
     private int spacesCounter = 0;
 
+    /**
+     * generate spaces for pretty debug printing
+     *
+     * @param count number of generated spaces
+     * @return string with spaces
+     */
     private String generateSpaces(int count) {
         String spaces = "";
         for (int i = 0; i < count; i++) {
@@ -96,10 +188,20 @@ public class CSSParserListenerImpl implements CSSParserListener {
         return spaces;
     }
 
+    /**
+     * get parsed rulelist
+     *
+     * @return parsed rules
+     */
     public RuleList getRules() {
         return rules;
     }
 
+    /**
+     * get mediaquery list
+     *
+     * @return media query list
+     */
     public List<MediaQuery> getMedia() {
         return mediaQueryList;
     }
@@ -131,8 +233,8 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void exitInlinestyle(CSSParser.InlinestyleContext ctx) {
-//        logLeave("inlinestyle"  +ctx.getText());
-        log.info("EXITING INLINESTYLE ----------------------------------");
+        logLeave("inlinestyle: " + ctx.getText());
+        log.trace("EXITING INLINESTYLE ----------------------------------");
         isInlineStyle = false;
         tmpDeclarations = null;
     }
@@ -147,7 +249,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     public void exitStylesheet(CSSParser.StylesheetContext ctx) {
         log.debug("\n***\n{}\n***\n", rules);
         logLeave("stylesheet");
-        log.info("EXITING STYLESHEET ----------------------------------");
+        log.trace("EXITING STYLESHEET ----------------------------------");
     }
 
     @Override
@@ -167,9 +269,8 @@ public class CSSParserListenerImpl implements CSSParserListener {
                         log.debug("exitStatement |ADDING statement {}", rule);
                         rules.add(rule);
                     } else {
-                        log.debug("exitStatement |ommited statement :{}", rule);
+                        log.debug("exitStatement |ommited null statement ");
                     }
-
                 }
             } else {
                 log.debug("exitStatement | statement is not valid, so not adding it");
@@ -279,14 +380,6 @@ public class CSSParserListenerImpl implements CSSParserListener {
     @Override
     public void exitProperty(CSSParser.PropertyContext ctx) {
         //done - empty stuff
-    }
-
-    protected static class TermsScope {
-        List<Term<?>> list;
-        Term<?> term;
-        Term.Operator op;
-        int unary;
-        boolean dash;
     }
 
     @Override
@@ -544,7 +637,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
         exitSelector(ctx);
     }
 
-    // on every enterSelecotr submethod
+    // on every enterSelector submethod
     private void enterSelector() {
         logEnter("selector");
         tmpSelector = (Selector) rf.createSelector().unlock();
@@ -737,15 +830,6 @@ public class CSSParserListenerImpl implements CSSParserListener {
             //tmpDeclarationScope == null
 //            tmpDeclarationScope.invalid = true;
         }
-    }
-
-    private boolean ctxHasErrorNode(ParserRuleContext ctx) {
-        for (int i = 0; i < ctx.children.size(); i++) {
-            if (ctx.getChild(i) instanceof ErrorNode) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -957,13 +1041,6 @@ public class CSSParserListenerImpl implements CSSParserListener {
     public void exitInlineset(CSSParser.InlinesetContext ctx) {
     }
 
-    private enum MediaQueryState {START, TYPE, AND, EXPR, TYPEOREXPR}
-
-    private static class mediaquery_scope {
-        cz.vutbr.web.css.MediaQuery q;
-        MediaQueryState state;
-        boolean invalid;
-    }
 
     @Override
     public void enterMedia(CSSParser.MediaContext ctx) {
@@ -1100,11 +1177,12 @@ public class CSSParserListenerImpl implements CSSParserListener {
     @Override
     public void enterUnknown_atrule(CSSParser.Unknown_atruleContext ctx) {
         logEnter("unknown_atrule: " + ctx.getText());
+        //done in exitAtstatement
     }
 
     @Override
     public void exitUnknown_atrule(CSSParser.Unknown_atruleContext ctx) {
-
+        //empty
     }
 
     @Override
@@ -1129,68 +1207,6 @@ public class CSSParserListenerImpl implements CSSParserListener {
     @Override
     public void exitEveryRule(ParserRuleContext parserRuleContext) {
         spacesCounter -= 2;
-    }
-
-    private String extractTextUnescaped(String text) {
-        return unescapeString(text);
-    }
-
-    /**
-     * check if string is valid ID
-     *
-     * @param id ID to validate and unescapes
-     * @return unescaped id or null
-     */
-    private String extractIdUnescaped(String id) {
-        if (!id.isEmpty() && !Character.isDigit(id.charAt(0))) {
-            return org.unbescape.css.CssEscape.unescapeCss(id);
-        }
-        return null;
-    }
-
-    private String unescapeString(String text) {
-        return org.unbescape.css.CssEscape.unescapeCss(text);
-    }
-
-    private Declaration.Source extractSource(CSSToken ct) {
-        return new Declaration.Source(ct.getBase(), ct.getLine(), ct.getCharPositionInLine());
-    }
-
-    private URL extractBase(TerminalNode node) {
-        CSSToken ct = (CSSToken) node.getSymbol();
-        return ct.getBase();
-    }
-
-    private static class declaration_scope {
-        cz.vutbr.web.css.Declaration d;
-        boolean invalid;
-    }
-
-    private declaration_scope getDeclarationScopeAndInit() {
-        declaration_scope tmp = new declaration_scope();
-        tmp.d = rf.createDeclaration();
-        tmp.invalid = false;
-        tmp.d.unlock();
-        return tmp;
-    }
-
-    private static class atstatement_scope {
-        cz.vutbr.web.css.RuleBlock<?> stm;
-    }
-
-    /**
-     * remove terminal node emtpy tokens from input list
-     *
-     * @param inputArrayList original list
-     * @return list without terminal node type = S (space)
-     */
-    private List<ParseTree> filterSpaceTokens(List<ParseTree> inputArrayList) {
-        return inputArrayList.stream().filter(
-                item -> (
-                        !(item instanceof TerminalNode) ||
-                                ((TerminalNodeImpl) item).getSymbol().getType() != CSSLexer.S
-                )
-        ).collect(Collectors.toList());
     }
 
 }
