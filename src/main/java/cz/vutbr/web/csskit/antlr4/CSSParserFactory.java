@@ -18,7 +18,7 @@ import java.util.List;
  * @author sedlakr
  */
 public class CSSParserFactory {
-    private static final Logger log = LoggerFactory.getLogger(CSSParserFactoryOld.class);
+    private static final Logger log = LoggerFactory.getLogger(CSSParserFactory.class);
 
     /**
      * Source types.
