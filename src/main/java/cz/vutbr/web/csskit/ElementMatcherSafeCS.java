@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import cz.vutbr.web.css.ElementMatcher;
-import cz.vutbr.web.css.Selector;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import cz.vutbr.web.css.ElementMatcher;
+import cz.vutbr.web.css.Selector;
 
 /**
  * A case-sensitive matcher that corresponds to the XHTML mode matching. 

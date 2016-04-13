@@ -1,5 +1,6 @@
 package cz.vutbr.web.csskit;
 
+import cz.vutbr.web.css.CSSNodeVisitor;
 import cz.vutbr.web.css.Term;
 
 /**
@@ -11,6 +12,22 @@ public class TermImpl<T> implements Term<T> {
 
 	protected T value;
 	protected Operator operator = null;
+	
+	/**
+	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+	 * 
+	 * TermImpl requires this method since because of inheritance although it should not be called.
+	 * 
+	 * @param visitor
+	 * 	The visitor interface
+	 * @return
+	 * 	The current CSS Object
+	 */
+	@Override
+	public Object accept(CSSNodeVisitor visitor) {
+		new AssertionError("A TermImpl can not be visited.");
+		return null;
+	}
 
 	protected TermImpl() {
 	}

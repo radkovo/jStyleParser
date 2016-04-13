@@ -8,12 +8,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.CSSNodeVisitor;
 import cz.vutbr.web.css.CombinedSelector;
+import cz.vutbr.web.css.CombinedSelector.Specificity;
+import cz.vutbr.web.css.CombinedSelector.Specificity.Level;
 import cz.vutbr.web.css.ElementMatcher;
 import cz.vutbr.web.css.MatchCondition;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.CombinedSelector.Specificity;
-import cz.vutbr.web.css.CombinedSelector.Specificity.Level;
 
 /**
  * Encapsulates one selector for CSS declaration.
@@ -32,6 +33,19 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 	 */
 	public Combinator getCombinator() {
 		return combinator;
+	}
+	
+	/**
+	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+	 * 
+	 * @param visitor
+	 * 	The visitor interface
+	 * @return
+	 * 	The current CSS Object
+	 */
+	@Override
+	public Object accept(CSSNodeVisitor visitor) {
+		return visitor.visit(this);
 	}
 
 	/**
@@ -189,6 +203,19 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     		setName(name);
     	}
     	
+    	/**
+    	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+    	 * 
+    	 * @param visitor
+    	 * 	The visitor interface
+    	 * @return
+    	 * 	The current CSS Object
+    	 */
+    	@Override
+    	public Object accept(CSSNodeVisitor visitor) {
+    		return visitor.visit(this);
+    	}
+    	
 		public void computeSpecificity(CombinedSelector.Specificity spec) {
 			if(!WILDCARD.equals(name))
 				spec.add(Level.D);
@@ -260,6 +287,19 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	
     	protected ElementClassImpl(String className) {
     		setClassName(className);
+    	}
+    	
+    	/**
+    	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+    	 * 
+    	 * @param visitor
+    	 * 	The visitor interface
+    	 * @return
+    	 * 	The current CSS Object
+    	 */
+    	@Override
+    	public Object accept(CSSNodeVisitor visitor) {
+    		return visitor.visit(this);
     	}
     	
     	public void computeSpecificity(Specificity spec) {
@@ -358,6 +398,19 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
             PSEUDO_DECLARATIONS.put("before", PseudoDeclaration.BEFORE);
             PSEUDO_DECLARATIONS.put("after", PseudoDeclaration.AFTER);
         }
+        
+        /**
+    	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+    	 * 
+    	 * @param visitor
+    	 * 	The visitor interface
+    	 * @return
+    	 * 	The current CSS Object
+    	 */
+    	@Override
+    	public Object accept(CSSNodeVisitor visitor) {
+    		return visitor.visit(this);
+    	}
         
     	private String functionName;
     	private String value;
@@ -753,6 +806,19 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     		setID(value);
     	}
     	
+    	/**
+    	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+    	 * 
+    	 * @param visitor
+    	 * 	The visitor interface
+    	 * @return
+    	 * 	The current CSS Object
+    	 */
+    	@Override
+    	public Object accept(CSSNodeVisitor visitor) {
+    		return visitor.visit(this);
+    	}
+    	
     	public void computeSpecificity(Specificity spec) {
     		spec.add(Level.B);
 		}    	
@@ -831,6 +897,19 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     		this.operator = operator;
     		this.attribute = attribute;
     		setValue(value);
+    	}
+    	
+    	/**
+    	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+    	 * 
+    	 * @param visitor
+    	 * 	The visitor interface
+    	 * @return
+    	 * 	The current CSS Object
+    	 */
+    	@Override
+    	public Object accept(CSSNodeVisitor visitor) {
+    		return visitor.visit(this);
     	}
     	
     	/**
@@ -965,6 +1044,19 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	protected ElementDOMImpl(Element e, boolean inlinePriority) {
     		this.elem = e;
     		this.inlinePriority = inlinePriority;
+    	}
+    	
+    	/**
+    	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+    	 * 
+    	 * @param visitor
+    	 * 	The visitor interface
+    	 * @return
+    	 * 	The current CSS Object
+    	 */
+    	@Override
+    	public Object accept(CSSNodeVisitor visitor) {
+    		return visitor.visit(this);
     	}
 
 		public Element getElement() {

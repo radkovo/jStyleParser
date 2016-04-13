@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import cz.vutbr.web.css.CSSNodeVisitor;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermList;
 
@@ -19,6 +20,19 @@ public class TermListImpl extends AbstractList<Term<?>> implements TermList {
 	
 	protected TermListImpl(int initialSize) {
 		this.value = new ArrayList<Term<?>>(initialSize);
+	}
+	
+	/**
+	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+	 * 
+	 * @param visitor
+	 * 	The visitor interface
+	 * @return
+	 * 	The current CSS Object
+	 */
+	@Override
+	public Object accept(CSSNodeVisitor visitor) {
+		return visitor.visit(this);
 	}
 	
 	/**

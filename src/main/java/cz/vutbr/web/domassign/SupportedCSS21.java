@@ -12,11 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
-import cz.vutbr.web.css.CSSProperty.Height;
-import cz.vutbr.web.css.SupportedCSS;
-import cz.vutbr.web.css.Term;
-import cz.vutbr.web.css.TermFactory;
-import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.CSSProperty.Azimuth;
 import cz.vutbr.web.css.CSSProperty.Background;
 import cz.vutbr.web.css.CSSProperty.BackgroundAttachment;
@@ -50,6 +45,7 @@ import cz.vutbr.web.css.CSSProperty.FontSize;
 import cz.vutbr.web.css.CSSProperty.FontStyle;
 import cz.vutbr.web.css.CSSProperty.FontVariant;
 import cz.vutbr.web.css.CSSProperty.FontWeight;
+import cz.vutbr.web.css.CSSProperty.Height;
 import cz.vutbr.web.css.CSSProperty.Left;
 import cz.vutbr.web.css.CSSProperty.LetterSpacing;
 import cz.vutbr.web.css.CSSProperty.LineHeight;
@@ -101,6 +97,10 @@ import cz.vutbr.web.css.CSSProperty.Widows;
 import cz.vutbr.web.css.CSSProperty.Width;
 import cz.vutbr.web.css.CSSProperty.WordSpacing;
 import cz.vutbr.web.css.CSSProperty.ZIndex;
+import cz.vutbr.web.css.SupportedCSS;
+import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermList;
 
 /**
  * Contains default values for properties supported by parser (CSS 2.1)

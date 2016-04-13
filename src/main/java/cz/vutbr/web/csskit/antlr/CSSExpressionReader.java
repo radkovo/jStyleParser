@@ -2,7 +2,6 @@ package cz.vutbr.web.csskit.antlr;
 
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.Token;
-
 import org.slf4j.Logger;
 
 public class CSSExpressionReader {

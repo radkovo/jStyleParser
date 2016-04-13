@@ -35,5 +35,15 @@ public interface Rule<T> extends List<T> {
 	 * @return Underlying collection
 	 */
 	List<T> asList();
+	
+	/**
+	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+	 * 
+	 * @param visitor
+	 * 	The visitor interface
+	 * @return
+	 * 	The current CSS Object
+	 */
+	public Object accept(CSSNodeVisitor visitor);
     
 }

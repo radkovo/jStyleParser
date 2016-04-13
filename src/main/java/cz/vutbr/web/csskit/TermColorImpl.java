@@ -2,6 +2,7 @@ package cz.vutbr.web.csskit;
 
 import java.awt.Color;
 
+import cz.vutbr.web.css.CSSNodeVisitor;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFunction;
@@ -36,6 +37,19 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
     protected TermColorImpl(int r, int g, int b, int a) {
         value = new Color(r, g, b, a);
     }
+    
+    /**
+	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+	 * 
+	 * @param visitor
+	 * 	The visitor interface
+	 * @return
+	 * 	The current CSS Object
+	 */
+	@Override
+	public Object accept(CSSNodeVisitor visitor) {
+		return visitor.visit(this);
+	}
     
     @Override
     public String toString() {

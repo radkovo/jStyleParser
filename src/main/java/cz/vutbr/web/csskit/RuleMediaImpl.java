@@ -3,6 +3,7 @@ package cz.vutbr.web.csskit;
 import java.util.Collections;
 import java.util.List;
 
+import cz.vutbr.web.css.CSSNodeVisitor;
 import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RuleSet;
@@ -26,6 +27,19 @@ public class RuleMediaImpl extends AbstractRuleBlock<RuleSet> implements RuleMed
 	protected RuleMediaImpl() {
 		this.media = Collections.emptyList();
 	}    
+	
+	/**
+	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+	 * 
+	 * @param visitor
+	 * 	The visitor interface
+	 * @return
+	 * 	The current CSS Object
+	 */
+	@Override
+	public Object accept(CSSNodeVisitor visitor) {
+		return visitor.visit(this);
+	}
     
 	@Override
 	public List<MediaQuery> getMediaQueries() {

@@ -179,6 +179,16 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     public interface SelectorPart { 	
     	public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond);
     	public void computeSpecificity(CombinedSelector.Specificity spec);
+    	
+    	/**
+    	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+    	 * 
+    	 * @param visitor
+    	 * 	The visitor interface
+    	 * @return
+    	 * 	The current CSS Object
+    	 */
+    	public Object accept(CSSNodeVisitor visitor);
     }
     
     /**

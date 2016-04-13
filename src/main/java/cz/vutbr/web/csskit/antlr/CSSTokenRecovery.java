@@ -9,7 +9,6 @@ import org.antlr.runtime.NoViableAltException;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.Token;
-
 import org.slf4j.Logger;
 
 public class CSSTokenRecovery {

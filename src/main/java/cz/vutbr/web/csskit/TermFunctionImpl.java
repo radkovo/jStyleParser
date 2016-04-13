@@ -2,6 +2,7 @@ package cz.vutbr.web.csskit;
 
 import org.unbescape.css.CssEscape;
 
+import cz.vutbr.web.css.CSSNodeVisitor;
 import cz.vutbr.web.css.TermFunction;
 
 /**
@@ -17,6 +18,19 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
 	
     protected TermFunctionImpl() {    	
     }
+    
+    /**
+	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+	 * 
+	 * @param visitor
+	 * 	The visitor interface
+	 * @return
+	 * 	The current CSS Object
+	 */
+	@Override
+	public Object accept(CSSNodeVisitor visitor) {
+		return visitor.visit(this);
+	}
     
     
     /**

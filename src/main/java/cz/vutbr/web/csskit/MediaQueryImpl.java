@@ -9,6 +9,7 @@ import java.util.Locale;
 
 import org.unbescape.css.CssEscape;
 
+import cz.vutbr.web.css.CSSNodeVisitor;
 import cz.vutbr.web.css.MediaExpression;
 import cz.vutbr.web.css.MediaQuery;
 
@@ -20,6 +21,19 @@ public class MediaQueryImpl extends AbstractRule<MediaExpression> implements Med
 {
     protected boolean negative;
     protected String type;
+    
+    /**
+	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+	 * 
+	 * @param visitor
+	 * 	The visitor interface
+	 * @return
+	 * 	The current CSS Object
+	 */
+	@Override
+	public Object accept(CSSNodeVisitor visitor) {
+		return visitor.visit(this);
+	}
 
     public MediaQueryImpl()
     {

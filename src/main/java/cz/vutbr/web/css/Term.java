@@ -67,4 +67,14 @@ public interface Term<T> extends Cloneable {
     public Term<T> setOperator(Operator operator);
 
     public Term<T> shallowClone();
+    
+    /**
+	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+	 * 
+	 * @param visitor
+	 * 	The visitor interface
+	 * @return
+	 * 	The current CSS Object
+	 */
+	public Object accept(CSSNodeVisitor visitor);
 }

@@ -1,5 +1,6 @@
 package cz.vutbr.web.csskit;
 
+import cz.vutbr.web.css.CSSNodeVisitor;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.Term;
 
@@ -30,6 +31,19 @@ public class DeclarationImpl extends AbstractRule<Term<?>> implements Declaratio
 		this.important = clone.isImportant();
 		this.source = new Source(clone.getSource());
 		this.replaceAll(clone.asList());
+	}
+	
+	/**
+	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+	 * 
+	 * @param visitor
+	 * 	The visitor interface
+	 * @return
+	 * 	The current CSS Object
+	 */
+	@Override
+	public Object accept(CSSNodeVisitor visitor) {
+		return visitor.visit(this);
 	}
 
 	/**

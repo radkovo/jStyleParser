@@ -9,6 +9,7 @@ import java.util.Locale;
 
 import org.unbescape.css.CssEscape;
 
+import cz.vutbr.web.css.CSSNodeVisitor;
 import cz.vutbr.web.css.MediaExpression;
 import cz.vutbr.web.css.Term;
 
@@ -19,6 +20,19 @@ import cz.vutbr.web.css.Term;
 public class MediaExpressionImpl extends AbstractRule<Term<?>> implements MediaExpression
 {
     protected String feature;
+    
+    /**
+	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+	 * 
+	 * @param visitor
+	 * 	The visitor interface
+	 * @return
+	 * 	The current CSS Object
+	 */
+	@Override
+	public Object accept(CSSNodeVisitor visitor) {
+		return visitor.visit(this);
+	}
 
     @Override
     public String getFeature()

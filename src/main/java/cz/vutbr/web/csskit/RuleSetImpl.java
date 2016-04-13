@@ -2,9 +2,10 @@ package cz.vutbr.web.csskit;
 
 import java.util.List;
 
+import cz.vutbr.web.css.CSSNodeVisitor;
+import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleSet;
-import cz.vutbr.web.css.CombinedSelector;
 
 /**
  * Basic holder of declarations with CSS selectors
@@ -23,6 +24,20 @@ public class RuleSetImpl extends AbstractRuleBlock<Declaration> implements RuleS
 	public RuleSetImpl(CombinedSelector[] selectors) {
 		super();
 		this.selectors = selectors;
+	}
+	
+	
+	/**
+	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+	 * 
+	 * @param visitor
+	 * 	The visitor interface
+	 * @return
+	 * 	The current CSS Object
+	 */
+	@Override
+	public Object accept(CSSNodeVisitor visitor) {
+		return visitor.visit(this);
 	}
 	
 	/**
