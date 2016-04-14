@@ -25,7 +25,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     // structures after parsing
     private List<String> importPaths = new ArrayList<>();
     private List<List<MediaQuery>> importMedia = new ArrayList<>();
-    private RuleList rules = new RuleArrayList();
+    private RuleList rules;
 
     // block preparator
     private Preparator preparator;
@@ -229,6 +229,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     public void enterInlinestyle(CSSParser.InlinestyleContext ctx) {
         logEnter("inlinestyle: " + ctx.getText());
         isInlineStyle = true;
+        rules = new RuleArrayList();
     }
 
     @Override
@@ -242,7 +243,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     @Override
     public void enterStylesheet(CSSParser.StylesheetContext ctx) {
         logEnter("stylesheet: " + ctx.getText());
-
+        rules = new RuleArrayList();
     }
 
     @Override
