@@ -276,9 +276,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
                 log.debug("exitStatement | statement is not valid, so not adding it");
             }
         } else {
-            if (tmpAtStatementOrRuleSetScope.stm == null) {
-                log.error("exitStatement | stmt not valid ");
-            } else {
+            if (tmpAtStatementOrRuleSetScope.stm != null) {
                 log.debug("exitStatement | ADDING statement {}", tmpAtStatementOrRuleSetScope.stm);
                 rules.add(tmpAtStatementOrRuleSetScope.stm);
             }
