@@ -482,6 +482,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
         logEnter("valuepart: >" + ctx.getText() + "<");
         if (ctx.MINUS() != null) {
             terms_stack.peek().unary = -1;
+            terms_stack.peek().dash = true;
         }
         if (ctx.COMMA() != null) {
             log.debug("VP - comma");
