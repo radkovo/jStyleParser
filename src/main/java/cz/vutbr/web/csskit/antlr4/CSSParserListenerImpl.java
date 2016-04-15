@@ -25,7 +25,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     // structures after parsing
     private List<String> importPaths = new ArrayList<>();
     private List<List<MediaQuery>> importMedia = new ArrayList<>();
-    private RuleList rules;
+    private RuleList rules = null;
 
     // block preparator
     private Preparator preparator;
