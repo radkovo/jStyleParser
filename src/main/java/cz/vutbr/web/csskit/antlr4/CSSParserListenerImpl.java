@@ -507,7 +507,12 @@ public class CSSParserListenerImpl implements CSSParserListener {
             terms_stack.peek().term = tf.createPercent(ctx.PERCENTAGE().getText(), terms_stack.peek().unary);
         } else if (ctx.DIMENSION() != null) {
             log.debug("VP - dimension");
-            terms_stack.peek().term = tf.createDimension(ctx.DIMENSION().getText(), terms_stack.peek().unary);
+            String dim = ctx.DIMENSION().getText();
+            terms_stack.peek().term = tf.createDimension(dim, terms_stack.peek().unary);
+            if(terms_stack.peek().term  == null){
+                log.info("Unable to create dimension from {}, unary {}", dim, terms_stack.peek().unary);
+                tmpDeclarationScope.invalid = true;
+            }
         } else if (ctx.NUMBER() != null) {
             log.debug("VP - number");
             terms_stack.peek().term = tf.createNumeric(ctx.NUMBER().getText(), terms_stack.peek().unary);
