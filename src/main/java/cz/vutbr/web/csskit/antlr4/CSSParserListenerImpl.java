@@ -518,7 +518,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
             terms_stack.peek().term = tf.createNumeric(ctx.NUMBER().getText(), terms_stack.peek().unary);
         } else if (ctx.URI() != null) {
             log.debug("VP - uri");
-            terms_stack.peek().term = tf.createURI(extractTextUnescaped(ctx.URI().getText()));
+            terms_stack.peek().term = tf.createURI(extractTextUnescaped(ctx.URI().getText()),extractBase(ctx.URI()));
         } else if (ctx.funct() != null) {
             terms_stack.peek().term = null;
             //served in function
