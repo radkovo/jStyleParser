@@ -161,14 +161,14 @@ public class CSSTokenRecovery {
                     }
 
                     ttype1 = lexer._token;
-                    log.debug("return >" + ttype1.getText()+"<");
+                    log.trace("return tokent: >" + ttype1.getText()+"<");
                     return ttype1;
                 }
                 // recover from unexpected EOF
                 if (!ls.isBalanced()) {
                     return generateEOFRecover();
                 }
-                log.debug("is balanced so end");
+                log.trace("lexer state is balanced - emitEOF");
                 lexer.emitEOF();
                 ttype1 = lexer._token;
                 return ttype1;
