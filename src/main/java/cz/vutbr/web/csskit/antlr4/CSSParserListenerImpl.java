@@ -363,8 +363,10 @@ public class CSSParserListenerImpl implements CSSParserListener {
     }
 
     @Override
+    /**
+     * Property of declaration
+     */
     public void enterProperty(CSSParser.PropertyContext ctx) {
-        //done
         logEnter("property: " + ctx.getText());
         String property = extractTextUnescaped(ctx.IDENT().getText());
         if (ctx.MINUS() != null) {
@@ -378,7 +380,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void exitProperty(CSSParser.PropertyContext ctx) {
-        //done - empty stuff
+        //empty
     }
 
     @Override
