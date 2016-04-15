@@ -1,14 +1,10 @@
 package test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertArrayEquals;
-
-import java.io.IOException;
-import java.util.Date;
-
+import cz.vutbr.web.css.*;
+import cz.vutbr.web.css.CSSProperty.FontFamily;
+import cz.vutbr.web.domassign.Analyzer;
+import cz.vutbr.web.domassign.StyleMap;
 import org.junit.Assert;
-
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -17,17 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import cz.vutbr.web.css.CSSException;
-import cz.vutbr.web.css.CSSFactory;
-import cz.vutbr.web.css.NodeData;
-import cz.vutbr.web.css.RuleMedia;
-import cz.vutbr.web.css.RuleSet;
-import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.TermFactory;
-import cz.vutbr.web.css.TermList;
-import cz.vutbr.web.css.CSSProperty.FontFamily;
-import cz.vutbr.web.domassign.Analyzer;
-import cz.vutbr.web.domassign.StyleMap;
+import java.io.IOException;
+import java.util.Date;
+
+import static org.junit.Assert.*;
 
 public class GrammarRecovery1Test {
 	private static final Logger log = LoggerFactory.getLogger(GrammarRecovery1Test.class);
@@ -79,8 +68,13 @@ public class GrammarRecovery1Test {
 	
 	//declaration with no value
 	public static final String TEST_NO_VALUE = "#menu { background-color: #afa; null; color: red; }";
-	
-	
+
+	//declaration with curlyblock
+	public static final String TEST_VALUE_CURLY = "#menu { background-color: #afa; color:{blue}; color: red; } a{color:blue;}";
+
+	public static final String TEST_VALUE_ATKEYWORD = "#menu { background-color: #afa; color:@media; color: red; } a{color:blue;}";
+
+
 	@BeforeClass
 	public static void init() {
 		log.info("\n\n\n == GrammarRecovery1 test at {} == \n\n\n", new Date());
@@ -220,4 +214,29 @@ public class GrammarRecovery1Test {
         Assert.assertEquals("There are two declarations in the rule", 2, ss.get(0).size());
 
     }
+
+	@Test
+	public void declarationValueCurly() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parseString(TEST_VALUE_CURLY, null);
+
+        RuleBlock rb = ss.get(0);
+        Declaration d = (Declaration) rb.get(1);
+        Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
+        Assert.assertEquals("There are two declarations in the first rule", 2, ss.get(0).size());
+        Assert.assertEquals("Second declaration is color: red ", tf.createColor("#ff0000"), d.get(0));
+        Assert.assertEquals("There are one declaration in the second rule", 1, ss.get(1).size());
+
+	}
+	@Test
+	public void declarationValueAtKeyword() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parseString(TEST_VALUE_ATKEYWORD, null);
+		RuleBlock rb = ss.get(0);
+		Declaration d = (Declaration) rb.get(1);
+        Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
+        Assert.assertEquals("There are two declarations in the first rule", 2, ss.get(0).size());
+        Assert.assertEquals("Second declaration is color: red ", tf.createColor("#ff0000"), d.get(0));
+        Assert.assertEquals("There are one declaration in the second rule", 1, ss.get(1).size());
+
+	}
+
 }

@@ -415,7 +415,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void enterTermCurlyBlock(CSSParser.TermCurlyBlockContext ctx) {
-
+        tmpDeclarationScope.invalid = true;
     }
 
     @Override
@@ -425,7 +425,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void enterTermAtKeyword(CSSParser.TermAtKeywordContext ctx) {
-
+        tmpDeclarationScope.invalid = true;
     }
 
     @Override
