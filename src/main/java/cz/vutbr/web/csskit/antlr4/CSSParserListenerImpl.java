@@ -499,6 +499,9 @@ public class CSSParserListenerImpl implements CSSParserListener {
         } else if (ctx.HASH() != null) {
             log.debug("VP - hash");
             terms_stack.peek().term = tf.createColor(ctx.HASH().getText());
+            if(terms_stack.peek().term == null){
+                tmpDeclarationScope.invalid = true;
+            }
         } else if (ctx.PERCENTAGE() != null) {
             log.debug("VP - percentage");
             terms_stack.peek().term = tf.createPercent(ctx.PERCENTAGE().getText(), terms_stack.peek().unary);
