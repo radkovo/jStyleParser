@@ -932,7 +932,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
         if (ctx.CHARSET() != null) {
 
         } else if (ctx.IMPORT() != null) {
-            String iuri = ctx.import_uri().getText();
+            String iuri = extractTextUnescaped(ctx.import_uri().getText());
             if (!this.preventImports) {
                 log.debug("Adding import: {}", iuri);
                 importMedia.add(mediaQueryList);
@@ -977,11 +977,13 @@ public class CSSParserListenerImpl implements CSSParserListener {
     @Override
     public void enterImport_uri(CSSParser.Import_uriContext ctx) {
         logEnter("Import_uri");
+        // done in exitAtStatement
     }
 
     @Override
     public void exitImport_uri(CSSParser.Import_uriContext ctx) {
         logLeave("Import_uri");
+        // done in exitAtStatement
     }
 
     @Override
