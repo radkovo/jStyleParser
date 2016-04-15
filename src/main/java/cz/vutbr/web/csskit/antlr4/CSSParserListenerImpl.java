@@ -75,7 +75,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     }
 
     private String extractTextUnescaped(String text) {
-        return unescapeString(text);
+        return org.unbescape.css.CssEscape.unescapeCss(text);
     }
 
     /**
@@ -91,9 +91,6 @@ public class CSSParserListenerImpl implements CSSParserListener {
         return null;
     }
 
-    private String unescapeString(String text) {
-        return org.unbescape.css.CssEscape.unescapeCss(text);
-    }
 
     private Declaration.Source extractSource(CSSToken ct) {
         return new Declaration.Source(ct.getBase(), ct.getLine(), ct.getCharPositionInLine());
@@ -369,7 +366,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     public void enterProperty(CSSParser.PropertyContext ctx) {
         //done
         logEnter("property: " + ctx.getText());
-        String property = unescapeString(ctx.IDENT().getText());
+        String property = extractTextUnescaped(ctx.IDENT().getText());
         if (ctx.MINUS() != null) {
             property = ctx.MINUS().getText() + property;
         }
@@ -447,7 +444,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
             throw new UnsupportedOperationException("EXPRESSIONS are not allowed yet");
             //todo
         } else {
-            String fname = unescapeString(ctx.FUNCTION().getText());
+            String fname = extractTextUnescaped(ctx.FUNCTION().getText());
             if (fname.equalsIgnoreCase("url")) {
                 if (terms_stack.peek().unary == -1 || tmpTermList == null || tmpTermList.size() != 1) {
                     tmpDeclarationScope.invalid = true;
@@ -455,7 +452,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
                     Term<?> term = tmpTermList.get(0);
                     if (term instanceof TermString) {
                         log.debug("creating url");
-                        terms_stack.peek().term = tf.createURI(unescapeString(((TermString) term).getValue()), extractBase(ctx.FUNCTION()));
+                        terms_stack.peek().term = tf.createURI(extractTextUnescaped(((TermString) term).getValue()), extractBase(ctx.FUNCTION()));
                     } else
                         tmpDeclarationScope.invalid = true;
                 }
@@ -492,10 +489,10 @@ public class CSSParserListenerImpl implements CSSParserListener {
         } else if (ctx.string() != null) {
             //string
             log.debug("VP - string");
-            terms_stack.peek().term = tf.createString(unescapeString(ctx.string().getText()));
+            terms_stack.peek().term = tf.createString(extractTextUnescaped(ctx.string().getText()));
         } else if (ctx.IDENT() != null) {
             log.debug("VP - ident");
-            terms_stack.peek().term = tf.createIdent(unescapeString(ctx.IDENT().getText()), terms_stack.peek().dash);
+            terms_stack.peek().term = tf.createIdent(extractTextUnescaped(ctx.IDENT().getText()), terms_stack.peek().dash);
         } else if (ctx.HASH() != null) {
             log.debug("VP - hash");
             terms_stack.peek().term = tf.createColor(ctx.HASH().getText());
@@ -510,7 +507,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
             terms_stack.peek().term = tf.createNumeric(ctx.NUMBER().getText(), terms_stack.peek().unary);
         } else if (ctx.URI() != null) {
             log.debug("VP - uri");
-            terms_stack.peek().term = tf.createURI(unescapeString(ctx.URI().getText()));
+            terms_stack.peek().term = tf.createURI(extractTextUnescaped(ctx.URI().getText()));
         } else if (ctx.funct() != null) {
             terms_stack.peek().term = null;
             //served in function
@@ -620,7 +617,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     @Override
     public void enterSelectorWithIdOrAsterisk(CSSParser.SelectorWithIdOrAsteriskContext ctx) {
         enterSelector();
-        Selector.ElementName en = rf.createElement(unescapeString(ctx.getChild(0).getText()));
+        Selector.ElementName en = rf.createElement(extractTextUnescaped(ctx.getChild(0).getText()));
         log.debug("Adding selector: {}", en.getName());
         tmpSelector.add(en);
     }
@@ -662,7 +659,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
         logEnter("selpart id: " + ctx.getText());
         String id = extractIdUnescaped(ctx.getText());
         if (id != null) {
-            tmpSelector.add(rf.createID(unescapeString(ctx.getText())));
+            tmpSelector.add(rf.createID(extractTextUnescaped(ctx.getText())));
         } else {
             tmpCombinedSelectorInvalid = true;
         }
@@ -676,7 +673,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     @Override
     public void enterSelpartClass(CSSParser.SelpartClassContext ctx) {
         logEnter("selpart class: " + ctx.getText());
-        tmpSelector.add(rf.createClass(unescapeString(ctx.getText())));
+        tmpSelector.add(rf.createClass(extractTextUnescaped(ctx.getText())));
     }
 
     @Override
@@ -721,7 +718,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
         // see http://www.w3.org/TR/CSS2/selector.html#attribute-selectors
         logEnter("attribute: " + ctx.getText());
         //initialize attribute
-        String attributeName = unescapeString(ctx.children.get(0).getText());
+        String attributeName = extractTextUnescaped(ctx.children.get(0).getText());
         String value = null;
         boolean isStringValue = false;
         Selector.Operator op = Selector.Operator.NO_OPERATOR;
@@ -735,7 +732,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
                 value = ((TerminalNode) childernWithoutSpaces.get(2)).getText();
             }
-            value = unescapeString(value);
+            value = extractTextUnescaped(value);
             switch (opToken.getType()) {
                 case CSSParser.EQUALS: {
                     op = Selector.Operator.EQUALS;
@@ -786,7 +783,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
         //first item is pseudocolon | : or ::
         Boolean isPseudoElem = ctx.getChild(0).getText().length() != 1;
         Selector.PseudoPage tmpPseudo;
-        String first = unescapeString(ctx.getChild(1).getText());
+        String first = extractTextUnescaped(ctx.getChild(1).getText());
         if (ctx.FUNCTION() == null) {
             // ident
             tmpPseudo = rf.createPseudoPage(first, null);
@@ -998,10 +995,10 @@ public class CSSParserListenerImpl implements CSSParserListener {
     public void exitPage(CSSParser.PageContext ctx) {
         String name = null, pseudo = null;
         if (ctx.IDENT() != null) {
-            name = unescapeString(ctx.IDENT().getText());
+            name = extractTextUnescaped(ctx.IDENT().getText());
         }
         if (ctx.page_pseudo() != null) {
-            pseudo = unescapeString(ctx.page_pseudo().getText());
+            pseudo = extractTextUnescaped(ctx.page_pseudo().getText());
         }
 
         RuleBlock<?> rb = preparator.prepareRulePage(tmpDeclarations, tmpMargins, name, pseudo);
@@ -1152,7 +1149,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
         //create temp declaration storage
         tmpDeclarationScope = getDeclarationScopeAndInit();
         //set property to declaration
-        tmpDeclarationScope.d.setProperty(unescapeString(ctx.IDENT().getText()));
+        tmpDeclarationScope.d.setProperty(extractTextUnescaped(ctx.IDENT().getText()));
         Token token = ctx.IDENT().getSymbol();
         tmpDeclarationScope.d.setSource(extractSource((CSSToken) token));
     }
