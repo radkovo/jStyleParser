@@ -59,7 +59,6 @@ public class CSSParserListenerImpl implements CSSParserListener {
     private mediaquery_scope tmpMediaQueryScope;
     private List<MediaQuery> mediaQueryList = null;
     private MediaExpression tmpMediaExpression = null;
-    private boolean isInlineStyle = false;
 
     private static class terms_scope {
         List<Term<?>> list;
@@ -228,15 +227,20 @@ public class CSSParserListenerImpl implements CSSParserListener {
     @Override
     public void enterInlinestyle(CSSParser.InlinestyleContext ctx) {
         logEnter("inlinestyle: " + ctx.getText());
-        isInlineStyle = true;
         rules = new RuleArrayList();
     }
 
     @Override
     public void exitInlinestyle(CSSParser.InlinestyleContext ctx) {
+        if (ctx.declarations() != null) {
+            RuleBlock<?> rb = preparator.prepareInlineRuleSet(tmpDeclarations, null);
+            if (rb != null) {
+                rules.add(rb);
+            }
+        }
+        log.debug("\n***\n{}\n***\n", rules);
         logLeave("inlinestyle: " + ctx.getText());
         log.trace("EXITING INLINESTYLE ----------------------------------");
-        isInlineStyle = false;
         tmpDeclarations = null;
     }
 
@@ -316,13 +320,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void exitDeclarations(CSSParser.DeclarationsContext ctx) {
-//        logLeave("declarations"  +ctx.getText());
-        if (isInlineStyle) {
-            RuleBlock<?> rb = preparator.prepareInlineRuleSet(tmpDeclarations, null);
-            if (rb != null) {
-                rules.add(rb);
-            }
-        }
+        logLeave("declarations: " + ctx.getText());
     }
 
     @Override
@@ -468,7 +466,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
                 if (terms_stack.peek().unary == -1) //if started with minus, add the minus to the function name
                     function.setFunctionName('-' + function.getFunctionName());
                 if (tmpTermList != null) {
-                  //  log.debug("setting function value to : {}", tmpTermList);
+                    //  log.debug("setting function value to : {}", tmpTermList);
                     function.setValue(tmpTermList);
                 }
                 terms_stack.peek().term = function;
@@ -944,6 +942,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
             }
 
         } else if (ctx.page() != null) {
+            //implemented in exitPage
 
         } else if (ctx.VIEWPORT() != null) {
             tmpAtStatementOrRuleSetScope.stm = preparator.prepareRuleViewport(tmpDeclarations);
@@ -1039,11 +1038,14 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void enterInlineset(CSSParser.InlinesetContext ctx) {
+        //TODO: whole rule should be removed due to
+        //https://www.w3.org/TR/css-style-attr/#syntax
         logEnter("inlineset: " + ctx.getText());
     }
 
     @Override
     public void exitInlineset(CSSParser.InlinesetContext ctx) {
+        //https://www.w3.org/TR/css-style-attr/#syntax
     }
 
 
