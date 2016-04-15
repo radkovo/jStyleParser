@@ -526,6 +526,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
         } else {
             log.error("unhandled valueparts");
             terms_stack.peek().term = null;
+            tmpDeclarationScope.invalid = true;
         }
 
     }
