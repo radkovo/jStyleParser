@@ -62,17 +62,22 @@ public class GrammarRecovery1Test {
 
 	//invalid closing parenthesis between the rules
 	public static final String TEST_INVALID_PAREN =	" h1 { color: red; } } h3 { color: blue; }";
-	
+
 	//invalid semicolon between the rules
 	public static final String TEST_INVALID_SEMICOLON =	" h1 { color: red; } ; h3 { color: blue; }";
-	
+
 	//declaration with no value
 	public static final String TEST_NO_VALUE = "#menu { background-color: #afa; null; color: red; }";
 
 	//declaration with curlyblock
 	public static final String TEST_VALUE_CURLY = "#menu { background-color: #afa; color:{blue}; color: red; } a{color:blue;}";
 
-	public static final String TEST_VALUE_ATKEYWORD = "#menu { background-color: #afa; color:@media; color: red; } a{color:blue;}";
+	public static final String TEST_TERM_VALUE_ATKEYWORD = "#menu { background-color: #afa; color:@media; color: red; } a{color:blue;}";
+
+
+    public static final String TEST_TERM_VALUE_BRACEBLOCK = "#menu { background-color: #afa; color: [ttt=aa]; color: red; } a{color:blue;}";
+
+    public static final String TEST_TERM_VALUE_PARENBLOCK = "#menu { background-color: #afa; color: (ddd); color:red } a{color:blue;}";
 
 
 	@BeforeClass
@@ -227,9 +232,10 @@ public class GrammarRecovery1Test {
         Assert.assertEquals("There are one declaration in the second rule", 1, ss.get(1).size());
 
 	}
+
 	@Test
 	public void declarationValueAtKeyword() throws IOException, CSSException {
-		StyleSheet ss = CSSFactory.parseString(TEST_VALUE_ATKEYWORD, null);
+		StyleSheet ss = CSSFactory.parseString(TEST_TERM_VALUE_ATKEYWORD, null);
 		RuleBlock rb = ss.get(0);
 		Declaration d = (Declaration) rb.get(1);
         Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
