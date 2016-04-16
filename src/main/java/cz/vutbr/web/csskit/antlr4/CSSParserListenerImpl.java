@@ -569,21 +569,31 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void enterCombined_selector(CSSParser.Combined_selectorContext ctx) {
-        String combinedSelector = ctx.getText();
-        logEnter("combinedselector : " + combinedSelector);
+        logEnter("combined_selector : " + ctx.getText());
         tmpCombinedSelectorInvalid = false;
         tmpCombinedSelector = (CombinedSelector) rf.createCombinedSelector().unlock();
     }
 
     @Override
     public void exitCombined_selector(CSSParser.Combined_selectorContext ctx) {
-        if (!tmpCombinedSelectorInvalid) {
+        // entire ruleset is not valid when selector is not valid
+        // there is no need to parse selector's when already marked as invalid
+        if (!stmtIsValid || tmpCombinedSelectorInvalid) {
+            tmpCombinedSelector = null;
+            if(!stmtIsValid){
+                log.debug("Ommiting combined selector, whole statement discarded");
+            }
+            else {
+                log.debug("Combined selector is invalid");
+            }
+            stmtIsValid = false;
+        }
+        else{
             tmpCombinedSelectorList.add(tmpCombinedSelector);
             log.debug("Returing combined selector: {}.", tmpCombinedSelector);
-        } else {
-            log.debug("Combined selector is invalid");
         }
         tmpCombinator = null;
+        logLeave("combined_selector");
     }
 
     @Override
