@@ -641,13 +641,13 @@ public class CSSParserListenerImpl implements CSSParserListener {
     public void enterSelectorWithIdOrAsterisk(CSSParser.SelectorWithIdOrAsteriskContext ctx) {
         enterSelector();
         Selector.ElementName en = rf.createElement(extractTextUnescaped(ctx.getChild(0).getText()));
-        log.debug("Adding selector: {}", en.getName());
+        log.debug("Adding element name: {}", en.getName());
         tmpSelector.add(en);
     }
 
     @Override
     public void exitSelectorWithIdOrAsterisk(CSSParser.SelectorWithIdOrAsteriskContext ctx) {
-        exitSelector();
+        exitSelector(ctx);
     }
 
     @Override
@@ -657,7 +657,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void exitSelectorWithoutIdOrAsterisk(CSSParser.SelectorWithoutIdOrAsteriskContext ctx) {
-        exitSelector();
+        exitSelector(ctx);
     }
 
     // on every enterSelector submethod
@@ -670,8 +670,11 @@ public class CSSParserListenerImpl implements CSSParserListener {
     }
 
     // on every exitSelecotr submethod
-    private void exitSelector() {
+    private void exitSelector(CSSParser.SelectorContext ctx) {
         tmpCombinedSelector.add(tmpSelector);
+        if(ctxHasErrorNode(ctx)){
+            stmtIsValid = false;
+        }
     }
 
     //////////////
