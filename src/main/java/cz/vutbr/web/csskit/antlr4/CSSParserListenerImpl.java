@@ -263,6 +263,9 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void exitStatement(CSSParser.StatementContext ctx) {
+        if(ctxHasErrorNode(ctx)){
+            return;
+        }
         //statement: ruleset | atstatement
         if (ctx.ruleset() != null) {
             if (stmtIsValid) {
@@ -551,6 +554,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
         }
 
         //save valuepartr to termslist
+        // set operator, store and create next
         if (!tmpDeclarationScope.invalid && terms_stack.peek().term != null) {
             log.debug("adding valuepart " + terms_stack.peek().term);
             //set operator and add term to term list
