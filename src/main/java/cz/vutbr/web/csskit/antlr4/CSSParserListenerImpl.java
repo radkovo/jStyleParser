@@ -534,17 +534,18 @@ public class CSSParserListenerImpl implements CSSParserListener {
     @Override
     public void exitValuepart(CSSParser.ValuepartContext ctx) {
         //try convert color from current term
-        if (terms_stack.peek().term != null) {
-            TermColor termColor = null;
-            if (terms_stack.peek().term instanceof TermIdent) { // red
-                termColor = tf.createColor((TermIdent) terms_stack.peek().term);
-            } else if (terms_stack.peek().term instanceof TermFunction) { // rgba(0,0,0)
-                termColor = tf.createColor((TermFunction) terms_stack.peek().term);
-
+        Term<?> term = terms_stack.peek().term;
+        if (term != null) {
+            TermColor colorTerm = null;
+            if (term instanceof TermIdent) { // red
+                colorTerm = tf.createColor((TermIdent) term);
+            } else if (term instanceof TermFunction) { // rgba(0,0,0)
+                colorTerm = tf.createColor((TermFunction) term);
             }
-            if (termColor != null) {
-                log.debug("term color is OK - creating - " + termColor.toString());
-                terms_stack.peek().term = termColor;
+            //replace with color
+            if (colorTerm != null) {
+                log.debug("term color is OK - creating - " + colorTerm.toString());
+                terms_stack.peek().term = colorTerm;
             }
 
         }
