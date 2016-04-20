@@ -27,5 +27,9 @@
 			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/antlr-4.5.3-complete.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.20.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-nop-1.7.20.jar"/>
+	<classpathentry kind="lib" path="lib/unbescape-1.1.2.RELEASE.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
