@@ -28,4 +28,10 @@ public interface StyleSheet extends Rule<RuleBlock<?>>{
      * @author radek
      */
     public enum Origin { AUTHOR, AGENT, USER }
+    
+    public String getName();
+    public void setName(String name);
+    
+    public CSSComment getComment();
+    public void setComment(CSSComment comment);
 }

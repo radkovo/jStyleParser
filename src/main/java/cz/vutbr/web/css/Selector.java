@@ -105,6 +105,9 @@ public interface Selector extends Rule<Selector.SelectorPart> {
         
     }
     
+    public CodeLocation getLocation();
+    public void setLocation(CodeLocation location);
+    
     /**
      * Returns combinator of this and other simple selector
      * @return Combinator
@@ -227,6 +230,8 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     public interface ElementClass extends SelectorPart {
     	public String getClassName();
     	public ElementClass setClassName(String name);
+    	public CodeLocation getLocation();
+        public void setLocation(CodeLocation location);
     }
     
     /**
@@ -237,6 +242,8 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     public interface ElementID extends SelectorPart {
     	public String getID();
     	public ElementID setID(String id);
+    	public CodeLocation getLocation();
+        public void setLocation(CodeLocation location);
     }
     
     public interface ElementDOM extends SelectorPart {

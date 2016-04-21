@@ -9,6 +9,7 @@ import org.w3c.dom.NodeList;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSNodeVisitor;
+import cz.vutbr.web.css.CodeLocation;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.CombinedSelector.Specificity;
 import cz.vutbr.web.css.CombinedSelector.Specificity.Level;
@@ -27,6 +28,15 @@ import cz.vutbr.web.css.Selector;
 public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements Selector {
 
 	protected Combinator combinator;
+	protected CodeLocation location;
+	
+	public CodeLocation getLocation() {
+		return this.location;
+	}
+	
+	public void setLocation(CodeLocation location) {
+		this.location = location;
+	}
     
 	/**
 	 * @return the combinator
@@ -284,6 +294,17 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     public static class ElementClassImpl implements ElementClass {
 
     	private String className;
+    	protected CodeLocation location;
+    	
+    	@Override
+    	public CodeLocation getLocation() {
+    		return this.location;
+    	}
+    	
+    	@Override
+    	public void setLocation(CodeLocation location) {
+    		this.location = location;
+    	}
     	
     	protected ElementClassImpl(String className) {
     		setClassName(className);
@@ -801,6 +822,17 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     public static class ElementIDImpl implements ElementID {
     	
     	private String id;
+    	protected CodeLocation location;
+    	
+    	@Override
+    	public CodeLocation getLocation() {
+    		return this.location;
+    	}
+    	
+    	@Override
+    	public void setLocation(CodeLocation location) {
+    		this.location = location;
+    	}
     	
     	protected ElementIDImpl(String value) {
     		setID(value);

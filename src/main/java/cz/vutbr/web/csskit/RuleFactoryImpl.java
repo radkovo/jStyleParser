@@ -64,9 +64,8 @@ public class RuleFactoryImpl implements RuleFactory {
 	/* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createImport()
 	 */
-	@Deprecated
-	public RuleImport createImport() {
-		return new RuleImportImpl();
+	public RuleImport createImport(String uri) {
+		return new RuleImportImpl(uri);
 	}
 
 	/* (non-Javadoc)

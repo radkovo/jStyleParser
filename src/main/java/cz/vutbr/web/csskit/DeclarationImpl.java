@@ -1,5 +1,6 @@
 package cz.vutbr.web.csskit;
 
+import cz.vutbr.web.css.CSSComment;
 import cz.vutbr.web.css.CSSNodeVisitor;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.Term;
@@ -15,6 +16,7 @@ public class DeclarationImpl extends AbstractRule<Term<?>> implements Declaratio
 	protected String property;
 	protected boolean important;
 	protected Source source;
+	protected CSSComment comment;
 
 	protected DeclarationImpl() {
 		this.property = "";
@@ -173,6 +175,16 @@ public class DeclarationImpl extends AbstractRule<Term<?>> implements Declaratio
 		} else if (!property.equals(other.property))
 			return false;
 		return true;
+	}
+
+	@Override
+	public CSSComment getComment() {
+		return this.comment;
+	}
+
+	@Override
+	public void setComment(CSSComment comment) {
+		this.comment = comment;
 	}
     
 }

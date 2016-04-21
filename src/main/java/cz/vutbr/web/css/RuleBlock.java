@@ -21,4 +21,12 @@ public interface RuleBlock<T> extends Rule<T>{
 	 */
 	public StyleSheet getStyleSheet();
 	
+	public CSSComment getComment();
+	
+	public void setComment(CSSComment comment);
+	
+	public void setLocation(CodeLocation location);
+	
+	public CodeLocation getLocation();
+	
 }

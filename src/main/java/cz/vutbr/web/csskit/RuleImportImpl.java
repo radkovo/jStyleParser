@@ -1,5 +1,6 @@
 package cz.vutbr.web.csskit;
 
+import cz.vutbr.web.css.CSSNodeVisitor;
 import cz.vutbr.web.css.RuleImport;
 
 /**
@@ -10,7 +11,6 @@ import cz.vutbr.web.css.RuleImport;
  * @author kapy
  * @author Jan Svercl, VUT Brno, 2008
  */
-@Deprecated
 public class RuleImportImpl extends AbstractRuleBlock<String> implements RuleImport {
   
 	/** URI of file to be imported */
@@ -24,9 +24,27 @@ public class RuleImportImpl extends AbstractRuleBlock<String> implements RuleImp
     	this.uri = "";
     }
     
+    protected RuleImportImpl(String uri) {
+    	super();
+    	this.uri = uri;
+    }
+    
     public String getURI() {
         return uri;
     }
+    
+    /**
+	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+	 * 
+	 * @param visitor
+	 * 	The visitor interface
+	 * @return
+	 * 	The current CSS Object
+	 */
+	@Override
+	public Object accept(CSSNodeVisitor visitor) {
+		return visitor.visit(this);
+	}
 
     public RuleImport setURI(String uri) {
 

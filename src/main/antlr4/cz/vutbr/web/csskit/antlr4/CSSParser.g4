@@ -71,14 +71,14 @@ inlinestyle
 
 //http://www.w3.org/TR/css-syntax-3/
 stylesheet
-	: ( CDO | CDC  | S | nostatement | statement )*
+	: comment* ( CDO | CDC  | S | nostatement | statement )* (S | comment)*
     ;
     catch [RecognitionException re] {
         log.error("Recognition exception | stylesheet | should be EMPTY");
     }
 
 statement
-    : ruleset | atstatement
+    : (S | comment)* ruleset | (S | comment)* atstatement
     ;
     catch [RecognitionException re] {
         log.error("Recognition exception | statement | should be EMPTY");
@@ -244,8 +244,8 @@ declaration
       CSSLexerState begin = getCurrentLexerState(_localctx.getStart());
       log.debug("Decl begin: " + begin);
     }
-	: property COLON S* terms? important? //-> ^(DECLARATION important? property terms?)
-	| noprop any* //-> INVALID_DECLARATION /* if first character in the declaration is invalid (various dirty hacks) */
+	: (S | comment)* property COLON S* terms? important? (S | comment)* //-> ^(DECLARATION important? property terms?)
+	| (S | comment)* noprop any* (S | comment)* //-> INVALID_DECLARATION /* if first character in the declaration is invalid (various dirty hacks) */
 	;
 	catch [RecognitionException re] {
         log.error("PARSING declaration ERROR | consume until SEMICOLON, RCURLY");
@@ -444,7 +444,13 @@ string
         log.error("PARSING string ERROR | should be empty");
     }
 
-
+comment
+	: COMMENT
+	;
+	catch [RecognitionException re] {
+        log.error("PARSING comment ERROR | should be empty");
+    }
+    
 any
 	: ( IDENT //-> IDENT
 	  | CLASSKEYWORD //-> CLASSKEYWORD

@@ -13,6 +13,10 @@ import cz.vutbr.web.css.Selector.PseudoDeclaration;
  * @author Jan Svercl, VUT Brno, 2008
  */
 public interface CombinedSelector extends Rule<Selector> {
+	
+	public void setLocation(CodeLocation location);
+	
+	public CodeLocation getLocation();
   
     /**
      * Gets last Selector stored in list,

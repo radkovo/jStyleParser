@@ -19,6 +19,7 @@ public interface CSSNodeVisitor {
 	public Object visit(RulePage node);
 	public Object visit(RuleSet node);
 	public Object visit(RuleViewport node);
+	public Object visit(RuleImport node);
 	
 	public Object visit(Declaration node);
 	public Object visit(CombinedSelector node);
@@ -51,5 +52,7 @@ public interface CSSNodeVisitor {
 	public Object visit(TermString node);
 	public Object visit(TermTime node);
 	public Object visit(TermURI node);
+	
+	public Object visit(CSSComment node);
 
 }

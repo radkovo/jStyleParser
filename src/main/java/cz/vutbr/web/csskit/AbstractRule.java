@@ -7,13 +7,23 @@ import java.util.Iterator;
 import java.util.List;
 
 import cz.vutbr.web.css.CSSNodeVisitor;
+import cz.vutbr.web.css.CodeLocation;
 import cz.vutbr.web.css.Rule;
 
 public class AbstractRule<T> extends AbstractList<T> implements Rule<T> {
 	
 	protected List<T> list = Collections.emptyList();
 	protected int hash = 0;
+	protected CodeLocation location;
 	
+	public CodeLocation getLocation() {
+		return location;
+	}
+
+	public void setLocation(CodeLocation location) {
+		this.location = location;
+	}
+
 	public List<T> asList() {
 		return this.list;
 	}

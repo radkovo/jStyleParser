@@ -29,8 +29,7 @@ public interface RuleFactory {
 	 * Creates CSS import rule
 	 * @return New CSS import rule
 	 */
-	@Deprecated
-	RuleImport createImport();
+	RuleImport createImport(String uri);
 
 	/**
 	 * Creates CSS rule set, that is collection of CSS declarations

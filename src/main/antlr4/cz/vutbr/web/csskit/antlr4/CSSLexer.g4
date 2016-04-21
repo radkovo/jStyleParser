@@ -431,13 +431,11 @@ S
 	;
 
 COMMENT	
-//	: '/*' ( options {greedy=false;} : .)* '*/' { $channel = HIDDEN; } //= ANTLRv3
-    : '/*' .*? '*/' -> channel(HIDDEN)  //= ANTLR v4
+    : '/*' .*? '*/'
 	;
 
 SL_COMMENT
-//	: '//' ( options {greedy=false;} : .)* ('\n' | '\r' ) { $channel=HIDDEN; } //= ANTLRv3
-	: '//' .*? ('\n' | '\r' ) -> channel(HIDDEN) //= ANTLRv4
+	: '//' .*? ('\n' | '\r' ) -> channel(HIDDEN)
 	;
 
 /** Expression function */

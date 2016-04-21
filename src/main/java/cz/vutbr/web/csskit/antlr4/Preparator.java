@@ -6,6 +6,7 @@ import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleBlock;
+import cz.vutbr.web.css.RuleImport;
 import cz.vutbr.web.css.RuleMargin;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
@@ -82,5 +83,12 @@ public interface Preparator {
      * @return RuleFontFace
      */
     public RuleBlock<?> prepareRuleFontFace(List<Declaration> decl);
+    
+    /**
+     * Creates RuleImport 
+     * @param the uri
+     * @return RuleImport
+     */
+    public RuleImport prepareRuleImport(String uri);
     
 }

@@ -73,7 +73,6 @@ public class CSSParserFactory {
         return parseAndImport(source, network, encoding, type, sheet, preparator, base, null);
     }
 
-
     /**
      * Parses source of given type. Uses no element.
      *
@@ -146,6 +145,15 @@ public class CSSParserFactory {
             throws CSSException, IOException {
         CSSParser parser = createParser(source, network, encoding, type, base);
         CSSParserListenerImpl extractor = parse(parser, type, preparator, media);
+        
+        if (extractor.getStyleSheetComment() != null) {
+        	sheet.setComment(extractor.getStyleSheetComment());
+        }
+        
+        String[] paths = source.toString().split("\\/");
+        String name = paths[paths.length-1];
+        
+        sheet.setName(name);
 
         for (int i = 0; i < extractor.getImportPaths().size(); i++) {
             String path = extractor.getImportPaths().get(i);
