@@ -280,7 +280,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
                     if (rule != null) {
                     	if (tmpStatementComment != null ) {
                         	rule.setComment(tmpStatementComment);
-                        	rule.setLocation(getCodeLocation(ctx, true));
+                        	rule.setLocation(getCodeLocation(ctx, 0));
                         	tmpStatementComment = null;
                     	}
                         log.debug("exitStatement |ADDING statement {}", rule);
@@ -298,7 +298,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
                 
                 if (tmpStatementComment != null ) {
                 	tmpAtStatementOrRuleSetScope.stm.setComment(tmpStatementComment);
-                	tmpAtStatementOrRuleSetScope.stm.setLocation(getCodeLocation(ctx, true));
+                	tmpAtStatementOrRuleSetScope.stm.setLocation(getCodeLocation(ctx, 0));
                 	tmpStatementComment = null;
             	}
                 
@@ -323,7 +323,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
         //complete ruleset and add to ruleList
         tmpAtStatementOrRuleSetScope.stm = preparator.prepareRuleSet(tmpCombinedSelectorList, tmpDeclarations, (this.wrapMedia != null && !this.wrapMedia.isEmpty()), this.wrapMedia);
         if (tmpAtStatementOrRuleSetScope.stm != null && !ctxHasErrorNode(ctx)) {
-        	tmpAtStatementOrRuleSetScope.stm.setLocation(getCodeLocation(ctx, true));
+        	tmpAtStatementOrRuleSetScope.stm.setLocation(getCodeLocation(ctx, 0));
             tmpRuleList.add(tmpAtStatementOrRuleSetScope.stm);
         }
         //cleanup tmpDeclarations
@@ -355,6 +355,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void exitDeclaration(CSSParser.DeclarationContext ctx) {
+    	
         if (ctx.terms() != null) {
 //            log.debug("Totally added {} terms", terms_stack.peek().list.size());
             tmpDeclarationScope.d.replaceAll(tmpTermList);
@@ -368,8 +369,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
             	tmpDeclarationComment = null;
         	}
             
-            tmpDeclarationScope.d.setLocation(getCodeLocation(ctx, false));
-            
+            tmpDeclarationScope.d.setLocation(getCodeLocation(ctx, 0));
             tmpDeclarations.add(tmpDeclarationScope.d);
             log.debug("Inserted declaration #{} ", tmpDeclarations.size() + 1);
         } else {
@@ -608,7 +608,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     @Override
     public void exitCombined_selector(CSSParser.Combined_selectorContext ctx) {
         if (!tmpCombinedSelectorInvalid) {
-        	tmpCombinedSelector.setLocation(getCodeLocation(ctx, false));
+        	tmpCombinedSelector.setLocation(getCodeLocation(ctx, 0));
             tmpCombinedSelectorList.add(tmpCombinedSelector);
             log.debug("Returing combined selector: {}.", tmpCombinedSelector);
         } else {
@@ -668,7 +668,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void exitSelectorWithIdOrAsterisk(CSSParser.SelectorWithIdOrAsteriskContext ctx) {
-    	tmpSelector.setLocation(getCodeLocation(ctx, true));
+    	tmpSelector.setLocation(getCodeLocation(ctx, 0));
         exitSelector();
     }
 
@@ -679,7 +679,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void exitSelectorWithoutIdOrAsterisk(CSSParser.SelectorWithoutIdOrAsteriskContext ctx) {
-    	tmpSelector.setLocation(getCodeLocation(ctx, true));
+    	tmpSelector.setLocation(getCodeLocation(ctx, 0));
         exitSelector();
     }
 
@@ -706,7 +706,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
         String id = extractIdUnescaped(ctx.getText());
         if (id != null) {
         	Selector.ElementID elem = rf.createID(extractTextUnescaped(ctx.getText())); 
-            elem.setLocation(getCodeLocation(ctx, true));
+            elem.setLocation(getCodeLocation(ctx, 0));
             tmpSelector.add(elem);
         } else {
             tmpCombinedSelectorInvalid = true;
@@ -722,7 +722,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     public void enterSelpartClass(CSSParser.SelpartClassContext ctx) {
         logEnter("selpart class: " + ctx.getText());
         Selector.ElementClass elem = rf.createClass(extractTextUnescaped(ctx.getText())); 
-        elem.setLocation(getCodeLocation(ctx, true));
+        elem.setLocation(getCodeLocation(ctx, 0));
 		tmpSelector.add(elem);
     }
 
@@ -981,18 +981,18 @@ public class CSSParserListenerImpl implements CSSParserListener {
         } else if (ctx.IMPORT() != null) {
         	String iuri = ctx.import_uri().getText();
             tmpAtStatementOrRuleSetScope.stm = preparator.prepareRuleImport(iuri);
-            tmpAtStatementOrRuleSetScope.stm.setLocation(getCodeLocation(ctx, true));
+            tmpAtStatementOrRuleSetScope.stm.setLocation(getCodeLocation(ctx, 0));
             this.preventImports = true;
         } else if (ctx.page() != null) {
             //implemented in exitPage
 
         } else if (ctx.VIEWPORT() != null) {
         	tmpAtStatementOrRuleSetScope.stm = preparator.prepareRuleViewport(tmpDeclarations);
-            tmpAtStatementOrRuleSetScope.stm.setLocation(getCodeLocation(ctx, true));
+            tmpAtStatementOrRuleSetScope.stm.setLocation(getCodeLocation(ctx, 0));
             this.preventImports = true;
         } else if (ctx.FONTFACE() != null) {
         	tmpAtStatementOrRuleSetScope.stm = preparator.prepareRuleFontFace(tmpDeclarations);
-            tmpAtStatementOrRuleSetScope.stm.setLocation(getCodeLocation(ctx, true));
+            tmpAtStatementOrRuleSetScope.stm.setLocation(getCodeLocation(ctx, 0));
             this.preventImports = true;
         } else if (ctx.MEDIA() != null) {
             log.debug("exitAtstatement MEDIA");
@@ -1008,7 +1008,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
             }
             tmpAtStatementOrRuleSetScope.stm = preparator.prepareRuleMedia(mediaRulesList, mediaQueryList);
-            tmpAtStatementOrRuleSetScope.stm.setLocation(getCodeLocation(ctx, true));
+            tmpAtStatementOrRuleSetScope.stm.setLocation(getCodeLocation(ctx, 0));
             this.preventImports = true;
         } else {
             //unknown atrule
@@ -1268,7 +1268,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
 	@Override
 	public void exitComment(CommentContext ctx) {
-		cz.vutbr.web.css.CodeLocation location = getCodeLocation(ctx, true);
+		cz.vutbr.web.css.CodeLocation location = getCodeLocation(ctx, 0);
 		
 		String context = ctx.getParent().getClass().getSimpleName();
 		if (tmpStyleSheetComment == null) {
@@ -1285,18 +1285,21 @@ public class CSSParserListenerImpl implements CSSParserListener {
 	   return  lines;
 	}
 	
-	private cz.vutbr.web.css.CodeLocation getCodeLocation(ParserRuleContext ctx, boolean lengthen) {
+	private cz.vutbr.web.css.CodeLocation getCodeLocation(ParserRuleContext ctx, int realLength) {
 		
 		String[] lines = splitLines(ctx.getText());
 		
 		int offset = ctx.getStart().getStartIndex();
 		
 		int length;
-		if (lengthen) {
-			length = ctx.getStop().getStopIndex() - ctx.getStart().getStartIndex() + 2;
-		} else {
-			length = ctx.getStop().getStopIndex() - ctx.getStart().getStartIndex();
-		}
+//		if (lengthen) {
+//			length = ctx.getStop().getStopIndex() - ctx.getStart().getStartIndex() + 2;
+//		} else {
+//			length = ctx.getStop().getStopIndex() - ctx.getStart().getStartIndex();
+//		}
+		
+		length = ctx.getText().trim().length()+1;
+		//length = realLength;
 		
 		int startLine = ctx.getStart().getLine();
 		int endLine = (startLine+lines.length-1);
@@ -1316,7 +1319,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 		System.out.println("");
 		System.out.println("");
 		System.out.println("OFFSET: "+offset);
-		System.out.println("LENGTH: "+length);
+		System.out.println("LENGTH: "+(ctx.getStop().getStopIndex() - ctx.getStart().getStartIndex()));
 		System.out.println("STARTLINE: "+startLine);
 		System.out.println("ENDLINE: "+endLine);
 		System.out.println("STARTPOS:"+startPosition);

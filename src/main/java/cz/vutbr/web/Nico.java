@@ -66,7 +66,8 @@ public class Nico {
 	        System.out.println("Stylesheet comment: "+style.getComment().getText());
 	        System.out.println("Stylesheet comment location: "+style.getComment().getLocation().toString());
         }
-        rulesBlock(style);
+        
+        ///rulesBlock(style);
       } catch (CSSException | IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
@@ -74,7 +75,7 @@ public class Nico {
     } else {
       try {
         style = CSSFactory.parse(file, "UTF-8");
-        rulesBlock(style);
+        //rulesBlock(style);
       } catch (CSSException | IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
