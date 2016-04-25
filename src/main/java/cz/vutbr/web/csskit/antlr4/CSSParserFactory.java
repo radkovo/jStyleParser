@@ -150,6 +150,8 @@ public class CSSParserFactory {
         	sheet.setComment(extractor.getStyleSheetComment());
         }
         
+        sheet.setLocation(extractor.getStyleSheetLocation());
+        
         String[] paths = source.toString().split("\\/");
         String name = paths[paths.length-1];
         

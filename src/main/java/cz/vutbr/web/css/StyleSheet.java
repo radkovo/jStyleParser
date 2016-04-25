@@ -34,4 +34,7 @@ public interface StyleSheet extends Rule<RuleBlock<?>>{
     
     public CSSComment getComment();
     public void setComment(CSSComment comment);
+    
+    public CodeLocation getLocation();
+    public void setLocation(CodeLocation location);
 }

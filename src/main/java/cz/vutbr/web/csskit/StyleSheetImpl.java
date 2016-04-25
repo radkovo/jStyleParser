@@ -2,6 +2,7 @@ package cz.vutbr.web.csskit;
 
 import cz.vutbr.web.css.CSSComment;
 import cz.vutbr.web.css.CSSNodeVisitor;
+import cz.vutbr.web.css.CodeLocation;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.StyleSheet;
 
@@ -17,6 +18,15 @@ public class StyleSheetImpl extends AbstractRule<RuleBlock<?>> implements StyleS
     private Origin origin;
     private CSSComment comment;
     private String name;
+    private CodeLocation location;
+	
+	public CodeLocation getLocation() {
+		return this.location;
+	}
+	
+	public void setLocation(CodeLocation location) {
+		this.location = location;
+	}
     
     public CSSComment getComment() {
     	return this.comment;

@@ -52,7 +52,8 @@ public class CSSParserListenerImpl implements CSSParserListener {
     private RuleList tmpRuleList;
     private List<RuleMargin> tmpMargins;
     private RuleMargin tmpMarginRule;
-    
+
+    private CodeLocation tmpStyleSheetLocation;    
     private CSSComment tmpStyleSheetComment;    
     private CSSComment tmpDeclarationComment;
     private CSSComment tmpStatementComment;
@@ -202,6 +203,10 @@ public class CSSParserListenerImpl implements CSSParserListener {
     public CSSComment getStyleSheetComment() {
 		return tmpStyleSheetComment;
 	}
+    
+    public CodeLocation getStyleSheetLocation() {
+		return tmpStyleSheetLocation;
+	}
 
     /**
      * get mediaquery list
@@ -255,6 +260,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     public void enterStylesheet(CSSParser.StylesheetContext ctx) {
         logEnter("stylesheet: " + ctx.getText());
         rules = new RuleArrayList();
+        tmpStyleSheetLocation = getCodeLocation(ctx, 0);
     }
 
     @Override
