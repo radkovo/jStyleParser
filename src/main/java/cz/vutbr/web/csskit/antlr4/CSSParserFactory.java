@@ -183,6 +183,7 @@ public class CSSParserFactory {
 
         CSSInputStream input = getInput(source, network, encoding, type);
         input.setBase(base);
+        
         CSSLexer lexer = new CSSLexer(input);
         lexer.init();
 //        ANTLRErrorListener lexErr = new CSSLexerErrorListener();

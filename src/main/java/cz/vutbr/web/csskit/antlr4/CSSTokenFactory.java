@@ -21,9 +21,9 @@ public class CSSTokenFactory {
     }
 
     public CSSToken make() {
-        CSSToken t = new CSSToken(input, lexer._type, lexer._channel, lexer._tokenStartCharIndex, input.b.index() - 1, lexerClass);
+    	CSSToken t = new CSSToken(input, lexer._type, lexer._channel, lexer._tokenStartCharIndex, input.b.index() - 1, lexerClass);
         t.setLine(lexer._tokenStartLine);
-        t.setText(lexer._text);
+        t.setText(lexer.getText());
         t.setCharPositionInLine(lexer._tokenStartCharPositionInLine);
         t.setBase(((CSSInputStream) input.b).getBase());
 

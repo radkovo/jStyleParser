@@ -40,7 +40,6 @@ public class CSSParserListenerImpl implements CSSParserListener {
     //logger
     private org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(getClass());
 
-
     //temp variables for construction
     private CombinedSelector tmpCombinedSelector;
     private boolean tmpCombinedSelectorInvalid;
@@ -132,6 +131,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
      * @return list without terminal node type = S (space)
      */
     private List<ParseTree> filterSpaceTokens(List<ParseTree> inputArrayList) {
+
         return inputArrayList.stream().filter(
                 item -> (
                         !(item instanceof TerminalNode) ||
@@ -226,13 +226,14 @@ public class CSSParserListenerImpl implements CSSParserListener {
     }
 
     private void logEnter(String entry) {
+    	//System.out.println("Enter: "+entry);
         log.trace("Enter: " + generateSpaces(spacesCounter) + "{}", entry);
     }
 
     private void logLeave(String leaving) {
+    	//System.out.println("Exit: "+leaving);
         log.trace("Leave: " + generateSpaces(spacesCounter) + "{}", leaving);
     }
-
 
     //override generated methods
 
@@ -381,7 +382,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
         } else {
             log.debug("Declaration was invalidated or already invalid");
         }
-
+        
     }
 
     @Override
@@ -457,7 +458,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void exitTermCurlyBlock(CSSParser.TermCurlyBlockContext ctx) {
-
+    	
     }
 
     @Override
@@ -569,7 +570,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     }
 
     @Override
-    public void exitValuepart(CSSParser.ValuepartContext ctx) {
+    public void exitValuepart(CSSParser.ValuepartContext ctx) {   	
         //try convert color from current term
         if (terms_stack.peek().term != null) {
             TermColor termColor = null;
@@ -708,7 +709,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     /////////////
     @Override
     public void enterSelpartId(CSSParser.SelpartIdContext ctx) {
-        logEnter("selpart id: " + ctx.getText());
+        logEnter("selpart id: " + ctx.getText());;
         String id = extractIdUnescaped(ctx.getText());
         if (id != null) {
         	Selector.ElementID elem = rf.createID(extractTextUnescaped(ctx.getText())); 
@@ -1318,24 +1319,24 @@ public class CSSParserListenerImpl implements CSSParserListener {
 			endPosition = lines[lines.length-1].length()+1;
 		}
 		
-		System.out.println(ctx.getText());
-		System.out.println("");
-		System.out.println("LINES: "+lines.length);
-		System.out.println("LINES-1: "+(lines.length-1));
-		System.out.println("");
-		System.out.println("");
-		System.out.println("OFFSET: "+offset);
-		System.out.println("LENGTH: "+(ctx.getStop().getStopIndex() - ctx.getStart().getStartIndex()));
-		System.out.println("STARTLINE: "+startLine);
-		System.out.println("ENDLINE: "+endLine);
-		System.out.println("STARTPOS:"+startPosition);
-		System.out.println("ENDPOS: "+endPosition);
-		System.out.println("");
-		System.out.println(startLine<=endLine);
-		System.out.println(startPosition<=endPosition);
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
+//		System.out.println(ctx.getText());
+//		System.out.println("");
+//		System.out.println("LINES: "+lines.length);
+//		System.out.println("LINES-1: "+(lines.length-1));
+//		System.out.println("");
+//		System.out.println("");
+//		System.out.println("OFFSET: "+offset);
+//		System.out.println("LENGTH: "+(ctx.getStop().getStopIndex() - ctx.getStart().getStartIndex()));
+//		System.out.println("STARTLINE: "+startLine);
+//		System.out.println("ENDLINE: "+endLine);
+//		System.out.println("STARTPOS:"+startPosition);
+//		System.out.println("ENDPOS: "+endPosition);
+//		System.out.println("");
+//		System.out.println(startLine<=endLine);
+//		System.out.println(startPosition<=endPosition);
+//		System.out.println("");
+//		System.out.println("");
+//		System.out.println("");
 		
 		
 		return new CodeLocation(

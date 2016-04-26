@@ -1,8 +1,4 @@
-.lul {
-  border: none;
-}
-
-@font-face {
-    font-family: myFirstFont;
-    src: url(sansation_light.cs1s);
+/* Cool*/
+.left {
+  src: url("vet_mooi_font.woff");
 }
