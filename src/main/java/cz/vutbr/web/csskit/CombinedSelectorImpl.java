@@ -2,6 +2,7 @@ package cz.vutbr.web.csskit;
 
 import java.util.Arrays;
 
+import cz.vutbr.web.css.CSSNodeVisitor;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.Selector.PseudoDeclaration;
@@ -27,6 +28,19 @@ public class CombinedSelectorImpl extends AbstractRule<Selector> implements Comb
     public PseudoDeclaration getPseudoElement() {
         return getLastSelector().getPseudoElement(); //pseudo-elements may only be appended after the last simple selector of the selector
     }
+    
+    /**
+	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+	 * 
+	 * @param visitor
+	 * 	The visitor interface
+	 * @return
+	 * 	The current CSS Object
+	 */
+	@Override
+	public Object accept(CSSNodeVisitor visitor) {
+		return visitor.visit(this);
+	}
 	
 	/**
 	 * Computes specificity of selector

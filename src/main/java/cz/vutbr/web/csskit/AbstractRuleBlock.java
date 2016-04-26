@@ -1,11 +1,14 @@
 package cz.vutbr.web.csskit;
 
+import cz.vutbr.web.css.CSSComment;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.StyleSheet;
 
 public class AbstractRuleBlock<T> extends AbstractRule<T> implements RuleBlock<T> {
 	
 	protected StyleSheet stylesheet;
+	protected CSSComment comment;
+	
 	
 	public StyleSheet getStyleSheet()
 	{
@@ -40,6 +43,16 @@ public class AbstractRuleBlock<T> extends AbstractRule<T> implements RuleBlock<T
 		if (!(obj instanceof AbstractRuleBlock<?>))
 			return false;
 		return true;
+	}
+
+	@Override
+	public CSSComment getComment() {
+		return this.comment;
+	}
+
+	@Override
+	public void setComment(CSSComment comment) {
+		this.comment = comment;
 	}
 
 	

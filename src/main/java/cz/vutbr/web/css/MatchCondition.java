@@ -5,9 +5,9 @@
  */
 package cz.vutbr.web.css;
 
-import cz.vutbr.web.css.Selector.SelectorPart;
-
 import org.w3c.dom.Element;
+
+import cz.vutbr.web.css.Selector.SelectorPart;
 
 /**
  * An additional condition for matching the selectors.

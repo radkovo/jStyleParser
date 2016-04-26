@@ -1,0 +1,7 @@
+div {
+  color: #FFF;
+  background-color: #CCCCCC;
+  border-top-color: red;
+  outline-color: rgb(25,50,75);
+  border-bottom-color: rgba(25,50,75,0.5);
+}

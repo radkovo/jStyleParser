@@ -105,6 +105,9 @@ public interface Selector extends Rule<Selector.SelectorPart> {
         
     }
     
+    public CodeLocation getLocation();
+    public void setLocation(CodeLocation location);
+    
     /**
      * Returns combinator of this and other simple selector
      * @return Combinator
@@ -179,6 +182,16 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     public interface SelectorPart { 	
     	public boolean matches(Element e, ElementMatcher matcher, MatchCondition cond);
     	public void computeSpecificity(CombinedSelector.Specificity spec);
+    	
+    	/**
+    	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+    	 * 
+    	 * @param visitor
+    	 * 	The visitor interface
+    	 * @return
+    	 * 	The current CSS Object
+    	 */
+    	public Object accept(CSSNodeVisitor visitor);
     }
     
     /**
@@ -217,6 +230,8 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     public interface ElementClass extends SelectorPart {
     	public String getClassName();
     	public ElementClass setClassName(String name);
+    	public CodeLocation getLocation();
+        public void setLocation(CodeLocation location);
     }
     
     /**
@@ -227,6 +242,8 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     public interface ElementID extends SelectorPart {
     	public String getID();
     	public ElementID setID(String id);
+    	public CodeLocation getLocation();
+        public void setLocation(CodeLocation location);
     }
     
     public interface ElementDOM extends SelectorPart {

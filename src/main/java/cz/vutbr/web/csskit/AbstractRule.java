@@ -6,13 +6,24 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import cz.vutbr.web.css.CSSNodeVisitor;
+import cz.vutbr.web.css.CodeLocation;
 import cz.vutbr.web.css.Rule;
 
 public class AbstractRule<T> extends AbstractList<T> implements Rule<T> {
 	
 	protected List<T> list = Collections.emptyList();
 	protected int hash = 0;
+	protected CodeLocation location;
 	
+	public CodeLocation getLocation() {
+		return location;
+	}
+
+	public void setLocation(CodeLocation location) {
+		this.location = location;
+	}
+
 	public List<T> asList() {
 		return this.list;
 	}
@@ -101,6 +112,22 @@ public class AbstractRule<T> extends AbstractList<T> implements Rule<T> {
 		} else if (!list.equals(other.list))
 			return false;
 		return true;
+	}
+
+	/**
+	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+	 * 
+	 * AbstractRule requires this method since because of inheritance although it should not be called.
+	 * 
+	 * @param visitor
+	 * 	The visitor interface
+	 * @return
+	 * 	The current CSS Object
+	 */
+	@Override
+	public Object accept(CSSNodeVisitor visitor) {
+		new AssertionError("A abstractRule can not be visited.");
+		return null;
 	}
 
 	

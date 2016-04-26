@@ -15,13 +15,13 @@ import cz.vutbr.web.css.TermLength;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermNumeric;
+import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.css.TermPair;
 import cz.vutbr.web.css.TermPercent;
 import cz.vutbr.web.css.TermResolution;
 import cz.vutbr.web.css.TermString;
 import cz.vutbr.web.css.TermTime;
 import cz.vutbr.web.css.TermURI;
-import cz.vutbr.web.css.TermNumeric.Unit;
 
 public class TermFactoryImpl implements TermFactory {
 

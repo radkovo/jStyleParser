@@ -15,7 +15,7 @@ import java.util.Collection;
  * @author kapy
  */
 public interface NodeData {
-
+	
 	/**
 	 * Returns property of given name and supposed type. Inherited properties
 	 * are included.

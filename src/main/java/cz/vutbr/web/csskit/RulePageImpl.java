@@ -3,6 +3,7 @@ package cz.vutbr.web.csskit;
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.vutbr.web.css.CSSNodeVisitor;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.PrettyOutput;
 import cz.vutbr.web.css.Rule;
@@ -26,6 +27,19 @@ public class RulePageImpl extends AbstractRuleBlock<Rule<?>> implements RulePage
 		this.name = null;
 		this.pseudo = null;
 		replaceAll(new ArrayList<Rule<?>>());
+	}
+	
+	/**
+	 * Accept method required by the visitor pattern for traversing the CSS Tree. 
+	 * 
+	 * @param visitor
+	 * 	The visitor interface
+	 * @return
+	 * 	The current CSS Object
+	 */
+	@Override
+	public Object accept(CSSNodeVisitor visitor) {
+		return visitor.visit(this);
 	}
 	
 	/**

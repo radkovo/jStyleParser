@@ -69,31 +69,7 @@ public class ImportTest1 {
 	public void testSimpleImport() throws CSSException, IOException {
 
 		StyleSheet ss = CSSFactory.parse(getClass().getResource("/simple/imp.css"), null);
-
-		Analyzer analyzer = new Analyzer(ss);
-
-		StyleMap decl = analyzer.evaluateDOM(doc, "all", true);
-		ElementMap elements = new ElementMap(doc);
-
-		Element marginator = elements.getElementById("marginator");
-
-		assertNotNull("Element marginator exists", marginator);
-
-		NodeData data = decl.get(marginator);
-
-		assertEquals(
-				"<div id=\"marginator\"> contains margin with for same values",
-				Margin.length, data.getProperty("margin-top"));
-		assertEquals(
-				"<div id=\"marginator\"> contains margin with for same values",
-				Margin.length, data.getProperty("margin-bottom"));
-		assertEquals("Margin of 100px", new Float(100.0f), data.getValue(
-				TermLength.class, "margin-top").getValue());
-		assertEquals("Margin of 100px", TermNumeric.Unit.px, data.getValue(
-				TermLength.class, "margin-top").getUnit());
-		assertEquals("for all for both values", data.getValue(TermLength.class,
-				"margin-bottom"), data
-				.getValue(TermLength.class, "margin-left"));
+	    this.checkDataCSS(ss);
 
 	}
 
@@ -139,5 +115,39 @@ public class ImportTest1 {
 	public void testURLImport() throws CSSException, IOException {
 		CSSFactory.parseString(EXTERN_IMPORT, null);
 	}
-	
+
+	@Test
+	public void testImportEscaped() throws CSSException,IOException{
+		StyleSheet ss = CSSFactory.parse(getClass().getResource("/simple/imp_escaped.css"), null);
+		this.checkDataCSS(ss);
+	}
+
+	//check parsed data.css
+	private void checkDataCSS(StyleSheet ss) {
+		Analyzer analyzer = new Analyzer(ss);
+
+		StyleMap decl = analyzer.evaluateDOM(doc, "all", true);
+		ElementMap elements = new ElementMap(doc);
+
+		Element marginator = elements.getElementById("marginator");
+
+		assertNotNull("Element marginator exists", marginator);
+
+		NodeData data = decl.get(marginator);
+
+		assertEquals(
+				"<div id=\"marginator\"> contains margin with for same values",
+				Margin.length, data.getProperty("margin-top"));
+		assertEquals(
+				"<div id=\"marginator\"> contains margin with for same values",
+				Margin.length, data.getProperty("margin-bottom"));
+		assertEquals("Margin of 100px", new Float(100.0f), data.getValue(
+				TermLength.class, "margin-top").getValue());
+		assertEquals("Margin of 100px", TermNumeric.Unit.px, data.getValue(
+				TermLength.class, "margin-top").getUnit());
+		assertEquals("for all for both values", data.getValue(TermLength.class,
+				"margin-bottom"), data
+				.getValue(TermLength.class, "margin-left"));
+	}
+
 }

@@ -25,6 +25,14 @@ public interface Declaration extends Rule<Term<?>>, PrettyOutput, Comparable<Dec
     
     public void setSource(Source src);
     
+    public CSSComment getComment();
+    
+    public void setComment(CSSComment comment);
+    
+    public void setLocation(CodeLocation location);
+    
+    public CodeLocation getLocation();
+    
     //==================================================================================================
     
     /**
