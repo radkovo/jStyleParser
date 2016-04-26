@@ -12,7 +12,6 @@ public class CSSTokenFactory {
     private final CSSLexerState ls;
     private final Class<? extends Lexer> lexerClass;
 
-
     public CSSTokenFactory(Pair<TokenSource, CharStream> input, Lexer lexer, CSSLexerState ls, Class<? extends Lexer> lexerClass) {
         this.input = input;
         this.lexer = lexer;

@@ -29,12 +29,22 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
 	protected static final int MIN_VALUE = 0;
 	protected static final int PERCENT_CONVERSION = 100;
     protected static final int MAX_HUE = 360;
+    
+    private String originalFormat;
 	
-    protected TermColorImpl(int r, int g, int b) {
+    public String getOriginalFormat() {
+		return originalFormat;
+	}
+
+	public void setOriginalFormat(String originalFormat) {
+		this.originalFormat = originalFormat;
+	}
+
+	public TermColorImpl(int r, int g, int b) {
         value = new Color(r, g, b);
     }
     
-    protected TermColorImpl(int r, int g, int b, int a) {
+	public TermColorImpl(int r, int g, int b, int a) {
         value = new Color(r, g, b, a);
     }
     

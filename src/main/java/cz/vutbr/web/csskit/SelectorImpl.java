@@ -345,7 +345,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	
     	@Override
     	public String toString() {
-    		return "." + CssEscape.escapeCssIdentifier(className);
+    		return "."+CssEscape.escapeCssIdentifier(className.substring(1,className.length()));
     	}
 
 		/* (non-Javadoc)
@@ -873,7 +873,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	    	
     	@Override
     	public String toString() {
-    		return "#" + CssEscape.escapeCssIdentifier(id);
+    		return "#"+CssEscape.escapeCssIdentifier(id.substring(1,id.length()));
     	}
 
 		/* (non-Javadoc)

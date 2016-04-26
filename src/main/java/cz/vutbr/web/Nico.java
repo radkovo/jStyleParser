@@ -316,7 +316,8 @@ public class Nico {
     if (term instanceof TermAngle) {
       System.out.println("    Angle: " + term.getValue());
     } else if (term instanceof TermColor) {
-      System.out.println("    Color: " + term.getValue() + " - " + term.getOperator());
+      System.out.println("    Color: " +term.toString()+" - "+ term.getValue() + " - " + term.getOperator());
+      System.out.println(((TermColor) term).getOriginalFormat());
     } else if (term instanceof TermExpression) {
       System.out.println("    Expression: " + term.getValue()); 
     } else if (term instanceof TermFrequency) {

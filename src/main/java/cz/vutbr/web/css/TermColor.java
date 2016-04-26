@@ -8,4 +8,9 @@ import java.awt.Color;
  * @author Karel Piwko, 2008
  */
 public interface TermColor extends Term<Color> {
+	
+	public String getOriginalFormat();
+
+	public void setOriginalFormat(String originalFormat);
+	
 }

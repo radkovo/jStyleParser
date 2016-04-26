@@ -195,22 +195,23 @@ public class CSSToken extends CommonToken {
 		} catch (NullPointerException e) {
 			return text;
 		}
-		switch (t) {
-			case FUNCTION:
-				return text.substring(0, text.length()-1);
-			case URI:
-				return extractURI(text);
-			case STRING:
-				return extractSTRING(text);
-			case UNCLOSED_STRING:
-				return extractUNCLOSEDSTRING(text);
-			case CLASSKEYWORD:
-				return extractCLASSKEYWORD(text);
-			case HASH:
-				return extractHASH(text);
-			default:
-				return text;
-		}
+		return text;
+//		switch (t) {
+//			case FUNCTION:
+//				return text.substring(0, text.length()-1);
+//			case URI:
+//				return extractURI(text);
+//			case STRING:
+//				return extractSTRING(text);
+//			case UNCLOSED_STRING:
+//				return extractUNCLOSEDSTRING(text);
+//			case CLASSKEYWORD:
+//				return extractCLASSKEYWORD(text);
+//			case HASH:
+//				return extractHASH(text);
+//			default:
+//				return text;
+//		}
 
 	}
 

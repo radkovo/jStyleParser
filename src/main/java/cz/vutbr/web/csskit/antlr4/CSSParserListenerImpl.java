@@ -3,6 +3,7 @@ package cz.vutbr.web.csskit.antlr4;
 import cz.vutbr.web.css.*;
 import cz.vutbr.web.csskit.CommentImpl;
 import cz.vutbr.web.csskit.RuleArrayList;
+import cz.vutbr.web.csskit.TermColorImpl;
 import cz.vutbr.web.csskit.antlr4.CSSParser.CommentContext;
 
 import org.antlr.v4.runtime.CommonToken;
@@ -485,6 +486,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
             //todo
         } else {
             String fname = extractTextUnescaped(ctx.FUNCTION().getText());
+            
             if (fname.equalsIgnoreCase("url")) {
                 if (terms_stack.peek().unary == -1 || tmpTermList == null || tmpTermList.size() != 1) {
                     tmpDeclarationScope.invalid = true;
@@ -496,6 +498,20 @@ public class CSSParserListenerImpl implements CSSParserListener {
                     } else
                         tmpDeclarationScope.invalid = true;
                 }
+            } else if(fname.equalsIgnoreCase("rgb(")) {
+            	TermFunction function = tf.createFunction();
+            	function.setFunctionName("rgb");
+            	function.setValue(tmpTermList);
+            	TermColor color =  TermColorImpl.getColorByFunction(function);
+            	color.setOriginalFormat(ctx.getText());
+            	terms_stack.peek().term = color;
+            } else if (fname.equalsIgnoreCase("rgba(")) {
+            	TermFunction function = tf.createFunction();
+            	function.setFunctionName("rgba");
+            	function.setValue(tmpTermList);
+            	TermColor color =  TermColorImpl.getColorByFunction(function);
+            	color.setOriginalFormat(ctx.getText());
+            	terms_stack.peek().term = color;
             } else {
                 TermFunction function = tf.createFunction();
                 //log.debug("function name to " + fname);
@@ -536,7 +552,9 @@ public class CSSParserListenerImpl implements CSSParserListener {
             terms_stack.peek().term = tf.createIdent(extractTextUnescaped(ctx.IDENT().getText()), terms_stack.peek().dash);
         } else if (ctx.HASH() != null) {
             log.debug("VP - hash");
-            terms_stack.peek().term = tf.createColor(ctx.HASH().getText());
+             TermColor color = tf.createColor(ctx.HASH().getText());
+             color.setOriginalFormat(ctx.getText());
+             terms_stack.peek().term = color;
             if(terms_stack.peek().term == null){
                 tmpDeclarationScope.invalid = true;
             }
@@ -576,8 +594,10 @@ public class CSSParserListenerImpl implements CSSParserListener {
             TermColor termColor = null;
             if (terms_stack.peek().term instanceof TermIdent) { // red
                 termColor = tf.createColor((TermIdent) terms_stack.peek().term);
+                termColor.setOriginalFormat(ctx.getText());
             } else if (terms_stack.peek().term instanceof TermFunction) { // rgba(0,0,0)
                 termColor = tf.createColor((TermFunction) terms_stack.peek().term);
+                termColor.setOriginalFormat(ctx.getText());
 
             }
             if (termColor != null) {
@@ -1305,7 +1325,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 //			length = ctx.getStop().getStopIndex() - ctx.getStart().getStartIndex();
 //		}
 		
-		length = ctx.getText().trim().length()+1;
+		length = ctx.getText().trim().length();
 		//length = realLength;
 		
 		int startLine = ctx.getStart().getLine();
