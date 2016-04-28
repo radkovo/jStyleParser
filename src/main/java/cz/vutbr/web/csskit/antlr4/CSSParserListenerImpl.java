@@ -945,19 +945,19 @@ public class CSSParserListenerImpl implements CSSParserListener {
         logEnter("atstatement: " + ctx.getText());
         //init scope
         tmpAtStatementOrRuleSetScope = new atstatement_scope();
+        tmpAtStatementOrRuleSetScope.stm = null;
 
 
     }
 
     @Override
     public void exitAtstatement(CSSParser.AtstatementContext ctx) {
-        log.debug("exit atstatement: " + ctx.getText());
         if (ctxHasErrorNode(ctx)) {
             log.debug("atstatement is not valid ");
             return;
         }
         if (ctx.CHARSET() != null) {
-
+            //charset is processed in lexer
         } else if (ctx.IMPORT() != null) {
             String iuri = extractTextUnescaped(ctx.import_uri().getText());
             if (!this.preventImports) {
@@ -992,6 +992,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
                 }
 
             }
+            log.debug("Inserted ruleset ({}) into @media", mediaRulesList.size());
             tmpAtStatementOrRuleSetScope.stm = preparator.prepareRuleMedia(mediaRulesList, mediaQueryList);
             this.preventImports = true;
         } else {
@@ -999,6 +1000,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
             log.debug("Skipping invalid at statement");
             tmpAtStatementOrRuleSetScope.stm = null;
         }
+        logLeave("atstatement");
     }
 
     @Override
@@ -1105,6 +1107,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     public void exitMedia_query(CSSParser.Media_queryContext ctx) {
         logLeave("exitMedia_query1");
         if (tmpMediaQueryScope.invalid) {
+            log.trace("Skipping invalid rule {}", tmpMediaQueryScope.q);
             ///mediaquery invalid add NOT ALL
             tmpMediaQueryScope.q = rf.createMediaQuery();
             tmpMediaQueryScope.q.unlock();
