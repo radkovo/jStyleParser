@@ -156,14 +156,11 @@ IDENT
 	;	
 
 CHARSET
-//@init {
-//  tr.expecting(CHARSET);
-//}
-//@after {
-//	tr.end();
-//}
-
-	: '@charset' S* STRING_MACR S* SEMICOLON
+	:
+    {
+	    tr.expecting(CHARSET);
+    }
+	'@charset' S* STRING_MACR S* SEMICOLON
 	  {
 	    // we have to trim manually
 	    String enc = cz.vutbr.web.csskit.antlr4.CSSToken.extractSTRING(getText());
@@ -185,6 +182,8 @@ CHARSET
         else{
             log.warn("Ignoring @charset rule not at the beginning of the style sheet");
         }
+
+        tr.end();
 	  }
 	;
 
@@ -238,13 +237,14 @@ CLASSKEYWORD
 
 /** String including 'decorations' */
 STRING
-//@init{
-//	tr.expecting(STRING);
-//}
-//@after {
-//	tr.end();
-//}
-	: STRING_MACR
+	:
+	{
+	    tr.expecting(STRING);
+	}
+	STRING_MACR
+	{
+	    tr.end();
+	}
 	;
 UNCLOSED_STRING
 	: UNCLOSED_STRING_MACR
