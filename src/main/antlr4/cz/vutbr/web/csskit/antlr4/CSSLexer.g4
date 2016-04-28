@@ -132,16 +132,12 @@ tokens {
         return t;
 	}
 
-	@Override
-    public void emitErrorMessage(String msg) {
-    	log.info("ANTLR: {}", msg);
-    }
-
     /**
      * Does special token recovery for some cases
      */
     @Override
     public void recover(RecognitionException re) {
+        log.debug("recover" + re.toString());
 //        if (!tr.recover())
 //            super.recover(re);
     }
