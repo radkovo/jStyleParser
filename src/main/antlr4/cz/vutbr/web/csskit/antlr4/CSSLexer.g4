@@ -57,7 +57,7 @@ tokens {
 
 @members{
     // CSSLexer.g4 members start
-    int count = 0;
+
     private org.slf4j.Logger log;
 
     // number of already processed tokens (for checking the beginning of the style sheet)
