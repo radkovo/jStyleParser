@@ -326,7 +326,7 @@ public class CSSErrorStrategy implements ANTLRErrorStrategy {
             if (next instanceof CSSToken) {
                 t = (CSSToken) recognizer.getInputStream().LT(1);
                 if (t.getType() == Token.EOF) {
-                    System.out.println("token eof ");
+                    logger.debug("token eof ");
                     break;
                 }
             } else
@@ -346,7 +346,7 @@ public class CSSErrorStrategy implements ANTLRErrorStrategy {
             if (next instanceof CSSToken) {
                 t = (CSSToken) input.LT(1);
                 if (t.getType() == Token.EOF) {
-                    System.out.println("token eof ");
+                    logger.debug("token eof ");
                     break;
                 }
             } else
