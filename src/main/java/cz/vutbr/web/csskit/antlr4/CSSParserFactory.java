@@ -181,6 +181,7 @@ public class CSSParserFactory {
         lexer.addErrorListener(CSSLexerErrorListener.INSTANCE);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         CSSParser parser = new CSSParser(tokens);
+        parser.removeErrorListeners();
         parser.addErrorListener(new CSSParserErrorListener());
         parser.setErrorHandler(new CSSErrorStrategy());
         return parser;
@@ -239,6 +240,7 @@ public class CSSParserFactory {
             lexer.addErrorListener(CSSLexerErrorListener.INSTANCE);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             CSSParser parser = new CSSParser(tokens);
+            parser.removeErrorListeners();
             parser.addErrorListener(new CSSParserErrorListener());
             parser.setErrorHandler(new CSSErrorStrategy());
             ParseTreeWalker walker = new ParseTreeWalker(); // create standard walker
