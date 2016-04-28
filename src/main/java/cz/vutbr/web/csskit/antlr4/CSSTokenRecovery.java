@@ -161,7 +161,7 @@ public class CSSTokenRecovery {
                     }
 
                     ttype1 = lexer._token;
-                    log.trace("return tokent: >" + ttype1.getText()+"<");
+                    log.trace("return token: >" + ttype1.getText()+"<");
                     return ttype1;
                 }
                 // recover from unexpected EOF
