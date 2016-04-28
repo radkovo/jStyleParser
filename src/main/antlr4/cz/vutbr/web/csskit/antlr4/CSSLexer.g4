@@ -163,7 +163,7 @@ CHARSET
 	'@charset' S* STRING_MACR S* SEMICOLON
 	  {
 	    // we have to trim manually
-	    String enc = cz.vutbr.web.csskit.antlr4.CSSToken.extractSTRING(getText());
+	    String enc = cz.vutbr.web.csskit.antlr4.CSSToken.extractCHARSET(getText());
 	    if (tokencnt <= 1) //we are at the beginning of the style sheet
 	    {
             try {

@@ -261,6 +261,6 @@ public class CSSToken extends CommonToken {
 	}
 
 	public static String extractCHARSET(String charset){
-		return extractSTRING(charset.replace("@charset","").replace(";",""));
+		return extractSTRING(charset.replace("@charset","").replace(";","").trim());
 	}
 }
