@@ -70,7 +70,7 @@ tokens {
     /**
       * token facctory for generating custom tokens (CSSToken)
       */
-    protected CSSTokenFactory tf;
+    protected cz.vutbr.web.csskit.antlr4.CSSTokenFactory tf;
     protected cz.vutbr.web.csskit.antlr4.CSSTokenRecovery tr;
     protected cz.vutbr.web.csskit.antlr4.CSSExpressionReader er;
 
@@ -83,7 +83,7 @@ tokens {
 //        this.log.info("init called");
         this.ls = new cz.vutbr.web.csskit.antlr4.CSSLexerState();
         //initialize CSSTokenFactory
-        this.tf = new CSSTokenFactory(_tokenFactorySourcePair, this, ls, getClass());
+        this.tf = new cz.vutbr.web.csskit.antlr4.CSSTokenFactory(_tokenFactorySourcePair, this, ls, getClass());
         this.tr = new cz.vutbr.web.csskit.antlr4.CSSTokenRecovery(this, _input, ls, log);
         this.er = new cz.vutbr.web.csskit.antlr4.CSSExpressionReader(_input, log);
     }
@@ -101,11 +101,6 @@ tokens {
     public void setInputStream(IntStream input) {
         throw new UnsupportedOperationException();
     }
-    //   anltrv3 old method
-    //    @Override
-    //    public void setCharStream(CharStream input) {
-    //        throw new UnsupportedOperationException();
-    //    }
 
     /**
      * Overrides next token to match includes and to
@@ -114,6 +109,7 @@ tokens {
 	@Override
     public Token nextToken(){
        Token token = tr.nextToken();
+
        //count non-empty tokens for eventual checking of the style sheet start
        if (token.getType() == S) {
            tokencnt++;
@@ -122,6 +118,7 @@ tokens {
        // Skip first token after switching on another input.
        if(((CommonToken)token).getStartIndex() < 0)
          token = nextToken();
+
        return token;
     }
 
@@ -135,7 +132,7 @@ tokens {
         return t;
 	}
 
-//	@Override
+	@Override
     public void emitErrorMessage(String msg) {
     	log.info("ANTLR: {}", msg);
     }
@@ -143,9 +140,8 @@ tokens {
     /**
      * Does special token recovery for some cases
      */
-//    @Override
+    @Override
     public void recover(RecognitionException re) {
-        log.info("ANTLR recover");
 //        if (!tr.recover())
 //            super.recover(re);
     }
@@ -167,7 +163,6 @@ IDENT
 
 CHARSET
 //@init {
-//	System.out.println("eee");
 //  tr.expecting(CHARSET);
 //}
 //@after {
@@ -198,7 +193,6 @@ CHARSET
         }
 	  }
 	;
-
 
 IMPORT
 	: '@import' 
@@ -355,33 +349,27 @@ LESS
     ;    	
 
 LCURLY
-	: '{'
-	{ls.curlyNest++;}
+	: '{'  {ls.curlyNest++;}
 	;
 
 RCURLY	
-	: '}'
-	{ if(ls.curlyNest>0) ls.curlyNest--;}
+	: '}'  { if(ls.curlyNest>0) ls.curlyNest--;}
 	;
 
 APOS
-	: '\''
-	{ ls.aposOpen=!ls.aposOpen; }
+	: '\'' { ls.aposOpen=!ls.aposOpen; }
 	;
 
 QUOT
-	: '"'
-	{ ls.quotOpen=!ls.quotOpen; }
+	: '"'  { ls.quotOpen=!ls.quotOpen; }
 	;
 	
 LPAREN
-	: '('
-	{ls.parenNest++; }
+	: '('  {ls.parenNest++; }
 	;
 
 RPAREN
-	: ')'
-	{ if(ls.parenNest>0) ls.parenNest--; }
+	: ')'  { if(ls.parenNest>0) ls.parenNest--; }
 	;		
 
 LBRACE
@@ -425,19 +413,16 @@ HAT
 	;
 
 /** White character */
-
 S
 	: W_CHAR+
 	;
 
 COMMENT	
-//	: '/*' ( options {greedy=false;} : .)* '*/' { $channel = HIDDEN; } //= ANTLRv3
-    : '/*' .*? '*/' -> channel(HIDDEN)  //= ANTLR v4
+    : '/*' .*? '*/' -> channel(HIDDEN)
 	;
 
 SL_COMMENT
-//	: '//' ( options {greedy=false;} : .)* ('\n' | '\r' ) { $channel=HIDDEN; } //= ANTLRv3
-	: '//' .*? ('\n' | '\r' ) -> channel(HIDDEN) //= ANTLRv4
+	: '//' .*? ('\n' | '\r' ) -> channel(HIDDEN)
 	;
 
 /** Expression function */
@@ -532,12 +517,13 @@ STRING_MACR
     : QUOT (STRING_CHAR | APOS {ls.aposOpen=false;} )* QUOT
     | APOS (STRING_CHAR | QUOT {ls.quotOpen=false;} )* APOS
     ;
+
 UNCLOSED_STRING_MACR
     : QUOT (STRING_CHAR | APOS {ls.aposOpen=false;} )*
     | APOS (STRING_CHAR | QUOT {ls.quotOpen=false;} )*
     ;
 
-//fragment
+fragment
 STRING_CHAR
 	:  (URI_CHAR | ' ' | '(' | ')' | ('\\' NL_CHAR))
 	;
