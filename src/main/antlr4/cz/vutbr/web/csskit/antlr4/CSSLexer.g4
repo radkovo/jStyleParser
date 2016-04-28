@@ -54,9 +54,7 @@ tokens {
 	INVALID_IMPORT,
 	INVALID_DIRECTIVE
 }
-@header{
-    import cz.vutbr.web.csskit.antlr4.*;
-}
+
 @members{
     // CSSLexer.g4 members start
     int count = 0;
