@@ -62,6 +62,7 @@ tokens {
 
     // number of already processed tokens (for checking the beginning of the style sheet)
     protected int tokencnt = 0;
+
     // current lexer state
     protected cz.vutbr.web.csskit.antlr4.CSSLexerState ls;
 
