@@ -2,7 +2,6 @@ package cz.vutbr.web.csskit.antlr4;
 
 import cz.vutbr.web.css.*;
 import cz.vutbr.web.csskit.RuleArrayList;
-import org.antlr.v4.codegen.model.decl.Decl;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.Stack;
 
 
-public class CSSParserVisitorImpl implements CSSParserVisitor {
+public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtractor {
     // factories for building structures
     private RuleFactory rf = CSSFactory.getRuleFactory();
     private TermFactory tf = CSSFactory.getTermFactory();
@@ -35,6 +34,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor {
     private List<String> importPaths = new ArrayList<>();
     private List<List<MediaQuery>> importMedia = new ArrayList<>();
     private RuleList rules = null;
+    private List<MediaQuery> mediaQueryList = null;
 
     //prevent imports inside the style sheet
     private boolean preventImports = false;
@@ -73,6 +73,33 @@ public class CSSParserVisitorImpl implements CSSParserVisitor {
         }
         return spaces;
     }
+
+    /**
+     * get parsed rulelist
+     *
+     * @return parsed rules
+     */
+    public RuleList getRules() {
+        return rules;
+    }
+
+    /**
+     * get mediaquery list
+     *
+     * @return media query list
+     */
+    public List<MediaQuery> getMedia() {
+        return mediaQueryList;
+    }
+
+    public List<String> getImportPaths() {
+        return importPaths;
+    }
+
+    public List<List<MediaQuery>> getImportMedia() {
+        return importMedia;
+    }
+
 
     /**
      * Constructor

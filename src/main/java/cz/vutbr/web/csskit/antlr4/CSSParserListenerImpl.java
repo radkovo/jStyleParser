@@ -14,7 +14,7 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 
-public class CSSParserListenerImpl implements CSSParserListener {
+public class CSSParserListenerImpl implements CSSParserListener, CSSParserExtractor {
 
     // factories for building structures
     private RuleFactory rf = CSSFactory.getRuleFactory();
@@ -263,7 +263,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
 
     @Override
     public void exitStatement(CSSParser.StatementContext ctx) {
-        if(ctxHasErrorNode(ctx)){
+        if (ctxHasErrorNode(ctx)) {
             return;
         }
         //statement: ruleset | atstatement
@@ -492,7 +492,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
         } else if (ctx.HASH() != null) {
             log.debug("VP - hash");
             terms_stack.peek().term = tf.createColor(ctx.HASH().getText());
-            if(terms_stack.peek().term == null){
+            if (terms_stack.peek().term == null) {
                 tmpDeclarationScope.invalid = true;
             }
         } else if (ctx.PERCENTAGE() != null) {
@@ -502,7 +502,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
             log.debug("VP - dimension");
             String dim = ctx.DIMENSION().getText();
             terms_stack.peek().term = tf.createDimension(dim, terms_stack.peek().unary);
-            if(terms_stack.peek().term  == null){
+            if (terms_stack.peek().term == null) {
                 log.info("Unable to create dimension from {}, unary {}", dim, terms_stack.peek().unary);
                 tmpDeclarationScope.invalid = true;
             }
@@ -511,7 +511,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
             terms_stack.peek().term = tf.createNumeric(ctx.NUMBER().getText(), terms_stack.peek().unary);
         } else if (ctx.URI() != null) {
             log.debug("VP - uri");
-            terms_stack.peek().term = tf.createURI(extractTextUnescaped(ctx.URI().getText()),extractBase(ctx.URI()));
+            terms_stack.peek().term = tf.createURI(extractTextUnescaped(ctx.URI().getText()), extractBase(ctx.URI()));
         } else if (ctx.funct() != null) {
             terms_stack.peek().term = null;
             //served in function
@@ -574,15 +574,13 @@ public class CSSParserListenerImpl implements CSSParserListener {
         // there is no need to parse selector's when already marked as invalid
         if (!stmtIsValid || tmpCombinedSelectorInvalid) {
             tmpCombinedSelector = null;
-            if(!stmtIsValid){
+            if (!stmtIsValid) {
                 log.debug("Ommiting combined selector, whole statement discarded");
-            }
-            else {
+            } else {
                 log.debug("Combined selector is invalid");
             }
             stmtIsValid = false;
-        }
-        else{
+        } else {
             tmpCombinedSelectorList.add(tmpCombinedSelector);
             log.debug("Returing combined selector: {}.", tmpCombinedSelector);
         }
@@ -608,7 +606,6 @@ public class CSSParserListenerImpl implements CSSParserListener {
     public void exitCombinator(CSSParser.CombinatorContext ctx) {
         //empty
     }
-
 
 
     @Override
@@ -646,7 +643,7 @@ public class CSSParserListenerImpl implements CSSParserListener {
     // on every exitSelecotr submethod
     private void exitSelector(CSSParser.SelectorContext ctx) {
         tmpCombinedSelector.add(tmpSelector);
-        if(ctxHasErrorNode(ctx)){
+        if (ctxHasErrorNode(ctx)) {
             stmtIsValid = false;
         }
     }

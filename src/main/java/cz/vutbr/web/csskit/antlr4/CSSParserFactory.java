@@ -2,6 +2,8 @@ package cz.vutbr.web.csskit.antlr4;
 
 import cz.vutbr.web.css.*;
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.fit.net.DataURLHandler;
 import org.slf4j.Logger;
@@ -145,7 +147,7 @@ public class CSSParserFactory {
                                         StyleSheet sheet, Preparator preparator, URL base, List<MediaQuery> media)
             throws CSSException, IOException {
         CSSParser parser = createParser(source, network, encoding, type, base);
-        CSSParserListenerImpl extractor = parse(parser, type, preparator, media);
+        CSSParserExtractor extractor = parse(parser, type, preparator, media);
 
         for (int i = 0; i < extractor.getImportPaths().size(); i++) {
             String path = extractor.getImportPaths().get(i);
@@ -191,16 +193,20 @@ public class CSSParserFactory {
 //        return feedAST(tokens, ast, preparator, media);
     }
 
-    private static CSSParserListenerImpl parse(CSSParser parser, SourceType type, Preparator preparator,
-                                               List<MediaQuery> media) throws CSSException {
+    private static CSSParserExtractor parse(CSSParser parser, SourceType type, Preparator preparator,
+                                            List<MediaQuery> media) throws CSSException {
         ParserRuleContext tree;
+        CSSParserVisitorImpl visitor = new CSSParserVisitorImpl(preparator, media);
+//        CSSParserListenerImpl extractor = new CSSParserListenerImpl(preparator, media);
         switch (type) {
             case INLINE:
                 tree = parser.inlinestyle();
+                visitor.visitInlinestyle((CSSParser.InlinestyleContext) tree);
                 break;
             case EMBEDDED:
 //                try {
                 tree = parser.stylesheet();
+                visitor.visitStylesheet((CSSParser.StylesheetContext) tree);
 //                } catch (RuntimeException re) {
 //                    throw encapsulateException(re,
 //                            "Unable to parse embedded CSS style [AST]");
@@ -209,6 +215,7 @@ public class CSSParserFactory {
             case URL:
 //                try {
                 tree = parser.stylesheet();
+                visitor.visitStylesheet((CSSParser.StylesheetContext) tree);
 //                } catch (RuntimeException re) {
 //                    throw encapsulateException(re,
 //                            "Unable to parse file CSS style [AST]");
@@ -217,10 +224,10 @@ public class CSSParserFactory {
             default:
                 throw new RuntimeException("Coding error");
         }
-        ParseTreeWalker walker = new ParseTreeWalker(); // create standard walker
-        CSSParserListenerImpl extractor = new CSSParserListenerImpl(preparator, media);
-        walker.walk(extractor, tree); // initiate walk of tree with listener
-        return extractor;
+//        ParseTreeWalker walker = new ParseTreeWalker(); // create standard walker
+//        walker.walk(extractor, tree); // initiate walk of tree with listener
+//        return extractor;
+        return visitor;
     }
 
 
@@ -243,10 +250,18 @@ public class CSSParserFactory {
             parser.removeErrorListeners();
             parser.addErrorListener(new CSSParserErrorListener());
             parser.setErrorHandler(new CSSErrorStrategy());
-            ParseTreeWalker walker = new ParseTreeWalker(); // create standard walker
-            CSSParserListenerImpl extractor = new CSSParserListenerImpl();
-            ParserRuleContext tree = parser.media();
-            walker.walk(extractor, tree); // initiate walk of tree with listener
+            CSSParserExtractor extractor;
+            CSSParser.MediaContext tree = parser.media();
+            // listner use
+//            ParseTreeWalker walker = new ParseTreeWalker(); // create standard walker
+//            CSSParserListenerImpl listener = new CSSParserListenerImpl();
+//            walker.walk(listener, tree); // initiate walk of tree with listener
+//            extractor = listener;
+            // visitor use
+            CSSParserVisitorImpl visitor = new CSSParserVisitorImpl();
+            visitor.visitMedia(tree);
+            extractor = visitor;
+
             return extractor.getMedia();
         } catch (IOException e) {
             log.error("I/O error during media query parsing: {}", e.getMessage());
@@ -254,7 +269,7 @@ public class CSSParserFactory {
         }/* catch (CSSException e) {
             log.warn("Malformed media query {}", query);
             return null;
-        } */catch (RecognitionException e) {
+        } */ catch (RecognitionException e) {
             log.warn("Malformed media query {}", query);
             return null;
         }
