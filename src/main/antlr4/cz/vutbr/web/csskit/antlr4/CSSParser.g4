@@ -27,6 +27,11 @@ options {
     tokenVocab=CSSLexer;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////// P A R S E R /////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
 @members {
     // logger
     private org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(getClass());
@@ -306,8 +311,8 @@ terms
 
 term
     : valuepart #termValuePart//-> valuepart
-    | LCURLY S* (any | SEMICOLON S*)* RCURLY #termCurlyBlock//-> CURLYBLOCK
-    | ATKEYWORD S* #termAtKeyword//-> ATKEYWORD
+    | LCURLY S* (any | SEMICOLON S*)* RCURLY #termInvalid//-> CURLYBLOCK
+    | ATKEYWORD S* #termInvalid//-> ATKEYWORD
     ;
     catch [RecognitionException re] {
       log.error("PARSING term ERROR | should be empty");
@@ -372,10 +377,10 @@ combined_selector
 	}
 
 combinator
-	: GREATER S* #combinatorChild
-	| PLUS S* #combinatorAdjacent
-	| TILDE S* #combinatorPreceding
-	| S #combinatorDescendant
+	: GREATER S* //#combinatorChild
+	| PLUS S* //#combinatorAdjacent
+	| TILDE S* //#combinatorPreceding
+	| S //#combinatorDescendant
     ;
     catch [RecognitionException re] {
         log.error("Recognition exception | combinator| should be empty");
