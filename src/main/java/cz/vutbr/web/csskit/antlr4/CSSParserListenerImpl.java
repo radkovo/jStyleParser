@@ -417,22 +417,12 @@ public class CSSParserListenerImpl implements CSSParserListener {
     }
 
     @Override
-    public void enterTermCurlyBlock(CSSParser.TermCurlyBlockContext ctx) {
+    public void enterTermInvalid(CSSParser.TermInvalidContext ctx) {
         tmpDeclarationScope.invalid = true;
     }
 
     @Override
-    public void exitTermCurlyBlock(CSSParser.TermCurlyBlockContext ctx) {
-
-    }
-
-    @Override
-    public void enterTermAtKeyword(CSSParser.TermAtKeywordContext ctx) {
-        tmpDeclarationScope.invalid = true;
-    }
-
-    @Override
-    public void exitTermAtKeyword(CSSParser.TermAtKeywordContext ctx) {
+    public void exitTermInvalid(CSSParser.TermInvalidContext ctx) {
 
     }
 
@@ -601,44 +591,24 @@ public class CSSParserListenerImpl implements CSSParserListener {
     }
 
     @Override
-    public void enterCombinatorChild(CSSParser.CombinatorChildContext ctx) {
-        tmpCombinator = Selector.Combinator.CHILD;
+    public void enterCombinator(CSSParser.CombinatorContext ctx) {
+        logEnter("combinator");
+        if (ctx.GREATER() != null) {
+            tmpCombinator = Selector.Combinator.CHILD;
+        } else if (ctx.PLUS() != null) {
+            tmpCombinator = Selector.Combinator.ADJACENT;
+        } else if (ctx.TILDE() != null) {
+            tmpCombinator = Selector.Combinator.PRECEDING;
+        } else {
+            tmpCombinator = Selector.Combinator.DESCENDANT;
+        }
     }
 
     @Override
-    public void exitCombinatorChild(CSSParser.CombinatorChildContext ctx) {
-
+    public void exitCombinator(CSSParser.CombinatorContext ctx) {
+        //empty
     }
 
-    @Override
-    public void enterCombinatorAdjacent(CSSParser.CombinatorAdjacentContext ctx) {
-        tmpCombinator = Selector.Combinator.ADJACENT;
-    }
-
-    @Override
-    public void exitCombinatorAdjacent(CSSParser.CombinatorAdjacentContext ctx) {
-
-    }
-
-    @Override
-    public void enterCombinatorPreceding(CSSParser.CombinatorPrecedingContext ctx) {
-        tmpCombinator = Selector.Combinator.PRECEDING;
-    }
-
-    @Override
-    public void exitCombinatorPreceding(CSSParser.CombinatorPrecedingContext ctx) {
-
-    }
-
-    @Override
-    public void enterCombinatorDescendant(CSSParser.CombinatorDescendantContext ctx) {
-        tmpCombinator = Selector.Combinator.DESCENDANT;
-    }
-
-    @Override
-    public void exitCombinatorDescendant(CSSParser.CombinatorDescendantContext ctx) {
-
-    }
 
 
     @Override
