@@ -744,52 +744,52 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
     @Override
     public Selector visitSelectorWithIdOrAsterisk(CSSParser.SelectorWithIdOrAsteriskContext ctx) {
-        return null;
+        throw new UnsupportedOperationException("not implemented");
     }
 
     @Override
     public Selector visitSelectorWithoutIdOrAsterisk(CSSParser.SelectorWithoutIdOrAsteriskContext ctx) {
-        return null;
+        throw new UnsupportedOperationException("not implemented");
     }
 
     @Override
     public Object visitSelpartId(CSSParser.SelpartIdContext ctx) {
-        return null;
+        throw new UnsupportedOperationException("not implemented");
     }
 
     @Override
     public Object visitSelpartClass(CSSParser.SelpartClassContext ctx) {
-        return null;
+        throw new UnsupportedOperationException("not implemented");
     }
 
     @Override
     public Object visitSelpartAttrib(CSSParser.SelpartAttribContext ctx) {
-        return null;
+        throw new UnsupportedOperationException("not implemented");
     }
 
     @Override
     public Object visitSelpartPseudo(CSSParser.SelpartPseudoContext ctx) {
-        return null;
+        throw new UnsupportedOperationException("not implemented");
     }
 
     @Override
     public Object visitSelpartInvalid(CSSParser.SelpartInvalidContext ctx) {
-        return null;
+        throw new UnsupportedOperationException("not implemented");
     }
 
     @Override
     public Object visitAttribute(CSSParser.AttributeContext ctx) {
-        return null;
+        throw new UnsupportedOperationException("not implemented");
     }
 
     @Override
     public Object visitPseudo(CSSParser.PseudoContext ctx) {
-        return null;
+        throw new UnsupportedOperationException("not implemented");
     }
 
     @Override
     public Object visitPseudocolon(CSSParser.PseudocolonContext ctx) {
-        return null;
+        throw new UnsupportedOperationException("not implemented");
     }
 
     @Override
@@ -802,26 +802,31 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
     @Override
     public Object visitAny(CSSParser.AnyContext ctx) {
+        // handled elsewhere
         return null;
     }
 
     @Override
     public Object visitNostatement(CSSParser.NostatementContext ctx) {
+        // handled elsewhere
         return null;
     }
 
     @Override
     public Object visitNoprop(CSSParser.NopropContext ctx) {
+        // handled elsewhere
         return null;
     }
 
     @Override
     public Object visitNorule(CSSParser.NoruleContext ctx) {
+        // handled elsewhere
         return null;
     }
 
     @Override
     public Object visitNomediaquery(CSSParser.NomediaqueryContext ctx) {
+        // handled elsewhere
         return null;
     }
 
@@ -846,6 +851,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
     @Override
     public Object visitErrorNode(ErrorNode errorNode) {
+        log.error("visitErrorNode");
         return null;
     }
 }
