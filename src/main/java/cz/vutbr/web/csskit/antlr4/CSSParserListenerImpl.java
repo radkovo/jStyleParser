@@ -607,107 +607,56 @@ public class CSSParserListenerImpl implements CSSParserListener, CSSParserExtrac
         //empty
     }
 
-
     @Override
-    public void enterSelectorWithIdOrAsterisk(CSSParser.SelectorWithIdOrAsteriskContext ctx) {
-        enterSelector();
-        Selector.ElementName en = rf.createElement(extractTextUnescaped(ctx.getChild(0).getText()));
-        log.debug("Adding element name: {}", en.getName());
-        tmpSelector.add(en);
-    }
-
-    @Override
-    public void exitSelectorWithIdOrAsterisk(CSSParser.SelectorWithIdOrAsteriskContext ctx) {
-        exitSelector(ctx);
-    }
-
-    @Override
-    public void enterSelectorWithoutIdOrAsterisk(CSSParser.SelectorWithoutIdOrAsteriskContext ctx) {
-        enterSelector();
-    }
-
-    @Override
-    public void exitSelectorWithoutIdOrAsterisk(CSSParser.SelectorWithoutIdOrAsteriskContext ctx) {
-        exitSelector(ctx);
-    }
-
-    // on every enterSelector submethod
-    private void enterSelector() {
+    public void enterSelector(CSSParser.SelectorContext ctx){
         logEnter("selector");
         tmpSelector = (Selector) rf.createSelector().unlock();
         if (tmpCombinator != null) {
             tmpSelector.setCombinator(tmpCombinator);
         }
+        if(ctx.IDENT() != null || ctx.ASTERISK() != null){
+            Selector.ElementName en = rf.createElement(extractTextUnescaped(ctx.getChild(0).getText()));
+            log.debug("Adding element name: {}", en.getName());
+            tmpSelector.add(en);
+        }
     }
-
     // on every exitSelecotr submethod
-    private void exitSelector(CSSParser.SelectorContext ctx) {
+    public void exitSelector(CSSParser.SelectorContext ctx) {
         tmpCombinedSelector.add(tmpSelector);
         if (ctxHasErrorNode(ctx)) {
             stmtIsValid = false;
         }
     }
-
-    //////////////
-    //  SELPART
-    /////////////
     @Override
-    public void enterSelpartId(CSSParser.SelpartIdContext ctx) {
-        logEnter("selpart id: " + ctx.getText());
-        String id = extractIdUnescaped(ctx.getText());
-        if (id != null) {
-            tmpSelector.add(rf.createID(extractTextUnescaped(ctx.getText())));
-        } else {
-            tmpCombinedSelectorInvalid = true;
+    public void enterSelpart(CSSParser.SelpartContext ctx){
+        if(ctx.HASH() != null){
+            logEnter("selpart id: " + ctx.getText());
+            String id = extractIdUnescaped(ctx.getText());
+            if (id != null) {
+                tmpSelector.add(rf.createID(extractTextUnescaped(ctx.getText())));
+            } else {
+                tmpCombinedSelectorInvalid = true;
+            }
+        }
+        else if(ctx.CLASSKEYWORD() != null){
+            logEnter("selpart class: " + ctx.getText());
+            tmpSelector.add(rf.createClass(extractTextUnescaped(ctx.getText())));
+        }
+        else if(ctx.attribute() != null){
+            logEnter("selpart attrib: " + ctx.getText());
+        }
+        else if(ctx.pseudo() != null){
+            logEnter("selpart pseudo: " + ctx.getText());
+        }
+        else{
+            logEnter("Selpart invalid" + ctx.getText());
         }
     }
-
     @Override
-    public void exitSelpartId(CSSParser.SelpartIdContext ctx) {
-        //do nothing
-    }
-
-    @Override
-    public void enterSelpartClass(CSSParser.SelpartClassContext ctx) {
-        logEnter("selpart class: " + ctx.getText());
-        tmpSelector.add(rf.createClass(extractTextUnescaped(ctx.getText())));
-    }
-
-    @Override
-    public void exitSelpartClass(CSSParser.SelpartClassContext ctx) {
-        //do nothing
-    }
-
-    @Override
-    public void enterSelpartAttrib(CSSParser.SelpartAttribContext ctx) {
-        logEnter("selpart attrib: " + ctx.getText());
-        //do nothing
-    }
-
-    @Override
-    public void exitSelpartAttrib(CSSParser.SelpartAttribContext ctx) {
-        //do nothing
-    }
-
-    @Override
-    public void enterSelpartPseudo(CSSParser.SelpartPseudoContext ctx) {
+    public void exitSelpart(CSSParser.SelpartContext ctx){
         logEnter("selpart pseudo: " + ctx.getText());
     }
-
-    @Override
-    public void exitSelpartPseudo(CSSParser.SelpartPseudoContext ctx) {
-        //do nothing
-    }
-
-    @Override
-    public void enterSelpartInvalid(CSSParser.SelpartInvalidContext ctx) {
-        logEnter("Selpart invalid" + ctx.getText());
-    }
-
-    @Override
-    public void exitSelpartInvalid(CSSParser.SelpartInvalidContext ctx) {
-        //do nothing
-    }
+    
 
     @Override
     public void enterAttribute(CSSParser.AttributeContext ctx) {

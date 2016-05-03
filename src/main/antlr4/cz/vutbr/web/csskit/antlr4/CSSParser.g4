@@ -388,9 +388,9 @@ combinator
 
 
 selector
-    : (IDENT | ASTERISK)  selpart* S* #selectorWithIdOrAsterisk
+    : (IDENT | ASTERISK)  selpart* S*
     	//-> ^(SELECTOR ^(ELEMENT IDENT?) selpart*)
-    | selpart+ S* #selectorWithoutIdOrAsterisk
+    | selpart+ S*
         //-> ^(SELECTOR selpart+)
     ;
     catch [RecognitionException re] {
@@ -400,11 +400,11 @@ selector
 	  }
 
 selpart
-    :  HASH #selpartId
-    | CLASSKEYWORD #selpartClass
-	| LBRACE S* attribute RBRACE #selpartAttrib //-> ^(ATTRIBUTE attribute)
-    | pseudo #selpartPseudo
-    | INVALID_SELPART #selpartInvalid
+    :  HASH //#selpartId
+    | CLASSKEYWORD //#selpartClass
+	| LBRACE S* attribute RBRACE //#selpartAttrib //-> ^(ATTRIBUTE attribute)
+    | pseudo //#selpartPseudo
+    | INVALID_SELPART //#selpartInvalid
     ;
     catch [RecognitionException re] {
         log.error("PARSING SELPART ERROR");

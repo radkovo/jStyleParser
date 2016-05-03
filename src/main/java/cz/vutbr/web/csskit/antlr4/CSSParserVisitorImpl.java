@@ -61,6 +61,19 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     }
 
     /**
+     * check if string is valid ID
+     *
+     * @param id ID to validate and unescapes
+     * @return unescaped id or null
+     */
+    private String extractIdUnescaped(String id) {
+        if (!id.isEmpty() && !Character.isDigit(id.charAt(0))) {
+            return org.unbescape.css.CssEscape.unescapeCss(id);
+        }
+        return null;
+    }
+
+    /**
      * generate spaces for pretty debug printing
      *
      * @param count number of generated spaces
@@ -681,14 +694,6 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
     protected Stack<combined_selector_scope> combined_selector_stack = new Stack<>();
 
-    private Selector visitSelector(CSSParser.SelectorContext ctx) {
-        if (ctx instanceof CSSParser.SelectorWithIdOrAsteriskContext) {
-            return visitSelectorWithIdOrAsterisk((CSSParser.SelectorWithIdOrAsteriskContext) ctx);
-        } else {
-            return visitSelectorWithoutIdOrAsterisk((CSSParser.SelectorWithoutIdOrAsteriskContext) ctx);
-        }
-    }
-
     @Override
     /**
      * Construction of selector
@@ -738,52 +743,80 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
         } else {
             return Selector.Combinator.DESCENDANT;
         }
+    }
 
+    protected static class selector_scope {
+        cz.vutbr.web.css.Selector s;
+    }
+
+    protected Stack<selector_scope> selector_stack = new Stack<>();
+
+    public Selector visitSelector(CSSParser.SelectorContext ctx) {
+        selector_stack.push(new selector_scope());
+        cz.vutbr.web.css.Selector sel;
+        logEnter("selector");
+        selector_stack.peek().s = sel = (cz.vutbr.web.css.Selector) rf.createSelector().unlock();
+        if (ctx.IDENT() != null || ctx.ASTERISK() != null) {
+            cz.vutbr.web.css.Selector.ElementName en = rf.createElement(cz.vutbr.web.css.Selector.ElementName.WILDCARD);
+            if (ctx.IDENT() != null) {
+                en.setName(extractTextUnescaped(ctx.IDENT().getText()));
+            }
+            log.debug("Adding element name: {}.", en.getName());
+            selector_stack.peek().s.add(en);
+        }
+        for (CSSParser.SelpartContext selpartctx : ctx.selpart()) {
+            visitSelpart(selpartctx);
+        }
+
+        logLeave("selector");
+        return sel;
+    }
+
+    /**
+     * @param ctx the parse tree
+     * @return null
+     */
+    @Override
+    public Object visitSelpart(CSSParser.SelpartContext ctx) {
+        logEnter("selpart");
+        String ident;
+        if (ctx.HASH() != null) {
+            ident = extractIdUnescaped(ctx.HASH().getText());
+            if (ident != null) {
+                selector_stack.peek().s.add(rf.createID(ident));
+            } else {
+                combined_selector_stack.peek().invalid = true;
+            }
+
+        } else if (ctx.CLASSKEYWORD() != null) {
+            selector_stack.peek().s.add(rf.createClass(extractTextUnescaped(ctx.CLASSKEYWORD().getText())));
+        } else if (ctx.attribute() != null) {
+            Selector.ElementAttribute ea = visitAttribute(ctx.attribute());
+            selector_stack.peek().s.add(ea);
+
+        } else if (ctx.pseudo() != null) {
+            Selector.PseudoPage p = visitPseudo(ctx.pseudo());
+            if (p != null) {
+                selector_stack.peek().s.add(p);
+            } else {
+                combined_selector_stack.peek().invalid = true;
+            }
+
+        } else {
+            combined_selector_stack.peek().invalid = true;
+        }
+        logLeave("selpart");
+        return null;
     }
 
 
     @Override
-    public Selector visitSelectorWithIdOrAsterisk(CSSParser.SelectorWithIdOrAsteriskContext ctx) {
+    public Selector.ElementAttribute visitAttribute(CSSParser.AttributeContext ctx) {
         throw new UnsupportedOperationException("not implemented");
     }
 
     @Override
-    public Selector visitSelectorWithoutIdOrAsterisk(CSSParser.SelectorWithoutIdOrAsteriskContext ctx) {
-        throw new UnsupportedOperationException("not implemented");
-    }
-
-    @Override
-    public Object visitSelpartId(CSSParser.SelpartIdContext ctx) {
-        throw new UnsupportedOperationException("not implemented");
-    }
-
-    @Override
-    public Object visitSelpartClass(CSSParser.SelpartClassContext ctx) {
-        throw new UnsupportedOperationException("not implemented");
-    }
-
-    @Override
-    public Object visitSelpartAttrib(CSSParser.SelpartAttribContext ctx) {
-        throw new UnsupportedOperationException("not implemented");
-    }
-
-    @Override
-    public Object visitSelpartPseudo(CSSParser.SelpartPseudoContext ctx) {
-        throw new UnsupportedOperationException("not implemented");
-    }
-
-    @Override
-    public Object visitSelpartInvalid(CSSParser.SelpartInvalidContext ctx) {
-        throw new UnsupportedOperationException("not implemented");
-    }
-
-    @Override
-    public Object visitAttribute(CSSParser.AttributeContext ctx) {
-        throw new UnsupportedOperationException("not implemented");
-    }
-
-    @Override
-    public Object visitPseudo(CSSParser.PseudoContext ctx) {
+    public Selector.PseudoPage visitPseudo(CSSParser.PseudoContext ctx) {
         throw new UnsupportedOperationException("not implemented");
     }
 
