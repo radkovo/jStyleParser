@@ -2,16 +2,16 @@ package cz.vutbr.web.csskit.antlr4;
 
 import cz.vutbr.web.css.*;
 import cz.vutbr.web.csskit.RuleArrayList;
+import org.antlr.v4.runtime.CommonToken;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.RuleNode;
-import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.runtime.tree.*;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 
 public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtractor {
@@ -85,6 +85,36 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
             spaces += " ";
         }
         return spaces;
+    }
+
+    /**
+     * remove terminal node emtpy tokens from input list
+     *
+     * @param inputArrayList original list
+     * @return list without terminal node type = S (space)
+     */
+    private List<ParseTree> filterSpaceTokens(List<ParseTree> inputArrayList) {
+        return inputArrayList.stream().filter(
+                item -> (
+                        !(item instanceof TerminalNode) ||
+                                ((TerminalNodeImpl) item).getSymbol().getType() != CSSLexer.S
+                )
+        ).collect(Collectors.toList());
+    }
+
+    /**
+     * check if rule context contains error node
+     *
+     * @param ctx rule context
+     * @return contains context error node
+     */
+    private boolean ctxHasErrorNode(ParserRuleContext ctx) {
+        for (int i = 0; i < ctx.children.size(); i++) {
+            if (ctx.getChild(i) instanceof ErrorNode) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -189,6 +219,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
      * Statement, main contents unit
      */
     public RuleBlock<?> visitStatement(CSSParser.StatementContext ctx) {
+        if(ctxHasErrorNode(ctx)){
+            return null;
+        }
         logEnter("statement: " + ctx.getText());
         statement_stack.push(new statement_scope());
         statement_stack.peek().invalid = false;
@@ -203,6 +236,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
         }
         statement_stack.pop();
         logLeave("statement: " + ctx.getText());
+        //could be null
         return stmt;
     }
 
@@ -313,7 +347,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
         }
         log.debug("Totally returned {} media queries.", queries.size());
         logLeave("media: " + ctx.getText());
-        return null;
+        return queries;
     }
 
     protected static class mediaquery_scope {
@@ -342,7 +376,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
             mq.q.setNegative(true);
         }
         logLeave("mediaquery");
-        return null;
+        return mq.q;
     }
 
     @Override
@@ -427,6 +461,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
             log.debug("Skiping invalid statement in media");
         }
         logLeave("media_rule: " + ctx.getText());
+        //could be null
         return rules;
     }
 
@@ -443,6 +478,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
      */
     public RuleBlock<?> visitRuleset(CSSParser.RulesetContext ctx) {
         logEnter("ruleset");
+        if(ctxHasErrorNode(ctx)){
+            return null;
+        }
         List<CombinedSelector> cslist = new ArrayList<>();
         // body
         for (CSSParser.Combined_selectorContext csctx : ctx.combined_selector()) {
@@ -477,6 +515,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
             if (d != null) {
                 decl.add(d);
                 log.debug("Inserted declaration #{} ", decl.size() + 1);
+            }
+            else{
+                log.debug("Null declaration was omitted");
             }
         }
         logLeave("declarations");
@@ -519,7 +560,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
         logLeave("declaration");
         declaration_stack.pop();
 
-        return null;
+        return decl;
     }
 
     @Override
@@ -532,6 +573,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     /**
      * Setting property of declaration
      */
+    //returns null
     public Object visitProperty(CSSParser.PropertyContext ctx) {
         logEnter("property");
 
@@ -545,6 +587,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
         log.debug("Setting property: {}", declaration_stack.peek().d.getProperty());
         logLeave("property");
+        //returns null
         return null;
     }
 
@@ -595,13 +638,14 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
         logLeave("terms");
 
         terms_stack.pop();
-        return null;
+        return tlist;
     }
 
     @Override
     public Object visitTermValuePart(CSSParser.TermValuePartContext ctx) {
         logEnter("term");
         visitValuepart(ctx.valuepart());
+        //returns null
         return null;
     }
 
@@ -609,12 +653,14 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     public Object visitTermInvalid(CSSParser.TermInvalidContext ctx) {
         logEnter("term");
         declaration_stack.peek().invalid = true;
+        //returns null
         return null;
     }
 
 
     @Override
     public Object visitFunct(CSSParser.FunctContext ctx) {
+        //returns null
         return null;
     }
 
@@ -685,6 +731,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
             }
 
         }
+        //returns null
         return null;
     }
 
@@ -752,6 +799,10 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     protected Stack<selector_scope> selector_stack = new Stack<>();
 
     public Selector visitSelector(CSSParser.SelectorContext ctx) {
+        if (ctxHasErrorNode(ctx)) {
+            statement_stack.peek().invalid = true;
+            return null;
+        }
         selector_stack.push(new selector_scope());
         cz.vutbr.web.css.Selector sel;
         logEnter("selector");
@@ -774,7 +825,6 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
     /**
      * @param ctx the parse tree
-     * @return null
      */
     @Override
     public Object visitSelpart(CSSParser.SelpartContext ctx) {
@@ -806,23 +856,127 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
             combined_selector_stack.peek().invalid = true;
         }
         logLeave("selpart");
+        //returns null
         return null;
     }
 
 
     @Override
     public Selector.ElementAttribute visitAttribute(CSSParser.AttributeContext ctx) {
-        throw new UnsupportedOperationException("not implemented");
+        //attributes can be like [attr] or [attr operator value]
+        // see http://www.w3.org/TR/CSS2/selector.html#attribute-selectors
+        logEnter("attribute: " + ctx.getText());
+        //initialize attribute
+        String attributeName = extractTextUnescaped(ctx.children.get(0).getText());
+        String value = null;
+        boolean isStringValue = false;
+        Selector.Operator op = Selector.Operator.NO_OPERATOR;
+        List<ParseTree> ctx2 = filterSpaceTokens(ctx.children);
+        //is attribute like [attr=value]
+        if (ctx2.size() == 3) {
+            CommonToken opToken = (CommonToken) ((TerminalNodeImpl) ctx2.get(1)).symbol;
+            isStringValue = (ctx2.get(2) instanceof CSSParser.StringContext);
+            if (isStringValue) {
+                value = ctx2.get(2).getText();
+            } else {
+
+                value = ctx2.get(2).getText();
+            }
+            value = extractTextUnescaped(value);
+            switch (opToken.getType()) {
+                case CSSParser.EQUALS: {
+                    op = Selector.Operator.EQUALS;
+                    break;
+                }
+                case CSSParser.INCLUDES: {
+                    op = Selector.Operator.INCLUDES;
+                    break;
+                }
+                case CSSParser.DASHMATCH: {
+                    op = Selector.Operator.DASHMATCH;
+                    break;
+                }
+                case CSSParser.CONTAINS: {
+                    op = Selector.Operator.CONTAINS;
+                    break;
+                }
+                case CSSParser.STARTSWITH: {
+                    op = Selector.Operator.STARTSWITH;
+                    break;
+                }
+                case CSSParser.ENDSWITH: {
+                    op = Selector.Operator.ENDSWITH;
+                    break;
+                }
+                default: {
+                    op = Selector.Operator.NO_OPERATOR;
+                }
+            }
+        }
+        Selector.ElementAttribute elemAttr = null;
+        if (attributeName != null) {
+            elemAttr = rf.createAttribute(value, isStringValue, op, attributeName);
+        } else {
+            log.debug("Invalid attribute element in selector");
+            combined_selector_stack.peek().invalid = true;
+        }
+        logLeave("attribute");
+
+        return elemAttr;
     }
 
     @Override
     public Selector.PseudoPage visitPseudo(CSSParser.PseudoContext ctx) {
-        throw new UnsupportedOperationException("not implemented");
+        logEnter("pseudo: " + ctx.getText());
+        // childcount == 2
+        //first item is pseudocolon | : or ::
+        Boolean isPseudoElem = ctx.getChild(0).getText().length() != 1;
+        Selector.PseudoPage pseudoPage;
+        String first = extractTextUnescaped(ctx.getChild(1).getText());
+        if (ctx.FUNCTION() == null) {
+            // ident
+            pseudoPage = rf.createPseudoPage(first, null);
+            if (pseudoPage == null || pseudoPage.getDeclaration() == null) {
+                log.error("invalid pseudo declaration: " + first);
+                pseudoPage = null;
+            } else if (isPseudoElem && !pseudoPage.getDeclaration().isPseudoElement()) {
+                log.error("pseudo class cannot be used as pseudo element");
+                pseudoPage = null; //* pseudoClasses are not allowed here *//*
+            }
+        } else {
+            //function
+            if (isPseudoElem) {
+                log.error("pseudo element cannot be used as a function");
+                pseudoPage = null;
+            } else {
+                //function
+                //var first is function name
+                String value = "";
+                if (ctx.IDENT() != null) {
+                    value = ctx.IDENT().getText();
+                } else {
+                    if (ctx.MINUS() != null) {
+                        value = "-";
+                    }
+                    if (ctx.NUMBER() != null) {
+                        value += ctx.NUMBER().getText();
+                    } else if (ctx.INDEX() != null) {
+                        value += ctx.INDEX().getText();
+                    } else {
+                        throw new UnsupportedOperationException("unknown state");
+                    }
+                }
+                pseudoPage = rf.createPseudoPage(value, first);
+            }
+        }
+        logLeave("pseudo");
+        return pseudoPage;
     }
 
     @Override
+    //returns null
     public Object visitPseudocolon(CSSParser.PseudocolonContext ctx) {
-        throw new UnsupportedOperationException("not implemented");
+        return null;
     }
 
     @Override
