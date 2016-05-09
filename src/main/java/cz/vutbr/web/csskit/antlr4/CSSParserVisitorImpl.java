@@ -545,8 +545,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
         if (ctx.noprop() == null && !ctxHasErrorNode(ctx)) {
             if (ctx.important() != null) {
-                decl.setImportant(true);
-                log.debug("IMPORTANT");
+                visitImportant(ctx.important());
             }
             visitProperty(ctx.property());
             if (ctx.terms() != null) {
@@ -572,7 +571,13 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
     @Override
     public Object visitImportant(CSSParser.ImportantContext ctx) {
-        //empty
+        if (ctxHasErrorNode(ctx)) {
+            declaration_stack.peek().invalid = true;
+        } else {
+            declaration_stack.peek().d.setImportant(true);
+            log.debug("IMPORTANT");
+        }
+        //returns null
         return null;
     }
 

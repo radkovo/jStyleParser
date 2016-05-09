@@ -267,7 +267,7 @@ important
     : EXCLAMATION S* IMPORTANT S* //-> IMPORTANT
     ;
     catch [RecognitionException re] {
-        log.error("PARSING IMPORTANT");
+        log.error("PARSING IMPORTANT error");
         IntervalSet intervalSet = new IntervalSet(RCURLY,SEMICOLON);
         this.getCSSErrorHandler().consumeUntil(this,intervalSet);
         _localctx.addErrorNode(this.getTokenFactory().create(INVALID_DIRECTIVE,"INVALID_DIRECTIVE"));
