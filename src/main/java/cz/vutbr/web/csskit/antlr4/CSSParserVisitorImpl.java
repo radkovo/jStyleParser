@@ -177,12 +177,26 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
      */
     @Override
     public RuleBlock<?> visitInlinestyle(CSSParser.InlinestyleContext ctx) {
-//        logEnter("inlineset");
-//        RuleBlock<?> is;
-//        List<Selector.PseudoPage> pplist = new ArrayList<>();
-//
-//        logLeave("inlineset");
-//        return is
+        logEnter("inlinestyle");
+        this.rules = new cz.vutbr.web.csskit.RuleArrayList();
+        if (ctx.declarations() != null) {
+            //declarations
+            List<Declaration> decl = visitDeclarations(ctx.declarations());
+            cz.vutbr.web.css.RuleBlock<?> rb = preparator.prepareInlineRuleSet(decl, null);
+            if (rb != null) {
+                this.rules.add(rb);
+            }
+        } else {
+            //inlineset
+            for (CSSParser.InlinesetContext ctxis : ctx.inlineset()) {
+                cz.vutbr.web.css.RuleBlock<?> irs = visitInlineset(ctxis);
+                if (irs != null) {
+                    this.rules.add(irs);
+                }
+            }
+        }
+        log.debug("\n***\n{}\n***\n", this.rules);
+        logLeave("inlinestyle");
         return null;
     }
 
@@ -334,7 +348,8 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     }
 
     @Override
-    public Object visitInlineset(CSSParser.InlinesetContext ctx) {
+    public cz.vutbr.web.css.RuleBlock<?> visitInlineset(CSSParser.InlinesetContext ctx) {
+        //TODO: implement or delete ?
         return null;
     }
 
