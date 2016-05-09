@@ -189,7 +189,7 @@ media_expression
     //    -> ^(DECLARATION IDENT terms?)
     ;
     catch [RecognitionException re] {
-        log.error("PARSING meida_expression ERROR | consume until RPAREN, SEMICOLON");
+        log.error("PARSING media_expression ERROR | consume until RPAREN, SEMICOLON");
         IntervalSet intervalSet = new IntervalSet(RPAREN, SEMICOLON);
         getCSSErrorHandler().consumeUntilGreedy(this,intervalSet);
         _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,"INVALID_STATEMENT"));

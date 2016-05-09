@@ -219,7 +219,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
      * Statement, main contents unit
      */
     public RuleBlock<?> visitStatement(CSSParser.StatementContext ctx) {
-        if(ctxHasErrorNode(ctx)){
+        if (ctxHasErrorNode(ctx)) {
             return null;
         }
         logEnter("statement: " + ctx.getText());
@@ -426,6 +426,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     @Override
     public MediaExpression visitMedia_expression(CSSParser.Media_expressionContext ctx) {
         logEnter("mediaexpression: " + ctx.getText());
+        if (ctxHasErrorNode(ctx)) {
+            mq.invalid = true;
+        }
         MediaExpression expr = rf.createMediaExpression();
         Declaration decl;
         declaration_stack.push(new declaration_scope());
@@ -441,7 +444,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
             decl.replaceAll(t);
         }
 
-        if (decl != null && !declaration_stack.peek().invalid) { //if the declaration is valid
+        if (declaration_stack.peek().d != null && !declaration_stack.peek().invalid) { //if the declaration is valid
             expr.setFeature(decl.getProperty());
             expr.replaceAll(decl);
         }
@@ -478,7 +481,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
      */
     public RuleBlock<?> visitRuleset(CSSParser.RulesetContext ctx) {
         logEnter("ruleset");
-        if(ctxHasErrorNode(ctx)){
+        if (ctxHasErrorNode(ctx) || ctx.norule() != null) {
             return null;
         }
         List<CombinedSelector> cslist = new ArrayList<>();
@@ -510,14 +513,15 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     public List<Declaration> visitDeclarations(CSSParser.DeclarationsContext ctx) {
         logEnter("declarations");
         List<Declaration> decl = new ArrayList<>();
-        for (CSSParser.DeclarationContext declctx : ctx.declaration()) {
-            Declaration d = visitDeclaration(declctx);
-            if (d != null) {
-                decl.add(d);
-                log.debug("Inserted declaration #{} ", decl.size() + 1);
-            }
-            else{
-                log.debug("Null declaration was omitted");
+        if (ctx.declaration() != null) {
+            for (CSSParser.DeclarationContext declctx : ctx.declaration()) {
+                Declaration d = visitDeclaration(declctx);
+                if (d != null) {
+                    decl.add(d);
+                    log.debug("Inserted declaration #{} ", decl.size() + 1);
+                } else {
+                    log.debug("Null declaration was omitted");
+                }
             }
         }
         logLeave("declarations");
@@ -539,15 +543,18 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
         declaration_stack.peek().d = decl = rf.createDeclaration();
         declaration_stack.peek().invalid = false;
 
-        if (ctx.noprop() == null) {
+        if (ctx.noprop() == null && !ctxHasErrorNode(ctx)) {
             if (ctx.important() != null) {
                 decl.setImportant(true);
                 log.debug("IMPORTANT");
             }
             visitProperty(ctx.property());
-            List<Term<?>> t = visitTerms(ctx.terms());
-            decl.replaceAll(t);
+            if (ctx.terms() != null) {
+                List<Term<?>> t = visitTerms(ctx.terms());
+                decl.replaceAll(t);
+            }
         } else {
+            log.debug("invalidating declaration");
             declaration_stack.peek().invalid = true;
         }
 
@@ -660,6 +667,29 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
     @Override
     public Object visitFunct(CSSParser.FunctContext ctx) {
+        final String fname = extractTextUnescaped(ctx.FUNCTION().getText());
+        List<Term<?>> t = visitTerms(ctx.terms());
+        if (fname.equalsIgnoreCase("url")) {
+            // the function name is url() after escaping - create an URI
+            if (terms_stack.peek().unary == -1 || t == null || t.size() != 1)
+                declaration_stack.peek().invalid = true;
+            else {
+                cz.vutbr.web.css.Term<?> term = t.get(0);
+                if (term instanceof cz.vutbr.web.css.TermString)
+                    terms_stack.peek().term = tf.createURI(((cz.vutbr.web.css.TermString) term).getValue(), extractBase(ctx.FUNCTION()));
+                else
+                    declaration_stack.peek().invalid = true;
+            }
+        } else {
+            // create function
+            cz.vutbr.web.css.TermFunction function = tf.createFunction();
+            function.setFunctionName(fname);
+            if (terms_stack.peek().unary == -1) //if started with minus, add the minus to the function name
+                function.setFunctionName('-' + function.getFunctionName());
+            if (t != null)
+                function.setValue(t);
+            terms_stack.peek().term = function;
+        }
         //returns null
         return null;
     }
@@ -708,6 +738,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
             terms_stack.peek().term = tf.createURI(extractTextUnescaped(ctx.URI().getText()), extractBase(ctx.URI()));
         } else if (ctx.funct() != null) {
             terms_stack.peek().term = null;
+            visitFunct(ctx.funct());
             //served in function
             log.debug("function is server later");
         } else {
