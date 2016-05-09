@@ -356,7 +356,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     @Override
     public List<cz.vutbr.web.css.MediaQuery> visitMedia(CSSParser.MediaContext ctx) {
         logEnter("media: " + ctx.getText());
-        List<MediaQuery> queries = new ArrayList<>();
+        List<MediaQuery> queries = mediaQueryList = new ArrayList<>();
         for (CSSParser.Media_queryContext mqc : ctx.media_query()) {
             queries.add(visitMedia_query(mqc));
         }
