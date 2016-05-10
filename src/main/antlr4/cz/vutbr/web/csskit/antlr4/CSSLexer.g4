@@ -515,7 +515,7 @@ UNCLOSED_STRING_MACR
     | APOS (STRING_CHAR | QUOT {ls.quotOpen=false;} )*
     ;
 
-fragment
+//fragment
 STRING_CHAR
 	:  (URI_CHAR | ' ' | '(' | ')' | ('\\' NL_CHAR))
 	;
