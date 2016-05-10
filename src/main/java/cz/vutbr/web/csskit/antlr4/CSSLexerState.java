@@ -1,7 +1,5 @@
 package cz.vutbr.web.csskit.antlr4;
 
-import cz.vutbr.web.csskit.antlr4.CSSToken;
-
 public class CSSLexerState {
 
     public enum RecoveryMode {
@@ -47,7 +45,7 @@ public class CSSLexerState {
      * curly braces) are balanced
      */
     public boolean isBalanced() {
-        return aposOpen == false && quotOpen == false && curlyNest == 0 && parenNest == 0;
+        return !aposOpen && !quotOpen && curlyNest == 0 && parenNest == 0;
     }
 
     /**
@@ -65,28 +63,25 @@ public class CSSLexerState {
      */
     public boolean isBalanced(RecoveryMode mode, CSSLexerState state, CSSToken t) {
         if (mode == RecoveryMode.BALANCED)
-            return aposOpen == false && quotOpen == false && curlyNest == 0 && parenNest == 0;
+            return !aposOpen && !quotOpen && curlyNest == 0 && parenNest == 0;
         else if (mode == RecoveryMode.FUNCTION)
             return parenNest == 0;
         else if (mode == RecoveryMode.RULE)
-            return aposOpen == false && quotOpen == false && parenNest == 0;
+            return !aposOpen && !quotOpen && parenNest == 0;
         else if (mode == RecoveryMode.DECL) {
             if (t.getType() == CSSLexer.RCURLY) //if '}' is processed the curlyNest has been already decreased
-                return aposOpen == false && quotOpen == false && parenNest == 0 && curlyNest == state.curlyNest - 1;
+                return !aposOpen && !quotOpen && parenNest == 0 && curlyNest == state.curlyNest - 1;
             else
-                return aposOpen == false && quotOpen == false && parenNest == 0 && curlyNest == state.curlyNest;
+                return !aposOpen && !quotOpen && parenNest == 0 && curlyNest == state.curlyNest;
         } else
             return false;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{=").append(curlyNest)
-                .append(", (=").append(parenNest)
-                .append(", '=").append(aposOpen ? "1" : "0")
-                .append(", \"=").append(quotOpen ? "1" : "0");
-
-        return sb.toString();
+        return "{=" + curlyNest +
+                ", (=" + parenNest +
+                ", '=" + (aposOpen ? "1" : "0") +
+                ", \"=" + (quotOpen ? "1" : "0");
     }
 }
