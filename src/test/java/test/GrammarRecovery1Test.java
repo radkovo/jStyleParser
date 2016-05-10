@@ -4,6 +4,7 @@ import cz.vutbr.web.css.*;
 import cz.vutbr.web.css.CSSProperty.FontFamily;
 import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.StyleMap;
+import org.antlr.v4.codegen.model.decl.Decl;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -139,6 +140,45 @@ public class GrammarRecovery1Test {
 	}
 
 	@Test
+	public void decl1() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parseString(TEST_DECL1, null);
+		assertEquals("Contains one ruleset", 1, ss.size());
+		assertEquals("Ruleset contains 2 rules", 2, ss.get(0).size());
+        assertEquals("First rule is color red", tf.createColor("#ff0000"), ((Declaration) ss.get(0).get(0)).get(0));
+        assertEquals("Second rule is color green", tf.createColor("#008000"), ((Declaration) ss.get(0).get(1)).get(0));
+	}
+    @Ignore
+    // TODO:
+    //	@Test
+    //test is failing due to grammar declaration: : property COLON S* terms? important?
+    // - terms could be possibly empty but in CSS2.1 cannot!
+    //https://www.w3.org/TR/CSS21/grammar.html#grammar
+    //vs. https://www.w3.org/TR/css-syntax-3/#declaration-diagram
+	public void decl2() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parseString(TEST_DECL2, null);
+        assertEquals("Contains one ruleset", 1, ss.size());
+        assertEquals("Ruleset contains 1 rule", 1, ss.get(0).size());
+        assertEquals("First rule is color green", tf.createColor("#008000"), ((Declaration) ss.get(0).get(0)).get(0));
+	}
+    @Ignore
+    // TODO:
+    //	@Test
+    //same as decl2
+	public void decl3() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parseString(TEST_DECL3, null);
+        assertEquals("Contains one ruleset", 1, ss.size());
+        assertEquals("Ruleset contains 2 rules", 2, ss.get(0).size());
+        assertEquals("First rule is color red", tf.createColor("#ff0000"), ((Declaration) ss.get(0).get(0)).get(0));
+        assertEquals("Second rule is color green", tf.createColor("#008000"), ((Declaration) ss.get(0).get(1)).get(0));
+	}
+	@Test
+	public void decl4() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parseString(TEST_DECL4, null);
+        assertEquals("Contains one ruleset", 1, ss.size());
+        assertEquals("Ruleset contains 1 rule", 1, ss.get(0).size());
+        assertEquals("First rule is color green", tf.createColor("#008000"), ((Declaration) ss.get(0).get(0)).get(0));
+	}
+	@Test
 	public void noTerms() throws IOException, CSSException {
 
 		StyleSheet ss = CSSFactory.parseString(TEST_DECL5, null);
@@ -202,7 +242,7 @@ public class GrammarRecovery1Test {
 		Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
 
 	}
-	
+
 	@Test
 	public void invalidSemicolon() throws IOException, CSSException {
 		StyleSheet ss = CSSFactory.parseString(TEST_INVALID_SEMICOLON, null);
