@@ -2,9 +2,6 @@ package cz.vutbr.web.csskit.antlr4;
 
 import cz.vutbr.web.css.*;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.ParseTreeListener;
-import org.antlr.v4.runtime.tree.ParseTreeVisitor;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.fit.net.DataURLHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,14 +172,15 @@ public class CSSParserFactory {
 
         CSSInputStream input = getInput(source, network, encoding, type);
         input.setBase(base);
+        CSSErrorListener errorListener = new CSSErrorListener();
         CSSLexer lexer = new CSSLexer(input);
         lexer.init();
         lexer.removeErrorListeners();
-        lexer.addErrorListener(new CSSLexerErrorListener());
+        lexer.addErrorListener(errorListener);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         CSSParser parser = new CSSParser(tokens);
         parser.removeErrorListeners();
-        parser.addErrorListener(new CSSParserErrorListener());
+        parser.addErrorListener(errorListener);
         parser.setErrorHandler(new CSSErrorStrategy());
         return parser;
 
@@ -241,13 +239,14 @@ public class CSSParserFactory {
             CSSInputStream input = CSSInputStream.stringStream(query);
             input.setBase(new URL("file://media/query/url")); //this URL should not be used, just for safety
             CSSLexer lexer = new CSSLexer(input);
+            CSSErrorListener errorListener = new CSSErrorListener();
             lexer.init();
             lexer.removeErrorListeners();
-            lexer.addErrorListener(new CSSLexerErrorListener());
+            lexer.addErrorListener(errorListener);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             CSSParser parser = new CSSParser(tokens);
             parser.removeErrorListeners();
-            parser.addErrorListener(new CSSParserErrorListener());
+            parser.addErrorListener(errorListener);
             parser.setErrorHandler(new CSSErrorStrategy());
             CSSParserExtractor extractor;
             CSSParser.MediaContext tree = parser.media();
