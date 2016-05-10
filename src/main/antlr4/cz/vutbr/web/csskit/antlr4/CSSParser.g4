@@ -335,29 +335,29 @@ funct
 
 /** a part of a property value */
 valuepart
-    : ( MINUS? IDENT  //-> MINUS? IDENT
-      | CLASSKEYWORD //-> CLASSKEYWORD
-      | (PLUS | MINUS)? NUMBER //-> MINUS? NUMBER
-      | (PLUS | MINUS)? PERCENTAGE //-> MINUS? PERCENTAGE
-      | (PLUS | MINUS)? DIMENSION //-> MINUS? DIMENSION
-      | string //-> string
-      | URI    //-> URI
-      | HASH //-> HASH
-      | UNIRANGE //-> UNIRANGE
-      | INCLUDES //-> INCLUDES
-      | COLON //-> COLON
-      | COMMA //-> COMMA
-      | GREATER //-> GREATER
-      | LESS //-> LESS
-      |	QUESTION //-> QUESTION
-      | PERCENT //-> PERCENT
-      | EQUALS //-> EQUALS
-      | SLASH //-> SLASH
-	  | ASTERISK //-> ASTERISK
-      | (PLUS | MINUS)? funct //-> MINUS? funct
-      | DASHMATCH //-> DASHMATCH
-      | LPAREN valuepart* RPAREN //-> ^(PARENBLOCK valuepart*)
-      | LBRACE valuepart* RBRACE //-> ^(BRACEBLOCK valuepart*)
+    : ( MINUS? IDENT
+        | (PLUS | MINUS)? NUMBER
+        | (PLUS | MINUS)? PERCENTAGE
+        | (PLUS | MINUS)? DIMENSION
+        | string
+        | URI
+        | HASH
+        | (PLUS | MINUS)? funct
+        | COMMA
+        | SLASH
+        | CLASSKEYWORD //invalid
+        | UNIRANGE //invalid
+        | INCLUDES //invalid
+        | COLON //invalid
+        | GREATER //invalid
+        | LESS //invalid
+        | QUESTION //invalid
+        | PERCENT //invalid
+        | EQUALS //invalid
+	    | ASTERISK //invalid
+        | DASHMATCH //invalid
+        | LPAREN valuepart* RPAREN //invalid
+        | LBRACE valuepart* RBRACE //invalid
     ) S*
     ;
 	catch [RecognitionException re] {
