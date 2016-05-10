@@ -5,7 +5,6 @@ package cz.vutbr.web.csskit.antlr4;
 
 import cz.vutbr.web.css.NetworkProcessor;
 import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.misc.Interval;
 
 import java.io.*;
 import java.net.URL;
@@ -18,10 +17,6 @@ import java.nio.charset.Charset;
  * @author kapy
  */
 public class CSSInputStream extends ANTLRInputStream {
-    private enum StreamType {
-        STRING,
-        URL
-    }
 
     /**
      * ANTLR input
@@ -58,7 +53,6 @@ public class CSSInputStream extends ANTLRInputStream {
      */
     private String encoding;
 
-    private StreamType streamType;
 
     public static CSSInputStream stringStream(String source) throws IOException {
         InputStream is = new ByteArrayInputStream(source.getBytes());
@@ -70,15 +64,14 @@ public class CSSInputStream extends ANTLRInputStream {
         stream.encoding = encoding;
         //stream.source = is;
         stream.input = stream;
-        stream.streamType = StreamType.STRING;
 
         return stream;
     }
 
     public static CSSInputStream urlStream(URL source, NetworkProcessor network, String encoding) throws IOException {
         InputStream is = network.fetch(source);
-        if (encoding == null){
-            encoding =Charset.defaultCharset().name();
+        if (encoding == null) {
+            encoding = Charset.defaultCharset().name();
         }
         BufferedReader br = new BufferedReader(
                 new InputStreamReader(is, encoding));
@@ -91,7 +84,6 @@ public class CSSInputStream extends ANTLRInputStream {
         stream.encoding = encoding;
         stream.source = is;
         stream.input = stream;
-        stream.streamType = StreamType.URL;
         return stream;
     }
 
@@ -99,6 +91,7 @@ public class CSSInputStream extends ANTLRInputStream {
     // force using factory methods
     private CSSInputStream() {
     }
+
     private CSSInputStream(Reader r) throws IOException {
         super(r);
     }
@@ -154,14 +147,7 @@ public class CSSInputStream extends ANTLRInputStream {
             if (!current.equalsIgnoreCase(enc)) {
                 source.close();
                 encoding = enc;
-                CSSInputStream newstream;
-//                if (streamType == StreamType.STRING) {
-//                    throw new UnsupportedOperationException("Cannot set encoding to string");
-//
-//                } else {
-                    newstream = urlStream(url, network, encoding);
-//                }
-
+                CSSInputStream newstream = urlStream(url, network, encoding);
                 input = newstream.input;
             }
         }
@@ -173,12 +159,6 @@ public class CSSInputStream extends ANTLRInputStream {
     public String getRawData() {
         return rawData;
     }
-
-
-    /*@Override
-    public String getText(Interval interval) {
-        return null;
-    }*/
 
     @Override
     public String toString() {
