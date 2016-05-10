@@ -177,10 +177,8 @@ public class CSSParserFactory {
         input.setBase(base);
         CSSLexer lexer = new CSSLexer(input);
         lexer.init();
-//        ANTLRErrorListener lexErr = new CSSLexerErrorListener();
-//        lexer.removeErrorListeners();
-//        lexer.getErrorListeners();
-        lexer.addErrorListener(CSSLexerErrorListener.INSTANCE);
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(new CSSLexerErrorListener());
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         CSSParser parser = new CSSParser(tokens);
         parser.removeErrorListeners();
@@ -244,7 +242,8 @@ public class CSSParserFactory {
             input.setBase(new URL("file://media/query/url")); //this URL should not be used, just for safety
             CSSLexer lexer = new CSSLexer(input);
             lexer.init();
-            lexer.addErrorListener(CSSLexerErrorListener.INSTANCE);
+            lexer.removeErrorListeners();
+            lexer.addErrorListener(new CSSLexerErrorListener());
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             CSSParser parser = new CSSParser(tokens);
             parser.removeErrorListeners();
