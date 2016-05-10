@@ -113,7 +113,7 @@ import_uri
     }
 
 page
-	: PAGE S* (( IDENT | IDENT page_pseudo | page_pseudo) S*) ?
+	: PAGE S* IDENT? page_pseudo? S*
 		LCURLY S*
 		declarations margin_rule*
 		RCURLY
