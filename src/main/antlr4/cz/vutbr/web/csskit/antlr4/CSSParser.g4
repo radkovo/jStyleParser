@@ -238,7 +238,6 @@ ruleset
 
 declarations
 	: declaration? (SEMICOLON S* declaration? )*
-	  //-> ^(SET declaration*)
 	;
     catch [RecognitionException re] {
         log.error("Recognition exception | declarations | should be empty");
@@ -359,7 +358,7 @@ valuepart
       | DASHMATCH //-> DASHMATCH
       | LPAREN valuepart* RPAREN //-> ^(PARENBLOCK valuepart*)
       | LBRACE valuepart* RBRACE //-> ^(BRACEBLOCK valuepart*)
-    ) S*//!S*
+    ) S*
     ;
 	catch [RecognitionException re] {
 	   log.error("Recognition exception | valuepart | should be empty");
@@ -407,8 +406,8 @@ selpart
 	  }
 
 attribute
-	: IDENT S*//S!*
-	  ((EQUALS | INCLUDES | DASHMATCH | STARTSWITH | ENDSWITH | CONTAINS) S*/*!**/ (IDENT | string) S*/*!**/)?
+	: IDENT S*
+	  ((EQUALS | INCLUDES | DASHMATCH | STARTSWITH | ENDSWITH | CONTAINS) S* (IDENT | string) S*)?
 	;
     catch [RecognitionException re] {
         log.error("ATTRIBUTE ERROR");
@@ -471,7 +470,7 @@ any
       | DASHMATCH //-> DASHMATCH
       | LPAREN any* RPAREN //-> ^(PARENBLOCK any*)
       | LBRACE any* RBRACE //-> ^(BRACEBLOCK any*)
-    ) S*//!S*
+    ) S*
     ;
     catch [RecognitionException re] {
         log.error("PARSING any ERROR | should be empty");
@@ -508,7 +507,7 @@ noprop
 	   | STRING_CHAR //-> STRING_CHAR
        | CTRL //-> CTRL
 	   | INVALID_TOKEN //-> INVALID_TOKEN
-    ) S*//!S*
+    ) S*
     ;
     catch [RecognitionException re] {
         log.error("PARSING noprop ERROR | should be empty");
