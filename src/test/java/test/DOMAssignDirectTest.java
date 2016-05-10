@@ -1,15 +1,14 @@
 package test;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
+import cz.vutbr.web.css.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -17,15 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import cz.vutbr.web.css.CSSException;
-import cz.vutbr.web.css.CSSFactory;
-import cz.vutbr.web.css.CSSProperty;
-import cz.vutbr.web.css.NodeData;
-import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.TermColor;
-import cz.vutbr.web.css.TermFactory;
-import cz.vutbr.web.css.TermLength;
-import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.domassign.DirectAnalyzer;
 import cz.vutbr.web.domassign.StyleMap;
@@ -39,6 +29,20 @@ public class DOMAssignDirectTest {
 	public static void init() throws SAXException, IOException {
 		log.info("\n\n\n == DOMAssignDirect test at {} == \n\n\n", new Date());
 	}
+
+    @Test
+    /**
+     * checks if linked stylesheets are parsed
+     */
+    public void linkedStyleTest() throws SAXException, IOException {
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/domassign/linkedStyle.html"));
+        Document doc = ds.parse();
+        StyleSheet style = CSSFactory.getUsedStyles(doc, null, getClass().getResource("/domassign/linkedStyle.html"), "screen");
+        assertEquals("There is one rule", 1, style.size());
+        assertEquals("There is one declaration in rule", 1, style.get(0).size());
+        assertEquals("Declaration contains one term", 1, ((Declaration) style.get(0).get(0)).size());
+        assertEquals("Declaration is red color", tf.createColor("#ff0000"), ((Declaration) style.get(0).get(0)).get(0));
+    }
 
 	@Test
 	public void basic() throws SAXException, IOException {
