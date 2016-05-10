@@ -130,6 +130,7 @@ page_pseudo
         log.error("Recognition exception | page_pseudo | should be empty");
     }
 
+/** CSS3 margin-at-rule - see https://drafts.csswg.org/css-page-3/#margin-at-rules */
 margin_rule
 	: MARGIN_AREA S* LCURLY S* declarations RCURLY S* //-> ^(MARGIN_AREA declarations)
 	;

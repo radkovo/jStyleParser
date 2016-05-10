@@ -344,7 +344,13 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
     @Override
     public RuleMargin visitMargin_rule(CSSParser.Margin_ruleContext ctx) {
-        return null;
+        logEnter("margin_rule");
+        RuleMargin m;
+        String area = ctx.MARGIN_AREA().getText();
+        List<Declaration> decl = visitDeclarations(ctx.declarations());
+        m = preparator.prepareRuleMargin(extractTextUnescaped(area).substring(1), decl);
+        logLeave("margin_rule");
+        return m;
     }
 
     @Override
@@ -687,8 +693,8 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
     @Override
     public Object visitFunct(CSSParser.FunctContext ctx) {
-        if(ctx.EXPRESSION() != null){
-            log.warn("Omitting expression " + ctx.getText()+", expressions are not supported");
+        if (ctx.EXPRESSION() != null) {
+            log.warn("Omitting expression " + ctx.getText() + ", expressions are not supported");
             //invalidate declaration
             declaration_stack.peek().invalid = true;
             return null;
