@@ -687,6 +687,12 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
     @Override
     public Object visitFunct(CSSParser.FunctContext ctx) {
+        if(ctx.EXPRESSION() != null){
+            log.warn("Omitting expression " + ctx.getText()+", expressions are not supported");
+            //invalidate declaration
+            declaration_stack.peek().invalid = true;
+            return null;
+        }
         final String fname = extractTextUnescaped(ctx.FUNCTION().getText());
         List<Term<?>> t = visitTerms(ctx.terms());
         if (fname.equalsIgnoreCase("url")) {

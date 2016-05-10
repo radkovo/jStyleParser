@@ -326,8 +326,8 @@ funct
     @after {
         functLevel--;
     }
-    : EXPRESSION //-> EXPRESSION
-	| FUNCTION S* terms? RPAREN //-> ^(FUNCTION terms?)
+    : EXPRESSION S* (any | SEMICOLON S*)* RPAREN //=>invalid declaration - expression function is no longer supported
+	| FUNCTION S* terms? RPAREN
 	;
     catch [RecognitionException re] {
         log.error("Recognition exception | funct | should be empty");
@@ -361,26 +361,22 @@ valuepart
     ) S*//!S*
     ;
 	catch [RecognitionException re] {
-	  log.error("THROWING valuepart ERROR / TODO:");
-//	  throw re;
-//	  reportError(re);
-//      recover(input,re);
+	   log.error("Recognition exception | valuepart | should be empty");
 	}
 
 combined_selector
 	: selector ((combinator) selector)*
 	;
 	catch [RecognitionException re] {
-	  log.error("PARSING COMBINED_SELECTOR ERROR / TODO:");
-//	  reportError(re);
-//      recover(input,re);
+	  log.error("Recognition exception | combined_selector | should be empty");
 	}
 
+//combinator of selectors
 combinator
-	: GREATER S* //#combinatorChild
-	| PLUS S* //#combinatorAdjacent
-	| TILDE S* //#combinatorPreceding
-	| S //#combinatorDescendant
+	: GREATER S* //child combinator
+	| PLUS S* //adjacent combinator
+	| TILDE S* //preceding combinator
+	| S //descendant combinator
     ;
     catch [RecognitionException re] {
         log.error("Recognition exception | combinator| should be empty");
@@ -389,15 +385,12 @@ combinator
 
 selector
     : (IDENT | ASTERISK)  selpart* S*
-    	//-> ^(SELECTOR ^(ELEMENT IDENT?) selpart*)
     | selpart+ S*
-        //-> ^(SELECTOR selpart+)
     ;
     catch [RecognitionException re] {
         log.error("PARSING selector ERROR | inserting INVALID_SELECTOR");
         _localctx.addErrorNode(this.getTokenFactory().create(INVALID_SELECTOR,"INVALID_SELECTOR"));
-//      retval.tree = tnr.invalidFallback(INVALID_SELECTOR, "INVALID_SELECTOR", re);
-	  }
+    }
 
 selpart
     :  HASH //#selpartId

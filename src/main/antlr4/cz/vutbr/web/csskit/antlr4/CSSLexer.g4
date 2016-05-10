@@ -71,7 +71,6 @@ tokens {
       */
     protected cz.vutbr.web.csskit.antlr4.CSSTokenFactory tf;
     protected cz.vutbr.web.csskit.antlr4.CSSTokenRecovery tr;
-    protected cz.vutbr.web.csskit.antlr4.CSSExpressionReader er;
 
     /**
      * This function must be called to initialize lexer's state.
@@ -84,7 +83,6 @@ tokens {
         //initialize CSSTokenFactory
         this.tf = new cz.vutbr.web.csskit.antlr4.CSSTokenFactory(_tokenFactorySourcePair, this, ls, getClass());
         this.tr = new cz.vutbr.web.csskit.antlr4.CSSTokenRecovery(this, _input, ls, log);
-        this.er = new cz.vutbr.web.csskit.antlr4.CSSExpressionReader(_input, log);
     }
 
     @Override
@@ -420,10 +418,9 @@ SL_COMMENT
 	: '//' .*? ('\n' | '\r' ) -> channel(HIDDEN)
 	;
 
-/** Expression function */
+/** Expression function - no longer supported*/
 EXPRESSION
   : 'expression('
-//  { er.read(); }
   ;
   
 /** Other Function beginning */	
