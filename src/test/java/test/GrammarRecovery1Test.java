@@ -67,7 +67,7 @@ public class GrammarRecovery1Test {
 	public static final String TEST_INVALID_SEMICOLON =	" h1 { color: red; } ; h3 { color: blue; }";
 
 	//declaration with no value
-	public static final String TEST_NO_VALUE = "#menu { background-color: #afa; null; color: red; }";
+	public static final String TEST_NO_VALUE = "#menu { background-color: #afa; null; color: red; } a{color:blue;}";
 
 	//declaration with curlyblock
 	public static final String TEST_VALUE_CURLY = "#menu { background-color: #afa; color:{blue}; color: red; } a{color:blue;}";
@@ -210,39 +210,43 @@ public class GrammarRecovery1Test {
 		Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
 
 	}
-	
+
+	private void assertDeclarationValueRecovery(StyleSheet ss){
+		RuleBlock rb = ss.get(0);
+		Declaration d = (Declaration) rb.get(1);
+		Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
+		Assert.assertEquals("There are two declarations in the first rule", 2, ss.get(0).size());
+		Assert.assertEquals("Second declaration is color: red ", tf.createColor("#ff0000"), d.get(0));
+		Assert.assertEquals("There are one declaration in the second rule", 1, ss.get(1).size());
+	}
     @Test
     public void declarationNoValue() throws IOException, CSSException {
         StyleSheet ss = CSSFactory.parseString(TEST_NO_VALUE, null);
-
-        Assert.assertEquals("Stylesheet contains one rule", 1, ss.size());
-        Assert.assertEquals("There are two declarations in the rule", 2, ss.get(0).size());
-
+		assertDeclarationValueRecovery(ss);
     }
 
 	@Test
 	public void declarationValueCurly() throws IOException, CSSException {
 		StyleSheet ss = CSSFactory.parseString(TEST_VALUE_CURLY, null);
-
-        RuleBlock rb = ss.get(0);
-        Declaration d = (Declaration) rb.get(1);
-        Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
-        Assert.assertEquals("There are two declarations in the first rule", 2, ss.get(0).size());
-        Assert.assertEquals("Second declaration is color: red ", tf.createColor("#ff0000"), d.get(0));
-        Assert.assertEquals("There are one declaration in the second rule", 1, ss.get(1).size());
-
+		assertDeclarationValueRecovery(ss);
 	}
 
 	@Test
 	public void declarationValueAtKeyword() throws IOException, CSSException {
 		StyleSheet ss = CSSFactory.parseString(TEST_TERM_VALUE_ATKEYWORD, null);
-		RuleBlock rb = ss.get(0);
-		Declaration d = (Declaration) rb.get(1);
-        Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
-        Assert.assertEquals("There are two declarations in the first rule", 2, ss.get(0).size());
-        Assert.assertEquals("Second declaration is color: red ", tf.createColor("#ff0000"), d.get(0));
-        Assert.assertEquals("There are one declaration in the second rule", 1, ss.get(1).size());
+		assertDeclarationValueRecovery(ss);
+	}
 
+	@Test
+	public void declarationValueBraceblock() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parseString(TEST_TERM_VALUE_BRACEBLOCK, null);
+		assertDeclarationValueRecovery(ss);
+	}
+
+	@Test
+	public void declarationValueParenblock() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parseString(TEST_TERM_VALUE_PARENBLOCK, null);
+		assertDeclarationValueRecovery(ss);
 	}
 
 }
