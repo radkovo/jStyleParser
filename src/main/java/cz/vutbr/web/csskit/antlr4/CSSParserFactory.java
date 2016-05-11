@@ -166,63 +166,52 @@ public class CSSParserFactory {
         return addRulesToStyleSheet(extractor.getRules(), sheet);
     }
 
-    // creates the tree parser
+    // creates the parser
     private static CSSParser createParser(Object source, NetworkProcessor network, String encoding, SourceType type,
                                           URL base) throws IOException, CSSException {
 
         CSSInputStream input = getInput(source, network, encoding, type);
         input.setBase(base);
+        return createParserForInput(input);
+    }
+    private static CSSParser createParserForInput(CSSInputStream input){
+        // error listener
         CSSErrorListener errorListener = new CSSErrorListener();
+        // lexer
         CSSLexer lexer = new CSSLexer(input);
         lexer.init();
         lexer.removeErrorListeners();
         lexer.addErrorListener(errorListener);
+        // token stream
         CommonTokenStream tokens = new CommonTokenStream(lexer);
+        // parser
         CSSParser parser = new CSSParser(tokens);
         parser.removeErrorListeners();
         parser.addErrorListener(errorListener);
         parser.setErrorHandler(new CSSErrorStrategy());
         return parser;
-
-//        CommonTokenStream tokens = feedLexer(input);
-//        CommonTree ast = feedParser(tokens, type);
-//        return feedAST(tokens, ast, preparator, media);
     }
 
     private static CSSParserExtractor parse(CSSParser parser, SourceType type, Preparator preparator,
                                             List<MediaQuery> media) throws CSSException {
         ParserRuleContext tree;
         CSSParserVisitorImpl visitor = new CSSParserVisitorImpl(preparator, media);
-//        CSSParserListenerImpl extractor = new CSSParserListenerImpl(preparator, media);
         switch (type) {
             case INLINE:
                 tree = parser.inlinestyle();
                 visitor.visitInlinestyle((CSSParser.InlinestyleContext) tree);
                 break;
             case EMBEDDED:
-//                try {
                 tree = parser.stylesheet();
                 visitor.visitStylesheet((CSSParser.StylesheetContext) tree);
-//                } catch (RuntimeException re) {
-//                    throw encapsulateException(re,
-//                            "Unable to parse embedded CSS style [AST]");
-//                }
                 break;
             case URL:
-//                try {
                 tree = parser.stylesheet();
                 visitor.visitStylesheet((CSSParser.StylesheetContext) tree);
-//                } catch (RuntimeException re) {
-//                    throw encapsulateException(re,
-//                            "Unable to parse file CSS style [AST]");
-//                }
                 break;
             default:
                 throw new RuntimeException("Coding error");
         }
-//        ParseTreeWalker walker = new ParseTreeWalker(); // create standard walker
-//        walker.walk(extractor, tree); // initiate walk of tree with listener
-//        return extractor;
         return visitor;
     }
 
@@ -235,32 +224,14 @@ public class CSSParserFactory {
      */
     public List<MediaQuery> parseMediaQuery(String query) {
         try {
-            //input from string
+            // input from string
             CSSInputStream input = CSSInputStream.stringStream(query);
             input.setBase(new URL("file://media/query/url")); //this URL should not be used, just for safety
-            CSSLexer lexer = new CSSLexer(input);
-            CSSErrorListener errorListener = new CSSErrorListener();
-            lexer.init();
-            lexer.removeErrorListeners();
-            lexer.addErrorListener(errorListener);
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
-            CSSParser parser = new CSSParser(tokens);
-            parser.removeErrorListeners();
-            parser.addErrorListener(errorListener);
-            parser.setErrorHandler(new CSSErrorStrategy());
-            CSSParserExtractor extractor;
-            CSSParser.MediaContext tree = parser.media();
-            // listner use
-//            ParseTreeWalker walker = new ParseTreeWalker(); // create standard walker
-//            CSSParserListenerImpl listener = new CSSParserListenerImpl();
-//            walker.walk(listener, tree); // initiate walk of tree with listener
-//            extractor = listener;
-            // visitor use
+            // create parser
+            CSSParser parser = createParserForInput(input);
+            // visitor
             CSSParserVisitorImpl visitor = new CSSParserVisitorImpl();
-            visitor.visitMedia(tree);
-            extractor = visitor;
-
-            return extractor.getMedia();
+            return visitor.visitMedia(parser.media());
         } catch (IOException e) {
             log.error("I/O error during media query parsing: {}", e.getMessage());
             return null;
