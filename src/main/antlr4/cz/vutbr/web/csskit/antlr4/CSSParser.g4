@@ -200,7 +200,7 @@ media_expression
 
 media_rule
     : ruleset
-    | atstatement //-> INVALID_STATEMENT
+    | atstatement //invalid statement
     ;
     catch [RecognitionException re] {
         log.error("Recognition exception | media_rule | should be empty");
@@ -544,7 +544,6 @@ norule
     }
 
 /** invalid start of a media query */
-//sedlakr - hotovo
 nomediaquery
   : ( NUMBER
     | PERCENTAGE
