@@ -66,8 +66,8 @@ options {
 }
 inlinestyle
 	: S*  (
-	        declarations //-> ^(INLINESTYLE declarations)
-            | inlineset+ //-> ^(INLINESTYLE inlineset+)
+	        declarations
+            | inlineset+
 	      )
 	;
     catch [RecognitionException re] {
@@ -117,14 +117,13 @@ page
 		LCURLY S*
 		declarations margin_rule*
 		RCURLY
-		//-> ^(PAGE IDENT? page_pseudo? declarations ^(SET margin_rule*))
 	;
     catch [RecognitionException re] {
         log.error("Recognition exception | page | should be empty");
     }
 
 page_pseudo
-	: pseudocolon//^ IDENT
+	: pseudocolon
 	;
     catch [RecognitionException re] {
         log.error("Recognition exception | page_pseudo | should be empty");
@@ -132,7 +131,7 @@ page_pseudo
 
 /** CSS3 margin-at-rule - see https://drafts.csswg.org/css-page-3/#margin-at-rules */
 margin_rule
-	: MARGIN_AREA S* LCURLY S* declarations RCURLY S* //-> ^(MARGIN_AREA declarations)
+	: MARGIN_AREA S* LCURLY S* declarations RCURLY S*
 	;
     catch [RecognitionException re] {
         log.error("Recognition exception | margin_rule | should be empty");
@@ -145,7 +144,6 @@ inlineset
       LCURLY
 	  	declarations
 	  RCURLY
-	 // -> ^(RULE pseudo* declarations)
 	;
     catch [RecognitionException re] {
         log.error("Recognition exception | inlineset | should be empty");
@@ -154,7 +152,6 @@ inlineset
 
 media
     : media_query (COMMA S* media_query)*
-    //-> ^(MEDIA_QUERY media_query)+
     ;
     catch [RecognitionException re] {
         log.error("PARSING MEDIA ERROR | consume until COMMA, LCURLY, SEMICOLON");
@@ -174,7 +171,7 @@ media_query
 
 media_term
     : (IDENT | media_expression)
-    | nomediaquery //hotovo
+    | nomediaquery
     ;
     catch [RecognitionException re] {
         log.error("PARSING MEDIATERM ERROR | consume until COMMA, LCURLY, SEMICOLON");
@@ -187,7 +184,6 @@ media_term
 
 media_expression
     : LPAREN S* IDENT S* (COLON S* terms)? RPAREN
-    //    -> ^(DECLARATION IDENT terms?)
     ;
     catch [RecognitionException re] {
         log.error("PARSING media_expression ERROR | consume until RPAREN, SEMICOLON");
@@ -207,7 +203,7 @@ media_rule
     }
 
 unknown_atrule
-    : ATKEYWORD S* any* LCURLY S* any* RCURLY //-> INVALID_ATSTATEMENT
+    : ATKEYWORD S* any* LCURLY S* any* RCURLY //invalid atstatement
     ;
     catch [RecognitionException re] {
         log.error("PARSING unknown_atrule ERROR - consume until RCURLY");
@@ -223,8 +219,7 @@ ruleset
 	  LCURLY S*
 	  	declarations
 	  RCURLY
-	  //-> ^(RULE combined_selector+ declarations)
-	| norule //-> INVALID_STATEMENT
+	| norule // invalid statement
 	;
     catch [RecognitionException re] {
 	    log.debug("PARSING ruleset ERROR | consume until RCURLY and add INVALID_STATEMENT");
@@ -249,8 +244,8 @@ declaration
       CSSLexerState begin = getCurrentLexerState(_localctx.getStart());
       log.debug("Decl begin: " + begin);
     }
-	: property COLON S* terms? important? //-> ^(DECLARATION important? property terms?)
-	| noprop any* //-> INVALID_DECLARATION /* if first character in the declaration is invalid (various dirty hacks) */
+	: property COLON S* terms? important?
+	| noprop any* // invalid declaration /* if first character in the declaration is invalid (various dirty hacks) */
 	;
 	catch [RecognitionException re] {
         log.error("PARSING declaration ERROR | consume until SEMICOLON, RCURLY");
@@ -264,7 +259,7 @@ declaration
 	}
 
 important
-    : EXCLAMATION S* IMPORTANT S* //-> IMPORTANT
+    : EXCLAMATION S* IMPORTANT S*
     ;
     catch [RecognitionException re] {
         log.error("PARSING IMPORTANT error");
@@ -275,7 +270,6 @@ important
 //      retval.tree = tnr.invalidFallback(INVALID_DIRECTIVE, "INVALID_DIRECTIVE", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.RULE, null, re);
     }
 
-//done
 property
 	: MINUS? IDENT S*
 	;
@@ -285,7 +279,6 @@ property
 
 terms
 	: term+
-	//-> ^(VALUE term+)
 	;
     catch [RecognitionException re] {
         log.error("PARSING terms ERROR functLevel = {}", functLevel);
@@ -310,9 +303,9 @@ terms
     }
 
 term
-    : valuepart #termValuePart//-> valuepart
-    | LCURLY S* (any | SEMICOLON S*)* RCURLY #termInvalid//-> CURLYBLOCK
-    | ATKEYWORD S* #termInvalid//-> ATKEYWORD
+    : valuepart #termValuePart
+    | LCURLY S* (any | SEMICOLON S*)* RCURLY #termInvalid // invalid term
+    | ATKEYWORD S* #termInvalid // invalid term
     ;
     catch [RecognitionException re] {
       log.error("PARSING term ERROR | should be empty");
@@ -326,7 +319,7 @@ funct
     @after {
         functLevel--;
     }
-    : EXPRESSION S* (any | SEMICOLON S*)* RPAREN //=>invalid declaration - expression function is no longer supported
+    : EXPRESSION S* (any | SEMICOLON S*)* RPAREN // invalid declaration - expression function is no longer supported
 	| FUNCTION S* terms? RPAREN
 	;
     catch [RecognitionException re] {
@@ -393,11 +386,11 @@ selector
     }
 
 selpart
-    :  HASH //#selpartId
-    | CLASSKEYWORD //#selpartClass
-	| LBRACE S* attribute RBRACE //#selpartAttrib //-> ^(ATTRIBUTE attribute)
-    | pseudo //#selpartPseudo
-    | INVALID_SELPART //#selpartInvalid
+    : HASH
+    | CLASSKEYWORD
+	| LBRACE S* attribute RBRACE
+    | pseudo
+    | INVALID_SELPART // invalid selpart
     ;
     catch [RecognitionException re] {
         log.error("PARSING SELPART ERROR");
@@ -410,8 +403,7 @@ attribute
 	  ((EQUALS | INCLUDES | DASHMATCH | STARTSWITH | ENDSWITH | CONTAINS) S* (IDENT | string) S*)?
 	;
     catch [RecognitionException re] {
-        log.error("ATTRIBUTE ERROR");
-    //    throw re;
+        log.error("Recognition exception | attribute | should be empty");
      }
 
 pseudo
@@ -423,10 +415,9 @@ pseudo
     //     retval.tree = tnr.invalidFallback(INVALID_SELPART, "INVALID_SELPART", re);
     }
 
-//pseudoElem| pseudoClass vyreseno zatim v metode enterPseudo ctx.getChild(0).getText().length() != 1
 pseudocolon
-	: COLON COLON //#pseudoElem //-> PSEUDOELEM
-	| COLON //#pseudoClass//-> PSEUDOCLASS
+	: COLON COLON // pseudo element
+	| COLON // pseudo class
 	;
     catch [RecognitionException re] {
         log.error("PARSING pseudocolon ERROR | should be empty");
@@ -444,32 +435,32 @@ string
 
 
 any
-	: ( IDENT //-> IDENT
-	  | CLASSKEYWORD //-> CLASSKEYWORD
-	  | NUMBER //-> NUMBER
-	  | PERCENTAGE //->PERCENTAGE
-	  | DIMENSION //-> DIMENSION
-	  | string //-> string
-      | URI    //-> URI
-      | HASH //-> HASH
-      | UNIRANGE //-> UNIRANGE
-      | INCLUDES //-> INCLUDES
-      | COLON //-> COLON
-      | COMMA //-> COMMA
-      | GREATER //-> GREATER
-      | LESS //-> LESS
-      |	QUESTION //-> QUESTION
-      | PERCENT //-> PERCENT
-      | EQUALS //-> EQUALS
-      | SLASH //-> SLASH
-      | EXCLAMATION //-> EXCLAMATION
-	  | MINUS //-> MINUS
-	  | PLUS //-> PLUS
-	  | ASTERISK //-> ASTERISK
-      | FUNCTION S* any* RPAREN //-> ^(FUNCTION any*)
-      | DASHMATCH //-> DASHMATCH
-      | LPAREN any* RPAREN //-> ^(PARENBLOCK any*)
-      | LBRACE any* RBRACE //-> ^(BRACEBLOCK any*)
+	: ( IDENT
+	  | CLASSKEYWORD
+	  | NUMBER
+	  | PERCENTAGE
+	  | DIMENSION
+	  | string
+      | URI
+      | HASH
+      | UNIRANGE
+      | INCLUDES
+      | COLON
+      | COMMA
+      | GREATER
+      | LESS
+      |	QUESTION
+      | PERCENT
+      | EQUALS
+      | SLASH
+      | EXCLAMATION
+	  | MINUS
+	  | PLUS
+	  | ASTERISK
+      | FUNCTION S* any* RPAREN
+      | DASHMATCH
+      | LPAREN any* RPAREN
+      | LBRACE any* RBRACE
     ) S*
     ;
     catch [RecognitionException re] {
@@ -478,35 +469,35 @@ any
 
 /** What cannot be contained directly in the stylesheet (ignored) */
 nostatement
-  : ( RCURLY //-> RCURLY
-      | SEMICOLON //-> SEMICOLON
-      | QUOT //-> QUOT
-      | APOS //-> APOS
-    );
-    catch [RecognitionException re] {
-        log.error("PARSING nostatement ERROR | should be empty");
-    }
+  : ( RCURLY
+    | SEMICOLON
+    | QUOT
+    | APOS
+  );
+  catch [RecognitionException re] {
+    log.error("PARSING nostatement ERROR | should be empty");
+  }
 
 /** invalid start of a property */
 noprop
-	: ( CLASSKEYWORD //-> CLASSKEYWORD
-       | NUMBER //-> NUMBER
-	   | COMMA //-> COMMA
-	   | GREATER //-> GREATER
-	   | LESS //-> LESS
-	   | QUESTION //-> QUESTION
-	   | PERCENT //-> PERCENT
-	   | EQUALS //-> EQUALS
-	   | SLASH //-> SLASH
-	   | EXCLAMATION //-> EXCLAMATION
-	   | PLUS //-> PLUS
-	   | ASTERISK //-> ASTERISK
-	   | DASHMATCH //-> DASHMATCH
-	   | INCLUDES //-> INCLUDES
-	   | COLON //-> COLON
-	   | STRING_CHAR //-> STRING_CHAR
-       | CTRL //-> CTRL
-	   | INVALID_TOKEN //-> INVALID_TOKEN
+	: ( CLASSKEYWORD
+       | NUMBER
+	   | COMMA
+	   | GREATER
+	   | LESS
+	   | QUESTION
+	   | PERCENT
+	   | EQUALS
+	   | SLASH
+	   | EXCLAMATION
+	   | PLUS
+	   | ASTERISK
+	   | DASHMATCH
+	   | INCLUDES
+	   | COLON
+	   | STRING_CHAR
+       | CTRL
+	   | INVALID_TOKEN
     ) S*
     ;
     catch [RecognitionException re] {
