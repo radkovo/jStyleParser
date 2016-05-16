@@ -355,8 +355,18 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
     @Override
     public cz.vutbr.web.css.RuleBlock<?> visitInlineset(CSSParser.InlinesetContext ctx) {
-        //TODO: implement or delete ?
-        return null;
+        logEnter("inlineset");
+        List<cz.vutbr.web.css.Selector.PseudoPage> pplist = new ArrayList<>();
+        if (ctx.pseudo() != null) {
+            for (CSSParser.PseudoContext pctx : ctx.pseudo()) {
+                Selector.PseudoPage p = visitPseudo(pctx);
+                pplist.add(p);
+            }
+        }
+        List<Declaration> decl = visitDeclarations(ctx.declarations());
+        RuleBlock<?> is = preparator.prepareInlineRuleSet(decl, pplist);
+        logLeave("inlineset");
+        return is;
     }
 
     @Override
