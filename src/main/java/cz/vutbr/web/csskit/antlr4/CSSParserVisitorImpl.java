@@ -221,12 +221,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
     protected static class statement_scope {
         boolean invalid;
-        // this flag allows us to encapsulate rulesets
-        // into media when media import is used
-        boolean insideAtstatement;
     }
 
-    protected Stack<statement_scope> statement_stack = new Stack<statement_scope>();
+    protected Stack<statement_scope> statement_stack = new Stack<>();
 
     @Override
     /**
@@ -258,6 +255,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     public RuleBlock<?> visitAtstatement(CSSParser.AtstatementContext ctx) {
         logEnter("atstatement: " + ctx.getText());
         RuleBlock<?> atstmt = null;
+        //noinspection StatementWithEmptyBody
         if (ctx.CHARSET() != null) {
             //charset set in lexer
         } else if (ctx.IMPORT() != null) {
@@ -564,7 +562,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
         boolean invalid;
     }
 
-    protected Stack<declaration_scope> declaration_stack = new Stack<declaration_scope>();
+    protected Stack<declaration_scope> declaration_stack = new Stack<>();
 
     @Override
     public Declaration visitDeclaration(CSSParser.DeclarationContext ctx) {
@@ -820,7 +818,6 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
      */
 
     public CombinedSelector visitCombined_selector(CSSParser.Combined_selectorContext ctx) {
-        CombinedSelector cs;
         logEnter("combined_selector");
         combined_selector_stack.push(new combined_selector_scope());
         CombinedSelector combinedSelector = (CombinedSelector) rf.createCombinedSelector().unlock();
