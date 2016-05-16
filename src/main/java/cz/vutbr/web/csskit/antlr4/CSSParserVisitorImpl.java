@@ -173,10 +173,11 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
     /**
      * @param ctx the parse tree
-     * @return Object
+     * @return RuleList
+     * inlinestyle: S* (declarations | inlineset+ )
      */
     @Override
-    public RuleBlock<?> visitInlinestyle(CSSParser.InlinestyleContext ctx) {
+    public RuleList visitInlinestyle(CSSParser.InlinestyleContext ctx) {
         logEnter("inlinestyle");
         this.rules = new cz.vutbr.web.csskit.RuleArrayList();
         if (ctx.declarations() != null) {
@@ -197,25 +198,26 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
         }
         log.debug("\n***\n{}\n***\n", this.rules);
         logLeave("inlinestyle");
-        return null;
+        return this.rules;
     }
 
-    @Override
     /**
      * Stylesheet, main rule
+     * stylesheet: ( CDO | CDC  | S | nostatement | statement )*
      */
-    public Object visitStylesheet(CSSParser.StylesheetContext ctx) {
+    @Override
+    public RuleList visitStylesheet(CSSParser.StylesheetContext ctx) {
         logEnter("stylesheet: " + ctx.getText());
-        rules = new RuleArrayList();
+        this.rules = new RuleArrayList();
         for (CSSParser.StatementContext stmt : ctx.statement()) {
             RuleBlock<?> s = visitStatement(stmt);
             if (s != null) {
-                rules.add(s);
+                this.rules.add(s);
             }
         }
-        log.debug("\n***\n{}\n***\n", rules);
+        log.debug("\n***\n{}\n***\n", this.rules);
         logLeave("stylesheet");
-        return null;
+        return this.rules;
     }
 
 
