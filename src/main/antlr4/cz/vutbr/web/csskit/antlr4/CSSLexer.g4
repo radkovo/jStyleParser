@@ -78,10 +78,10 @@ tokens {
      */
     public void init() {
         this.log = org.slf4j.LoggerFactory.getLogger(getClass());
-//        this.log.info("init called");
         this.ls = new cz.vutbr.web.csskit.antlr4.CSSLexerState();
         //initialize CSSTokenFactory
         this.tf = new cz.vutbr.web.csskit.antlr4.CSSTokenFactory(_tokenFactorySourcePair, this, ls, getClass());
+        //initialize CSSTokenRecovery
         this.tr = new cz.vutbr.web.csskit.antlr4.CSSTokenRecovery(this, _input, ls, log);
     }
 
@@ -135,8 +135,8 @@ tokens {
     @Override
     public void recover(RecognitionException re) {
         log.debug("recover" + re.toString());
-//        if (!tr.recover())
-//            super.recover(re);
+        if (!tr.recover())
+            super.recover(re);
     }
     // CSSLexer.g4 members end
 }
@@ -168,7 +168,6 @@ CHARSET
             try {
                 log.warn("Changing charset to {}", enc);
                 ((cz.vutbr.web.csskit.antlr4.CSSInputStream) _input).setEncoding(enc);
-                //input = setCharStream(new ANTLFileStream(input.getSourceName(), enc));
             }
             catch(java.nio.charset.IllegalCharsetNameException icne) {
                 log.warn("Could not change to unsupported charset!", icne);
