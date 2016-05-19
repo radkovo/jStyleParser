@@ -107,7 +107,6 @@ public class CSSErrorStrategy extends DefaultErrorStrategy {
     }
 
     protected void consumeUntilGreedy(Parser recognizer, IntervalSet set, CSSLexerState.RecoveryMode mode) {
-        CSSLexerState ls = null;
         CSSToken t;
         do {
             Token next = recognizer.getInputStream().LT(1);
@@ -122,7 +121,7 @@ public class CSSErrorStrategy extends DefaultErrorStrategy {
             logger.debug("Skipped greedy: {}", t.getText());
             // consume token even if it will match
             recognizer.consume();
-        } while (!(t.getLexerState().isBalanced(mode, ls, t) && this.getErrorRecoverySet(recognizer).contains(t.getType())));
+        } while (!(t.getLexerState().isBalanced(mode, null, t) && this.getErrorRecoverySet(recognizer).contains(t.getType())));
     }
 
     /**
