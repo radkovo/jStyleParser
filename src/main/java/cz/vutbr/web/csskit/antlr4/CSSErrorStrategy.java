@@ -337,9 +337,16 @@ public class CSSErrorStrategy implements ANTLRErrorStrategy {
         } while (!(t.getLexerState().isBalanced(mode, ls, t) && this.getErrorRecoverySet(recognizer).contains(t.getType())));
     }
 
-    public void consumeUntil(Parser recognizer, IntervalSet follow, CSSLexerState.RecoveryMode mode, CSSLexerState ls, RecognitionException re) {
-        CSSToken t = null;
-        boolean finish = false;
+    /**
+     * consume tokens until is balanced mode and next is in follow
+     * @param recognizer
+     * @param follow
+     * @param mode
+     * @param ls
+     */
+    public void consumeUntil(Parser recognizer, IntervalSet follow, CSSLexerState.RecoveryMode mode, CSSLexerState ls) {
+        CSSToken t;
+        boolean finish;
         TokenStream input = recognizer.getInputStream();
         do {
             Token next = input.LT(1);

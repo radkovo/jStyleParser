@@ -244,11 +244,8 @@ declaration
         log.error("PARSING declaration ERROR | consume until SEMICOLON, RCURLY");
         IntervalSet follow = new IntervalSet(SEMICOLON,RCURLY); //recover on the declaration end or rule end
         //not greedy - the final ; or } must remain for properly finishing the declaration/rule
-        this.getCSSErrorHandler().consumeUntil(this,follow,CSSLexerState.RecoveryMode.DECL, begin, re);
+        this.getCSSErrorHandler().consumeUntil(this, follow, CSSLexerState.RecoveryMode.DECL, begin);
         _localctx.addErrorNode(this.getTokenFactory().create(INVALID_DECLARATION,"INVALID_DECLARATION"));
-//      final BitSet follow = BitSet.of(SEMICOLON, RCURLY); //recover on the declaration end or rule end
-      //not greedy - the final ; or } must remain for properly finishing the declaration/rule
-//      retval.tree = tnr.invalidFallback(INVALID_DECLARATION, "INVALID_DECLARATION", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.DECL, begin, re);
 	}
 
 important
