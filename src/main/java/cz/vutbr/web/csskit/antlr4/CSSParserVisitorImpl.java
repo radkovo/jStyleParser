@@ -420,6 +420,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     }
 
     @Override
+    /**
+     * margin_rule : MARGIN_AREA S* LCURLY S* declarations RCURLY S*
+     */
     public RuleMargin visitMargin_rule(CSSParser.Margin_ruleContext ctx) {
         logEnter("margin_rule");
         RuleMargin m;
@@ -431,6 +434,15 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     }
 
     @Override
+    /**
+     *
+     inlineset
+     : (pseudo S* (COMMA S* pseudo S*)*)?
+     LCURLY
+     declarations
+     RCURLY
+     ;
+     */
     public cz.vutbr.web.css.RuleBlock<?> visitInlineset(CSSParser.InlinesetContext ctx) {
         logEnter("inlineset");
         List<cz.vutbr.web.css.Selector.PseudoPage> pplist = new ArrayList<>();
@@ -447,6 +459,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     }
 
     @Override
+    /**
+     media : media_query (COMMA S* media_query)*
+     */
     public List<cz.vutbr.web.css.MediaQuery> visitMedia(CSSParser.MediaContext ctx) {
         logEnter("media: " + ctx.getText());
         List<MediaQuery> queries = mediaQueryList = new ArrayList<>();
@@ -467,6 +482,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     mediaquery_scope mq;
 
     @Override
+    /**
+     * media_query : (media_term S*)+
+     */
     public MediaQuery visitMedia_query(CSSParser.Media_queryContext ctx) {
         logEnter("mediaquery: " + ctx.getText());
         mq = new mediaquery_scope();
@@ -488,7 +506,14 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     }
 
     @Override
+    /**
+     *
+     media_term
+     : (IDENT | media_expression)
+     | nomediaquery
+     */
     public Object visitMedia_term(CSSParser.Media_termContext ctx) {
+        //IDENT
         if (ctx.IDENT() != null) {
             String m = extractTextUnescaped(ctx.IDENT().getText());
             MediaQueryState state = mq.state;
@@ -508,7 +533,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
                 log.trace("Invalid media query: found ident: {} state: {}", m, state);
                 mq.invalid = true;
             }
-        } else if (ctx.media_expression() != null) {
+        }
+        //media_expression
+        else if (ctx.media_expression() != null) {
             MediaExpression e = visitMedia_expression(ctx.media_expression());
             if (mq.state == MediaQueryState.START
                     || mq.state == MediaQueryState.EXPR
@@ -525,13 +552,18 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
                 log.trace("Invalid media query: found expr, state: {}", mq.state);
                 mq.invalid = true;
             }
-        } else {
+        }
+        //nomediaquery
+        else {
             mq.invalid = true;
         }
         return null;
     }
 
     @Override
+    /**
+     * media_expression : LPAREN S* IDENT S* (COLON S* terms)? RPAREN
+     */
     public MediaExpression visitMedia_expression(CSSParser.Media_expressionContext ctx) {
         logEnter("mediaexpression: " + ctx.getText());
         if (ctxHasErrorNode(ctx)) {
@@ -563,6 +595,13 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     }
 
     @Override
+    /**
+     *
+     media_rule
+     : ruleset
+     | atstatement //invalid statement
+     ;
+     */
     public RuleBlock<?> visitMedia_rule(CSSParser.Media_ruleContext ctx) {
         logEnter("media_rule: " + ctx.getText());
         RuleBlock<?> rules = null;
@@ -586,6 +625,12 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     /**
      * The most common block in CSS file,
      * set of declarations with selector
+     ruleset
+     : combined_selector (COMMA S* combined_selector)*
+     LCURLY S*
+     declarations
+     RCURLY
+     | norule
      */
     public RuleBlock<?> visitRuleset(CSSParser.RulesetContext ctx) {
         logEnter("ruleset");
@@ -617,6 +662,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     @Override
     /**
      * Multiple CSS declarations
+     * declarations : declaration? (SEMICOLON S* declaration? )*
      */
     public List<Declaration> visitDeclarations(CSSParser.DeclarationsContext ctx) {
         logEnter("declarations");
@@ -644,6 +690,11 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     protected Stack<declaration_scope> declaration_stack = new Stack<>();
 
     @Override
+    /**
+     *
+     declaration : property COLON S* terms? important?
+     | noprop any*
+     */
     public Declaration visitDeclaration(CSSParser.DeclarationContext ctx) {
         logEnter("declaration");
         Declaration decl;
@@ -678,6 +729,10 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     }
 
     @Override
+    /**
+     * important
+     : EXCLAMATION S* IMPORTANT S*
+     */
     public Object visitImportant(CSSParser.ImportantContext ctx) {
         if (ctxHasErrorNode(ctx)) {
             declaration_stack.peek().invalid = true;
@@ -692,8 +747,11 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     @Override
     /**
      * Setting property of declaration
+     property
+     : MINUS? IDENT S*
+
+     returns null - processed via declaration_sctack
      */
-    //returns null
     public Object visitProperty(CSSParser.PropertyContext ctx) {
         logEnter("property");
 
@@ -725,6 +783,8 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     @Override
     /**
      * Term of CSSDeclaration
+     *
+     * terms : term+
      */
     public List<Term<?>> visitTerms(CSSParser.TermsContext ctx) {
         terms_stack.push(new terms_scope());
@@ -761,6 +821,14 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
         return tlist;
     }
 
+    /**
+     * term
+     * : valuepart #termValuePart
+     * | LCURLY S* (any | SEMICOLON S*)* RCURLY #termInvalid // invalid term
+     * | ATKEYWORD S* #termInvalid // invalid term
+     * ;
+     */
+    //
     @Override
     public Object visitTermValuePart(CSSParser.TermValuePartContext ctx) {
         logEnter("term");
@@ -894,8 +962,8 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     @Override
     /**
      * Construction of selector
+     * combined_selector : selector ((combinator) selector)*
      */
-
     public CombinedSelector visitCombined_selector(CSSParser.Combined_selectorContext ctx) {
         logEnter("combined_selector");
         combined_selector_stack.push(new combined_selector_scope());
@@ -929,6 +997,13 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     }
 
     @Override
+    /**
+     combinator
+     : GREATER S* //child combinator
+     | PLUS S* //adjacent combinator
+     | TILDE S* //preceding combinator
+     | S //descendant combinator
+     */
     public Selector.Combinator visitCombinator(CSSParser.CombinatorContext ctx) {
         logEnter("combinator");
         if (ctx.GREATER() != null) {
@@ -948,6 +1023,12 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
     protected Stack<selector_scope> selector_stack = new Stack<>();
 
+    /**
+     * selector
+     * : (IDENT | ASTERISK)  selpart* S*
+     * | selpart+ S*
+     * ;
+     */
     public Selector visitSelector(CSSParser.SelectorContext ctx) {
         if (ctxHasErrorNode(ctx)) {
             statement_stack.peek().invalid = true;
@@ -974,7 +1055,12 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     }
 
     /**
-     * @param ctx the parse tree
+     * selpart
+     * : HASH
+     * | CLASSKEYWORD
+     * | LBRACE S* attribute RBRACE
+     * | pseudo
+     * | INVALID_SELPART // invalid selpart
      */
     @Override
     public Object visitSelpart(CSSParser.SelpartContext ctx) {
@@ -1012,6 +1098,11 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
 
     @Override
+    /**
+     * attribute
+     : IDENT S*
+     ((EQUALS | INCLUDES | DASHMATCH | STARTSWITH | ENDSWITH | CONTAINS) S* (IDENT | string) S*)?
+     */
     public Selector.ElementAttribute visitAttribute(CSSParser.AttributeContext ctx) {
         //attributes can be like [attr] or [attr operator value]
         // see http://www.w3.org/TR/CSS2/selector.html#attribute-selectors
@@ -1076,6 +1167,10 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     }
 
     @Override
+    /**
+     * pseudo
+     : pseudocolon (IDENT | FUNCTION S*  (IDENT | MINUS? NUMBER | MINUS? INDEX) S* RPAREN)
+     */
     public Selector.PseudoPage visitPseudo(CSSParser.PseudoContext ctx) {
         logEnter("pseudo: " + ctx.getText());
         // childcount == 2
