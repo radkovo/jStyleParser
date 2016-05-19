@@ -86,23 +86,14 @@ public class CSSErrorStrategy extends DefaultErrorStrategy {
     }
 
 
-    protected void consumeUntil(Parser recognizer, IntervalSet set) {
-        logger.debug("CONSUME UNTIL {}", set.toString());
-        for (int ttype = recognizer.getInputStream().LA(1); ttype != -1 && !set.contains(ttype); ttype = recognizer.getInputStream().LA(1)) {
-            Token t = recognizer.consume();
-            logger.debug("CONSUME {}", t.getText());
-        }
-
-    }
-
     protected void consumeUntilGreedy(Parser recognizer, IntervalSet set) {
-        logger.debug("CONSUME UNTIL {}", set.toString());
+        logger.trace("CONSUME UNTIL GREEDY {}", set.toString());
         for (int ttype = recognizer.getInputStream().LA(1); ttype != -1 && !set.contains(ttype); ttype = recognizer.getInputStream().LA(1)) {
             Token t = recognizer.consume();
-            logger.debug("CONSUME {}", t.getText());
+            logger.trace("Skipped greedy: {}", t.getText());
         }
         Token t = recognizer.consume();
-        logger.debug("CONSUME {}", t.getText());
+        logger.trace("Skipped greedy: {} follow: {}", t.getText(), set);
 
     }
 
@@ -113,19 +104,21 @@ public class CSSErrorStrategy extends DefaultErrorStrategy {
             if (next instanceof CSSToken) {
                 t = (CSSToken) recognizer.getInputStream().LT(1);
                 if (t.getType() == Token.EOF) {
-                    logger.debug("token eof ");
+                    logger.trace("token eof ");
                     break;
                 }
             } else
                 break; /* not a CSSToken, probably EOF */
-            logger.debug("Skipped greedy: {}", t.getText());
+            logger.trace("Skipped greedy: {}", t.getText());
             // consume token even if it will match
             recognizer.consume();
-        } while (!(t.getLexerState().isBalanced(mode, null, t) && this.getErrorRecoverySet(recognizer).contains(t.getType())));
+        }
+        while (!(t.getLexerState().isBalanced(mode, null, t) && this.getErrorRecoverySet(recognizer).contains(t.getType())));
     }
 
     /**
      * consume tokens until is balanced mode and next is in follow
+     *
      * @param recognizer
      * @param follow
      * @param mode
@@ -140,7 +133,7 @@ public class CSSErrorStrategy extends DefaultErrorStrategy {
             if (next instanceof CSSToken) {
                 t = (CSSToken) input.LT(1);
                 if (t.getType() == Token.EOF) {
-                    logger.debug("token eof ");
+                    logger.trace("token eof ");
                     break;
                 }
             } else
@@ -148,7 +141,7 @@ public class CSSErrorStrategy extends DefaultErrorStrategy {
             // consume token if does not match
             finish = (t.getLexerState().isBalanced(mode, ls, t) && follow.contains(t.getType()));
             if (!finish) {
-                logger.debug("Skipped: {}", t);
+                logger.trace("Skipped: {}", t);
                 input.consume();
             }
         } while (!finish);
