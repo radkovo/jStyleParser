@@ -149,10 +149,8 @@ media
     catch [RecognitionException re] {
         log.error("PARSING MEDIA ERROR | consume until COMMA, LCURLY, SEMICOLON");
         IntervalSet intervalSet = new IntervalSet(COMMA, LCURLY,SEMICOLON);
-        getCSSErrorHandler().consumeUntil(this,intervalSet);
+        getCSSErrorHandler().consumeUntil(this,intervalSet,CSSLexerState.RecoveryMode.BALANCED, null);
         _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,"INVALID_STATEMENT"));
-        //     final BitSet follow = BitSet.of(COMMA, LCURLY, SEMICOLON);
-        //     retval.tree = tnr.invalidFallback(INVALID_STATEMENT, "INVALID_STATEMENT", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.BALANCED, null, re);
     }
 
 media_query
