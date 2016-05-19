@@ -85,18 +85,25 @@ public class CSSErrorStrategy extends DefaultErrorStrategy {
         }*/
     }
 
-
-    protected void consumeUntilGreedy(Parser recognizer, IntervalSet set) {
-        logger.trace("CONSUME UNTIL GREEDY {}", set.toString());
-        for (int ttype = recognizer.getInputStream().LA(1); ttype != -1 && !set.contains(ttype); ttype = recognizer.getInputStream().LA(1)) {
+    /**
+     * Consumes token until lexer state is balanced and
+     * token from follow is matched. Matched token is also consumed
+     */
+    protected void consumeUntilGreedy(Parser recognizer, IntervalSet follow) {
+        logger.trace("CONSUME UNTIL GREEDY {}", follow.toString());
+        for (int ttype = recognizer.getInputStream().LA(1); ttype != -1 && !follow.contains(ttype); ttype = recognizer.getInputStream().LA(1)) {
             Token t = recognizer.consume();
             logger.trace("Skipped greedy: {}", t.getText());
         }
         Token t = recognizer.consume();
-        logger.trace("Skipped greedy: {} follow: {}", t.getText(), set);
+        logger.trace("Skipped greedy: {} follow: {}", t.getText(), follow);
 
     }
 
+    /**
+     * Consumes token until lexer state is function-balanced and
+     * token from follow is matched. Matched token is also consumed
+     */
     protected void consumeUntilGreedy(Parser recognizer, IntervalSet set, CSSLexerState.RecoveryMode mode) {
         CSSToken t;
         do {
@@ -113,16 +120,12 @@ public class CSSErrorStrategy extends DefaultErrorStrategy {
             // consume token even if it will match
             recognizer.consume();
         }
-        while (!(t.getLexerState().isBalanced(mode, null, t) && this.getErrorRecoverySet(recognizer).contains(t.getType())));
+        while (!(t.getLexerState().isBalanced(mode, null, t) && set.contains(t.getType())));
     }
 
     /**
-     * consume tokens until is balanced mode and next is in follow
-     *
-     * @param recognizer
-     * @param follow
-     * @param mode
-     * @param ls
+     * Consumes token until lexer state is function-balanced and
+     * token from follow is matched.
      */
     public void consumeUntil(Parser recognizer, IntervalSet follow, CSSLexerState.RecoveryMode mode, CSSLexerState ls) {
         CSSToken t;
