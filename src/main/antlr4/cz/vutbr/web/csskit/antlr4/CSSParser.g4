@@ -264,19 +264,11 @@ terms
             IntervalSet intervalSet = new IntervalSet(RCURLY,SEMICOLON);
             this.getCSSErrorHandler().consumeUntilGreedy(this,intervalSet);
             _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,"INVALID_STATEMENT"));
-            /*
-            final BitSet follow = BitSet.of(RCURLY, SEMICOLON);
-            retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT,"INVALID_STATEMENT", follow, re);
-            */
         }
         else{
             IntervalSet intervalSet = new IntervalSet(RPAREN,RCURLY,SEMICOLON);
-            this.getCSSErrorHandler().consumeUntilGreedy(this,intervalSet);
+            this.getCSSErrorHandler().consumeUntilGreedy(this, intervalSet, CSSLexerState.RecoveryMode.FUNCTION);
             _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,"INVALID_STATEMENT"));
-            /*
-            final BitSet follow = BitSet.of(RPAREN, RCURLY, SEMICOLON);
-            retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT, "INVALID_STATEMENT", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.FUNCTION, null, re);
-            */
         }
     }
 
