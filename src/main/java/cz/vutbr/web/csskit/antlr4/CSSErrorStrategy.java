@@ -1,20 +1,8 @@
 package cz.vutbr.web.csskit.antlr4;
 
-import org.antlr.runtime.*;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.FailedPredicateException;
-import org.antlr.v4.runtime.NoViableAltException;
-import org.antlr.v4.runtime.Parser;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.atn.ATN;
 import org.antlr.v4.runtime.atn.ATNState;
-import org.antlr.v4.runtime.atn.ParserATNSimulator;
-import org.antlr.v4.runtime.atn.RuleTransition;
 import org.antlr.v4.runtime.misc.IntervalSet;
-import org.antlr.v4.runtime.misc.Pair;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.slf4j.Logger;
 
 
@@ -28,7 +16,7 @@ public class CSSErrorStrategy extends DefaultErrorStrategy {
 
 
     public void sync(Parser recognizer) throws RecognitionException {
-        ATNState s = (ATNState) ((ParserATNSimulator) recognizer.getInterpreter()).atn.states.get(recognizer.getState());
+        ATNState s = recognizer.getInterpreter().atn.states.get(recognizer.getState());
         if (!this.inErrorRecoveryMode(recognizer)) {
             TokenStream tokens = recognizer.getInputStream();
             int la = tokens.LA(1);
@@ -39,19 +27,12 @@ public class CSSErrorStrategy extends DefaultErrorStrategy {
                         case 4:
                         case 5:
                         case 10:
-//                            if (this.singleTokenDeletion(recognizer) != null) {
                             throw new RecognitionException(recognizer, tokens, recognizer.getContext());
-//                                return;
-//                            }
-//                            throw new InputMismatchException(recognizer);
                         case 9:
                         case 11:
                             //added
                             this.reportUnwantedToken(recognizer);
                             throw new RecognitionException(recognizer, tokens, recognizer.getContext());
-//                            IntervalSet expecting = recognizer.getExpectedTokens();
-//                            IntervalSet whatFollowsLoopIterationOrRule = expecting.or(this.getErrorRecoverySet(recognizer));
-//                            this.consumeUntil(recognizer, whatFollowsLoopIterationOrRule);
                         case 6:
                         case 7:
                         case 8:
