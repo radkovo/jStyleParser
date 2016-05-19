@@ -209,11 +209,9 @@ ruleset
     catch [RecognitionException re] {
 	    log.debug("PARSING ruleset ERROR | consume until RCURLY and add INVALID_STATEMENT");
         IntervalSet intervalSet = new IntervalSet(RCURLY);
-        getCSSErrorHandler().consumeUntilGreedy(this,intervalSet);
-        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,"INVALID_STATEMENT"));
-        //final BitSet follow = BitSet.of(RCURLY);
         //we don't require {} to be balanced here because of possible parent 'media' sections that may remain open => RecoveryMode.RULE
-        //	    retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT,	"INVALID_STATEMENT", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.RULE, null, re);
+        getCSSErrorHandler().consumeUntilGreedy(this, intervalSet, CSSLexerState.RecoveryMode.RULE);
+        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,"INVALID_STATEMENT"));
 	}
 
 declarations
