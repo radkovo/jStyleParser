@@ -846,6 +846,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
         } else {
             log.debug("Returing combined selector: {}.", combinedSelector);
         }
+        combined_selector_stack.pop();
         logLeave("combined_selector");
         return combinedSelector;
     }
