@@ -35,9 +35,9 @@ options {
 @members {
     // logger
     private org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(getClass());
+
     // function level e.g. function(function(function()))
     private int functLevel = 0;
-    //protected cz.vutbr.web.csskit.antlr.CSSTreeNodeRecovery tnr;
 
     /**
      * Obtains the current lexer state from current token
@@ -48,6 +48,11 @@ options {
         }
         return null;
     }
+
+    /**
+      * get overtyped error strategy
+      * - strategy must be set to CSSErrorStrategy before parsing !!
+      */
     private CSSErrorStrategy getCSSErrorHandler(){
         if(this._errHandler instanceof CSSErrorStrategy){
             return ((CSSErrorStrategy) this._errHandler);
@@ -58,10 +63,7 @@ options {
 
 }
 inlinestyle
-	: S*  (
-	        declarations
-            | inlineset+
-	      )
+	: S*  ( declarations | inlineset+ )
 	;
     catch [RecognitionException re] {
         log.error("Recognition exception | inlinestyle | should be EMPTY");
@@ -95,7 +97,7 @@ atstatement
         log.error("Recognition exception | atstatement consume until RCURLY | SEMICOLON");
         IntervalSet intervalSet = new IntervalSet(RCURLY, SEMICOLON);
         getCSSErrorHandler().consumeUntilGreedy(this, intervalSet);
-        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_ATSTATEMENT,"INVALID_ATSTATEMENT"));
+        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_ATSTATEMENT, "INVALID_ATSTATEMENT"));
      }
 
 import_uri
@@ -148,9 +150,9 @@ media
     ;
     catch [RecognitionException re] {
         log.error("PARSING MEDIA ERROR | consume until COMMA, LCURLY, SEMICOLON");
-        IntervalSet intervalSet = new IntervalSet(COMMA, LCURLY,SEMICOLON);
-        getCSSErrorHandler().consumeUntil(this,intervalSet,CSSLexerState.RecoveryMode.BALANCED, null);
-        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,"INVALID_STATEMENT"));
+        IntervalSet intervalSet = new IntervalSet(COMMA, LCURLY, SEMICOLON);
+        getCSSErrorHandler().consumeUntil(this, intervalSet, CSSLexerState.RecoveryMode.BALANCED, null);
+        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT, "INVALID_STATEMENT"));
     }
 
 media_query
@@ -166,9 +168,9 @@ media_term
     ;
     catch [RecognitionException re] {
         log.error("PARSING MEDIATERM ERROR | consume until COMMA, LCURLY, SEMICOLON");
-        IntervalSet intervalSet = new IntervalSet(COMMA, LCURLY,SEMICOLON);
-        getCSSErrorHandler().consumeUntil(this,intervalSet,CSSLexerState.RecoveryMode.RULE, null);
-        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,"INVALID_STATEMENT"));
+        IntervalSet intervalSet = new IntervalSet(COMMA, LCURLY, SEMICOLON);
+        getCSSErrorHandler().consumeUntil(this, intervalSet, CSSLexerState.RecoveryMode.RULE, null);
+        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT, "INVALID_STATEMENT"));
     }
 
 media_expression
@@ -196,7 +198,7 @@ unknown_atrule
         log.error("PARSING unknown_atrule ERROR - consume until RCURLY");
         IntervalSet intervalSet = new IntervalSet(RCURLY);
         getCSSErrorHandler().consumeUntilGreedy(this, intervalSet, CSSLexerState.RecoveryMode.BALANCED);
-        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_ATSTATEMENT,"INVALID_ATSTATEMENT"));
+        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_ATSTATEMENT, "INVALID_ATSTATEMENT"));
     }
 
 ruleset
@@ -210,8 +212,8 @@ ruleset
 	    log.debug("PARSING ruleset ERROR | consume until RCURLY and add INVALID_STATEMENT");
         IntervalSet intervalSet = new IntervalSet(RCURLY);
         //we don't require {} to be balanced here because of possible parent 'media' sections that may remain open => RecoveryMode.RULE
-        getCSSErrorHandler().consumeUntilGreedy(this, intervalSet, CSSLexerState.RecoveryMode.RULE);
-        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,"INVALID_STATEMENT"));
+        getCSSErrorHandler().consumeUntilGreedy(this, intervalSet/*, CSSLexerState.RecoveryMode.RULE*/);
+        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT, "INVALID_STATEMENT"));
 	}
 
 declarations
@@ -232,10 +234,10 @@ declaration
 	;
 	catch [RecognitionException re] {
         log.error("PARSING declaration ERROR | consume until SEMICOLON, RCURLY");
-        IntervalSet follow = new IntervalSet(SEMICOLON,RCURLY); //recover on the declaration end or rule end
+        IntervalSet follow = new IntervalSet(SEMICOLON, RCURLY); //recover on the declaration end or rule end
         //not greedy - the final ; or } must remain for properly finishing the declaration/rule
         this.getCSSErrorHandler().consumeUntil(this, follow, CSSLexerState.RecoveryMode.DECL, begin);
-        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_DECLARATION,"INVALID_DECLARATION"));
+        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_DECLARATION, "INVALID_DECLARATION"));
 	}
 
 important
@@ -244,8 +246,8 @@ important
     catch [RecognitionException re] {
         log.error("PARSING IMPORTANT error");
         IntervalSet intervalSet = new IntervalSet(RCURLY,SEMICOLON);
-        this.getCSSErrorHandler().consumeUntil(this,intervalSet,CSSLexerState.RecoveryMode.RULE, null);
-        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_DIRECTIVE,"INVALID_DIRECTIVE"));
+        this.getCSSErrorHandler().consumeUntil(this, intervalSet, CSSLexerState.RecoveryMode.RULE, null);
+        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_DIRECTIVE, "INVALID_DIRECTIVE"));
     }
 
 property
@@ -261,14 +263,14 @@ terms
     catch [RecognitionException re] {
         log.error("PARSING terms ERROR functLevel = {}", functLevel);
         if (functLevel == 0){
-            IntervalSet intervalSet = new IntervalSet(RCURLY,SEMICOLON);
-            this.getCSSErrorHandler().consumeUntilGreedy(this,intervalSet);
-            _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,"INVALID_STATEMENT"));
+            IntervalSet intervalSet = new IntervalSet(RCURLY, SEMICOLON);
+            this.getCSSErrorHandler().consumeUntilGreedy(this, intervalSet);
+            _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT, "INVALID_STATEMENT"));
         }
         else{
-            IntervalSet intervalSet = new IntervalSet(RPAREN,RCURLY,SEMICOLON);
+            IntervalSet intervalSet = new IntervalSet(RPAREN, RCURLY, SEMICOLON);
             this.getCSSErrorHandler().consumeUntilGreedy(this, intervalSet, CSSLexerState.RecoveryMode.FUNCTION);
-            _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,"INVALID_STATEMENT"));
+            _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT, "INVALID_STATEMENT"));
         }
     }
 
@@ -352,7 +354,7 @@ selector
     ;
     catch [RecognitionException re] {
         log.error("PARSING selector ERROR | inserting INVALID_SELECTOR");
-        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_SELECTOR,"INVALID_SELECTOR"));
+        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_SELECTOR, "INVALID_SELECTOR"));
     }
 
 selpart
@@ -364,8 +366,7 @@ selpart
     ;
     catch [RecognitionException re] {
         log.error("PARSING SELPART ERROR");
-        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_SELPART,"INVALID_SELPART"));
-//      retval.tree = tnr.invalidFallback(INVALID_SELPART, "INVALID_SELPART", re);
+        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_SELPART, "INVALID_SELPART"));
 	  }
 
 attribute
@@ -381,8 +382,7 @@ pseudo
 	;
     catch [RecognitionException re] {
       log.error("PARSING pseudo ERROR | inserting INVALID_SELPART");
-       _localctx.addErrorNode(this.getTokenFactory().create(INVALID_SELPART,"INVALID_SELPART"));
-    //     retval.tree = tnr.invalidFallback(INVALID_SELPART, "INVALID_SELPART", re);
+       _localctx.addErrorNode(this.getTokenFactory().create(INVALID_SELPART, "INVALID_SELPART"));
     }
 
 pseudocolon
