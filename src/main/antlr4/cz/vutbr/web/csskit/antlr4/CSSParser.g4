@@ -93,8 +93,8 @@ atstatement
 	;
     catch [RecognitionException re] {
         log.error("Recognition exception | atstatement consume until RCURLY | SEMICOLON");
-        IntervalSet intervalSet = new IntervalSet(RCURLY,SEMICOLON);
-        getCSSErrorHandler().consumeUntil(this,intervalSet);
+        IntervalSet intervalSet = new IntervalSet(RCURLY, SEMICOLON);
+        getCSSErrorHandler().consumeUntilGreedy(this, intervalSet);
         _localctx.addErrorNode(this.getTokenFactory().create(INVALID_ATSTATEMENT,"INVALID_ATSTATEMENT"));
      }
 
