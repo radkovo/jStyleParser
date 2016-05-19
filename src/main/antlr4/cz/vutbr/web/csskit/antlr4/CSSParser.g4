@@ -40,13 +40,6 @@ options {
     //protected cz.vutbr.web.csskit.antlr.CSSTreeNodeRecovery tnr;
 
     /**
-     * This function must be called to initialize parser's state.
-     * Because we can't change directly generated constructors.
-     */
-    public void init() {
-        //this.tnr = new cz.vutbr.web.csskit.antlr4.CSSTreeNodeRecovery(this, input, state, adaptor, log);
-    }
-    /**
      * Obtains the current lexer state from current token
      */
     private cz.vutbr.web.csskit.antlr4.CSSLexerState getCurrentLexerState(Token t){
