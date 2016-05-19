@@ -254,10 +254,8 @@ important
     catch [RecognitionException re] {
         log.error("PARSING IMPORTANT error");
         IntervalSet intervalSet = new IntervalSet(RCURLY,SEMICOLON);
-        this.getCSSErrorHandler().consumeUntil(this,intervalSet);
+        this.getCSSErrorHandler().consumeUntil(this,intervalSet,CSSLexerState.RecoveryMode.RULE, null);
         _localctx.addErrorNode(this.getTokenFactory().create(INVALID_DIRECTIVE,"INVALID_DIRECTIVE"));
-//      final BitSet follow = BitSet.of(RCURLY, SEMICOLON);
-//      retval.tree = tnr.invalidFallback(INVALID_DIRECTIVE, "INVALID_DIRECTIVE", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.RULE, null, re);
     }
 
 property
