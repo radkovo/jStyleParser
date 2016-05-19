@@ -28,6 +28,8 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
 
     // block preparator
     private Preparator preparator;
+
+    // list of media queries to wrap rules
     private List<MediaQuery> wrapMedia;
 
     // structures after parsing
@@ -55,6 +57,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
         return new Declaration.Source(ct.getBase(), ct.getLine(), ct.getCharPositionInLine());
     }
 
+    /**
+     * extract base from parse tree node
+     */
     private URL extractBase(TerminalNode node) {
         CSSToken ct = (CSSToken) node.getSymbol();
         return ct.getBase();
@@ -135,10 +140,20 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
         return mediaQueryList;
     }
 
+    /**
+     * get import list
+     *
+     * @return list of urls to import
+     */
     public List<String> getImportPaths() {
         return importPaths;
     }
 
+    /**
+     * get media for imports
+     *
+     * @return list of media for imports
+     */
     public List<List<MediaQuery>> getImportMedia() {
         return importMedia;
     }
@@ -185,6 +200,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
             List<Declaration> decl = visitDeclarations(ctx.declarations());
             cz.vutbr.web.css.RuleBlock<?> rb = preparator.prepareInlineRuleSet(decl, null);
             if (rb != null) {
+                //rb is valid,add to rules
                 this.rules.add(rb);
             }
         } else {
@@ -192,6 +208,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
             for (CSSParser.InlinesetContext ctxis : ctx.inlineset()) {
                 cz.vutbr.web.css.RuleBlock<?> irs = visitInlineset(ctxis);
                 if (irs != null) {
+                    //irs is valid, add to rules
                     this.rules.add(irs);
                 }
             }
@@ -204,14 +221,17 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     /**
      * Stylesheet, main rule
      * stylesheet: ( CDO | CDC  | S | nostatement | statement )*
+     * statement* is only processed
      */
     @Override
     public RuleList visitStylesheet(CSSParser.StylesheetContext ctx) {
         logEnter("stylesheet: " + ctx.getText());
         this.rules = new RuleArrayList();
+        //statement*
         for (CSSParser.StatementContext stmt : ctx.statement()) {
             RuleBlock<?> s = visitStatement(stmt);
             if (s != null) {
+                //add statement to rules
                 this.rules.add(s);
             }
         }
@@ -220,31 +240,43 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
         return this.rules;
     }
 
-
+    /**
+     * scope and stack for statement
+     * - this is for accessing statement scope from inner rules
+     * e.g. - used for invalidate statement from selector
+     */
     protected static class statement_scope {
-        boolean invalid;
+        boolean invalid = false;
     }
 
+    /**
+     * stack for posibly recursion
+     */
     protected Stack<statement_scope> statement_stack = new Stack<>();
 
     @Override
     /**
      * Statement, main contents unit
+     * statement : ruleset | atstatement
      */
     public RuleBlock<?> visitStatement(CSSParser.StatementContext ctx) {
         if (ctxHasErrorNode(ctx)) {
+            //context is invalid
             return null;
         }
         logEnter("statement: " + ctx.getText());
+        //create new scope and push it to stack
         statement_stack.push(new statement_scope());
-        statement_stack.peek().invalid = false;
         RuleBlock<?> stmt = null;
         if (ctx.ruleset() != null) {
+            //ruleset
             stmt = visitRuleset(ctx.ruleset());
         } else if (ctx.atstatement() != null) {
+            //atstatement
             stmt = visitAtstatement(ctx.atstatement());
         }
         if (statement_stack.peek().invalid) {
+            //stmt == null - is invalid
             log.debug("Statement is invalid");
         }
         statement_stack.pop();
@@ -254,13 +286,29 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     }
 
     @Override
+    /**
+     *
+
+     atstatement
+     : CHARSET
+     | IMPORT S* import_uri S* media? SEMICOLON
+     | page
+     | VIEWPORT S* LCURLY S* declarations RCURLY
+     | FONTFACE S* LCURLY S* declarations RCURLY
+     | MEDIA S* media? LCURLY S* (media_rule S*)* RCURLY
+     | unknown_atrule
+     ;
+
+     */
     public RuleBlock<?> visitAtstatement(CSSParser.AtstatementContext ctx) {
         logEnter("atstatement: " + ctx.getText());
         RuleBlock<?> atstmt = null;
         //noinspection StatementWithEmptyBody
         if (ctx.CHARSET() != null) {
-            //charset set in lexer
-        } else if (ctx.IMPORT() != null) {
+            //charset is served in lexer
+        }
+        //import
+        else if (ctx.IMPORT() != null) {
             List<cz.vutbr.web.css.MediaQuery> im = null;
             if (ctx.media() != null) {
                 im = visitMedia(ctx.media());
@@ -273,17 +321,29 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
             } else {
                 log.debug("Ignoring import: {}", iuri);
             }
-        } else if (ctx.page() != null) {
+        }
+        //page
+        else if (ctx.page() != null) {
+
             atstmt = visitPage(ctx.page());
-        } else if (ctx.VIEWPORT() != null) {
+        }
+        //viewport
+        else if (ctx.VIEWPORT() != null) {
+
             List<cz.vutbr.web.css.Declaration> declarations = visitDeclarations(ctx.declarations());
             atstmt = preparator.prepareRuleViewport(declarations);
             this.preventImports = true;
-        } else if (ctx.FONTFACE() != null) {
+        }
+        //fontface
+        else if (ctx.FONTFACE() != null) {
+
             List<cz.vutbr.web.css.Declaration> declarations = visitDeclarations(ctx.declarations());
             atstmt = preparator.prepareRuleFontFace(declarations);
             this.preventImports = true;
-        } else if (ctx.MEDIA() != null) {
+        }
+        //media
+        else if (ctx.MEDIA() != null) {
+
             List<cz.vutbr.web.css.MediaQuery> mediaList = null;
             List<cz.vutbr.web.css.RuleSet> rules = null;
             if (ctx.media() != null) {
@@ -300,7 +360,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
             }
             atstmt = preparator.prepareRuleMedia(rules, mediaList);
             this.preventImports = true;
-        } else {
+        }
+        //unknown
+        else {
             log.debug("Skipping invalid at statement");
         }
         logLeave("atstatement");
@@ -308,18 +370,29 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     }
 
     @Override
+    /**
+     * import_uri : (STRING | URI)
+     */
     public String visitImport_uri(CSSParser.Import_uriContext ctx) {
         return extractTextUnescaped(ctx.getText());
     }
 
     @Override
+    /**
+     *
+     page
+     : PAGE S* IDENT? page_pseudo? S*
+     LCURLY S*
+     declarations margin_rule*
+     RCURLY
+     */
     public RuleBlock<?> visitPage(CSSParser.PageContext ctx) {
         String name = null, pseudo = null;
         if (ctx.IDENT() != null) {
             name = extractTextUnescaped(ctx.IDENT().getText());
         }
         if (ctx.page_pseudo() != null) {
-            pseudo = extractTextUnescaped(ctx.page_pseudo().getText());
+            pseudo = visitPage_pseudo(ctx.page_pseudo());
         }
         List<Declaration> declarations = visitDeclarations(ctx.declarations());
         List<cz.vutbr.web.css.RuleMargin> margins = null;
@@ -338,8 +411,12 @@ public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtracto
     }
 
     @Override
-    public Object visitPage_pseudo(CSSParser.Page_pseudoContext ctx) {
-        return null;
+    /**
+     page_pseudo
+     : pseudocolon
+     */
+    public String visitPage_pseudo(CSSParser.Page_pseudoContext ctx) {
+        return extractTextUnescaped(ctx.getText());
     }
 
     @Override
