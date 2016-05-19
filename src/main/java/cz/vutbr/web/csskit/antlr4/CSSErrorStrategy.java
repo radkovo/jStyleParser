@@ -62,27 +62,11 @@ public class CSSErrorStrategy extends DefaultErrorStrategy {
         }
     }
 
-
+    /**
+     * throws RecognitionException to handle in parser's catch block
+     */
     public Token recoverInline(Parser recognizer) throws RecognitionException {
-        logger.debug("recoverInline");
-        int currentSymbolType = recognizer.getInputStream().LA(1);
-//        if(currentSymbolType == -1){
-//            if (this.singleTokenInsertion(recognizer)) {
-//                return this.getMissingSymbol(recognizer);
-//            }
-//        }
-        logger.debug("recoverInline - throwing exception");
         throw new RecognitionException(recognizer, recognizer.getInputStream(), recognizer.getContext());
-        /*
-        Token matchedSymbol = this.singleTokenDeletion(recognizer);
-        if (matchedSymbol != null) {
-            recognizer.consume();
-            return matchedSymbol;
-        } else if (this.singleTokenInsertion(recognizer)) {
-            return this.getMissingSymbol(recognizer);
-        } else {
-            throw new InputMismatchException(recognizer);
-        }*/
     }
 
     /**
