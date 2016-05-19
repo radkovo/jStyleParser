@@ -195,10 +195,8 @@ unknown_atrule
     catch [RecognitionException re] {
         log.error("PARSING unknown_atrule ERROR - consume until RCURLY");
         IntervalSet intervalSet = new IntervalSet(RCURLY);
-        getCSSErrorHandler().consumeUntilGreedy(this,intervalSet,CSSLexerState.RecoveryMode.BALANCED);
+        getCSSErrorHandler().consumeUntilGreedy(this, intervalSet, CSSLexerState.RecoveryMode.BALANCED);
         _localctx.addErrorNode(this.getTokenFactory().create(INVALID_ATSTATEMENT,"INVALID_ATSTATEMENT"));
-    //     final BitSet follow = BitSet.of(RCURLY);
-    //     retval.tree = tnr.invalidFallbackGreedy(INVALID_ATSTATEMENT,"INVALID_ATSTATEMENT", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.BALANCED, null, re);
     }
 
 ruleset
