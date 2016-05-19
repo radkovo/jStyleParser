@@ -177,10 +177,8 @@ media_expression
     catch [RecognitionException re] {
         log.error("PARSING media_expression ERROR | consume until RPAREN, SEMICOLON");
         IntervalSet intervalSet = new IntervalSet(RPAREN, SEMICOLON);
-        getCSSErrorHandler().consumeUntilGreedy(this,intervalSet);
-        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,"INVALID_STATEMENT"));
-        //		 final BitSet follow = BitSet.of(RPAREN, SEMICOLON);
-        //		 retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT, "INVALID_STATEMENT", follow, re);
+        getCSSErrorHandler().consumeUntilGreedy(this, intervalSet);
+        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT, "INVALID_STATEMENT"));
     }
 
 media_rule
