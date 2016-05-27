@@ -164,6 +164,7 @@ CHARSET
 	    //System.err.println("CHARSET"+tokencnt);
 	    if (tokencnt <= 1) //we are at the beginning of the style sheet
 	    {
+			    tokencnt++;
 			    try {
 			           log.warn("Changing charset to {}", enc);
 			          ((cz.vutbr.web.csskit.antlr.CSSInputStream) input).setEncoding(enc);
