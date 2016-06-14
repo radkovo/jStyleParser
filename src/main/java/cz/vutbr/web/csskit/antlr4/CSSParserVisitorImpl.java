@@ -11,7 +11,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 
 public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParserExtractor {
@@ -99,12 +98,13 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
      * @return list without terminal node type = S (space)
      */
     private List<ParseTree> filterSpaceTokens(List<ParseTree> inputArrayList) {
-        return inputArrayList.stream().filter(
-                item -> (
-                        !(item instanceof TerminalNode) ||
-                                ((TerminalNodeImpl) item).getSymbol().getType() != CSSLexer.S
-                )
-        ).collect(Collectors.toList());
+        List<ParseTree> ret = new ArrayList<ParseTree>(inputArrayList.size());
+        for (ParseTree item : inputArrayList) {
+            if (!(item instanceof TerminalNode) || ((TerminalNodeImpl) item).getSymbol().getType() != CSSLexer.S) {
+                ret.add(item);
+            }
+        }
+        return ret;
     }
 
     /**

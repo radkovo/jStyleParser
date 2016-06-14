@@ -72,7 +72,7 @@ public class CSSToken extends CommonToken {
 	 * @param stop End position in stream
 	 */
 	public CSSToken(int type, CSSLexerState state, int start, int stop, Class<? extends Lexer> lexerClass) {
-		this(new Pair<>(null,null), type, Token.DEFAULT_CHANNEL, start, stop, lexerClass);
+		this(new Pair<TokenSource, CharStream>(null,null), type, Token.DEFAULT_CHANNEL, start, stop, lexerClass);
 		this.ls = new CSSLexerState(state);
 	}
 
