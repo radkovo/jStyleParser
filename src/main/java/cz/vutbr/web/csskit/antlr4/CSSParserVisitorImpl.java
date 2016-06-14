@@ -14,7 +14,7 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 
-public class CSSParserVisitorImpl implements CSSParserVisitor, CSSParserExtractor {
+public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParserExtractor {
     // factories for building structures
     private RuleFactory rf = CSSFactory.getRuleFactory();
     private TermFactory tf = CSSFactory.getTermFactory();

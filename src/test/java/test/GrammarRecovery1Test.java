@@ -4,7 +4,6 @@ import cz.vutbr.web.css.*;
 import cz.vutbr.web.css.CSSProperty.FontFamily;
 import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.StyleMap;
-import org.antlr.v4.codegen.model.decl.Decl;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -252,7 +251,7 @@ public class GrammarRecovery1Test {
 	}
 
 	private void assertDeclarationValueRecovery(StyleSheet ss){
-		RuleBlock rb = ss.get(0);
+		RuleBlock<?> rb = ss.get(0);
 		Declaration d = (Declaration) rb.get(1);
 		Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
 		Assert.assertEquals("There are two declarations in the first rule", 2, ss.get(0).size());

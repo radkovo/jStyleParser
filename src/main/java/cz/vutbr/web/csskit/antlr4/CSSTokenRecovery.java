@@ -1,14 +1,9 @@
 package cz.vutbr.web.csskit.antlr4;
 
-import org.antlr.v4.*;
-
-
 import java.util.Stack;
 
-import org.antlr.v4.codegen.model.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.atn.LexerATNSimulator;
 import org.antlr.v4.runtime.misc.IntervalSet;
 import org.slf4j.Logger;

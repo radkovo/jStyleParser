@@ -1,15 +1,18 @@
 package test;
 
-import cz.vutbr.web.css.*;
-import cz.vutbr.web.css.Declaration;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cz.vutbr.web.css.CSSException;
+import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.RuleFontFace;
+import cz.vutbr.web.css.StyleSheet;
+import cz.vutbr.web.css.TermFactory;
+
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
