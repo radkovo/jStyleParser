@@ -1,14 +1,11 @@
 package test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertArrayEquals;
-
-import java.io.IOException;
-import java.util.Date;
-
+import cz.vutbr.web.css.*;
+import cz.vutbr.web.css.CSSProperty.FontFamily;
+import cz.vutbr.web.domassign.Analyzer;
+import cz.vutbr.web.domassign.StyleMap;
+import org.antlr.v4.codegen.model.decl.Decl;
 import org.junit.Assert;
-
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -17,17 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import cz.vutbr.web.css.CSSException;
-import cz.vutbr.web.css.CSSFactory;
-import cz.vutbr.web.css.NodeData;
-import cz.vutbr.web.css.RuleMedia;
-import cz.vutbr.web.css.RuleSet;
-import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.TermFactory;
-import cz.vutbr.web.css.TermList;
-import cz.vutbr.web.css.CSSProperty.FontFamily;
-import cz.vutbr.web.domassign.Analyzer;
-import cz.vutbr.web.domassign.StyleMap;
+import java.io.IOException;
+import java.util.Date;
+
+import static org.junit.Assert.*;
 
 public class GrammarRecovery1Test {
 	private static final Logger log = LoggerFactory.getLogger(GrammarRecovery1Test.class);
@@ -73,14 +63,24 @@ public class GrammarRecovery1Test {
 
 	//invalid closing parenthesis between the rules
 	public static final String TEST_INVALID_PAREN =	" h1 { color: red; } } h3 { color: blue; }";
-	
+
 	//invalid semicolon between the rules
 	public static final String TEST_INVALID_SEMICOLON =	" h1 { color: red; } ; h3 { color: blue; }";
-	
+
 	//declaration with no value
-	public static final String TEST_NO_VALUE = "#menu { background-color: #afa; null; color: red; }";
-	
-	
+	public static final String TEST_NO_VALUE = "#menu { background-color: #afa; null; color: red; } a{color:blue;}";
+
+	//declaration with curlyblock
+	public static final String TEST_VALUE_CURLY = "#menu { background-color: #afa; color:{blue}; color: red; } a{color:blue;}";
+
+	public static final String TEST_TERM_VALUE_ATKEYWORD = "#menu { background-color: #afa; color:@media; color: red; } a{color:blue;}";
+
+
+    public static final String TEST_TERM_VALUE_BRACEBLOCK = "#menu { background-color: #afa; color: [ttt=aa]; color: red; } a{color:blue;}";
+
+    public static final String TEST_TERM_VALUE_PARENBLOCK = "#menu { background-color: #afa; color: (ddd); color:red } a{color:blue;}";
+
+
 	@BeforeClass
 	public static void init() {
 		log.info("\n\n\n == GrammarRecovery1 test at {} == \n\n\n", new Date());
@@ -139,6 +139,45 @@ public class GrammarRecovery1Test {
 
 	}
 
+	@Test
+	public void decl1() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parseString(TEST_DECL1, null);
+		assertEquals("Contains one ruleset", 1, ss.size());
+		assertEquals("Ruleset contains 2 rules", 2, ss.get(0).size());
+        assertEquals("First rule is color red", tf.createColor("#ff0000"), ((Declaration) ss.get(0).get(0)).get(0));
+        assertEquals("Second rule is color green", tf.createColor("#008000"), ((Declaration) ss.get(0).get(1)).get(0));
+	}
+    @Ignore
+    // TODO:
+    //	@Test
+    //test is failing due to grammar declaration: : property COLON S* terms? important?
+    // - terms could be possibly empty but in CSS2.1 cannot!
+    //https://www.w3.org/TR/CSS21/grammar.html#grammar
+    //vs. https://www.w3.org/TR/css-syntax-3/#declaration-diagram
+	public void decl2() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parseString(TEST_DECL2, null);
+        assertEquals("Contains one ruleset", 1, ss.size());
+        assertEquals("Ruleset contains 1 rule", 1, ss.get(0).size());
+        assertEquals("First rule is color green", tf.createColor("#008000"), ((Declaration) ss.get(0).get(0)).get(0));
+	}
+    @Ignore
+    // TODO:
+    //	@Test
+    //same as decl2
+	public void decl3() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parseString(TEST_DECL3, null);
+        assertEquals("Contains one ruleset", 1, ss.size());
+        assertEquals("Ruleset contains 2 rules", 2, ss.get(0).size());
+        assertEquals("First rule is color red", tf.createColor("#ff0000"), ((Declaration) ss.get(0).get(0)).get(0));
+        assertEquals("Second rule is color green", tf.createColor("#008000"), ((Declaration) ss.get(0).get(1)).get(0));
+	}
+	@Test
+	public void decl4() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parseString(TEST_DECL4, null);
+        assertEquals("Contains one ruleset", 1, ss.size());
+        assertEquals("Ruleset contains 1 rule", 1, ss.get(0).size());
+        assertEquals("First rule is color green", tf.createColor("#008000"), ((Declaration) ss.get(0).get(0)).get(0));
+	}
 	@Test
 	public void noTerms() throws IOException, CSSException {
 
@@ -203,7 +242,7 @@ public class GrammarRecovery1Test {
 		Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
 
 	}
-	
+
 	@Test
 	public void invalidSemicolon() throws IOException, CSSException {
 		StyleSheet ss = CSSFactory.parseString(TEST_INVALID_SEMICOLON, null);
@@ -211,13 +250,43 @@ public class GrammarRecovery1Test {
 		Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
 
 	}
-	
+
+	private void assertDeclarationValueRecovery(StyleSheet ss){
+		RuleBlock rb = ss.get(0);
+		Declaration d = (Declaration) rb.get(1);
+		Assert.assertEquals("Stylesheet contains two rules", 2, ss.size());
+		Assert.assertEquals("There are two declarations in the first rule", 2, ss.get(0).size());
+		Assert.assertEquals("Second declaration is color: red ", tf.createColor("#ff0000"), d.get(0));
+		Assert.assertEquals("There are one declaration in the second rule", 1, ss.get(1).size());
+	}
     @Test
     public void declarationNoValue() throws IOException, CSSException {
         StyleSheet ss = CSSFactory.parseString(TEST_NO_VALUE, null);
-
-        Assert.assertEquals("Stylesheet contains one rule", 1, ss.size());
-        Assert.assertEquals("There are two declarations in the rule", 2, ss.get(0).size());
-
+		assertDeclarationValueRecovery(ss);
     }
+
+	@Test
+	public void declarationValueCurly() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parseString(TEST_VALUE_CURLY, null);
+		assertDeclarationValueRecovery(ss);
+	}
+
+	@Test
+	public void declarationValueAtKeyword() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parseString(TEST_TERM_VALUE_ATKEYWORD, null);
+		assertDeclarationValueRecovery(ss);
+	}
+
+	@Test
+	public void declarationValueBraceblock() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parseString(TEST_TERM_VALUE_BRACEBLOCK, null);
+		assertDeclarationValueRecovery(ss);
+	}
+
+	@Test
+	public void declarationValueParenblock() throws IOException, CSSException {
+		StyleSheet ss = CSSFactory.parseString(TEST_TERM_VALUE_PARENBLOCK, null);
+		assertDeclarationValueRecovery(ss);
+	}
+
 }

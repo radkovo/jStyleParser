@@ -1,4 +1,4 @@
-package cz.vutbr.web.csskit.antlr;
+package cz.vutbr.web.csskit.antlr4;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +41,7 @@ public class SimplePreparator implements Preparator {
 
 		// check emptiness
 		if ((cslist == null || cslist.isEmpty())
-				&& (dlist == null || dlist.isEmpty())) {
+				|| (dlist == null || dlist.isEmpty())) {
 			log.debug("Empty RuleSet was ommited");
 			return null;
 		}

@@ -19,8 +19,8 @@ import org.w3c.dom.traversal.NodeFilter;
 
 import cz.vutbr.web.csskit.DefaultNetworkProcessor;
 import cz.vutbr.web.csskit.MatchConditionImpl;
-import cz.vutbr.web.csskit.antlr.CSSParserFactory;
-import cz.vutbr.web.csskit.antlr.CSSParserFactory.SourceType;
+import cz.vutbr.web.csskit.antlr4.CSSParserFactory;
+import cz.vutbr.web.csskit.antlr4.CSSParserFactory.SourceType;
 import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.DeclarationTransformer;
 import cz.vutbr.web.domassign.StyleMap;

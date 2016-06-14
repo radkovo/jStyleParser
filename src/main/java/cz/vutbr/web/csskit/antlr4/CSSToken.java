@@ -1,19 +1,17 @@
-package cz.vutbr.web.csskit.antlr;
+package cz.vutbr.web.csskit.antlr4;
+
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.Pair;
 
 import java.net.URL;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.antlr.runtime.CharStream;
-import org.antlr.runtime.CommonToken;
-import org.antlr.runtime.Lexer;
-import org.antlr.runtime.Token;
-
 /**
  * Token with encapsulation of LexerState during parse.
  * Models view at token text by removing syntactic sugar
  * from tokens with contains it,
- * e.g. STRING, URI, FUNCTION 
+ * e.g. STRING, URI, FUNCTION
  * @author kapy
  *
  */
@@ -23,24 +21,25 @@ public class CSSToken extends CommonToken {
 	 * Extended with EOF_TOKEN
 	 */
 	private static final long serialVersionUID = 3L;
-	
+
 	/**
 	 * Current lexer state
 	 */
 	protected CSSLexerState ls;
-	
+
 	/** Base URL for URIs */
 	protected URL base;
-	
+
 	// token types
 	public static final int FUNCTION = 1;
 	public static final int URI = 2;
 	public static final int STRING = 3;
 	public static final int CLASSKEYWORD = 4;
 	public static final int HASH = 5;
-	
+	public static final int UNCLOSED_STRING = 6;
+
 	private final TypeMapper typeMapper;
-	
+
 	/**
 	 * Creates CSSToken, this is base {@code emit()} constructor
 	 * @param input Input stream
@@ -49,11 +48,11 @@ public class CSSToken extends CommonToken {
 	 * @param start Start position in stream
 	 * @param stop End position in stream
 	 */
-	public CSSToken(CharStream input, int type, int channel, int start, int stop, Class<? extends Lexer> lexerClass) {
+	public CSSToken(Pair<TokenSource, CharStream> input, int type, int channel, int start, int stop, Class<? extends Lexer> lexerClass) {
 		super(input, type, channel, start, stop);
-		typeMapper = new TypeMapper(CSSToken.class, lexerClass, "FUNCTION", "URI", "STRING", "CLASSKEYWORD", "HASH");
+		typeMapper = new TypeMapper(CSSToken.class, lexerClass, "FUNCTION", "URI", "STRING", "CLASSKEYWORD", "HASH","UNCLOSED_STRING");
 	}
-	
+
 	/**
 	 * Creates CSSToken of given type with cloning lexer state
 	 * automatically
@@ -63,7 +62,7 @@ public class CSSToken extends CommonToken {
 	public CSSToken(int type, CSSLexerState state, Class<? extends Lexer> lexerClass) {
 		this(type, state, 0, 0, lexerClass);
 	}
-	
+
 	/**
 	 * Creates CSSToken of given type with cloning lexer state
 	 * automatically, allows to set text boundaries in input stream
@@ -73,7 +72,7 @@ public class CSSToken extends CommonToken {
 	 * @param stop End position in stream
 	 */
 	public CSSToken(int type, CSSLexerState state, int start, int stop, Class<? extends Lexer> lexerClass) {
-		this(null, type, Token.DEFAULT_CHANNEL, start, stop, lexerClass);
+		this(new Pair<>(null,null), type, Token.DEFAULT_CHANNEL, start, stop, lexerClass);
 		this.ls = new CSSLexerState(state);
 	}
 
@@ -92,7 +91,7 @@ public class CSSToken extends CommonToken {
 	 * @return the lexer state
 	 */
 	public CSSLexerState getLexerState() {
-		return ls;	
+		return ls;
 	}
 
 	/**
@@ -117,14 +116,17 @@ public class CSSToken extends CommonToken {
 	 * Considers text as content of STRING token,
 	 * and models view at this text as an common string,
 	 * that is one character removed from the both beginning
-	 * and the end.  
-	 * @param string Content of STRING token 
+	 * and the end.
+	 * @param string Content of STRING token
 	 * @return String with trimmed quotation marks
 	 */
 	public static String extractSTRING(String string) {
 		return string.substring(1, string.length()-1);
 	}
 
+	public static String extractUNCLOSEDSTRING(String string) {
+		return string.substring(1, string.length());
+	}
 	/**
 	 * Considers text as content of URI token,
 	 * and models view at this text as an common string,
@@ -133,17 +135,17 @@ public class CSSToken extends CommonToken {
 	 * is STRING, remove even quotation marks
 	 * @param uri Content of URI token
 	 * @return String with trimmed URI syntax sugar and
-	 * optionally quotation marks 
+	 * optionally quotation marks
 	 */
 	public static String extractURI(String uri) {
 		String ret = uri.substring(4, uri.length()-1);
 		// trim string
 		if(ret.length() > 0 && (ret.charAt(0)=='\'' || ret.charAt(0)=='"'))
 			ret = ret.substring(1, ret.length()-1);
-		
+
 		return ret;
 	}
-	
+
 	/**
 	 * Considers text as content of FUNCTION token,
 	 * and models view at this text as an common string,
@@ -154,7 +156,7 @@ public class CSSToken extends CommonToken {
 	public static String extractFUNCTION(String function) {
 		return function.substring(0, function.length()-1);
 	}
-	
+
 	/**
 	 * Considers text as content of HASH token,
 	 * and models view at this text as an common string,
@@ -165,7 +167,7 @@ public class CSSToken extends CommonToken {
 	public static String extractHASH(String hash) {
 		return hash.substring(1,hash.length());
 	}
-	
+
 	/**
 	 * Considers text as content of CLASSKEYWORD token,
 	 * and models view at this text as an common string,
@@ -176,17 +178,17 @@ public class CSSToken extends CommonToken {
 	public static String extractCLASSKEYWORD(String className) {
 		return className.substring(1,className.length());
 	}
-	
+
 	/**
 	 * Returns common text stored in token. Content is not modified.
 	 * @return Model view of text in token
 	 */
 	@Override
 	public String getText() {
-		
+
 		// sets text from input if not text directly available
 		text = super.getText();
-		
+
 		int t;
 		try {
 			t = typeMapper.inverse().get(type);
@@ -200,25 +202,29 @@ public class CSSToken extends CommonToken {
 				return extractURI(text);
 			case STRING:
 				return extractSTRING(text);
+			case UNCLOSED_STRING:
+				return extractUNCLOSEDSTRING(text);
 			case CLASSKEYWORD:
 				return extractCLASSKEYWORD(text);
 			case HASH:
-				return extractHASH(text);	
+				return extractHASH(text);
 			default:
 				return text;
 		}
-		
+
 	}
-    
-    @Override
+
+
+
+	@Override
     public String toString() {
     	StringBuilder sb = new StringBuilder();
     	sb.append("/").append(ls).append("/")
     		.append(super.toString());
-    	
+
     	return sb.toString();
     }
-	
+
 	/**
 	 * Convert between type values defined in two classes.
 	 */
@@ -252,5 +258,12 @@ public class CSSToken extends CommonToken {
 		public TypeMapper inverse() {
 			return inverse;
 		}
+	}
+
+	/**
+	 * extract charset value from CHARSET token
+     */
+	public static String extractCHARSET(String charset){
+		return extractSTRING(charset.replace("@charset","").replace(";","").trim());
 	}
 }
