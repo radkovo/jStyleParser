@@ -326,7 +326,10 @@ valuepart
     ) S*
     ;
 	catch [RecognitionException re] {
-	   log.error("Recognition exception | valuepart | should be empty");
+		log.error("Recognition exception | valuepart | should be empty");
+		IntervalSet intervalSet = new IntervalSet(RCURLY, SEMICOLON);
+		getCSSErrorHandler().consumeUntil(this, intervalSet, CSSLexerState.RecoveryMode.BALANCED, null);
+		_localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,""));
 	}
 
 combined_selector
