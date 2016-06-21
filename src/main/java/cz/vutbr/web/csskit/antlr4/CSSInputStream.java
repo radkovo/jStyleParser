@@ -5,8 +5,14 @@ package cz.vutbr.web.csskit.antlr4;
 
 import cz.vutbr.web.css.NetworkProcessor;
 import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.misc.Interval;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
 
@@ -59,11 +65,11 @@ public class CSSInputStream extends ANTLRInputStream {
         String encoding = Charset.defaultCharset().name();
         BufferedReader br = new BufferedReader(new InputStreamReader(is, encoding));
 
-        CSSInputStream stream = new CSSInputStream(br);
+        CSSInputStream stream = new CSSInputStream();
         stream.rawData = source;
         stream.encoding = encoding;
         //stream.source = is;
-        stream.input = stream;
+        stream.input = new ANTLRInputStream(br);
 
         return stream;
     }
@@ -73,17 +79,15 @@ public class CSSInputStream extends ANTLRInputStream {
         if (encoding == null) {
             encoding = Charset.defaultCharset().name();
         }
-        BufferedReader br = new BufferedReader(
-                new InputStreamReader(is, encoding));
+        BufferedReader br = new BufferedReader(new InputStreamReader(is, encoding));
 
-        CSSInputStream stream = new CSSInputStream(br);
-
+        CSSInputStream stream = new CSSInputStream();
         stream.base = source;
         stream.network = network;
         stream.url = source;
         stream.encoding = encoding;
         stream.source = is;
-        stream.input = stream;
+        stream.input = new ANTLRInputStream(br);
         return stream;
     }
 
@@ -92,14 +96,62 @@ public class CSSInputStream extends ANTLRInputStream {
     private CSSInputStream() {
     }
 
-    private CSSInputStream(Reader r) throws IOException {
-        super(r);
+    @Override
+    public int LA(int i) {
+        return input.LA(i);
     }
 
+    @Override
+    public int LT(int i) {
+        return input.LT(i);
+    }
 
-    /* (non-Javadoc)
-     * @see org.antlr.runtime.CharStream#getSourceName()
-     */
+    @Override
+    public void consume() {
+        input.consume();
+    }
+
+    @Override
+    public String getText(Interval interval) {
+        return input.getText(interval);
+    }
+
+    @Override
+    public int index() {
+        return input.index();
+    }
+
+    @Override
+    public void load(Reader arg0, int arg1, int arg2) throws IOException {
+        input.load(arg0, arg1, arg2);
+    }
+
+    @Override
+    public int mark() {
+        return input.mark();
+    }
+
+    @Override
+    public void release(int marker) {
+        input.release(marker);
+    }
+
+    @Override
+    public void reset() {
+        input.reset();
+    }
+
+    @Override
+    public void seek(int index) {
+        input.seek(index);
+    }
+
+    @Override
+    public int size() {
+        return input.size();
+    }
+
+    @Override
     public String getSourceName() {
         return base != null ? base.toString() : "";
     }
