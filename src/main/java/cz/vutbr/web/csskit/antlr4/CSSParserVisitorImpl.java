@@ -862,7 +862,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
                 declaration_stack.peek().invalid = true;
             else {
                 cz.vutbr.web.css.Term<?> term = t.get(0);
-                if (term instanceof cz.vutbr.web.css.TermString)
+                if (term instanceof cz.vutbr.web.css.TermString && term.getOperator() == null)
                     terms_stack.peek().term = tf.createURI(((cz.vutbr.web.css.TermString) term).getValue(), extractBase(ctx.FUNCTION()));
                 else
                     declaration_stack.peek().invalid = true;
