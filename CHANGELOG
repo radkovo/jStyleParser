@@ -1,3 +1,7 @@
+Version 1.23 - Jul 8, 2016
+- @charset processing fix
+- Minor fixes in media query matching
+
 Version 1.22 - Jan 28, 2016
 - A generic ElementMatcher mechanism for implementing alternative ways
   of selector to element matching
