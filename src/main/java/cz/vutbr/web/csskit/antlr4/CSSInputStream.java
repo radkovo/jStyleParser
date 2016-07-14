@@ -197,10 +197,12 @@ public class CSSInputStream extends ANTLRInputStream {
             if (current == null)
                 current = Charset.defaultCharset().name();
             if (!current.equalsIgnoreCase(enc)) {
+                int oldindex = input.index();
                 source.close();
                 encoding = enc;
                 CSSInputStream newstream = urlStream(url, network, encoding);
                 input = newstream.input;
+                input.seek(oldindex);
             }
         }
     }
