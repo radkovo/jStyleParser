@@ -313,8 +313,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             if (ctx.media() != null) {
                 im = visitMedia(ctx.media());
             }
+            ctx.import_uri();
             String iuri = visitImport_uri(ctx.import_uri());
-            if (!this.preventImports) {
+            if (!this.preventImports && iuri != null) {
                 log.debug("Adding import: {}", iuri);
                 importMedia.add(im);
                 importPaths.add(iuri);
@@ -377,7 +378,10 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
      * import_uri : (STRING | URI)
      */
     public String visitImport_uri(CSSParser.Import_uriContext ctx) {
-        return extractTextUnescaped(ctx.getText());
+        if (ctx != null)
+            return extractTextUnescaped(ctx.getText());
+        else
+            return null;
     }
 
     @Override

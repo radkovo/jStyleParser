@@ -101,7 +101,7 @@ atstatement
      }
 
 import_uri
-    : (STRING | URI | UNCLOSED_URI)
+    : (STRING | URI | UNCLOSED_STRING | UNCLOSED_URI)
     ;
     catch [RecognitionException re] {
         log.error("Recognition exception | import_uri | should be empty");
