@@ -101,7 +101,7 @@ atstatement
      }
 
 import_uri
-    : (STRING | URI)
+    : (STRING | URI | UNCLOSED_URI)
     ;
     catch [RecognitionException re] {
         log.error("Recognition exception | import_uri | should be empty");
@@ -306,6 +306,7 @@ valuepart
         | (PLUS | MINUS)? DIMENSION
         | string
         | URI
+        | UNCLOSED_URI
         | HASH
         | (PLUS | MINUS)? funct
         | COMMA
@@ -415,6 +416,7 @@ any
 	  | DIMENSION
 	  | string
       | URI
+      | UNCLOSED_URI
       | HASH
       | UNIRANGE
       | INCLUDES
@@ -484,6 +486,7 @@ norule
     | DIMENSION
     | string
     | URI
+    | UNCLOSED_URI
     | UNIRANGE
     | INCLUDES
     | COMMA
@@ -514,6 +517,7 @@ nomediaquery
     | DIMENSION
     | string
     | URI
+    | UNCLOSED_URI
     | UNIRANGE
     | INCLUDES
     | GREATER

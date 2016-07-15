@@ -244,6 +244,7 @@ STRING
 	    tr.end();
 	}
 	;
+
 UNCLOSED_STRING
 	: UNCLOSED_STRING_MACR
 	;
@@ -276,6 +277,10 @@ DIMENSION
 /** URI encapsulated in 'url(' ... ')' */
 URI
 	: 'url(' W_MACR (STRING_MACR | URI_MACR) W_MACR ')'
+	;
+
+UNCLOSED_URI
+	: 'url(' W_MACR (STRING_MACR | URI_MACR) W_MACR
 	;
 
 /** Unicode range */	

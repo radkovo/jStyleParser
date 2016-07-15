@@ -37,6 +37,7 @@ public class CSSToken extends CommonToken {
 	public static final int CLASSKEYWORD = 4;
 	public static final int HASH = 5;
 	public static final int UNCLOSED_STRING = 6;
+    public static final int UNCLOSED_URI = 7;
 
 	private final TypeMapper typeMapper;
 
@@ -50,7 +51,7 @@ public class CSSToken extends CommonToken {
 	 */
 	public CSSToken(Pair<TokenSource, CharStream> input, int type, int channel, int start, int stop, Class<? extends Lexer> lexerClass) {
 		super(input, type, channel, start, stop);
-		typeMapper = new TypeMapper(CSSToken.class, lexerClass, "FUNCTION", "URI", "STRING", "CLASSKEYWORD", "HASH","UNCLOSED_STRING");
+		typeMapper = new TypeMapper(CSSToken.class, lexerClass, "FUNCTION", "URI", "STRING", "CLASSKEYWORD", "HASH", "UNCLOSED_STRING", "UNCLOSED_URI");
 	}
 
 	/**
@@ -146,6 +147,15 @@ public class CSSToken extends CommonToken {
 		return ret;
 	}
 
+    public static String extractUNCLOSEDURI(String uri) {
+        String ret = uri.substring(4);
+        // trim string
+        if(ret.length() > 0 && (ret.charAt(0)=='\'' || ret.charAt(0)=='"'))
+            ret = ret.substring(1, ret.length());
+
+        return ret;
+    }
+    
 	/**
 	 * Considers text as content of FUNCTION token,
 	 * and models view at this text as an common string,
@@ -200,6 +210,8 @@ public class CSSToken extends CommonToken {
 				return text.substring(0, text.length()-1);
 			case URI:
 				return extractURI(text);
+            case UNCLOSED_URI:
+                return extractUNCLOSEDURI(text);
 			case STRING:
 				return extractSTRING(text);
 			case UNCLOSED_STRING:
