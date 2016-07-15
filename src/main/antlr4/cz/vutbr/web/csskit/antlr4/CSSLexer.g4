@@ -159,7 +159,7 @@ CHARSET
     {
 	    tr.expecting(CHARSET);
     }
-	'@charset' S* STRING_MACR S* SEMICOLON
+	'@charset' S* STRING_MACR? S* SEMICOLON
 	  {
 	    // we have to trim manually
 	    String enc = cz.vutbr.web.csskit.antlr4.CSSToken.extractCHARSET(getText());

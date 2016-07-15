@@ -332,14 +332,16 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
 
             List<cz.vutbr.web.css.Declaration> declarations = visitDeclarations(ctx.declarations());
             atstmt = preparator.prepareRuleViewport(declarations);
-            this.preventImports = true;
+            if (atstmt != null)
+                this.preventImports = true;
         }
         //fontface
         else if (ctx.FONTFACE() != null) {
 
             List<cz.vutbr.web.css.Declaration> declarations = visitDeclarations(ctx.declarations());
             atstmt = preparator.prepareRuleFontFace(declarations);
-            this.preventImports = true;
+            if (atstmt != null)
+                this.preventImports = true;
         }
         //media
         else if (ctx.MEDIA() != null) {
@@ -359,7 +361,8 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
                 }
             }
             atstmt = preparator.prepareRuleMedia(rules, mediaList);
-            this.preventImports = true;
+            if (atstmt != null)
+                this.preventImports = true;
         }
         //unknown
         else {
@@ -406,7 +409,8 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         }
 
         RuleBlock<?> rb = preparator.prepareRulePage(declarations, margins, name, pseudo);
-        this.preventImports = true;
+        if (rb != null)
+            this.preventImports = true;
         return rb;
     }
 
@@ -667,7 +671,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     public List<Declaration> visitDeclarations(CSSParser.DeclarationsContext ctx) {
         logEnter("declarations");
         List<Declaration> decl = new ArrayList<>();
-        if (ctx.declaration() != null) {
+        if (ctx != null && ctx.declaration() != null) {
             for (CSSParser.DeclarationContext declctx : ctx.declaration()) {
                 Declaration d = visitDeclaration(declctx);
                 if (d != null) {
