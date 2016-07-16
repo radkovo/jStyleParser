@@ -280,7 +280,7 @@ URI
 	;
 
 UNCLOSED_URI
-	: 'url(' W_MACR (STRING_MACR | URI_MACR) W_MACR
+	: 'url(' W_MACR (STRING_MACR | UNCLOSED_STRING_MACR | URI_MACR) W_MACR
 	;
 
 /** Unicode range */	
