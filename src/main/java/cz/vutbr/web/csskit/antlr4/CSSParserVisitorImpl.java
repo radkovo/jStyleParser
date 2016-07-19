@@ -1062,6 +1062,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         }
 
         logLeave("selector");
+        selector_stack.pop();
         return sel;
     }
 
@@ -1207,22 +1208,24 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             } else {
                 //function
                 //var first is function name
-                String value = "";
-                if (ctx.IDENT() != null) {
-                    value = ctx.IDENT().getText();
+                if (ctx.selector() != null) {
+                    pseudoPage = rf.createPseudoPage(visitSelector(ctx.selector()), first);
                 } else {
+                    String value = "";
                     if (ctx.MINUS() != null) {
                         value = "-";
                     }
-                    if (ctx.NUMBER() != null) {
+                    if (ctx.IDENT() != null) {
+                        value = ctx.IDENT().getText();
+                    } else if (ctx.NUMBER() != null) {
                         value += ctx.NUMBER().getText();
                     } else if (ctx.INDEX() != null) {
                         value += ctx.INDEX().getText();
                     } else {
                         throw new UnsupportedOperationException("unknown state");
                     }
+                    pseudoPage = rf.createPseudoPage(value, first);
                 }
-                pseudoPage = rf.createPseudoPage(value, first);
             }
         }
         logLeave("pseudo");

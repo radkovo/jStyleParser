@@ -329,7 +329,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	
         private static HashMap<String, PseudoDeclaration> PSEUDO_DECLARATIONS;
         static {
-            PSEUDO_DECLARATIONS = new HashMap<String, PseudoDeclaration>(22);
+            PSEUDO_DECLARATIONS = new HashMap<String, PseudoDeclaration>(30);
             PSEUDO_DECLARATIONS.put("active", PseudoDeclaration.ACTIVE);
             PSEUDO_DECLARATIONS.put("focus", PseudoDeclaration.FOCUS);
             PSEUDO_DECLARATIONS.put("hover", PseudoDeclaration.HOVER);
@@ -352,6 +352,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
             PSEUDO_DECLARATIONS.put("disabled", PseudoDeclaration.DISABLED);
             PSEUDO_DECLARATIONS.put("checked", PseudoDeclaration.CHECKED);
             PSEUDO_DECLARATIONS.put("target", PseudoDeclaration.TARGET);
+            PSEUDO_DECLARATIONS.put("not", PseudoDeclaration.NOT);
             
             PSEUDO_DECLARATIONS.put("first-letter", PseudoDeclaration.FIRST_LETTER);
             PSEUDO_DECLARATIONS.put("first-line", PseudoDeclaration.FIRST_LINE);
@@ -362,6 +363,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	private String functionName;
     	private String value;
     	private PseudoDeclaration declaration;
+    	private Selector selector; //nested selector (for :not(sel))
     	//decoded element index for nth-XXXX properties -- values a and b in the an+b specification
     	private int[] elementIndex;
     	
@@ -370,6 +372,11 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     		setFunctionName(functionName);
     	}
 
+        protected PseudoPageImpl(Selector selector, String functionName) {
+            setValue(null);
+            setFunctionName(functionName);
+            setSelector(selector);
+        }
     	
     	public PseudoDeclaration getDeclaration()
     	{
@@ -393,7 +400,15 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			return this;
 		}
 		
-		public void computeSpecificity(Specificity spec) {
+		public Selector getSelector() {
+            return selector;
+        }
+
+        public void setSelector(Selector selector) {
+            this.selector = selector;
+        }
+
+        public void computeSpecificity(Specificity spec) {
 
 		    if (declaration != null)
 		    {
@@ -499,6 +514,15 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
                                 return false;
                         }
                         return true;
+                    case NOT:
+                        if (selector != null) {
+                            return !selector.matches(e, matcher, cond);
+                        } else if (value != null) {
+                            final ElementName sel = new ElementNameImpl(value);
+                            return !sel.matches(e, matcher, cond);
+                        }
+                        else
+                            return false;
 					default:
 					    //match all pseudo elements and the pseudo classes specified by an additional condition (usually used for using LINK pseudo class for links)
 						if (declaration.isPseudoElement() || cond.isSatisfied(e, this)) 
@@ -666,7 +690,9 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			
 			if(functionName!=null) 
 				sb.append(functionName).append(OutputUtil.FUNCTION_OPENING);
-			if(value!=null)
+			if(selector != null)
+			    sb.append(selector.toString());
+			else if(value!=null)
 			    sb.append(CssEscape.escapeCssIdentifier(value));
 			if(functionName!=null)
 				sb.append(OutputUtil.FUNCTION_CLOSING);

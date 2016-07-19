@@ -147,6 +147,14 @@ public interface RuleFactory {
 	 */
 	Selector.PseudoPage createPseudoPage(String pseudo, String functionName);
 
+    /**
+     * Creates CSS pseudo selector containing another selector as argument
+     * @param selector the nested selector
+     * @param functionName Name of pseudo function
+     * @return New CSS pseudo page selector page
+     */
+    Selector.PseudoPage createPseudoPage(Selector selector, String functionName);
+
 	/**
 	 * Creates CSS author style sheet
 	 * @return The new style sheet.

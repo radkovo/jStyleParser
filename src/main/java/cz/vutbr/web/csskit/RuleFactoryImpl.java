@@ -153,6 +153,10 @@ public class RuleFactoryImpl implements RuleFactory {
 		return new SelectorImpl.PseudoPageImpl(pseudo, functionName);
 	}
 	
+    public PseudoPage createPseudoPage(Selector selector, String functionName) {
+        return new SelectorImpl.PseudoPageImpl(selector, functionName);
+    }
+    
 	public StyleSheet createStyleSheet() {
 		return new StyleSheetImpl();
 	}

@@ -85,6 +85,7 @@ public interface Selector extends Rule<Selector.SelectorPart> {
         DISABLED("disabled", false),
         CHECKED("checked", false),
         TARGET("target", false),
+        NOT("not", false),
         
         FIRST_LINE("first-line", true),
         FIRST_LETTER("first-letter", true),
