@@ -39,6 +39,7 @@ public class GrammarRecovery2Test {
     /* invalid selector - the whole rule should be skipped */
     public static final String TEST_DECL6A = "#menu,x:-moz-any-link { color: green !ie; } #menu { border: 1px solid blue; }";
     public static final String TEST_DECL6B = "#menu { border: 1px solid blue; } #menu,x:-moz-any-link { color: green !ie; }";
+    public static final String TEST_DECL6C = "p:invalidPseudoClass, p.test1 { color: yellow; background: red; }";
     
     /* invalid selector - the whole rule should be skipped but the other rules in media should be preserved (coorect {} matching test) */
     public static final String TEST_DECL7A = "@media { #menu,x:-moz-any-link { color: green !ie; } #menu { border: 1px solid blue; } }";
@@ -107,6 +108,8 @@ public class GrammarRecovery2Test {
         assertEquals("One declaration is accepted (second one is invalid)", 1, ss.size());
         ss = CSSFactory.parseString(TEST_DECL6B, null);
         assertEquals("One declaration is accepted (first one is invalid)", 1, ss.size());
+        ss = CSSFactory.parseString(TEST_DECL6C, null);
+        assertEquals("The whole rule is discarded (invalid pseudo class)", 0, ss.size());
     }
     
     @Test
