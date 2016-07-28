@@ -804,28 +804,28 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         terms_stack.peek().op = null;
         terms_stack.peek().unary = 1;
         terms_stack.peek().dash = false;
-        for (CSSParser.TermContext trmCtx : ctx.term()) {
-            if (trmCtx instanceof CSSParser.TermValuePartContext) {
-                visitTermValuePart((CSSParser.TermValuePartContext) trmCtx);
-                // set operator, store and create next
-                if (!declaration_stack.peek().invalid && terms_stack.peek().term != null) {
-                    terms_stack.peek().term.setOperator(terms_stack.peek().op);
-                    terms_stack.peek().list.add(terms_stack.peek().term);
-                    // reinitialization
-                    terms_stack.peek().op = cz.vutbr.web.css.Term.Operator.SPACE;
-                    terms_stack.peek().unary = 1;
-                    terms_stack.peek().dash = false;
-                    terms_stack.peek().term = null;
+        if (ctx.term() != null)
+        {
+            for (CSSParser.TermContext trmCtx : ctx.term()) {
+                if (trmCtx instanceof CSSParser.TermValuePartContext) {
+                    visitTermValuePart((CSSParser.TermValuePartContext) trmCtx);
+                    // set operator, store and create next
+                    if (!declaration_stack.peek().invalid && terms_stack.peek().term != null) {
+                        terms_stack.peek().term.setOperator(terms_stack.peek().op);
+                        terms_stack.peek().list.add(terms_stack.peek().term);
+                        // reinitialization
+                        terms_stack.peek().op = cz.vutbr.web.css.Term.Operator.SPACE;
+                        terms_stack.peek().unary = 1;
+                        terms_stack.peek().dash = false;
+                        terms_stack.peek().term = null;
+                    }
+                } else {
+                    visitTermInvalid((CSSParser.TermInvalidContext) trmCtx);
                 }
-            } else {
-                visitTermInvalid((CSSParser.TermInvalidContext) trmCtx);
             }
         }
-
-
         log.debug("Totally added {} terms", tlist.size());
         logLeave("terms");
-
         terms_stack.pop();
         return tlist;
     }
@@ -864,27 +864,30 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             return null;
         }
         final String fname = extractTextUnescaped(ctx.FUNCTION().getText());
-        List<Term<?>> t = visitTerms(ctx.terms());
-        if (fname.equalsIgnoreCase("url")) {
-            // the function name is url() after escaping - create an URI
-            if (terms_stack.peek().unary == -1 || t == null || t.size() != 1)
-                declaration_stack.peek().invalid = true;
-            else {
-                cz.vutbr.web.css.Term<?> term = t.get(0);
-                if (term instanceof cz.vutbr.web.css.TermString && term.getOperator() == null)
-                    terms_stack.peek().term = tf.createURI(((cz.vutbr.web.css.TermString) term).getValue(), extractBase(ctx.FUNCTION()));
-                else
+        if (ctx.terms() != null)
+        {
+            List<Term<?>> t = visitTerms(ctx.terms());
+            if (fname.equalsIgnoreCase("url")) {
+                // the function name is url() after escaping - create an URI
+                if (terms_stack.peek().unary == -1 || t == null || t.size() != 1)
                     declaration_stack.peek().invalid = true;
+                else {
+                    cz.vutbr.web.css.Term<?> term = t.get(0);
+                    if (term instanceof cz.vutbr.web.css.TermString && term.getOperator() == null)
+                        terms_stack.peek().term = tf.createURI(((cz.vutbr.web.css.TermString) term).getValue(), extractBase(ctx.FUNCTION()));
+                    else
+                        declaration_stack.peek().invalid = true;
+                }
+            } else {
+                // create function
+                cz.vutbr.web.css.TermFunction function = tf.createFunction();
+                function.setFunctionName(fname);
+                if (terms_stack.peek().unary == -1) //if started with minus, add the minus to the function name
+                    function.setFunctionName('-' + function.getFunctionName());
+                if (t != null)
+                    function.setValue(t);
+                terms_stack.peek().term = function;
             }
-        } else {
-            // create function
-            cz.vutbr.web.css.TermFunction function = tf.createFunction();
-            function.setFunctionName(fname);
-            if (terms_stack.peek().unary == -1) //if started with minus, add the minus to the function name
-                function.setFunctionName('-' + function.getFunctionName());
-            if (t != null)
-                function.setValue(t);
-            terms_stack.peek().term = function;
         }
         //returns null
         return null;
