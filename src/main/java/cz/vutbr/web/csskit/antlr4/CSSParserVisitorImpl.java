@@ -941,7 +941,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         } else if (ctx.URI() != null) {
             log.debug("VP - uri");
             terms_stack.peek().term = tf.createURI(extractTextUnescaped(ctx.URI().getText()), extractBase(ctx.URI()));
-        } else if (ctx.UNCLOSED_URI() != null) {
+        } else if (ctx.UNCLOSED_URI() != null && ((CSSToken) ctx.UNCLOSED_URI().getSymbol()).isValid()) {
             log.debug("VP - unclosed_uri");
             terms_stack.peek().term = tf.createURI(extractTextUnescaped(ctx.UNCLOSED_URI().getText()), extractBase(ctx.UNCLOSED_URI()));
         } else if (ctx.funct() != null) {

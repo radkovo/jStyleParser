@@ -65,6 +65,9 @@ tokens {
 
     // current lexer state
     protected cz.vutbr.web.csskit.antlr4.CSSLexerState ls;
+    
+    // last UNCLOSED_* token
+    protected cz.vutbr.web.csskit.antlr4.CSSToken lastUnclosed;
 
     /**
       * token facctory for generating custom tokens (CSSToken)
@@ -111,6 +114,22 @@ tokens {
        if (token.getType() == S) {
            tokencnt++;
        }
+       
+       //save last UNCLOSED_URI for later checking the EOF
+       if (token.getType() == UNCLOSED_URI) {
+           lastUnclosed = (CSSToken) token;
+           lastUnclosed.setValid(false);
+       }
+       //in case of EOF, convert the unclosed token to closed one
+       else if (token.getType() == Token.EOF) {
+           if (lastUnclosed != null) {
+               lastUnclosed.setValid(true);
+               log.debug("Validating UNCLOSED_URI by EOF");
+           }
+       }
+       //reset unclosed uri
+       else if (!tr.isAtEof())
+           lastUnclosed = null;
 
        // Skip first token after switching on another input.
        if(((CommonToken)token).getStartIndex() < 0)

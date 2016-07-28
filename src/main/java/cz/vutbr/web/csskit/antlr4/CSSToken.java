@@ -29,6 +29,8 @@ public class CSSToken extends CommonToken {
 
 	/** Base URL for URIs */
 	protected URL base;
+	
+	protected boolean valid = true;
 
 	// token types
 	public static final int FUNCTION = 1;
@@ -111,6 +113,14 @@ public class CSSToken extends CommonToken {
     public void setBase(URL base)
     {
         this.base = base;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
 
     /**

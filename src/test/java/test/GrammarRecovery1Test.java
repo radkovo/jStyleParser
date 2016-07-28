@@ -40,7 +40,8 @@ public class GrammarRecovery1Test {
 			+ "BODY { color: blue;}\n" + "p {color: white; quotes: '^' '^\n"
 			+ "color: red;" + "color: green}";
 
-	public static final String TEST_NOT_CLOSED_URL = "p { background: url('image1.png";
+	public static final String TEST_NOT_CLOSED_URL1 = "p { background: url('image1.png";
+    public static final String TEST_NOT_CLOSED_URL2 = "p { color: red; background: url('image1.png'; }";
 	
 	public static final String TEST_INVALID_ATTRIBUTE_OPERATOR = ".st a[href%=\"/slovnik/\"]:after {\n"
 			+ "content: url('/images/site2/slovnik.png');\n"
@@ -135,7 +136,7 @@ public class GrammarRecovery1Test {
 
     @Test
     public void unclosedUrl() throws IOException, CSSException {
-        StyleSheet ss = CSSFactory.parseString(TEST_NOT_CLOSED_URL, null);
+        StyleSheet ss = CSSFactory.parseString(TEST_NOT_CLOSED_URL1, null);
 
         assertEquals("Contains one ruleset", 1, ss.size());
 
@@ -146,6 +147,10 @@ public class GrammarRecovery1Test {
                 DeclarationsUtil.createDeclaration("background",
                         tf.createURI("image1.png")), rule.get(0));
 
+        ss = CSSFactory.parseString(TEST_NOT_CLOSED_URL2, null);
+        assertEquals("Contains one ruleset", 1, ss.size());
+        rule = (RuleSet) ss.get(0);
+        assertEquals("Rule contains one declaration (color)", 1, rule.size());
     }
 
 	@Test

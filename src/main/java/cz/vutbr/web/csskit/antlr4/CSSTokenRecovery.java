@@ -17,6 +17,8 @@ public class CSSTokenRecovery {
     private final Logger log;
     private final Stack<Integer> expectedToken;
 
+    private boolean eof;
+
     // tokens
     public static final int APOS = 1;
     public static final int QUOT = 2;
@@ -39,11 +41,16 @@ public class CSSTokenRecovery {
         this.ls = ls;
         this.log = log;
         this.expectedToken = new Stack<Integer>();
+        this.eof = false;
         typeMapper = new CSSToken.TypeMapper(CSSTokenRecovery.class, lexer.getClass(),
                 "APOS", "QUOT", "RPAREN", "RCURLY", "IMPORT",
                 "CHARSET", "STRING", "INVALID_STRING");
     }
 
+    public boolean isAtEof() {
+        return eof;
+    }
+    
     public void expecting(int token) {
         expectedToken.push(token);
     }
@@ -160,6 +167,7 @@ public class CSSTokenRecovery {
                     return ttype1;
                 }
                 // recover from unexpected EOF
+                eof = true;
                 if (!ls.isBalanced()) {
                     return generateEOFRecover();
                 }
