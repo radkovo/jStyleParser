@@ -50,6 +50,9 @@ public class GrammarRecovery2Test {
     /* invalid tokens among the declarations -- should be skipped */
     public static final String TEST_DECL9A = "p{background: white;border-color: #FCFCFC; #FCFCFC; #FDFDFD #FCFCFC; 123; url('nazdar'); 145%; 12em;color: red;}";
     
+    /* invalid character in the value -- the declaration should be ignored */
+    public static final String TEST_DECL10A = "div{color:green;background: url(\"support/red_box.png\"&);}";
+    
 	@BeforeClass
 	public static void init() 
 	{
@@ -138,6 +141,14 @@ public class GrammarRecovery2Test {
         assertEquals("Three declarations are accepted", 3, ss.get(0).size());
         Declaration d = (Declaration) ss.get(0).get(2);
         assertEquals("The last declaration defines color", "color", d.getProperty());
+    }
+    
+    @Test
+    public void invalidCharacterInValue() throws IOException, CSSException 
+    {
+        StyleSheet ss = CSSFactory.parseString(TEST_DECL10A, null);
+        assertEquals("Style sheet contains one rule", 1, ss.size());
+        assertEquals("Only the first declaration is accepted", 1, ss.get(0).size());
     }
     
 }
