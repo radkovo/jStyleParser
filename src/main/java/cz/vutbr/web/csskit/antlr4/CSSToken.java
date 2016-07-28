@@ -139,7 +139,7 @@ public class CSSToken extends CommonToken {
 	 * optionally quotation marks
 	 */
 	public static String extractURI(String uri) {
-		String ret = uri.substring(4, uri.length()-1);
+		String ret = uri.substring(4, uri.length()-1).trim();
 		// trim string
 		if(ret.length() > 0 && (ret.charAt(0)=='\'' || ret.charAt(0)=='"'))
 			ret = ret.substring(1, ret.length()-1);
@@ -148,10 +148,18 @@ public class CSSToken extends CommonToken {
 	}
 
     public static String extractUNCLOSEDURI(String uri) {
-        String ret = uri.substring(4);
-        // trim string
-        if(ret.length() > 0 && (ret.charAt(0)=='\'' || ret.charAt(0)=='"'))
-            ret = ret.substring(1, ret.length());
+        String ret = uri.substring(4).trim();
+        // trim quotes (if any)
+        if(ret.length() > 0) {
+            final char fc = ret.charAt(0);
+            if (fc == '\'' || fc == '"') {
+                final char lc = (ret.length() > 1) ? ret.charAt(ret.length() - 1) : ' ';
+                if (fc == lc)
+                    ret = ret.substring(1, ret.length() - 1); //both quotes (finished string)
+                else
+                    ret = ret.substring(1, ret.length()); //left quote only (unfinished string)
+            }
+        }
 
         return ret;
     }
