@@ -896,6 +896,12 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     @Override
     public Object visitValuepart(CSSParser.ValuepartContext ctx) {
         logEnter("valuepart: >" + ctx.getText() + "<");
+        if (ctxHasErrorNode(ctx)) {
+            log.error("value part with error");
+            terms_stack.peek().term = null;
+            declaration_stack.peek().invalid = true;
+            return null;
+        }
         if (ctx.MINUS() != null) {
             terms_stack.peek().unary = -1;
             terms_stack.peek().dash = true;
