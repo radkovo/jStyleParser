@@ -643,6 +643,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     public RuleBlock<?> visitRuleset(CSSParser.RulesetContext ctx) {
         logEnter("ruleset");
         if (ctxHasErrorNode(ctx) || ctx.norule() != null) {
+            log.trace("Leaving ruleset with error {} {}", ctxHasErrorNode(ctx), (ctx.norule() != null)); 
             return null;
         }
         List<CombinedSelector> cslist = new ArrayList<>();

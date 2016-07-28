@@ -457,7 +457,13 @@ nostatement
 noprop
 	: ( CLASSKEYWORD
        | NUMBER
+	   | PERCENTAGE
+	   | DIMENSION
+	   | string
 	   | COMMA
+	   | HASH
+	   | URI
+	   | UNCLOSED_URI
 	   | GREATER
 	   | LESS
 	   | QUESTION

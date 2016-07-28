@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermFactory;
 
@@ -44,6 +45,9 @@ public class GrammarRecovery2Test {
     public static final String TEST_DECL7B = "@media { #menu { border: 1px solid blue; } #menu,x:-moz-any-link { color: green !ie; } }";
     
     public static final String TEST_DECL8A = ".button{border-color:#c5c5c5 #7d7d7d #7b7b7b #a1a1a1}@-moz-document url-prefix(){.email-feed .g-cnt .button{padding:2px 0 3px 0}}.email{color:red}";
+    
+    /* invalid tokens among the declarations -- should be skipped */
+    public static final String TEST_DECL9A = "p{background: white;border-color: #FCFCFC; #FCFCFC; #FDFDFD #FCFCFC; 123; url('nazdar'); 145%; 12em;color: red;}";
     
 	@BeforeClass
 	public static void init() 
@@ -122,4 +126,15 @@ public class GrammarRecovery2Test {
         StyleSheet ss = CSSFactory.parseString(TEST_DECL8A, null);
         assertEquals("Style sheet contains two rules (the middle one is invalid)", 2, ss.size());
     }
+    
+    @Test
+    public void invalidTokensAmongDeclarations() throws IOException, CSSException 
+    {
+        StyleSheet ss = CSSFactory.parseString(TEST_DECL9A, null);
+        assertEquals("Style sheet contains one rule", 1, ss.size());
+        assertEquals("Three declarations are accepted", 3, ss.get(0).size());
+        Declaration d = (Declaration) ss.get(0).get(2);
+        assertEquals("The last declaration defines color", "color", d.getProperty());
+    }
+    
 }
