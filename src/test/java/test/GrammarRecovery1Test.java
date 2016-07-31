@@ -43,6 +43,8 @@ public class GrammarRecovery1Test {
 	public static final String TEST_NOT_CLOSED_URL1 = "p { background: url('image1.png";
     public static final String TEST_NOT_CLOSED_URL2 = "p { color: red; background: url('image1.png'; }";
 	
+    public static final String TEST_NOT_CLOSED_FUNCT = "div {color: rgb(0, 128, 0";
+    
 	public static final String TEST_INVALID_ATTRIBUTE_OPERATOR = ".st a[href%=\"/slovnik/\"]:after {\n"
 			+ "content: url('/images/site2/slovnik.png');\n"
 			+ "margin: 0 0.1em 0 0.2em;\n";
@@ -153,6 +155,20 @@ public class GrammarRecovery1Test {
         assertEquals("Rule contains one declaration (color)", 1, rule.size());
     }
 
+    @Test
+    public void unclosedFunction() throws IOException, CSSException {
+        StyleSheet ss = CSSFactory.parseString(TEST_NOT_CLOSED_FUNCT, null);
+
+        assertEquals("Contains one ruleset", 1, ss.size());
+
+        RuleSet rule = (RuleSet) ss.get(0);
+
+        assertEquals("Rule contains one declaration", 1, rule.size());
+        assertEquals("The unclosed function has been properly parsed",
+                DeclarationsUtil.createDeclaration("color",
+                        tf.createColor(0, 128, 0)), rule.get(0));
+    }
+    
 	@Test
 	public void invalidAtKeyword() throws IOException, CSSException {
 		StyleSheet ss = CSSFactory.parseString(TEST_INVALID_ATKEYWORD, null);

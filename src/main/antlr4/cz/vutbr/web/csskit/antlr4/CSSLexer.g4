@@ -448,7 +448,7 @@ EXPRESSION
   
 /** Other Function beginning */	
 FUNCTION
-	: IDENT_MACR '('
+	: IDENT_MACR '(' {ls.parenNest++; }
 	;
 
 INCLUDES
