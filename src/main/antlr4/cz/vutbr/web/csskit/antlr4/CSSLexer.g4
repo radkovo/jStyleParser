@@ -389,11 +389,11 @@ RPAREN
 	;		
 
 LBRACE
-	: '['
+	: '['  { ls.sqNest++; }
 	;
 
 RBRACE
-	: ']'
+	: ']'  { if(ls.sqNest>0) ls.sqNest--; }
 	;
 	
 EXCLAMATION

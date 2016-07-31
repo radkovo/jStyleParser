@@ -11,12 +11,14 @@ public class CSSLexerState {
 
     public short curlyNest;
     public short parenNest;
+    public short sqNest;
     public boolean quotOpen;
     public boolean aposOpen;
 
     public CSSLexerState() {
         this.curlyNest = 0;
         this.parenNest = 0;
+        this.sqNest = 0;
         this.quotOpen = false;
         this.aposOpen = false;
     }
@@ -24,6 +26,7 @@ public class CSSLexerState {
     public CSSLexerState(CSSLexerState clone) {
         this.curlyNest = clone.curlyNest;
         this.parenNest = clone.parenNest;
+        this.sqNest = clone.sqNest;
         this.quotOpen = clone.quotOpen;
         this.aposOpen = clone.aposOpen;
     }
@@ -34,6 +37,7 @@ public class CSSLexerState {
             CSSLexerState that = (CSSLexerState) o;
             return (this.curlyNest == that.curlyNest &&
                     this.parenNest == that.parenNest &&
+                    this.sqNest == that.sqNest &&
                     this.quotOpen == that.quotOpen &&
                     this.aposOpen == that.aposOpen);
         }
@@ -45,7 +49,7 @@ public class CSSLexerState {
      * curly braces) are balanced
      */
     public boolean isBalanced() {
-        return !aposOpen && !quotOpen && curlyNest == 0 && parenNest == 0;
+        return !aposOpen && !quotOpen && curlyNest == 0 && parenNest == 0 && this.sqNest == 0;
     }
 
     /**
@@ -63,16 +67,16 @@ public class CSSLexerState {
      */
     public boolean isBalanced(RecoveryMode mode, CSSLexerState state, CSSToken t) {
         if (mode == RecoveryMode.BALANCED)
-            return !aposOpen && !quotOpen && curlyNest == 0 && parenNest == 0;
+            return !aposOpen && !quotOpen && curlyNest == 0 && parenNest == 0 && sqNest == 0;
         else if (mode == RecoveryMode.FUNCTION)
-            return parenNest == 0;
+            return parenNest == 0 && sqNest == 0;
         else if (mode == RecoveryMode.RULE)
-            return !aposOpen && !quotOpen && parenNest == 0;
+            return !aposOpen && !quotOpen && parenNest == 0 && sqNest == 0;
         else if (mode == RecoveryMode.DECL) {
             if (t.getType() == CSSLexer.RCURLY) //if '}' is processed the curlyNest has been already decreased
-                return !aposOpen && !quotOpen && parenNest == 0 && curlyNest == state.curlyNest - 1;
+                return !aposOpen && !quotOpen && parenNest == 0 && sqNest == 0 && curlyNest == state.curlyNest - 1;
             else
-                return !aposOpen && !quotOpen && parenNest == 0 && curlyNest == state.curlyNest;
+                return !aposOpen && !quotOpen && parenNest == 0 && sqNest == 0 && curlyNest == state.curlyNest;
         } else
             return false;
     }
@@ -81,6 +85,7 @@ public class CSSLexerState {
     public String toString() {
         return "{=" + curlyNest +
                 ", (=" + parenNest +
+                ", [=" + sqNest +
                 ", '=" + (aposOpen ? "1" : "0") +
                 ", \"=" + (quotOpen ? "1" : "0");
     }
