@@ -2246,7 +2246,8 @@ public class DeclarationTransformer {
 					}
 					// next item
 					else if (t instanceof TermIdent && sb.length() != 0
-							&& t.getOperator() != Operator.COMMA) {
+							&& t.getOperator() != Operator.COMMA
+							&& t.getOperator() != Operator.SLASH) {
 						sb.append(" ").append(t.getValue());
 						composed = true;
 					}
