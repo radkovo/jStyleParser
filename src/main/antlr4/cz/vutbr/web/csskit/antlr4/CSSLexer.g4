@@ -434,7 +434,7 @@ S
 	;
 
 COMMENT	
-    : '/*' .*? '*/' -> channel(HIDDEN)
+    : '/*' .*? ('*/' | EOF) -> channel(HIDDEN)
 	;
 
 SL_COMMENT
