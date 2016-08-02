@@ -62,6 +62,9 @@ tokens {
 
     // number of already processed tokens (for checking the beginning of the style sheet)
     protected int tokencnt = 0;
+    
+    // 'charset changed' flag for preventing multiple @charset rules
+    protected boolean charsetChanged = false;
 
     // current lexer state
     protected cz.vutbr.web.csskit.antlr4.CSSLexerState ls;
@@ -182,10 +185,11 @@ CHARSET
 	  {
 	    // we have to trim manually
 	    String enc = cz.vutbr.web.csskit.antlr4.CSSToken.extractCHARSET(getText());
-	    if (tokencnt <= 1) //we are at the beginning of the style sheet
+	    if (tokencnt <= 1 && !charsetChanged) //we are at the beginning of the style sheet
 	    {
             try {
                 log.warn("Changing charset to {}", enc);
+                charsetChanged = true;
                 ((cz.vutbr.web.csskit.antlr4.CSSInputStream) _input).setEncoding(enc);
             }
             catch(java.nio.charset.IllegalCharsetNameException icne) {
