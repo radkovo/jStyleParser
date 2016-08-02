@@ -511,6 +511,7 @@ norule
     | POUND //that is not HASH (not an identifier)
     | HAT
     | AMPERSAND
+    | INVALID_TOKEN
     );
     catch [RecognitionException re] {
         log.error("PARSING norule ERROR | should be empty");
