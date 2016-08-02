@@ -206,7 +206,13 @@ ruleset
 	  LCURLY S*
 	  	declarations
 	  RCURLY
-	| norule // invalid statement
+	| norule {
+	    log.debug("PARSING ruleset: norule encountered | consume until RCURLY and add INVALID_STATEMENT");
+        IntervalSet intervalSet = new IntervalSet(RCURLY);
+        //we don't require {} to be balanced here because of possible parent 'media' sections that may remain open => RecoveryMode.RULE
+        getCSSErrorHandler().consumeUntilGreedy(this, intervalSet/*, CSSLexerState.RecoveryMode.RULE*/);
+        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT, "INVALID_STATEMENT"));
+	}
 	;
     catch [RecognitionException re] {
 	    log.debug("PARSING ruleset ERROR | consume until RCURLY and add INVALID_STATEMENT");
