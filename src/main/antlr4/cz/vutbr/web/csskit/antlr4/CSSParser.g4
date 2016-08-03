@@ -197,7 +197,7 @@ unknown_atrule
     ;
     catch [RecognitionException re] {
         log.error("PARSING unknown_atrule ERROR - consume until RCURLY");
-        IntervalSet intervalSet = new IntervalSet(RCURLY);
+        IntervalSet intervalSet = new IntervalSet(RCURLY, SEMICOLON);
         getCSSErrorHandler().consumeUntilGreedy(this, intervalSet, CSSLexerState.RecoveryMode.BALANCED);
         _localctx.addErrorNode(this.getTokenFactory().create(INVALID_ATSTATEMENT, "INVALID_ATSTATEMENT"));
     }
