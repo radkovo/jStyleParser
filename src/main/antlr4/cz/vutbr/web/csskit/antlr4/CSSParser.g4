@@ -193,6 +193,7 @@ media_rule
 
 unknown_atrule
     : ATKEYWORD S* any* LCURLY S* any* RCURLY //invalid atstatement
+    | ATKEYWORD S* any* SEMICOLON
     ;
     catch [RecognitionException re] {
         log.error("PARSING unknown_atrule ERROR - consume until RCURLY");
