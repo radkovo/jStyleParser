@@ -241,7 +241,6 @@
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr4-runtime</artifactId>
 			<version>4.5.3</version>
-			<type>maven-plugin</type>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
