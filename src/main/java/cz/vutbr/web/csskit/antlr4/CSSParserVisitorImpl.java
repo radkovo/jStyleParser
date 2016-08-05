@@ -41,11 +41,11 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     private boolean preventImports = false;
 
     private void logEnter(String entry) {
-        log.trace("Enter: " + generateSpaces(spacesCounter) + "{}", entry);
+        //log.trace("Enter: " + generateSpaces(spacesCounter) + "{}", entry);
     }
 
     private void logLeave(String leaving) {
-        log.trace("Leave: " + generateSpaces(spacesCounter) + "{}", leaving);
+        //log.trace("Leave: " + generateSpaces(spacesCounter) + "{}", leaving);
     }
 
     private String extractTextUnescaped(String text) {
@@ -1065,7 +1065,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             if (ctx.IDENT() != null) {
                 en.setName(extractTextUnescaped(ctx.IDENT().getText()));
             }
-            log.debug("Adding element name: {}.", en.getName());
+            //log.debug("Adding element name: {}.", en.getName());
             selector_stack.peek().s.add(en);
         }
         for (CSSParser.SelpartContext selpartctx : ctx.selpart()) {
