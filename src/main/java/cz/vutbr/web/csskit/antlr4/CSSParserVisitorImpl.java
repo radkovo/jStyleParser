@@ -548,7 +548,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             if (mq.state == MediaQueryState.START
                     || mq.state == MediaQueryState.EXPR
                     || mq.state == MediaQueryState.TYPEOREXPR) {
-                if (e.getFeature() != null) //the expression is valid
+                if (e != null && e.getFeature() != null) //the expression is valid
                 {
                     mq.q.add(e);
                     mq.state = MediaQueryState.AND;
@@ -576,6 +576,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         logEnter("mediaexpression: " + ctx.getText());
         if (ctxHasErrorNode(ctx)) {
             mq.invalid = true;
+            return null;
         }
         MediaExpression expr = rf.createMediaExpression();
         Declaration decl;
