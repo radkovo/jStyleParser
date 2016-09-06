@@ -4,6 +4,7 @@ import cz.vutbr.web.css.*;
 import cz.vutbr.web.csskit.RuleArrayList;
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.*;
 
@@ -41,11 +42,18 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     private boolean preventImports = false;
 
     private void logEnter(String entry) {
-        //log.trace("Enter: " + generateSpaces(spacesCounter) + "{}", entry);
+        if (log.isTraceEnabled())
+            log.trace("Enter: {}{}", generateSpaces(spacesCounter), entry);
     }
 
+    private void logEnter(String entry, RuleContext ctx) {
+        if (log.isTraceEnabled())
+            log.trace("Enter: {}{}: >{}<", generateSpaces(spacesCounter), entry, ctx.getText());
+    }
+    
     private void logLeave(String leaving) {
-        //log.trace("Leave: " + generateSpaces(spacesCounter) + "{}", leaving);
+        if (log.isTraceEnabled())
+            log.trace("Leave: {}{}", generateSpaces(spacesCounter), leaving);
     }
 
     private String extractTextUnescaped(String text) {
@@ -225,7 +233,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
      */
     @Override
     public RuleList visitStylesheet(CSSParser.StylesheetContext ctx) {
-        logEnter("stylesheet: " + ctx.getText());
+        logEnter("stylesheet: ", ctx);
         this.rules = new RuleArrayList();
         //statement*
         for (CSSParser.StatementContext stmt : ctx.statement()) {
@@ -264,7 +272,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             //context is invalid
             return null;
         }
-        logEnter("statement: " + ctx.getText());
+        logEnter("statement: ", ctx);
         //create new scope and push it to stack
         statement_stack.push(new statement_scope());
         RuleBlock<?> stmt = null;
@@ -280,7 +288,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             log.debug("Statement is invalid");
         }
         statement_stack.pop();
-        logLeave("statement: " + ctx.getText());
+        logLeave("statement");
         //could be null
         return stmt;
     }
@@ -301,7 +309,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
 
      */
     public RuleBlock<?> visitAtstatement(CSSParser.AtstatementContext ctx) {
-        logEnter("atstatement: " + ctx.getText());
+        logEnter("atstatement: ", ctx);
         RuleBlock<?> atstmt = null;
         //noinspection StatementWithEmptyBody
         if (ctx.CHARSET() != null) {
@@ -471,13 +479,13 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
      media : media_query (COMMA S* media_query)*
      */
     public List<cz.vutbr.web.css.MediaQuery> visitMedia(CSSParser.MediaContext ctx) {
-        logEnter("media: " + ctx.getText());
+        logEnter("media: ", ctx);
         List<MediaQuery> queries = mediaQueryList = new ArrayList<>();
         for (CSSParser.Media_queryContext mqc : ctx.media_query()) {
             queries.add(visitMedia_query(mqc));
         }
         log.debug("Totally returned {} media queries.", queries.size());
-        logLeave("media: " + ctx.getText());
+        logLeave("media");
         return queries;
     }
 
@@ -494,13 +502,13 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
      * media_query : (media_term S*)+
      */
     public MediaQuery visitMedia_query(CSSParser.Media_queryContext ctx) {
-        logEnter("mediaquery: " + ctx.getText());
+        logEnter("mediaquery: ", ctx);
         mq = new mediaquery_scope();
         mq.q = rf.createMediaQuery();
         mq.q.unlock();
         mq.state = MediaQueryState.START;
         mq.invalid = false;
-        logLeave("mediaquery: " + ctx.getText());
+        logLeave("mediaquery");
         for (CSSParser.Media_termContext mtc : ctx.media_term()) {
             visitMedia_term(mtc);
         }
@@ -573,7 +581,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
      * media_expression : LPAREN S* IDENT S* (COLON S* terms)? RPAREN
      */
     public MediaExpression visitMedia_expression(CSSParser.Media_expressionContext ctx) {
-        logEnter("mediaexpression: " + ctx.getText());
+        logEnter("mediaexpression: ", ctx);
         if (ctxHasErrorNode(ctx)) {
             mq.invalid = true;
             return null;
@@ -599,7 +607,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         }
         declaration_stack.pop();
 
-        logLeave("mediaexpression: " + ctx.getText());
+        logLeave("mediaexpression");
         return expr;
     }
 
@@ -612,14 +620,14 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
      ;
      */
     public RuleBlock<?> visitMedia_rule(CSSParser.Media_ruleContext ctx) {
-        logEnter("media_rule: " + ctx.getText());
+        logEnter("media_rule: ", ctx);
         RuleBlock<?> rules = null;
         if (ctx.ruleset() != null) {
             rules = visitRuleset(ctx.ruleset());
         } else {
             log.debug("Skiping invalid statement in media");
         }
-        logLeave("media_rule: " + ctx.getText());
+        logLeave("media_rule");
         //could be null
         return rules;
     }
@@ -896,7 +904,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
 
     @Override
     public Object visitValuepart(CSSParser.ValuepartContext ctx) {
-        logEnter("valuepart: >" + ctx.getText() + "<");
+        logEnter("valuepart: ", ctx);
         if (ctxHasErrorNode(ctx)) {
             log.error("value part with error");
             terms_stack.peek().term = null;
@@ -1129,7 +1137,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     public Selector.ElementAttribute visitAttribute(CSSParser.AttributeContext ctx) {
         //attributes can be like [attr] or [attr operator value]
         // see http://www.w3.org/TR/CSS2/selector.html#attribute-selectors
-        logEnter("attribute: " + ctx.getText());
+        logEnter("attribute: ", ctx);
         //initialize attribute
         String attributeName = extractTextUnescaped(ctx.children.get(0).getText());
         String value = null;
@@ -1195,7 +1203,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
      : pseudocolon (IDENT | FUNCTION S*  (IDENT | MINUS? NUMBER | MINUS? INDEX) S* RPAREN)
      */
     public Selector.PseudoPage visitPseudo(CSSParser.PseudoContext ctx) {
-        logEnter("pseudo: " + ctx.getText());
+        logEnter("pseudo: ", ctx);
         // childcount == 2
         //first item is pseudocolon | : or ::
         Boolean isPseudoElem = ctx.getChild(0).getText().length() != 1;
