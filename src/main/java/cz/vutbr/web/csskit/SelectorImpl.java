@@ -1,6 +1,7 @@
 package cz.vutbr.web.csskit;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.unbescape.css.CssEscape;
 import org.w3c.dom.Element;
@@ -11,6 +12,7 @@ import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.ElementMatcher;
 import cz.vutbr.web.css.MatchCondition;
+import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.CombinedSelector.Specificity;
 import cz.vutbr.web.css.CombinedSelector.Specificity.Level;
@@ -26,14 +28,56 @@ import cz.vutbr.web.css.CombinedSelector.Specificity.Level;
 public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements Selector {
 
 	protected Combinator combinator;
+	protected PseudoDeclaration pseudoElement; //the pseudo element if defined (only a single pseudo element may be used in the selector)
     
-	/**
+	@Override
+    public Rule<SelectorPart> replaceAll(List<SelectorPart> replacement)
+    {
+	    for (SelectorPart item : replacement)
+	        checkPseudoElement(item);
+        return super.replaceAll(replacement);
+    }
+
+    @Override
+    public SelectorPart set(int index, SelectorPart element)
+    {
+        checkPseudoElement(element);
+        return super.set(index, element);
+    }
+
+    @Override
+    public void add(int index, SelectorPart element)
+    {
+        checkPseudoElement(element);
+        super.add(index, element);
+    }
+
+    @Override
+    public boolean add(SelectorPart o)
+    {
+        checkPseudoElement(o);
+        return super.add(o);
+    }
+
+    /**
 	 * @return the combinator
 	 */
 	public Combinator getCombinator() {
 		return combinator;
 	}
 
+	/**
+	 * Registers the pseudo element if the given selector part is a pseudo element.
+	 */
+	private void checkPseudoElement(SelectorPart item) {
+        if(item instanceof PseudoPage) {
+            final PseudoDeclaration ret = ((PseudoPage)item).getDeclaration();
+            if (ret.isPseudoElement()) {
+                pseudoElement = ret;
+            }
+        }
+	}
+	
 	/**
 	 * @param combinator the combinator to set
 	 */
@@ -84,16 +128,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     }
     
     public PseudoDeclaration getPseudoElement() {
-        for(SelectorPart item : list) {
-            if(item instanceof PseudoPage)
-            {
-                final PseudoDeclaration ret = ((PseudoPage)item).getDeclaration();
-                if (ret.isPseudoElement()) {
-                    return ret; //pseudo-elements may only be appended after the last simple selector of the selector
-                }
-            }
-        }
-        return null;
+        return pseudoElement;
     }
     
     public boolean hasPseudoDeclaration(final PseudoDeclaration pd) {
