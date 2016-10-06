@@ -39,6 +39,7 @@ import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermPercent;
 import cz.vutbr.web.css.TermString;
 import cz.vutbr.web.css.TermURI;
+import cz.vutbr.web.csskit.DeclarationTransformer;
 import cz.vutbr.web.css.CSSProperty.BackgroundAttachment;
 import cz.vutbr.web.css.CSSProperty.BackgroundColor;
 import cz.vutbr.web.css.CSSProperty.BackgroundImage;
@@ -114,10 +115,10 @@ import cz.vutbr.web.css.Term.Operator;
  * @author kapy
  * 
  */
-public class DeclarationTransformer {
+public class DeclarationTransformerImpl implements DeclarationTransformer {
 
 	private static final Logger log = LoggerFactory
-			.getLogger(DeclarationTransformer.class);
+			.getLogger(DeclarationTransformerImpl.class);
 
 	/**
 	 * A hint about the allowed value range when processing numeric values. 
@@ -145,13 +146,13 @@ public class DeclarationTransformer {
 	/**
 	 * Singleton instance
 	 */
-	private static final DeclarationTransformer instance;
+	private static final DeclarationTransformerImpl instance;
 
 	private static final TermFactory tf = CSSFactory.getTermFactory();
 	private static final SupportedCSS css = CSSFactory.getSupportedCSS();
 
 	static {
-		instance = new DeclarationTransformer();
+		instance = new DeclarationTransformerImpl();
 	}
 
 	/**
@@ -159,7 +160,7 @@ public class DeclarationTransformer {
 	 * 
 	 * @return Singleton instance
 	 */
-	public static final DeclarationTransformer getInstance() {
+	public static final DeclarationTransformerImpl getInstance() {
 		return instance;
 	}
 
@@ -205,6 +206,7 @@ public class DeclarationTransformer {
 	 * @return <code>true</code> in case of success, <code>false</code>
 	 *         otherwise
 	 */
+	@Override
 	public boolean parseDeclaration(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
@@ -243,7 +245,7 @@ public class DeclarationTransformer {
 	/**
 	 * Sole constructor
 	 */
-	private DeclarationTransformer() {
+	private DeclarationTransformerImpl() {
 		this.methods = parsingMethods();
 	}
 
@@ -254,8 +256,8 @@ public class DeclarationTransformer {
 
 		for (String key : css.getDefinedPropertyNames()) {
 			try {
-				Method m = DeclarationTransformer.class.getDeclaredMethod(
-						DeclarationTransformer.camelCase("process-" + key),
+				Method m = DeclarationTransformerImpl.class.getDeclaredMethod(
+						DeclarationTransformerImpl.camelCase("process-" + key),
 						Declaration.class, Map.class, Map.class);
 				map.put(key, m);
 			} catch (Exception e) {
