@@ -17,12 +17,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 import org.w3c.dom.traversal.NodeFilter;
 
+import cz.vutbr.web.csskit.DeclarationTransformer;
 import cz.vutbr.web.csskit.DefaultNetworkProcessor;
 import cz.vutbr.web.csskit.MatchConditionImpl;
 import cz.vutbr.web.csskit.antlr4.CSSParserFactory;
 import cz.vutbr.web.csskit.antlr4.CSSParserFactory.SourceType;
 import cz.vutbr.web.domassign.Analyzer;
-import cz.vutbr.web.domassign.DeclarationTransformer;
+import cz.vutbr.web.domassign.DeclarationTransformerImpl;
 import cz.vutbr.web.domassign.StyleMap;
 import cz.vutbr.web.domassign.Traversal;
 
@@ -54,7 +55,7 @@ public final class CSSFactory {
 	private static final String DEFAULT_TERM_FACTORY = "cz.vutbr.web.csskit.TermFactoryImpl";
 	private static final String DEFAULT_SUPPORTED_CSS = "cz.vutbr.web.domassign.SupportedCSS3";
 	private static final String DEFAULT_RULE_FACTORY = "cz.vutbr.web.csskit.RuleFactoryImpl";
-    private static final String DEFAULT_DECLARATION_TRANSFORMER = "cz.vutbr.web.domassign.DeclarationTransformer";
+    private static final String DEFAULT_DECLARATION_TRANSFORMER = "cz.vutbr.web.domassign.DeclarationTransformerImpl";
 	private static final String DEFAULT_NODE_DATA_IMPL = "cz.vutbr.web.domassign.SingleMapNodeData";
 	private static final String DEFAULT_ELEMENT_MATCHER = "cz.vutbr.web.csskit.ElementMatcherSafeStd";
 
@@ -295,10 +296,10 @@ public final class CSSFactory {
         if (dt == null) {
             try {
                 @SuppressWarnings("unchecked")
-                Class<? extends DeclarationTransformer> clazz = (Class<? extends DeclarationTransformer>) Class
+                Class<? extends DeclarationTransformerImpl> clazz = (Class<? extends DeclarationTransformerImpl>) Class
                         .forName(DEFAULT_DECLARATION_TRANSFORMER);
                 Method m = clazz.getMethod("getInstance");
-                registerDeclarationTransformer((DeclarationTransformer) m.invoke(null));
+                registerDeclarationTransformer((DeclarationTransformerImpl) m.invoke(null));
                 log.debug("Retrived {} as default DeclarationTransformer implementation.",
                         DEFAULT_DECLARATION_TRANSFORMER);
             } catch (Exception e) {

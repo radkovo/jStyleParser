@@ -16,6 +16,7 @@ import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
+import cz.vutbr.web.csskit.DeclarationTransformer;
 import cz.vutbr.web.csskit.OutputUtil;
 
 /**
