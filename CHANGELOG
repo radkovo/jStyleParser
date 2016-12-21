@@ -1,3 +1,7 @@
+Version 2.1 - Dec 21, 2016
+- API extensions: allow custom declaration transformers
+- Pseudo element processing fix
+
 Version 2.0 - Sep 7, 2016
 - New ANTLR4 based parser
 - Significant error recovery improvements
