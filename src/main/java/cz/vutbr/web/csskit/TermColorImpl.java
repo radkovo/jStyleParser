@@ -11,7 +11,8 @@ import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermPercent;
 
 /**
- * TermColor
+ * TermColor implementation that represents a color defined by a standard color
+ * specification without usign special keywords.
  * TODO: Clipping should be done against devices gamut
  * @author Jan Svercl, VUT Brno, 2008
  * 			modified by Karel Piwko, 2008
@@ -37,6 +38,16 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
         value = new Color(r, g, b, a);
     }
     
+    @Override
+    public Keyword getKeyword() {
+        return Keyword.none;
+    }
+
+    @Override
+    public boolean isTransparent() {
+        return (value.getAlpha() == 0);
+    }
+
     @Override
     public String toString() {
     	

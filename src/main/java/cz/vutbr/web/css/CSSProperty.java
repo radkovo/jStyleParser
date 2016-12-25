@@ -156,7 +156,7 @@ public interface CSSProperty {
 	}
 
 	public enum Color implements CSSProperty {
-		color(""), TRANSPARENT("transparent"), INHERIT("inherit");
+		color(""), INHERIT("inherit");
 
 		private String text;
 
@@ -248,7 +248,7 @@ public interface CSSProperty {
 	}
 
 	public enum BackgroundColor implements CSSProperty {
-		color(""), TRANSPARENT("transparent"), INHERIT("inherit");
+		color(""), INHERIT("inherit");
 
 		private String text;
 
@@ -411,8 +411,7 @@ public interface CSSProperty {
 	}
 
 	public enum BorderColor implements CSSProperty {
-		color(""), taken(""), component_values(""), TRANSPARENT("transparent"), INHERIT(
-				"inherit");
+		color(""), component_values(""), INHERIT("inherit");
 
 		private String text;
 

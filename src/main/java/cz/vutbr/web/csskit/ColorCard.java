@@ -4,19 +4,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cz.vutbr.web.css.TermColor;
+import cz.vutbr.web.css.TermColor.Keyword;
 
 /**
  * Holds colors by their names.
  * Ignores System Colors are they are deprecated in CSS3
  * TODO Consider possibility of implementing SystemColors
  * @author kapy
+ * @author burgetr
  */
 public class ColorCard {
 
-	private static final Map<String, TermColor> map
-		= new HashMap<String, TermColor>(147, 1.0f);
+	private static final Map<String, TermColor> map = new HashMap<String, TermColor>(149, 1.0f);
 	
 	static	{
+	    map.put("transparent", new TermColorKeywordImpl(Keyword.TRANSPARENT, 0x00, 0x00, 0x00, 0x00));
+        map.put("currentColor", new TermColorKeywordImpl(Keyword.CURRENT_COLOR, 0x00, 0x00, 0x00, 0xff));
+	    
         map.put("aliceblue", new TermColorImpl(0xf0, 0xf8, 0xff));
         map.put("antiquewhite", new TermColorImpl(0xfa, 0xeb, 0xd7));
         map.put("aqua", new TermColorImpl(0x00, 0xff, 0xff));

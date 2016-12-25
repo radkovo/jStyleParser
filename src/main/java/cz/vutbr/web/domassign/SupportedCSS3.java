@@ -131,6 +131,8 @@ public class SupportedCSS3 implements SupportedCSS {
 	private static final Term<?> DEFAULT_UA_PADDING = tf.createLength(0.0f);
 	private static final Term<?> DEFAULT_UA_MIN_WIDTH = tf.createLength(0.0f);
 	private static final Term<?> DEFAULT_UA_MIN_HEIGHT = tf.createLength(0.0f);
+    private static final Term<?> DEFAULT_BORDER_COLOR = tf.createColor(tf.createIdent("currentColor"));
+	private static final Term<?> DEFAULT_BACKGROUND_COLOR = tf.createColor(tf.createIdent("transparent"));
 	private static final TermList DEFAULT_UA_BACKGROUND_POSITION = tf.createList(2);
 	static {
 		DEFAULT_UA_BACKGROUND_POSITION.add(tf.createPercent(0.0f));
@@ -323,12 +325,15 @@ public class SupportedCSS3 implements SupportedCSS {
 		props.put("border-bottom-style", BorderStyle.NONE);
 		props.put("border-left-style", BorderStyle.NONE);
 
-		// default color is taken form color property
 		props.put("border-color", BorderColor.component_values);
-		props.put("border-top-color", BorderColor.taken);
-		props.put("border-right-color", BorderColor.taken);
-		props.put("border-bottom-color", BorderColor.taken);
-		props.put("border-left-color", BorderColor.taken);
+		props.put("border-top-color", BorderColor.color);
+        values.put("border-top-color", DEFAULT_BORDER_COLOR);
+		props.put("border-right-color", BorderColor.color);
+		values.put("border-right-color", DEFAULT_BORDER_COLOR);
+		props.put("border-bottom-color", BorderColor.color);
+		values.put("border-bottom-color", DEFAULT_BORDER_COLOR);
+		props.put("border-left-color", BorderColor.color);
+		values.put("border-left-color", DEFAULT_BORDER_COLOR);
 
         props.put("border-radius", BorderRadius.component_values);
 		props.put("border-top-left-radius", BorderRadius.list_values);
@@ -371,7 +376,8 @@ public class SupportedCSS3 implements SupportedCSS {
 		// background
 		props.put("background", Background.component_values);
 		props.put("background-attachment", BackgroundAttachment.SCROLL);
-		props.put("background-color", BackgroundColor.TRANSPARENT);
+		props.put("background-color", BackgroundColor.color);
+		values.put("background-color", DEFAULT_BACKGROUND_COLOR);
 		props.put("background-image", BackgroundImage.NONE);
 		props.put("background-position", BackgroundPosition.list_values);
 		values.put("background-position", DEFAULT_UA_BACKGROUND_POSITION);
