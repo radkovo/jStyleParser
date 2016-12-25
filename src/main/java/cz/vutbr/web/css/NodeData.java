@@ -89,6 +89,14 @@ public interface NodeData {
 			boolean includeInherited);
 
 	/**
+	 * Returns the color value of the property with the given name. Special keywords
+	 * such as {@code currentColor} are concretized. 
+	 * @param name the property name
+	 * @return the color value or {@code null} when the value is not available or is not color.
+	 */
+	public TermColor getColorValue(String name);
+	
+	/**
 	 * Returns a string representation of the property value.
 	 * 
 	 * @param name
@@ -112,8 +120,8 @@ public interface NodeData {
 	public NodeData inheritFrom(NodeData parent) throws ClassCastException;
 
 	/**
-	 * Replaces all <code>inherit</code> CSS properties either with values of
-	 * parent, or, if not present, with default values of user agent.
+	 * Replaces all {@code inherit}, {@code initial} and {@code unset} CSS properties 
+	 * with the inherited values or default values of user agent.
 	 * 
 	 * @return Modified property
 	 */

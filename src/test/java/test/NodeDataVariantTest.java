@@ -28,6 +28,7 @@ import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.QuadrupleMapNodeData;
 import cz.vutbr.web.domassign.SingleMapNodeData;
@@ -273,7 +274,12 @@ public class NodeDataVariantTest {
 			return null;
 		}
 
-	    public String getAsString(String name, boolean includeInherited) {
+	    @Override
+        public TermColor getColorValue(String name) {
+            return null;
+        }
+
+        public String getAsString(String name, boolean includeInherited) {
 	        return null;
 	    }
 	    

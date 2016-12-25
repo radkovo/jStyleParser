@@ -16,6 +16,8 @@ import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.TermColor;
+import cz.vutbr.web.css.TermColor.Keyword;
 import cz.vutbr.web.csskit.DeclarationTransformer;
 import cz.vutbr.web.csskit.OutputUtil;
 
@@ -114,6 +116,17 @@ public class QuadrupleMapNodeData implements NodeData {
 		return getValue(clazz, name, true);
 	}
 	
+    @Override
+    public TermColor getColorValue(String name) {
+        TermColor ret = getValue(TermColor.class, name, true);
+        if (ret != null && ret.getKeyword() == Keyword.CURRENT_COLOR) {
+            TermColor cvalue = getValue(TermColor.class, "color", true);
+            if (cvalue != null)
+                ret.setValue(cvalue.getValue());
+        }
+        return ret;
+    }
+
     public String getAsString(String name, boolean includeInherited) {
         boolean usedInherited = false;
         CSSProperty prop = propertiesOwn.get(name);
@@ -233,6 +246,28 @@ public class QuadrupleMapNodeData implements NodeData {
 				
 				Declaration source = sourcesInh.get(key);
 				if(source!=null) sourcesOwn.put(key, source);
+			} else if (p.equalsInitial()) {
+			    CSSProperty rp = css.getDefaultProperty(key);
+			    propertiesOwn.put(key, rp);
+			    Term<?> value = css.getDefaultValue(key);
+			    if (value != null)
+			        valuesOwn.put(key, value);
+			} else if (p.equalsUnset()) {
+			    if (p.inherited()) {
+	                CSSProperty rp = propertiesInh.get(key);
+	                if(rp==null) rp = css.getDefaultProperty(key);
+	                propertiesOwn.put(key, rp);
+	                
+	                Term<?> value = valuesInh.get(key);
+	                if(value==null) value = css.getDefaultValue(key);
+	                if(value!=null) valuesOwn.put(key, value);
+			    } else {
+	                CSSProperty rp = css.getDefaultProperty(key);
+	                propertiesOwn.put(key, rp);
+	                Term<?> value = css.getDefaultValue(key);
+	                if (value != null)
+	                    valuesOwn.put(key, value);
+			    }
 			}
 		}
 		

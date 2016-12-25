@@ -37,6 +37,8 @@ public interface CSSProperty {
 	 * CSS "inherit" keyword for retrieving instance by Translator object
 	 */
 	public static final String INHERIT_KEYWORD = "INHERIT";
+	public static final String INITIAL_KEYWORD = "INITIAL";
+	public static final String UNSET_KEYWORD = "UNSET";
 
     public static final String FONT_SERIF = java.awt.Font.SERIF;
     public static final String FONT_SANS_SERIF = java.awt.Font.SANS_SERIF;
@@ -60,6 +62,22 @@ public interface CSSProperty {
 	 *         <code>false</code> otherwise
 	 */
 	public boolean equalsInherit();
+
+    /**
+     * Allows to check whether property equals <code>initial</code> value
+     * 
+     * @return <code>true</code>if value is <code>INITIAL</code>,
+     *         <code>false</code> otherwise
+     */
+    public boolean equalsInitial();
+
+    /**
+     * Allows to check whether property equals <code>unset</code> value
+     * 
+     * @return <code>true</code>if value is <code>UNSET</code>,
+     *         <code>false</code> otherwise
+     */
+    public boolean equalsUnset();
 
 	/**
 	 * Textual representation of CSS property
@@ -132,7 +150,7 @@ public interface CSSProperty {
 				"center-left"), CENTER("center"), CENTER_RIGHT("center-right"), RIGHT(
 				"right"), FAR_RIGHT("far-right"), RIGHT_SIDE("right-side"), BEHIND(
 				"behind"), LEFTWARDS("leftwards"), RIGHTWARDS("rightwards"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -148,6 +166,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -156,7 +182,7 @@ public interface CSSProperty {
 	}
 
 	public enum Color implements CSSProperty {
-		color(""), INHERIT("inherit");
+		color(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -172,6 +198,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -179,7 +213,7 @@ public interface CSSProperty {
 	}
 
 	public enum Cue implements CSSProperty {
-		component_values(""), uri(""), NONE("none"), INHERIT("inherit");
+		component_values(""), uri(""), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -195,6 +229,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -202,7 +244,7 @@ public interface CSSProperty {
 	}
 
 	public enum Background implements CSSProperty {
-		component_values(""), INHERIT("inherit");
+		component_values(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -218,6 +260,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -225,7 +275,7 @@ public interface CSSProperty {
 	}
 
 	public enum BackgroundAttachment implements CSSProperty {
-		SCROLL("scroll"), FIXED("fixed"), INHERIT("inherit");
+		SCROLL("scroll"), FIXED("fixed"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -241,6 +291,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -248,7 +306,7 @@ public interface CSSProperty {
 	}
 
 	public enum BackgroundColor implements CSSProperty {
-		color(""), INHERIT("inherit");
+		color(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -264,6 +322,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -271,7 +337,7 @@ public interface CSSProperty {
 	}
 
 	public enum BackgroundImage implements CSSProperty {
-		uri(""), NONE("none"), INHERIT("inherit");
+		uri(""), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -287,6 +353,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -295,7 +369,7 @@ public interface CSSProperty {
 
 	public enum BackgroundPosition implements CSSProperty {
 		list_values(""), LEFT("left"), CENTER("center"), RIGHT("right"), TOP("top"), BOTTOM("bottom"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -311,6 +385,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -319,7 +401,7 @@ public interface CSSProperty {
 
 	public enum BackgroundRepeat implements CSSProperty {
 		REPEAT("repeat"), REPEAT_X("repeat-x"), REPEAT_Y("repeat-y"), NO_REPEAT(
-				"no-repeat"), INHERIT("inherit");
+				"no-repeat"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -334,6 +416,14 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
 		
 		@Override
 		public String toString() {
@@ -342,7 +432,7 @@ public interface CSSProperty {
 	}
 
     public enum BackgroundSize implements CSSProperty {
-        list_values(""), CONTAIN("contain"), COVER("cover"), INHERIT("inherit");
+        list_values(""), CONTAIN("contain"), COVER("cover"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
         private String text;
 
@@ -358,6 +448,14 @@ public interface CSSProperty {
             return this == INHERIT;
         }
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
         @Override
         public String toString() {
             return text;
@@ -365,7 +463,7 @@ public interface CSSProperty {
     }
     
 	public enum Border implements CSSProperty {
-		component_values(""), INHERIT("inherit");
+		component_values(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -381,6 +479,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -388,7 +494,7 @@ public interface CSSProperty {
 	}
 
 	public enum BorderCollapse implements CSSProperty {
-		COLLAPSE("collapse"), SEPARATE("separate"), INHERIT("inherit");
+		COLLAPSE("collapse"), SEPARATE("separate"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -404,6 +510,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}		
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -411,7 +525,7 @@ public interface CSSProperty {
 	}
 
 	public enum BorderColor implements CSSProperty {
-		color(""), component_values(""), INHERIT("inherit");
+		color(""), component_values(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -427,6 +541,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -434,7 +556,7 @@ public interface CSSProperty {
 	}
 
     public enum BorderRadius implements CSSProperty {
-        component_values(""), list_values(""), INHERIT("inherit");
+        component_values(""), list_values(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
         private String text;
 
@@ -450,6 +572,14 @@ public interface CSSProperty {
             return this == INHERIT;
         }
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
         @Override
         public String toString() {
             return text;
@@ -457,7 +587,7 @@ public interface CSSProperty {
     }
 	
 	public enum BorderSpacing implements CSSProperty {
-		list_values(""), INHERIT("inherit");
+		list_values(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -473,6 +603,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -482,7 +620,8 @@ public interface CSSProperty {
 	public enum BorderStyle implements CSSProperty {
 		component_values(""), NONE("none"), HIDDEN("hidden"), DOTTED("dotted"), DASHED(
 				"dashed"), SOLID("solid"), DOUBLE("double"), GROOVE("groove"), RIDGE(
-				"ridge"), INSET("inset"), OUTSET("outset"), INHERIT("inherit");
+				"ridge"), INSET("inset"), OUTSET("outset"), INHERIT("inherit"),
+		        INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -498,6 +637,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -506,7 +653,7 @@ public interface CSSProperty {
 
 	public enum BorderWidth implements CSSProperty {
 		component_values(""), length(""), THIN("thin"), MEDIUM("medium"), THICK(
-				"thick"), INHERIT("inherit");
+				"thick"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -522,6 +669,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -530,7 +685,7 @@ public interface CSSProperty {
 
 	public enum Elevation implements CSSProperty {
 		angle(""), BELOW("below"), LEVEL("level"), ABOVE("above"), HIGHER(
-				"higher"), LOWER("lower"), INHERIT("inherit");
+				"higher"), LOWER("lower"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -545,6 +700,14 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
 	
 		@Override
 		public String toString() {
@@ -555,7 +718,7 @@ public interface CSSProperty {
 	public enum Font implements CSSProperty {
 		component_values(""), CAPTION("caption"), ICON("icon"), MENU("menu"), MESSAGE_BOX(
 				"message-box"), SMALL_CAPTION("small-caption"), STATUS_BAR(
-				"status-bar"), INHERIT("inherit");
+				"status-bar"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -571,6 +734,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -580,7 +751,7 @@ public interface CSSProperty {
 	public enum FontFamily implements CSSProperty {
 		list_values("", ""), SERIF("serif", FONT_SERIF), SANS_SERIF("sans-serif", FONT_SANS_SERIF),
 		CURSIVE("cursive", FONT_CURSIVE), FANTASY("fantasy", FONT_FANTASY), MONOSPACE("monospace", FONT_MONOSPACED), 
-		INHERIT("inherit", "");
+		INHERIT("inherit", ""), INITIAL("initial", ""), UNSET("unset", "");
 		
 		private String text;
 		private String awtval;
@@ -598,6 +769,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -612,7 +791,7 @@ public interface CSSProperty {
 		percentage(""), length(""), XX_SMALL("xx-small"), X_SMALL("x-small"), SMALL(
 				"small"), MEDIUM("medium"), LARGE("large"), X_LARGE("x-large"), XX_LARGE(
 				"xx-large"), LARGER("larger"), SMALLER("smaller"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -628,6 +807,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -636,7 +823,7 @@ public interface CSSProperty {
 
 	public enum FontStyle implements CSSProperty {
 		NORMAL("normal"), ITALIC("italic"), OBLIQUE("oblique"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -652,6 +839,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -659,7 +854,7 @@ public interface CSSProperty {
 	}
 
 	public enum FontVariant implements CSSProperty {
-		SMALL_CAPS("small-caps"), NORMAL("normal"), INHERIT("inherit");
+		SMALL_CAPS("small-caps"), NORMAL("normal"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -675,6 +870,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -686,7 +889,7 @@ public interface CSSProperty {
 				"400"), numeric_500("500"), numeric_600("600"), numeric_700(
 				"700"), numeric_800("800"), numeric_900("900"), NORMAL("normal"), BOLD(
 				"bold"), BOLDER("bolder"), LIGHTER("lighter"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -702,6 +905,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -710,7 +921,7 @@ public interface CSSProperty {
 
 	public enum LineHeight implements CSSProperty {
 		number(""), length(""), percentage(""), NORMAL("normal"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -726,6 +937,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -733,7 +952,7 @@ public interface CSSProperty {
 	}
 	
     public enum TabSize implements CSSProperty {
-        integer(""), length(""), INHERIT("inherit");
+        integer(""), length(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
         private String text;
 
@@ -749,6 +968,14 @@ public interface CSSProperty {
             return this == INHERIT;
         }
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
         @Override
         public String toString() {
             return text;
@@ -756,7 +983,7 @@ public interface CSSProperty {
     }
     
 	public enum CaptionSide implements CSSProperty {
-		TOP("top"), BOTTOM("bottom"), INHERIT("inherit");
+		TOP("top"), BOTTOM("bottom"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -772,6 +999,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
 		@Override
 		public String toString() {
 			return text;
@@ -779,7 +1014,7 @@ public interface CSSProperty {
 	}
 
 	public enum Content implements CSSProperty {
-		list_values(""), NORMAL("normal"), NONE("none"), INHERIT("inherit");
+		list_values(""), NORMAL("normal"), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -794,6 +1029,14 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
 	
 		@Override
 		public String toString() {
@@ -802,7 +1045,7 @@ public interface CSSProperty {
 	}
 
 	public enum CounterIncrement implements CSSProperty {
-		list_values(""), NONE("none"), INHERIT("inherit");
+		list_values(""), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -818,6 +1061,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -825,7 +1076,7 @@ public interface CSSProperty {
 	}
 
 	public enum CounterReset implements CSSProperty {
-		list_values(""), NONE("none"), INHERIT("inherit");
+		list_values(""), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -841,6 +1092,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -849,7 +1108,7 @@ public interface CSSProperty {
 
 	public enum Clear implements CSSProperty {
 		NONE("none"), LEFT("left"), RIGHT("right"), BOTH("both"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -865,6 +1124,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -872,7 +1139,7 @@ public interface CSSProperty {
 	}
 
 	public enum Clip implements CSSProperty {
-		shape(""), AUTO("auto"), INHERIT("inherit");
+		shape(""), AUTO("auto"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -888,6 +1155,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -900,7 +1175,7 @@ public interface CSSProperty {
 				"ne-resize"), NW_RESIZE("nw-resize"), N_RESIZE("n-resize"), SE_RESIZE(
 				"se-resize"), SW_RESIZE("sw-resize"), S_RESIZE("s-resize"), W_RESIZE(
 				"w-resize"), TEXT("text"), WAIT("wait"), PROGRESS("progress"), HELP(
-				"help"), INHERIT("inherit");
+				"help"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -916,6 +1191,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -923,7 +1206,7 @@ public interface CSSProperty {
 	}
 
 	public enum Direction implements CSSProperty {
-		LTR("ltr"), RTL("rtl"), INHERIT("inherit");
+		LTR("ltr"), RTL("rtl"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -939,6 +1222,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -952,7 +1243,8 @@ public interface CSSProperty {
 				"table-header-group"), TABLE_FOOTER_GROUP("table-footer-group"), TABLE_ROW(
 				"table-row"), TABLE_COLUMN_GROUP("table-column-group"), TABLE_COLUMN(
 				"table-column"), TABLE_CELL("table-cell"), TABLE_CAPTION(
-				"table-caption"), NONE("none"), INHERIT("inherit");
+				"table-caption"), NONE("none"), INHERIT("inherit"),
+		        INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -968,6 +1260,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -975,7 +1275,7 @@ public interface CSSProperty {
 	}
 
 	public enum Width implements CSSProperty {
-		length(""), percentage(""), AUTO("auto"), INHERIT("inherit");
+		length(""), percentage(""), AUTO("auto"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -991,6 +1291,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -998,7 +1306,7 @@ public interface CSSProperty {
 	}
 
 	public enum MinWidth implements CSSProperty {
-		length(""), percentage(""), INHERIT("inherit");
+		length(""), percentage(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1014,6 +1322,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1021,7 +1337,7 @@ public interface CSSProperty {
 	}
 
 	public enum MaxWidth implements CSSProperty {
-		length(""), percentage(""), NONE("none"), INHERIT("inherit");
+		length(""), percentage(""), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1036,6 +1352,14 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
 		
 		@Override
 		public String toString() {
@@ -1044,7 +1368,7 @@ public interface CSSProperty {
 	}
 
 	public enum Height implements CSSProperty {
-		length(""), percentage(""), AUTO("auto"), INHERIT("inherit");
+		length(""), percentage(""), AUTO("auto"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1059,6 +1383,14 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
 		
 		@Override
 		public String toString() {
@@ -1067,7 +1399,7 @@ public interface CSSProperty {
 	}
 
 	public enum MinHeight implements CSSProperty {
-		length(""), percentage(""), INHERIT("inherit");
+		length(""), percentage(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1083,6 +1415,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1090,7 +1430,7 @@ public interface CSSProperty {
 	}
 
 	public enum MaxHeight implements CSSProperty {
-		length(""), percentage(""), NONE("none"), INHERIT("inherit");
+		length(""), percentage(""), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1106,6 +1446,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1113,7 +1461,7 @@ public interface CSSProperty {
 	}
 
 	public enum EmptyCells implements CSSProperty {
-		SHOW("show"), HIDE("hide"), INHERIT("inherit");
+		SHOW("show"), HIDE("hide"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1129,6 +1477,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1136,7 +1492,7 @@ public interface CSSProperty {
 	}
 
 	public enum Float implements CSSProperty {
-		NONE("none"), LEFT("left"), RIGHT("right"), INHERIT("inherit");
+		NONE("none"), LEFT("left"), RIGHT("right"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1152,6 +1508,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1159,7 +1523,7 @@ public interface CSSProperty {
 	}
 
 	public enum ListStyle implements CSSProperty {
-		component_values(""), INHERIT("inherit");
+		component_values(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1175,6 +1539,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1182,7 +1554,7 @@ public interface CSSProperty {
 	}
 
 	public enum ListStyleImage implements CSSProperty {
-		uri(""), NONE("none"), INHERIT("inherit");
+		uri(""), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1198,6 +1570,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1205,7 +1585,7 @@ public interface CSSProperty {
 	}
 
 	public enum ListStylePosition implements CSSProperty {
-		INSIDE("inside"), OUTSIDE("outside"), INHERIT("inherit");
+		INSIDE("inside"), OUTSIDE("outside"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1221,6 +1601,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1233,7 +1621,7 @@ public interface CSSProperty {
 				"upper-roman"), LOWER_GREEK("lower-greek"), LOWER_LATIN(
 				"lower-latin"), UPPER_LATN("upper-latin"), ARMENIAN("armenian"), GEORGIAN(
 				"georgian"), LOWER_ALPHA("lower-alpha"), UPPER_ALPHA(
-				"upper-alpha"), NONE("none"), INHERIT("inherit");
+				"upper-alpha"), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1249,6 +1637,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1257,7 +1653,7 @@ public interface CSSProperty {
 
 	public enum Margin implements CSSProperty {
 		length(""), percentage(""), component_values(""), AUTO("auto"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1273,6 +1669,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1280,7 +1684,7 @@ public interface CSSProperty {
 	}
 
     public enum Opacity implements CSSProperty {
-        number(""), INHERIT("inherit");
+        number(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
         private String text;
 
@@ -1296,6 +1700,14 @@ public interface CSSProperty {
             return this == INHERIT;
         }
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
         @Override
         public String toString() {
             return text;
@@ -1303,7 +1715,7 @@ public interface CSSProperty {
     }
     
 	public enum Orphans implements CSSProperty {
-		integer(""), INHERIT("inherit");
+		integer(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1319,6 +1731,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1326,7 +1746,7 @@ public interface CSSProperty {
 	}
 
 	public enum Outline implements CSSProperty {
-		component_values(""), INHERIT("inherit");
+		component_values(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1342,6 +1762,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1350,7 +1778,7 @@ public interface CSSProperty {
 
 	public enum OutlineWidth implements CSSProperty {
 		length(""), THIN("thin"), MEDIUM("medium"), THICK("thick"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1366,6 +1794,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1375,7 +1811,7 @@ public interface CSSProperty {
 	public enum OutlineStyle implements CSSProperty {
 		NONE("none"), DOTTED("dotted"), DASHED("dashed"), SOLID("solid"), DOUBLE(
 				"double"), GROOVE("groove"), RIDGE("ridge"), INSET("inset"), OUTSET(
-				"outset"), HIDDEN("hidden"), INHERIT("inherit");
+				"outset"), HIDDEN("hidden"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1391,6 +1827,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1398,7 +1842,7 @@ public interface CSSProperty {
 	}
 
 	public enum OutlineColor implements CSSProperty {
-		color(""), INVERT("invert"), INHERIT("inherit");
+		color(""), INVERT("invert"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1413,7 +1857,16 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
-		@Override
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
+        @Override
 		public String toString() {
 			return text;
 		}
@@ -1421,7 +1874,7 @@ public interface CSSProperty {
 
 	public enum Overflow implements CSSProperty {
 		VISIBLE("visible"), HIDDEN("hidden"), CLIP("clip"), SCROLL("scroll"),
-		    AUTO("auto"), INHERIT("inherit");
+		    AUTO("auto"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1437,6 +1890,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1445,7 +1906,7 @@ public interface CSSProperty {
 
 	public enum Padding implements CSSProperty {
 		length(""), percentage(""), component_values(""), AUTO("auto"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1461,6 +1922,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1469,7 +1938,7 @@ public interface CSSProperty {
 
 	public enum PageBreak implements CSSProperty {
 		AUTO("auto"), ALWAYS("always"), AVOID("avoid"), LEFT("left"), RIGHT(
-				"right"), INHERIT("inherit");
+				"right"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1485,6 +1954,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1492,7 +1969,7 @@ public interface CSSProperty {
 	}
 
 	public enum PageBreakInside implements CSSProperty {
-		AUTO("auto"), AVOID("avoid"), INHERIT("inherit");
+		AUTO("auto"), AVOID("avoid"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1508,6 +1985,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1515,7 +2000,7 @@ public interface CSSProperty {
 	}
 
 	public enum Pause implements CSSProperty {
-		component_values(""), time(""), percentage(""), INHERIT("inherit");
+		component_values(""), time(""), percentage(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1531,6 +2016,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1538,7 +2031,7 @@ public interface CSSProperty {
 	}
 
 	public enum PitchRange implements CSSProperty {
-		number(""), INHERIT("inherit");
+		number(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1554,6 +2047,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1562,7 +2063,7 @@ public interface CSSProperty {
 
 	public enum Pitch implements CSSProperty {
 		frequency(""), X_LOW("x-low"), LOW("low"), MEDIUM("medium"), HIGH(
-				"high"), X_HIGH("x-high"), INHERIT("inherit");
+				"high"), X_HIGH("x-high"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1578,6 +2079,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1586,7 +2095,7 @@ public interface CSSProperty {
 
 	public enum PlayDuring implements CSSProperty {
 		uri(""), uri_mix(""), uri_repeat(""), AUTO("auto"), NONE("none"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1602,6 +2111,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1610,7 +2127,7 @@ public interface CSSProperty {
 
 	public enum Position implements CSSProperty {
 		STATIC("static"), RELATIVE("relative"), ABSOLUTE("absolute"), FIXED(
-				"fixed"), INHERIT("inherit");
+				"fixed"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1625,6 +2142,14 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
 		
 		@Override
 		public String toString() {
@@ -1633,7 +2158,7 @@ public interface CSSProperty {
 	}
 
 	public enum Richness implements CSSProperty {
-		number("number"), INHERIT("inherit");
+		number("number"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1649,6 +2174,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1656,7 +2189,7 @@ public interface CSSProperty {
 	}
 
 	public enum SpeakHeader implements CSSProperty {
-		ONCE("once"), ALWAYS("always"), INHERIT("inherit");
+		ONCE("once"), ALWAYS("always"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1672,6 +2205,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1679,7 +2220,7 @@ public interface CSSProperty {
 	}
 
 	public enum SpeakNumeral implements CSSProperty {
-		DIGITS("digits"), CONTINUOUS("continuous"), INHERIT("inherit");
+		DIGITS("digits"), CONTINUOUS("continuous"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1695,6 +2236,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1702,7 +2251,7 @@ public interface CSSProperty {
 	}
 
 	public enum SpeakPunctuation implements CSSProperty {
-		CODE("code"), NONE("none"), INHERIT("inherit");
+		CODE("code"), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1717,6 +2266,14 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
 		
 		@Override
 		public String toString() {
@@ -1726,7 +2283,7 @@ public interface CSSProperty {
 
 	public enum Speak implements CSSProperty {
 		NORMAL("normal"), NONE("none"), SPELL_OUT("spell-out"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1741,6 +2298,14 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
 		
 		@Override
 		public String toString() {
@@ -1751,7 +2316,7 @@ public interface CSSProperty {
 	public enum SpeechRate implements CSSProperty {
 		number(""), X_SLOW("x-slow"), SLOW("slow"), MEDIUM("medium"), FAST(
 				"fast"), X_FAST("x-fast"), FASTER("faster"), SLOWER("slower"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1767,6 +2332,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1774,7 +2347,7 @@ public interface CSSProperty {
 	}
 
 	public enum Stress implements CSSProperty {
-		number(""), INHERIT("inherit");
+		number(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1790,6 +2363,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1797,7 +2378,7 @@ public interface CSSProperty {
 	}
 
 	public enum Top implements CSSProperty {
-		length(""), percentage(""), AUTO("auto"), INHERIT("inherit");
+		length(""), percentage(""), AUTO("auto"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1813,6 +2394,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1820,7 +2409,7 @@ public interface CSSProperty {
 	}
 
 	public enum Right implements CSSProperty {
-		length(""), percentage(""), AUTO("auto"), INHERIT("inherit");
+		length(""), percentage(""), AUTO("auto"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1836,6 +2425,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1843,7 +2440,7 @@ public interface CSSProperty {
 	}
 
 	public enum Bottom implements CSSProperty {
-		length(""), percentage(""), AUTO("auto"), INHERIT("inherit");
+		length(""), percentage(""), AUTO("auto"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1859,6 +2456,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1866,7 +2471,7 @@ public interface CSSProperty {
 	}
 
 	public enum Left implements CSSProperty {
-		length(""), percentage(""), AUTO("auto"), INHERIT("inherit");
+		length(""), percentage(""), AUTO("auto"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1882,6 +2487,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1889,7 +2502,7 @@ public interface CSSProperty {
 	}
 
 	public enum Quotes implements CSSProperty {
-		list_values(""), NONE("none"), INHERIT("inherit");
+		list_values(""), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1905,6 +2518,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1912,7 +2533,7 @@ public interface CSSProperty {
 	}
 
 	public enum TableLayout implements CSSProperty {
-		AUTO("auto"), FIXED("fixed"), INHERIT("inherit");
+		AUTO("auto"), FIXED("fixed"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1928,6 +2549,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1936,7 +2565,7 @@ public interface CSSProperty {
 
 	public enum TextAlign implements CSSProperty {
 		BY_DIRECTION("by-direction"), LEFT("left"), RIGHT("right"), CENTER(
-				"center"), JUSTIFY("justify"), INHERIT("inherit");
+				"center"), JUSTIFY("justify"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1952,6 +2581,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1961,7 +2598,7 @@ public interface CSSProperty {
 	public enum TextDecoration implements CSSProperty {
 		list_values(""), UNDERLINE("underline"), OVERLINE("overline"), BLINK(
 				"blink"), LINE_THROUGH("line-through"), NONE("none"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1977,6 +2614,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -1984,7 +2629,7 @@ public interface CSSProperty {
 	}
 
 	public enum TextIndent implements CSSProperty {
-		length(""), percentage(""), INHERIT("inherit");
+		length(""), percentage(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -2000,6 +2645,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -2008,7 +2661,7 @@ public interface CSSProperty {
 
 	public enum TextTransform implements CSSProperty {
 		CAPITALIZE("capitalize"), UPPERCASE("uppercase"), LOWERCASE("lowercase"), NONE(
-				"none"), INHERIT("inherit");
+				"none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -2024,6 +2677,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -2031,7 +2692,7 @@ public interface CSSProperty {
 	}
 
     public enum Transform implements CSSProperty {
-        list_values(""), NONE("none"), INHERIT("inherit");
+        list_values(""), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
         private String text;
 
@@ -2046,6 +2707,14 @@ public interface CSSProperty {
         public boolean equalsInherit() {
             return this == INHERIT;
         }
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
     
         @Override
         public String toString() {
@@ -2054,7 +2723,7 @@ public interface CSSProperty {
     }
 
     public enum TransformOrigin implements CSSProperty {
-        list_values(""), INHERIT("inherit");
+        list_values(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
         private String text;
 
@@ -2070,6 +2739,14 @@ public interface CSSProperty {
             return this == INHERIT;
         }
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
         @Override
         public String toString() {
             return text;
@@ -2078,7 +2755,7 @@ public interface CSSProperty {
     
 	public enum UnicodeBidi implements CSSProperty {
 		NORMAL("normal"), EMDEB("embed"), BIDI_OVERRIDE("bidi-override"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -2094,6 +2771,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}		
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -2103,7 +2788,8 @@ public interface CSSProperty {
 	public enum VerticalAlign implements CSSProperty {
 		length(""), percentage(""), BASELINE("baseline"), SUB("sub"), SUPER(
 				"super"), TOP("top"), TEXT_TOP("text-top"), MIDDLE("middle"), BOTTOM(
-				"bottom"), TEXT_BOTTOM("text-bottom"), INHERIT("inherit");
+				"bottom"), TEXT_BOTTOM("text-bottom"), INHERIT("inherit"), INITIAL(
+				"initial"), UNSET("unset");
 
 		private String text;
 
@@ -2119,6 +2805,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -2127,7 +2821,7 @@ public interface CSSProperty {
 
 	public enum Visibility implements CSSProperty {
 		VISIBLE("visible"), HIDDEN("hidden"), COLLAPSE("collapse"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -2143,6 +2837,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -2151,7 +2853,7 @@ public interface CSSProperty {
 
 	public enum VoiceFamily implements CSSProperty {
 		list_values(""), MALE("male"), FEMALE("female"), CHILD("child"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -2167,6 +2869,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -2176,7 +2886,7 @@ public interface CSSProperty {
 	public enum Volume implements CSSProperty {
 		number(""), percentage(""), SILENT("silent"), X_SOFT("x-soft"), SOFT(
 				"soft"), MEDIUM("medium"), LOUD("loud"), X_LOUD("x-loud"), INHERIT(
-				"inherit");
+				"inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -2192,6 +2902,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -2200,7 +2918,7 @@ public interface CSSProperty {
 
 	public enum WhiteSpace implements CSSProperty {
 		NORMAL("normal"), PRE("pre"), NOWRAP("nowrap"), PRE_WRAP("pre-wrap"), PRE_LINE(
-				"pre-line"), INHERIT("inherit");
+				"pre-line"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -2216,6 +2934,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -2223,7 +2949,7 @@ public interface CSSProperty {
 	}
 
 	public enum Widows implements CSSProperty {
-		integer(""), INHERIT("inherit");
+		integer(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -2239,6 +2965,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -2246,7 +2980,7 @@ public interface CSSProperty {
 	}
 
 	public enum WordSpacing implements CSSProperty {
-		length(""), NORMAL("normal"), INHERIT("inherit");
+		length(""), NORMAL("normal"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -2262,6 +2996,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -2269,7 +3011,7 @@ public interface CSSProperty {
 	}
 
 	public enum LetterSpacing implements CSSProperty {
-		length(""), NORMAL("normal"), INHERIT("inherit");
+		length(""), NORMAL("normal"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -2285,6 +3027,14 @@ public interface CSSProperty {
 			return this == INHERIT;
 		}
 
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -2292,7 +3042,7 @@ public interface CSSProperty {
 	}
 
 	public enum ZIndex implements CSSProperty {
-		integer(""), AUTO("auto"), INHERIT("inherit");
+		integer(""), AUTO("auto"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -2307,6 +3057,14 @@ public interface CSSProperty {
 		public boolean equalsInherit() {
 			return this == INHERIT;
 		}
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
 		
 		@Override
 		public String toString() {
@@ -2334,6 +3092,18 @@ public interface CSSProperty {
 
         @Override
         public boolean equalsInherit()
+        {
+            return false;
+        }
+
+        @Override
+        public boolean equalsInitial() 
+        {
+            return false;
+        }
+
+        @Override
+        public boolean equalsUnset() 
         {
             return false;
         }

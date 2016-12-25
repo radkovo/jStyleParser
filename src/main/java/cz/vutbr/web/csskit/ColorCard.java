@@ -19,7 +19,7 @@ public class ColorCard {
 	
 	static	{
 	    map.put("transparent", new TermColorKeywordImpl(Keyword.TRANSPARENT, 0x00, 0x00, 0x00, 0x00));
-        map.put("currentColor", new TermColorKeywordImpl(Keyword.CURRENT_COLOR, 0x00, 0x00, 0x00, 0xff));
+        map.put("currentcolor", new TermColorKeywordImpl(Keyword.CURRENT_COLOR, 0x00, 0x00, 0x00, 0xff));
 	    
         map.put("aliceblue", new TermColorImpl(0xf0, 0xf8, 0xff));
         map.put("antiquewhite", new TermColorImpl(0xfa, 0xeb, 0xd7));

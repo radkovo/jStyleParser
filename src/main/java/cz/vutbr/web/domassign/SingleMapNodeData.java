@@ -14,6 +14,8 @@ import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.TermColor;
+import cz.vutbr.web.css.TermColor.Keyword;
 import cz.vutbr.web.csskit.DeclarationTransformer;
 import cz.vutbr.web.csskit.OutputUtil;
 
@@ -88,6 +90,17 @@ public class SingleMapNodeData implements NodeData {
 		return getValue(clazz, name, true);
 	}
 
+    @Override
+    public TermColor getColorValue(String name) {
+        TermColor ret = getValue(TermColor.class, name, true);
+        if (ret != null && ret.getKeyword() == Keyword.CURRENT_COLOR) {
+            TermColor cvalue = getValue(TermColor.class, "color", true);
+            if (cvalue != null)
+                ret.setValue(cvalue.getValue());
+        }
+        return ret;
+    }
+
     public String getAsString(String name, boolean includeInherited) {
         Quadruple q = map.get(name);
         if(q==null) return null;
@@ -147,25 +160,43 @@ public class SingleMapNodeData implements NodeData {
 	}
 	
 	public NodeData concretize() {
-		
+
 		for(Map.Entry<String, Quadruple> entry : map.entrySet()) {
 		    final String key = entry.getKey();
 			final Quadruple q = entry.getValue();
 			
 			// replace current with inherited or defaults
-			if(q.curProp!=null && q.curProp.equalsInherit()) {
-				if(q.inhProp==null) q.curProp = css.getDefaultProperty(key);
-				else {
-				    q.curProp = q.inhProp;
-				    q.curSource = q.inhSource;
-				}
-				
-				if(q.inhValue==null) q.curValue = css.getDefaultValue(key);
-				else q.curValue = q.inhValue;
-				
-	            map.put(key, q);
+			if (q.curProp!=null) { 
+			    if (q.curProp.equalsInherit()) {
+    				if(q.inhProp==null) q.curProp = css.getDefaultProperty(key);
+    				else {
+    				    q.curProp = q.inhProp;
+    				    q.curSource = q.inhSource;
+    				}
+    				
+    				if(q.inhValue==null) q.curValue = css.getDefaultValue(key);
+    				else q.curValue = q.inhValue;
+    				
+    	            map.put(key, q);
+			    } else if (q.curProp.equalsInitial()) {
+			        q.curProp = css.getDefaultProperty(key);
+			        q.curValue = css.getDefaultValue(key);
+			        map.put(key, q);
+			    } else if (q.curProp.equalsUnset()) {
+			        if (q.curProp.inherited()) {
+	                    if(q.inhProp==null) q.curProp = css.getDefaultProperty(key);
+	                    else q.curProp = q.inhProp;
+	                    if(q.inhValue==null) q.curValue = css.getDefaultValue(key);
+	                    else q.curValue = q.inhValue;
+			        } else {
+	                    q.curProp = css.getDefaultProperty(key);
+	                    q.curValue = css.getDefaultValue(key);
+			        }
+                    map.put(key, q);
+			    }
 			}
 		}
+		
 		return this;
 	}
 	
