@@ -68,10 +68,12 @@ public class DeclarationImpl extends AbstractRule<Term<?>> implements Declaratio
 
 
 	/**
+	 * Sets the property name. Automatically converts the name to lowercase because
+	 * the CSS property names should be case-insensitive.
 	 * @param property the property to set
 	 */
 	public void setProperty(String property) {
-		this.property = property;
+		this.property = property.toLowerCase();
 	}
 
 

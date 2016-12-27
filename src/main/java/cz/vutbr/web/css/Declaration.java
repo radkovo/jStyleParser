@@ -17,8 +17,17 @@ public interface Declaration extends Rule<Term<?>>, PrettyOutput, Comparable<Dec
     
     public void setImportant(boolean important);
     
+    /**
+     * Obtains the property name.
+     * @return The property name (always lowercase)
+     */
     public String getProperty();
 
+    /**
+     * Sets the property name. Automatically converts the name to lowercase because
+     * the CSS property names should be case-insensitive.
+     * @param property the property to set
+     */
     public void setProperty(String property);
     
     public Source getSource();

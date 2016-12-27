@@ -210,7 +210,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	public boolean parseDeclaration(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
-		String propertyName = d.getProperty().toLowerCase();
+		final String propertyName = d.getProperty();
 
 		// no such declaration is supported
 		if (!css.isSupportedCSSProperty(propertyName))
