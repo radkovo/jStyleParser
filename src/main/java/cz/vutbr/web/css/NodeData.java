@@ -46,8 +46,8 @@ public interface NodeData {
 			boolean includeInherited);
 
     /**
-     * Returns value of property of given name as a generic type. Inherited
-     * values can be avoided.
+     * Returns the <em>cascaded value</em> of property of given name.
+     * Inherited values can be avoided.
      * 
      * @param name
      *            Name of property
@@ -58,8 +58,8 @@ public interface NodeData {
     public Term<?> getValue(String name, boolean includeInherited);
     
 	/**
-	 * Returns value of property of given name and supposed type. Inherited
-	 * values are included.
+     * Returns the <em>cascaded value</em> of property of given name and supposed type.
+     * Inherited values can be avoided.
 	 * 
 	 * @param <T>
 	 *            Type of value returned
@@ -72,8 +72,8 @@ public interface NodeData {
 	public <T extends Term<?>> T getValue(Class<T> clazz, String name);
 
 	/**
-	 * Returns value of property of given name and supposed type. Inherited
-	 * values can be avoided.
+	 * Returns the <em>cascaded value</em> of property of given name and supposed type.
+	 * Inherited values can be avoided.
 	 * 
 	 * @param <T>
 	 *            Type of value returned 
@@ -89,12 +89,26 @@ public interface NodeData {
 			boolean includeInherited);
 
 	/**
-	 * Returns the color value of the property with the given name. Special keywords
-	 * such as {@code currentColor} are concretized. 
+	 * Returns the <em>specified value</em> of a property which corresponds to the
+	 * cascaded value (obtained by {@link NodeData#getValue(String, boolean)}) with
+	 * applying the defaulting processes.
 	 * @param name the property name
-	 * @return the color value or {@code null} when the value is not available or is not color.
+	 * @return the property value or {@code null} when the property value is not defined
+	 * and no default value is available.
 	 */
-	public TermColor getColorValue(String name);
+	public Term<?> getSpecifiedValue(String name);
+    
+	/**
+     * Returns the <em>specified value</em> of a property which corresponds to the
+     * cascaded value (obtained by {@link NodeData#getValue(String, boolean)}) with
+     * applying the defaulting processes.
+     * 
+	 * @param clazz the expected class of the result
+	 * @param name the property name
+     * @return the property value or {@code null} when the property value is not defined
+     * and no default value is available.
+	 */
+	public <T extends Term<?>> T getSpecifiedValue(Class<T> clazz, String name);
 	
 	/**
 	 * Returns a string representation of the property value.

@@ -8,15 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.NodeData;
-import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
-import cz.vutbr.web.css.TermColor;
-import cz.vutbr.web.css.TermColor.Keyword;
-import cz.vutbr.web.csskit.DeclarationTransformer;
 import cz.vutbr.web.csskit.OutputUtil;
 
 /**
@@ -26,12 +21,9 @@ import cz.vutbr.web.csskit.OutputUtil;
  * @author kapy
  *
  */
-public class SingleMapNodeData implements NodeData {
+public class SingleMapNodeData extends BaseNodeDataImpl {
 
 	private static final int COMMON_DECLARATION_SIZE = 7;
-	
-	protected static DeclarationTransformer transformer = CSSFactory.getDeclarationTransformer();
-	protected static SupportedCSS css = CSSFactory.getSupportedCSS();
 	
 	private Map<String, Quadruple> map;
 	
@@ -89,18 +81,7 @@ public class SingleMapNodeData implements NodeData {
 	public <T extends Term<?>> T getValue(Class<T> clazz, String name) {
 		return getValue(clazz, name, true);
 	}
-
-    @Override
-    public TermColor getColorValue(String name) {
-        TermColor ret = getValue(TermColor.class, name, true);
-        if (ret != null && ret.getKeyword() == Keyword.CURRENT_COLOR) {
-            TermColor cvalue = getValue(TermColor.class, "color", true);
-            if (cvalue != null)
-                ret.setValue(cvalue.getValue());
-        }
-        return ret;
-    }
-
+    
     public String getAsString(String name, boolean includeInherited) {
         Quadruple q = map.get(name);
         if(q==null) return null;
