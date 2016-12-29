@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>CSS Inheritance &amp; Initial &amp; Unset</title>
+    <style type="text/css">
+    	ul {
+                border: 3px solid blue;
+                margin: 1em 2em 3em 4em;
+                color: red;
+        }
+        li {
+                border: 2px solid red;
+                border: inherit;
+                margin: inherit;
+                color: green;
+        }
+        li a {
+                color: inherit;
+        }
+        li:first-child {
+                border-color: initial;
+                color: initial;
+        }
+        li:last-child {
+                border-color: unset;
+                color: unset;
+        }
+    </style>
+  </head>
+  <body>
+  	<div id="content">
+  		<h1>Inheritance &amp; Initial &amp; Unset</h1>
+  		<ul>
+  		<li id="item1"><a class="first" href="a1.html">Link 1</a></li>
+  		<li><a href="a2.html">Link 2</a></li>
+  		<li><a href="a3.html">Link 3</a></li>
+  		<li id="item4"><a class="last" href="a4.html">Link 4</a></li>
+  		</ul>
+  	</div>
+  </body>
+</html>
