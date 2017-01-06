@@ -13,6 +13,7 @@ import java.util.Collection;
  * is stored somewhere else</li> </ul>
  * 
  * @author kapy
+ * @author burgetr
  */
 public interface NodeData {
 
@@ -42,8 +43,17 @@ public interface NodeData {
 	 *            Whether to include inherited properties or not
 	 * @return Value of property of type T or <code>null</code>
 	 */
-	public <T extends CSSProperty> T getProperty(String name,
-			boolean includeInherited);
+	public <T extends CSSProperty> T getProperty(String name, boolean includeInherited);
+	
+	/**
+	 * Returns the property of the given name after applying the defaulting processes.
+	 * 
+	 * @param name
+	 *     Property name
+	 * @return The specified value of the property of the type T or {@code null} if the
+	 * value is not available and no default value is applicable.
+	 */
+	public <T extends CSSProperty> T getSpecifiedProperty(String name);
 
     /**
      * Returns the <em>cascaded value</em> of property of given name.

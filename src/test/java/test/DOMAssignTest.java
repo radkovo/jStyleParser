@@ -203,6 +203,25 @@ public class DOMAssignTest {
         assertThat(data.getSpecifiedValue(TermColor.class, "color"), is(tf.createColor(255, 0, 0)));
     }
     
+    @Test
+    public void defaulting() throws SAXException, IOException {  
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/advanced/initial.html"));
+        Document doc = ds.parse();
+        ElementMap elements = new ElementMap(doc);
+        
+        StyleMap decl = CSSFactory.assignDOM(doc, null,
+                getClass().getResource("/advanced/initial.html"),"screen", true);
+        
+        NodeData data = decl.get(elements.getElementById("content"));
+        assertNotNull("Data for #content exist", data);
+        //cascaded value
+        assertNull(data.getProperty("border-top-color"));
+        assertNull(data.getValue(TermColor.class, "border-top-color"));
+        //specified value
+        assertThat((CSSProperty.BorderColor) data.getSpecifiedProperty("border-top-color"), is(CSSProperty.BorderColor.color));
+        assertThat(data.getSpecifiedValue(TermColor.class, "border-top-color"), is(tf.createColor(tf.createIdent("currentColor"))));
+    }
+    
     // Test for issue #11 on GitHub. Respect the specified order of rule-blocks even if the selectors don't match in the same order.
     @Test
     public void respectSpecifiedOrder() throws SAXException, IOException, CSSException {

@@ -260,6 +260,10 @@ public class NodeDataVariantTest {
 			return null;
 		}
 
+        public <T extends CSSProperty> T getSpecifiedProperty(String name) {
+            return null;
+        }
+
         public Term<?> getValue(String name, boolean includeInherited) {
             return null;
         }

@@ -5,6 +5,7 @@
 package cz.vutbr.web.domassign;
 
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
@@ -20,6 +21,18 @@ public abstract class BaseNodeDataImpl implements NodeData {
     
     protected static DeclarationTransformer transformer = CSSFactory.getDeclarationTransformer();
     protected static SupportedCSS css = CSSFactory.getSupportedCSS();
+    
+    @Override
+    public <T extends CSSProperty> T getSpecifiedProperty(String name) {
+        T prop = getProperty(name, true);
+        if (prop == null) {
+            @SuppressWarnings("unchecked")
+            T def = (T) css.getDefaultProperty(name);
+            return def;
+        } else {
+            return prop;
+        }
+    }
     
     @Override
     public Term<?> getSpecifiedValue(String name) {
