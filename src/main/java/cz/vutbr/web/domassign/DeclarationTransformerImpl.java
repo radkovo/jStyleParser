@@ -1643,7 +1643,18 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processOverflow(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(Overflow.class, d, properties);
+	    
+	    if (d.size() == 1) {
+	        Term<?> term = d.get(0);
+	        if (term instanceof TermIdent) {
+	            return genericProperty(Overflow.class, (TermIdent) term, ALLOW_INH, properties, "overflow-x")
+	                    && genericProperty(Overflow.class, (TermIdent) term, ALLOW_INH, properties, "overflow-y");
+	        }
+	        else
+	            return false;
+	    }
+	    else
+	        return false;
 	}
 
     @SuppressWarnings("unused")
