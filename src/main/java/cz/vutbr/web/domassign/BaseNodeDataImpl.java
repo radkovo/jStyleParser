@@ -11,6 +11,7 @@ import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermColor.Keyword;
+import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.csskit.DeclarationTransformer;
 
 /**
@@ -42,9 +43,14 @@ public abstract class BaseNodeDataImpl implements NodeData {
         
         if (ret != null) {
             if (ret instanceof TermColor && ((TermColor) ret).getKeyword() == Keyword.CURRENT_COLOR) {
+                //clone the value fot setting the current color
+                final TermFactory tf = CSSFactory.getTermFactory();
+                ret = tf.createColor(tf.createIdent("currentColor"));
+                //set the current color value
                 TermColor cvalue = getValue(TermColor.class, "color", true);
-                if (cvalue != null)
-                    ((TermColor) ret).setValue(cvalue.getValue());
+                if (cvalue == null)
+                    cvalue = (TermColor) css.getDefaultValue("color");
+                ((TermColor) ret).setValue(cvalue.getValue());
             }
         }
         
