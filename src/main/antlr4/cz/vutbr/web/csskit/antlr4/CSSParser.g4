@@ -203,7 +203,7 @@ unknown_atrule
     }
 
 ruleset
-	: combined_selector (COMMA S* combined_selector)*
+	: (combined_selector (COMMA S* combined_selector)*)?
 	  LCURLY S*
 	  	declarations
 	  RCURLY

@@ -53,6 +53,9 @@ public class GrammarRecovery2Test {
     /* invalid character in the value -- the declaration should be ignored */
     public static final String TEST_DECL10A = "div{color:green;background: url(\"support/red_box.png\"&);}";
     
+    /* a rule with no selector should be skipped */
+    public static final String TEST_DECL11A = "p{color:blue}{color:red}p{color:green}";
+    
 	@BeforeClass
 	public static void init() 
 	{
@@ -149,6 +152,13 @@ public class GrammarRecovery2Test {
         StyleSheet ss = CSSFactory.parseString(TEST_DECL10A, null);
         assertEquals("Style sheet contains one rule", 1, ss.size());
         assertEquals("Only the first declaration is accepted", 1, ss.get(0).size());
+    }
+    
+    @Test
+    public void ruleWithNoSelector() throws IOException, CSSException 
+    {
+        StyleSheet ss = CSSFactory.parseString(TEST_DECL11A, null);
+        assertEquals("Style sheet contains two rules", 2, ss.size());
     }
     
 }
