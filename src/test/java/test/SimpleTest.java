@@ -58,6 +58,15 @@ public class SimpleTest {
     public static final String TEST_RGBFUNCTION_INVALID =
             "BODY { color: rgb(50%,100,0);} ";
         
+    public static final String TEST_HSLFUNCTION1 =
+            "BODY { color: hsl(120,100%,50%);} ";
+        
+    public static final String TEST_RGBAFUNCTION1 =
+            "BODY { color: rgba(255,0,0,0.2);} ";
+        
+    public static final String TEST_HSLAFUNCTION1 =
+            "BODY { color: hsla(240,100%,50%, 0.4);} ";
+        
 	public static final String TEST_UNIT =
 		"BODY { margin: 5em; }";
 	
@@ -210,6 +219,63 @@ public class SimpleTest {
         assertEquals("Rule contains one declaration", 1, rule.size());
         Term<?> value = rule.get(0).get(0);
         assertTrue("Assigned value is TermFunction (not TermColor)", value instanceof TermFunction);
+    }
+    
+    @Test 
+    public void testHSLFunction1() throws IOException, CSSException   {
+        
+        StyleSheet ss = CSSFactory.parseString(TEST_HSLFUNCTION1, null);
+        assertEquals("One rule is set", 1, ss.size());
+        
+        RuleSet rule = (RuleSet) ss.get(0);             
+        
+        assertArrayEquals("Rule contains one selector BODY ", 
+                SelectorsUtil.createSelectors("BODY"), 
+                rule.getSelectors());
+        
+        assertEquals("Rule contains one declaration with color",
+                DeclarationsUtil.appendDeclaration(null, "color", 
+                        tf.createColor(0, 255, 0)),
+                rule.asList());
+        
+    }
+    
+    @Test 
+    public void testRGBAFunction1() throws IOException, CSSException   {
+        
+        StyleSheet ss = CSSFactory.parseString(TEST_RGBAFUNCTION1, null);
+        assertEquals("One rule is set", 1, ss.size());
+        
+        RuleSet rule = (RuleSet) ss.get(0);             
+        
+        assertArrayEquals("Rule contains one selector BODY ", 
+                SelectorsUtil.createSelectors("BODY"), 
+                rule.getSelectors());
+        
+        assertEquals("Rule contains one declaration with color",
+                DeclarationsUtil.appendDeclaration(null, "color", 
+                        tf.createColor(255, 0, 0, 51)),
+                rule.asList());
+        
+    }
+    
+    @Test 
+    public void testHSLAFunction1() throws IOException, CSSException   {
+        
+        StyleSheet ss = CSSFactory.parseString(TEST_HSLAFUNCTION1, null);
+        assertEquals("One rule is set", 1, ss.size());
+        
+        RuleSet rule = (RuleSet) ss.get(0);             
+        
+        assertArrayEquals("Rule contains one selector BODY ", 
+                SelectorsUtil.createSelectors("BODY"), 
+                rule.getSelectors());
+        
+        assertEquals("Rule contains one declaration with color",
+                DeclarationsUtil.appendDeclaration(null, "color", 
+                        tf.createColor(0, 0, 255, 102)),
+                rule.asList());
+        
     }
     
 	@Test
