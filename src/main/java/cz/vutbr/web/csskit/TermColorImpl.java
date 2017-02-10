@@ -8,6 +8,7 @@ import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermInteger;
 import cz.vutbr.web.css.TermNumber;
+import cz.vutbr.web.css.TermOperator;
 import cz.vutbr.web.css.TermPercent;
 
 /**
@@ -127,29 +128,37 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
      */
     public static TermColor getColorByFunction(TermFunction func) {
     	
-    	if ((COLOR_RGB_NAME.equals(func.getFunctionName()) && func.size() == COLOR_PARAMS_COUNT)
-    	   || COLOR_RGBA_NAME.equals(func.getFunctionName()) && func.size() == COLOR_PARAMS_COUNT + 1) {
+    	if ((COLOR_RGB_NAME.equals(func.getFunctionName()) && func.size() == 2*COLOR_PARAMS_COUNT - 1) //count commas
+    	   || COLOR_RGBA_NAME.equals(func.getFunctionName()) && func.size() == 2*(COLOR_PARAMS_COUNT + 1) - 1) {
     		
             boolean percVals = false;
             boolean intVals = false;
     		int[] rgb = new int[COLOR_PARAMS_COUNT];
-    		for(int i = 0; i < COLOR_PARAMS_COUNT; i++) {
+    		for(int i = 0; i < 2*COLOR_PARAMS_COUNT - 1; i++) {
     		    Term<?> term = func.get(i);
-    			// term is number and numeric
-    			if(term instanceof TermInteger ) {
-    				rgb[i] = ((TermInteger)term).getIntValue();
-    				intVals = true;
-    			}
-    			// term is percent
-    			else if(term instanceof TermPercent) {
-    				final int value = ((TermPercent) term).getValue().intValue();
-    				rgb[i] = (value * MAX_VALUE) / PERCENT_CONVERSION;
-    				percVals = true;
-    			}
-    			// not valid term
-    			else {
-    				return null;
-    			}
+    		    if (i % 2 == 0)
+    		    {
+        			// term is number and numeric
+        			if(term instanceof TermInteger ) {
+        				rgb[i / 2] = ((TermInteger)term).getIntValue();
+        				intVals = true;
+        			}
+        			// term is percent
+        			else if(term instanceof TermPercent) {
+        				final int value = ((TermPercent) term).getValue().intValue();
+        				rgb[i / 2] = (value * MAX_VALUE) / PERCENT_CONVERSION;
+        				percVals = true;
+        			}
+        			// not valid term
+        			else {
+        				return null;
+        			}
+    		    }
+    		    else
+    		    {
+    		        if(!(term instanceof TermOperator) || ((TermOperator) term).getValue() != ',')
+    		            return null;
+    		    }
     		}
     		
     		if (percVals && intVals) //do not allow both percentages and int values combined
@@ -163,9 +172,9 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
     		
     		//alpha
     		int a = MAX_VALUE;
-    		if (func.size() > COLOR_PARAMS_COUNT)
+    		if (func.size() > 2*COLOR_PARAMS_COUNT - 1)
     		{
-    		    Term<?> term = func.get(COLOR_PARAMS_COUNT);
+    		    Term<?> term = func.get(2*COLOR_PARAMS_COUNT);
     		    if (term instanceof TermNumber || term instanceof TermInteger) {
     		        float alpha = getFloatValue(term);
     		        a = Math.round(alpha * MAX_VALUE);
@@ -178,8 +187,8 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
     		
     		return new TermColorImpl(rgb[0], rgb[1], rgb[2], a);
     	}
-    	else if ((COLOR_HSL_NAME.equals(func.getFunctionName()) && func.size() == COLOR_PARAMS_COUNT)
-                || COLOR_HSLA_NAME.equals(func.getFunctionName()) && func.size() == COLOR_PARAMS_COUNT + 1) {
+    	else if ((COLOR_HSL_NAME.equals(func.getFunctionName()) && func.size() == 2*COLOR_PARAMS_COUNT - 1)
+                || COLOR_HSLA_NAME.equals(func.getFunctionName()) && func.size() == 2*(COLOR_PARAMS_COUNT + 1) - 1) {
 
     	    float h, s, l;
     	    Term<?> hterm = func.get(0);
@@ -191,8 +200,12 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
     	    }
     	    else
     	        return null;
-    	    
-            Term<?> sterm = func.get(1);
+
+            Term<?> comma = func.get(1);
+            if(!(comma instanceof TermOperator) || ((TermOperator) comma).getValue() != ',')
+                return null;
+            
+            Term<?> sterm = func.get(2);
             if (sterm instanceof TermPercent) {
                 int is = ((TermPercent) sterm).getValue().intValue();
                 if (is > 100) is = 100;
@@ -202,7 +215,11 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
             else
                 return null;
     	    
-            Term<?> lterm = func.get(2);
+            comma = func.get(3);
+            if(!(comma instanceof TermOperator) || ((TermOperator) comma).getValue() != ',')
+                return null;
+            
+            Term<?> lterm = func.get(4);
             if (lterm instanceof TermPercent) {
                 int il = ((TermPercent) lterm).getValue().intValue();
                 if (il > 100) il = 100;
@@ -216,9 +233,13 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
             
             // alpha
             int a = MAX_VALUE;
-            if (func.size() > COLOR_PARAMS_COUNT)
+            if (func.size() > 2*COLOR_PARAMS_COUNT - 1)
             {
-                Term<?> term = func.get(COLOR_PARAMS_COUNT);
+                comma = func.get(5);
+                if(!(comma instanceof TermOperator) || ((TermOperator) comma).getValue() != ',')
+                    return null;
+                
+                Term<?> term = func.get(6);
                 if (term instanceof TermNumber || term instanceof TermInteger) {
                     float alpha = getFloatValue(term);
                     a = Math.round(alpha * MAX_VALUE);

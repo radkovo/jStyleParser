@@ -299,7 +299,7 @@ funct
         functLevel--;
     }
     : EXPRESSION S* (any | SEMICOLON S*)* RPAREN // invalid declaration - expression function is no longer supported
-	| FUNCTION S* terms? RPAREN
+	| FUNCTION S* funct_args? RPAREN
 	;
     catch [RecognitionException re] {
         log.error("Recognition exception | funct | should be empty");
@@ -331,6 +331,48 @@ valuepart
         | DASHMATCH //invalid
         | LPAREN valuepart* RPAREN //invalid
         | LBRACE valuepart* RBRACE //invalid
+    ) S*
+    ;
+	catch [RecognitionException re] {
+		log.error("Recognition exception | valuepart");
+		IntervalSet intervalSet = new IntervalSet(RCURLY, SEMICOLON);
+		getCSSErrorHandler().consumeUntil(this, intervalSet, CSSLexerState.RecoveryMode.BALANCED, null);
+		_localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,""));
+	}
+
+funct_args
+	: funct_argument+
+	;
+    catch [RecognitionException re] {
+        log.error("PARSING funct_args ERROR functLevel = {}", functLevel);
+        IntervalSet intervalSet = new IntervalSet(RPAREN, RCURLY, SEMICOLON);
+        this.getCSSErrorHandler().consumeUntilGreedy(this, intervalSet, CSSLexerState.RecoveryMode.FUNCTION);
+        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT, "INVALID_STATEMENT"));
+    }
+
+funct_argument
+    : ( IDENT
+    	| PLUS
+    	| MINUS
+	    | ASTERISK
+        | SLASH
+        | NUMBER
+        | PERCENTAGE
+        | DIMENSION
+        | HASH
+        | string
+        | funct
+        | COMMA
+        | CLASSKEYWORD //invalid
+        | UNIRANGE //invalid
+        | INCLUDES //invalid
+        | COLON //invalid
+        | GREATER //invalid
+        | LESS //invalid
+        | QUESTION //invalid
+        | PERCENT //invalid
+        | EQUALS //invalid
+        | DASHMATCH //invalid
     ) S*
     ;
 	catch [RecognitionException re] {

@@ -2,6 +2,7 @@ package cz.vutbr.web.csskit.antlr4;
 
 import cz.vutbr.web.css.*;
 import cz.vutbr.web.csskit.RuleArrayList;
+
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
@@ -873,9 +874,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             return null;
         }
         final String fname = extractTextUnescaped(ctx.FUNCTION().getText());
-        if (ctx.terms() != null)
+        if (ctx.funct_args() != null)
         {
-            List<Term<?>> t = visitTerms(ctx.terms());
+            List<Term<?>> t = visitFunct_args(ctx.funct_args());
             if (fname.equalsIgnoreCase("url")) {
                 // the function name is url() after escaping - create an URI
                 if (terms_stack.peek().unary == -1 || t == null || t.size() != 1)
@@ -979,6 +980,118 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             }
 
         }
+        //returns null
+        return null;
+    }
+
+    protected static class funct_args_scope {
+        List<cz.vutbr.web.css.Term<?>> list;
+        cz.vutbr.web.css.Term<?> term;
+    }
+
+    protected Stack<funct_args_scope> funct_args_stack = new Stack<>();
+
+    @Override
+    public List<Term<?>> visitFunct_args(CSSParser.Funct_argsContext ctx)
+    {
+        funct_args_stack.push(new funct_args_scope());
+        List<cz.vutbr.web.css.Term<?>> tlist;
+        funct_args_stack.peek().term = null;
+        logEnter("funct_args");
+        funct_args_stack.peek().list = tlist = new ArrayList<>();
+        if (ctx.funct_argument() != null)
+        {
+            for (CSSParser.Funct_argumentContext argCtx : ctx.funct_argument()) {
+                visitFunct_argument(argCtx);
+                // set operator, store and create next
+                if (!declaration_stack.peek().invalid && funct_args_stack.peek().term != null) {
+                    funct_args_stack.peek().list.add(funct_args_stack.peek().term);
+                    funct_args_stack.peek().term = null;
+                }
+            }
+        }
+        log.debug("Totally added {} args", tlist.size());
+        logLeave("funct_args");
+        funct_args_stack.pop();
+        return tlist;
+    }
+
+    @Override
+    public Object visitFunct_argument(CSSParser.Funct_argumentContext ctx)
+    {
+        logEnter("funct_argument: ", ctx);
+        if (ctxHasErrorNode(ctx)) {
+            log.error("argument with error");
+            funct_args_stack.peek().term = null;
+            declaration_stack.peek().invalid = true;
+            return null;
+        }
+        if (ctx.PLUS() != null) {
+            log.debug("VP - plus");
+            funct_args_stack.peek().term = tf.createOperator('+');
+        } else if (ctx.MINUS() != null) {
+            log.debug("VP - minus");
+            funct_args_stack.peek().term = tf.createOperator('-');
+        } else if (ctx.ASTERISK() != null) {
+            log.debug("VP - *");
+            funct_args_stack.peek().term = tf.createOperator('*');
+        } else if (ctx.SLASH() != null) {
+            log.debug("VP - /");
+            funct_args_stack.peek().term = tf.createOperator('/');
+        } else if (ctx.COMMA() != null) {
+            log.debug("VP - comma");
+            funct_args_stack.peek().term = tf.createOperator(',');
+        } else if (ctx.string() != null) {
+            log.debug("VP - string");
+            funct_args_stack.peek().term = tf.createString(extractTextUnescaped(ctx.string().getText()));
+        } else if (ctx.IDENT() != null) {
+            log.debug("VP - ident");
+            funct_args_stack.peek().term = tf.createIdent(extractTextUnescaped(ctx.IDENT().getText()));
+        } else if (ctx.PERCENTAGE() != null) {
+            log.debug("VP - percentage");
+            funct_args_stack.peek().term = tf.createPercent(ctx.PERCENTAGE().getText(), 1);
+        } else if (ctx.DIMENSION() != null) {
+            log.debug("VP - dimension");
+            String dim = ctx.DIMENSION().getText();
+            funct_args_stack.peek().term = tf.createDimension(dim, 1);
+            if (funct_args_stack.peek().term == null) {
+                log.info("Unable to create dimension from {}, unary {}", dim, 1);
+                declaration_stack.peek().invalid = true;
+            }
+        } else if (ctx.HASH() != null) {
+            log.debug("VP - hash");
+            terms_stack.peek().term = tf.createColor(ctx.HASH().getText());
+            if (terms_stack.peek().term == null) {
+                declaration_stack.peek().invalid = true;
+            }
+        } else if (ctx.NUMBER() != null) {
+            log.debug("VP - number");
+            funct_args_stack.peek().term = tf.createNumeric(ctx.NUMBER().getText(), 1);
+        } else if (ctx.funct() != null) {
+            funct_args_stack.peek().term = null;
+            visitFunct(ctx.funct());
+            //served in function
+            log.debug("function is server later");
+        } else {
+            log.error("unhandled funct_args");
+            funct_args_stack.peek().term = null;
+            declaration_stack.peek().invalid = true;
+        }
+        //try convert color from current term
+        /*Term<?> term = funct_args_stack.peek().term;
+        if (term != null) {
+            TermColor colorTerm = null;
+            if (term instanceof TermIdent) { // red
+                colorTerm = tf.createColor((TermIdent) term);
+            } else if (term instanceof TermFunction) { // rgba(0,0,0)
+                colorTerm = tf.createColor((TermFunction) term);
+            }
+            //replace with color
+            if (colorTerm != null) {
+                log.debug("term color is OK - creating - " + colorTerm.toString());
+                funct_args_stack.peek().term = colorTerm;
+            }
+        }*/
         //returns null
         return null;
     }

@@ -12,6 +12,7 @@ public interface TermFactory {
 	TermColor createColor(TermIdent ident);
 	TermColor createColor(String hash);
 	TermColor createColor(int r, int g, int b);
+    TermColor createColor(int r, int g, int b, int a);
 	TermColor createColor(TermFunction function);
 	
 	TermFrequency createFrequency(Float value);
@@ -57,4 +58,6 @@ public interface TermFactory {
 	
 	TermURI createURI(String value);
     TermURI createURI(String value, URL base);
+    
+    TermOperator createOperator(char value);
 }
