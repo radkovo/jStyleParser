@@ -1,17 +1,20 @@
 package test;
 
+import java.util.Date;
+
+import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.csskit.antlr4.CSSParserFactory;
-import cz.vutbr.web.csskit.antlr4.CSSParserFactory.SourceType;
 
 public class ProfilerEntryPoint {
 
 	public static void main(String[] args) throws Exception {
 
-		StyleSheet sheet = CSSParserFactory.getInstance().parse("data/abclinuxu/styles.css", null,
-				null, SourceType.URL, null);
+        Date start = new Date();
+		StyleSheet sheet = CSSFactory.parse("src/test/resources/profiling/slate.css", "UTF-8");
 
 		System.out.println("Total rules: " + sheet.size());
+        Date end = new Date();
+        System.out.println("Parsing time: " + (end.getTime() - start.getTime()) + " ms");
 
 	}
 
