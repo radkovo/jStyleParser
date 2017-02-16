@@ -3,6 +3,8 @@ package cz.vutbr.web.csskit.antlr4;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.Pair;
 
+import cz.vutbr.web.csskit.antlr4.CSSToken.TypeMapper;
+
 import java.net.URL;
 import java.util.Map;
 import java.util.TreeMap;
@@ -51,9 +53,9 @@ public class CSSToken extends CommonToken {
 	 * @param start Start position in stream
 	 * @param stop End position in stream
 	 */
-	public CSSToken(Pair<TokenSource, CharStream> input, int type, int channel, int start, int stop, Class<? extends Lexer> lexerClass) {
+	public CSSToken(Pair<TokenSource, CharStream> input, int type, int channel, int start, int stop, TypeMapper typeMapper) {
 		super(input, type, channel, start, stop);
-		typeMapper = new TypeMapper(CSSToken.class, lexerClass, "FUNCTION", "URI", "STRING", "CLASSKEYWORD", "HASH", "UNCLOSED_STRING", "UNCLOSED_URI");
+		this.typeMapper = typeMapper; 
 	}
 
 	/**
@@ -62,8 +64,8 @@ public class CSSToken extends CommonToken {
 	 * @param type Type of token
 	 * @param state State of lexer, which will be copied
 	 */
-	public CSSToken(int type, CSSLexerState state, Class<? extends Lexer> lexerClass) {
-		this(type, state, 0, 0, lexerClass);
+	public CSSToken(int type, CSSLexerState state, TypeMapper typeMapper) {
+		this(type, state, 0, 0, typeMapper);
 	}
 
 	/**
@@ -74,8 +76,8 @@ public class CSSToken extends CommonToken {
 	 * @param start Start position in stream
 	 * @param stop End position in stream
 	 */
-	public CSSToken(int type, CSSLexerState state, int start, int stop, Class<? extends Lexer> lexerClass) {
-		this(new Pair<TokenSource, CharStream>(null,null), type, Token.DEFAULT_CHANNEL, start, stop, lexerClass);
+	public CSSToken(int type, CSSLexerState state, int start, int stop, TypeMapper typeMapper) {
+		this(new Pair<TokenSource, CharStream>(null,null), type, Token.DEFAULT_CHANNEL, start, stop, typeMapper);
 		this.ls = new CSSLexerState(state);
 	}
 
@@ -290,6 +292,11 @@ public class CSSToken extends CommonToken {
 		}
 	}
 
+    public static TypeMapper createDefaultTypeMapper(Class<? extends Lexer> lexerClass) {
+        return new TypeMapper(CSSToken.class, lexerClass, "FUNCTION", "URI", "STRING", "CLASSKEYWORD", "HASH", "UNCLOSED_STRING", "UNCLOSED_URI");
+    }
+
+	
 	/**
 	 * extract charset value from CHARSET token
      */

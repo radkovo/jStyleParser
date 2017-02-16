@@ -30,6 +30,7 @@ public class CSSTokenRecovery {
     public static final int INVALID_STRING = 8;
 
     private final CSSToken.TypeMapper typeMapper;
+    private final CSSToken.TypeMapper lexerTypeMapper;
 
     public CSSTokenRecovery(Lexer lexer,
                             CharStream input,
@@ -42,6 +43,7 @@ public class CSSTokenRecovery {
         this.log = log;
         this.expectedToken = new Stack<Integer>();
         this.eof = false;
+        lexerTypeMapper = CSSToken.createDefaultTypeMapper(lexer.getClass());
         typeMapper = new CSSToken.TypeMapper(CSSTokenRecovery.class, lexer.getClass(),
                 "APOS", "QUOT", "RPAREN", "RCURLY", "IMPORT",
                 "CHARSET", "STRING", "INVALID_STRING");
@@ -82,7 +84,7 @@ public class CSSTokenRecovery {
                     ls.quotOpen = false;
                     ls.aposOpen = false;
                     // create invalid string token
-                    lexer.setToken((Token) new CSSToken(typeMapper.get(INVALID_STRING), ls, lexer.getClass()));
+                    lexer.setToken((Token) new CSSToken(typeMapper.get(INVALID_STRING), ls, lexerTypeMapper));
                     ((CSSToken) lexer.getToken()).setText("INVALID_STRING");
 //                    state.token = (Token) new CSSToken(typeMapper.get(INVALID_STRING), ls, lexer.getClass());
 //                    state.token.setText("INVALID_STRING");
@@ -97,7 +99,7 @@ public class CSSTokenRecovery {
                     ls.aposOpen = false;
                     lexer.setToken((Token) new CSSToken(typeMapper.get(STRING), ls,
                             lexer._tokenStartCharIndex, input.index() - 1,
-                            lexer.getClass()));
+                            lexerTypeMapper));
                     ((CSSToken) lexer.getToken()).setText(
 
                             input.toString().substring(lexer._tokenStartCharIndex, input.index() - 1)
@@ -191,19 +193,19 @@ public class CSSTokenRecovery {
 
         if (ls.aposOpen) {
             ls.aposOpen = false;
-            t = new CSSToken(typeMapper.get(APOS), ls, lexer.getClass());
+            t = new CSSToken(typeMapper.get(APOS), ls, lexerTypeMapper);
             t.setText("'");
         } else if (ls.quotOpen) {
             ls.quotOpen = false;
-            t = new CSSToken(typeMapper.get(QUOT), ls, lexer.getClass());
+            t = new CSSToken(typeMapper.get(QUOT), ls, lexerTypeMapper);
             t.setText("\"");
         } else if (ls.parenNest != 0) {
             ls.parenNest--;
-            t = new CSSToken(typeMapper.get(RPAREN), ls, lexer.getClass());
+            t = new CSSToken(typeMapper.get(RPAREN), ls, lexerTypeMapper);
             t.setText(")");
         } else if (ls.curlyNest != 0) {
             ls.curlyNest--;
-            t = new CSSToken(typeMapper.get(RCURLY), ls, lexer.getClass());
+            t = new CSSToken(typeMapper.get(RCURLY), ls, lexerTypeMapper);
             t.setText("}");
         }
 
