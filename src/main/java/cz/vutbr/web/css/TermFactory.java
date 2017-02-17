@@ -1,6 +1,7 @@
 package cz.vutbr.web.css;
 
 import java.net.URL;
+import java.util.List;
 
 import cz.vutbr.web.css.TermNumeric.Unit;
 
@@ -8,6 +9,8 @@ public interface TermFactory {
 
 	TermAngle createAngle(Float value);
 	TermAngle createAngle(String value, Unit unit, int unary);
+	
+	TermCalc createCalc(List<Term<?>> args);
 	
 	TermColor createColor(TermIdent ident);
 	TermColor createColor(String hash);

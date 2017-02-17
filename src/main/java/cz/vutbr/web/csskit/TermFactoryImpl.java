@@ -1,9 +1,15 @@
 package cz.vutbr.web.csskit;
 
 import java.net.URL;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.List;
 
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermAngle;
+import cz.vutbr.web.css.TermCalc;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermExpression;
 import cz.vutbr.web.css.TermFactory;
@@ -12,6 +18,7 @@ import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermInteger;
 import cz.vutbr.web.css.TermLength;
+import cz.vutbr.web.css.TermLengthOrPercent;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermNumeric;
@@ -48,7 +55,15 @@ public class TermFactoryImpl implements TermFactory {
 				convertFloat(value, unit.value(), unary));
 	}
 
-	public TermColor createColor(TermIdent ident) {
+	@Override
+    public TermCalc createCalc(List<Term<?>> args) {
+        List<Term<?>> postfix = new ArrayList<>(args.size());
+        scanCalcArguments(args, postfix);
+        // TODO create a term based on the type
+        return null;
+    }
+
+    public TermColor createColor(TermIdent ident) {
 		return TermColorImpl.getColorByIdent(ident);
 	}
 
@@ -284,4 +299,79 @@ public class TermFactoryImpl implements TermFactory {
 			throw new IllegalArgumentException("Invalid null format");
 		}
 	}
+	
+	protected List<Term<?>> scanCalcArguments(List<Term<?>> args, List<Term<?>> ret) {
+	    
+	    //isLength, isFrequency, isAngle, isTime, isNumber, isInteger
+	    boolean[] types = new boolean[6];
+	    Arrays.fill(types, true);
+	    
+	    for (Term<?> t : args) {
+	        System.out.println("TERM: " + t + " " + t.getClass().getSimpleName());
+	    }
+	    
+	    //tansform expression to a postfix notation
+	    //TODO ( and ) operators are not correctly parsed?
+	    Deque<TermOperator> stack = new ArrayDeque<>(5);
+	    for (Term<?> t : args) {
+	        if (t instanceof TermLengthOrPercent || t instanceof TermFrequency || t instanceof TermAngle
+	                || t instanceof TermTime || t instanceof TermNumber || t instanceof TermInteger) {
+	            ret.add(t);
+	        } else if (t instanceof TermOperator) {
+	            final TermOperator op = (TermOperator) t;
+	            final int p = getPriority(op);
+	            if (p != -1) {
+    	            TermOperator top = stack.peek();
+    	            if (top == null || top.getValue() == '(' || p > getPriority(top)) {
+    	                stack.push(op);
+    	            } else {
+    	                do {
+    	                    ret.add(top);
+    	                    stack.pop();
+    	                    top = stack.peek();
+    	                } while (top != null && top.getValue() != '(' && p <= getPriority(top));
+    	                stack.push(op);
+    	            }
+	            } else if (op.getValue() == '(') {
+	                stack.push(op);
+                } else if (op.getValue() == ')') {
+                    TermOperator top = stack.pop();
+                    while (top != null && top.getValue() != ')') {
+                        ret.add(top);
+                        top = stack.pop();
+                    }
+	            } else {
+	                ret = null;
+	                break;
+	            }
+	        } else {
+	            ret = null;
+	            break;
+	        }
+	    }
+	    while (!stack.isEmpty())
+	        ret.add(stack.pop());
+	    
+	    if (ret != null)
+            for (Term<?> t : ret) {
+                System.out.println("PTERM: " + t + " " + t.getClass().getSimpleName());
+            }
+	    
+	    return ret;
+	}
+	
+	private int getPriority(TermOperator op) {
+	    char c = op.getValue();
+	    switch (c) {
+	        case '+':
+	        case '-':
+	            return 0;
+	        case '*':
+	        case '/':
+	            return 1;
+	        default:
+	            return -1;
+	    }
+	}
+	
 }

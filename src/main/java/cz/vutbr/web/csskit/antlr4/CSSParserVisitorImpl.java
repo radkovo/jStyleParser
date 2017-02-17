@@ -873,11 +873,11 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             declaration_stack.peek().invalid = true;
             return null;
         }
-        final String fname = extractTextUnescaped(ctx.FUNCTION().getText());
+        final String fname = extractTextUnescaped(ctx.FUNCTION().getText()).toLowerCase();
         if (ctx.funct_args() != null)
         {
             List<Term<?>> t = visitFunct_args(ctx.funct_args());
-            if (fname.equalsIgnoreCase("url")) {
+            if (fname.equals("url")) {
                 // the function name is url() after escaping - create an URI
                 if (terms_stack.peek().unary == -1 || t == null || t.size() != 1)
                     declaration_stack.peek().invalid = true;
@@ -888,6 +888,18 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
                     else
                         declaration_stack.peek().invalid = true;
                 }
+            } else if (fname.equals("calc")) {
+                // create calc() of the given type: <length>, <frequency>, <angle>, <time>, <number>, or <integer>
+                if (terms_stack.peek().unary == -1 || t == null || t.size() == 0)
+                    declaration_stack.peek().invalid = true;
+                else {
+                    TermCalc calc = tf.createCalc(t);
+                    if (calc != null)
+                        terms_stack.peek().term = calc;
+                    else
+                        declaration_stack.peek().invalid = true;
+                }
+                
             } else {
                 // create function
                 cz.vutbr.web.css.TermFunction function = tf.createFunction();
