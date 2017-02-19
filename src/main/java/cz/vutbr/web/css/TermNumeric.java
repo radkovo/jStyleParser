@@ -1,9 +1,13 @@
 package cz.vutbr.web.css;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Holds value of numeric type. This could be integer or float
  * according to &lt;T&gt;.
  * @author kapy
+ * @author burgetr
  *
  * @param <T> Type of value stored in term
  */
@@ -12,81 +16,88 @@ public interface TermNumeric<T extends Number> extends Term<T> {
 	/**
 	 * These are available units in CSS
 	 * @author kapy
-	 *
+	 * @author burgetr
 	 */
 	public enum Unit {
-	    none(""),
-    	em("em"),
-    	ex("ex"),
-    	ch("ch"),
-    	rem("rem"),
-    	vw("vw"),
-    	vh("vh"),
-    	vmin("vmin"),
-    	vmax("vmax"),
-    	cm("cm"),
-    	mm("mm"),
-    	q("q"),
-        in("in"),
-    	pt("pt"),
-    	pc("pc"),
-        px("px"),
-    	deg("deg"),
-    	rad("rad"),
-    	grad("grad"),
-        turn("turn"),
-    	ms("ms"),
-    	s("s"),
-    	hz("hz"),
-    	khz("khz"),
-    	dpi("dpi"),
-    	dpcm("dpcm"),
-    	dppx("dppx");
-    
+	    none("", Type.none),
+    	em("em", Type.length),
+    	ex("ex", Type.length),
+    	ch("ch", Type.length),
+    	rem("rem", Type.length),
+    	vw("vw", Type.length),
+    	vh("vh", Type.length),
+    	vmin("vmin", Type.length),
+    	vmax("vmax", Type.length),
+    	cm("cm", Type.length),
+    	mm("mm", Type.length),
+    	q("q", Type.length),
+        in("in", Type.length),
+    	pt("pt", Type.length),
+    	pc("pc", Type.length),
+        px("px", Type.length),
+    	deg("deg", Type.angle),
+    	rad("rad", Type.angle),
+    	grad("grad", Type.angle),
+        turn("turn", Type.angle),
+    	ms("ms", Type.time),
+    	s("s", Type.time),
+    	hz("hz", Type.frequency),
+    	khz("khz", Type.frequency),
+    	dpi("dpi", Type.resolution),
+    	dpcm("dpcm", Type.resolution),
+    	dppx("dppx", Type.resolution);
+
+	    private static final Map<String, Unit> map;
+	    static {
+	        map = new HashMap<>(Unit.values().length);
+	        for (Unit u : Unit.values()) {
+	            map.put(u.value, u);
+	        }
+	    }
+	    
     	private String value;
+    	private Type type;
     	
-    	private Unit(String value) { 
+    	private Unit(String value, Type type) { 
     		this.value = value;
+    		this.type = type;
     	}
-    	public String value() { return value; }
     	
+    	public String value() { 
+    	    return value;
+    	}
+    	
+        public Type getType() {
+            return type;
+        }
+        
+        public static Unit findByValue(String value) {
+            return map.get(value);
+        }
+        
     	public boolean isAngle() {
-    		return this==deg || this==rad || this==grad || this==turn;
+    		return getType() == Type.angle;
     	}
     	
     	public boolean isLength() {
-            switch (this) {
-                case pt:
-                case in:
-                case cm:
-                case mm:
-                case q:
-                case pc:
-                case px:
-                case em:
-                case ex:
-                case ch:
-                case rem:
-                case vw:
-                case vh:
-                case vmin:
-                case vmax:
-                    return true;
-                default:
-                    return false;
-            }
+            return getType() == Type.length;
     	}
     	
     	public boolean isTime() {
-    		return this==s || this==ms;    
+            return getType() == Type.time;
     	}
     	
     	public boolean isFrequency() {
-    		return this==hz || this==khz;
+            return getType() == Type.frequency;
     	}
     	
     	public boolean isResolution() {
-    	    return this==dpi || this==dpcm || this==dppx;
+            return getType() == Type.resolution;
+    	}
+
+    	/** Unit types */
+    	public enum Type {
+    	    angle, length, time, frequency, resolution, none
     	}
     }
 	

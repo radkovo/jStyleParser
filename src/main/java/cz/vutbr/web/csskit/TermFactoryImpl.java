@@ -169,36 +169,43 @@ public class TermFactoryImpl implements TermFactory {
     }
 
 	public TermNumeric<Float> createDimension(String value, int unary) {
-
-	    try {
-    		for (TermNumeric.Unit unit : TermNumeric.Unit.values()) {
-    			// try to find valid unit identifier
-    			if (value.matches("^[0-9]*\\.?[0-9]+" + unit.value() + "$")) {
-    				Float f = convertFloat(value, unit.value(), unary);
-    				if (unit.isAngle())
-    					return (TermNumeric<Float>) (new TermAngleImpl()).setUnit(
-    							unit).setValue(f);
-    				else if (unit.isFrequency())
-    					return (TermNumeric<Float>) (new TermFrequencyImpl())
-    							.setUnit(unit).setValue(f);
-    				else if (unit.isLength())
-    					return (TermNumeric<Float>) (new TermLengthImpl()).setUnit(
-    							unit).setValue(f);
-                    else if (unit.isResolution())
-                        return (TermNumeric<Float>) (new TermResolutionImpl()).setUnit(
-                                unit).setValue(f);
-    				else if (unit.isTime())
-    					return (TermNumeric<Float>) (new TermTimeImpl()).setUnit(
-    							unit).setValue(f);
-    			}
-    
-    		}
-	    } catch (IllegalArgumentException e) {
-	        return null;
-	    }
-
-		return null;
-
+        //find the end of the numeric value
+        int valend = value.length() - 1;
+        while (valend >= 0 && !(value.charAt(valend) >= '0' && value.charAt(valend) <= '9'))
+            valend--;
+        //split the number and the unit
+        if (valend >= 0 && valend < value.length() - 1) {
+            final String upart = value.substring(valend + 1);
+            final TermNumeric.Unit unit = TermNumeric.Unit.findByValue(upart.toLowerCase());
+            if (unit != null) {
+                final String vpart = value.substring(0, valend + 1);
+                Float f;
+                try {
+                    f = Float.parseFloat(vpart) * unary;
+                } catch (NumberFormatException e) {
+                    return null; //not a float number
+                }
+                
+                switch (unit.getType()) {
+                    case angle:
+                        return (TermNumeric<Float>) (new TermAngleImpl()).setUnit(unit).setValue(f);
+                    case frequency:
+                        return (TermNumeric<Float>) (new TermFrequencyImpl()).setUnit(unit).setValue(f);
+                    case length:
+                        return (TermNumeric<Float>) (new TermLengthImpl()).setUnit(unit).setValue(f);
+                    case resolution:
+                        return (TermNumeric<Float>) (new TermResolutionImpl()).setUnit(unit).setValue(f);
+                    case time:
+                        return (TermNumeric<Float>) (new TermTimeImpl()).setUnit(unit).setValue(f);
+                    default:
+                        return null;
+                }
+            }
+            else
+                return null; //unknown unit
+        }
+        else
+            return null; //value or unit missing
 	}
 
 	@SuppressWarnings("unchecked")
