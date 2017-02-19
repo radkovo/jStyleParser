@@ -4,7 +4,7 @@
 package cz.vutbr.web.css;
 
 /**
- * A basic informace of any term type with the float value.
+ * A basic interface of any term type with the float value.
  * 
  * @author burgetr
  */

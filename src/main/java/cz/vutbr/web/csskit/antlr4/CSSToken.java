@@ -3,8 +3,6 @@ package cz.vutbr.web.csskit.antlr4;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.Pair;
 
-import cz.vutbr.web.csskit.antlr4.CSSToken.TypeMapper;
-
 import java.net.URL;
 import java.util.Map;
 import java.util.TreeMap;
