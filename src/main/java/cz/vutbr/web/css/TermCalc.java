@@ -5,7 +5,7 @@
  */
 package cz.vutbr.web.css;
 
-import java.util.List;
+import cz.vutbr.web.csskit.CalcArgs;
 
 /**
  * A value of the calc() expression. It may correspond to length, frequency, angle, time, number, or integer.
@@ -15,9 +15,9 @@ public interface TermCalc extends TermFloatValue
 {
 
     /** 
-     * Returns the calc() arguments in postfix notation.
+     * Returns the calc() arguments (in postfix notation).
      * @return The list of arguments passed to the calc() function in postfix order.
      */
-    public List<Term<?>> getPostfix();
-
+    public CalcArgs getArgs();
+    
 }

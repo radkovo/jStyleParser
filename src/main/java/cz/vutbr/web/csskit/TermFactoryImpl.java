@@ -24,6 +24,7 @@ import cz.vutbr.web.css.TermString;
 import cz.vutbr.web.css.TermTime;
 import cz.vutbr.web.css.TermURI;
 import cz.vutbr.web.css.TermNumeric.Unit;
+import cz.vutbr.web.css.TermNumeric.Unit.Type;
 import cz.vutbr.web.css.TermOperator;
 
 public class TermFactoryImpl implements TermFactory {
@@ -53,6 +54,8 @@ public class TermFactoryImpl implements TermFactory {
 	@Override
     public TermCalc createCalc(List<Term<?>> args) {
         CalcArgs cargs = new CalcArgs(args);
+        if (cargs.getType() == Type.length)
+            return new TermCalcLengthImpl(cargs);
         // TODO create a term based on the type
         return null;
     }
