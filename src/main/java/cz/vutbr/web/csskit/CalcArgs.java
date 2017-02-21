@@ -25,6 +25,11 @@ public class CalcArgs extends ArrayList<Term<?>> {
     
     private static final long serialVersionUID = 1L;
     
+    public static final StringEvaluator stringEvaluator;
+    static {
+        stringEvaluator = new StringEvaluator();
+    }
+    
     private Type utype = Type.none; //expected value type
     private boolean isint = true; //all the values are integers?
     private boolean valid = true;
@@ -125,6 +130,48 @@ public class CalcArgs extends ArrayList<Term<?>> {
                     valid = false;
             }
         }
+    }
+    
+    //=========================================================================
+    
+    public <T> T evaluate(Evaluator<T> eval) {
+        Deque<T> stack = new ArrayDeque<>();
+        for (Term<?> t : this) {
+            if (t instanceof TermOperator) {
+                T val2 = stack.pop();
+                T val1 = stack.pop();
+                T val = eval.evaluateOperator(val1, val2, (TermOperator) t);
+                stack.push(val);
+            } else if (t instanceof TermFloatValue) {
+                T val = eval.evaluateArgument((TermFloatValue) t);
+                stack.push(val);
+            }
+        }
+        return stack.peek();
+    }
+    
+    //=========================================================================
+    
+    public interface Evaluator<T> {
+        
+        public T evaluateArgument(TermFloatValue val);
+        
+        public T evaluateOperator(T val1, T val2, TermOperator op);
+        
+    }
+    
+    public static class StringEvaluator implements Evaluator<String> {
+
+        @Override
+        public String evaluateArgument(TermFloatValue val) {
+            return val.toString();
+        }
+
+        @Override
+        public String evaluateOperator(String val1, String val2, TermOperator op) {
+            return "(" + val1 + " " + op.toString() + " " + val2.toString() + ")";
+        }
+        
     }
     
 }
