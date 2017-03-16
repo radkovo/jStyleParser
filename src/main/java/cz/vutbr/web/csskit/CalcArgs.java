@@ -8,8 +8,12 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFloatValue;
+import cz.vutbr.web.css.TermInteger;
 import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermNumeric;
 import cz.vutbr.web.css.TermNumeric.Unit.Type;
@@ -24,6 +28,7 @@ import cz.vutbr.web.css.TermPercent;
 public class CalcArgs extends ArrayList<Term<?>> {
     
     private static final long serialVersionUID = 1L;
+    private static final Logger log = LoggerFactory.getLogger(CalcArgs.class);
     
     public static final StringEvaluator stringEvaluator;
     static {
@@ -152,6 +157,13 @@ public class CalcArgs extends ArrayList<Term<?>> {
     
     //=========================================================================
     
+    /**
+     * A generic evaluator that is able to obtain a resulting value of the given type
+     * from the expressions.
+     * 
+     * @author burgetr
+     * @param <T> the type of the resulting value
+     */
     public interface Evaluator<T> {
         
         public T evaluateArgument(TermFloatValue val);
@@ -160,6 +172,11 @@ public class CalcArgs extends ArrayList<Term<?>> {
         
     }
     
+    /**
+     * A pre-defined evaluator that produces a string representation of the expression.
+     * 
+     * @author burgetr
+     */
     public static class StringEvaluator implements Evaluator<String> {
 
         @Override
@@ -173,5 +190,44 @@ public class CalcArgs extends ArrayList<Term<?>> {
         }
         
     }
+    
+    /**
+     * An abstract pre-defined evaluator that produces a double value from the expression.
+     * Implementations must provide the {@code resolveValue()} method that evaluates an atomic value.
+     *  
+     * @author burgetr
+     */
+    public static abstract class DoubleEvaluator implements Evaluator<Double> {
+        
+        @Override
+        public Double evaluateArgument(TermFloatValue val) {
+            if (val instanceof TermNumber || val instanceof TermInteger)
+                return Double.valueOf(val.getValue());
+            else
+                return resolveValue(val);
+        }
+
+        @Override
+        public Double evaluateOperator(Double val1, Double val2, TermOperator op) {
+            switch (op.getValue()) {
+                case '+': return val1 + val2;
+                case '-': return val1 - val2;
+                case '*': return val1 * val2;
+                case '/': return val1 / val2;
+                default:
+                    log.error("Unknown operator {} in expression", op);
+                    return 0.0;
+            }
+        }
+        
+        /**
+         * Evaluates an atomic value.
+         * @param val the input value specification
+         * @return the evaluated value
+         */
+        public abstract double resolveValue(TermFloatValue val);
+        
+    }
+
     
 }
