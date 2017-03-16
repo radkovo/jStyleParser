@@ -9,11 +9,11 @@ import cz.vutbr.web.css.TermCalc;
  *
  * @author burgetr
  */
-public class TermCalcLengthImpl extends TermLengthImpl implements TermCalc {
+public class TermCalcIntegerImpl extends TermIntegerImpl implements TermCalc {
     
     private CalcArgs args;
 
-    public TermCalcLengthImpl(CalcArgs args) {
+    public TermCalcIntegerImpl(CalcArgs args) {
         this.args = args;
     }
     
