@@ -242,7 +242,7 @@ public class TermFactoryImpl implements TermFactory {
 	}
 
 	public TermTime createTime(Float value) {
-		return (new TermTimeImpl()).setValue(value);
+		return (TermTime) (new TermTimeImpl()).setValue(value);
 	}
 
 	public TermTime createTime(String value, Unit unit, int unary) {
