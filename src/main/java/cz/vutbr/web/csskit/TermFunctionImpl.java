@@ -114,12 +114,39 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException
+    public List<TermFloatValue> getValues()
     {
-        // TODO Auto-generated method stub
-        return super.clone();
+        List<TermFloatValue> ret = new ArrayList<>();
+        TermOperator curOp = null; //an optional unary operator before the value
+        for (Term<?> t : this) {
+            if (t instanceof TermOperator) {
+                if (curOp == null)
+                    curOp = (TermOperator) t;
+                else
+                    return null; //repeating operator
+            } else if (t instanceof TermFloatValue) {
+                TermFloatValue curVal = (TermFloatValue) t;
+                if (curOp != null) {
+                    if (curOp.getValue() == '-') {
+                        Float newVal = -curVal.getValue();
+                        curVal = (TermFloatValue) curVal.shallowClone();
+                        curVal.setValue(newVal);
+                    } else if (curOp.getValue() != '+') {
+                        return null; //invalid operator
+                    }
+                }
+                ret.add(curVal);
+                curVal = null;
+                curOp = null;
+            } else
+                return null; //invalid term
+        }
+        
+        if (curOp != null)
+            return null; //an operator followed with no value
+        
+        return ret;
     }
-
 
     @Override
     public String toString() {
