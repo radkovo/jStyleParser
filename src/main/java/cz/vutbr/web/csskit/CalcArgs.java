@@ -7,6 +7,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,13 +62,19 @@ public class CalcArgs extends ArrayList<Term<?>> {
         //tansform expression to a postfix notation
         //TODO ( and ) operators are not correctly parsed?
         Deque<TermOperator> stack = new ArrayDeque<>(5);
+        boolean unary = true;
         for (Term<?> t : args) {
             if (t instanceof TermFloatValue) {
                 add(t);
                 considerType((TermFloatValue) t);
+                unary = false;
                 if (!valid) break; //type mismatch
             } else if (t instanceof TermOperator) {
-                final TermOperator op = (TermOperator) t;
+                TermOperator op = (TermOperator) t;
+                if (unary && op.getValue() == '-') {
+                    op = (TermOperator) op.shallowClone();
+                    op.setValue('~');
+                }
                 final int p = getPriority(op);
                 if (p != -1) {
                     TermOperator top = stack.peek();
@@ -81,14 +88,17 @@ public class CalcArgs extends ArrayList<Term<?>> {
                         } while (top != null && top.getValue() != '(' && p <= getPriority(top));
                         stack.push(op);
                     }
+                    unary = true;
                 } else if (op.getValue() == '(') {
                     stack.push(op);
+                    unary = true;
                 } else if (op.getValue() == ')') {
                     TermOperator top = stack.pop();
                     while (top != null && top.getValue() != ')') {
                         add(top);
                         top = stack.pop();
                     }
+                    unary = false;
                 } else {
                     valid = false;
                     break;
@@ -111,6 +121,8 @@ public class CalcArgs extends ArrayList<Term<?>> {
             case '*':
             case '/':
                 return 1;
+            case '~':
+                return 2; //unary -
             default:
                 return -1;
         }
@@ -139,20 +151,30 @@ public class CalcArgs extends ArrayList<Term<?>> {
     
     //=========================================================================
     
-    public <T> T evaluate(Evaluator<T> eval) {
-        Deque<T> stack = new ArrayDeque<>();
-        for (Term<?> t : this) {
-            if (t instanceof TermOperator) {
-                T val2 = stack.pop();
-                T val1 = stack.pop();
-                T val = eval.evaluateOperator(val1, val2, (TermOperator) t);
-                stack.push(val);
-            } else if (t instanceof TermFloatValue) {
-                T val = eval.evaluateArgument((TermFloatValue) t);
-                stack.push(val);
+    public <T> T evaluate(Evaluator<T> eval) throws IllegalArgumentException {
+        try {
+            Deque<T> stack = new ArrayDeque<>();
+            for (Term<?> t : this) {
+                if (t instanceof TermOperator) {
+                    T val;
+                    if (((TermOperator) t).getValue() == '~') {
+                        T val1 = stack.pop();
+                        val = eval.evaluateOperator(val1, (TermOperator) t);
+                    } else {
+                        T val2 = stack.pop();
+                        T val1 = stack.pop();
+                        val = eval.evaluateOperator(val1, val2, (TermOperator) t);
+                    }
+                    stack.push(val);
+                } else if (t instanceof TermFloatValue) {
+                    T val = eval.evaluateArgument((TermFloatValue) t);
+                    stack.push(val);
+                }
             }
+            return stack.peek();
+        } catch (NoSuchElementException e) {
+            throw new IllegalArgumentException("Couldn't evaluate calc() expression", e);
         }
-        return stack.peek();
     }
     
     //=========================================================================
@@ -169,6 +191,8 @@ public class CalcArgs extends ArrayList<Term<?>> {
         public T evaluateArgument(TermFloatValue val);
         
         public T evaluateOperator(T val1, T val2, TermOperator op);
+        
+        public T evaluateOperator(T val, TermOperator op);
         
     }
     
@@ -187,6 +211,14 @@ public class CalcArgs extends ArrayList<Term<?>> {
         @Override
         public String evaluateOperator(String val1, String val2, TermOperator op) {
             return "(" + val1 + " " + op.toString() + " " + val2.toString() + ")";
+        }
+        
+        @Override
+        public String evaluateOperator(String val, TermOperator op) {
+            if (op.getValue() == '~')
+                return "-" + val;
+            else
+                return op.getValue() + val;
         }
         
     }
@@ -220,6 +252,17 @@ public class CalcArgs extends ArrayList<Term<?>> {
             }
         }
         
+        @Override
+        public Double evaluateOperator(Double val, TermOperator op)
+        {
+            if (op.getValue() == '~') {
+                return -val;
+            } else {
+                log.error("Unknown unary operator {} in expression", op);
+                return val;
+            }
+        }
+
         /**
          * Evaluates an atomic value.
          * @param val the input value specification
