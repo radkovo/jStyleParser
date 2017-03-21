@@ -1050,6 +1050,12 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         } else if (ctx.SLASH() != null) {
             log.debug("VP - /");
             funct_args_stack.peek().term = tf.createOperator('/');
+        } else if (ctx.LPAREN() != null) {
+            log.debug("VP - (");
+            funct_args_stack.peek().term = tf.createOperator('(');
+        } else if (ctx.RPAREN() != null) {
+            log.debug("VP - )");
+            funct_args_stack.peek().term = tf.createOperator(')');
         } else if (ctx.COMMA() != null) {
             log.debug("VP - comma");
             funct_args_stack.peek().term = tf.createOperator(',');

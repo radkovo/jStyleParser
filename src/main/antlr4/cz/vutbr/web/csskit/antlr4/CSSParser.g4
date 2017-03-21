@@ -356,6 +356,8 @@ funct_argument
     	| MINUS
 	    | ASTERISK
         | SLASH
+        | LPAREN
+        | RPAREN
         | NUMBER
         | PERCENTAGE
         | DIMENSION

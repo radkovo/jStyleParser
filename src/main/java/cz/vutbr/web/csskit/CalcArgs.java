@@ -58,9 +58,7 @@ public class CalcArgs extends ArrayList<Term<?>> {
     }
     
     protected void scanArguments(List<Term<?>> args) {
-        
         //tansform expression to a postfix notation
-        //TODO ( and ) operators are not correctly parsed?
         Deque<TermOperator> stack = new ArrayDeque<>(5);
         boolean unary = true;
         for (Term<?> t : args) {
@@ -94,7 +92,7 @@ public class CalcArgs extends ArrayList<Term<?>> {
                     unary = true;
                 } else if (op.getValue() == ')') {
                     TermOperator top = stack.pop();
-                    while (top != null && top.getValue() != ')') {
+                    while (top != null && top.getValue() != '(') {
                         add(top);
                         top = stack.pop();
                     }
