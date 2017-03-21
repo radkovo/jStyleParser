@@ -49,6 +49,7 @@ public class OutputUtil {
     public static final String MEDIA_EXPR_OPENING = "(";
     public static final String MEDIA_EXPR_CLOSING = ")";
     public static final String MEDIA_FEATURE_DELIM = ": ";
+    public static final String CALC_KEYWORD = "calc";
 	
 	
 	
@@ -144,6 +145,18 @@ public class OutputUtil {
 		}
 		
 		return sb;
+	}
+	
+	public static StringBuilder appendCalcArgs(StringBuilder sb, CalcArgs args) {
+	    final String astr = args.evaluate(CalcArgs.stringEvaluator);
+	    if (!astr.startsWith(FUNCTION_OPENING)) {
+	        sb.append(FUNCTION_OPENING);
+	        sb.append(astr);
+	        sb.append(FUNCTION_CLOSING);
+	    } else {
+	        sb.append(astr);
+	    }
+	    return sb;
 	}
 	
 }

@@ -29,7 +29,7 @@ public class TermCalcTimeImpl extends TermTimeImpl implements TermCalc {
 
     @Override
     public String toString() {
-        return "calc" + args.evaluate(CalcArgs.stringEvaluator);
+        return OutputUtil.appendCalcArgs(new StringBuilder(OutputUtil.CALC_KEYWORD), args).toString();
     }
     
 }
