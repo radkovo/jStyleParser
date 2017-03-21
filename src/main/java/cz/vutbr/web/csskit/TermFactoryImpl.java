@@ -53,22 +53,25 @@ public class TermFactoryImpl implements TermFactory {
 	@Override
     public TermCalc createCalc(List<Term<?>> args) {
         CalcArgs cargs = new CalcArgs(args);
-        switch (cargs.getType()) {
-            case length:
-                return new TermCalcLengthImpl(cargs);
-            case angle:
-                return new TermCalcAngleImpl(cargs);
-            case frequency:
-                return new TermCalcFrequencyImpl(cargs);
-            case resolution:
-                return new TermCalcResolutionImpl(cargs);
-            case time:
-                return new TermCalcTimeImpl(cargs);
-            case none:
-                if (cargs.isInt())
-                    return new TermCalcIntegerImpl(cargs);
-                else
-                    return new TermCalcNumberImpl(cargs);
+        if (cargs.isValid())
+        {
+            switch (cargs.getType()) {
+                case length:
+                    return new TermCalcLengthImpl(cargs);
+                case angle:
+                    return new TermCalcAngleImpl(cargs);
+                case frequency:
+                    return new TermCalcFrequencyImpl(cargs);
+                case resolution:
+                    return new TermCalcResolutionImpl(cargs);
+                case time:
+                    return new TermCalcTimeImpl(cargs);
+                case none:
+                    if (cargs.isInt())
+                        return new TermCalcIntegerImpl(cargs);
+                    else
+                        return new TermCalcNumberImpl(cargs);
+            }
         }
         return null;
     }

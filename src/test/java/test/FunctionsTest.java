@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,8 +16,14 @@ import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
+import cz.vutbr.web.css.TermAngle;
+import cz.vutbr.web.css.TermCalc;
 import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermFloatValue;
 import cz.vutbr.web.css.TermFunction;
+import cz.vutbr.web.css.TermLengthOrPercent;
+import cz.vutbr.web.css.TermNumeric.Unit;
+import cz.vutbr.web.csskit.CalcArgs;
 
 public class FunctionsTest {
 	private static final Logger log = LoggerFactory.getLogger(FunctionsTest.class);
@@ -29,6 +36,36 @@ public class FunctionsTest {
 
     /* function name may start with minus */
     public static final String TEST_DECL2A = " a:after { background-image:-moz-linear-gradient(top,#fff,#ececec); border: 1px solid red; }";
+    
+    /* different rect() syntaxes */
+    public static final String TEST_RECT1 = "p { clip: rect(1px 10em 3rem 2ch); color: red; }";
+    public static final String TEST_RECT2 = "p { clip: rect(1px, 10em, 3rem, 2ch); color: red; }";
+    
+    /* calc() length expressions (all should evaluate to 60.0) */
+    public static final String TEST_CALC_L[];
+    static {
+        TEST_CALC_L = new String[5];
+        TEST_CALC_L[0] = "p { width: calc(60px); color: red; }";
+        TEST_CALC_L[1] = "p { width: calc(1em + 0.5em); color: red; }";
+        TEST_CALC_L[2] = "p { width: calc(1em + (10% * 2)); color: red; }";
+        TEST_CALC_L[3] = "p { width: calc(-3em + 4.5em); color: red; }";
+        TEST_CALC_L[4] = "p { width: calc(3em + (-1.5em)); color: red; }";
+    }
+    
+    /* calc() angle expressions (all should evaluate to 33) */
+    public static final String TEST_CALC_A[];
+    static {
+        TEST_CALC_A = new String[1];
+        TEST_CALC_A[0] = "p { azimuth: calc(30deg + 6rad); color: red; }";
+    }
+    
+    /* invalid calc() expressions (all width declarations should be skipped) */
+    public static final String TEST_CALC_I[];
+    static {
+        TEST_CALC_I = new String[1];
+        TEST_CALC_I[0] = "p { width: calc(30deg + 3em * 2); color: red; }"; //mixed types in expression
+    }
+
     
 	@BeforeClass
 	public static void init() 
@@ -56,4 +93,127 @@ public class FunctionsTest {
 		char first = f.getFunctionName().charAt(0);
 		assertEquals("Function name starts with minus", '-', first);
 	}
+	
+	@Test
+	public void rectFunctions() throws IOException, CSSException
+	{
+        StyleSheet ss1 = CSSFactory.parseString(TEST_RECT1, null);
+        assertEquals("Two properties are accepted", 2, ss1.get(0).size());
+        Declaration d1 = (Declaration) ss1.get(0).get(0);
+        TermFunction f1 = (TermFunction) d1.get(0);
+        List<TermFloatValue> args1 = f1.getValues();
+        assertEquals("Function name is correct", "rect", f1.getFunctionName());
+        assertEquals("Four arguments are accepted", 4, args1.size());
+        assertEquals("The last one is a correct length", tf.createLength(2f, Unit.ch), args1.get(3));
+	    
+        StyleSheet ss2 = CSSFactory.parseString(TEST_RECT2, null);
+        assertEquals("Two properties are accepted", 2, ss2.get(0).size());
+        Declaration d2 = (Declaration) ss2.get(0).get(0);
+        TermFunction f2 = (TermFunction) d2.get(0);
+        List<TermFloatValue> args2 = f2.getSeparatedValues(tf.createOperator(','));
+        assertEquals("Function name is correct", "rect", f2.getFunctionName());
+        assertEquals("Four arguments are accepted", 4, args2.size());
+        assertEquals("The last one is a correct length", tf.createLength(2f, Unit.ch), args2.get(3));
+	}
+	
+	@Test
+    public void calcLengths() throws IOException, CSSException
+    {
+	    PxEvaluator eval = new PxEvaluator();
+	    for (int i = 0; i < TEST_CALC_L.length; i++)
+	    {
+	        StyleSheet ss = CSSFactory.parseString(TEST_CALC_L[i], null);
+	        assertEquals("Two properties are accepted [" + i + "]", 2, ss.get(0).size());
+	        Declaration d = (Declaration) ss.get(0).get(0);
+	        TermCalc calc = (TermCalc) d.get(0);
+	        Double result = calc.getArgs().evaluate(eval);
+            assertEquals("Experssion result is correct [" + i + "]", 60.0, result.doubleValue(), 0.000001);
+	    }
+    }
+	
+    @Test
+    public void calcAngles() throws IOException, CSSException
+    {
+        DegEvaluator eval = new DegEvaluator();
+        for (int i = 0; i < TEST_CALC_A.length; i++)
+        {
+            StyleSheet ss = CSSFactory.parseString(TEST_CALC_A[i], null);
+            assertEquals("Two properties are accepted [" + i + "]", 2, ss.get(0).size());
+            Declaration d = (Declaration) ss.get(0).get(0);
+            TermCalc calc = (TermCalc) d.get(0);
+            Double result = calc.getArgs().evaluate(eval);
+            assertEquals("Experssion result is correct [" + i + "]", 33.0, result.doubleValue(), 0.000001);
+        }
+    }
+    
+    @Test
+    public void calcInvalid() throws IOException, CSSException
+    {
+        for (int i = 0; i < TEST_CALC_I.length; i++)
+        {
+            StyleSheet ss = CSSFactory.parseString(TEST_CALC_I[i], null);
+            assertEquals("Only one property is accepted [" + i + "]", 1, ss.get(0).size());
+        }
+    }
+    
+	//==========================================================================================
+	
+    /**
+     * A simple testing length evaluator with fixed values for 1em and 100%.
+     */
+	private class PxEvaluator extends CalcArgs.DoubleEvaluator
+    {
+        private static final double whole = 100f;
+        private static final double em = 40f;
+
+        @Override
+        public double resolveValue(TermFloatValue val)
+        {
+            if (val instanceof TermLengthOrPercent)
+            {
+                if (((TermLengthOrPercent) val).isPercentage())
+                    return val.getValue() * whole / 100.0;
+                else
+                    switch (val.getUnit())
+                    {
+                        case px:
+                            return val.getValue();
+                        case em:
+                            return val.getValue() * em;
+                        default:
+                            return 0.0;
+                    }
+            }
+            else
+                return 0.0; //this should not happen
+        }
+    }
+
+    /**
+     * A simple testing angle evaluator with fixed values for 1em and 100%.
+     */
+    private class DegEvaluator extends CalcArgs.DoubleEvaluator
+    {
+        private static final double radx = 0.5; //just a testing value, nothing real
+
+        @Override
+        public double resolveValue(TermFloatValue val)
+        {
+            if (val instanceof TermAngle)
+            {
+                switch (val.getUnit())
+                {
+                    case deg:
+                        return val.getValue();
+                    case rad:
+                        return val.getValue() * radx;
+                    default:
+                        return 0.0;
+                }
+            }
+            else
+                return 0.0; //this should not happen
+        }
+    }
+
 }
