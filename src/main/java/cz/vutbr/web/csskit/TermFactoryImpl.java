@@ -3,6 +3,7 @@ package cz.vutbr.web.csskit;
 import java.net.URL;
 import java.util.List;
 
+import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermAngle;
 import cz.vutbr.web.css.TermCalc;
@@ -19,6 +20,7 @@ import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermNumeric;
 import cz.vutbr.web.css.TermPair;
 import cz.vutbr.web.css.TermPercent;
+import cz.vutbr.web.css.TermRect;
 import cz.vutbr.web.css.TermResolution;
 import cz.vutbr.web.css.TermString;
 import cz.vutbr.web.css.TermTime;
@@ -236,7 +238,41 @@ public class TermFactoryImpl implements TermFactory {
 				value, OutputUtil.PERCENT_SIGN, unary));
 	}
 
-	public TermString createString(String value) {
+	@Override
+    public TermRect createRect(TermFunction function) {
+        if (function.getFunctionName().equalsIgnoreCase("rect")) {
+            List<Term<?>> args = function.getValues(true); //try the rect(0 0 0 0) syntax
+            if (args == null || args.size() != 4)
+                args = function.getSeparatedValues(CSSFactory.getTermFactory().createOperator(','), true); //try the rect(0, 0, 0, 0) syntax
+            if (args.size() == 4) { //check the argument count and types
+                for (int i = 0; i < 4; i++) {
+                    Term<?> val = args.get(i);
+                    if (val instanceof TermIdent) {
+                        if (((TermIdent) val).getValue().equalsIgnoreCase("auto")) //replace 'auto' with null
+                            args.set(i, null);
+                    } else if (!(val instanceof TermLength)) {
+                        return null;
+                    }
+                }
+                return createRect((TermLength) args.get(0),
+                        (TermLength) args.get(1),
+                        (TermLength) args.get(2),
+                        (TermLength) args.get(3));
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public TermRect createRect(TermLength a, TermLength b,
+            TermLength c, TermLength d) {
+        return new TermRectImpl(a, b, c, d);
+    }
+
+    public TermString createString(String value) {
 		return (new TermStringImpl()).setValue(value);
 	}
 

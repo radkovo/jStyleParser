@@ -28,14 +28,14 @@ public interface TermFunction extends TermList {
      * Splits the list of arguments using the given separator term and tries to convert the
      * arguments to typed values (lengths, times, numbers, etc...) 
      * @param separator The term used as a separator (typically TermOperator(',').
-     * @return A list of typed numeric values or {@code null} in case that the arguments cannot be converted to values. 
+     * @return A list of typed numeric values or idents (if keywords allowed) or {@code null} in case that the arguments cannot be converted to values. 
      */
-    public List<TermFloatValue> getSeparatedValues(Term<?> separator);
+    public List<Term<?>> getSeparatedValues(Term<?> separator, boolean allowKeywords);
 
     /**
      * Tries to convert the terms to a list of typed values (lengths, times, numbers, etc...). 
-     * @return A list of typed numeric values or {@code null} in case that the arguments cannot be converted to values. 
+     * @return A list of typed numeric values or idents (if keywords allowed) or {@code null} in case that the arguments cannot be converted to values. 
      */
-    public List<TermFloatValue> getValues();
+    public List<Term<?>> getValues(boolean allowKeywords);
 
 }

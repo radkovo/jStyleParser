@@ -37,6 +37,7 @@ import cz.vutbr.web.css.TermLengthOrPercent;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermPercent;
+import cz.vutbr.web.css.TermRect;
 import cz.vutbr.web.css.TermString;
 import cz.vutbr.web.css.TermURI;
 import cz.vutbr.web.csskit.DeclarationTransformer;
@@ -1348,8 +1349,8 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 				return true;
 			}
 			return false;
-		} else if (term instanceof TermFunction) {
-		    return genericTerm(TermFunction.class, term, "clip", Clip.shape, ValueRange.ALLOW_ALL, properties, values);
+		} else if (term instanceof TermRect) {
+		    return genericTerm(TermRect.class, term, "clip", Clip.shape, ValueRange.ALLOW_ALL, properties, values);
 		}
 		return false;
 	}

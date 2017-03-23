@@ -976,19 +976,25 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             terms_stack.peek().term = null;
             declaration_stack.peek().invalid = true;
         }
-        //try convert color from current term
+        //try to convert generic terms to more specific value types
         Term<?> term = terms_stack.peek().term;
         if (term != null) {
             TermColor colorTerm = null;
-            if (term instanceof TermIdent) { // red
+            TermRect rectTerm = null;
+            if (term instanceof TermIdent) { //idents - try to convert colors
                 colorTerm = tf.createColor((TermIdent) term);
             } else if (term instanceof TermFunction) { // rgba(0,0,0)
                 colorTerm = tf.createColor((TermFunction) term);
+                if (colorTerm == null)
+                    rectTerm = tf.createRect((TermFunction) term);
             }
-            //replace with color
+            //replace with more specific value
             if (colorTerm != null) {
                 log.debug("term color is OK - creating - " + colorTerm.toString());
                 terms_stack.peek().term = colorTerm;
+            } else if (rectTerm != null) {
+                log.debug("term rect is OK - creating - " + rectTerm.toString());
+                terms_stack.peek().term = rectTerm;
             }
 
         }

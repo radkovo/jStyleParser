@@ -8,6 +8,7 @@ import org.unbescape.css.CssEscape;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFloatValue;
 import cz.vutbr.web.css.TermFunction;
+import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermOperator;
 
 /**
@@ -58,21 +59,25 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
     }
 
     @Override
-    public List<TermFloatValue> getSeparatedValues(Term<?> separator) {
-        List<TermFloatValue> ret = new ArrayList<>();
+    public List<Term<?>> getSeparatedValues(Term<?> separator, boolean allowKeywords) {
+        List<Term<?>> ret = new ArrayList<>();
         TermOperator curOp = null; //an optional unary operator before the value
-        TermFloatValue curVal = null;
+        Term<?> curVal = null;
         for (Term<?> t : this) {
             if (t.equals(separator)) {
                 if (curVal != null) {
                     if (curOp != null) {
-                        if (curOp.getValue() == '-') {
-                            Float newVal = -curVal.getValue();
-                            curVal = (TermFloatValue) curVal.shallowClone();
-                            curVal.setValue(newVal);
-                        } else if (curOp.getValue() != '+') {
-                            return null; //invalid operator
+                        if (curVal instanceof TermFloatValue) {
+                            if (curOp.getValue() == '-') {
+                                Float newVal = -((TermFloatValue) curVal).getValue();
+                                curVal = (TermFloatValue) curVal.shallowClone();
+                                ((TermFloatValue) curVal).setValue(newVal);
+                            } else if (curOp.getValue() != '+') {
+                                return null; //invalid operator
+                            }
                         }
+                        else
+                            return null; //operator combined with ident
                     }
                     ret.add(curVal);
                     curVal = null;
@@ -87,7 +92,12 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
                     return null;
             } else if (t instanceof TermFloatValue) {
                 if (curVal == null)
-                    curVal = (TermFloatValue) t;
+                    curVal = t;
+                else
+                    return null;
+            } else if (allowKeywords && t instanceof TermIdent) {
+                if (curVal == null)
+                    curVal = t;
                 else
                     return null;
             } else
@@ -97,13 +107,17 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         //the last value
         if (curVal != null) {
             if (curOp != null) {
-                if (curOp.getValue() == '-') {
-                    Float newVal = -curVal.getValue();
-                    curVal = (TermFloatValue) curVal.shallowClone();
-                    curVal.setValue(newVal);
-                } else if (curOp.getValue() != '+') {
-                    return null; //invalid operator
+                if (curVal instanceof TermFloatValue) {
+                    if (curOp.getValue() == '-') {
+                        Float newVal = -((TermFloatValue) curVal).getValue();
+                        curVal = (TermFloatValue) curVal.shallowClone();
+                        ((TermFloatValue) curVal).setValue(newVal);
+                    } else if (curOp.getValue() != '+') {
+                        return null; //invalid operator
+                    }
                 }
+                else
+                    return null; //operator combined with ident
             }
             ret.add(curVal);
         }
@@ -114,9 +128,9 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
     }
 
     @Override
-    public List<TermFloatValue> getValues()
+    public List<Term<?>> getValues(boolean allowKeywords)
     {
-        List<TermFloatValue> ret = new ArrayList<>();
+        List<Term<?>> ret = new ArrayList<>();
         TermOperator curOp = null; //an optional unary operator before the value
         for (Term<?> t : this) {
             if (t instanceof TermOperator) {
@@ -138,6 +152,11 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
                 ret.add(curVal);
                 curVal = null;
                 curOp = null;
+            } else if (t instanceof TermIdent) {
+                if (curOp == null)
+                    ret.add(t);
+                else
+                    return null; //operator combined with ident
             } else
                 return null; //invalid term
         }

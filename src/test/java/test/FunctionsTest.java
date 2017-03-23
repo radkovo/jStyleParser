@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,6 +22,7 @@ import cz.vutbr.web.css.TermFloatValue;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermLengthOrPercent;
 import cz.vutbr.web.css.TermNumeric.Unit;
+import cz.vutbr.web.css.TermRect;
 import cz.vutbr.web.csskit.CalcArgs;
 
 public class FunctionsTest {
@@ -40,6 +40,7 @@ public class FunctionsTest {
     /* different rect() syntaxes */
     public static final String TEST_RECT1 = "p { clip: rect(1px 10em 3rem 2ch); color: red; }";
     public static final String TEST_RECT2 = "p { clip: rect(1px, 10em, 3rem, 2ch); color: red; }";
+    public static final String TEST_RECT3 = "p { clip: rect(1px, 10em, 3rem, auto); color: red; }";
     
     /* calc() length expressions (all should evaluate to 60.0) */
     public static final String TEST_CALC_L[];
@@ -100,20 +101,20 @@ public class FunctionsTest {
         StyleSheet ss1 = CSSFactory.parseString(TEST_RECT1, null);
         assertEquals("Two properties are accepted", 2, ss1.get(0).size());
         Declaration d1 = (Declaration) ss1.get(0).get(0);
-        TermFunction f1 = (TermFunction) d1.get(0);
-        List<TermFloatValue> args1 = f1.getValues();
-        assertEquals("Function name is correct", "rect", f1.getFunctionName());
-        assertEquals("Four arguments are accepted", 4, args1.size());
-        assertEquals("The last one is a correct length", tf.createLength(2f, Unit.ch), args1.get(3));
+        TermRect r1 = (TermRect) d1.get(0);
+        assertEquals("The last one is a correct length", tf.createLength(2f, Unit.ch), r1.getValue().get(3));
 	    
         StyleSheet ss2 = CSSFactory.parseString(TEST_RECT2, null);
         assertEquals("Two properties are accepted", 2, ss2.get(0).size());
         Declaration d2 = (Declaration) ss2.get(0).get(0);
-        TermFunction f2 = (TermFunction) d2.get(0);
-        List<TermFloatValue> args2 = f2.getSeparatedValues(tf.createOperator(','));
-        assertEquals("Function name is correct", "rect", f2.getFunctionName());
-        assertEquals("Four arguments are accepted", 4, args2.size());
-        assertEquals("The last one is a correct length", tf.createLength(2f, Unit.ch), args2.get(3));
+        TermRect r2 = (TermRect) d2.get(0);
+        assertEquals("The last one is a correct length", tf.createLength(2f, Unit.ch), r2.getValue().get(3));
+        
+        StyleSheet ss3 = CSSFactory.parseString(TEST_RECT3, null);
+        assertEquals("Two properties are accepted", 2, ss3.get(0).size());
+        Declaration d3 = (Declaration) ss3.get(0).get(0);
+        TermRect r3 = (TermRect) d3.get(0);
+        assertEquals("The last one is a correct length", null, r3.getValue().get(3));
 	}
 	
 	@Test

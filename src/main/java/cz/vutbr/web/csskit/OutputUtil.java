@@ -50,6 +50,7 @@ public class OutputUtil {
     public static final String MEDIA_EXPR_CLOSING = ")";
     public static final String MEDIA_FEATURE_DELIM = ": ";
     public static final String CALC_KEYWORD = "calc";
+    public static final String RECT_KEYWORD = "rect";
 	
 	
 	

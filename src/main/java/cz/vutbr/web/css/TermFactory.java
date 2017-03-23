@@ -49,6 +49,12 @@ public interface TermFactory {
 	TermPercent createPercent(Float value);
 	TermPercent createPercent(String value, int unary);
 	
+	TermRect createRect(TermFunction function);
+	/**
+	 * Creates a rectangle from four lengths. Use {@code null} for {@code auto} values.
+	 */
+	TermRect createRect(TermLength a, TermLength b, TermLength c, TermLength d);
+	
     TermResolution createResolution(Float value);
     TermResolution createResolution(String value, Unit unit, int unary);
     

@@ -6,7 +6,6 @@ import java.util.List;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermColor;
-import cz.vutbr.web.css.TermFloatValue;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermInteger;
@@ -130,7 +129,7 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
      */
     public static TermColor getColorByFunction(TermFunction func) {
     	
-        List<TermFloatValue> args = func.getSeparatedValues(CSSFactory.getTermFactory().createOperator(','));
+        List<Term<?>> args = func.getSeparatedValues(CSSFactory.getTermFactory().createOperator(','), false);
         if (args != null)
         {
         	if ((COLOR_RGB_NAME.equals(func.getFunctionName()) && args.size() == COLOR_PARAMS_COUNT)
