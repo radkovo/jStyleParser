@@ -52,6 +52,7 @@ import cz.vutbr.web.css.CSSProperty.BorderSpacing;
 import cz.vutbr.web.css.CSSProperty.BorderStyle;
 import cz.vutbr.web.css.CSSProperty.BorderWidth;
 import cz.vutbr.web.css.CSSProperty.Bottom;
+import cz.vutbr.web.css.CSSProperty.BoxSizing;
 import cz.vutbr.web.css.CSSProperty.CaptionSide;
 import cz.vutbr.web.css.CSSProperty.Clear;
 import cz.vutbr.web.css.CSSProperty.Clip;
@@ -1064,6 +1065,12 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	 * } return true; }
 	 */
 
+    @SuppressWarnings("unused")
+    private boolean processBoxSizing(Declaration d,
+            Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return genericOneIdent(BoxSizing.class, d, properties);
+    }
+    
 	@SuppressWarnings("unused")
 	private boolean processFontFamily(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {

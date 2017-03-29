@@ -36,6 +36,7 @@ import cz.vutbr.web.css.CSSProperty.BorderSpacing;
 import cz.vutbr.web.css.CSSProperty.BorderStyle;
 import cz.vutbr.web.css.CSSProperty.BorderWidth;
 import cz.vutbr.web.css.CSSProperty.Bottom;
+import cz.vutbr.web.css.CSSProperty.BoxSizing;
 import cz.vutbr.web.css.CSSProperty.CaptionSide;
 import cz.vutbr.web.css.CSSProperty.Clear;
 import cz.vutbr.web.css.CSSProperty.Clip;
@@ -357,6 +358,7 @@ public class SupportedCSS3 implements SupportedCSS {
         props.put("overflow-x", Overflow.VISIBLE);
         props.put("overflow-y", Overflow.VISIBLE);
 		props.put("clip", Clip.AUTO);
+		props.put("box-sizing", BoxSizing.CONTENT_BOX);
 
 		// positioning
 		props.put("display", Display.INLINE);

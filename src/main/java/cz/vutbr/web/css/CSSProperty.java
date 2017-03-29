@@ -682,6 +682,38 @@ public interface CSSProperty {
 			return text;
 		}
 	}
+	
+    public enum BoxSizing implements CSSProperty {
+        CONTENT_BOX("content-box"), BORDER_BOX("border-box"),
+        INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+        private String text;
+
+        private BoxSizing(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
 
 	public enum Elevation implements CSSProperty {
 		angle(""), BELOW("below"), LEVEL("level"), ABOVE("above"), HIGHER(
