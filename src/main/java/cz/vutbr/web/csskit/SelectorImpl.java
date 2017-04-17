@@ -940,8 +940,8 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		}
 		
     	public ElementAttribute setValue(String value) {
-    		this.value = value;
-    		return this;
+            this.value = value == null ? null : value.replace("\\", "");
+            return this;
     	}
 		
 		@Override

@@ -20,6 +20,7 @@
 
 package test;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -39,6 +40,11 @@ public class DOMSource
     private InputStream is;
     private Document doc;
     private String charset;
+
+    public DOMSource(final String input)
+    {
+        this.is = new ByteArrayInputStream(input.getBytes());
+    }
 
     public DOMSource(InputStream is)
     {
