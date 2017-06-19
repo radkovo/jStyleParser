@@ -1275,7 +1275,7 @@ public interface CSSProperty {
 				"table-header-group"), TABLE_FOOTER_GROUP("table-footer-group"), TABLE_ROW(
 				"table-row"), TABLE_COLUMN_GROUP("table-column-group"), TABLE_COLUMN(
 				"table-column"), TABLE_CELL("table-cell"), TABLE_CAPTION(
-				"table-caption"), NONE("none"), INHERIT("inherit"),
+				"table-caption"), FLEX("flex"), INLINE_FLEX("inline-flex"), NONE("none"), INHERIT("inherit"),
 		        INITIAL("initial"), UNSET("unset");
 
 		private String text;
@@ -1745,7 +1745,7 @@ public interface CSSProperty {
             return text;
         }
     }
-    
+
 	public enum Orphans implements CSSProperty {
 		integer(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
@@ -3098,6 +3098,322 @@ public interface CSSProperty {
             return this == UNSET;
         }
 		
+		@Override
+		public String toString() {
+			return text;
+		}
+	}
+
+	public enum AlignContent implements CSSProperty {
+		FlexStart("flex-start"), FlexEnd("flex-end"), Center("center"), SpaceBetween("space-between"), SpaceAround(
+				"space-around"), Stretch("stretch"), INITIAL("initial"), UNSET("unset");
+
+		private String text;
+
+		private AlignContent(String text) {
+			this.text = text;
+		}
+
+		public boolean inherited() {
+			return false;
+		}
+
+		public boolean equalsInherit() {
+			return false;
+		}
+
+		public boolean equalsInitial() {
+			return this == INITIAL;
+		}
+
+		public boolean equalsUnset() {
+			return this == UNSET;
+		}
+
+		@Override
+		public String toString() {
+			return text;
+		}
+	}
+
+	public enum AlignItems implements CSSProperty {
+		FlexStart("flex-start"), FlexEnd("flex-end"), Center("center"), Baseline("baseline"), Stretch(
+				"stretch"), INITIAL("initial"), UNSET("unset");
+
+		private String text;
+
+		private AlignItems(String text) {
+			this.text = text;
+		}
+
+		public boolean inherited() {
+			return false;
+		}
+
+		public boolean equalsInherit() {
+			return false;
+		}
+
+		public boolean equalsInitial() {
+			return this == INITIAL;
+		}
+
+		public boolean equalsUnset() {
+			return this == UNSET;
+		}
+
+		@Override
+		public String toString() {
+			return text;
+		}
+	}
+
+	public enum AlignSelf implements CSSProperty {
+		Auto("auto"), FlexStart("flex-start"), FlexEnd("flex-end"), Center("center"), Baseline("baseline"), Stretch(
+				"stretch"), INITIAL("initial"), UNSET("unset");
+
+		private String text;
+
+		private AlignSelf(String text) {
+			this.text = text;
+		}
+
+		public boolean inherited() {
+			return false;
+		}
+
+		public boolean equalsInherit() {
+			return false;
+		}
+
+		public boolean equalsInitial() {
+			return this == INITIAL;
+		}
+
+		public boolean equalsUnset() {
+			return this == UNSET;
+		}
+
+		@Override
+		public String toString() {
+			return text;
+		}
+	}
+
+	public enum FlexBasis implements CSSProperty {
+		CONTENT("content"), length(""), percentage(""), AUTO("auto"), INHERIT("inherit"), INITIAL("initial"), UNSET(
+				"unset");
+
+		private String text;
+
+		private FlexBasis(String text) {
+			this.text = text;
+		}
+
+		public boolean inherited() {
+			return false;
+		}
+
+		public boolean equalsInherit() {
+			return false;
+		}
+
+		public boolean equalsInitial() {
+			return this == INITIAL;
+		}
+
+		public boolean equalsUnset() {
+			return this == UNSET;
+		}
+
+		@Override
+		public String toString() {
+			return text;
+		}
+	}
+
+	public enum FlexDirection implements CSSProperty {
+		ROW("row"), ROW_REVERSE("row-reverse"), COLUMN("column"), COLUMN_REVERSE("column-reverse"), INITIAL(
+				"initial"), UNSET("unset");
+
+		private String text;
+
+		private FlexDirection(String text) {
+			this.text = text;
+		}
+
+		public boolean inherited() {
+			return false;
+		}
+
+		public boolean equalsInherit() {
+			return false;
+		}
+
+		public boolean equalsInitial() {
+			return this == INITIAL;
+		}
+
+		public boolean equalsUnset() {
+			return this == UNSET;
+		}
+
+		@Override
+		public String toString() {
+			return text;
+		}
+	}
+
+	public enum FlexGrow implements CSSProperty {
+		number(""), INITIAL("initial"), UNSET("unset");
+
+		private String text;
+
+		private FlexGrow(String text) {
+			this.text = text;
+		}
+
+		public boolean inherited() {
+			return false;
+		}
+
+		public boolean equalsInherit() {
+			return false;
+		}
+
+		public boolean equalsInitial() {
+			return this == INITIAL;
+		}
+
+		public boolean equalsUnset() {
+			return this == UNSET;
+		}
+
+		@Override
+		public String toString() {
+			return text;
+		}
+	}
+
+	public enum FlexShrink implements CSSProperty {
+		number(""), INITIAL("initial"), UNSET("unset");
+
+		private String text;
+
+		private FlexShrink(String text) {
+			this.text = text;
+		}
+
+		public boolean inherited() {
+			return false;
+		}
+
+		public boolean equalsInherit() {
+			return false;
+		}
+
+		public boolean equalsInitial() {
+			return this == INITIAL;
+		}
+
+		public boolean equalsUnset() {
+			return this == UNSET;
+		}
+
+		@Override
+		public String toString() {
+			return text;
+		}
+	}
+
+	public enum FlexWrap implements CSSProperty {
+		NOWRAP("nowrap"), WRAP("wrap"), WRAP_REVERSE("wrap-reverse"), INITIAL("initial"), UNSET("unset");
+
+		private String text;
+
+		private FlexWrap(String text) {
+			this.text = text;
+		}
+
+		public boolean inherited() {
+			return false;
+		}
+
+		public boolean equalsInherit() {
+			return false;
+		}
+
+		public boolean equalsInitial() {
+			return this == INITIAL;
+		}
+
+		public boolean equalsUnset() {
+			return this == UNSET;
+		}
+
+		@Override
+		public String toString() {
+			return text;
+		}
+	}
+
+	public enum JustifyContent implements CSSProperty {
+		FlexStart("flex-start"), FlexEnd("flex-end"), Center("center"), SpaceBetween("space-between"), SpaceAround(
+				"space-around"), INITIAL("initial"), UNSET("unset");
+
+		private String text;
+
+		private JustifyContent(String text) {
+			this.text = text;
+		}
+
+		public boolean inherited() {
+			return false;
+		}
+
+		public boolean equalsInherit() {
+			return false;
+		}
+
+		public boolean equalsInitial() {
+			return this == INITIAL;
+		}
+
+		public boolean equalsUnset() {
+			return this == UNSET;
+		}
+
+		@Override
+		public String toString() {
+			return text;
+		}
+	}
+
+	public enum Order implements CSSProperty {
+		integer(""), INITIAL("initial"), UNSET("unset");
+
+		private String text;
+
+		private Order(String text) {
+			this.text = text;
+		}
+
+		public boolean inherited() {
+			return false;
+		}
+
+		public boolean equalsInherit() {
+			return false;
+		}
+
+		public boolean equalsInitial() {
+			return this == INITIAL;
+		}
+
+		public boolean equalsUnset() {
+			return this == UNSET;
+		}
+
 		@Override
 		public String toString() {
 			return text;
