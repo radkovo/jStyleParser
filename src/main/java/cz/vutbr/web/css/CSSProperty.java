@@ -3201,8 +3201,7 @@ public interface CSSProperty {
 	}
 
 	public enum FlexBasis implements CSSProperty {
-		CONTENT("content"), length(""), percentage(""), AUTO("auto"), INHERIT("inherit"), INITIAL("initial"), UNSET(
-				"unset");
+		CONTENT("content"), length(""), percentage(""), AUTO("auto"), INHERIT("inherit"), INITIAL("initial"), UNSET( "unset");
 
 		private String text;
 
@@ -3233,8 +3232,7 @@ public interface CSSProperty {
 	}
 
 	public enum FlexDirection implements CSSProperty {
-		ROW("row"), ROW_REVERSE("row-reverse"), COLUMN("column"), COLUMN_REVERSE("column-reverse"), INITIAL(
-				"initial"), UNSET("unset");
+		ROW("row"), ROW_REVERSE("row-reverse"), COLUMN("column"), COLUMN_REVERSE("column-reverse"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
