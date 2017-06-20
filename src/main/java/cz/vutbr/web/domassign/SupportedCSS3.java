@@ -368,12 +368,15 @@ public class SupportedCSS3 implements SupportedCSS {
 		props.put("voice-family", DEFAULT_UA_VOICE_FAMILY);
 		props.put("volume", Volume.MEDIUM);
 
-		// Flex
+		// Flexbox
 		props.put("flex-direction", FlexDirection.ROW);
 		props.put("flex-wrap", FlexWrap.NOWRAP);
 		props.put("flex-basis", FlexBasis.AUTO);
+		props.put("flex-grow", FlexGrow.number);
 		values.put("flex-grow", DEFAULT_FLEX_GROW);
+		props.put("flex-shrink", FlexShrink.number);
 		values.put("flex-shrink", DEFAULT_FLEX_SHRINK);
+		props.put("order", Order.integer);
 		values.put("order", DEFAULT_ORDER);
 		props.put("justify-content", JustifyContent.FlexStart);
 		props.put("align-content", AlignContent.Stretch);
