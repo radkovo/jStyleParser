@@ -17,37 +17,15 @@ import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
-import cz.vutbr.web.css.CSSProperty.BackgroundSize;
-import cz.vutbr.web.css.CSSProperty.BorderRadius;
-import cz.vutbr.web.css.CSSProperty.GenericCSSPropertyProxy;
-import cz.vutbr.web.css.CSSProperty.Opacity;
-import cz.vutbr.web.css.CSSProperty.Transform;
-import cz.vutbr.web.css.CSSProperty.TransformOrigin;
-import cz.vutbr.web.css.Declaration;
-import cz.vutbr.web.css.SupportedCSS;
-import cz.vutbr.web.css.Term;
-import cz.vutbr.web.css.TermColor;
-import cz.vutbr.web.css.TermFactory;
-import cz.vutbr.web.css.TermFloatValue;
-import cz.vutbr.web.css.TermFunction;
-import cz.vutbr.web.css.TermIdent;
-import cz.vutbr.web.css.TermInteger;
-import cz.vutbr.web.css.TermLength;
-import cz.vutbr.web.css.TermLengthOrPercent;
-import cz.vutbr.web.css.TermList;
-import cz.vutbr.web.css.TermNumber;
-import cz.vutbr.web.css.TermPercent;
-import cz.vutbr.web.css.TermRect;
-import cz.vutbr.web.css.TermString;
-import cz.vutbr.web.css.TermURI;
-import cz.vutbr.web.csskit.DeclarationTransformer;
 import cz.vutbr.web.css.CSSProperty.BackgroundAttachment;
 import cz.vutbr.web.css.CSSProperty.BackgroundColor;
 import cz.vutbr.web.css.CSSProperty.BackgroundImage;
 import cz.vutbr.web.css.CSSProperty.BackgroundPosition;
 import cz.vutbr.web.css.CSSProperty.BackgroundRepeat;
+import cz.vutbr.web.css.CSSProperty.BackgroundSize;
 import cz.vutbr.web.css.CSSProperty.BorderCollapse;
 import cz.vutbr.web.css.CSSProperty.BorderColor;
+import cz.vutbr.web.css.CSSProperty.BorderRadius;
 import cz.vutbr.web.css.CSSProperty.BorderSpacing;
 import cz.vutbr.web.css.CSSProperty.BorderStyle;
 import cz.vutbr.web.css.CSSProperty.BorderWidth;
@@ -64,13 +42,20 @@ import cz.vutbr.web.css.CSSProperty.Cursor;
 import cz.vutbr.web.css.CSSProperty.Direction;
 import cz.vutbr.web.css.CSSProperty.Display;
 import cz.vutbr.web.css.CSSProperty.EmptyCells;
+import cz.vutbr.web.css.CSSProperty.FlexBasis;
+import cz.vutbr.web.css.CSSProperty.FlexDirection;
+import cz.vutbr.web.css.CSSProperty.FlexGrow;
+import cz.vutbr.web.css.CSSProperty.FlexShrink;
+import cz.vutbr.web.css.CSSProperty.FlexWrap;
 import cz.vutbr.web.css.CSSProperty.Font;
 import cz.vutbr.web.css.CSSProperty.FontFamily;
 import cz.vutbr.web.css.CSSProperty.FontSize;
 import cz.vutbr.web.css.CSSProperty.FontStyle;
 import cz.vutbr.web.css.CSSProperty.FontVariant;
 import cz.vutbr.web.css.CSSProperty.FontWeight;
+import cz.vutbr.web.css.CSSProperty.GenericCSSPropertyProxy;
 import cz.vutbr.web.css.CSSProperty.Height;
+import cz.vutbr.web.css.CSSProperty.JustifyContent;
 import cz.vutbr.web.css.CSSProperty.Left;
 import cz.vutbr.web.css.CSSProperty.LetterSpacing;
 import cz.vutbr.web.css.CSSProperty.LineHeight;
@@ -82,6 +67,8 @@ import cz.vutbr.web.css.CSSProperty.MaxHeight;
 import cz.vutbr.web.css.CSSProperty.MaxWidth;
 import cz.vutbr.web.css.CSSProperty.MinHeight;
 import cz.vutbr.web.css.CSSProperty.MinWidth;
+import cz.vutbr.web.css.CSSProperty.Opacity;
+import cz.vutbr.web.css.CSSProperty.Order;
 import cz.vutbr.web.css.CSSProperty.Orphans;
 import cz.vutbr.web.css.CSSProperty.OutlineColor;
 import cz.vutbr.web.css.CSSProperty.OutlineStyle;
@@ -100,6 +87,8 @@ import cz.vutbr.web.css.CSSProperty.TextDecoration;
 import cz.vutbr.web.css.CSSProperty.TextIndent;
 import cz.vutbr.web.css.CSSProperty.TextTransform;
 import cz.vutbr.web.css.CSSProperty.Top;
+import cz.vutbr.web.css.CSSProperty.Transform;
+import cz.vutbr.web.css.CSSProperty.TransformOrigin;
 import cz.vutbr.web.css.CSSProperty.UnicodeBidi;
 import cz.vutbr.web.css.CSSProperty.VerticalAlign;
 import cz.vutbr.web.css.CSSProperty.Visibility;
@@ -108,7 +97,25 @@ import cz.vutbr.web.css.CSSProperty.Widows;
 import cz.vutbr.web.css.CSSProperty.Width;
 import cz.vutbr.web.css.CSSProperty.WordSpacing;
 import cz.vutbr.web.css.CSSProperty.ZIndex;
+import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.SupportedCSS;
+import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.Term.Operator;
+import cz.vutbr.web.css.TermColor;
+import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermFloatValue;
+import cz.vutbr.web.css.TermFunction;
+import cz.vutbr.web.css.TermIdent;
+import cz.vutbr.web.css.TermInteger;
+import cz.vutbr.web.css.TermLength;
+import cz.vutbr.web.css.TermLengthOrPercent;
+import cz.vutbr.web.css.TermList;
+import cz.vutbr.web.css.TermNumber;
+import cz.vutbr.web.css.TermPercent;
+import cz.vutbr.web.css.TermRect;
+import cz.vutbr.web.css.TermString;
+import cz.vutbr.web.css.TermURI;
+import cz.vutbr.web.csskit.DeclarationTransformer;
 
 /**
  * Contains methods to transform declaration into values applicable to NodeData.
@@ -589,6 +596,32 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 						lengthIdentification, range, properties, values);
 	}
 
+    protected <T extends CSSProperty> boolean genericInteger(
+            Class<T> type, T integerIdentification, ValueRange range,
+            Declaration d, Map<String, CSSProperty> properties,
+            Map<String, Term<?>> values) {
+
+        if (d.size() != 1)
+            return false;
+        
+        Term<?> term = d.get(0);
+        if (term instanceof TermIdent)
+        {
+            T property = genericPropertyRaw(type, null, (TermIdent) term);
+            if (!property.equalsInherit())
+                return false;
+            else
+            {
+                properties.put(d.getProperty(), property);
+                return true;
+            }
+        }
+        else
+        {
+            return genericTerm(TermInteger.class, term, d.getProperty(), integerIdentification, range, properties, values);
+        }
+    }
+    
     protected <T extends CSSProperty> boolean genericIntegerOrLength(
             Class<T> type, T integerIdentification, T lengthIdentification, ValueRange range,
             Declaration d, Map<String, CSSProperty> properties,
@@ -1908,6 +1941,41 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     	}
     }          
 	
+	@SuppressWarnings("unused")
+	private boolean processFlexBasis(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		return genericOneIdentOrLengthOrPercent(FlexBasis.class, FlexBasis.length, FlexBasis.percentage, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
+	}
+
+	@SuppressWarnings("unused")
+	private boolean processFlexDirection(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		return genericOneIdent(FlexDirection.class, d, properties);
+	}
+
+	@SuppressWarnings("unused")
+	private boolean processFlexWrap(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		return genericOneIdent(FlexWrap.class, d, properties);
+	}
+
+	@SuppressWarnings("unused")
+	private boolean processFlexGrow(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return genericOneIdentOrIntegerOrNumber(FlexGrow.class, FlexGrow.number, FlexGrow.number, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean processFlexShrink(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return genericOneIdentOrIntegerOrNumber(FlexShrink.class, FlexShrink.number, FlexShrink.number, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean processJustifyContent(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		return genericOneIdent(JustifyContent.class, d, properties);
+	}
+
+	@SuppressWarnings("unused")
+	private boolean processOrder(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return genericInteger(Order.class, Order.integer, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
+	}
+
 	@SuppressWarnings("unused")
 	private boolean processContent(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
