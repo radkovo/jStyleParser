@@ -109,7 +109,14 @@ public final class CSSFactory {
 	 * Media specification used for automatically importing style sheets. 
 	 */
 	private static MediaSpec autoImportMedia = null;
-	
+
+	/**
+	 *
+	 * Default network processor
+	 *
+	 */
+	private static NetworkProcessor networkProcessor = null;
+
 	/**
 	 * Sets whether to allow lengths with no units and interpret them as pixels. The default value is {@code false}.
 	 * @param b {@code true} when the lengths with no units should be allowed.
@@ -151,7 +158,19 @@ public final class CSSFactory {
     {
         CSSFactory.autoImportMedia = autoImportMedia;
     }
-	
+
+    public static NetworkProcessor getNetworkProcessor() {
+		if (networkProcessor == null) {
+			networkProcessor = new DefaultNetworkProcessor();
+		}
+
+		return networkProcessor;
+	}
+
+    public static void setNetworkProcessor(NetworkProcessor networkProcessor) {
+    	CSSFactory.networkProcessor = networkProcessor;
+	}
+
 	/**
 	 * Registers new CSSParserFactory instance
 	 *
@@ -414,7 +433,7 @@ public final class CSSFactory {
 	 */
 	public static final StyleSheet parse(URL url, String encoding)
 			throws CSSException, IOException {
-		return getCSSParserFactory().parse(url, new DefaultNetworkProcessor(), encoding, SourceType.URL, url);
+		return getCSSParserFactory().parse(url, getNetworkProcessor(), encoding, SourceType.URL, url);
 	}
 
     /**
@@ -478,7 +497,7 @@ public final class CSSFactory {
 	public static final StyleSheet parse(String css) throws IOException,
 			CSSException {
 	    URL base = new URL("file:///base/url/is/not/specified"); //Cannot determine the base URI in this method but we need some base URI for relative URLs
-		return getCSSParserFactory().parse(css, new DefaultNetworkProcessor(),
+		return getCSSParserFactory().parse(css, getNetworkProcessor(),
 		        null, SourceType.EMBEDDED, base);
 	}
 
@@ -499,7 +518,7 @@ public final class CSSFactory {
      */
 	public static final StyleSheet parseString(String css, URL base) throws IOException,
             CSSException {
-	    return parseString(css, base, new DefaultNetworkProcessor());
+	    return parseString(css, base, getNetworkProcessor());
     }
     
     /**
@@ -576,7 +595,7 @@ public final class CSSFactory {
      */
     public static final StyleSheet getUsedStyles(Document doc, String encoding, URL base, MediaSpec media)
     {
-        return getUsedStyles(doc, encoding, base, media, new DefaultNetworkProcessor());
+        return getUsedStyles(doc, encoding, base, media, getNetworkProcessor());
     }
     
     /**
@@ -595,7 +614,7 @@ public final class CSSFactory {
      */
     public static final StyleSheet getUsedStyles(Document doc, String encoding, URL base, String media)
     {
-        return getUsedStyles(doc, encoding, base, new MediaSpec(media), new DefaultNetworkProcessor());
+        return getUsedStyles(doc, encoding, base, new MediaSpec(media), getNetworkProcessor());
     }
     
     @Deprecated
@@ -684,7 +703,7 @@ public final class CSSFactory {
 	public static final StyleMap assignDOM(Document doc, String encoding,
 			URL base, MediaSpec media, boolean useInheritance, final MatchCondition matchCond) {
 	    
-	    return assignDOM(doc, encoding, new DefaultNetworkProcessor(),
+	    return assignDOM(doc, encoding, getNetworkProcessor(),
 	            base, media, useInheritance, matchCond);
 	}
 
