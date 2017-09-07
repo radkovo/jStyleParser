@@ -1,3 +1,12 @@
+Version 3.0 - Sep 7, 2017
+- Default value processing: initial and unset
+- Color processing changes: currentColor support
+- Correct overflow-x and overflow-y handling
+- Calculated values: calc() function support
+- box-sizing property support
+- flexbox properties support
+- Minor error handling fixes
+
 Version 2.1 - Dec 21, 2016
 - API extensions: allow custom declaration transformers
 - Pseudo element processing fix
