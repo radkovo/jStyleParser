@@ -1,6 +1,5 @@
 package cz.vutbr.web.csskit;
 
-import java.awt.Color;
 import java.util.List;
 
 import cz.vutbr.web.css.CSSFactory;
