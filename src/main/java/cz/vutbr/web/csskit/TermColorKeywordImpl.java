@@ -4,8 +4,6 @@
  */
 package cz.vutbr.web.csskit;
 
-import java.awt.Color;
-
 import cz.vutbr.web.css.TermColor;
 
 /**

@@ -33,6 +33,7 @@ import cz.vutbr.web.css.TermNumeric;
 import cz.vutbr.web.css.CSSProperty.BorderStyle;
 import cz.vutbr.web.css.CSSProperty.FontFamily;
 import cz.vutbr.web.css.CSSProperty.Margin;
+import cz.vutbr.web.csskit.Color;
 import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.StyleMap;
 import cz.vutbr.web.domassign.Traversal;
@@ -81,7 +82,7 @@ public class AnalyzerTest {
 		assertEquals("<body> nodedata contains color", CSSProperty.Color.color,
 				data.getProperty("color"));
 		assertEquals("color declaration contains red color",
-				new java.awt.Color(255, 0, 0), data.getValue(TermColor.class,
+				new Color(255, 0, 0), data.getValue(TermColor.class,
 						"color").getValue());
 
 		assertEquals("<body> nodedata contains font-weight: 200",

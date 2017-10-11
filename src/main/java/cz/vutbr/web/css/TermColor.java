@@ -1,6 +1,6 @@
 package cz.vutbr.web.css;
 
-import java.awt.Color;
+import cz.vutbr.web.csskit.Color;
 
 /**
  * Holds color value directly usable in Java.
