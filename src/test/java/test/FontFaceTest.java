@@ -13,6 +13,7 @@ import cz.vutbr.web.css.TermFactory;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -49,6 +50,9 @@ public class FontFaceTest {
                     "  font-family: 'MyWebFont', Fallback, sans-serif;\n" +
                     "}";
 
+    public static final String TEST_STRING4 = FilesUtil.readResource("/simple/fontfaces.css");
+            
+            
     @BeforeClass
     public static void init() {
         log.info("\n\n\n == FontFaceTest test at {} == \n\n\n", new Date());
@@ -106,5 +110,25 @@ public class FontFaceTest {
 //                "src: url('myfont.woff2') format('woff2'), url('myfont.woff') format('woff'), url('myfont.ttf') format('truetype');\n",
 //                rule.get(1).toString());
 
+    }
+    
+    @Test
+    public void testFFSources() throws IOException, CSSException {
+
+        log.info("input:\n\n\n" + TEST_STRING4 + "\n\n\n");
+        StyleSheet ss;
+
+        ss = CSSFactory.parseString(TEST_STRING4, null);
+
+        assertEquals("Four rules are set", 4, ss.size());
+
+        RuleFontFace rule = (RuleFontFace) ss.get(0);
+        assertEquals("Rule contains 4 declarations", 4, rule.size()); //TODO unicode-range
+        List<RuleFontFace.Source> srcs = rule.getSources();
+        assertEquals("There are 3 sources declared", 3, srcs.size());
+        assertEquals("First name is correct", "Indie Flower", ((RuleFontFace.SourceLocal) srcs.get(0)).getName());
+        assertEquals("Second name is correct", "IndieFlower", ((RuleFontFace.SourceLocal) srcs.get(1)).getName());
+        assertEquals("Third name is correct URI", "https://fonts.gstatic.com/s/indieflower/v9/10JVD_humAd5zP2yrFqw6ugdm0LZdjqr5-oayXSOefg.woff2", ((RuleFontFace.SourceURL) srcs.get(2)).getURI().getValue());
+        
     }
 }
