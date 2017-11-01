@@ -5,7 +5,7 @@
  */
 package cz.vutbr.web.css;
 
-import java.net.URL;
+import java.util.List;
 
 import cz.vutbr.web.css.CSSProperty.FontStyle;
 import cz.vutbr.web.css.CSSProperty.FontWeight;
@@ -24,10 +24,10 @@ public interface RuleFontFace extends RuleBlock<Declaration>, PrettyOutput
     public String getFontFamily();
     
     /**
-     * Gets the font source
+     * Gets the declared font sources
      * @return The value of the font source URL
      */
-    public URL getSource();
+    public List<Source> getSources();
     
     /**
      * Gets the font style
@@ -40,4 +40,33 @@ public interface RuleFontFace extends RuleBlock<Declaration>, PrettyOutput
      * @return Font weight
      */
     public FontWeight getFontWeight();
+    
+    //=================================================================================
+    
+    /**
+     * A generic font source.
+     * @author burgetr
+     */
+    public interface Source
+    {
+    }
+    
+    /**
+     * A local font (src: local()). 
+     * @author burgetr
+     */
+    public interface SourceLocal extends Source
+    {
+        public String getName();
+    }
+    
+    /**
+     * A remote source indentified by its URL (src: url()). 
+     * @author burgetr
+     */
+    public interface SourceURL extends Source
+    {
+        public TermURI getURI();
+    }
+    
 }
