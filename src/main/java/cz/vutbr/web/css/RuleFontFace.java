@@ -25,7 +25,7 @@ public interface RuleFontFace extends RuleBlock<Declaration>, PrettyOutput
     
     /**
      * Gets the declared font sources
-     * @return The value of the font source URL
+     * @return The list of sources or {@code null} when no valid source declaration is present.
      */
     public List<Source> getSources();
     
@@ -57,6 +57,7 @@ public interface RuleFontFace extends RuleBlock<Declaration>, PrettyOutput
      */
     public interface SourceLocal extends Source
     {
+        /** The local font name */
         public String getName();
     }
     
@@ -66,7 +67,10 @@ public interface RuleFontFace extends RuleBlock<Declaration>, PrettyOutput
      */
     public interface SourceURL extends Source
     {
+        /** The font URI specification */
         public TermURI getURI();
+        /** Format specification or {@code null} if not present */
+        public String getFormat();
     }
     
 }

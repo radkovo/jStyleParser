@@ -13,6 +13,7 @@ import cz.vutbr.web.css.CSSProperty.FontWeight;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleFontFace;
 import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.Term.Operator;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermString;
 import cz.vutbr.web.css.TermURI;
@@ -44,41 +45,81 @@ public class RuleFontFaceImpl extends AbstractRuleBlock<Declaration> implements 
 	public List<RuleFontFace.Source> getSources() 
 	{
 	    Declaration decl = getDeclaration(PROPERTY_SOURCE);
-	    List<RuleFontFace.Source> ret = new ArrayList<>(decl.size());
-	    
-	    for (Term<?> val : decl)
+	    if (decl != null)
 	    {
-	        if (val instanceof TermURI)
-	        {
-	            final TermURI uri = (TermURI) val;
-                final RuleFontFace.SourceURL src = new RuleFontFace.SourceURL() {
-                    @Override
-                    public TermURI getURI() {
-                        return uri;
-                    }
-                };
-                ret.add(src);
-	        }
-	        else if (val instanceof TermFunction)
-	        {
-	            final TermFunction fn = (TermFunction) val;
-	            if (fn.getFunctionName().equalsIgnoreCase("local") && fn.size() == 1 && fn.get(0) instanceof TermString)
-	            {
-	                final String fontname = ((TermString) fn.get(0)).getValue();
-	                final RuleFontFace.SourceLocal src = new RuleFontFace.SourceLocal() {
+    	    List<RuleFontFace.Source> ret = new ArrayList<>(decl.size());
+    	    boolean invalid = false;
+    	    
+    	    for (int i = 0; i < decl.size() && !invalid; i++)
+    	    {
+    	        Term<?> val = decl.get(i);
+    	        if (val instanceof TermURI)
+    	        {
+    	            final TermURI uri = (TermURI) val;
+    	            final String format = (i + 1 < decl.size()) ? checkForFormat(decl.get(i + 1)) : null;
+    	            if (format != null)
+    	                i++; //skip correct format definition
+                    final RuleFontFace.SourceURL src = new RuleFontFace.SourceURL() {
                         @Override
-                        public String getName() {
-                            return fontname;
+                        public TermURI getURI() {
+                            return uri;
+                        }
+                        @Override
+                        public String getFormat() {
+                            return format;
                         }
                     };
                     ret.add(src);
-	            }
-	        }
-	    }
+    	        }
+    	        else if (val instanceof TermFunction)
+    	        {
+    	            final TermFunction fn = (TermFunction) val;
+    	            if (fn.getFunctionName().equalsIgnoreCase("local") && fn.size() == 1 && fn.get(0) instanceof TermString)
+    	            {
+    	                final String fontname = ((TermString) fn.get(0)).getValue();
+    	                final RuleFontFace.SourceLocal src = new RuleFontFace.SourceLocal() {
+                            @Override
+                            public String getName() {
+                                return fontname;
+                            }
+                        };
+                        ret.add(src);
+    	            }
+    	            else
+    	                invalid = true;
+    	        }
+    	        else
+    	            invalid = true;
+    	        
+    	        if (i + 1 < decl.size() && decl.get(i + 1).getOperator() != Operator.COMMA)
+    	            invalid = true; //some additional (invalid) terms found
+    	    }
 	    
-        return ret;
+    	    if (!invalid)
+    	        return ret;
+    	    else
+    	        return null;
+	    }
+	    else
+	        return null;
 	}
 
+	private String checkForFormat(Term<?> term)
+	{
+	    if (term instanceof TermFunction && term.getOperator() == Operator.SPACE)
+	    {
+	        final TermFunction fn = (TermFunction) term;
+	        if (fn.getFunctionName().equalsIgnoreCase("format") && fn.size() == 1 && fn.get(0) instanceof TermString)
+	        {
+	            return ((TermString) fn.get(0)).getValue();
+	        }
+	        else
+	            return null;
+	    }
+	    else
+	        return null;
+	}
+	
 	@Override
 	public FontStyle getFontStyle() 
 	{
