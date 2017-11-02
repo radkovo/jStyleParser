@@ -65,6 +65,8 @@ public interface TermFactory {
 	TermTime createTime(Float value);
 	TermTime createTime(String value, Unit unit, int unary);
 	
+    TermUnicodeRange createUnicodeRange(String value);
+	
 	TermURI createURI(String value);
     TermURI createURI(String value, URL base);
     

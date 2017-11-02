@@ -29,6 +29,7 @@ public class RuleFontFaceImpl extends AbstractRuleBlock<Declaration> implements 
 	private static final String PROPERTY_SOURCE = "src";
 	private static final String PROPERTY_FONT_STYLE = "font-style";
 	private static final String PROPERTY_FONT_WEIGHT = "font-weight";
+    private static final String PROPERTY_UNICODE_RANGE = "unicode-range";
 	
     protected RuleFontFaceImpl() 
     {
@@ -149,6 +150,21 @@ public class RuleFontFaceImpl extends AbstractRuleBlock<Declaration> implements 
 			return null;
 		}
 	}
+	
+    @Override
+    public List<String> getUnicodeRanges() 
+    {
+        Declaration decl = getDeclaration(PROPERTY_UNICODE_RANGE);
+        if (decl != null) {
+            List<String> ret = new ArrayList<>(decl.size());
+            for (Term<?> term : decl) {
+                ret.add(term.getValue().toString());
+            }
+            return ret;
+        }
+        else
+            return null;
+    }
 	
     @Override 
     public String toString() 

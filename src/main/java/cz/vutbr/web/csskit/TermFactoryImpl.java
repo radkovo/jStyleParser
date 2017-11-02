@@ -25,6 +25,7 @@ import cz.vutbr.web.css.TermResolution;
 import cz.vutbr.web.css.TermString;
 import cz.vutbr.web.css.TermTime;
 import cz.vutbr.web.css.TermURI;
+import cz.vutbr.web.css.TermUnicodeRange;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.css.TermOperator;
 
@@ -289,6 +290,10 @@ public class TermFactoryImpl implements TermFactory {
 				convertFloat(value, unit.value(), unary));
 	}
 
+    public TermUnicodeRange createUnicodeRange(String value) {
+        return (new TermUnicodeRangeImpl()).setValue(value);
+    }
+    
 	public TermURI createURI(String value) {
 		return (new TermURIImpl()).setValue(value);
 	}

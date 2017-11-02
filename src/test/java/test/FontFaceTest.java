@@ -123,12 +123,15 @@ public class FontFaceTest {
         assertEquals("Four rules are set", 4, ss.size());
 
         RuleFontFace rule = (RuleFontFace) ss.get(0);
-        assertEquals("Rule contains 4 declarations", 4, rule.size()); //TODO unicode-range
+        assertEquals("Rule contains 5 declarations", 5, rule.size());
         List<RuleFontFace.Source> srcs = rule.getSources();
         assertEquals("There are 3 sources declared", 3, srcs.size());
         assertEquals("First name is correct", "Indie Flower", ((RuleFontFace.SourceLocal) srcs.get(0)).getName());
         assertEquals("Second name is correct", "IndieFlower", ((RuleFontFace.SourceLocal) srcs.get(1)).getName());
         assertEquals("Third name is correct URI", "https://fonts.gstatic.com/s/indieflower/v9/10JVD_humAd5zP2yrFqw6ugdm0LZdjqr5-oayXSOefg.woff2", ((RuleFontFace.SourceURL) srcs.get(2)).getURI().getValue());
+        
+        List<String> unirange = rule.getUnicodeRanges();
+        assertEquals("There are 11 unicode ranges", 11, unirange.size());
         
     }
 }

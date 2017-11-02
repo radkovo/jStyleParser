@@ -960,6 +960,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         } else if (ctx.NUMBER() != null) {
             log.debug("VP - number");
             terms_stack.peek().term = tf.createNumeric(ctx.NUMBER().getText(), terms_stack.peek().unary);
+        } else if (ctx.UNIRANGE() != null) {
+            log.debug("VP - unirange");
+            terms_stack.peek().term = tf.createUnicodeRange(ctx.UNIRANGE().getText());
         } else if (ctx.URI() != null) {
             log.debug("VP - uri");
             terms_stack.peek().term = tf.createURI(extractTextUnescaped(ctx.URI().getText()), extractBase(ctx.URI()));

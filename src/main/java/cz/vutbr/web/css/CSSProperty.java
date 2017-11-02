@@ -2817,6 +2817,35 @@ public interface CSSProperty {
 		}
 	}
 
+	public enum UnicodeRange implements CSSProperty {
+        list_values;
+
+        @Override
+        public boolean inherited() {
+            return false;
+        }
+
+        @Override
+        public boolean equalsInherit() {
+            return false;
+        }
+
+        @Override
+        public boolean equalsInitial() {
+            return false;
+        }
+
+        @Override
+        public boolean equalsUnset() {
+            return false;
+        }
+	    
+        @Override
+        public String toString() {
+            return "";
+        }
+	}
+	
 	public enum VerticalAlign implements CSSProperty {
 		length(""), percentage(""), BASELINE("baseline"), SUB("sub"), SUPER(
 				"super"), TOP("top"), TEXT_TOP("text-top"), MIDDLE("middle"), BOTTOM(

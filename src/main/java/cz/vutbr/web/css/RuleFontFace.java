@@ -41,6 +41,12 @@ public interface RuleFontFace extends RuleBlock<Declaration>, PrettyOutput
      */
     public FontWeight getFontWeight();
     
+    /**
+     * Gets the unicode ranges
+     * @return List of unicode ranges
+     */
+    public List<String> getUnicodeRanges();
+    
     //=================================================================================
     
     /**

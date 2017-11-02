@@ -90,6 +90,7 @@ import cz.vutbr.web.css.CSSProperty.Top;
 import cz.vutbr.web.css.CSSProperty.Transform;
 import cz.vutbr.web.css.CSSProperty.TransformOrigin;
 import cz.vutbr.web.css.CSSProperty.UnicodeBidi;
+import cz.vutbr.web.css.CSSProperty.UnicodeRange;
 import cz.vutbr.web.css.CSSProperty.VerticalAlign;
 import cz.vutbr.web.css.CSSProperty.Visibility;
 import cz.vutbr.web.css.CSSProperty.WhiteSpace;
@@ -115,6 +116,7 @@ import cz.vutbr.web.css.TermPercent;
 import cz.vutbr.web.css.TermRect;
 import cz.vutbr.web.css.TermString;
 import cz.vutbr.web.css.TermURI;
+import cz.vutbr.web.css.TermUnicodeRange;
 import cz.vutbr.web.csskit.DeclarationTransformer;
 
 /**
@@ -1856,10 +1858,33 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 		return genericOneIdent(TextTransform.class, d, properties);
 	}
 
+    @SuppressWarnings("unused")
+    private boolean processUnicodeBidi(Declaration d,
+            Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return genericOneIdent(UnicodeBidi.class, d, properties);
+    }
+    
 	@SuppressWarnings("unused")
-	private boolean processUnicodeBidi(Declaration d,
+	private boolean processUnicodeRange(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(UnicodeBidi.class, d, properties);
+	    
+		if (d.size() > 0) {
+		    TermList list = tf.createList();
+		    for (int i = 0; i < d.size(); i++) {
+		        Term<?> term = d.get(i);
+		        if (term instanceof TermUnicodeRange
+		                && ((i == 0 && term.getOperator() == null) || (i != 0 && term.getOperator() == Operator.COMMA))) {
+		            list.add(term);
+		        } else {
+		            return false;
+		        }
+		    }
+		    properties.put("unicode-range", UnicodeRange.list_values);
+		    values.put("unicode-range", list);
+		    return true;
+		}
+		else
+		    return false;
 	}
 
 	@SuppressWarnings("unused")
