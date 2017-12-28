@@ -72,7 +72,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 	private void checkPseudoElement(SelectorPart item) {
         if(item instanceof PseudoPage) {
             final PseudoDeclaration ret = ((PseudoPage)item).getDeclaration();
-            if (ret.isPseudoElement()) {
+            if (ret != null && ret.isPseudoElement()) {
                 pseudoElement = ret;
             }
         }
