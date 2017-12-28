@@ -1254,7 +1254,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         } else if (ctx.pseudo() != null) {
             Selector.PseudoPage p = visitPseudo(ctx.pseudo());
             if (p != null) {
-                if (p.getDeclaration().isPseudoElement() && selector_stack.peek().s.getPseudoElement() != null) {
+                if (p.getDeclaration() != null && p.getDeclaration().isPseudoElement() && selector_stack.peek().s.getPseudoElement() != null) {
                     log.warn("Invalid selector with multiple pseudo-elements");
                     combined_selector_stack.peek().invalid = true;
                 }
