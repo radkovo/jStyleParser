@@ -1,3 +1,7 @@
+Version 3.2 - Jan 29, 2017
+- Improved font-face rule support
+- Unknown pseudo classes are correctly skipped
+
 Version 3.1 - Oct 13, 2017
 - Removed java.awt bindings for better compatibility with Android (and other platforms)
 
