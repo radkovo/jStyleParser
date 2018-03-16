@@ -26,6 +26,7 @@ import cz.vutbr.web.css.TermInteger;
 import cz.vutbr.web.css.TermLength;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.css.TermURI;
+import java.util.Arrays;
 
 public class SimpleTest {
 	private static final Logger log = LoggerFactory.getLogger(SimpleTest.class);
@@ -106,11 +107,11 @@ public class SimpleTest {
 	private static final String TEST_INTEGER_Z_INDEX = "p { z-index: 10; }";
 
 	// Test case for issue #59
-	private static final String TEST_INVALID_PSEUDO_SELECTOR1 = "::selection {background: red}";
+	private static final String TEST_INVALID_PSEUDO_SELECTOR1 = "::notaselector {background: red}";
 
 	// Test case for issue #59
 	private static final String TEST_INVALID_PSEUDO_SELECTOR2 = "::selection {background: red}" +
-		"::notaselector {background: red}" +
+		"::notaselector {background: yellow}" +
 		"p {background: green}";
 	
 	@BeforeClass
@@ -391,18 +392,29 @@ public class SimpleTest {
 	@Test
 	public void testInvalidPseudoSelector2() throws IOException, CSSException   {
 		StyleSheet ss = CSSFactory.parseString(TEST_INVALID_PSEUDO_SELECTOR2, null);
-		assertEquals("One rule is set", 1, ss.size());
+		assertEquals("Two rules are set", 2, ss.size());
 
-		RuleSet rule = (RuleSet) ss.get(0);
+		RuleSet rule1 = (RuleSet) ss.get(0);
+
+		assertEquals("Rule contains one selector ::selection ",
+				"[::selection]",
+				Arrays.toString(rule1.getSelectors()));
+
+		assertEquals("Rule contains one declaration {background: red}",
+				DeclarationsUtil.appendDeclaration(null, "background",
+						tf.createColor(255, 0, 0)),
+				rule1.asList());
+        
+		RuleSet rule2 = (RuleSet) ss.get(1);
 
 		assertArrayEquals("Rule contains one selector p ",
 				SelectorsUtil.createSelectors("p"),
-				rule.getSelectors());
+				rule2.getSelectors());
 
 		assertEquals("Rule contains one declaration {background: green}",
 				DeclarationsUtil.appendDeclaration(null, "background",
 						tf.createColor(0, 128, 0)),
-				rule.asList());
+				rule2.asList());
 	}
 
 }

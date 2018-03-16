@@ -164,7 +164,6 @@ public class PseudoClassTest {
     public void rangeInputPseudoElements() throws CSSException, IOException {
         
         StyleSheet style = CSSFactory.parseString(TEST_RANGE, null);
-        System.err.println("Rules: " + style.size());
         assertEquals("There are 6 rules", 6, style.size());
     }
     
