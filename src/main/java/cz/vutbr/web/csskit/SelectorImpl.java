@@ -362,37 +362,13 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
      */
     public static class PseudoPageImpl implements PseudoPage {
     	
-        private static HashMap<String, PseudoDeclaration> PSEUDO_DECLARATIONS;
+        private static final HashMap<String, PseudoDeclaration> PSEUDO_DECLARATIONS;
         static {
-            PSEUDO_DECLARATIONS = new HashMap<String, PseudoDeclaration>(30);
-            PSEUDO_DECLARATIONS.put("active", PseudoDeclaration.ACTIVE);
-            PSEUDO_DECLARATIONS.put("focus", PseudoDeclaration.FOCUS);
-            PSEUDO_DECLARATIONS.put("hover", PseudoDeclaration.HOVER);
-            PSEUDO_DECLARATIONS.put("link", PseudoDeclaration.LINK);
-            PSEUDO_DECLARATIONS.put("visited", PseudoDeclaration.VISITED);
-            PSEUDO_DECLARATIONS.put("first-child", PseudoDeclaration.FIRST_CHILD);
-            PSEUDO_DECLARATIONS.put("last-child", PseudoDeclaration.LAST_CHILD);
-            PSEUDO_DECLARATIONS.put("only-child", PseudoDeclaration.ONLY_CHILD);
-            PSEUDO_DECLARATIONS.put("only-of-type", PseudoDeclaration.ONLY_OF_TYPE);
-            PSEUDO_DECLARATIONS.put("nth-child", PseudoDeclaration.NTH_CHILD);
-            PSEUDO_DECLARATIONS.put("nth-last-child", PseudoDeclaration.NTH_LAST_CHILD);
-            PSEUDO_DECLARATIONS.put("nth-of-type", PseudoDeclaration.NTH_OF_TYPE);
-            PSEUDO_DECLARATIONS.put("nth-last-of-type", PseudoDeclaration.NTH_LAST_OF_TYPE);
-            PSEUDO_DECLARATIONS.put("first-of-type", PseudoDeclaration.FIRST_OF_TYPE);
-            PSEUDO_DECLARATIONS.put("last-of-type", PseudoDeclaration.LAST_OF_TYPE);
-            PSEUDO_DECLARATIONS.put("root", PseudoDeclaration.ROOT);
-            PSEUDO_DECLARATIONS.put("empty", PseudoDeclaration.EMPTY);
-            PSEUDO_DECLARATIONS.put("lang", PseudoDeclaration.LANG);
-            PSEUDO_DECLARATIONS.put("enabled", PseudoDeclaration.ENABLED);
-            PSEUDO_DECLARATIONS.put("disabled", PseudoDeclaration.DISABLED);
-            PSEUDO_DECLARATIONS.put("checked", PseudoDeclaration.CHECKED);
-            PSEUDO_DECLARATIONS.put("target", PseudoDeclaration.TARGET);
-            PSEUDO_DECLARATIONS.put("not", PseudoDeclaration.NOT);
+            PSEUDO_DECLARATIONS = new HashMap<>(PseudoDeclaration.values().length);
             
-            PSEUDO_DECLARATIONS.put("first-letter", PseudoDeclaration.FIRST_LETTER);
-            PSEUDO_DECLARATIONS.put("first-line", PseudoDeclaration.FIRST_LINE);
-            PSEUDO_DECLARATIONS.put("before", PseudoDeclaration.BEFORE);
-            PSEUDO_DECLARATIONS.put("after", PseudoDeclaration.AFTER);
+            for (PseudoDeclaration declaration : PseudoDeclaration.values()) {
+                PSEUDO_DECLARATIONS.put(declaration.value(), declaration);
+            }
         }
         
     	private String functionName;

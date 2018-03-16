@@ -433,7 +433,7 @@ attribute
      }
 
 pseudo
-	: pseudocolon (IDENT | FUNCTION S* (MINUS? IDENT | MINUS? NUMBER | MINUS? INDEX | selector) S* RPAREN)
+	: pseudocolon (MINUS? IDENT | FUNCTION S* (MINUS? IDENT | MINUS? NUMBER | MINUS? INDEX | selector) S* RPAREN)
 	;
     catch [RecognitionException re] {
       log.error("PARSING pseudo ERROR | inserting INVALID_SELPART");
