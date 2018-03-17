@@ -3,6 +3,7 @@ package test;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.StyleSheet;
@@ -147,6 +149,22 @@ public class PseudoClassTest {
 
         NodeData nodeData = getStyleById(elements, da, "p1");
         assertThat(nodeData.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
+    }
+
+    // Test for issue #83
+    private static final String TEST_RANGE = 
+            "input[type=range]::-webkit-slider-runnable-track { width: 1em; }\n" +
+            "input[type=range]::-webkit-slider-thumb { width: 2em; }\n" +
+            "input[type=range]::-moz-range-track { width: 3em; }\n" +
+            "input[type=range]::-moz-range-thumb { width: 4em; }\n" +
+            "input[type=range]::-ms-track { width: 5em; }\n" +
+            "input[type=range]::-ms-thumb { width: 6em; }";
+    
+    @Test
+    public void rangeInputPseudoElements() throws CSSException, IOException {
+        
+        StyleSheet style = CSSFactory.parseString(TEST_RANGE, null);
+        assertEquals("There are 6 rules", 6, style.size());
     }
     
     private NodeData getStyleById(ElementMap elements, StyleMap decl, String id)

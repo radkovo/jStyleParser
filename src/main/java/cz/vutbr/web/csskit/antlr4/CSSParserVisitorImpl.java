@@ -1345,7 +1345,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     @Override
     /**
      * pseudo
-     : pseudocolon (IDENT | FUNCTION S*  (IDENT | MINUS? NUMBER | MINUS? INDEX) S* RPAREN)
+     : pseudocolon (MINUS? IDENT | FUNCTION S*  (IDENT | MINUS? NUMBER | MINUS? INDEX) S* RPAREN)
      */
     public Selector.PseudoPage visitPseudo(CSSParser.PseudoContext ctx) {
         logEnter("pseudo: ", ctx);
@@ -1353,12 +1353,15 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         //first item is pseudocolon | : or ::
         Boolean isPseudoElem = ctx.getChild(0).getText().length() != 1;
         Selector.PseudoPage pseudoPage;
-        String first = extractTextUnescaped(ctx.getChild(1).getText());
         if (ctx.FUNCTION() == null) {
             // ident
-            pseudoPage = rf.createPseudoPage(first, null);
+            String pseudo = extractTextUnescaped(ctx.IDENT().getText());
+            if (ctx.MINUS() != null) {
+                pseudo = ctx.MINUS().getText() + pseudo;
+            }
+            pseudoPage = rf.createPseudoPage(pseudo, null);
             if (pseudoPage == null || pseudoPage.getDeclaration() == null) {
-                log.error("invalid pseudo declaration: " + first);
+                log.error("invalid pseudo declaration: " + pseudo);
                 pseudoPage = null;
             } else if (isPseudoElem && !pseudoPage.getDeclaration().isPseudoElement()) {
                 log.error("pseudo class cannot be used as pseudo element");
@@ -1371,9 +1374,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
                 pseudoPage = null;
             } else {
                 //function
-                //var first is function name
+                String name = extractTextUnescaped(ctx.getChild(1).getText());
                 if (ctx.selector() != null) {
-                    pseudoPage = rf.createPseudoPage(visitSelector(ctx.selector()), first);
+                    pseudoPage = rf.createPseudoPage(visitSelector(ctx.selector()), name);
                 } else {
                     String value = "";
                     if (ctx.MINUS() != null) {
@@ -1388,7 +1391,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
                     } else {
                         throw new UnsupportedOperationException("unknown state");
                     }
-                    pseudoPage = rf.createPseudoPage(value, first);
+                    pseudoPage = rf.createPseudoPage(value, name);
                 }
             }
         }
