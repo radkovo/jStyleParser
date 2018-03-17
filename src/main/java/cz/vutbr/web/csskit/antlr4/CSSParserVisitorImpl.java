@@ -624,7 +624,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         logEnter("media_rule: ", ctx);
         RuleBlock<?> rules = null;
         if (ctx.ruleset() != null) {
+            statement_stack.push(new statement_scope());
             rules = visitRuleset(ctx.ruleset());
+            statement_stack.pop();
         } else {
             log.debug("Skiping invalid statement in media");
         }
