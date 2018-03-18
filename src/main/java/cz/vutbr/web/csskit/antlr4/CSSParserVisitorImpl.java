@@ -1359,7 +1359,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             if (ctx.MINUS() != null) {
                 pseudo = ctx.MINUS().getText() + pseudo;
             }
-            pseudoPage = rf.createPseudoPage(pseudo, null);
+            pseudoPage = rf.createPseudoPage(pseudo, null, isPseudoElem);
             if (pseudoPage == null || pseudoPage.getDeclaration() == null) {
                 log.error("invalid pseudo declaration: " + pseudo);
                 pseudoPage = null;
@@ -1391,7 +1391,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
                     } else {
                         throw new UnsupportedOperationException("unknown state");
                     }
-                    pseudoPage = rf.createPseudoPage(value, name);
+                    pseudoPage = rf.createPseudoPage(value, name, false);
                 }
             }
         }

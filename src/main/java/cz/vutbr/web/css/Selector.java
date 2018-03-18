@@ -63,6 +63,7 @@ public interface Selector extends Rule<Selector.SelectorPart> {
      */
     public enum PseudoDeclaration
     {
+        // Pseudo-classes
         ACTIVE("active", false),
         FOCUS("focus", false),
         HOVER("hover", false),
@@ -87,30 +88,21 @@ public interface Selector extends Rule<Selector.SelectorPart> {
         TARGET("target", false),
         NOT("not", false),
         
+        // Pseudo-elements
         FIRST_LINE("first-line", true),
         FIRST_LETTER("first-letter", true),
         BEFORE("before", true),
         AFTER("after", true),
-        
         BACKDROP("backdrop", true),
         CUE("cue", true),
         GRAMMAR_ERROR("grammar-error", true),
         PLACEHOLDER("placeholder", true),
         SELECTION("selection", true),
         SPELLING_ERROR("spelling-error", true),
-        _MOZ_PROGRESS_BAR("-moz-progress-bar", true),
-        _MOZ_RANGE_PROGRESS("-moz-range-progress", true),
-        _MOZ_RANGE_THUMB("-moz-range-thumb", true),
-        _MOZ_RANGE_TRACK("-moz-range-track", true),
-        _MS_FILL("-ms-fill", true),
-        _MS_FILL_LOWER("-ms-fill-lower", true),
-        _MS_FILL_UPPER("-ms-fill-upper", true),
-        _MS_THUMB("-ms-thumb", true),
-        _MS_TRACK("-ms-track", true),
-        _WEBKIT_PROGRESS_BAR("-webkit-progress-bar", true),
-        _WEBKIT_PROGRESS_VALUE("-webkit-progress-value", true),
-        _WEBKIT_SLIDER_RUNNABLE_TRACK("-webkit-slider-runnable-track", true),
-        _WEBKIT_SLIDER_THUMB("-webkit-slider-thumb", true);
+        
+        // Placeholders for vendor-specific pseudo-classes or elements
+        VENDOR_CLASS("", false),
+        VENDOR_ELEMENT("", true);
 
         private String value;
         private boolean element;
@@ -265,7 +257,7 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     	public PseudoPage setFunctionName(String functionName);
     	
     	public String getValue();
-    	public PseudoPage setValue(String value);
+    	public PseudoPage setValue(String value, boolean isPseudoElement);
     	
         public PseudoDeclaration getDeclaration();
         

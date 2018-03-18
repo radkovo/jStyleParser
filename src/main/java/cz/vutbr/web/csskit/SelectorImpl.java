@@ -367,6 +367,10 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
             PSEUDO_DECLARATIONS = new HashMap<>(PseudoDeclaration.values().length);
             
             for (PseudoDeclaration declaration : PseudoDeclaration.values()) {
+                if (declaration == PseudoDeclaration.VENDOR_CLASS || declaration == PseudoDeclaration.VENDOR_ELEMENT) {
+                    continue; // These do not have a specific associated key, so they should not be in the lookup table
+                }
+                
                 PSEUDO_DECLARATIONS.put(declaration.value(), declaration);
             }
         }
@@ -378,15 +382,19 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
     	//decoded element index for nth-XXXX properties -- values a and b in the an+b specification
     	private int[] elementIndex;
     	
-    	protected PseudoPageImpl(String value, String functionName) {
-    		setValue(value);
-    		setFunctionName(functionName);
+    	protected PseudoPageImpl(String value, String functionName, boolean isPseudoElement) {
+            this.value = value;
+            this.functionName = functionName;
+            inferDeclaration(isPseudoElement);
+            decodeValue();
     	}
 
         protected PseudoPageImpl(Selector selector, String functionName) {
-            setValue(null);
-            setFunctionName(functionName);
-            setSelector(selector);
+            this.value = null;
+            this.functionName = functionName;
+            this.selector = selector;
+            inferDeclaration(false);
+            decodeValue();
         }
     	
     	public PseudoDeclaration getDeclaration()
@@ -406,7 +414,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		 */
 		public PseudoPage setFunctionName(String functionName) {			
 			this.functionName = functionName;
-            inferDeclaration();
+            inferDeclaration(false);
             decodeValue();
 			return this;
 		}
@@ -679,9 +687,9 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		 * Sets value of pseudo. Could be even <code>null</code>
 		 * @param value New value
 		 */
-		public PseudoPage setValue(String value) {
+		public PseudoPage setValue(String value, boolean isPseudoElement) {
 			this.value = value;
-			inferDeclaration();
+			inferDeclaration(isPseudoElement);
 			decodeValue();
 			return this;
 		}
@@ -751,13 +759,15 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			return true;
 		}
 		
-		private void inferDeclaration()
+		private void inferDeclaration(boolean isPseudoElement)
 		{
 		    if (functionName != null)
 		        declaration = PSEUDO_DECLARATIONS.get(functionName.toLowerCase()); //Pseudo-element and pseudo-class names are case-insensitive
-		    else if (value != null)
+		    else if (value != null && value.startsWith("-")) // Vendor-specific
+                declaration = (isPseudoElement ? PseudoDeclaration.VENDOR_ELEMENT : PseudoDeclaration.VENDOR_CLASS);
+            else if (value != null)
 		        declaration = PSEUDO_DECLARATIONS.get(value.toLowerCase());
-		    else
+            else
 		        declaration = null;
 		}
 

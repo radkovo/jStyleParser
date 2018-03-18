@@ -149,8 +149,8 @@ public class RuleFactoryImpl implements RuleFactory {
 		return new SelectorImpl.ElementIDImpl(id);
 	}
 	
-	public PseudoPage createPseudoPage(String pseudo, String functionName) {
-		return new SelectorImpl.PseudoPageImpl(pseudo, functionName);
+	public PseudoPage createPseudoPage(String pseudo, String functionName, boolean isPseudoElement) {
+		return new SelectorImpl.PseudoPageImpl(pseudo, functionName, isPseudoElement);
 	}
 	
     public PseudoPage createPseudoPage(Selector selector, String functionName) {
