@@ -101,8 +101,8 @@ public interface Selector extends Rule<Selector.SelectorPart> {
         SPELLING_ERROR("spelling-error", true),
         
         // Placeholders for vendor-specific pseudo-classes or elements
-        VENDOR_CLASS("", false),
-        VENDOR_ELEMENT("", true);
+        vendor_class(null, false),
+        vendor_element(null, true);
 
         private String value;
         private boolean element;

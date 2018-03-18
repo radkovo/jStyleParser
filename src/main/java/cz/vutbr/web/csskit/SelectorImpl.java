@@ -367,8 +367,8 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
             PSEUDO_DECLARATIONS = new HashMap<>(PseudoDeclaration.values().length);
             
             for (PseudoDeclaration declaration : PseudoDeclaration.values()) {
-                if (declaration == PseudoDeclaration.VENDOR_CLASS || declaration == PseudoDeclaration.VENDOR_ELEMENT) {
-                    continue; // These do not have a specific associated key, so they should not be in the lookup table
+                if (declaration.value() == null) {
+                    continue;
                 }
                 
                 PSEUDO_DECLARATIONS.put(declaration.value(), declaration);
@@ -764,7 +764,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		    if (functionName != null)
 		        declaration = PSEUDO_DECLARATIONS.get(functionName.toLowerCase()); //Pseudo-element and pseudo-class names are case-insensitive
 		    else if (value != null && value.startsWith("-")) // Vendor-specific
-                declaration = (isPseudoElement ? PseudoDeclaration.VENDOR_ELEMENT : PseudoDeclaration.VENDOR_CLASS);
+                declaration = (isPseudoElement ? PseudoDeclaration.vendor_element : PseudoDeclaration.vendor_class);
             else if (value != null)
 		        declaration = PSEUDO_DECLARATIONS.get(value.toLowerCase());
             else
