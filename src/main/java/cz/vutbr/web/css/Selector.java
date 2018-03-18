@@ -275,13 +275,8 @@ public interface Selector extends Rule<Selector.SelectorPart> {
      */
     public interface PseudoPage extends SelectorPart {
     	public String getFunctionName();
-    	public PseudoPage setFunctionName(String functionName);
-    	
     	public String getValue();
-    	public PseudoPage setValue(String value, boolean isPseudoElement);
-    	
         public PseudoDeclaration getDeclaration();
-        
     }
        
    
