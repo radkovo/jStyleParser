@@ -20,7 +20,11 @@ import org.xml.sax.SAXException;
 
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.NodeData;
+import cz.vutbr.web.css.RuleFactory;
+import cz.vutbr.web.css.RuleSet;
+import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.Selector.PseudoDeclaration;
 import cz.vutbr.web.css.TermColor;
@@ -28,11 +32,15 @@ import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.csskit.MatchConditionOnElements;
 import cz.vutbr.web.domassign.DirectAnalyzer;
 import cz.vutbr.web.domassign.StyleMap;
+import java.util.List;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 public class PseudoClassTest {
 	private static final Logger log = LoggerFactory.getLogger(PseudoClassTest.class);
 	
 	private static TermFactory tf = CSSFactory.getTermFactory();
+    private static final RuleFactory rf = CSSFactory.getRuleFactory();
 	
 	@BeforeClass
 	public static void init() throws SAXException, IOException {
@@ -159,12 +167,32 @@ public class PseudoClassTest {
             "input[type=range]::-moz-range-thumb { width: 4em; }\n" +
             "input[type=range]::-ms-track { width: 5em; }\n" +
             "input[type=range]::-ms-thumb { width: 6em; }";
+    private static final String[] TEST_RANGE_ELEMENTS = new String[] {
+            "-webkit-slider-runnable-track",
+            "-webkit-slider-thumb",
+            "-moz-range-track",
+            "-moz-range-thumb",
+            "-ms-track",
+            "-ms-thumb"
+            };
     
     @Test
     public void rangeInputPseudoElements() throws CSSException, IOException {
         
         StyleSheet style = CSSFactory.parseString(TEST_RANGE, null);
         assertEquals("There are 6 rules", 6, style.size());
+        
+        for (int i = 0; i < TEST_RANGE_ELEMENTS.length; i++) {
+            List<CombinedSelector> cslist = SelectorsUtil.appendSimpleSelector(null, 
+                "input", 
+                null, 
+                rf.createAttribute("range", false, Selector.Operator.EQUALS, "type"), 
+                rf.createPseudoPage(TEST_RANGE_ELEMENTS[i], null, true));
+
+            RuleSet rule = (RuleSet) style.get(i);
+            assertArrayEquals("Rule contains one selector input[type=range]::" + TEST_RANGE_ELEMENTS[i], cslist.toArray(), rule.getSelectors());
+            assertEquals("Rule contains one declaration", 1, rule.size());
+        }
     }
     
     private NodeData getStyleById(ElementMap elements, StyleMap decl, String id)
