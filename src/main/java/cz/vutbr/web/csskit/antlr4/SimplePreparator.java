@@ -88,13 +88,22 @@ public class SimplePreparator implements Preparator {
 		return (RuleBlock<?>) rm;
 	}
 
-	public RuleBlock<?> prepareRulePage(List<Declaration> declarations, List<RuleMargin> marginRules, String name, String pseudo) {
+    @Override
+	public RuleBlock<?> prepareRulePage(List<Declaration> declarations, List<RuleMargin> marginRules, String name, Selector.PseudoPage pseudo) {
 
 	    if ((declarations == null || declarations.isEmpty()) &&
 	         (marginRules == null || marginRules.isEmpty())) {
 			log.debug("Empty RulePage was ommited");
 			return null;
 		}
+        if (pseudo != null && 
+                pseudo.getDeclaration() != Selector.PseudoDeclaration.LEFT &&
+                pseudo.getDeclaration() != Selector.PseudoDeclaration.RIGHT &&
+                pseudo.getDeclaration() != Selector.PseudoDeclaration.FIRST &&
+                pseudo.getDeclaration() != Selector.PseudoDeclaration.BLANK) {
+            log.debug("Ommitting RulePage with invalid pseudo");
+			return null;
+        }
 
 		RulePage rp = rf.createPage();
         if (declarations != null)

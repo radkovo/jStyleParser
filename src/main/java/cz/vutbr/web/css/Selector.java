@@ -67,6 +67,7 @@ public interface Selector extends Rule<Selector.SelectorPart> {
         ACTIVE("active", false),
         ANY("any", false),
         ANY_LINK("any-link", false),
+        BLANK("blank", false),
         CHECKED("checked", false),
         DEFAULT("default", false),
         DEFINED("defined", false),

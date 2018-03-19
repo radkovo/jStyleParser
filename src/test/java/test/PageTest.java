@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class PageTest {
     private static final Logger log = LoggerFactory.getLogger(PageTest.class);
@@ -21,11 +22,15 @@ public class PageTest {
                     "@top-left-corner { content: \" \"; border: solid green; }" +
                     "}";
 
+    public static final String TEST_STRING2 = "@page :left { margin: 1cm; }";
+    public static final String TEST_STRING3 = "@page :right { margin: 2cm; }";
+    public static final String TEST_STRING4 = "@page :first { margin: 3cm; }";
+    public static final String TEST_STRING5 = "@page :hover { margin: 4cm; }"; // Invalid
+    
     @BeforeClass
     public static void init() {
         log.info("\n\n\n == PageTest test at {} == \n\n\n", new Date());
     }
-
 
     @Test
     public void testMarginRule() throws IOException, CSSException {
@@ -40,4 +45,39 @@ public class PageTest {
         assertEquals("Margin rule contains 2 declarations", 2, margin.size());
     }
 
+    @Test
+    public void testLeftPseudo() throws IOException, CSSException {
+        StyleSheet ss = CSSFactory.parseString(TEST_STRING2, null);
+        assertEquals("One rule is set", 1, ss.size());
+        RulePage rule = (RulePage) ss.get(0);
+        assertNotNull("Rule has a pseudo-class ", rule.getPseudo());
+        assertEquals("Rule has :left pseudo-class ", Selector.PseudoDeclaration.LEFT, rule.getPseudo().getDeclaration());
+        assertEquals("Rule contains 1 declaration ", 1, rule.size());
+    }
+    
+    @Test
+    public void testRightPseudo() throws IOException, CSSException {
+        StyleSheet ss = CSSFactory.parseString(TEST_STRING3, null);
+        assertEquals("One rule is set", 1, ss.size());
+        RulePage rule = (RulePage) ss.get(0);
+        assertNotNull("Rule has a pseudo-class ", rule.getPseudo());
+        assertEquals("Rule has :right pseudo-class ", Selector.PseudoDeclaration.RIGHT, rule.getPseudo().getDeclaration());
+        assertEquals("Rule contains 1 declaration ", 1, rule.size());
+    }
+    
+    @Test
+    public void testFirstPseudo() throws IOException, CSSException {
+        StyleSheet ss = CSSFactory.parseString(TEST_STRING4, null);
+        assertEquals("One rule is set", 1, ss.size());
+        RulePage rule = (RulePage) ss.get(0);
+        assertNotNull("Rule has a pseudo-class ", rule.getPseudo());
+        assertEquals("Rule has :first pseudo-class ", Selector.PseudoDeclaration.FIRST, rule.getPseudo().getDeclaration());
+        assertEquals("Rule contains 1 declaration ", 1, rule.size());
+    }
+    
+    @Test
+    public void testInvalidPseudo() throws IOException, CSSException {
+        StyleSheet ss = CSSFactory.parseString(TEST_STRING5, null);
+        assertEquals("No rules are set", 0, ss.size());
+    }
 }

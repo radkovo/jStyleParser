@@ -703,9 +703,9 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
 			 
-			sb.append(OutputUtil.PAGE_OPENING);
+			sb.append(OutputUtil.PSEUDO_OPENING);
 			if (declaration!=null && declaration.isPseudoElement())
-	            sb.append(OutputUtil.PAGE_OPENING);
+	            sb.append(OutputUtil.PSEUDO_OPENING);
 			
 			if(functionName!=null) 
 				sb.append(functionName).append(OutputUtil.FUNCTION_OPENING);

@@ -397,18 +397,19 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     /**
      *
      page
-     : PAGE S* IDENT? page_pseudo? S*
+     : PAGE S* IDENT? pseudo? S*
      LCURLY S*
      declarations margin_rule*
      RCURLY
      */
     public RuleBlock<?> visitPage(CSSParser.PageContext ctx) {
-        String name = null, pseudo = null;
+        String name = null;
         if (ctx.IDENT() != null) {
             name = extractTextUnescaped(ctx.IDENT().getText());
         }
-        if (ctx.page_pseudo() != null) {
-            pseudo = visitPage_pseudo(ctx.page_pseudo());
+        Selector.PseudoPage pseudo = null;
+        if (ctx.pseudo() != null) {
+            pseudo = visitPseudo(ctx.pseudo());
         }
         List<Declaration> declarations = visitDeclarations(ctx.declarations());
         List<cz.vutbr.web.css.RuleMargin> margins = null;
@@ -425,15 +426,6 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         if (rb != null)
             this.preventImports = true;
         return rb;
-    }
-
-    @Override
-    /**
-     page_pseudo
-     : pseudocolon
-     */
-    public String visitPage_pseudo(CSSParser.Page_pseudoContext ctx) {
-        return extractTextUnescaped(ctx.getText());
     }
 
     @Override
@@ -1345,19 +1337,21 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     @Override
     /**
      * pseudo
-     : pseudocolon (MINUS? IDENT | FUNCTION S*  (IDENT | MINUS? NUMBER | MINUS? INDEX) S* RPAREN)
+     : COLON COLON? (MINUS? IDENT | FUNCTION S*  (IDENT | MINUS? NUMBER | MINUS? INDEX) S* RPAREN)
      */
     public Selector.PseudoPage visitPseudo(CSSParser.PseudoContext ctx) {
         logEnter("pseudo: ", ctx);
-        // childcount == 2
-        //first item is pseudocolon | : or ::
-        Boolean isPseudoElem = ctx.getChild(0).getText().length() != 1;
+        boolean isPseudoElem = ctx.COLON().size() > 1;
         Selector.PseudoPage pseudoPage;
         if (ctx.FUNCTION() == null) {
             // ident
             String pseudo = extractTextUnescaped(ctx.IDENT().getText());
             if (ctx.MINUS() != null) {
                 pseudo = ctx.MINUS().getText() + pseudo;
+            }
+            // Legacy support for :after, :before, :first-line, and :first-letter pseudo-elements
+            if (!isPseudoElem && ("after".equalsIgnoreCase(pseudo) || "before".equalsIgnoreCase(pseudo) || "first-line".equalsIgnoreCase(pseudo) || "first-letter".equalsIgnoreCase(pseudo))) {
+                isPseudoElem = true;
             }
             pseudoPage = rf.createPseudoPage(pseudo, null, isPseudoElem);
             if (pseudoPage == null || pseudoPage.getDeclaration() == null) {
@@ -1374,7 +1368,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
                 pseudoPage = null;
             } else {
                 //function
-                String name = extractTextUnescaped(ctx.getChild(1).getText());
+                String name = extractTextUnescaped(ctx.FUNCTION().getText());
                 if (ctx.selector() != null) {
                     pseudoPage = rf.createPseudoPage(visitSelector(ctx.selector()), name);
                 } else {
@@ -1397,12 +1391,6 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         }
         logLeave("pseudo");
         return pseudoPage;
-    }
-
-    @Override
-    //returns null
-    public Object visitPseudocolon(CSSParser.PseudocolonContext ctx) {
-        return null;
     }
 
     @Override

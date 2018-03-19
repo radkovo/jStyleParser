@@ -159,6 +159,71 @@ public class PseudoClassTest {
         assertThat(nodeData.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
     }
 
+    private static final String TEST_PSEUDO_1 = // Legacy support
+            "p:first-line { color: red; }" +
+            "p:first-letter { color: blue; }" + 
+            "p:before { color: yellow; }" + 
+            "p:after { color: green; }";
+    private static final String TEST_PSEUDO_2 =
+            "p::first-line { color: red; }" +
+            "p::first-letter { color: blue; }" + 
+            "p::before { color: yellow; }" + 
+            "p::after { color: green; }";
+    
+    @Test
+    public void legacyPseudoElementSupport() throws CSSException, IOException {
+        StyleSheet style = CSSFactory.parseString(TEST_PSEUDO_1, null);
+        assertEquals("There are 4 rules", 4, style.size());
+        
+        List<CombinedSelector> sel1 = SelectorsUtil.appendSimpleSelector(null, "p", null, rf.createPseudoPage("first-line", null, true));
+        List<CombinedSelector> sel2 = SelectorsUtil.appendSimpleSelector(null, "p", null, rf.createPseudoPage("first-letter", null, true));
+        List<CombinedSelector> sel3 = SelectorsUtil.appendSimpleSelector(null, "p", null, rf.createPseudoPage("before", null, true));
+        List<CombinedSelector> sel4 = SelectorsUtil.appendSimpleSelector(null, "p", null, rf.createPseudoPage("after", null, true));
+
+        RuleSet rule1 = (RuleSet) style.get(0);
+        assertArrayEquals("Rule contains one selector p::first-line", sel1.toArray(), rule1.getSelectors());
+        assertEquals("Rule contains one declaration", 1, rule1.size());
+        
+        RuleSet rule2 = (RuleSet) style.get(1);
+        assertArrayEquals("Rule contains one selector p::first-letter", sel2.toArray(), rule2.getSelectors());
+        assertEquals("Rule contains one declaration", 1, rule2.size());
+        
+        RuleSet rule3 = (RuleSet) style.get(2);
+        assertArrayEquals("Rule contains one selector p::before", sel3.toArray(), rule3.getSelectors());
+        assertEquals("Rule contains one declaration", 1, rule3.size());
+        
+        RuleSet rule4 = (RuleSet) style.get(3);
+        assertArrayEquals("Rule contains one selector p::after", sel4.toArray(), rule4.getSelectors());
+        assertEquals("Rule contains one declaration", 1, rule4.size());
+    }
+    
+    @Test
+    public void nonlegacyPseudoElementSupport() throws CSSException, IOException {
+        StyleSheet style = CSSFactory.parseString(TEST_PSEUDO_2, null);
+        assertEquals("There are 4 rules", 4, style.size());
+        
+        List<CombinedSelector> sel1 = SelectorsUtil.appendSimpleSelector(null, "p", null, rf.createPseudoPage("first-line", null, true));
+        List<CombinedSelector> sel2 = SelectorsUtil.appendSimpleSelector(null, "p", null, rf.createPseudoPage("first-letter", null, true));
+        List<CombinedSelector> sel3 = SelectorsUtil.appendSimpleSelector(null, "p", null, rf.createPseudoPage("before", null, true));
+        List<CombinedSelector> sel4 = SelectorsUtil.appendSimpleSelector(null, "p", null, rf.createPseudoPage("after", null, true));
+
+        RuleSet rule1 = (RuleSet) style.get(0);
+        assertArrayEquals("Rule contains one selector p::first-line", sel1.toArray(), rule1.getSelectors());
+        assertEquals("Rule contains one declaration", 1, rule1.size());
+        
+        RuleSet rule2 = (RuleSet) style.get(1);
+        assertArrayEquals("Rule contains one selector p::first-letter", sel2.toArray(), rule2.getSelectors());
+        assertEquals("Rule contains one declaration", 1, rule2.size());
+        
+        RuleSet rule3 = (RuleSet) style.get(2);
+        assertArrayEquals("Rule contains one selector p::before", sel3.toArray(), rule3.getSelectors());
+        assertEquals("Rule contains one declaration", 1, rule3.size());
+        
+        RuleSet rule4 = (RuleSet) style.get(3);
+        assertArrayEquals("Rule contains one selector p::after", sel4.toArray(), rule4.getSelectors());
+        assertEquals("Rule contains one declaration", 1, rule4.size());
+    }
+    
     // Test for issue #83
     private static final String TEST_RANGE = 
             "input[type=range]::-webkit-slider-runnable-track { width: 1em; }\n" +
@@ -178,7 +243,6 @@ public class PseudoClassTest {
     
     @Test
     public void rangeInputPseudoElements() throws CSSException, IOException {
-        
         StyleSheet style = CSSFactory.parseString(TEST_RANGE, null);
         assertEquals("There are 6 rules", 6, style.size());
         

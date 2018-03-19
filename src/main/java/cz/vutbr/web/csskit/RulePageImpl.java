@@ -8,6 +8,7 @@ import cz.vutbr.web.css.PrettyOutput;
 import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.RuleMargin;
 import cz.vutbr.web.css.RulePage;
+import cz.vutbr.web.css.Selector;
 
 /**
  * Wrap of declarations bounded with a page rule 
@@ -19,7 +20,7 @@ import cz.vutbr.web.css.RulePage;
 public class RulePageImpl extends AbstractRuleBlock<Rule<?>> implements RulePage {
 
 	protected String name;
-	protected String pseudo;
+	protected Selector.PseudoPage pseudo;
 	
 	protected RulePageImpl() {
 		super();
@@ -48,7 +49,7 @@ public class RulePageImpl extends AbstractRuleBlock<Rule<?>> implements RulePage
 	/**
 	 * Gets pseudo-class of the page
 	 */
-	public String getPseudo() {
+	public Selector.PseudoPage getPseudo() {
 		return pseudo;
 	}
 
@@ -57,7 +58,7 @@ public class RulePageImpl extends AbstractRuleBlock<Rule<?>> implements RulePage
 	 * @param pseudo The pseudo-class to set
 	 * @return Modified instance
 	 */
-	public RulePage setPseudo(String pseudo) {
+	public RulePage setPseudo(Selector.PseudoPage pseudo) {
 		this.pseudo = pseudo;
 		return this;
 	}
@@ -82,8 +83,8 @@ public class RulePageImpl extends AbstractRuleBlock<Rule<?>> implements RulePage
     	sb.append(OutputUtil.PAGE_KEYWORD);
     	if(name != null && !"".equals(name))
     		sb.append(OutputUtil.SPACE_DELIM).append(name);
-    	if(pseudo != null && !"".equals(pseudo))
-    		sb.append(OutputUtil.PAGE_OPENING).append(pseudo);
+    	if(pseudo != null)
+    		sb.append(pseudo.toString());
     	
     	// append declarations and margin rules
     	sb.append(OutputUtil.RULE_OPENING);

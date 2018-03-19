@@ -108,20 +108,13 @@ import_uri
     }
 
 page
-	: PAGE S* IDENT? page_pseudo? S*
+	: PAGE S* IDENT? pseudo? S*
 		LCURLY S*
 		declarations margin_rule*
 		RCURLY
 	;
     catch [RecognitionException re] {
         log.error("Recognition exception | page | should be empty");
-    }
-
-page_pseudo
-	: pseudocolon
-	;
-    catch [RecognitionException re] {
-        log.error("Recognition exception | page_pseudo | should be empty");
     }
 
 /** CSS3 margin-at-rule - see https://drafts.csswg.org/css-page-3/#margin-at-rules */
@@ -433,20 +426,12 @@ attribute
      }
 
 pseudo
-	: pseudocolon (MINUS? IDENT | FUNCTION S* (MINUS? IDENT | MINUS? NUMBER | MINUS? INDEX | selector) S* RPAREN)
-	;
+    : COLON COLON? (MINUS? IDENT | FUNCTION S* (MINUS? IDENT | MINUS? NUMBER | MINUS? INDEX | selector) S* RPAREN)
+    ;
     catch [RecognitionException re] {
       log.error("PARSING pseudo ERROR | inserting INVALID_SELPART");
        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_SELPART, "INVALID_SELPART"));
     }
-
-pseudocolon
-	: COLON COLON // pseudo element
-	| COLON // pseudo class
-	;
-    catch [RecognitionException re] {
-        log.error("PARSING pseudocolon ERROR | should be empty");
-     }
 
 
 string
