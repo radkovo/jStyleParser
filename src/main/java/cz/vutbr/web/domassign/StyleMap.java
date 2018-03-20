@@ -9,7 +9,7 @@ import org.w3c.dom.Element;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.NodeData;
-import cz.vutbr.web.css.Selector.PseudoDeclaration;
+import cz.vutbr.web.css.Selector.PseudoElementType;
 
 /**
  * This is a map that assigns a style to a particular elements and moreover, it
@@ -17,7 +17,7 @@ import cz.vutbr.web.css.Selector.PseudoDeclaration;
  * 
  * @author burgetr
  */
-public class StyleMap extends MultiMap<Element, PseudoDeclaration, NodeData>
+public class StyleMap extends MultiMap<Element, PseudoElementType, NodeData>
 {
 
 	public StyleMap(int size)

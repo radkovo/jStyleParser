@@ -40,7 +40,7 @@ public interface Preparator {
 	 * @return RuleSet
 	 */
 	public RuleBlock<?> prepareInlineRuleSet(List<Declaration> dlist,
-			List<Selector.PseudoPage> pseudos);
+			List<Selector.SelectorPart> pseudos);
 	
 	/**
 	 * Creates RuleMedia, block of rules with assigned medias. Uses mark to change priority of rules,

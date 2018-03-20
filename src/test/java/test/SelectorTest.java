@@ -295,8 +295,7 @@ public class SelectorTest {
 		RuleSet rule = (RuleSet) ss.get(0);
 
 		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null);
-		SelectorsUtil.appendSimpleSelector(cslist, null, null, rf
-				.createPseudoPage("hover", null, false));
+		SelectorsUtil.appendSimpleSelector(cslist, null, null, rf.createPseudoClass("hover"));
 
 		assertArrayEquals("Rule contains one pseudoselector :hover", cslist.toArray(), rule
 				.getSelectors());
@@ -316,8 +315,7 @@ public class SelectorTest {
 		RuleSet rule = (RuleSet) ss.get(0);
 
 		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null);
-		SelectorsUtil.appendSimpleSelector(cslist, null, null, rf
-				.createPseudoPage("fr", "lang", false));
+		SelectorsUtil.appendSimpleSelector(cslist, null, null, rf.createPseudoClass("lang", "fr"));
 		SelectorsUtil.appendChild(cslist, "Q");
 
 		assertArrayEquals("Rule contains one combined pseudoselector :lang(fr)>Q",
@@ -340,8 +338,9 @@ public class SelectorTest {
 
 		// test first rule
 		List<CombinedSelector> cslist = SelectorsUtil.appendCS(null);
-		SelectorsUtil.appendSimpleSelector(cslist, "P", null, rf
-				.createClass("special"), rf.createPseudoPage("before", null, true));
+		SelectorsUtil.appendSimpleSelector(cslist, "P", null, 
+                rf.createClass("special"), 
+                rf.createPseudoElement("before"));
 
 		assertArrayEquals("Rule 1 contains one combined selector P.special:before",
 				cslist.toArray(), ((RuleSet) ss.get(0)).getSelectors());
@@ -354,9 +353,9 @@ public class SelectorTest {
 
 		// test second rule
 		cslist = SelectorsUtil.appendCS(null);
-		SelectorsUtil.appendSimpleSelector(cslist, "P", null, rf
-				.createClass("special"), rf.createPseudoPage("first-letter",
-				null, true));
+		SelectorsUtil.appendSimpleSelector(cslist, "P", null, 
+                rf.createClass("special"), 
+                rf.createPseudoElement("first-letter"));
 
 		assertArrayEquals(
 				"Rule 2 contains one combined selector P.special:first-letter",

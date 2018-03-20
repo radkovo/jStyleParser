@@ -12,7 +12,7 @@ import java.util.List;
 import org.w3c.dom.Element;
 
 import cz.vutbr.web.css.Declaration;
-import cz.vutbr.web.css.Selector.PseudoDeclaration;
+import cz.vutbr.web.css.Selector.PseudoElementType;
 
 /**
  * This is a map that assigns a sorted list of declarations to each element 
@@ -20,7 +20,7 @@ import cz.vutbr.web.css.Selector.PseudoDeclaration;
  * 
  * @author burgetr
  */
-public class DeclarationMap extends MultiMap<Element, PseudoDeclaration, List<Declaration>>
+public class DeclarationMap extends MultiMap<Element, PseudoElementType, List<Declaration>>
 {
 
     /**
@@ -29,7 +29,7 @@ public class DeclarationMap extends MultiMap<Element, PseudoDeclaration, List<De
      * @param pseudo an optional pseudo-element or null
      * @param decl the new declaration
      */
-    public void addDeclaration(Element el, PseudoDeclaration pseudo, Declaration decl)
+    public void addDeclaration(Element el, PseudoElementType pseudo, Declaration decl)
     {
         List<Declaration> list = getOrCreate(el, pseudo);
         list.add(decl);
@@ -40,7 +40,7 @@ public class DeclarationMap extends MultiMap<Element, PseudoDeclaration, List<De
      * @param el the element to which the list is assigned
      * @param pseudo an optional pseudo-element or null
      */
-    public void sortDeclarations(Element el, PseudoDeclaration pseudo)
+    public void sortDeclarations(Element el, PseudoElementType pseudo)
     {
         List<Declaration> list = get(el, pseudo);
         if (list != null)

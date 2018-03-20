@@ -96,14 +96,6 @@ public class SimplePreparator implements Preparator {
 			log.debug("Empty RulePage was ommited");
 			return null;
 		}
-        if (pseudo != null && 
-                pseudo.getDeclaration() != Selector.PseudoDeclaration.LEFT &&
-                pseudo.getDeclaration() != Selector.PseudoDeclaration.RIGHT &&
-                pseudo.getDeclaration() != Selector.PseudoDeclaration.FIRST &&
-                pseudo.getDeclaration() != Selector.PseudoDeclaration.BLANK) {
-            log.debug("Ommitting RulePage with invalid pseudo");
-			return null;
-        }
 
 		RulePage rp = rf.createPage();
         if (declarations != null)
@@ -164,8 +156,9 @@ public class SimplePreparator implements Preparator {
         return (RuleBlock<?>) rp;
     }
 
+    @Override
 	public RuleBlock<?> prepareInlineRuleSet(List<Declaration> dlist,
-			List<PseudoPage> pseudos) {
+			List<Selector.SelectorPart> pseudos) {
 
 		if(dlist==null || dlist.isEmpty()) {
 			log.debug("Empty RuleSet (inline) was ommited");
@@ -184,7 +177,7 @@ public class SimplePreparator implements Preparator {
 		rs.replaceAll(dlist);
 		rs.setSelectors(Arrays.asList(cs));
 		
-		log.info("Create @media as with:\n{}", rs);
+		log.info("Create inline ruleset as with:\n{}", rs);
 		
 		return (RuleBlock<?>) rs;
 	}

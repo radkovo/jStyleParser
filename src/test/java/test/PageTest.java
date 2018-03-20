@@ -51,7 +51,7 @@ public class PageTest {
         assertEquals("One rule is set", 1, ss.size());
         RulePage rule = (RulePage) ss.get(0);
         assertNotNull("Rule has a pseudo-class ", rule.getPseudo());
-        assertEquals("Rule has :left pseudo-class ", Selector.PseudoDeclaration.LEFT, rule.getPseudo().getDeclaration());
+        assertEquals("Rule has :left pseudo-class ", Selector.PseudoPageType.LEFT, rule.getPseudo().getType());
         assertEquals("Rule contains 1 declaration ", 1, rule.size());
     }
     
@@ -61,7 +61,7 @@ public class PageTest {
         assertEquals("One rule is set", 1, ss.size());
         RulePage rule = (RulePage) ss.get(0);
         assertNotNull("Rule has a pseudo-class ", rule.getPseudo());
-        assertEquals("Rule has :right pseudo-class ", Selector.PseudoDeclaration.RIGHT, rule.getPseudo().getDeclaration());
+        assertEquals("Rule has :right pseudo-class ", Selector.PseudoPageType.RIGHT, rule.getPseudo().getType());
         assertEquals("Rule contains 1 declaration ", 1, rule.size());
     }
     
@@ -71,7 +71,7 @@ public class PageTest {
         assertEquals("One rule is set", 1, ss.size());
         RulePage rule = (RulePage) ss.get(0);
         assertNotNull("Rule has a pseudo-class ", rule.getPseudo());
-        assertEquals("Rule has :first pseudo-class ", Selector.PseudoDeclaration.FIRST, rule.getPseudo().getDeclaration());
+        assertEquals("Rule has :first pseudo-class ", Selector.PseudoPageType.FIRST, rule.getPseudo().getType());
         assertEquals("Rule contains 1 declaration ", 1, rule.size());
     }
     

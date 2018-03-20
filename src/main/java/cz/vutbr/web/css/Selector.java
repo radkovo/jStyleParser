@@ -1,5 +1,7 @@
 package cz.vutbr.web.css;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.w3c.dom.Element;
 
 /**
@@ -58,86 +60,164 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     }
 
     /**
-     * A pseudo class or element specification 
-     * @author burgetr
+     * A pseudo-class for @page rules
      */
-    public enum PseudoDeclaration
-    {
-        // Pseudo-classes
-        ACTIVE("active", false),
-        ANY("any", false),
-        ANY_LINK("any-link", false),
-        BLANK("blank", false),
-        CHECKED("checked", false),
-        DEFAULT("default", false),
-        DEFINED("defined", false),
-        DIR("dir", false),
-        DISABLED("disabled", false),
-        EMPTY("empty", false),
-        ENABLED("enabled", false),
-        FIRST("first", false),
-        FIRST_CHILD("first-child", false),
-        FIRST_OF_TYPE("first-of-type", false),
-        FULLSCREEN("fullscreen", false),
-        FOCUS("focus", false),
-        FOCUS_WITHIN("focus-within", false),
-        HOVER("hover", false),
-        INDETERMINATE("indeterminate", false),
-        IN_RANGE("in-range", false),
-        INVALID("invalid", false),
-        LANG("lang", false),
-        LAST_CHILD("last-child", false),
-        LAST_OF_TYPE("last-of-type", false),
-        LEFT("left", false),
-        LINK("link", false),
-        NOT("not", false),
-        NTH_CHILD("nth-child", false),
-        NTH_LAST_CHILD("nth-last-child", false),
-        NTH_LAST_OF_TYPE("nth-last-of-type", false),
-        NTH_OF_TYPE("nth-of-type", false),
-        ONLY_CHILD("only-child", false),
-        ONLY_OF_TYPE("only-of-type", false),
-        OPTIONAL("optional", false),
-        OUT_OF_RANGE("out-of-range", false),
-        PLACEHOLDER_SHOWN("placeholder-shown", false),
-        READ_ONLY("read-only", false),
-        READ_WRITE("read-write", false),
-        REQUIRED("required", false),
-        RIGHT("right", false),
-        ROOT("root", false),
-        SCOPE("scope", false),
-        TARGET("target", false),
-        VALID("valid", false),
-        VISITED("visited", false),
+    public enum PseudoPageType {
+        BLANK("blank"),
+        FIRST("first"),
+        LEFT("left"),
+        RIGHT("right"),
+        vendor(null); // Vendor-prefixed
         
-        // Pseudo-elements
-        FIRST_LINE("first-line", true),
-        FIRST_LETTER("first-letter", true),
-        BEFORE("before", true),
-        AFTER("after", true),
-        BACKDROP("backdrop", true),
-        CUE("cue", true),
-        GRAMMAR_ERROR("grammar-error", true),
-        PLACEHOLDER("placeholder", true),
-        SELECTION("selection", true),
-        SPELLING_ERROR("spelling-error", true),
+        private final String name;
+        private static final Map<String, PseudoPageType> lookup = new ConcurrentHashMap<>();
         
-        // Placeholders for vendor-specific pseudo-classes or elements
-        vendor_class(null, false),
-        vendor_element(null, true);
-
-        private String value;
-        private boolean element;
-        
-        private PseudoDeclaration(String value, boolean isElement) {
-            this.value = value;
-            this.element = isElement;
+        private PseudoPageType(String name) {
+            this.name = name;
         }
         
-        public String value() {return value;}
+        public String getName() {
+            return name;
+        }
         
-        public boolean isPseudoElement() {return element;}
+        public static PseudoPageType forName(String name) {
+            if (name == null) {
+                return null;
+            }
+            if (name.startsWith("-") || name.startsWith("_")) {
+                return vendor;
+            }
+            if (lookup.isEmpty()) {
+                for (PseudoPageType type : values()) {
+                    if (type.getName() != null) {
+                        lookup.put(type.getName(), type);
+                    }
+                }
+            }
+            return lookup.get(name.toLowerCase());
+        }
+    }
+    
+    /**
+     * A pseudo-class
+     */
+    public enum PseudoClassType {
+        ACTIVE("active"),
+        ANY("any"),
+        ANY_LINK("any-link"),
+        CHECKED("checked"),
+        DEFAULT("default"),
+        DEFINED("defined"),
+        DIR("dir"),
+        DISABLED("disabled"),
+        EMPTY("empty"),
+        ENABLED("enabled"),
+        FIRST_CHILD("first-child"),
+        FIRST_OF_TYPE("first-of-type"),
+        FULLSCREEN("fullscreen"),
+        FOCUS("focus"),
+        FOCUS_WITHIN("focus-within"),
+        HAS("has"),
+        HOVER("hover"),
+        INDETERMINATE("indeterminate"),
+        IN_RANGE("in-range"),
+        INVALID("invalid"),
+        LANG("lang"),
+        LAST_CHILD("last-child"),
+        LAST_OF_TYPE("last-of-type"),
+        LINK("link"),
+        NOT("not"),
+        NTH_CHILD("nth-child"),
+        NTH_LAST_CHILD("nth-last-child"),
+        NTH_LAST_OF_TYPE("nth-last-of-type"),
+        NTH_OF_TYPE("nth-of-type"),
+        ONLY_CHILD("only-child"),
+        ONLY_OF_TYPE("only-of-type"),
+        OPTIONAL("optional"),
+        OUT_OF_RANGE("out-of-range"),
+        PLACEHOLDER_SHOWN("placeholder-shown"),
+        READ_ONLY("read-only"),
+        READ_WRITE("read-write"),
+        REQUIRED("required"),
+        ROOT("root"),
+        SCOPE("scope"),
+        TARGET("target"),
+        VALID("valid"),
+        VISITED("visited"),
+        vendor(null); // Vendor-prefixed
         
+        private final String name;
+        private static final Map<String, PseudoClassType> lookup = new ConcurrentHashMap<>();
+        
+        private PseudoClassType(String name) {
+            this.name = name;
+        }
+        
+        public String getName() {
+            return name;
+        }
+        
+        public static PseudoClassType forName(String name) {
+            if (name == null) {
+                return null;
+            }
+            if (name.startsWith("-") || name.startsWith("_")) {
+                return vendor;
+            }
+            if (lookup.isEmpty()) {
+                for (PseudoClassType type : values()) {
+                    if (type.getName() != null) {
+                        lookup.put(type.getName(), type);
+                    }
+                }
+            }
+            return lookup.get(name.toLowerCase());
+        }
+    }
+    
+    /**
+     * A pseudo-element
+     */
+    public enum PseudoElementType {
+        FIRST_LINE("first-line"),
+        FIRST_LETTER("first-letter"),
+        BEFORE("before"),
+        AFTER("after"),
+        BACKDROP("backdrop"),
+        CUE("cue"),
+        GRAMMAR_ERROR("grammar-error"),
+        PLACEHOLDER("placeholder"),
+        SELECTION("selection"),
+        SPELLING_ERROR("spelling-error"),
+        vendor(null); // Vendor-prefixed
+        
+        private final String name;
+        private static final Map<String, PseudoElementType> lookup = new ConcurrentHashMap<>();
+        
+        private PseudoElementType(String name) {
+            this.name = name;
+        }
+        
+        public String getName() {
+            return name;
+        }
+        
+        public static PseudoElementType forName(String name) {
+            if (name == null) {
+                return null;
+            }
+            if (name.startsWith("-") || name.startsWith("_")) {
+                return vendor;
+            }
+            if (lookup.isEmpty()) {
+                for (PseudoElementType type : values()) {
+                    if (type.getName() != null) {
+                        lookup.put(type.getName(), type);
+                    }
+                }
+            }
+            return lookup.get(name.toLowerCase());
+        }
     }
     
     /**
@@ -172,16 +252,17 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     public String getElementName();
     
     /**
-     * Reads the pseudoelement of the selector 
+     * Reads the pseudo-element of the selector 
      * @return the used pseudo-element or <code>null</code> if no pseudo-element is specified
      */
-    public PseudoDeclaration getPseudoElement();
+    public PseudoElementType getPseudoElementType();
     
     /**
-     * Checks where the specified pseudo declaration is in this selector
-     * @return <code>true</code> if the selector has the specified pseudo declaration
+     * Checks where the specified pseudo-class is in this selector
+     * @param pct
+     * @return <code>true</code> if the selector has the specified pseudo-class
      */
-    public boolean hasPseudoDeclaration(final PseudoDeclaration pd);
+    public boolean hasPseudoClass(final PseudoClassType pct);
 
     /**
      * Modifies specificity according to CSS standard
@@ -269,16 +350,22 @@ public interface Selector extends Rule<Selector.SelectorPart> {
     	public ElementDOM setElement(Element e);
     }
     
-    /**
-     * Pseudo page
-     * @author kapy
-     *
-     */
     public interface PseudoPage extends SelectorPart {
-    	public String getFunctionName();
-    	public String getValue();
-        public PseudoDeclaration getDeclaration();
+    	public String getName();
+        public PseudoPageType getType();
     }
-       
-   
+    
+    public interface PseudoClass extends SelectorPart {
+        public String getName();
+        public String getFunctionValue();
+        public PseudoClassType getType();
+        public Selector getNestedSelector();
+    }
+    
+    public interface PseudoElement extends SelectorPart {
+        public String getName();
+        public String getFunctionValue();
+        public PseudoElementType getType();
+        public Selector getNestedSelector();
+    }
 }
