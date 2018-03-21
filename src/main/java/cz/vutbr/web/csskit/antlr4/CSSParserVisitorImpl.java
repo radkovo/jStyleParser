@@ -875,50 +875,41 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     public Object visitFunct(CSSParser.FunctContext ctx) {
         if (ctx.EXPRESSION() != null) {
             log.warn("Omitting expression " + ctx.getText() + ", expressions are not supported");
-            //invalidate declaration
-            declaration_stack.peek().invalid = true;
             return null;
         }
+        Term<?> ret = null;
         final String fname = extractTextUnescaped(ctx.FUNCTION().getText()).toLowerCase();
         if (ctx.funct_args() != null)
         {
             List<Term<?>> t = visitFunct_args(ctx.funct_args());
             if (fname.equals("url")) {
                 // the function name is url() after escaping - create an URI
-                if (terms_stack.peek().unary == -1 || t == null || t.size() != 1)
-                    declaration_stack.peek().invalid = true;
+                if (t == null || t.size() != 1)
+                    ret = null;
                 else {
                     cz.vutbr.web.css.Term<?> term = t.get(0);
                     if (term instanceof cz.vutbr.web.css.TermString && term.getOperator() == null)
-                        terms_stack.peek().term = tf.createURI(((cz.vutbr.web.css.TermString) term).getValue(), extractBase(ctx.FUNCTION()));
+                        ret = tf.createURI(((cz.vutbr.web.css.TermString) term).getValue(), extractBase(ctx.FUNCTION()));
                     else
-                        declaration_stack.peek().invalid = true;
+                        ret = null;
                 }
             } else if (fname.equals("calc")) {
                 // create calc() of the given type: <length>, <frequency>, <angle>, <time>, <number>, or <integer>
-                if (terms_stack.peek().unary == -1 || t == null || t.size() == 0)
-                    declaration_stack.peek().invalid = true;
-                else {
-                    TermCalc calc = tf.createCalc(t);
-                    if (calc != null)
-                        terms_stack.peek().term = calc;
-                    else
-                        declaration_stack.peek().invalid = true;
-                }
+                if (t == null || t.size() == 0)
+                    ret = null;
+                else
+                    ret = tf.createCalc(t);
                 
             } else {
                 // create function
                 cz.vutbr.web.css.TermFunction function = tf.createFunction();
                 function.setFunctionName(fname);
-                if (terms_stack.peek().unary == -1) //if started with minus, add the minus to the function name
-                    function.setFunctionName('-' + function.getFunctionName());
                 if (t != null)
                     function.setValue(t);
-                terms_stack.peek().term = function;
+                ret = function;
             }
         }
-        //returns null
-        return null;
+        return ret;
     }
 
     @Override
@@ -977,9 +968,23 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             terms_stack.peek().term = tf.createURI(extractTextUnescaped(ctx.UNCLOSED_URI().getText()), extractBase(ctx.UNCLOSED_URI()));
         } else if (ctx.funct() != null) {
             terms_stack.peek().term = null;
-            visitFunct(ctx.funct());
-            //served in function
-            log.debug("function is server later");
+            Term<?> fnterm = (Term<?>) visitFunct(ctx.funct());
+            if (fnterm != null) {
+                if (terms_stack.peek().unary == -1) { 
+                    if (fnterm instanceof TermFunction) {
+                        //normal function - add the unary minus to the function name
+                        ((TermFunction) fnterm).setFunctionName('-' + ((TermFunction) fnterm).getFunctionName());
+                        terms_stack.peek().term = fnterm;
+                    } else {
+                        //url() and calc() - not applicable 
+                        declaration_stack.peek().invalid = true;
+                    }
+                } else {
+                    terms_stack.peek().term = fnterm;
+                }
+            } else {
+                declaration_stack.peek().invalid = true;
+            }
         } else {
             log.error("unhandled valueparts");
             terms_stack.peek().term = null;
@@ -1102,9 +1107,12 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             funct_args_stack.peek().term = tf.createNumeric(ctx.NUMBER().getText(), 1);
         } else if (ctx.funct() != null) {
             funct_args_stack.peek().term = null;
-            visitFunct(ctx.funct());
-            //served in function
-            log.debug("function is server later");
+            Term<?> fnterm = (Term<?>) visitFunct(ctx.funct());
+            if (fnterm != null) {
+                funct_args_stack.peek().term = fnterm;
+            } else {
+                declaration_stack.peek().invalid = true;
+            }
         } else {
             log.error("unhandled funct_args");
             funct_args_stack.peek().term = null;
