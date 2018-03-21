@@ -176,7 +176,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
 		if(operator!=null) sb.append(operator.value());
 		
 		sb.append(CssEscape.escapeCssIdentifier(functionName)).append(OutputUtil.FUNCTION_OPENING);
-		sb = OutputUtil.appendList(sb, value, OutputUtil.EMPTY_DELIM)
+		sb = OutputUtil.appendFunctionArgs(sb, value)
 			.append(OutputUtil.FUNCTION_CLOSING);
 		
 		return sb.toString();
