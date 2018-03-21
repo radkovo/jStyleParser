@@ -1093,8 +1093,8 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             }
         } else if (ctx.HASH() != null) {
             log.debug("VP - hash");
-            terms_stack.peek().term = tf.createColor(ctx.HASH().getText());
-            if (terms_stack.peek().term == null) {
+            funct_args_stack.peek().term = tf.createColor(ctx.HASH().getText());
+            if (funct_args_stack.peek().term == null) {
                 declaration_stack.peek().invalid = true;
             }
         } else if (ctx.NUMBER() != null) {
