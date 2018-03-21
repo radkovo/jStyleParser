@@ -145,7 +145,7 @@ public interface RuleFactory {
 	 * @param functionName Name of additional function or <code>null</code>
 	 * @return New CSS pseudo page selector page
 	 */
-	Selector.PseudoPage createPseudoPage(String pseudo, String functionName);
+	Selector.PseudoPage createPseudoPage(String pseudo, String functionName, boolean isPseudoElement);
 
     /**
      * Creates CSS pseudo selector containing another selector as argument

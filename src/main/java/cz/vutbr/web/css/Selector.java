@@ -63,54 +63,67 @@ public interface Selector extends Rule<Selector.SelectorPart> {
      */
     public enum PseudoDeclaration
     {
+        // Pseudo-classes
         ACTIVE("active", false),
-        FOCUS("focus", false),
-        HOVER("hover", false),
-        LINK("link", false),
-        VISITED("visited", false),
+        ANY("any", false),
+        ANY_LINK("any-link", false),
+        CHECKED("checked", false),
+        DEFAULT("default", false),
+        DEFINED("defined", false),
+        DIR("dir", false),
+        DISABLED("disabled", false),
+        EMPTY("empty", false),
+        ENABLED("enabled", false),
+        FIRST("first", false),
         FIRST_CHILD("first-child", false),
+        FIRST_OF_TYPE("first-of-type", false),
+        FULLSCREEN("fullscreen", false),
+        FOCUS("focus", false),
+        FOCUS_WITHIN("focus-within", false),
+        HOVER("hover", false),
+        INDETERMINATE("indeterminate", false),
+        IN_RANGE("in-range", false),
+        INVALID("invalid", false),
+        LANG("lang", false),
         LAST_CHILD("last-child", false),
-        ONLY_CHILD("only-child", false),
-        ONLY_OF_TYPE("only-of-type", false),
+        LAST_OF_TYPE("last-of-type", false),
+        LEFT("left", false),
+        LINK("link", false),
+        NOT("not", false),
         NTH_CHILD("nth-child", false),
         NTH_LAST_CHILD("nth-last-child", false),
-        NTH_OF_TYPE("nth-of-type", false),
         NTH_LAST_OF_TYPE("nth-last-of-type", false),
-        FIRST_OF_TYPE("first-of-type", false),
-        LAST_OF_TYPE("last-of-type", false),
+        NTH_OF_TYPE("nth-of-type", false),
+        ONLY_CHILD("only-child", false),
+        ONLY_OF_TYPE("only-of-type", false),
+        OPTIONAL("optional", false),
+        OUT_OF_RANGE("out-of-range", false),
+        PLACEHOLDER_SHOWN("placeholder-shown", false),
+        READ_ONLY("read-only", false),
+        READ_WRITE("read-write", false),
+        REQUIRED("required", false),
+        RIGHT("right", false),
         ROOT("root", false),
-        EMPTY("empty", false),
-        LANG("lang", false),
-        ENABLED("enabled", false),
-        DISABLED("disabled", false),
-        CHECKED("checked", false),
+        SCOPE("scope", false),
         TARGET("target", false),
-        NOT("not", false),
+        VALID("valid", false),
+        VISITED("visited", false),
         
+        // Pseudo-elements
         FIRST_LINE("first-line", true),
         FIRST_LETTER("first-letter", true),
         BEFORE("before", true),
         AFTER("after", true),
-        
         BACKDROP("backdrop", true),
         CUE("cue", true),
         GRAMMAR_ERROR("grammar-error", true),
         PLACEHOLDER("placeholder", true),
         SELECTION("selection", true),
         SPELLING_ERROR("spelling-error", true),
-        _MOZ_PROGRESS_BAR("-moz-progress-bar", true),
-        _MOZ_RANGE_PROGRESS("-moz-range-progress", true),
-        _MOZ_RANGE_THUMB("-moz-range-thumb", true),
-        _MOZ_RANGE_TRACK("-moz-range-track", true),
-        _MS_FILL("-ms-fill", true),
-        _MS_FILL_LOWER("-ms-fill-lower", true),
-        _MS_FILL_UPPER("-ms-fill-upper", true),
-        _MS_THUMB("-ms-thumb", true),
-        _MS_TRACK("-ms-track", true),
-        _WEBKIT_PROGRESS_BAR("-webkit-progress-bar", true),
-        _WEBKIT_PROGRESS_VALUE("-webkit-progress-value", true),
-        _WEBKIT_SLIDER_RUNNABLE_TRACK("-webkit-slider-runnable-track", true),
-        _WEBKIT_SLIDER_THUMB("-webkit-slider-thumb", true);
+        
+        // Placeholders for vendor-specific pseudo-classes or elements
+        vendor_class(null, false),
+        vendor_element(null, true);
 
         private String value;
         private boolean element;
@@ -262,13 +275,8 @@ public interface Selector extends Rule<Selector.SelectorPart> {
      */
     public interface PseudoPage extends SelectorPart {
     	public String getFunctionName();
-    	public PseudoPage setFunctionName(String functionName);
-    	
     	public String getValue();
-    	public PseudoPage setValue(String value);
-    	
         public PseudoDeclaration getDeclaration();
-        
     }
        
    

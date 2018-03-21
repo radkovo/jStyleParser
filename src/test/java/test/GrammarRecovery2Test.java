@@ -15,7 +15,6 @@ import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermFactory;
-import org.junit.Ignore;
 
 public class GrammarRecovery2Test {
 	private static final Logger log = LoggerFactory.getLogger(GrammarRecovery2Test.class);
@@ -120,7 +119,6 @@ public class GrammarRecovery2Test {
     }
     
     @Test
-    @Ignore
     public void invalidSelectorMedia() throws IOException, CSSException 
     {
         StyleSheet ss = CSSFactory.parseString(TEST_DECL7A, null);
