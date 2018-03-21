@@ -13,8 +13,8 @@ import java.util.Set;
 import org.w3c.dom.Element;
 
 import cz.vutbr.web.css.MatchCondition;
-import cz.vutbr.web.css.Selector.PseudoDeclaration;
-import cz.vutbr.web.css.Selector.PseudoPage;
+import cz.vutbr.web.css.Selector.PseudoClass;
+import cz.vutbr.web.css.Selector.PseudoClassType;
 import cz.vutbr.web.css.Selector.SelectorPart;
 
 /**
@@ -27,8 +27,8 @@ import cz.vutbr.web.css.Selector.SelectorPart;
  */
 public class MatchConditionOnElements implements MatchCondition
 {
-    private Map<Element, Set<PseudoDeclaration>> elements;
-    private Map<String, Set<PseudoDeclaration>> names;
+    private Map<Element, Set<PseudoClassType>> elements;
+    private Map<String, Set<PseudoClassType>> names;
     
     /**
      * Creates the condition with an empty set of assigned elements and element names.
@@ -44,7 +44,7 @@ public class MatchConditionOnElements implements MatchCondition
      * @param e the element
      * @param pseudoClass the pseudo class to be assigned
      */
-    public MatchConditionOnElements(Element e, PseudoDeclaration pseudoClass)
+    public MatchConditionOnElements(Element e, PseudoClassType pseudoClass)
     {
         addMatch(e, pseudoClass);
     }
@@ -54,7 +54,7 @@ public class MatchConditionOnElements implements MatchCondition
      * @param name the element name
      * @param pseudoClass the pseudo class to be assigned
      */
-    public MatchConditionOnElements(String name, PseudoDeclaration pseudoClass)
+    public MatchConditionOnElements(String name, PseudoClassType pseudoClass)
     {
         addMatch(name, pseudoClass);
     }
@@ -64,15 +64,15 @@ public class MatchConditionOnElements implements MatchCondition
      * @param e the DOM element
      * @param pseudoClass the pseudo class to be assigned
      */
-    public void addMatch(Element e, PseudoDeclaration pseudoClass)
+    public void addMatch(Element e, PseudoClassType pseudoClass)
     {
         if (elements == null)
-            elements = new HashMap<Element, Set<PseudoDeclaration>>();
+            elements = new HashMap<Element, Set<PseudoClassType>>();
         
-        Set<PseudoDeclaration> classes = elements.get(e);
+        Set<PseudoClassType> classes = elements.get(e);
         if (classes == null)
         {
-            classes = new HashSet<PseudoDeclaration>(2);
+            classes = new HashSet<PseudoClassType>(2);
             elements.put(e, classes);
         }
         classes.add(pseudoClass);
@@ -83,11 +83,11 @@ public class MatchConditionOnElements implements MatchCondition
      * @param e the DOM element
      * @param pseudoClass the pseudo class to be removed
      */
-    public void removeMatch(Element e, PseudoDeclaration pseudoClass)
+    public void removeMatch(Element e, PseudoClassType pseudoClass)
     {
         if (elements != null)
         {
-            Set<PseudoDeclaration> classes = elements.get(e);
+            Set<PseudoClassType> classes = elements.get(e);
             if (classes != null)
                 classes.remove(pseudoClass);
         }   
@@ -99,15 +99,15 @@ public class MatchConditionOnElements implements MatchCondition
      * @param name the element name
      * @param pseudoClass the pseudo class to be assigned
      */
-    public void addMatch(String name, PseudoDeclaration pseudoClass)
+    public void addMatch(String name, PseudoClassType pseudoClass)
     {
         if (names == null)
-            names = new HashMap<String, Set<PseudoDeclaration>>();
+            names = new HashMap<String, Set<PseudoClassType>>();
         
-        Set<PseudoDeclaration> classes = names.get(name);
+        Set<PseudoClassType> classes = names.get(name);
         if (classes == null)
         {
-            classes = new HashSet<PseudoDeclaration>(2);
+            classes = new HashSet<PseudoClassType>(2);
             names.put(name, classes);
         }
         classes.add(pseudoClass);
@@ -118,11 +118,11 @@ public class MatchConditionOnElements implements MatchCondition
      * @param name the element name
      * @param pseudoClass the pseudo class to be removed
      */
-    public void removeMatch(String name, PseudoDeclaration pseudoClass)
+    public void removeMatch(String name, PseudoClassType pseudoClass)
     {
         if (names != null)
         {
-            Set<PseudoDeclaration> classes = names.get(name);
+            Set<PseudoClassType> classes = names.get(name);
             if (classes != null)
                 classes.remove(pseudoClass);
         }   
@@ -130,20 +130,20 @@ public class MatchConditionOnElements implements MatchCondition
     
     public boolean isSatisfied(Element e, SelectorPart selpart)
     {
-        if (selpart instanceof PseudoPage)
+        if (selpart instanceof PseudoClass)
         {
-            PseudoDeclaration required = ((PseudoPage) selpart).getDeclaration();
+            PseudoClassType required = ((PseudoClass) selpart).getType();
             
             if (elements != null)
             {
-                Set<PseudoDeclaration> pseudos = elements.get(e);
+                Set<PseudoClassType> pseudos = elements.get(e);
                 if (pseudos != null)
                     return pseudos.contains(required);
             }
             
             if (names != null)
             {
-                Set<PseudoDeclaration> pseudos = names.get(e.getTagName().toLowerCase());
+                Set<PseudoClassType> pseudos = names.get(e.getTagName().toLowerCase());
                 if (pseudos != null)
                     return pseudos.contains(required);
             }
@@ -158,16 +158,16 @@ public class MatchConditionOnElements implements MatchCondition
     public Object clone() {
     	final MatchConditionOnElements clone = new MatchConditionOnElements();
     	if (elements != null) {
-    		clone.elements = new HashMap<Element, Set<PseudoDeclaration>>();
+    		clone.elements = new HashMap<Element, Set<PseudoClassType>>();
     		for (final Element e : elements.keySet()) {
-                final HashSet<PseudoDeclaration> clonedDeclarations = new HashSet<PseudoDeclaration>(elements.get(e));
+                final HashSet<PseudoClassType> clonedDeclarations = new HashSet<PseudoClassType>(elements.get(e));
     			clone.elements.put(e, clonedDeclarations);
     		}
     	}
     	if (names != null) {
-    		clone.names = new HashMap<String, Set<PseudoDeclaration>>();
+    		clone.names = new HashMap<String, Set<PseudoClassType>>();
 			for (final String n : names.keySet()) {
-                final HashSet<PseudoDeclaration> clonedDeclarations = new HashSet<PseudoDeclaration>(names.get(n));
+                final HashSet<PseudoClassType> clonedDeclarations = new HashSet<PseudoClassType>(names.get(n));
     			clone.names.put(n, clonedDeclarations);
     		}
     	}

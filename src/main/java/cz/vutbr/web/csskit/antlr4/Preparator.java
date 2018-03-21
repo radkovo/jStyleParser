@@ -40,7 +40,7 @@ public interface Preparator {
 	 * @return RuleSet
 	 */
 	public RuleBlock<?> prepareInlineRuleSet(List<Declaration> dlist,
-			List<Selector.PseudoPage> pseudos);
+			List<Selector.SelectorPart> pseudos);
 	
 	/**
 	 * Creates RuleMedia, block of rules with assigned medias. Uses mark to change priority of rules,
@@ -59,7 +59,7 @@ public interface Preparator {
      * @param pseudo Pseudo-class of the page
 	 * @return RulePage
 	 */
-	public RuleBlock<?> prepareRulePage(List<Declaration> declarations, List<RuleMargin> marginRules, String name, String pseudo);
+	public RuleBlock<?> prepareRulePage(List<Declaration> declarations, List<RuleMargin> marginRules, String name, Selector.PseudoPage pseudo);
 	
     /**
      * Creates RuleMargin, block of declarations associated with specific area in the page margin. 

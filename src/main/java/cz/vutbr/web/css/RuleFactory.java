@@ -139,21 +139,58 @@ public interface RuleFactory {
 	 */
 	Selector.ElementID createID(String id);
 
-	/**
-	 * Creates CSS selector part, pseudo page
-	 * @param pseudo Name of pseudo page
-	 * @param functionName Name of additional function or <code>null</code>
-	 * @return New CSS pseudo page selector page
-	 */
-	Selector.PseudoPage createPseudoPage(String pseudo, String functionName, boolean isPseudoElement);
-
     /**
-     * Creates CSS pseudo selector containing another selector as argument
-     * @param selector the nested selector
-     * @param functionName Name of pseudo function
-     * @return New CSS pseudo page selector page
-     */
-    Selector.PseudoPage createPseudoPage(Selector selector, String functionName);
+	 * Creates CSS selector part, page at-rule pseudo-class
+	 * @param name Name of pseudo-class
+	 * @return New CSS page pseudo-class
+	 */
+	Selector.PseudoPage createPseudoPage(String name);
+    
+    /**
+	 * Creates CSS selector part, pseudo-element
+	 * @param name Name of pseudo-element
+	 * @return New CSS pseudo-element
+	 */
+	Selector.PseudoElement createPseudoElement(String name);
+    
+    /**
+	 * Creates CSS selector part, pseudo-element
+	 * @param name Name of pseudo-element
+     * @param functionValue Value of its function argument
+	 * @return New CSS pseudo-element
+	 */
+	Selector.PseudoElement createPseudoElement(String name, String functionValue);
+    
+    /**
+	 * Creates CSS selector part, pseudo-element
+	 * @param name Name of pseudo-element
+     * @param nestedSelector Selector in its function argument
+	 * @return New CSS pseudo-element
+	 */
+	Selector.PseudoElement createPseudoElement(String name, Selector nestedSelector);
+    
+	/**
+	 * Creates CSS selector part, pseudo-class
+	 * @param name Name of pseudo-class
+	 * @return New CSS pseudo-class
+	 */
+	Selector.PseudoClass createPseudoClass(String name);
+    
+    /**
+	 * Creates CSS selector part, pseudo-class
+	 * @param name Name of pseudo-class
+     * @param functionValue Value of its function argument
+	 * @return New CSS pseudo-class
+	 */
+	Selector.PseudoClass createPseudoClass(String name, String functionValue);
+    
+    /**
+	 * Creates CSS selector part, pseudo-class
+	 * @param name Name of pseudo-class
+     * @param nestedSelector Selector in its function argument
+	 * @return New CSS pseudo-class
+	 */
+	Selector.PseudoClass createPseudoClass(String name, Selector nestedSelector);
 
 	/**
 	 * Creates CSS author style sheet

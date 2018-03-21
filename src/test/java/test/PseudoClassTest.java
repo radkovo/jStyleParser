@@ -3,7 +3,6 @@ package test;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +24,8 @@ import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
+import cz.vutbr.web.css.Selector.PseudoClassType;
 import cz.vutbr.web.css.StyleSheet;
-import cz.vutbr.web.css.Selector.PseudoDeclaration;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.csskit.MatchConditionOnElements;
@@ -54,11 +53,11 @@ public class PseudoClassTest {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        MatchConditionOnElements cond = new MatchConditionOnElements("a", PseudoDeclaration.LINK);
-        cond.addMatch(elements.getElementById("l2"), PseudoDeclaration.HOVER);
-        cond.addMatch(elements.getElementById("l3"), PseudoDeclaration.VISITED);
-        cond.addMatch(elements.getElementById("l3"), PseudoDeclaration.HOVER);
-        cond.removeMatch(elements.getElementById("l3"), PseudoDeclaration.HOVER);
+        MatchConditionOnElements cond = new MatchConditionOnElements("a", PseudoClassType.LINK);
+        cond.addMatch(elements.getElementById("l2"), PseudoClassType.HOVER);
+        cond.addMatch(elements.getElementById("l3"), PseudoClassType.VISITED);
+        cond.addMatch(elements.getElementById("l3"), PseudoClassType.HOVER);
+        cond.removeMatch(elements.getElementById("l3"), PseudoClassType.HOVER);
         CSSFactory.registerDefaultMatchCondition(cond);
         
         StyleMap decl = CSSFactory.assignDOM(doc, null, createBaseFromFilename("data/simple/pseudo.html"),"screen", true);
@@ -79,9 +78,9 @@ public class PseudoClassTest {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        MatchConditionOnElements cond = new MatchConditionOnElements("a", PseudoDeclaration.LINK);
-        cond.addMatch(elements.getElementById("l2"), PseudoDeclaration.HOVER);
-        cond.addMatch(elements.getElementById("l3"), PseudoDeclaration.VISITED);
+        MatchConditionOnElements cond = new MatchConditionOnElements("a", PseudoClassType.LINK);
+        cond.addMatch(elements.getElementById("l2"), PseudoClassType.HOVER);
+        cond.addMatch(elements.getElementById("l3"), PseudoClassType.VISITED);
         CSSFactory.registerDefaultMatchCondition(cond);
         
         StyleSheet style = CSSFactory.getUsedStyles(doc, null, createBaseFromFilename("data/simple/selectors.html"),"screen");
@@ -103,11 +102,11 @@ public class PseudoClassTest {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
 
-        MatchConditionOnElements cond = new MatchConditionOnElements("a", PseudoDeclaration.LINK);
-        cond.addMatch(elements.getElementById("l2"), PseudoDeclaration.HOVER);
-        cond.addMatch(elements.getElementById("l3"), PseudoDeclaration.VISITED);
-        cond.addMatch(elements.getElementById("l3"), PseudoDeclaration.HOVER);
-        cond.removeMatch(elements.getElementById("l3"), PseudoDeclaration.HOVER);
+        MatchConditionOnElements cond = new MatchConditionOnElements("a", PseudoClassType.LINK);
+        cond.addMatch(elements.getElementById("l2"), PseudoClassType.HOVER);
+        cond.addMatch(elements.getElementById("l3"), PseudoClassType.VISITED);
+        cond.addMatch(elements.getElementById("l3"), PseudoClassType.HOVER);
+        cond.removeMatch(elements.getElementById("l3"), PseudoClassType.HOVER);
 
         StyleMap decl = CSSFactory.assignDOM(doc, null, createBaseFromFilename("data/simple/pseudo.html"),"screen", true, cond);
 
@@ -127,9 +126,9 @@ public class PseudoClassTest {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
 
-        MatchConditionOnElements cond = new MatchConditionOnElements("a", PseudoDeclaration.LINK);
-        cond.addMatch(elements.getElementById("l2"), PseudoDeclaration.HOVER);
-        cond.addMatch(elements.getElementById("l3"), PseudoDeclaration.VISITED);
+        MatchConditionOnElements cond = new MatchConditionOnElements("a", PseudoClassType.LINK);
+        cond.addMatch(elements.getElementById("l2"), PseudoClassType.HOVER);
+        cond.addMatch(elements.getElementById("l3"), PseudoClassType.VISITED);
 
         StyleSheet style = CSSFactory.getUsedStyles(doc, null, createBaseFromFilename("data/simple/selectors.html"),"screen");
         DirectAnalyzer da = new DirectAnalyzer(style);
@@ -159,6 +158,71 @@ public class PseudoClassTest {
         assertThat(nodeData.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
     }
 
+    private static final String TEST_PSEUDO_1 = // Legacy support
+            "p:first-line { color: red; }" +
+            "p:first-letter { color: blue; }" + 
+            "p:before { color: yellow; }" + 
+            "p:after { color: green; }";
+    private static final String TEST_PSEUDO_2 =
+            "p::first-line { color: red; }" +
+            "p::first-letter { color: blue; }" + 
+            "p::before { color: yellow; }" + 
+            "p::after { color: green; }";
+    
+    @Test
+    public void legacyPseudoElementSupport() throws CSSException, IOException {
+        StyleSheet style = CSSFactory.parseString(TEST_PSEUDO_1, null);
+        assertEquals("There are 4 rules", 4, style.size());
+        
+        List<CombinedSelector> sel1 = SelectorsUtil.appendSimpleSelector(null, "p", null, rf.createPseudoElement("first-line"));
+        List<CombinedSelector> sel2 = SelectorsUtil.appendSimpleSelector(null, "p", null, rf.createPseudoElement("first-letter"));
+        List<CombinedSelector> sel3 = SelectorsUtil.appendSimpleSelector(null, "p", null, rf.createPseudoElement("before"));
+        List<CombinedSelector> sel4 = SelectorsUtil.appendSimpleSelector(null, "p", null, rf.createPseudoElement("after"));
+
+        RuleSet rule1 = (RuleSet) style.get(0);
+        assertArrayEquals("Rule contains one selector p::first-line", sel1.toArray(), rule1.getSelectors());
+        assertEquals("Rule contains one declaration", 1, rule1.size());
+        
+        RuleSet rule2 = (RuleSet) style.get(1);
+        assertArrayEquals("Rule contains one selector p::first-letter", sel2.toArray(), rule2.getSelectors());
+        assertEquals("Rule contains one declaration", 1, rule2.size());
+        
+        RuleSet rule3 = (RuleSet) style.get(2);
+        assertArrayEquals("Rule contains one selector p::before", sel3.toArray(), rule3.getSelectors());
+        assertEquals("Rule contains one declaration", 1, rule3.size());
+        
+        RuleSet rule4 = (RuleSet) style.get(3);
+        assertArrayEquals("Rule contains one selector p::after", sel4.toArray(), rule4.getSelectors());
+        assertEquals("Rule contains one declaration", 1, rule4.size());
+    }
+    
+    @Test
+    public void nonlegacyPseudoElementSupport() throws CSSException, IOException {
+        StyleSheet style = CSSFactory.parseString(TEST_PSEUDO_2, null);
+        assertEquals("There are 4 rules", 4, style.size());
+        
+        List<CombinedSelector> sel1 = SelectorsUtil.appendSimpleSelector(null, "p", null, rf.createPseudoElement("first-line"));
+        List<CombinedSelector> sel2 = SelectorsUtil.appendSimpleSelector(null, "p", null, rf.createPseudoElement("first-letter"));
+        List<CombinedSelector> sel3 = SelectorsUtil.appendSimpleSelector(null, "p", null, rf.createPseudoElement("before"));
+        List<CombinedSelector> sel4 = SelectorsUtil.appendSimpleSelector(null, "p", null, rf.createPseudoElement("after"));
+
+        RuleSet rule1 = (RuleSet) style.get(0);
+        assertArrayEquals("Rule contains one selector p::first-line", sel1.toArray(), rule1.getSelectors());
+        assertEquals("Rule contains one declaration", 1, rule1.size());
+        
+        RuleSet rule2 = (RuleSet) style.get(1);
+        assertArrayEquals("Rule contains one selector p::first-letter", sel2.toArray(), rule2.getSelectors());
+        assertEquals("Rule contains one declaration", 1, rule2.size());
+        
+        RuleSet rule3 = (RuleSet) style.get(2);
+        assertArrayEquals("Rule contains one selector p::before", sel3.toArray(), rule3.getSelectors());
+        assertEquals("Rule contains one declaration", 1, rule3.size());
+        
+        RuleSet rule4 = (RuleSet) style.get(3);
+        assertArrayEquals("Rule contains one selector p::after", sel4.toArray(), rule4.getSelectors());
+        assertEquals("Rule contains one declaration", 1, rule4.size());
+    }
+    
     // Test for issue #83
     private static final String TEST_RANGE = 
             "input[type=range]::-webkit-slider-runnable-track { width: 1em; }\n" +
@@ -178,7 +242,6 @@ public class PseudoClassTest {
     
     @Test
     public void rangeInputPseudoElements() throws CSSException, IOException {
-        
         StyleSheet style = CSSFactory.parseString(TEST_RANGE, null);
         assertEquals("There are 6 rules", 6, style.size());
         
@@ -187,11 +250,47 @@ public class PseudoClassTest {
                 "input", 
                 null, 
                 rf.createAttribute("range", false, Selector.Operator.EQUALS, "type"), 
-                rf.createPseudoPage(TEST_RANGE_ELEMENTS[i], null, true));
+                rf.createPseudoElement(TEST_RANGE_ELEMENTS[i]));
 
             RuleSet rule = (RuleSet) style.get(i);
             assertArrayEquals("Rule contains one selector input[type=range]::" + TEST_RANGE_ELEMENTS[i], cslist.toArray(), rule.getSelectors());
             assertEquals("Rule contains one declaration", 1, rule.size());
+        }
+    }
+    
+    @Test
+    public void childPseudoClassesTest() throws SAXException, IOException {
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/child-pseudo.html"));
+        Document doc = ds.parse();
+        ElementMap elements = new ElementMap(doc);
+
+        StyleSheet style = CSSFactory.getUsedStyles(doc, null, null, "screen");
+        DirectAnalyzer da = new DirectAnalyzer(style);
+
+        TermColor[] expected = new TermColor[] {
+            tf.createColor("#F0F"),
+            tf.createColor("#00F"),
+            tf.createColor("#00F"),
+            tf.createColor("#0F0"),
+            tf.createColor("#F00"),
+            tf.createColor("#FFF"),
+            tf.createColor("#FF0"),
+            tf.createColor("#FFF"),
+            tf.createColor("#000"),
+            tf.createColor("#0F0"),
+            tf.createColor("#000"),
+            tf.createColor("#FFF"),
+            tf.createColor("#0F0"),
+            tf.createColor("#FFF"),
+            tf.createColor("#F00"),
+            tf.createColor("#0F0"),
+            tf.createColor("#000"),
+            tf.createColor("#0FF")
+        };
+        
+        for (int id = 1; id <= 18; id++) {
+            NodeData nodeData = getStyleById(elements, da, "list-" + id);
+            assertThat(nodeData.getValue(TermColor.class, "color"), is(expected[id - 1]));
         }
     }
     

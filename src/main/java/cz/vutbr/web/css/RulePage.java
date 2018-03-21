@@ -27,13 +27,13 @@ public interface RulePage extends RuleBlock<Rule<?>>, PrettyOutput {
 	 * Gets pseudo-class of the page
 	 * @return Pseudo-class of the page
 	 */
-    public String getPseudo();
+    public Selector.PseudoPage getPseudo();
     
     /**
      * Sets pseudo-class of the page
      * @param pseudo New pseudo-class of the page
      * @return Modified instance
      */
-    public RulePage setPseudo(String pseudo);
+    public RulePage setPseudo(Selector.PseudoPage pseudo);
 
 }

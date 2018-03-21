@@ -1,6 +1,7 @@
 package cz.vutbr.web.csskit.antlr4;
 
 import cz.vutbr.web.css.*;
+import cz.vutbr.web.css.Selector.PseudoElement;
 import cz.vutbr.web.csskit.RuleArrayList;
 
 import org.antlr.v4.runtime.CommonToken;
@@ -397,18 +398,26 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     /**
      *
      page
-     : PAGE S* IDENT? page_pseudo? S*
+     : PAGE S* IDENT? pseudo? S*
      LCURLY S*
      declarations margin_rule*
      RCURLY
      */
     public RuleBlock<?> visitPage(CSSParser.PageContext ctx) {
-        String name = null, pseudo = null;
+        boolean invalid = false;
+        String name = null;
         if (ctx.IDENT() != null) {
             name = extractTextUnescaped(ctx.IDENT().getText());
         }
-        if (ctx.page_pseudo() != null) {
-            pseudo = visitPage_pseudo(ctx.page_pseudo());
+        Selector.PseudoPage pseudo = null;
+        if (ctx.pseudo() != null) {
+            Selector.SelectorPart p = visitPseudo(ctx.pseudo());
+            if (p != null && p instanceof Selector.PseudoPage) {
+                pseudo = (Selector.PseudoPage) p;
+            } else { // Invalid pseudo
+                log.debug("skipping RulePage with invalid pseudo-class: " + pseudo);
+                invalid = true;
+            }
         }
         List<Declaration> declarations = visitDeclarations(ctx.declarations());
         List<cz.vutbr.web.css.RuleMargin> margins = null;
@@ -421,19 +430,14 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             }
         }
 
-        RuleBlock<?> rb = preparator.prepareRulePage(declarations, margins, name, pseudo);
-        if (rb != null)
-            this.preventImports = true;
-        return rb;
-    }
-
-    @Override
-    /**
-     page_pseudo
-     : pseudocolon
-     */
-    public String visitPage_pseudo(CSSParser.Page_pseudoContext ctx) {
-        return extractTextUnescaped(ctx.getText());
+        if (invalid) {
+            return null;
+        } else {
+            RuleBlock<?> rb = preparator.prepareRulePage(declarations, margins, name, pseudo);
+            if (rb != null)
+                this.preventImports = true;
+            return rb;
+        }
     }
 
     @Override
@@ -462,10 +466,10 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
      */
     public cz.vutbr.web.css.RuleBlock<?> visitInlineset(CSSParser.InlinesetContext ctx) {
         logEnter("inlineset");
-        List<cz.vutbr.web.css.Selector.PseudoPage> pplist = new ArrayList<>();
+        List<cz.vutbr.web.css.Selector.SelectorPart> pplist = new ArrayList<>();
         if (ctx.pseudo() != null) {
             for (CSSParser.PseudoContext pctx : ctx.pseudo()) {
-                Selector.PseudoPage p = visitPseudo(pctx);
+                Selector.SelectorPart p = visitPseudo(pctx);
                 pplist.add(p);
             }
         }
@@ -1254,9 +1258,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             selector_stack.peek().s.add(ea);
 
         } else if (ctx.pseudo() != null) {
-            Selector.PseudoPage p = visitPseudo(ctx.pseudo());
+            Selector.SelectorPart p = visitPseudo(ctx.pseudo());
             if (p != null) {
-                if (p.getDeclaration() != null && p.getDeclaration().isPseudoElement() && selector_stack.peek().s.getPseudoElement() != null) {
+                if (p instanceof PseudoElement && selector_stack.peek().s.getPseudoElementType() != null) {
                     log.warn("Invalid selector with multiple pseudo-elements");
                     combined_selector_stack.peek().invalid = true;
                 }
@@ -1347,64 +1351,58 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     @Override
     /**
      * pseudo
-     : pseudocolon (MINUS? IDENT | FUNCTION S*  (IDENT | MINUS? NUMBER | MINUS? INDEX) S* RPAREN)
+     : COLON COLON? (MINUS? IDENT | FUNCTION S*  (IDENT | MINUS? NUMBER | MINUS? INDEX) S* RPAREN)
      */
-    public Selector.PseudoPage visitPseudo(CSSParser.PseudoContext ctx) {
+    public Selector.SelectorPart visitPseudo(CSSParser.PseudoContext ctx) {
         logEnter("pseudo: ", ctx);
-        // childcount == 2
-        //first item is pseudocolon | : or ::
-        Boolean isPseudoElem = ctx.getChild(0).getText().length() != 1;
-        Selector.PseudoPage pseudoPage;
+        boolean isPseudoElem = ctx.COLON().size() > 1;
+        Selector.SelectorPart pseudo = null;
+        String name;
         if (ctx.FUNCTION() == null) {
             // ident
-            String pseudo = extractTextUnescaped(ctx.IDENT().getText());
+            name = extractTextUnescaped(ctx.IDENT().getText());
             if (ctx.MINUS() != null) {
-                pseudo = ctx.MINUS().getText() + pseudo;
+                name = ctx.MINUS().getText() + name;
             }
-            pseudoPage = rf.createPseudoPage(pseudo, null, isPseudoElem);
-            if (pseudoPage == null || pseudoPage.getDeclaration() == null) {
-                log.error("invalid pseudo declaration: " + pseudo);
-                pseudoPage = null;
-            } else if (isPseudoElem && !pseudoPage.getDeclaration().isPseudoElement()) {
-                log.error("pseudo class cannot be used as pseudo element");
-                pseudoPage = null; //* pseudoClasses are not allowed here *//*
+            // Legacy support for :after, :before, :first-line, and :first-letter pseudo-elements
+            if (!isPseudoElem && ("after".equalsIgnoreCase(name) || "before".equalsIgnoreCase(name) || "first-line".equalsIgnoreCase(name) || "first-letter".equalsIgnoreCase(name))) {
+                isPseudoElem = true;
+            }
+            if (isPseudoElem) {
+                pseudo = rf.createPseudoElement(name);
+            } else if (ctx.parent instanceof CSSParser.PageContext) {
+                pseudo = rf.createPseudoPage(name);
+            } else {
+                pseudo = rf.createPseudoClass(name);
             }
         } else {
-            //function
-            if (isPseudoElem) {
-                log.error("pseudo element cannot be used as a function");
-                pseudoPage = null;
+            // function
+            name = extractTextUnescaped(ctx.FUNCTION().getText());
+            if (ctx.selector() != null) {
+                Selector sel = visitSelector(ctx.selector());
+                pseudo = (isPseudoElem ? rf.createPseudoElement(name, sel) : rf.createPseudoClass(name, sel));
             } else {
-                //function
-                String name = extractTextUnescaped(ctx.getChild(1).getText());
-                if (ctx.selector() != null) {
-                    pseudoPage = rf.createPseudoPage(visitSelector(ctx.selector()), name);
+                String value = (ctx.MINUS() == null ? "" : "-");
+                if (ctx.IDENT() != null) {
+                    value += ctx.IDENT().getText();
+                } else if (ctx.NUMBER() != null) {
+                    value += ctx.NUMBER().getText();
+                } else if (ctx.INDEX() != null) {
+                    value += ctx.INDEX().getText();
                 } else {
-                    String value = "";
-                    if (ctx.MINUS() != null) {
-                        value = "-";
-                    }
-                    if (ctx.IDENT() != null) {
-                        value = ctx.IDENT().getText();
-                    } else if (ctx.NUMBER() != null) {
-                        value += ctx.NUMBER().getText();
-                    } else if (ctx.INDEX() != null) {
-                        value += ctx.INDEX().getText();
-                    } else {
-                        throw new UnsupportedOperationException("unknown state");
-                    }
-                    pseudoPage = rf.createPseudoPage(value, name, false);
+                    throw new UnsupportedOperationException("unknown state");
                 }
+                pseudo = (isPseudoElem ? rf.createPseudoElement(name, value) : rf.createPseudoClass(name, value));
             }
         }
+        if ((pseudo instanceof Selector.PseudoPage && ((Selector.PseudoPage) pseudo).getType() == null) ||
+                (pseudo instanceof Selector.PseudoClass && ((Selector.PseudoClass) pseudo).getType() == null) ||
+                (pseudo instanceof Selector.PseudoElement && ((Selector.PseudoElement) pseudo).getType() == null)) {
+            log.error("invalid pseudo declaration: " + name);
+            pseudo = null; // invalid
+        }
         logLeave("pseudo");
-        return pseudoPage;
-    }
-
-    @Override
-    //returns null
-    public Object visitPseudocolon(CSSParser.PseudocolonContext ctx) {
-        return null;
+        return pseudo;
     }
 
     @Override
