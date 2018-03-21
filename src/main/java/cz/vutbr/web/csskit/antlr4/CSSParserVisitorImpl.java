@@ -1358,7 +1358,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         boolean isPseudoElem = ctx.COLON().size() > 1;
         Selector.SelectorPart pseudo = null;
         String name;
-        if (ctx.FUNCTION() == null) {
+        if (ctx.IDENT() != null) {
             // ident
             name = extractTextUnescaped(ctx.IDENT().getText());
             if (ctx.MINUS() != null) {
@@ -1375,7 +1375,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             } else {
                 pseudo = rf.createPseudoClass(name);
             }
-        } else {
+        } else if (ctx.FUNCTION() != null) {
             // function
             name = extractTextUnescaped(ctx.FUNCTION().getText());
             if (ctx.selector() != null) {
@@ -1394,8 +1394,13 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
                 }
                 pseudo = (isPseudoElem ? rf.createPseudoElement(name, value) : rf.createPseudoClass(name, value));
             }
+        } else {
+            // invalid selpart
+            name = "";
         }
-        if ((pseudo instanceof Selector.PseudoPage && ((Selector.PseudoPage) pseudo).getType() == null) ||
+        
+        if ((pseudo == null) ||
+                (pseudo instanceof Selector.PseudoPage && ((Selector.PseudoPage) pseudo).getType() == null) ||
                 (pseudo instanceof Selector.PseudoClass && ((Selector.PseudoClass) pseudo).getType() == null) ||
                 (pseudo instanceof Selector.PseudoElement && ((Selector.PseudoElement) pseudo).getType() == null)) {
             log.error("invalid pseudo declaration: " + name);
