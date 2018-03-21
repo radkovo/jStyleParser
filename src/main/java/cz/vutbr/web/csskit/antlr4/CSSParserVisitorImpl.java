@@ -1358,24 +1358,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         boolean isPseudoElem = ctx.COLON().size() > 1;
         Selector.SelectorPart pseudo = null;
         String name;
-        if (ctx.IDENT() != null) {
-            // ident
-            name = extractTextUnescaped(ctx.IDENT().getText());
-            if (ctx.MINUS() != null) {
-                name = ctx.MINUS().getText() + name;
-            }
-            // Legacy support for :after, :before, :first-line, and :first-letter pseudo-elements
-            if (!isPseudoElem && ("after".equalsIgnoreCase(name) || "before".equalsIgnoreCase(name) || "first-line".equalsIgnoreCase(name) || "first-letter".equalsIgnoreCase(name))) {
-                isPseudoElem = true;
-            }
-            if (isPseudoElem) {
-                pseudo = rf.createPseudoElement(name);
-            } else if (ctx.parent instanceof CSSParser.PageContext) {
-                pseudo = rf.createPseudoPage(name);
-            } else {
-                pseudo = rf.createPseudoClass(name);
-            }
-        } else if (ctx.FUNCTION() != null) {
+        if (ctx.FUNCTION() != null) {
             // function
             name = extractTextUnescaped(ctx.FUNCTION().getText());
             if (ctx.selector() != null) {
@@ -1393,6 +1376,23 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
                     throw new UnsupportedOperationException("unknown state");
                 }
                 pseudo = (isPseudoElem ? rf.createPseudoElement(name, value) : rf.createPseudoClass(name, value));
+            }
+        } else if (ctx.IDENT() != null) {
+            // ident
+            name = extractTextUnescaped(ctx.IDENT().getText());
+            if (ctx.MINUS() != null) {
+                name = ctx.MINUS().getText() + name;
+            }
+            // Legacy support for :after, :before, :first-line, and :first-letter pseudo-elements
+            if (!isPseudoElem && ("after".equalsIgnoreCase(name) || "before".equalsIgnoreCase(name) || "first-line".equalsIgnoreCase(name) || "first-letter".equalsIgnoreCase(name))) {
+                isPseudoElem = true;
+            }
+            if (isPseudoElem) {
+                pseudo = rf.createPseudoElement(name);
+            } else if (ctx.parent instanceof CSSParser.PageContext) {
+                pseudo = rf.createPseudoPage(name);
+            } else {
+                pseudo = rf.createPseudoClass(name);
             }
         } else {
             // invalid selpart
