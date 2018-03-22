@@ -149,12 +149,39 @@ public class RuleFactoryImpl implements RuleFactory {
 		return new SelectorImpl.ElementIDImpl(id);
 	}
 	
-	public PseudoPage createPseudoPage(String pseudo, String functionName, boolean isPseudoElement) {
-		return new SelectorImpl.PseudoPageImpl(pseudo, functionName, isPseudoElement);
-	}
-	
-    public PseudoPage createPseudoPage(Selector selector, String functionName) {
-        return new SelectorImpl.PseudoPageImpl(selector, functionName);
+    @Override
+    public Selector.PseudoPage createPseudoPage(String name) {
+        return new SelectorImpl.PseudoPageImpl(name);
+    }
+    
+    @Override
+    public Selector.PseudoElement createPseudoElement(String name) {
+        return new SelectorImpl.PseudoElementImpl(name);
+    }
+    
+    @Override
+    public Selector.PseudoElement createPseudoElement(String name, String functionValue) {
+        return new SelectorImpl.PseudoElementImpl(name, functionValue);
+    }
+    
+    @Override
+    public Selector.PseudoElement createPseudoElement(String name, Selector nestedSelector) {
+        return new SelectorImpl.PseudoElementImpl(name, nestedSelector);
+    }
+    
+	@Override
+    public Selector.PseudoClass createPseudoClass(String name) {
+        return new SelectorImpl.PseudoClassImpl(name);
+    }
+    
+    @Override
+    public Selector.PseudoClass createPseudoClass(String name, String functionValue) {
+        return new SelectorImpl.PseudoClassImpl(name, functionValue);
+    }
+    
+	@Override
+    public Selector.PseudoClass createPseudoClass(String name, Selector nestedSelector) {
+        return new SelectorImpl.PseudoClassImpl(name, nestedSelector);
     }
     
 	public StyleSheet createStyleSheet() {

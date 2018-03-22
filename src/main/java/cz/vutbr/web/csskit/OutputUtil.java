@@ -3,6 +3,8 @@ package cz.vutbr.web.csskit;
 import java.util.List;
 
 import cz.vutbr.web.css.PrettyOutput;
+import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.TermOperator;
 
 /**
  * Helper class for generation output for given CSS rules
@@ -33,7 +35,7 @@ public class OutputUtil {
 	public static final String PROPERTY_CLOSING = ";\n";
 	public static final String IMPORTANT_KEYWORD = "!important";
 	public static final String PAGE_KEYWORD = "@page";
-	public static final String PAGE_OPENING = ":";
+	public static final String PSEUDO_OPENING = ":";
 	public static final String PAGE_CLOSING = "";
     public static final String VIEWPORT_KEYWORD = "@viewport";
     public static final String FONT_FACE_KEYWORD = "@font-face";
@@ -148,6 +150,12 @@ public class OutputUtil {
 		return sb;
 	}
 	
+	/**
+	 * Appends the calc() function arguments to a string builder.
+	 * @param sb the string builder to be modified
+	 * @param args the calc arguments
+	 * @return Modified <code>sb</code> to allow chaining
+	 */
 	public static StringBuilder appendCalcArgs(StringBuilder sb, CalcArgs args) {
 	    final String astr = args.evaluate(CalcArgs.stringEvaluator);
 	    if (!astr.startsWith(FUNCTION_OPENING)) {
@@ -160,4 +168,27 @@ public class OutputUtil {
 	    return sb;
 	}
 	
+    /**
+     * Appends the formatted list of function arguments to a string builder. The individual
+     * arguments are separated by spaces with the exception of commas.
+     * @param sb the string builder to be modified
+     * @param list the list of function arguments
+     * @return Modified <code>sb</code> to allow chaining
+     */
+	public static StringBuilder appendFunctionArgs(StringBuilder sb, List<Term<?>> list) {
+
+        boolean firstRun = true;
+
+        for (Term<?> elem : list) {
+            boolean sep = (elem instanceof TermOperator &&
+                    ((TermOperator) elem).getValue() == ',');
+            if (!firstRun && !sep)
+                sb.append(SPACE_DELIM);
+            firstRun = false;
+
+            sb.append(elem.toString());
+        }
+
+        return sb;
+    }
 }

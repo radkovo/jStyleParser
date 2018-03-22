@@ -74,11 +74,11 @@ public class ElementMatcherTest {
         checkDocument(file, new ElementMatcherSafeCS(), exXHTML, "XHTML matcher safe/" + msg);
         checkDocument(file, new ElementMatcherSimpleCS(), exXHTML, "XHTML matcher simple/" + msg);
         
-        checkDocument(file, new ElementMatcherSafeStd(), exHTMLStd, "XHTML matcher safe/" + msg);
-        checkDocument(file, new ElementMatcherSimpleStd(), exHTMLStd, "XHTML matcher simple/" + msg);
+        checkDocument(file, new ElementMatcherSafeStd(), exHTMLStd, "HTMLstd matcher safe/" + msg);
+        checkDocument(file, new ElementMatcherSimpleStd(), exHTMLStd, "HTMLstd matcher simple/" + msg);
         
-        checkDocument(file, new ElementMatcherSafeCI(), exHTMLQuirks, "XHTML matcher safe/" + msg);
-        checkDocument(file, new ElementMatcherSimpleCI(), exHTMLQuirks, "XHTML matcher simple/" + msg);
+        checkDocument(file, new ElementMatcherSafeCI(), exHTMLQuirks, "HTMLquirks matcher safe/" + msg);
+        checkDocument(file, new ElementMatcherSimpleCI(), exHTMLQuirks, "HTMLquirks matcher simple/" + msg);
     }
     
     private void checkDocument(String name, ElementMatcher matcher, TermColor[] expect, String msg) throws SAXException, IOException

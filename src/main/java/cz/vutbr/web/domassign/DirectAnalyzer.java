@@ -13,7 +13,7 @@ import org.w3c.dom.Element;
 
 import cz.vutbr.web.css.MediaSpec;
 import cz.vutbr.web.css.NodeData;
-import cz.vutbr.web.css.Selector.PseudoDeclaration;
+import cz.vutbr.web.css.Selector.PseudoElementType;
 import cz.vutbr.web.css.StyleSheet;
 
 /**
@@ -54,7 +54,7 @@ public class DirectAnalyzer extends Analyzer
      * @param media Used media specification.
      * @return The relevant declarations from the registered style sheets.
      */
-    public NodeData getElementStyle(Element el, PseudoDeclaration pseudo, MediaSpec media)
+    public NodeData getElementStyle(Element el, PseudoElementType pseudo, MediaSpec media)
     {
         final OrderedRule[] applicableRules = AnalyzerUtil.getApplicableRules(sheets, el, media);
         return AnalyzerUtil.getElementStyle(el, pseudo, getElementMatcher(), getMatchCondition(), applicableRules);
@@ -67,7 +67,7 @@ public class DirectAnalyzer extends Analyzer
      * @param media Used media name (e.g. "screen" or "all")
      * @return The relevant declarations from the registered style sheets.
      */
-    public NodeData getElementStyle(Element el, PseudoDeclaration pseudo, String media)
+    public NodeData getElementStyle(Element el, PseudoElementType pseudo, String media)
     {
         return getElementStyle(el, pseudo, new MediaSpec(media));
     }

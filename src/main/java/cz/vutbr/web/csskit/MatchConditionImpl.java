@@ -8,7 +8,8 @@ package cz.vutbr.web.csskit;
 import org.w3c.dom.Element;
 
 import cz.vutbr.web.css.MatchCondition;
-import cz.vutbr.web.css.Selector.PseudoDeclaration;
+import cz.vutbr.web.css.Selector.PseudoClass;
+import cz.vutbr.web.css.Selector.PseudoClassType;
 import cz.vutbr.web.css.Selector.PseudoPage;
 import cz.vutbr.web.css.Selector.SelectorPart;
 
@@ -19,21 +20,21 @@ import cz.vutbr.web.css.Selector.SelectorPart;
  */
 public class MatchConditionImpl implements MatchCondition
 {
-    PseudoDeclaration pseudo;
+    PseudoClassType pseudo;
     
     /**
-     * Creates the fefault condition that matches the LINK pseudo class to links.
+     * Creates the default condition that matches the LINK pseudo class to links.
      */
     public MatchConditionImpl()
     {
-        pseudo = PseudoDeclaration.LINK;
+        pseudo = PseudoClassType.LINK;
     }
     
     /**
-     * Creates the fefault condition that matches the given pseudo class to links.
+     * Creates the default condition that matches the given pseudo class to links.
      * @param pseudoClass the pseudoClass to be matched to links
      */
-    public MatchConditionImpl(PseudoDeclaration pseudoClass)
+    public MatchConditionImpl(PseudoClassType pseudoClass)
     {
         this.pseudo = pseudoClass;
     }
@@ -42,17 +43,17 @@ public class MatchConditionImpl implements MatchCondition
      * Sets the pseudo class that is matched to links.
      * @param pseudoClass the pseudoClass to be matched to links
      */
-    public void setPseudoClass(PseudoDeclaration pseudoClass)
+    public void setPseudoClass(PseudoClassType pseudoClass)
     {
         this.pseudo = pseudoClass;
     }
     
     public boolean isSatisfied(Element e, SelectorPart selpart)
     {
-        if (selpart instanceof PseudoPage)
+        if (selpart instanceof PseudoClass)
         {
-            PseudoDeclaration declaration = ((PseudoPage) selpart).getDeclaration();
-            return declaration.equals(pseudo) && e.getTagName().equalsIgnoreCase("a");
+            PseudoClassType type = ((PseudoClass) selpart).getType();
+            return type == pseudo && e.getTagName().equalsIgnoreCase("a");
         }
         else
             return false;

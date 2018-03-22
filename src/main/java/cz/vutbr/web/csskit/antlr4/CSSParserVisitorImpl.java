@@ -1,6 +1,7 @@
 package cz.vutbr.web.csskit.antlr4;
 
 import cz.vutbr.web.css.*;
+import cz.vutbr.web.css.Selector.PseudoElement;
 import cz.vutbr.web.csskit.RuleArrayList;
 
 import org.antlr.v4.runtime.CommonToken;
@@ -131,6 +132,34 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         return false;
     }
 
+    /**
+     * Tries to convert generic terms to more specific value types. Currently, colors (TermColor) and
+     * rectangles (TermRect) are supported.
+     * @param term the term to be converted
+     * @return the corresponding more specific term type or {@code null} when nothing was found.
+     */
+    private Term<?> findSpecificType(Term<?> term)
+    {
+        TermColor colorTerm = null;
+        TermRect rectTerm = null;
+        if (term instanceof TermIdent) { //idents - try to convert colors
+            colorTerm = tf.createColor((TermIdent) term);
+        } else if (term instanceof TermFunction) { // rgba(0,0,0)
+            colorTerm = tf.createColor((TermFunction) term);
+            if (colorTerm == null)
+                rectTerm = tf.createRect((TermFunction) term);
+        }
+        //replace with more specific value
+        if (colorTerm != null) {
+            log.debug("term color is OK - creating - " + colorTerm.toString());
+            return colorTerm;
+        } else if (rectTerm != null) {
+            log.debug("term rect is OK - creating - " + rectTerm.toString());
+            return rectTerm;
+        } else
+            return null;
+    }
+    
     /**
      * get parsed rulelist
      *
@@ -397,18 +426,26 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     /**
      *
      page
-     : PAGE S* IDENT? page_pseudo? S*
+     : PAGE S* IDENT? pseudo? S*
      LCURLY S*
      declarations margin_rule*
      RCURLY
      */
     public RuleBlock<?> visitPage(CSSParser.PageContext ctx) {
-        String name = null, pseudo = null;
+        boolean invalid = false;
+        String name = null;
         if (ctx.IDENT() != null) {
             name = extractTextUnescaped(ctx.IDENT().getText());
         }
-        if (ctx.page_pseudo() != null) {
-            pseudo = visitPage_pseudo(ctx.page_pseudo());
+        Selector.PseudoPage pseudo = null;
+        if (ctx.pseudo() != null) {
+            Selector.SelectorPart p = visitPseudo(ctx.pseudo());
+            if (p != null && p instanceof Selector.PseudoPage) {
+                pseudo = (Selector.PseudoPage) p;
+            } else { // Invalid pseudo
+                log.debug("skipping RulePage with invalid pseudo-class: " + pseudo);
+                invalid = true;
+            }
         }
         List<Declaration> declarations = visitDeclarations(ctx.declarations());
         List<cz.vutbr.web.css.RuleMargin> margins = null;
@@ -421,19 +458,14 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             }
         }
 
-        RuleBlock<?> rb = preparator.prepareRulePage(declarations, margins, name, pseudo);
-        if (rb != null)
-            this.preventImports = true;
-        return rb;
-    }
-
-    @Override
-    /**
-     page_pseudo
-     : pseudocolon
-     */
-    public String visitPage_pseudo(CSSParser.Page_pseudoContext ctx) {
-        return extractTextUnescaped(ctx.getText());
+        if (invalid) {
+            return null;
+        } else {
+            RuleBlock<?> rb = preparator.prepareRulePage(declarations, margins, name, pseudo);
+            if (rb != null)
+                this.preventImports = true;
+            return rb;
+        }
     }
 
     @Override
@@ -462,10 +494,10 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
      */
     public cz.vutbr.web.css.RuleBlock<?> visitInlineset(CSSParser.InlinesetContext ctx) {
         logEnter("inlineset");
-        List<cz.vutbr.web.css.Selector.PseudoPage> pplist = new ArrayList<>();
+        List<cz.vutbr.web.css.Selector.SelectorPart> pplist = new ArrayList<>();
         if (ctx.pseudo() != null) {
             for (CSSParser.PseudoContext pctx : ctx.pseudo()) {
-                Selector.PseudoPage p = visitPseudo(pctx);
+                Selector.SelectorPart p = visitPseudo(pctx);
                 pplist.add(p);
             }
         }
@@ -871,50 +903,41 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     public Object visitFunct(CSSParser.FunctContext ctx) {
         if (ctx.EXPRESSION() != null) {
             log.warn("Omitting expression " + ctx.getText() + ", expressions are not supported");
-            //invalidate declaration
-            declaration_stack.peek().invalid = true;
             return null;
         }
+        Term<?> ret = null;
         final String fname = extractTextUnescaped(ctx.FUNCTION().getText()).toLowerCase();
         if (ctx.funct_args() != null)
         {
             List<Term<?>> t = visitFunct_args(ctx.funct_args());
             if (fname.equals("url")) {
                 // the function name is url() after escaping - create an URI
-                if (terms_stack.peek().unary == -1 || t == null || t.size() != 1)
-                    declaration_stack.peek().invalid = true;
+                if (t == null || t.size() != 1)
+                    ret = null;
                 else {
                     cz.vutbr.web.css.Term<?> term = t.get(0);
                     if (term instanceof cz.vutbr.web.css.TermString && term.getOperator() == null)
-                        terms_stack.peek().term = tf.createURI(((cz.vutbr.web.css.TermString) term).getValue(), extractBase(ctx.FUNCTION()));
+                        ret = tf.createURI(((cz.vutbr.web.css.TermString) term).getValue(), extractBase(ctx.FUNCTION()));
                     else
-                        declaration_stack.peek().invalid = true;
+                        ret = null;
                 }
             } else if (fname.equals("calc")) {
                 // create calc() of the given type: <length>, <frequency>, <angle>, <time>, <number>, or <integer>
-                if (terms_stack.peek().unary == -1 || t == null || t.size() == 0)
-                    declaration_stack.peek().invalid = true;
-                else {
-                    TermCalc calc = tf.createCalc(t);
-                    if (calc != null)
-                        terms_stack.peek().term = calc;
-                    else
-                        declaration_stack.peek().invalid = true;
-                }
+                if (t == null || t.size() == 0)
+                    ret = null;
+                else
+                    ret = tf.createCalc(t);
                 
             } else {
                 // create function
                 cz.vutbr.web.css.TermFunction function = tf.createFunction();
                 function.setFunctionName(fname);
-                if (terms_stack.peek().unary == -1) //if started with minus, add the minus to the function name
-                    function.setFunctionName('-' + function.getFunctionName());
                 if (t != null)
                     function.setValue(t);
-                terms_stack.peek().term = function;
+                ret = function;
             }
         }
-        //returns null
-        return null;
+        return ret;
     }
 
     @Override
@@ -973,9 +996,23 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             terms_stack.peek().term = tf.createURI(extractTextUnescaped(ctx.UNCLOSED_URI().getText()), extractBase(ctx.UNCLOSED_URI()));
         } else if (ctx.funct() != null) {
             terms_stack.peek().term = null;
-            visitFunct(ctx.funct());
-            //served in function
-            log.debug("function is server later");
+            Term<?> fnterm = (Term<?>) visitFunct(ctx.funct());
+            if (fnterm != null) {
+                if (terms_stack.peek().unary == -1) { 
+                    if (fnterm instanceof TermFunction) {
+                        //normal function - add the unary minus to the function name
+                        ((TermFunction) fnterm).setFunctionName('-' + ((TermFunction) fnterm).getFunctionName());
+                        terms_stack.peek().term = fnterm;
+                    } else {
+                        //url() and calc() - not applicable 
+                        declaration_stack.peek().invalid = true;
+                    }
+                } else {
+                    terms_stack.peek().term = fnterm;
+                }
+            } else {
+                declaration_stack.peek().invalid = true;
+            }
         } else {
             log.error("unhandled valueparts");
             terms_stack.peek().term = null;
@@ -984,24 +1021,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         //try to convert generic terms to more specific value types
         Term<?> term = terms_stack.peek().term;
         if (term != null) {
-            TermColor colorTerm = null;
-            TermRect rectTerm = null;
-            if (term instanceof TermIdent) { //idents - try to convert colors
-                colorTerm = tf.createColor((TermIdent) term);
-            } else if (term instanceof TermFunction) { // rgba(0,0,0)
-                colorTerm = tf.createColor((TermFunction) term);
-                if (colorTerm == null)
-                    rectTerm = tf.createRect((TermFunction) term);
-            }
-            //replace with more specific value
-            if (colorTerm != null) {
-                log.debug("term color is OK - creating - " + colorTerm.toString());
-                terms_stack.peek().term = colorTerm;
-            } else if (rectTerm != null) {
-                log.debug("term rect is OK - creating - " + rectTerm.toString());
-                terms_stack.peek().term = rectTerm;
-            }
-
+            term = findSpecificType(term);
+            if (term != null)
+                terms_stack.peek().term = term;
         }
         //returns null
         return null;
@@ -1089,8 +1111,8 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             }
         } else if (ctx.HASH() != null) {
             log.debug("VP - hash");
-            terms_stack.peek().term = tf.createColor(ctx.HASH().getText());
-            if (terms_stack.peek().term == null) {
+            funct_args_stack.peek().term = tf.createColor(ctx.HASH().getText());
+            if (funct_args_stack.peek().term == null) {
                 declaration_stack.peek().invalid = true;
             }
         } else if (ctx.NUMBER() != null) {
@@ -1098,29 +1120,24 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             funct_args_stack.peek().term = tf.createNumeric(ctx.NUMBER().getText(), 1);
         } else if (ctx.funct() != null) {
             funct_args_stack.peek().term = null;
-            visitFunct(ctx.funct());
-            //served in function
-            log.debug("function is server later");
+            Term<?> fnterm = (Term<?>) visitFunct(ctx.funct());
+            if (fnterm != null) {
+                funct_args_stack.peek().term = fnterm;
+            } else {
+                declaration_stack.peek().invalid = true;
+            }
         } else {
             log.error("unhandled funct_args");
             funct_args_stack.peek().term = null;
             declaration_stack.peek().invalid = true;
         }
         //try convert color from current term
-        /*Term<?> term = funct_args_stack.peek().term;
+        Term<?> term = funct_args_stack.peek().term;
         if (term != null) {
-            TermColor colorTerm = null;
-            if (term instanceof TermIdent) { // red
-                colorTerm = tf.createColor((TermIdent) term);
-            } else if (term instanceof TermFunction) { // rgba(0,0,0)
-                colorTerm = tf.createColor((TermFunction) term);
-            }
-            //replace with color
-            if (colorTerm != null) {
-                log.debug("term color is OK - creating - " + colorTerm.toString());
-                funct_args_stack.peek().term = colorTerm;
-            }
-        }*/
+            term = findSpecificType(term);
+            if (term != null)
+                funct_args_stack.peek().term = term;
+        }
         //returns null
         return null;
     }
@@ -1254,9 +1271,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             selector_stack.peek().s.add(ea);
 
         } else if (ctx.pseudo() != null) {
-            Selector.PseudoPage p = visitPseudo(ctx.pseudo());
+            Selector.SelectorPart p = visitPseudo(ctx.pseudo());
             if (p != null) {
-                if (p.getDeclaration() != null && p.getDeclaration().isPseudoElement() && selector_stack.peek().s.getPseudoElement() != null) {
+                if (p instanceof PseudoElement && selector_stack.peek().s.getPseudoElementType() != null) {
                     log.warn("Invalid selector with multiple pseudo-elements");
                     combined_selector_stack.peek().invalid = true;
                 }
@@ -1347,64 +1364,63 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     @Override
     /**
      * pseudo
-     : pseudocolon (MINUS? IDENT | FUNCTION S*  (IDENT | MINUS? NUMBER | MINUS? INDEX) S* RPAREN)
+     : COLON COLON? (MINUS? IDENT | FUNCTION S*  (IDENT | MINUS? NUMBER | MINUS? INDEX) S* RPAREN)
      */
-    public Selector.PseudoPage visitPseudo(CSSParser.PseudoContext ctx) {
+    public Selector.SelectorPart visitPseudo(CSSParser.PseudoContext ctx) {
         logEnter("pseudo: ", ctx);
-        // childcount == 2
-        //first item is pseudocolon | : or ::
-        Boolean isPseudoElem = ctx.getChild(0).getText().length() != 1;
-        Selector.PseudoPage pseudoPage;
-        if (ctx.FUNCTION() == null) {
-            // ident
-            String pseudo = extractTextUnescaped(ctx.IDENT().getText());
-            if (ctx.MINUS() != null) {
-                pseudo = ctx.MINUS().getText() + pseudo;
+        boolean isPseudoElem = ctx.COLON().size() > 1;
+        Selector.SelectorPart pseudo = null;
+        String name;
+        if (ctx.FUNCTION() != null) {
+            // function
+            name = extractTextUnescaped(ctx.FUNCTION().getText());
+            if (ctx.selector() != null) {
+                Selector sel = visitSelector(ctx.selector());
+                pseudo = (isPseudoElem ? rf.createPseudoElement(name, sel) : rf.createPseudoClass(name, sel));
+            } else {
+                String value = (ctx.MINUS() == null ? "" : "-");
+                if (ctx.IDENT() != null) {
+                    value += ctx.IDENT().getText();
+                } else if (ctx.NUMBER() != null) {
+                    value += ctx.NUMBER().getText();
+                } else if (ctx.INDEX() != null) {
+                    value += ctx.INDEX().getText();
+                } else {
+                    throw new UnsupportedOperationException("unknown state");
+                }
+                pseudo = (isPseudoElem ? rf.createPseudoElement(name, value) : rf.createPseudoClass(name, value));
             }
-            pseudoPage = rf.createPseudoPage(pseudo, null, isPseudoElem);
-            if (pseudoPage == null || pseudoPage.getDeclaration() == null) {
-                log.error("invalid pseudo declaration: " + pseudo);
-                pseudoPage = null;
-            } else if (isPseudoElem && !pseudoPage.getDeclaration().isPseudoElement()) {
-                log.error("pseudo class cannot be used as pseudo element");
-                pseudoPage = null; //* pseudoClasses are not allowed here *//*
+        } else if (ctx.IDENT() != null) {
+            // ident
+            name = extractTextUnescaped(ctx.IDENT().getText());
+            if (ctx.MINUS() != null) {
+                name = ctx.MINUS().getText() + name;
+            }
+            // Legacy support for :after, :before, :first-line, and :first-letter pseudo-elements
+            if (!isPseudoElem && ("after".equalsIgnoreCase(name) || "before".equalsIgnoreCase(name) || "first-line".equalsIgnoreCase(name) || "first-letter".equalsIgnoreCase(name))) {
+                isPseudoElem = true;
+            }
+            if (isPseudoElem) {
+                pseudo = rf.createPseudoElement(name);
+            } else if (ctx.parent instanceof CSSParser.PageContext) {
+                pseudo = rf.createPseudoPage(name);
+            } else {
+                pseudo = rf.createPseudoClass(name);
             }
         } else {
-            //function
-            if (isPseudoElem) {
-                log.error("pseudo element cannot be used as a function");
-                pseudoPage = null;
-            } else {
-                //function
-                String name = extractTextUnescaped(ctx.getChild(1).getText());
-                if (ctx.selector() != null) {
-                    pseudoPage = rf.createPseudoPage(visitSelector(ctx.selector()), name);
-                } else {
-                    String value = "";
-                    if (ctx.MINUS() != null) {
-                        value = "-";
-                    }
-                    if (ctx.IDENT() != null) {
-                        value = ctx.IDENT().getText();
-                    } else if (ctx.NUMBER() != null) {
-                        value += ctx.NUMBER().getText();
-                    } else if (ctx.INDEX() != null) {
-                        value += ctx.INDEX().getText();
-                    } else {
-                        throw new UnsupportedOperationException("unknown state");
-                    }
-                    pseudoPage = rf.createPseudoPage(value, name, false);
-                }
-            }
+            // invalid selpart
+            name = "";
+        }
+        
+        if ((pseudo == null) ||
+                (pseudo instanceof Selector.PseudoPage && ((Selector.PseudoPage) pseudo).getType() == null) ||
+                (pseudo instanceof Selector.PseudoClass && ((Selector.PseudoClass) pseudo).getType() == null) ||
+                (pseudo instanceof Selector.PseudoElement && ((Selector.PseudoElement) pseudo).getType() == null)) {
+            log.error("invalid pseudo declaration: " + name);
+            pseudo = null; // invalid
         }
         logLeave("pseudo");
-        return pseudoPage;
-    }
-
-    @Override
-    //returns null
-    public Object visitPseudocolon(CSSParser.PseudocolonContext ctx) {
-        return null;
+        return pseudo;
     }
 
     @Override

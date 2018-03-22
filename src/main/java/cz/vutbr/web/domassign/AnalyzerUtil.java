@@ -24,7 +24,9 @@ import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.Selector.PseudoDeclaration;
+import cz.vutbr.web.css.Selector.PseudoClassType;
+import cz.vutbr.web.css.Selector.PseudoElement;
+import cz.vutbr.web.css.Selector.PseudoElementType;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.domassign.Analyzer.Holder;
 import cz.vutbr.web.domassign.Analyzer.HolderItem;
@@ -60,7 +62,7 @@ public final class AnalyzerUtil {
 	    return rules;
     }
 
-    public static NodeData getElementStyle(Element el, PseudoDeclaration pseudo, final ElementMatcher matcher, MatchCondition matchCond, OrderedRule[] applicableRules)
+    public static NodeData getElementStyle(Element el, PseudoElementType pseudo, final ElementMatcher matcher, MatchCondition matchCond, OrderedRule[] applicableRules)
     {
     	return makeNodeData(computeDeclarations(el, pseudo, applicableRules, matcher, matchCond));
     }
@@ -157,7 +159,7 @@ public final class AnalyzerUtil {
         }
     }
     
-	static List<Declaration> computeDeclarations(final Element e, final PseudoDeclaration pseudo, final OrderedRule[] clist, final ElementMatcher matcher, final MatchCondition matchCond) {
+	static List<Declaration> computeDeclarations(final Element e, final PseudoElementType pseudo, final OrderedRule[] clist, final ElementMatcher matcher, final MatchCondition matchCond) {
 		// resulting list of declaration for this element with no pseudo-selectors (main list)(local cache)
         final List<Declaration> eldecl = new ArrayList<Declaration>();
         
@@ -178,11 +180,11 @@ public final class AnalyzerUtil {
 
                 log.trace("CombinedSelector \"{}\" matched", s);
                 
-                final PseudoDeclaration psel = s.getPseudoElement();
-                final CombinedSelector.Specificity spec = s.computeSpecificity();
-                if (psel == pseudo)
+                final PseudoElementType ptype = s.getPseudoElementType();
+                if (ptype == pseudo)
                 {
                     // add to the resulting list
+                    final CombinedSelector.Specificity spec = s.computeSpecificity();
                     for (final Declaration d : rule)
                         eldecl.add(new AssignedDeclaration(d, spec, origin));
                 }
@@ -197,12 +199,12 @@ public final class AnalyzerUtil {
         return eldecl;
 	}
     
-    public static boolean hasPseudoSelector(final OrderedRule[] rules, final Element e, final MatchCondition matchCond, PseudoDeclaration pd)
+    public static boolean hasPseudoSelector(final OrderedRule[] rules, final Element e, final MatchCondition matchCond, PseudoClassType pd)
     {
 		for (final OrderedRule rule : rules) {
 			for (final CombinedSelector cs : rule.getRule().getSelectors()) {
 				final Selector lastSelector = cs.get(cs.size() - 1);
-				if (lastSelector.hasPseudoDeclaration(pd)) {
+				if (lastSelector.hasPseudoClass(pd)) {
 					return true;
 				}
 			}
@@ -210,7 +212,7 @@ public final class AnalyzerUtil {
 		return false;
 	}
 
-    public static boolean hasPseudoSelectorForAncestor(final OrderedRule[] rules, final Element e, final Element targetAncestor, final ElementMatcher matcher, final MatchCondition matchCond, PseudoDeclaration pd)
+    public static boolean hasPseudoSelectorForAncestor(final OrderedRule[] rules, final Element e, final Element targetAncestor, final ElementMatcher matcher, final MatchCondition matchCond, PseudoClassType pd)
     {
 		for (final OrderedRule rule : rules) {
 			for (final CombinedSelector cs : rule.getRule().getSelectors()) {
@@ -222,7 +224,7 @@ public final class AnalyzerUtil {
 		return false;
     }
 
-    private static boolean hasPseudoSelectorForAncestor(final CombinedSelector sel, final Element e, final Element targetAncestor, final ElementMatcher matcher, final MatchCondition matchCond, PseudoDeclaration pd)
+    private static boolean hasPseudoSelectorForAncestor(final CombinedSelector sel, final Element e, final Element targetAncestor, final ElementMatcher matcher, final MatchCondition matchCond, PseudoClassType pd)
     {
         boolean retval = false;
         Selector.Combinator combinator = null;
@@ -295,7 +297,7 @@ public final class AnalyzerUtil {
             if (!retval) {
                 break;
             } else if (current == targetAncestor) {
-                return s.hasPseudoDeclaration(pd);
+                return s.hasPseudoClass(pd);
             }
         }
         return false;
