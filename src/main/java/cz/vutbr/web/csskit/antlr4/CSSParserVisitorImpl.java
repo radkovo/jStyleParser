@@ -133,6 +133,34 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     }
 
     /**
+     * Tries to convert generic terms to more specific value types. Currently, colors (TermColor) and
+     * rectangles (TermRect) are supported.
+     * @param term the term to be converted
+     * @return the corresponding more specific term type or {@code null} when nothing was found.
+     */
+    private Term<?> findSpecificType(Term<?> term)
+    {
+        TermColor colorTerm = null;
+        TermRect rectTerm = null;
+        if (term instanceof TermIdent) { //idents - try to convert colors
+            colorTerm = tf.createColor((TermIdent) term);
+        } else if (term instanceof TermFunction) { // rgba(0,0,0)
+            colorTerm = tf.createColor((TermFunction) term);
+            if (colorTerm == null)
+                rectTerm = tf.createRect((TermFunction) term);
+        }
+        //replace with more specific value
+        if (colorTerm != null) {
+            log.debug("term color is OK - creating - " + colorTerm.toString());
+            return colorTerm;
+        } else if (rectTerm != null) {
+            log.debug("term rect is OK - creating - " + rectTerm.toString());
+            return rectTerm;
+        } else
+            return null;
+    }
+    
+    /**
      * get parsed rulelist
      *
      * @return parsed rules
@@ -993,24 +1021,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         //try to convert generic terms to more specific value types
         Term<?> term = terms_stack.peek().term;
         if (term != null) {
-            TermColor colorTerm = null;
-            TermRect rectTerm = null;
-            if (term instanceof TermIdent) { //idents - try to convert colors
-                colorTerm = tf.createColor((TermIdent) term);
-            } else if (term instanceof TermFunction) { // rgba(0,0,0)
-                colorTerm = tf.createColor((TermFunction) term);
-                if (colorTerm == null)
-                    rectTerm = tf.createRect((TermFunction) term);
-            }
-            //replace with more specific value
-            if (colorTerm != null) {
-                log.debug("term color is OK - creating - " + colorTerm.toString());
-                terms_stack.peek().term = colorTerm;
-            } else if (rectTerm != null) {
-                log.debug("term rect is OK - creating - " + rectTerm.toString());
-                terms_stack.peek().term = rectTerm;
-            }
-
+            term = findSpecificType(term);
+            if (term != null)
+                terms_stack.peek().term = term;
         }
         //returns null
         return null;
@@ -1119,20 +1132,12 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             declaration_stack.peek().invalid = true;
         }
         //try convert color from current term
-        /*Term<?> term = funct_args_stack.peek().term;
+        Term<?> term = funct_args_stack.peek().term;
         if (term != null) {
-            TermColor colorTerm = null;
-            if (term instanceof TermIdent) { // red
-                colorTerm = tf.createColor((TermIdent) term);
-            } else if (term instanceof TermFunction) { // rgba(0,0,0)
-                colorTerm = tf.createColor((TermFunction) term);
-            }
-            //replace with color
-            if (colorTerm != null) {
-                log.debug("term color is OK - creating - " + colorTerm.toString());
-                funct_args_stack.peek().term = colorTerm;
-            }
-        }*/
+            term = findSpecificType(term);
+            if (term != null)
+                funct_args_stack.peek().term = term;
+        }
         //returns null
         return null;
     }
