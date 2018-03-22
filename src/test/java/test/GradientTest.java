@@ -71,8 +71,8 @@ public class GradientTest {
         StyleSheet ss = CSSFactory.parseString(TEST_LINEAR_GRADIENT_TWO_COLOR, null);
         List<List<Term<?>>> separatedArguments = ((TermFunction) ((RuleSet) ss.get(0)).get(0).get(0)).getSeparatedArgs(tf.createOperator(','));
         assertEquals("There are 2 comma-separated arguments ", 2, separatedArguments.size());
-        assertEquals("The first argument is red ", Arrays.asList(tf.createIdent("red")), separatedArguments.get(0));
-        assertEquals("The second argument is blue ", Arrays.asList(tf.createIdent("blue")), separatedArguments.get(1));
+        assertEquals("The first argument is red ", Arrays.asList(tf.createColor(tf.createIdent("red"))), separatedArguments.get(0));
+        assertEquals("The second argument is blue ", Arrays.asList(tf.createColor(tf.createIdent("blue"))), separatedArguments.get(1));
 
         ss = CSSFactory.parseString(TEST_LINEAR_GRADIENT_TWO_COLOR_HASH, null);
         separatedArguments = ((TermFunction) ((RuleSet) ss.get(0)).get(0).get(0)).getSeparatedArgs(tf.createOperator(','));
@@ -89,17 +89,17 @@ public class GradientTest {
         ss = CSSFactory.parseString(TEST_LINEAR_GRADIENT_MULTI_COLOR_3, null);
         separatedArguments = ((TermFunction) ((RuleSet) ss.get(0)).get(0).get(0)).getSeparatedArgs(tf.createOperator(','));
         assertEquals("There are 3 comma-separated arguments ", 3, separatedArguments.size());
-        assertEquals("The first argument is red ", Arrays.asList(tf.createIdent("red")), separatedArguments.get(0));
-        assertEquals("The second argument is blue ", Arrays.asList(tf.createIdent("blue")), separatedArguments.get(1));
-        assertEquals("The third argument is green ", Arrays.asList(tf.createIdent("green")), separatedArguments.get(2));
+        assertEquals("The first argument is red ", Arrays.asList(tf.createColor(tf.createIdent("red"))), separatedArguments.get(0));
+        assertEquals("The second argument is blue ", Arrays.asList(tf.createColor(tf.createIdent("blue"))), separatedArguments.get(1));
+        assertEquals("The third argument is green ", Arrays.asList(tf.createColor(tf.createIdent("green"))), separatedArguments.get(2));
 
         ss = CSSFactory.parseString(TEST_LINEAR_GRADIENT_MULTI_COLOR_4, null);
         separatedArguments = ((TermFunction) ((RuleSet) ss.get(0)).get(0).get(0)).getSeparatedArgs(tf.createOperator(','));
         assertEquals("There are 4 comma-separated arguments ", 4, separatedArguments.size());
-        assertEquals("The first argument is red ", Arrays.asList(tf.createIdent("red")), separatedArguments.get(0));
-        assertEquals("The second argument is blue ", Arrays.asList(tf.createIdent("blue")), separatedArguments.get(1));
-        assertEquals("The third argument is green ", Arrays.asList(tf.createIdent("green")), separatedArguments.get(2));
-        assertEquals("The fourth argument is yellow ", Arrays.asList(tf.createIdent("yellow")), separatedArguments.get(3));
+        assertEquals("The first argument is red ", Arrays.asList(tf.createColor(tf.createIdent("red"))), separatedArguments.get(0));
+        assertEquals("The second argument is blue ", Arrays.asList(tf.createColor(tf.createIdent("blue"))), separatedArguments.get(1));
+        assertEquals("The third argument is green ", Arrays.asList(tf.createColor(tf.createIdent("green"))), separatedArguments.get(2));
+        assertEquals("The fourth argument is yellow ", Arrays.asList(tf.createColor(tf.createIdent("yellow"))), separatedArguments.get(3));
     }
 
     @Test
@@ -185,34 +185,34 @@ public class GradientTest {
         StyleSheet ss = CSSFactory.parseString(TEST_LINEAR_GRADIENT_STOPS_P1, null);
         List<List<Term<?>>> separatedArguments = ((TermFunction) ((RuleSet) ss.get(0)).get(0).get(0)).getSeparatedArgs(tf.createOperator(','));
         assertEquals("There are 2 comma-separated arguments ", 2, separatedArguments.size());
-        assertEquals("The first argument is red 0% ", Arrays.asList(tf.createIdent("red"), tf.createPercent(0f)), separatedArguments.get(0));
-        assertEquals("The second argument is blue 100% ", Arrays.asList(tf.createIdent("blue"), tf.createPercent(100f)), separatedArguments.get(1));
+        assertEquals("The first argument is red 0% ", Arrays.asList(tf.createColor(tf.createIdent("red")), tf.createPercent(0f)), separatedArguments.get(0));
+        assertEquals("The second argument is blue 100% ", Arrays.asList(tf.createColor(tf.createIdent("blue")), tf.createPercent(100f)), separatedArguments.get(1));
 
         ss = CSSFactory.parseString(TEST_LINEAR_GRADIENT_STOPS_P2, null);
         separatedArguments = ((TermFunction) ((RuleSet) ss.get(0)).get(0).get(0)).getSeparatedArgs(tf.createOperator(','));
         assertEquals("There are 3 comma-separated arguments ", 3, separatedArguments.size());
-        assertEquals("The first argument is red 20% ", Arrays.asList(tf.createIdent("red"), tf.createPercent(20f)), separatedArguments.get(0));
-        assertEquals("The second argument is blue 73% ", Arrays.asList(tf.createIdent("blue"), tf.createPercent(73f)), separatedArguments.get(1));
-        assertEquals("The third argument is green 81% ", Arrays.asList(tf.createIdent("green"), tf.createPercent(81f)), separatedArguments.get(2));
+        assertEquals("The first argument is red 20% ", Arrays.asList(tf.createColor(tf.createIdent("red")), tf.createPercent(20f)), separatedArguments.get(0));
+        assertEquals("The second argument is blue 73% ", Arrays.asList(tf.createColor(tf.createIdent("blue")), tf.createPercent(73f)), separatedArguments.get(1));
+        assertEquals("The third argument is green 81% ", Arrays.asList(tf.createColor(tf.createIdent("green")), tf.createPercent(81f)), separatedArguments.get(2));
 
         ss = CSSFactory.parseString(TEST_LINEAR_GRADIENT_STOPS_L1, null);
         separatedArguments = ((TermFunction) ((RuleSet) ss.get(0)).get(0).get(0)).getSeparatedArgs(tf.createOperator(','));
         assertEquals("There are 2 comma-separated arguments ", 2, separatedArguments.size());
-        assertEquals("The first argument is red 0 ", Arrays.asList(tf.createIdent("red"), tf.createInteger(0)), separatedArguments.get(0));
-        assertEquals("The second argument is blue 10em ", Arrays.asList(tf.createIdent("blue"), tf.createLength(10f, TermNumeric.Unit.em)), separatedArguments.get(1));
+        assertEquals("The first argument is red 0 ", Arrays.asList(tf.createColor(tf.createIdent("red")), tf.createInteger(0)), separatedArguments.get(0));
+        assertEquals("The second argument is blue 10em ", Arrays.asList(tf.createColor(tf.createIdent("blue")), tf.createLength(10f, TermNumeric.Unit.em)), separatedArguments.get(1));
 
         ss = CSSFactory.parseString(TEST_LINEAR_GRADIENT_STOPS_L2, null);
         separatedArguments = ((TermFunction) ((RuleSet) ss.get(0)).get(0).get(0)).getSeparatedArgs(tf.createOperator(','));
         assertEquals("There are 2 comma-separated arguments ", 2, separatedArguments.size());
-        assertEquals("The first argument is red 10pt ", Arrays.asList(tf.createIdent("red"), tf.createLength(10f, TermNumeric.Unit.pt)), separatedArguments.get(0));
-        assertEquals("The second argument is blue 120pt ", Arrays.asList(tf.createIdent("blue"), tf.createLength(120f, TermNumeric.Unit.pt)), separatedArguments.get(1));
+        assertEquals("The first argument is red 10pt ", Arrays.asList(tf.createColor(tf.createIdent("red")), tf.createLength(10f, TermNumeric.Unit.pt)), separatedArguments.get(0));
+        assertEquals("The second argument is blue 120pt ", Arrays.asList(tf.createColor(tf.createIdent("blue")), tf.createLength(120f, TermNumeric.Unit.pt)), separatedArguments.get(1));
 
         ss = CSSFactory.parseString(TEST_LINEAR_GRADIENT_STOPS_MIX, null);
         separatedArguments = ((TermFunction) ((RuleSet) ss.get(0)).get(0).get(0)).getSeparatedArgs(tf.createOperator(','));
         assertEquals("There are 3 comma-separated arguments ", 3, separatedArguments.size());
-        assertEquals("The first argument is red ", Arrays.asList(tf.createIdent("red")), separatedArguments.get(0));
-        assertEquals("The second argument is blue 120pt ", Arrays.asList(tf.createIdent("blue"), tf.createLength(120f, TermNumeric.Unit.pt)), separatedArguments.get(1));
-        assertEquals("The third argument is yellow 84% ", Arrays.asList(tf.createIdent("yellow"), tf.createPercent(84f)), separatedArguments.get(2));
+        assertEquals("The first argument is red ", Arrays.asList(tf.createColor(tf.createIdent("red"))), separatedArguments.get(0));
+        assertEquals("The second argument is blue 120pt ", Arrays.asList(tf.createColor(tf.createIdent("blue")), tf.createLength(120f, TermNumeric.Unit.pt)), separatedArguments.get(1));
+        assertEquals("The third argument is yellow 84% ", Arrays.asList(tf.createColor(tf.createIdent("yellow")), tf.createPercent(84f)), separatedArguments.get(2));
 
         ss = CSSFactory.parseString(TEST_LINEAR_GRADIENT_STOPS_HASH, null);
         separatedArguments = ((TermFunction) ((RuleSet) ss.get(0)).get(0).get(0)).getSeparatedArgs(tf.createOperator(','));
@@ -241,16 +241,16 @@ public class GradientTest {
         List<List<Term<?>>> separatedArguments = func.getSeparatedArgs(tf.createOperator(','));
         assertEquals("First function name is linear-gradient ", "linear-gradient", func.getFunctionName());
         assertEquals("First function has 2 comma-separated arguments ", 2, separatedArguments.size());
-        assertEquals("The first argument is red ", Arrays.asList(tf.createIdent("red")), separatedArguments.get(0));
-        assertEquals("The second argument is blue ", Arrays.asList(tf.createIdent("blue")), separatedArguments.get(1));
+        assertEquals("The first argument is red ", Arrays.asList(tf.createColor(tf.createIdent("red"))), separatedArguments.get(0));
+        assertEquals("The second argument is blue ", Arrays.asList(tf.createColor(tf.createIdent("blue"))), separatedArguments.get(1));
 
         func = (TermFunction) rule.get(0).get(1);
         separatedArguments = func.getSeparatedArgs(tf.createOperator(','));
         assertEquals("Second function name is linear-gradient ", "linear-gradient", func.getFunctionName());
         assertEquals("Second function has 3 comma-separated arguments ", 3, separatedArguments.size());
         assertEquals("The first argument is to right ", Arrays.asList(tf.createIdent("to"), tf.createIdent("right")), separatedArguments.get(0));
-        assertEquals("The second argument is yellow ", Arrays.asList(tf.createIdent("yellow")), separatedArguments.get(1));
-        assertEquals("The third argument is green ", Arrays.asList(tf.createIdent("green")), separatedArguments.get(2));
+        assertEquals("The second argument is yellow ", Arrays.asList(tf.createColor(tf.createIdent("yellow"))), separatedArguments.get(1));
+        assertEquals("The third argument is green ", Arrays.asList(tf.createColor(tf.createIdent("green"))), separatedArguments.get(2));
     }
 
     @Test
@@ -272,6 +272,6 @@ public class GradientTest {
         assertEquals("The first argument is to bottom ", Arrays.asList(tf.createIdent("to"), tf.createIdent("bottom")), separatedArguments.get(0));
         assertEquals("The first argument is pretty-printed as \"to bottom\" ", "linear-gradient(to bottom,", func.toString().substring(0, "linear-gradient(to bottom,".length()));
         assertEquals("The second argument is rgba(245,245,245,1) 0% ", Arrays.asList(tf.createColor(245, 245, 245, 255), tf.createPercent(0f)), separatedArguments.get(1));
-        assertEquals("The second argument is rgba(221,221,221,1) 100% ", Arrays.asList(tf.createColor(221, 221, 221, 255), tf.createPercent(100f)), separatedArguments.get(1));
+        assertEquals("The second argument is rgba(221,221,221,1) 100% ", Arrays.asList(tf.createColor(221, 221, 221, 255), tf.createPercent(100f)), separatedArguments.get(2));
     }
 }
