@@ -9,6 +9,7 @@ import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFloatValue;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
+import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermOperator;
 
 /**
@@ -39,6 +40,63 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
 		this.functionName = functionName;
 		return this;
 	}
+
+    @Override
+    public TermList setValue(List<Term<?>> value) {
+        this.value = new ArrayList<>();
+        
+        // Treat '-' as modifying the next argument, instead of as an operator
+        int minusCount = 0;
+        
+        for (Term<?> term : value) {
+            if (term instanceof TermOperator && ((TermOperator) term).getValue() == '-') {
+                minusCount++;
+            } else if (minusCount > 0) {
+                if (prependMinuses(term, minusCount)) {
+                    // Remove merged minuses
+                    for (int i = 0; i < minusCount; i++) {
+                        this.value.remove(this.value.size() - 1);
+                    }
+                }
+
+                minusCount = 0;
+            }
+            
+            this.value.add(term);
+        }
+        
+        return this;
+    }
+    
+    protected boolean prependMinuses(Term<?> term, int minusCount) {
+        boolean merged = false;
+        
+        if (term instanceof TermFloatValue) { // includes TermAngle, TermLength, etc.
+            TermFloatValue floatT = (TermFloatValue) term;
+            if (minusCount % 2 == 1) {
+                floatT.setValue(-1 * floatT.getValue());
+            }
+            merged = true;
+        } else if (term instanceof TermIdent) {
+            TermIdent ident = (TermIdent) term;
+            StringBuilder minuses = new StringBuilder();
+            for (int i = 0; i < minusCount; i++) {
+                minuses.append('-');
+            }
+            ident.setValue(minuses + ident.getValue());
+            merged = true;
+        } else if (term instanceof TermFunction) {
+            TermFunction func = (TermFunction) term;
+            StringBuilder minuses = new StringBuilder();
+            for (int i = 0; i < minusCount; i++) {
+                minuses.append('-');
+            }
+            func.setFunctionName(minuses + func.getFunctionName());
+            merged = true;
+        }
+        
+        return merged;
+    }
 
 	@Override
     public List<List<Term<?>>> getSeparatedArgs(Term<?> separator) {
