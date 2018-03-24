@@ -177,7 +177,7 @@ public class GradientTest {
         ss = CSSFactory.parseString(TEST_LINEAR_GRADIENT_ANGLE_NEGATIVE, null);
         separatedArguments = ((TermFunction) ((RuleSet) ss.get(0)).get(0).get(0)).getSeparatedArgs(tf.createOperator(','));
         assertEquals("There are 3 comma-separated arguments ", 3, separatedArguments.size());
-        assertEquals("The first argument is -10deg ", Arrays.asList(tf.createOperator('-'), tf.createAngle("10deg", TermNumeric.Unit.deg, 1)), separatedArguments.get(0));
+        assertEquals("The first argument is -10deg ", Arrays.asList(tf.createAngle("10deg", TermNumeric.Unit.deg, -1)), separatedArguments.get(0));
     }
 
     @Test

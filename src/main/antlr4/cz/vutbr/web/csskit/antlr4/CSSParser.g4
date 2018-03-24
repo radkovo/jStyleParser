@@ -371,7 +371,7 @@ funct_argument
     ) S*
     ;
 	catch [RecognitionException re] {
-		log.error("Recognition exception | valuepart");
+		log.error("Recognition exception | funct_argument");
 		IntervalSet intervalSet = new IntervalSet(RCURLY, SEMICOLON);
 		getCSSErrorHandler().consumeUntil(this, intervalSet, CSSLexerState.RecoveryMode.BALANCED, null);
 		_localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,""));

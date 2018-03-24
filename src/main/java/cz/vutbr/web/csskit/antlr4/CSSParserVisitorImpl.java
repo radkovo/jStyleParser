@@ -1072,37 +1072,37 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             return null;
         }
         if (ctx.PLUS() != null) {
-            log.debug("VP - plus");
+            log.debug("FA - plus");
             funct_args_stack.peek().term = tf.createOperator('+');
         } else if (ctx.MINUS() != null) {
-            log.debug("VP - minus");
+            log.debug("FA - minus");
             funct_args_stack.peek().term = tf.createOperator('-');
         } else if (ctx.ASTERISK() != null) {
-            log.debug("VP - *");
+            log.debug("FA - *");
             funct_args_stack.peek().term = tf.createOperator('*');
         } else if (ctx.SLASH() != null) {
-            log.debug("VP - /");
+            log.debug("FA - /");
             funct_args_stack.peek().term = tf.createOperator('/');
         } else if (ctx.LPAREN() != null) {
-            log.debug("VP - (");
+            log.debug("FA - (");
             funct_args_stack.peek().term = tf.createOperator('(');
         } else if (ctx.RPAREN() != null) {
-            log.debug("VP - )");
+            log.debug("FA - )");
             funct_args_stack.peek().term = tf.createOperator(')');
         } else if (ctx.COMMA() != null) {
-            log.debug("VP - comma");
+            log.debug("FA - comma");
             funct_args_stack.peek().term = tf.createOperator(',');
         } else if (ctx.string() != null) {
-            log.debug("VP - string");
+            log.debug("FA - string");
             funct_args_stack.peek().term = tf.createString(extractTextUnescaped(ctx.string().getText()));
         } else if (ctx.IDENT() != null) {
-            log.debug("VP - ident");
+            log.debug("FA - ident");
             funct_args_stack.peek().term = tf.createIdent(extractTextUnescaped(ctx.IDENT().getText()));
         } else if (ctx.PERCENTAGE() != null) {
-            log.debug("VP - percentage");
+            log.debug("FA - percentage");
             funct_args_stack.peek().term = tf.createPercent(ctx.PERCENTAGE().getText(), 1);
         } else if (ctx.DIMENSION() != null) {
-            log.debug("VP - dimension");
+            log.debug("FA - dimension");
             String dim = ctx.DIMENSION().getText();
             funct_args_stack.peek().term = tf.createDimension(dim, 1);
             if (funct_args_stack.peek().term == null) {
@@ -1110,15 +1110,16 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
                 declaration_stack.peek().invalid = true;
             }
         } else if (ctx.HASH() != null) {
-            log.debug("VP - hash");
+            log.debug("FA - hash");
             funct_args_stack.peek().term = tf.createColor(ctx.HASH().getText());
             if (funct_args_stack.peek().term == null) {
                 declaration_stack.peek().invalid = true;
             }
         } else if (ctx.NUMBER() != null) {
-            log.debug("VP - number");
+            log.debug("FA - number");
             funct_args_stack.peek().term = tf.createNumeric(ctx.NUMBER().getText(), 1);
         } else if (ctx.funct() != null) {
+            log.debug("FA - funct");
             funct_args_stack.peek().term = null;
             Term<?> fnterm = (Term<?>) visitFunct(ctx.funct());
             if (fnterm != null) {
