@@ -177,14 +177,19 @@ public class OutputUtil {
      */
 	public static StringBuilder appendFunctionArgs(StringBuilder sb, List<Term<?>> list) {
 
-        boolean firstRun = true;
-
+        Term<?> prev = null, pprev = null;
+        
         for (Term<?> elem : list) {
-            boolean sep = (elem instanceof TermOperator &&
-                    ((TermOperator) elem).getValue() == ',');
-            if (!firstRun && !sep)
+            boolean sep = true;
+            if (elem instanceof TermOperator && ((TermOperator) elem).getValue() == ',')
+                sep = false; //no spaces before commas
+            if ((prev != null && prev instanceof TermOperator && ((TermOperator) prev).getValue() == '-')
+                    && (pprev == null || pprev instanceof TermOperator)) //nothing or an operator before -
+                sep = false; //no spaces after unary minus
+            if (prev != null && sep)
                 sb.append(SPACE_DELIM);
-            firstRun = false;
+            pprev = prev;
+            prev = elem;
 
             sb.append(elem.toString());
         }
