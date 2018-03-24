@@ -46,20 +46,17 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         this.value = new ArrayList<>();
         
         // Treat '-' as modifying the next argument, instead of as an operator
-        int minusCount = 0;
+        boolean prevMinus = false;
         
         for (Term<?> term : value) {
             if (term instanceof TermOperator && ((TermOperator) term).getValue() == '-') {
-                minusCount++;
-            } else if (minusCount > 0) {
-                if (prependMinuses(term, minusCount)) {
-                    // Remove merged minuses
-                    for (int i = 0; i < minusCount; i++) {
-                        this.value.remove(this.value.size() - 1);
-                    }
+                prevMinus = true;
+            } else if (prevMinus) {
+                if (prependMinus(term)) {
+                    this.value.remove(this.value.size() - 1); // Remove merged minus
                 }
 
-                minusCount = 0;
+                prevMinus = false;
             }
             
             this.value.add(term);
@@ -68,30 +65,20 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         return this;
     }
     
-    protected boolean prependMinuses(Term<?> term, int minusCount) {
+    protected boolean prependMinus(Term<?> term) {
         boolean merged = false;
         
         if (term instanceof TermFloatValue) { // includes TermAngle, TermLength, etc.
             TermFloatValue floatT = (TermFloatValue) term;
-            if (minusCount % 2 == 1) {
-                floatT.setValue(-1 * floatT.getValue());
-            }
+            floatT.setValue(-1 * floatT.getValue());
             merged = true;
         } else if (term instanceof TermIdent) {
             TermIdent ident = (TermIdent) term;
-            StringBuilder minuses = new StringBuilder();
-            for (int i = 0; i < minusCount; i++) {
-                minuses.append('-');
-            }
-            ident.setValue(minuses + ident.getValue());
+            ident.setValue("-" + ident.getValue());
             merged = true;
         } else if (term instanceof TermFunction) {
             TermFunction func = (TermFunction) term;
-            StringBuilder minuses = new StringBuilder();
-            for (int i = 0; i < minusCount; i++) {
-                minuses.append('-');
-            }
-            func.setFunctionName(minuses + func.getFunctionName());
+            func.setFunctionName("-" + func.getFunctionName());
             merged = true;
         }
         
