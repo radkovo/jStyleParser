@@ -37,21 +37,23 @@ public class FunctionsTest {
     /* function name may start with minus */
     public static final String TEST_DECL2A = " a:after { background-image:-moz-linear-gradient(top,#fff,#ececec); border: 1px solid red; }";
     
+    /* function arguments may include minus */
+    public static final String TEST_DECL3A = "img { translate: translateY(-.1em) }";
+    
     /* different rect() syntaxes */
     public static final String TEST_RECT1 = "p { clip: rect(1px 10em 3rem 2ch); color: red; }";
     public static final String TEST_RECT2 = "p { clip: rect(1px, 10em, 3rem, 2ch); color: red; }";
     public static final String TEST_RECT3 = "p { clip: rect(1px, 10em, 3rem, auto); color: red; }";
     
     /* calc() length expressions (all should evaluate to 60.0) */
-    public static final String TEST_CALC_L[];
-    static {
-        TEST_CALC_L = new String[5];
-        TEST_CALC_L[0] = "p { width: calc(60px); color: red; }";
-        TEST_CALC_L[1] = "p { width: calc(1em + 0.5em); color: red; }";
-        TEST_CALC_L[2] = "p { width: calc(1em + (10% * 2)); color: red; }";
-        TEST_CALC_L[3] = "p { width: calc(-3em + 4.5em); color: red; }";
-        TEST_CALC_L[4] = "p { width: calc(3em + (-1.5em)); color: red; }";
-    }
+    public static final String TEST_CALC_L[] = new String[] {
+        "p { width: calc(60px); color: red; }",
+        "p { width: calc(1em + 0.5em); color: red; }",
+        "p { width: calc(1em + (10% * 2)); color: red; }",
+        "p { width: calc(-3em + 4.5em); color: red; }",
+        "p { width: calc(3em + (-1.5em)); color: red; }",
+        "p { width: calc(3em - 1.5em); color: red; }"
+    };
     
     /* calc() angle expressions (all should evaluate to 33) */
     public static final String TEST_CALC_A[];
@@ -93,6 +95,16 @@ public class FunctionsTest {
 		TermFunction f = (TermFunction) d.get(0);
 		char first = f.getFunctionName().charAt(0);
 		assertEquals("Function name starts with minus", '-', first);
+	}
+    
+    @Test
+	public void negativeArgument() throws IOException, CSSException 
+	{
+		StyleSheet ss = CSSFactory.parseString(TEST_DECL3A, null);
+		assertEquals("One properties is accepted", 1, ss.get(0).size());
+		Declaration d = (Declaration) ss.get(0).get(0);
+		TermFunction f = (TermFunction) d.get(0);
+		assertEquals("The argument is -0.1em", tf.createLength(-0.1f, Unit.em), f.get(0));
 	}
 	
 	@Test

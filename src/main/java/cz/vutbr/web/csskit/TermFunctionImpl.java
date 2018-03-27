@@ -9,6 +9,7 @@ import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFloatValue;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
+import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermOperator;
 
 /**
@@ -39,6 +40,50 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
 		this.functionName = functionName;
 		return this;
 	}
+
+    @Override
+    public TermList setValue(List<Term<?>> value) {
+        this.value = new ArrayList<>();
+        
+        // Treat '-' as modifying the next argument, instead of as an operator
+        boolean prevMinus = false;
+        
+        for (Term<?> term : value) {
+            if (term instanceof TermOperator && ((TermOperator) term).getValue() == '-') {
+                prevMinus = true;
+            } else if (prevMinus) {
+                if (prependMinus(term)) {
+                    this.value.remove(this.value.size() - 1); // Remove merged minus
+                }
+
+                prevMinus = false;
+            }
+            
+            this.value.add(term);
+        }
+        
+        return this;
+    }
+    
+    protected boolean prependMinus(Term<?> term) {
+        boolean merged = false;
+        
+        if (term instanceof TermFloatValue) { // includes TermAngle, TermLength, etc.
+            TermFloatValue floatT = (TermFloatValue) term;
+            floatT.setValue(-1 * floatT.getValue());
+            merged = true;
+        } else if (term instanceof TermIdent) {
+            TermIdent ident = (TermIdent) term;
+            ident.setValue("-" + ident.getValue());
+            merged = true;
+        } else if (term instanceof TermFunction) {
+            TermFunction func = (TermFunction) term;
+            func.setFunctionName("-" + func.getFunctionName());
+            merged = true;
+        }
+        
+        return merged;
+    }
 
 	@Override
     public List<List<Term<?>>> getSeparatedArgs(Term<?> separator) {
