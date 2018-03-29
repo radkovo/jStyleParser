@@ -112,9 +112,13 @@ public class TermFactoryImpl implements TermFactory {
         return (new TermExpressionImpl()).setValue(expr);
     }
     
-	public TermFunction createFunction() {
-		return new TermFunctionImpl();
+	public TermFunction createFunction(String name) {
+		return createFunctionByName(name, null);
 	}
+
+    public TermFunction createFunction(String name, List<Term<?>> args) {
+        return createFunctionByName(name, args);
+    }
 
     public TermIdent createIdent(String value) {
         return (TermIdent) (new TermIdentImpl()).setValue(value);
@@ -359,6 +363,32 @@ public class TermFactoryImpl implements TermFactory {
 		} catch (NullPointerException e) {
 			throw new IllegalArgumentException("Invalid null format");
 		}
+	}
+	
+	protected TermFunction createFunctionByName(String name, List<Term<?>> args)
+	{
+	    TermFunction fn = null;
+	    switch (name) {
+	        case "scale":
+	            fn = new TermFunctionImpl.ScaleImpl();
+	            break;
+            case "scalex":
+                fn = new TermFunctionImpl.ScaleXImpl();
+                break;
+            case "scaley":
+                fn = new TermFunctionImpl.ScaleYImpl();
+                break;
+	        default:
+	            fn = new TermFunctionImpl();
+	            break;
+	    }
+	    if (fn != null) {
+	        fn.setFunctionName(name);
+	        fn.setValue(args);
+	    }
+	    if (!fn.isValid())
+	        fn = null; //invalid arguments
+	    return fn;
 	}
 	
 }

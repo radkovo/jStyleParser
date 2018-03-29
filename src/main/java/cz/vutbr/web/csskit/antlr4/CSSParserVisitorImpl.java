@@ -930,11 +930,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
                 
             } else {
                 // create function
-                cz.vutbr.web.css.TermFunction function = tf.createFunction();
-                function.setFunctionName(fname);
-                if (t != null)
-                    function.setValue(t);
-                ret = function;
+                ret = tf.createFunction(fname, t);
             }
         }
         return ret;

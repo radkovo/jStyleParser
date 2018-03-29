@@ -18,6 +18,12 @@ public interface TermFunction extends TermList {
     public TermFunction setFunctionName(String functionName);
     
     /**
+     * Checks whether the arguments passed using {@code setValue()} are valid for this function.
+     * @return {@code true} when the function has valid arguments
+     */
+    public boolean isValid();
+    
+    /**
      * Splits the list of arguments to several lists based on the given separator term.
      * @param separator The term used as a separator (typically TermOperator(',').
      * @return A list of term lists corresponding to the individual separated arguments.
@@ -37,5 +43,25 @@ public interface TermFunction extends TermList {
      * @return A list of typed numeric values or idents (if keywords allowed) or {@code null} in case that the arguments cannot be converted to values. 
      */
     public List<Term<?>> getValues(boolean allowKeywords);
+
+    
+    //========================================================================
+    
+    public interface TransformFunction extends TermFunction {
+        
+    }
+    
+    public interface Scale extends TransformFunction {
+        public float getScaleX();
+        public float getScaleY();
+    }
+    
+    public interface ScaleX extends TransformFunction {
+        public float getScale();
+    }
+    
+    public interface ScaleY extends TransformFunction {
+        public float getScale();
+    }
 
 }

@@ -22,7 +22,9 @@ public interface TermFactory {
 	TermFrequency createFrequency(String value, Unit unit, int unary);
 	
     TermExpression createExpression(String expr);
-	TermFunction createFunction();
+
+    TermFunction createFunction(String name);
+    TermFunction createFunction(String name, List<Term<?>> args);
 	
 	TermIdent createIdent(String value);
     TermIdent createIdent(String value, boolean dash);

@@ -9,7 +9,9 @@ import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFloatValue;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
+import cz.vutbr.web.css.TermInteger;
 import cz.vutbr.web.css.TermList;
+import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermOperator;
 
 /**
@@ -20,13 +22,17 @@ import cz.vutbr.web.css.TermOperator;
 public class TermFunctionImpl extends TermListImpl implements TermFunction {
 
 	protected String functionName;
+	protected boolean valid;
 	
-    protected TermFunctionImpl() {    	
+	
+    protected TermFunctionImpl() {
+        valid = true;
     }
     
     /**
 	 * @return the functionName
 	 */
+    @Override
 	public String getFunctionName() {
 		return functionName;
 	}
@@ -34,6 +40,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
 	/**
 	 * @param functionName the functionName to set
 	 */
+    @Override
 	public TermFunction setFunctionName(String functionName) {
 		if(functionName==null)
 			throw new IllegalArgumentException("Invalid functionName in function (null)");
@@ -41,6 +48,15 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
 		return this;
 	}
 
+	@Override
+	public boolean isValid() {
+	    return valid;
+	}
+	
+	public void setValid(boolean valid) {
+	    this.valid = valid;
+	}
+	
     @Override
     public TermList setValue(List<Term<?>> value) {
         this.value = new ArrayList<>();
@@ -261,5 +277,108 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
 		return true;
 	}
 	
+	//========================================================================
 	
+    protected boolean isNumberArg(Term<?> term)
+    {
+        return term instanceof TermNumber || term instanceof TermInteger;
+    }
+
+    protected float getNumberArg(Term<?> term)
+    {
+        if (term instanceof TermNumber)
+            return ((TermNumber) term).getValue();
+        else
+            return ((TermInteger) term).getValue();
+    }
+	
+    //========================================================================
+    
+	public static class ScaleImpl extends TermFunctionImpl implements TermFunction.Scale {
+	    
+	    private float scaleX;
+	    private float scaleY;
+	    
+	    public ScaleImpl() {
+	        setValid(false); //arguments are required
+	    }
+
+        @Override
+	    public float getScaleX() {
+            return scaleX;
+        }
+
+        @Override
+        public float getScaleY() {
+            return scaleY;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            if (size() == 2 && isNumberArg(get(0)) && isNumberArg(get(1))) {
+                scaleX = getNumberArg(get(0));
+                scaleY = getNumberArg(get(1));
+            } else if (size() == 1 && isNumberArg(get(0))) {
+                scaleX = scaleY = getNumberArg(get(0));
+            } else {
+                setValid(false);
+            }
+            return this;
+        }
+	}
+	
+    public static class ScaleXImpl extends TermFunctionImpl implements TermFunction.ScaleX {
+        
+        private float scale;
+        
+        public ScaleXImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public float getScale() {
+            return scale;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            if (size() == 1 && isNumberArg(get(0))) {
+                scale = getNumberArg(get(0));
+            } else {
+                setValid(false);
+            }
+            return this;
+        }
+    }
+	
+    public static class ScaleYImpl extends TermFunctionImpl implements TermFunction.ScaleY {
+        
+        private float scale;
+        
+        public ScaleYImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public float getScale() {
+            return scale;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            if (size() == 1 && isNumberArg(get(0))) {
+                scale = getNumberArg(get(0));
+            } else {
+                setValid(false);
+            }
+            return this;
+        }
+    }
+    
 }
