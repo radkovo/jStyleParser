@@ -51,9 +51,50 @@ public interface TermFunction extends TermList {
         
     }
     
+    public interface Matrix extends TransformFunction {
+        public float[] getValues();
+    }
+    
+    public interface Matrix3d extends TransformFunction {
+        public float[] getValues();
+    }
+    
+    public interface Perspective extends TransformFunction {
+        public TermLength getDistance();
+    }
+    
+    public interface Rotate extends TransformFunction {
+        public TermAngle getAngle();
+    }
+    
+    public interface Rotate3d extends TransformFunction {
+        public float getX();
+        public float getY();
+        public float getZ();
+        public TermAngle getAngle();
+    }
+    
+    public interface RotateX extends TransformFunction {
+        public TermAngle getAngle();
+    }
+    
+    public interface RotateY extends TransformFunction {
+        public TermAngle getAngle();
+    }
+    
+    public interface RotateZ extends TransformFunction {
+        public TermAngle getAngle();
+    }
+    
     public interface Scale extends TransformFunction {
         public float getScaleX();
         public float getScaleY();
+    }
+    
+    public interface Scale3d extends TransformFunction {
+        public float getScaleX();
+        public float getScaleY();
+        public float getScaleZ();
     }
     
     public interface ScaleX extends TransformFunction {
@@ -64,4 +105,44 @@ public interface TermFunction extends TermList {
         public float getScale();
     }
 
+    public interface ScaleZ extends TransformFunction {
+        public float getScale();
+    }
+
+    public interface Skew extends TransformFunction {
+        public TermAngle getSkewX();
+        public TermAngle getSkewY();
+    }
+    
+    public interface SkewX extends TransformFunction {
+        public TermAngle getSkew();
+    }
+    
+    public interface SkewY extends TransformFunction {
+        public TermAngle getSkew();
+    }
+    
+    public interface Translate extends TransformFunction {
+        public TermLength getTranslateX();
+        public TermLength getTranslateY();
+    }
+    
+    public interface Translate3d extends TransformFunction {
+        public TermLength getTranslateX();
+        public TermLength getTranslateY();
+        public TermLength getTranslateZ();
+    }
+    
+    public interface TranslateX extends TransformFunction {
+        public TermLength getTranslate();
+    }
+    
+    public interface TranslateY extends TransformFunction {
+        public TermLength getTranslate();
+    }
+    
+    public interface TranslateZ extends TransformFunction {
+        public TermLength getTranslate();
+    }
+    
 }

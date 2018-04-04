@@ -7,10 +7,12 @@ import org.unbescape.css.CssEscape;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.TermAngle;
 import cz.vutbr.web.css.TermFloatValue;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermInteger;
+import cz.vutbr.web.css.TermLength;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermOperator;
@@ -297,6 +299,250 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
 	
     //========================================================================
     
+    public static class MatrixImpl extends TermFunctionImpl implements TermFunction.Matrix {
+        
+        private float[] values;
+        
+        public MatrixImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public float[] getValues() {
+            return values;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 6) {
+                values = new float[6];
+                setValid(true);
+                for (int i = 0; i < 6; i++) {
+                    if (isNumberArg(args.get(i)))
+                        values[i] = getNumberArg(args.get(i));
+                    else
+                        setValid(false);
+                }
+            }
+            return this;
+        }
+    }
+    
+    public static class Matrix3dImpl extends TermFunctionImpl implements TermFunction.Matrix3d {
+        
+        private float[] values;
+        
+        public Matrix3dImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public float[] getValues() {
+            return values;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 16) {
+                values = new float[16];
+                setValid(true);
+                for (int i = 0; i < 16; i++) {
+                    if (isNumberArg(args.get(i)))
+                        values[i] = getNumberArg(args.get(i));
+                    else
+                        setValid(false);
+                }
+            }
+            return this;
+        }
+    }
+    
+    public static class PerspectiveImpl extends TermFunctionImpl implements TermFunction.Perspective {
+        
+        private TermLength distance;
+        
+        public PerspectiveImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public TermLength getDistance() {
+            return distance;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 1 && args.get(0) instanceof TermLength) {
+                distance = (TermLength) args.get(0);
+                setValid(true);
+            }
+            return this;
+        }
+    }
+    
+    public static class RotateImpl extends TermFunctionImpl implements TermFunction.Rotate {
+        
+        private TermAngle angle;
+        
+        public RotateImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public TermAngle getAngle() {
+            return angle;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 1 && args.get(0) instanceof TermAngle) {
+                angle = (TermAngle) args.get(0);
+                setValid(true);
+            }
+            return this;
+        }
+    }
+    
+    public static class Rotate3dImpl extends TermFunctionImpl implements TermFunction.Rotate3d {
+
+        private float x;
+        private float y;
+        private float z;
+        private TermAngle angle;
+        
+        public Rotate3dImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public float getX() {
+            return x;
+        }
+
+        @Override
+        public float getY() {
+            return y;
+        }
+
+
+        @Override
+        public float getZ() {
+            return z;
+        }
+
+        @Override
+        public TermAngle getAngle() {
+            return angle;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 4 
+                    && isNumberArg(args.get(0)) && isNumberArg(args.get(1)) && isNumberArg(args.get(2))
+                    && args.get(3) instanceof TermAngle) {
+                x = getNumberArg(args.get(0));
+                y = getNumberArg(args.get(1));
+                z = getNumberArg(args.get(2));
+                angle = (TermAngle) args.get(3);
+                setValid(true);
+            } 
+            return this;
+        }
+    }
+    
+    public static class RotateXImpl extends TermFunctionImpl implements TermFunction.RotateX {
+        
+        private TermAngle angle;
+        
+        public RotateXImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public TermAngle getAngle() {
+            return angle;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 1 && args.get(0) instanceof TermAngle) {
+                angle = (TermAngle) args.get(0);
+                setValid(true);
+            }
+            return this;
+        }
+    }
+    
+    public static class RotateYImpl extends TermFunctionImpl implements TermFunction.RotateY {
+        
+        private TermAngle angle;
+        
+        public RotateYImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public TermAngle getAngle() {
+            return angle;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 1 && args.get(0) instanceof TermAngle) {
+                angle = (TermAngle) args.get(0);
+                setValid(true);
+            }
+            return this;
+        }
+    }
+    
+    public static class RotateZImpl extends TermFunctionImpl implements TermFunction.RotateZ {
+        
+        private TermAngle angle;
+        
+        public RotateZImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public TermAngle getAngle() {
+            return angle;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 1 && args.get(0) instanceof TermAngle) {
+                angle = (TermAngle) args.get(0);
+                setValid(true);
+            }
+            return this;
+        }
+    }
+    
 	public static class ScaleImpl extends TermFunctionImpl implements TermFunction.Scale {
 	    
 	    private float scaleX;
@@ -333,6 +579,47 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         }
 	}
 	
+    public static class Scale3dImpl extends TermFunctionImpl implements TermFunction.Scale3d {
+        
+        private float scaleX;
+        private float scaleY;
+        private float scaleZ;
+        
+        public Scale3dImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public float getScaleX() {
+            return scaleX;
+        }
+
+        @Override
+        public float getScaleY() {
+            return scaleY;
+        }
+
+        @Override
+        public float getScaleZ() {
+            return scaleZ;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 3 
+                    && isNumberArg(args.get(0)) && isNumberArg(args.get(1)) && isNumberArg(args.get(2))) {
+                scaleX = getNumberArg(args.get(0));
+                scaleY = getNumberArg(args.get(1));
+                scaleZ = getNumberArg(args.get(2));
+                setValid(true);
+            }
+            return this;
+        }
+    }
+    
     public static class ScaleXImpl extends TermFunctionImpl implements TermFunction.ScaleX {
         
         private float scale;
@@ -385,5 +672,281 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         }
     }
     
+    public static class ScaleZImpl extends TermFunctionImpl implements TermFunction.ScaleZ {
+        
+        private float scale;
+        
+        public ScaleZImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public float getScale() {
+            return scale;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 1 && isNumberArg(args.get(0))) {
+                scale = getNumberArg(args.get(0));
+                setValid(true);
+            }
+            return this;
+        }
+    }
     
+    public static class SkewImpl extends TermFunctionImpl implements TermFunction.Skew {
+        
+        private TermAngle skewX;
+        private TermAngle skewY;
+        
+        public SkewImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public TermAngle getSkewX() {
+            return skewX;
+        }
+
+        @Override
+        public TermAngle getSkewY() {
+            return skewY;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 2 
+                    && args.get(0) instanceof TermAngle
+                    && args.get(1) instanceof TermAngle) {
+                skewX = (TermAngle) args.get(0);
+                skewY = (TermAngle) args.get(1);
+                setValid(true);
+            } else if (size() == 1 && args.get(0) instanceof TermAngle) {
+                skewX = (TermAngle) args.get(0);
+                skewY = CSSFactory.getTermFactory().createAngle(0.0f);
+                setValid(true);
+            }
+            return this;
+        }
+    }
+    
+    public static class SkewXImpl extends TermFunctionImpl implements TermFunction.SkewX {
+        
+        private TermAngle skew;
+        
+        public SkewXImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public TermAngle getSkew() {
+            return skew;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (size() == 1 && args.get(0) instanceof TermAngle) {
+                skew = (TermAngle) args.get(0);
+                setValid(true);
+            }
+            return this;
+        }
+    }
+    
+    public static class SkewYImpl extends TermFunctionImpl implements TermFunction.SkewY {
+        
+        private TermAngle skew;
+        
+        public SkewYImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public TermAngle getSkew() {
+            return skew;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (size() == 1 && args.get(0) instanceof TermAngle) {
+                skew = (TermAngle) args.get(0);
+                setValid(true);
+            }
+            return this;
+        }
+    }
+    
+    public static class TranslateImpl extends TermFunctionImpl implements TermFunction.Translate {
+        
+        private TermLength translateX;
+        private TermLength translateY;
+        
+        public TranslateImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public TermLength getTranslateX() {
+            return translateX;
+        }
+
+        @Override
+        public TermLength getTranslateY() {
+            return translateY;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 2 
+                    && args.get(0) instanceof TermLength
+                    && args.get(1) instanceof TermLength) {
+                translateX = (TermLength) args.get(0);
+                translateY = (TermLength) args.get(1);
+                setValid(true);
+            } else if (size() == 1 && args.get(0) instanceof TermLength) {
+                translateX = (TermLength) args.get(0);
+                translateY = CSSFactory.getTermFactory().createLength(0.0f);
+                setValid(true);
+            }
+            return this;
+        }
+    }
+    
+    public static class Translate3dImpl extends TermFunctionImpl implements TermFunction.Translate3d {
+        
+        private TermLength translateX;
+        private TermLength translateY;
+        private TermLength translateZ;
+        
+        public Translate3dImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public TermLength getTranslateX() {
+            return translateX;
+        }
+
+        @Override
+        public TermLength getTranslateY() {
+            return translateY;
+        }
+
+        @Override
+        public TermLength getTranslateZ() {
+            return translateZ;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 3 
+                    && args.get(0) instanceof TermLength
+                    && args.get(1) instanceof TermLength
+                    && args.get(2) instanceof TermLength) {
+                translateX = (TermLength) args.get(0);
+                translateY = (TermLength) args.get(1);
+                translateZ = (TermLength) args.get(3);
+                setValid(true);
+            }
+            return this;
+        }
+    }
+
+    public static class TranslateXImpl extends TermFunctionImpl implements TermFunction.TranslateX {
+        
+        private TermLength translate;
+        
+        public TranslateXImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public TermLength getTranslate() {
+            return translate;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 1 && args.get(0) instanceof TermLength) {
+                translate = (TermLength) args.get(0);
+                setValid(true);
+            }
+            return this;
+        }
+    }
+    
+    public static class TranslateYImpl extends TermFunctionImpl implements TermFunction.TranslateY {
+        
+        private TermLength translate;
+        
+        public TranslateYImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public TermLength getTranslate() {
+            return translate;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 1 && args.get(0) instanceof TermLength) {
+                translate = (TermLength) args.get(0);
+                setValid(true);
+            }
+            return this;
+        }
+    }
+    
+    public static class TranslateZImpl extends TermFunctionImpl implements TermFunction.TranslateZ {
+        
+        private TermLength translate;
+        
+        public TranslateZImpl() {
+            setValid(false); //arguments are required
+        }
+
+        @Override
+        public TermLength getTranslate() {
+            return translate;
+        }
+
+        @Override
+        public TermList setValue(List<Term<?>> value)
+        {
+            super.setValue(value);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 1 && args.get(0) instanceof TermLength) {
+                translate = (TermLength) args.get(0);
+                setValid(true);
+            }
+            return this;
+        }
+    }
+
 }
