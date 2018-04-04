@@ -24,6 +24,7 @@ import cz.vutbr.web.css.TermLengthOrPercent;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.css.TermRect;
 import cz.vutbr.web.csskit.CalcArgs;
+import cz.vutbr.web.csskit.TermFunctionImpl;
 
 public class FunctionsTest {
 	private static final Logger log = LoggerFactory.getLogger(FunctionsTest.class);
@@ -69,6 +70,19 @@ public class FunctionsTest {
         TEST_CALC_I[0] = "p { width: calc(30deg + 3em * 2); color: red; }"; //mixed types in expression
     }
 
+    /* valid transform functions */
+    public static final String TEST_TRANSFORM[] = new String[] {
+        "p { transform: scale(1.5, 1.2); }",
+        "p { transform: scale(1.3); }",
+        "p { transform: scaleX(1.5); }",
+        "p { transform: scaleY(1.2); }"
+    };
+    
+    /* invalid transform functions; only the float declaration should be accepted */
+    public static final String TEST_TRANSFORM_INVALID[] = new String[] {
+        "p { float: left; transform: scale(1.5, 1.2, 1.1); }",
+        "p { float: left; transform: scale(); }"
+    };
     
 	@BeforeClass
 	public static void init() 
@@ -167,6 +181,51 @@ public class FunctionsTest {
             StyleSheet ss = CSSFactory.parseString(TEST_CALC_I[i], null);
             assertEquals("Only one property is accepted [" + i + "]", 1, ss.get(0).size());
         }
+    }
+    
+    @Test
+    public void transformValid() throws IOException, CSSException
+    {
+        for (int i = 0; i < TEST_TRANSFORM.length; i++)
+        {
+            StyleSheet ss = CSSFactory.parseString(TEST_TRANSFORM[i], null);
+            assertEquals("One rule is parset [" + i + "]", 1, ss.size());
+            assertEquals("One property is set [" + i + "]", 1, ss.get(0).size());
+            Declaration d = (Declaration) ss.get(0).get(0);
+            TermFunction fn = (TermFunction) d.get(0);
+            switch (i)
+            {
+                case 0:
+                    assertEquals(TermFunctionImpl.ScaleImpl.class, fn.getClass());
+                    assertEquals("ScaleX is correct", 1.5f, ((TermFunctionImpl.ScaleImpl) fn).getScaleX(), 0.001f);
+                    assertEquals("ScaleY is correct", 1.2f, ((TermFunctionImpl.ScaleImpl) fn).getScaleY(), 0.001f);
+                    break;
+                case 1:
+                    assertEquals(TermFunctionImpl.ScaleImpl.class, fn.getClass());
+                    assertEquals("ScaleX is correct", 1.3f, ((TermFunctionImpl.ScaleImpl) fn).getScaleX(), 0.001f);
+                    assertEquals("ScaleY is correct", 1.3f, ((TermFunctionImpl.ScaleImpl) fn).getScaleY(), 0.001f);
+                    break;
+                case 2:
+                    assertEquals(TermFunctionImpl.ScaleXImpl.class, fn.getClass());
+                    assertEquals("Scale is correct", 1.5f, ((TermFunctionImpl.ScaleXImpl) fn).getScale(), 0.001f);
+                    break;
+                case 3:
+                    assertEquals(TermFunctionImpl.ScaleYImpl.class, fn.getClass());
+                    assertEquals("Scale is correct", 1.2f, ((TermFunctionImpl.ScaleYImpl) fn).getScale(), 0.001f);
+                    break;
+            }
+        }
+    }
+    
+    @Test
+    public void transformInvalid() throws IOException, CSSException
+    {
+        for (int i = 0; i < TEST_TRANSFORM_INVALID.length; i++)
+        {
+            StyleSheet ss = CSSFactory.parseString(TEST_TRANSFORM_INVALID[i], null);
+            assertEquals("One rule is parset [" + i + "]", 1, ss.size());
+            assertEquals("One property is set [" + i + "]", 1, ss.get(0).size());
+        }        
     }
     
 	//==========================================================================================

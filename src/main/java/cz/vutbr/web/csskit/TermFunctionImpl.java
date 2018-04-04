@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.unbescape.css.CssEscape;
 
+import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermFloatValue;
 import cz.vutbr.web.css.TermFunction;
@@ -21,6 +22,8 @@ import cz.vutbr.web.css.TermOperator;
  */
 public class TermFunctionImpl extends TermListImpl implements TermFunction {
 
+    protected static final TermOperator DEFAULT_ARG_SEP = CSSFactory.getTermFactory().createOperator(',');
+    
 	protected String functionName;
 	protected boolean valid;
 	
@@ -58,7 +61,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
 	}
 	
     @Override
-    public TermList setValue(List<Term<?>> value) {
+    public TermList setValue(List<Term<?>> value) { //TODO the minus operation is duplicate to getSeparatedValues()?
         this.value = new ArrayList<>();
         
         // Treat '-' as modifying the next argument, instead of as an operator
@@ -317,13 +320,14 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         public TermList setValue(List<Term<?>> value)
         {
             super.setValue(value);
-            if (size() == 2 && isNumberArg(get(0)) && isNumberArg(get(1))) {
-                scaleX = getNumberArg(get(0));
-                scaleY = getNumberArg(get(1));
-            } else if (size() == 1 && isNumberArg(get(0))) {
-                scaleX = scaleY = getNumberArg(get(0));
-            } else {
-                setValid(false);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 2 && isNumberArg(args.get(0)) && isNumberArg(args.get(1))) {
+                scaleX = getNumberArg(args.get(0));
+                scaleY = getNumberArg(args.get(1));
+                setValid(true);
+            } else if (size() == 1 && isNumberArg(args.get(0))) {
+                scaleX = scaleY = getNumberArg(args.get(0));
+                setValid(true);
             }
             return this;
         }
@@ -346,10 +350,10 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         public TermList setValue(List<Term<?>> value)
         {
             super.setValue(value);
-            if (size() == 1 && isNumberArg(get(0))) {
-                scale = getNumberArg(get(0));
-            } else {
-                setValid(false);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 1 && isNumberArg(args.get(0))) {
+                scale = getNumberArg(args.get(0));
+                setValid(true);
             }
             return this;
         }
@@ -372,13 +376,14 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         public TermList setValue(List<Term<?>> value)
         {
             super.setValue(value);
-            if (size() == 1 && isNumberArg(get(0))) {
-                scale = getNumberArg(get(0));
-            } else {
-                setValid(false);
+            List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
+            if (args.size() == 1 && isNumberArg(args.get(0))) {
+                scale = getNumberArg(args.get(0));
+                setValid(true);
             }
             return this;
         }
     }
+    
     
 }
