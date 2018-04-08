@@ -98,7 +98,7 @@ public class FunctionsTest {
         "p { transform: skewX(-35deg); }", 
         "p { transform: skewY(0); }", 
         "p { transform: translate(10px); }", 
-        "p { transform: translate(10px, 15pt); }", 
+        "p { transform: translate(10px, 25%); }", 
         "p { transform: translate(0, 12pt); }", 
         "p { transform: translate3d(5ch, -0.4in, 5em); }", 
         "p { transform: translateX(10px); }", 
@@ -217,12 +217,12 @@ public class FunctionsTest {
         for (int i = 0; i < TEST_TRANSFORM.length; i++)
         {
             StyleSheet ss = CSSFactory.parseString(TEST_TRANSFORM[i], null);
-            System.out.println(i + " ss: " + ss);
+            //System.out.println(i + " ss: " + ss);
             assertEquals("One rule is parset [" + i + "]", 1, ss.size());
             assertEquals("One property is set [" + i + "]", 1, ss.get(0).size());
             Declaration d = (Declaration) ss.get(0).get(0);
             TermFunction fn = (TermFunction) d.get(0);
-            System.out.println(i + ": " + d);
+            //System.out.println(i + ": " + d);
             switch (i)
             {
                 case 0:
@@ -320,7 +320,7 @@ public class FunctionsTest {
                 case 26:
                     assertEquals(TermFunctionImpl.TranslateImpl.class, fn.getClass());
                     assertEquals("Length X is correct", tf.createLength("10", Unit.px, 1), ((TermFunctionImpl.TranslateImpl) fn).getTranslateX());
-                    assertEquals("Length Y is correct", tf.createLength("15", Unit.pt, 1), ((TermFunctionImpl.TranslateImpl) fn).getTranslateY());
+                    assertEquals("Length Y is correct", tf.createPercent(25.0f), ((TermFunctionImpl.TranslateImpl) fn).getTranslateY());
                     break;
                 case 27:
                     assertEquals(TermFunctionImpl.TranslateImpl.class, fn.getClass());

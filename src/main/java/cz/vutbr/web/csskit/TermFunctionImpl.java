@@ -13,6 +13,7 @@ import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermInteger;
 import cz.vutbr.web.css.TermLength;
+import cz.vutbr.web.css.TermLengthOrPercent;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermOperator;
@@ -307,6 +308,15 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
     protected TermLength getLengthArg(Term<?> term) {
         if (term instanceof TermLength)
             return (TermLength) term;
+        else if (isNumberArg(term) && getNumberArg(term) == 0)
+            return CSSFactory.getTermFactory().createLength(0.0f);
+        else
+            return null;
+    }
+    
+    protected TermLengthOrPercent getLengthOrPercentArg(Term<?> term) {
+        if (term instanceof TermLengthOrPercent)
+            return (TermLengthOrPercent) term;
         else if (isNumberArg(term) && getNumberArg(term) == 0)
             return CSSFactory.getTermFactory().createLength(0.0f);
         else
@@ -796,20 +806,20 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
     
     public static class TranslateImpl extends TermFunctionImpl implements TermFunction.Translate {
         
-        private TermLength translateX;
-        private TermLength translateY;
+        private TermLengthOrPercent translateX;
+        private TermLengthOrPercent translateY;
         
         public TranslateImpl() {
             setValid(false); //arguments are required
         }
 
         @Override
-        public TermLength getTranslateX() {
+        public TermLengthOrPercent getTranslateX() {
             return translateX;
         }
 
         @Override
-        public TermLength getTranslateY() {
+        public TermLengthOrPercent getTranslateY() {
             return translateY;
         }
 
@@ -819,10 +829,10 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
             if (args.size() == 2 
-                    && (translateX = getLengthArg(args.get(0))) != null
-                    && (translateY = getLengthArg(args.get(1))) != null) {
+                    && (translateX = getLengthOrPercentArg(args.get(0))) != null
+                    && (translateY = getLengthOrPercentArg(args.get(1))) != null) {
                 setValid(true);
-            } else if (size() == 1 && (translateX = getLengthArg(args.get(0))) != null) {
+            } else if (size() == 1 && (translateX = getLengthOrPercentArg(args.get(0))) != null) {
                 translateY = CSSFactory.getTermFactory().createLength(0.0f);
                 setValid(true);
             }
@@ -832,26 +842,26 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
     
     public static class Translate3dImpl extends TermFunctionImpl implements TermFunction.Translate3d {
         
-        private TermLength translateX;
-        private TermLength translateY;
-        private TermLength translateZ;
+        private TermLengthOrPercent translateX;
+        private TermLengthOrPercent translateY;
+        private TermLengthOrPercent translateZ;
         
         public Translate3dImpl() {
             setValid(false); //arguments are required
         }
 
         @Override
-        public TermLength getTranslateX() {
+        public TermLengthOrPercent getTranslateX() {
             return translateX;
         }
 
         @Override
-        public TermLength getTranslateY() {
+        public TermLengthOrPercent getTranslateY() {
             return translateY;
         }
 
         @Override
-        public TermLength getTranslateZ() {
+        public TermLengthOrPercent getTranslateZ() {
             return translateZ;
         }
 
@@ -861,9 +871,9 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
             if (args.size() == 3 
-                    && (translateX = getLengthArg(args.get(0))) != null
-                    && (translateY = getLengthArg(args.get(1))) != null
-                    && (translateZ = getLengthArg(args.get(2))) != null) {
+                    && (translateX = getLengthOrPercentArg(args.get(0))) != null
+                    && (translateY = getLengthOrPercentArg(args.get(1))) != null
+                    && (translateZ = getLengthOrPercentArg(args.get(2))) != null) {
                 setValid(true);
             }
             return this;
@@ -872,14 +882,14 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
 
     public static class TranslateXImpl extends TermFunctionImpl implements TermFunction.TranslateX {
         
-        private TermLength translate;
+        private TermLengthOrPercent translate;
         
         public TranslateXImpl() {
             setValid(false); //arguments are required
         }
 
         @Override
-        public TermLength getTranslate() {
+        public TermLengthOrPercent getTranslate() {
             return translate;
         }
 
@@ -888,7 +898,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-            if (args.size() == 1 && (translate = getLengthArg(args.get(0))) != null) {
+            if (args.size() == 1 && (translate = getLengthOrPercentArg(args.get(0))) != null) {
                 setValid(true);
             }
             return this;
@@ -897,14 +907,14 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
     
     public static class TranslateYImpl extends TermFunctionImpl implements TermFunction.TranslateY {
         
-        private TermLength translate;
+        private TermLengthOrPercent translate;
         
         public TranslateYImpl() {
             setValid(false); //arguments are required
         }
 
         @Override
-        public TermLength getTranslate() {
+        public TermLengthOrPercent getTranslate() {
             return translate;
         }
 
@@ -913,7 +923,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-            if (args.size() == 1 && (translate = getLengthArg(args.get(0))) != null) {
+            if (args.size() == 1 && (translate = getLengthOrPercentArg(args.get(0))) != null) {
                 setValid(true);
             }
             return this;
@@ -922,14 +932,14 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
     
     public static class TranslateZImpl extends TermFunctionImpl implements TermFunction.TranslateZ {
         
-        private TermLength translate;
+        private TermLengthOrPercent translate;
         
         public TranslateZImpl() {
             setValid(false); //arguments are required
         }
 
         @Override
-        public TermLength getTranslate() {
+        public TermLengthOrPercent getTranslate() {
             return translate;
         }
 
@@ -938,7 +948,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-            if (args.size() == 1 && (translate = getLengthArg(args.get(0))) != null) {
+            if (args.size() == 1 && (translate = getLengthOrPercentArg(args.get(0))) != null) {
                 setValid(true);
             }
             return this;

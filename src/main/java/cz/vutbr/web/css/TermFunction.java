@@ -123,26 +123,26 @@ public interface TermFunction extends TermList {
     }
     
     public interface Translate extends TransformFunction {
-        public TermLength getTranslateX();
-        public TermLength getTranslateY();
+        public TermLengthOrPercent getTranslateX();
+        public TermLengthOrPercent getTranslateY();
     }
     
     public interface Translate3d extends TransformFunction {
-        public TermLength getTranslateX();
-        public TermLength getTranslateY();
-        public TermLength getTranslateZ();
+        public TermLengthOrPercent getTranslateX();
+        public TermLengthOrPercent getTranslateY();
+        public TermLengthOrPercent getTranslateZ();
     }
     
     public interface TranslateX extends TransformFunction {
-        public TermLength getTranslate();
+        public TermLengthOrPercent getTranslate();
     }
     
     public interface TranslateY extends TransformFunction {
-        public TermLength getTranslate();
+        public TermLengthOrPercent getTranslate();
     }
     
     public interface TranslateZ extends TransformFunction {
-        public TermLength getTranslate();
+        public TermLengthOrPercent getTranslate();
     }
     
 }
