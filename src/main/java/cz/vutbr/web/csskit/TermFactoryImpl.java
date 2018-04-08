@@ -369,15 +369,69 @@ public class TermFactoryImpl implements TermFactory {
 	{
 	    TermFunction fn = null;
 	    switch (name) {
+	        case "matrix":
+	            fn = new TermFunctionImpl.MatrixImpl();
+	            break;
+	        case "matrix3d":
+	            fn = new TermFunctionImpl.Matrix3dImpl();
+	            break;
+	        case "perspective":
+	            fn = new TermFunctionImpl.PerspectiveImpl();
+	            break;
+	        case "rotate":
+	            fn = new TermFunctionImpl.RotateImpl();
+	            break;
+	        case "rotate3d":
+	            fn = new TermFunctionImpl.Rotate3dImpl();
+	            break;
+	        case "rotatex":
+	            fn = new TermFunctionImpl.RotateXImpl();
+	            break;
+	        case "rotatey":
+	            fn = new TermFunctionImpl.RotateYImpl();
+	            break;
+	        case "rotatez":
+	            fn = new TermFunctionImpl.RotateZImpl();
+	            break;
 	        case "scale":
 	            fn = new TermFunctionImpl.ScaleImpl();
 	            break;
-            case "scalex":
-                fn = new TermFunctionImpl.ScaleXImpl();
-                break;
-            case "scaley":
-                fn = new TermFunctionImpl.ScaleYImpl();
-                break;
+	        case "scale3d":
+	            fn = new TermFunctionImpl.Scale3dImpl();
+	            break;
+	        case "scalex":
+	            fn = new TermFunctionImpl.ScaleXImpl();
+	            break;
+	        case "scaley":
+	            fn = new TermFunctionImpl.ScaleYImpl();
+	            break;
+	        case "scalez":
+	            fn = new TermFunctionImpl.ScaleZImpl();
+	            break;
+	        case "skew":
+	            fn = new TermFunctionImpl.SkewImpl();
+	            break;
+	        case "skewx":
+	            fn = new TermFunctionImpl.SkewXImpl();
+	            break;
+	        case "skewy":
+	            fn = new TermFunctionImpl.SkewYImpl();
+	            break;
+	        case "translate":
+	            fn = new TermFunctionImpl.TranslateImpl();
+	            break;
+	        case "translate3d":
+	            fn = new TermFunctionImpl.Translate3dImpl();
+	            break;
+	        case "translatex":
+	            fn = new TermFunctionImpl.TranslateXImpl();
+	            break;
+	        case "translatey":
+	            fn = new TermFunctionImpl.TranslateYImpl();
+	            break;
+	        case "translatez":
+	            fn = new TermFunctionImpl.TranslateZImpl();
+	            break;
 	        default:
 	            fn = new TermFunctionImpl();
 	            break;

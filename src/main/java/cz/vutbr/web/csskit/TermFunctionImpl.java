@@ -284,19 +284,35 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
 	
 	//========================================================================
 	
-    protected boolean isNumberArg(Term<?> term)
-    {
+    protected boolean isNumberArg(Term<?> term) {
         return term instanceof TermNumber || term instanceof TermInteger;
     }
 
-    protected float getNumberArg(Term<?> term)
-    {
+    protected float getNumberArg(Term<?> term) {
         if (term instanceof TermNumber)
             return ((TermNumber) term).getValue();
         else
             return ((TermInteger) term).getValue();
     }
 	
+    protected TermAngle getAngleArg(Term<?> term) {
+        if (term instanceof TermAngle)
+            return (TermAngle) term;
+        else if (isNumberArg(term) && getNumberArg(term) == 0)
+            return CSSFactory.getTermFactory().createAngle(0.0f);
+        else
+            return null;
+    }
+    
+    protected TermLength getLengthArg(Term<?> term) {
+        if (term instanceof TermLength)
+            return (TermLength) term;
+        else if (isNumberArg(term) && getNumberArg(term) == 0)
+            return CSSFactory.getTermFactory().createLength(0.0f);
+        else
+            return null;
+    }
+    
     //========================================================================
     
     public static class MatrixImpl extends TermFunctionImpl implements TermFunction.Matrix {
@@ -381,8 +397,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-            if (args.size() == 1 && args.get(0) instanceof TermLength) {
-                distance = (TermLength) args.get(0);
+            if (args.size() == 1 && (distance = getLengthArg(args.get(0))) != null) {
                 setValid(true);
             }
             return this;
@@ -407,8 +422,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-            if (args.size() == 1 && args.get(0) instanceof TermAngle) {
-                angle = (TermAngle) args.get(0);
+            if (args.size() == 1 && (angle = getAngleArg(args.get(0))) != null) {
                 setValid(true);
             }
             return this;
@@ -454,11 +468,10 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
             if (args.size() == 4 
                     && isNumberArg(args.get(0)) && isNumberArg(args.get(1)) && isNumberArg(args.get(2))
-                    && args.get(3) instanceof TermAngle) {
+                    && (angle = getAngleArg(args.get(3))) != null) {
                 x = getNumberArg(args.get(0));
                 y = getNumberArg(args.get(1));
                 z = getNumberArg(args.get(2));
-                angle = (TermAngle) args.get(3);
                 setValid(true);
             } 
             return this;
@@ -483,8 +496,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-            if (args.size() == 1 && args.get(0) instanceof TermAngle) {
-                angle = (TermAngle) args.get(0);
+            if (args.size() == 1 && (angle = getAngleArg(args.get(0))) != null) {
                 setValid(true);
             }
             return this;
@@ -509,8 +521,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-            if (args.size() == 1 && args.get(0) instanceof TermAngle) {
-                angle = (TermAngle) args.get(0);
+            if (args.size() == 1 && (angle = getAngleArg(args.get(0))) != null) {
                 setValid(true);
             }
             return this;
@@ -535,8 +546,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-            if (args.size() == 1 && args.get(0) instanceof TermAngle) {
-                angle = (TermAngle) args.get(0);
+            if (args.size() == 1 && (angle = getAngleArg(args.get(0))) != null) {
                 setValid(true);
             }
             return this;
@@ -723,13 +733,10 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
             if (args.size() == 2 
-                    && args.get(0) instanceof TermAngle
-                    && args.get(1) instanceof TermAngle) {
-                skewX = (TermAngle) args.get(0);
-                skewY = (TermAngle) args.get(1);
+                    && (skewX = getAngleArg(args.get(0))) != null
+                    && (skewY = getAngleArg(args.get(1))) != null) {
                 setValid(true);
-            } else if (size() == 1 && args.get(0) instanceof TermAngle) {
-                skewX = (TermAngle) args.get(0);
+            } else if (size() == 1 && (skewX = getAngleArg(args.get(0))) != null) {
                 skewY = CSSFactory.getTermFactory().createAngle(0.0f);
                 setValid(true);
             }
@@ -755,8 +762,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-            if (size() == 1 && args.get(0) instanceof TermAngle) {
-                skew = (TermAngle) args.get(0);
+            if (args.size() == 1 && (skew = getAngleArg(args.get(0))) != null) {
                 setValid(true);
             }
             return this;
@@ -781,8 +787,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-            if (size() == 1 && args.get(0) instanceof TermAngle) {
-                skew = (TermAngle) args.get(0);
+            if (args.size() == 1 && (skew = getAngleArg(args.get(0))) != null) {
                 setValid(true);
             }
             return this;
@@ -814,13 +819,10 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
             if (args.size() == 2 
-                    && args.get(0) instanceof TermLength
-                    && args.get(1) instanceof TermLength) {
-                translateX = (TermLength) args.get(0);
-                translateY = (TermLength) args.get(1);
+                    && (translateX = getLengthArg(args.get(0))) != null
+                    && (translateY = getLengthArg(args.get(1))) != null) {
                 setValid(true);
-            } else if (size() == 1 && args.get(0) instanceof TermLength) {
-                translateX = (TermLength) args.get(0);
+            } else if (size() == 1 && (translateX = getLengthArg(args.get(0))) != null) {
                 translateY = CSSFactory.getTermFactory().createLength(0.0f);
                 setValid(true);
             }
@@ -859,12 +861,9 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
             if (args.size() == 3 
-                    && args.get(0) instanceof TermLength
-                    && args.get(1) instanceof TermLength
-                    && args.get(2) instanceof TermLength) {
-                translateX = (TermLength) args.get(0);
-                translateY = (TermLength) args.get(1);
-                translateZ = (TermLength) args.get(3);
+                    && (translateX = getLengthArg(args.get(0))) != null
+                    && (translateY = getLengthArg(args.get(1))) != null
+                    && (translateZ = getLengthArg(args.get(2))) != null) {
                 setValid(true);
             }
             return this;
@@ -889,8 +888,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-            if (args.size() == 1 && args.get(0) instanceof TermLength) {
-                translate = (TermLength) args.get(0);
+            if (args.size() == 1 && (translate = getLengthArg(args.get(0))) != null) {
                 setValid(true);
             }
             return this;
@@ -915,8 +913,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-            if (args.size() == 1 && args.get(0) instanceof TermLength) {
-                translate = (TermLength) args.get(0);
+            if (args.size() == 1 && (translate = getLengthArg(args.get(0))) != null) {
                 setValid(true);
             }
             return this;
@@ -941,8 +938,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         {
             super.setValue(value);
             List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-            if (args.size() == 1 && args.get(0) instanceof TermLength) {
-                translate = (TermLength) args.get(0);
+            if (args.size() == 1 && (translate = getLengthArg(args.get(0))) != null) {
                 setValid(true);
             }
             return this;
