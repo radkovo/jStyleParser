@@ -1207,20 +1207,10 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
             return true;
         } else {
 
-            // valid function names
-            final Set<String> validFuncNames = new HashSet<String>(Arrays
-                    .asList("matrix", "translate", "translatex", "translatey", 
-                            "scale", "scalex", "scaley", "rotate", "skew", "skewx",
-                            "skewy", "matrix3d", "translate3d", "translateZ",
-                            "scale3d", "scalez", "rotate3d", "rotatex", "rotatey",
-                            "rotatez", "perspective"));
-
             TermList list = tf.createList();
 
             for (Term<?> t : d.asList()) {
-                if (t instanceof TermFunction
-                        && validFuncNames.contains(((TermFunction) t)
-                                .getFunctionName().toLowerCase()))
+                if (t instanceof TermFunction.TransformFunction)
                     list.add(t);
                 else
                     return false;
