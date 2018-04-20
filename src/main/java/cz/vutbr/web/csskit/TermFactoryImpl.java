@@ -432,6 +432,9 @@ public class TermFactoryImpl implements TermFactory {
 	        case "translatez":
 	            fn = new TermFunctionImpl.TranslateZImpl();
 	            break;
+	        case "linear-gradient":
+	            fn = new TermFunctionImpl.LinearGradientImpl();
+	            break;
 	        default:
 	            fn = new TermFunctionImpl();
 	            break;

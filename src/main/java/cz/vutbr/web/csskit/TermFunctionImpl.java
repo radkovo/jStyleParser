@@ -8,6 +8,8 @@ import org.unbescape.css.CssEscape;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermAngle;
+import cz.vutbr.web.css.TermColor;
+import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermFloatValue;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
@@ -16,12 +18,14 @@ import cz.vutbr.web.css.TermLength;
 import cz.vutbr.web.css.TermLengthOrPercent;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumber;
+import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.css.TermOperator;
 
 /**
  * TermFunction, holds function
  * @author Jan Svercl, VUT Brno, 2008
- * 			modified by Karel Piwko
+ * @author Karel Piwko
+ * @author Radek Burget
  */
 public class TermFunctionImpl extends TermListImpl implements TermFunction {
 
@@ -319,6 +323,59 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
             return (TermLengthOrPercent) term;
         else if (isNumberArg(term) && getNumberArg(term) == 0)
             return CSSFactory.getTermFactory().createLength(0.0f);
+        else
+            return null;
+    }
+    
+    protected TermAngle convertSideOrCorner(List<Term<?>> aarg) {
+        if (aarg.size() > 1 && aarg.size() <= 3) {
+            TermAngle angle = null;
+            Term<?> toTerm = aarg.get(0);
+            Term<?> dir1 = aarg.get(1);
+            Term<?> dir2 = (aarg.size() == 3) ? aarg.get(2) : null;
+            if (toTerm instanceof TermIdent && toTerm.toString().equals("to")
+                    && dir1 instanceof TermIdent
+                    && (dir2 == null || dir2 instanceof TermIdent)) {
+                
+                final TermFactory tf = CSSFactory.getTermFactory();
+                
+                switch (dir1.toString()) {
+                    case "top":
+                        if (dir2 == null)
+                            angle = tf.createAngle("0", Unit.deg, 1);
+                        else if (dir2.toString().equals("left"))
+                            angle = tf.createAngle("315", Unit.deg, 1);
+                        else if (dir2.toString().equals("right"))
+                            angle = tf.createAngle("45", Unit.deg, 1);
+                        break;
+                    case "right":
+                        if (dir2 == null)
+                            angle = tf.createAngle("90", Unit.deg, 1);
+                        else if (dir2.toString().equals("top"))
+                            angle = tf.createAngle("45", Unit.deg, 1);
+                        else if (dir2.toString().equals("bottom"))
+                            angle = tf.createAngle("135", Unit.deg, 1);
+                        break;
+                    case "bottom":
+                        if (dir2 == null)
+                            angle = tf.createAngle("180", Unit.deg, 1);
+                        else if (dir2.toString().equals("left"))
+                            angle = tf.createAngle("225", Unit.deg, 1);
+                        else if (dir2.toString().equals("right"))
+                            angle = tf.createAngle("135", Unit.deg, 1);
+                        break;
+                    case "left":
+                        if (dir2 == null)
+                            angle = tf.createAngle("270", Unit.deg, 1);
+                        else if (dir2.toString().equals("top"))
+                            angle = tf.createAngle("315", Unit.deg, 1);
+                        else if (dir2.toString().equals("bottom"))
+                            angle = tf.createAngle("225", Unit.deg, 1);
+                        break;
+                }
+            }
+            return angle;
+        }
         else
             return null;
     }
@@ -954,5 +1011,91 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
             return this;
         }
     }
+    
+    //========================================================================
 
+    public static class ColorStopImpl implements TermFunction.Gradient.ColorStop {
+        private TermColor color;
+        private TermLengthOrPercent length;
+        
+        protected ColorStopImpl(TermColor color, TermLengthOrPercent length) {
+            this.color = color;
+            this.length = length;
+        }
+
+        @Override
+        public TermColor getColor()
+        {
+            return color;
+        }
+
+        @Override
+        public TermLengthOrPercent getLength()
+        {
+            return length;
+        }
+    }
+
+    public static class LinearGradientImpl extends TermFunctionImpl implements TermFunction.LinearGradient {
+        
+        private TermAngle angle;
+        private List<TermFunction.Gradient.ColorStop> colorStops;
+        
+        public LinearGradientImpl() {
+            setValid(false);
+        }
+        
+        @Override
+        public TermAngle getAngle() {
+            return angle;
+        }
+
+        @Override
+        public List<ColorStop> getColorStops() {
+            return colorStops;
+        }
+        
+        @Override
+        public TermList setValue(List<Term<?>> value) {
+            super.setValue(value);
+            List<List<Term<?>>> args = getSeparatedArgs(DEFAULT_ARG_SEP);
+            if (args.size() > 1) {
+                int firstStop = 0;
+                //check for an angle
+                List<Term<?>> aarg = args.get(0);
+                if (aarg.size() == 1 && (angle = getAngleArg(aarg.get(0))) != null) {
+                    firstStop = 1;
+                } else if ((angle = convertSideOrCorner(aarg)) != null) {
+                    firstStop = 1;
+                }
+                //check for stops
+                boolean valid = true;
+                if (args.size() > firstStop) {
+                    colorStops = new ArrayList<>();
+                    for (int i = firstStop; valid && i < args.size(); i++) {
+                        List<Term<?>> sarg = args.get(i);
+                        if (sarg.size() == 1 || sarg.size() == 2) {
+                            Term<?> tclr = sarg.get(0);
+                            Term<?> tlen = (sarg.size() == 2) ? sarg.get(1) : null;
+                            if (tclr instanceof TermColor
+                                    && (tlen == null || tlen instanceof TermLengthOrPercent)) {
+                                ColorStop newStop = new ColorStopImpl((TermColor) tclr, (TermLengthOrPercent) tlen);
+                                colorStops.add(newStop);
+                            } else {
+                                valid = false;
+                            }
+                        } else {
+                            valid = false;
+                        }
+                    }
+                }
+                //check validity
+                if (valid && colorStops != null && !colorStops.isEmpty())
+                    setValid(true);
+            }
+            return this;
+        }
+        
+    }
+    
 }

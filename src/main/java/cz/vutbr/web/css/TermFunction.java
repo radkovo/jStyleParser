@@ -144,5 +144,21 @@ public interface TermFunction extends TermList {
     public interface TranslateZ extends TransformFunction {
         public TermLengthOrPercent getTranslate();
     }
+
+    //========================================================================
+    
+    public interface Gradient extends TermFunction {
+
+        public interface ColorStop {
+            public TermColor getColor();
+            public TermLengthOrPercent getLength();
+        }
+        
+    }
+
+    public interface LinearGradient extends Gradient {
+        public TermAngle getAngle();
+        public List<Gradient.ColorStop> getColorStops();
+    }
     
 }
