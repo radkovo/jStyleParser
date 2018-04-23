@@ -161,4 +161,9 @@ public interface TermFunction extends TermList {
         public List<Gradient.ColorStop> getColorStops();
     }
     
+    public interface RepeatingLinearGradient extends Gradient {
+        public TermAngle getAngle();
+        public List<Gradient.ColorStop> getColorStops();
+    }
+    
 }

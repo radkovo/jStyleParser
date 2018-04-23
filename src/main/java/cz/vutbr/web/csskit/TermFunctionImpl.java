@@ -30,8 +30,8 @@ import cz.vutbr.web.css.TermOperator;
 public class TermFunctionImpl extends TermListImpl implements TermFunction {
 
     protected static final TermOperator DEFAULT_ARG_SEP = CSSFactory.getTermFactory().createOperator(',');
-    
-	protected String functionName;
+
+    protected String functionName;
 	protected boolean valid;
 	
 	
@@ -379,6 +379,42 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         else
             return null;
     }
+
+    /**
+     * Loads the color stops from the gunction arguments.
+     * @param args the comma-separated function arguments
+     * @param firstStop the first argument to start with
+     * @return the list of color stops or {@code null} when the arguments are invalid or missing
+     */
+    protected List<TermFunction.Gradient.ColorStop> loadColorStops(List<List<Term<?>>> args, int firstStop)
+    {
+        boolean valid = true;
+        List<TermFunction.Gradient.ColorStop> colorStops = null;
+        if (args.size() > firstStop) {
+            colorStops = new ArrayList<>();
+            for (int i = firstStop; valid && i < args.size(); i++) {
+                List<Term<?>> sarg = args.get(i);
+                if (sarg.size() == 1 || sarg.size() == 2) {
+                    Term<?> tclr = sarg.get(0);
+                    Term<?> tlen = (sarg.size() == 2) ? sarg.get(1) : null;
+                    if (tclr instanceof TermColor
+                            && (tlen == null || tlen instanceof TermLengthOrPercent)) {
+                        TermFunction.Gradient.ColorStop newStop = new ColorStopImpl((TermColor) tclr, (TermLengthOrPercent) tlen);
+                        colorStops.add(newStop);
+                    } else {
+                        valid = false;
+                    }
+                } else {
+                    valid = false;
+                }
+            }
+        }
+        if (valid && colorStops != null && !colorStops.isEmpty())
+            return colorStops;
+        else
+            return null;
+    }
+    
     
     //========================================================================
     
@@ -1037,7 +1073,6 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
     }
 
     public static class LinearGradientImpl extends TermFunctionImpl implements TermFunction.LinearGradient {
-        
         private TermAngle angle;
         private List<TermFunction.Gradient.ColorStop> colorStops;
         
@@ -1069,33 +1104,52 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
                     firstStop = 1;
                 }
                 //check for stops
-                boolean valid = true;
-                if (args.size() > firstStop) {
-                    colorStops = new ArrayList<>();
-                    for (int i = firstStop; valid && i < args.size(); i++) {
-                        List<Term<?>> sarg = args.get(i);
-                        if (sarg.size() == 1 || sarg.size() == 2) {
-                            Term<?> tclr = sarg.get(0);
-                            Term<?> tlen = (sarg.size() == 2) ? sarg.get(1) : null;
-                            if (tclr instanceof TermColor
-                                    && (tlen == null || tlen instanceof TermLengthOrPercent)) {
-                                ColorStop newStop = new ColorStopImpl((TermColor) tclr, (TermLengthOrPercent) tlen);
-                                colorStops.add(newStop);
-                            } else {
-                                valid = false;
-                            }
-                        } else {
-                            valid = false;
-                        }
-                    }
-                }
-                //check validity
-                if (valid && colorStops != null && !colorStops.isEmpty())
+                colorStops = loadColorStops(args, firstStop);
+                if (colorStops != null)
                     setValid(true);
             }
             return this;
         }
+    }
+    
+    public static class RepeatingLinearGradientImpl extends TermFunctionImpl implements TermFunction.LinearGradient {
+        private TermAngle angle;
+        private List<TermFunction.Gradient.ColorStop> colorStops;
         
+        public RepeatingLinearGradientImpl() {
+            setValid(false);
+        }
+        
+        @Override
+        public TermAngle getAngle() {
+            return angle;
+        }
+
+        @Override
+        public List<ColorStop> getColorStops() {
+            return colorStops;
+        }
+        
+        @Override
+        public TermList setValue(List<Term<?>> value) {
+            super.setValue(value);
+            List<List<Term<?>>> args = getSeparatedArgs(DEFAULT_ARG_SEP);
+            if (args.size() > 1) {
+                int firstStop = 0;
+                //check for an angle
+                List<Term<?>> aarg = args.get(0);
+                if (aarg.size() == 1 && (angle = getAngleArg(aarg.get(0))) != null) {
+                    firstStop = 1;
+                } else if ((angle = convertSideOrCorner(aarg)) != null) {
+                    firstStop = 1;
+                }
+                //check for stops
+                colorStops = loadColorStops(args, firstStop);
+                if (colorStops != null)
+                    setValid(true);
+            }
+            return this;
+        }
     }
     
 }

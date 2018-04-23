@@ -435,6 +435,9 @@ public class TermFactoryImpl implements TermFactory {
 	        case "linear-gradient":
 	            fn = new TermFunctionImpl.LinearGradientImpl();
 	            break;
+            case "repeating-linear-gradient":
+                fn = new TermFunctionImpl.RepeatingLinearGradientImpl();
+                break;
 	        default:
 	            fn = new TermFunctionImpl();
 	            break;
@@ -442,9 +445,9 @@ public class TermFactoryImpl implements TermFactory {
 	    if (fn != null) {
 	        fn.setFunctionName(name);
 	        fn.setValue(args);
+	        if (!fn.isValid())
+	            fn = null; //invalid arguments
 	    }
-	    if (!fn.isValid())
-	        fn = null; //invalid arguments
 	    return fn;
 	}
 	
