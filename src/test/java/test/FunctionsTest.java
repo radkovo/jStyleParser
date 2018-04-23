@@ -1,6 +1,7 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.util.Date;
@@ -110,6 +111,26 @@ public class FunctionsTest {
     public static final String TEST_TRANSFORM_INVALID[] = new String[] {
         "p { float: left; transform: scale(1.5, 1.2, 1.1); }",
         "p { float: left; transform: scale(); }"
+    };
+    
+    /* valid gradient functions */
+    public static final String TEST_GRADIENT[] = new String[] {
+        "p { background: linear-gradient(#e66465, #9198e5); }",
+        "p { background: linear-gradient(0.25turn, red, #ebf8e1, #f69d3c); }",
+        "p { background: linear-gradient(to left, #333, #333 50%, #eee 75%, #333 75%); }",
+        "p { background: linear-gradient(to bottom right, #333, #333 50%, #eee); }",
+        "p { background: repeating-linear-gradient(#e66465, #9198e5); }",
+        "p { background: repeating-linear-gradient(0.25turn, red, #ebf8e1, #f69d3c); }",
+        "p { background: repeating-linear-gradient(to left, #333, #333 50%, #eee 75%, #333 75%); }",
+        "p { background: repeating-linear-gradient(to bottom right, #333, #333 50%, #eee); }"
+    };
+    
+    /* invalid gradient functions; only the float declaration should be accepted */
+    public static final String TEST_GRADIENT_INVALID[] = new String[] {
+        "p { float: left; background: linear-gradient(12pt, red); }",
+        "p { float: left; background: linear-gradient(to top bottom, red, blue); }",
+        "p { float: left; background: linear-gradient(top left, red, blue); }",
+        "p { float: left; background: linear-gradient(to nowhere, red, blue); }"
     };
     
 	@BeforeClass
@@ -349,6 +370,107 @@ public class FunctionsTest {
         for (int i = 0; i < TEST_TRANSFORM_INVALID.length; i++)
         {
             StyleSheet ss = CSSFactory.parseString(TEST_TRANSFORM_INVALID[i], null);
+            assertEquals("One rule is parset [" + i + "]", 1, ss.size());
+            assertEquals("One property is set [" + i + "]", 1, ss.get(0).size());
+        }        
+    }
+    
+    @Test
+    public void gradientValid() throws IOException, CSSException
+    {
+        for (int i = 0; i < TEST_GRADIENT.length; i++)
+        {
+            StyleSheet ss = CSSFactory.parseString(TEST_GRADIENT[i], null);
+            //System.out.println(i + " ss: " + ss);
+            assertEquals("One rule is parset [" + i + "]", 1, ss.size());
+            assertEquals("One property is set [" + i + "]", 1, ss.get(0).size());
+            Declaration d = (Declaration) ss.get(0).get(0);
+            TermFunction fn = (TermFunction) d.get(0);
+            //System.out.println(i + ": " + d);
+            switch (i)
+            {
+                case 0:
+                    assertEquals(TermFunctionImpl.LinearGradientImpl.class, fn.getClass());
+                    assertNull("Angle is not set", ((TermFunctionImpl.LinearGradientImpl) fn).getAngle());
+                    assertEquals("Two stops are set", 2, ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#e66465"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Second stop color", tf.createColor("#9198e5"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(1).getColor());
+                    assertNull("Second stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(1).getLength());
+                    break;
+                case 1:
+                    assertEquals(TermFunctionImpl.LinearGradientImpl.class, fn.getClass());
+                    assertEquals("Angle", tf.createAngle("0.25", Unit.turn, 1), ((TermFunctionImpl.LinearGradientImpl) fn).getAngle());
+                    assertEquals("Three stops are set", 3, ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#ff0000"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Last stop color", tf.createColor("#f69d3c"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(2).getColor());
+                    assertNull("Last stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(2).getLength());
+                    break;
+                case 2:
+                    assertEquals(TermFunctionImpl.LinearGradientImpl.class, fn.getClass());
+                    assertEquals("Angle", tf.createAngle("270", Unit.deg, 1), ((TermFunctionImpl.LinearGradientImpl) fn).getAngle());
+                    assertEquals("Four stops are set", 4, ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#333333"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Last stop color", tf.createColor("#333333"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(3).getColor());
+                    assertEquals("Last stop length", tf.createPercent(75.0f), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(3).getLength());
+                    break;
+                case 3:
+                    assertEquals(TermFunctionImpl.LinearGradientImpl.class, fn.getClass());
+                    assertEquals("Angle", tf.createAngle("135", Unit.deg, 1), ((TermFunctionImpl.LinearGradientImpl) fn).getAngle());
+                    assertEquals("Three stops are set", 3, ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#333333"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Second stop color", tf.createColor("#333333"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(1).getColor());
+                    assertEquals("Second stop length", tf.createPercent(50.0f), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(1).getLength());
+                    break;
+                case 4:
+                    assertEquals(TermFunctionImpl.RepeatingLinearGradientImpl.class, fn.getClass());
+                    assertNull("Angle is not set", ((TermFunctionImpl.LinearGradientImpl) fn).getAngle());
+                    assertEquals("Two stops are set", 2, ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#e66465"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Second stop color", tf.createColor("#9198e5"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(1).getColor());
+                    assertNull("Second stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(1).getLength());
+                    break;
+                case 5:
+                    assertEquals(TermFunctionImpl.RepeatingLinearGradientImpl.class, fn.getClass());
+                    assertEquals("Angle", tf.createAngle("0.25", Unit.turn, 1), ((TermFunctionImpl.LinearGradientImpl) fn).getAngle());
+                    assertEquals("Three stops are set", 3, ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#ff0000"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Last stop color", tf.createColor("#f69d3c"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(2).getColor());
+                    assertNull("Last stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(2).getLength());
+                    break;
+                case 6:
+                    assertEquals(TermFunctionImpl.RepeatingLinearGradientImpl.class, fn.getClass());
+                    assertEquals("Angle", tf.createAngle("270", Unit.deg, 1), ((TermFunctionImpl.LinearGradientImpl) fn).getAngle());
+                    assertEquals("Four stops are set", 4, ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#333333"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Last stop color", tf.createColor("#333333"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(3).getColor());
+                    assertEquals("Last stop length", tf.createPercent(75.0f), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(3).getLength());
+                    break;
+                case 7:
+                    assertEquals(TermFunctionImpl.RepeatingLinearGradientImpl.class, fn.getClass());
+                    assertEquals("Angle", tf.createAngle("135", Unit.deg, 1), ((TermFunctionImpl.LinearGradientImpl) fn).getAngle());
+                    assertEquals("Three stops are set", 3, ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#333333"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Second stop color", tf.createColor("#333333"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(1).getColor());
+                    assertEquals("Second stop length", tf.createPercent(50.0f), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(1).getLength());
+                    break;
+            }
+        }
+    }
+    
+    @Test
+    public void gradientInvalid() throws IOException, CSSException
+    {
+        for (int i = 0; i < TEST_GRADIENT_INVALID.length; i++)
+        {
+            StyleSheet ss = CSSFactory.parseString(TEST_GRADIENT_INVALID[i], null);
             assertEquals("One rule is parset [" + i + "]", 1, ss.size());
             assertEquals("One property is set [" + i + "]", 1, ss.get(0).size());
         }        
