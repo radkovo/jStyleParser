@@ -438,6 +438,9 @@ public class TermFactoryImpl implements TermFactory {
             case "repeating-linear-gradient":
                 fn = new TermFunctionImpl.RepeatingLinearGradientImpl();
                 break;
+            case "radial-gradient":
+                fn = new TermFunctionImpl.RadialGradientImpl();
+                break;
 	        default:
 	            fn = new TermFunctionImpl();
 	            break;
