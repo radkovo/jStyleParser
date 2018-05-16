@@ -1112,7 +1112,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         }
     }
     
-    public static class RepeatingLinearGradientImpl extends TermFunctionImpl implements TermFunction.LinearGradient {
+    public static class RepeatingLinearGradientImpl extends TermFunctionImpl implements TermFunction.RepeatingLinearGradient {
         private TermAngle angle;
         private List<TermFunction.Gradient.ColorStop> colorStops;
         
