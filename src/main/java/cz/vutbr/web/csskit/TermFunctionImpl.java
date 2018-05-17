@@ -1350,7 +1350,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
                     setPositionValue(storage, 1, tf.createPercent(0.0f));
                 else if (idval.equalsIgnoreCase("bottom"))
                     setPositionValue(storage, 1, tf.createPercent(100.0f));
-                else if (idval.equalsIgnoreCase("left"))
+                else if (idval.equalsIgnoreCase("center"))
                     setPositionValue(storage, -1, tf.createPercent(50.0f));
             }
             else
