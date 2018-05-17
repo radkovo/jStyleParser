@@ -21,6 +21,7 @@ import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.css.TermOperator;
+import cz.vutbr.web.css.TermPercent;
 
 /**
  * TermFunction, holds function
@@ -1154,6 +1155,13 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
     }
 
     public static class RadialGradientImpl extends TermFunctionImpl implements TermFunction.RadialGradient {
+        
+        //default property values
+        private static final TermPercent DEFAULT_POSITION = CSSFactory.getTermFactory().createPercent(50.0f);
+        private static final TermIdent DEFAULT_SHAPE = CSSFactory.getTermFactory().createIdent("ellipse");
+        private static final TermIdent CIRCLE_SHAPE = CSSFactory.getTermFactory().createIdent("circle");
+        private static final TermIdent DEFAULT_SIZE = CSSFactory.getTermFactory().createIdent("farthest-corner");
+        
         private TermIdent shape;
         private TermLengthOrPercent[] size;
         private TermIdent sizeIdent;
@@ -1196,8 +1204,14 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
             if (args.size() > 1) {
                 int firstStop = 0;
                 //check for shape and size
-                if (decodeShape(args.get(0)))
+                if (decodeShape(args.get(0))) {
                     firstStop = 1;
+                } else { //no shape info provided, use defaults
+                    sizeIdent = DEFAULT_SIZE;
+                    shape = DEFAULT_SHAPE;
+                    position = new TermLengthOrPercent[2];
+                    position[0] = position[1] = DEFAULT_POSITION;
+                }
                 //check for stops
                 colorStops = loadColorStops(args, firstStop);
                 if (colorStops != null)
@@ -1224,7 +1238,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
                 args = args.subList(0, atpos);
             } else { //no position, use the default (center)
                 position = new TermLengthOrPercent[2];
-                position[0] = position[1] = CSSFactory.getTermFactory().createPercent(50.0f);
+                position[0] = position[1] = DEFAULT_POSITION;
             }
             //determine the shape
             boolean isCircle = false;
@@ -1241,13 +1255,18 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
             }
             //determine the size
             if (shape == null) { //shape not given
-                if (args.size() == 1) {
+                if (args.size() == 0) {
+                    sizeIdent = DEFAULT_SIZE;
+                    shape = DEFAULT_SHAPE;
+                } else if (args.size() == 1) {
                     Term<?> arg = args.get(0);
                     if (isExtentKeyword(arg)) {
                         sizeIdent = (TermIdent) arg;
+                        shape = DEFAULT_SHAPE; //see https://drafts.csswg.org/css-images-3/#radial-gradients
                     } else if (arg instanceof TermLength) {
                         size = new TermLengthOrPercent[1];
                         size[0] = (TermLength) arg;
+                        shape = CIRCLE_SHAPE;
                     } else {
                         return false;
                     }
@@ -1262,11 +1281,14 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
                             return false;
                         }
                     }
-                } else if (args.size() != 0) {
+                    shape = DEFAULT_SHAPE;
+                } else {
                     return false;
                 }
             } else if (!isCircle) { //ellipse
-                if (args.size() == 1) {
+                if (args.size() == 0) {
+                    sizeIdent = DEFAULT_SIZE;
+                } else if (args.size() == 1) {
                     Term<?> arg = args.get(0);
                     if (isExtentKeyword(arg)) {
                         sizeIdent = (TermIdent) arg;
@@ -1284,11 +1306,13 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
                             return false;
                         }
                     }
-                } else if (args.size() != 0) {
+                } else {
                     return false;
                 }
             } else { //circle
-                if (args.size() == 1) {
+                if (args.size() == 0) {
+                    sizeIdent = DEFAULT_SIZE;
+                } else if (args.size() == 1) {
                     Term<?> arg = args.get(0);
                     if (isExtentKeyword(arg)) {
                         sizeIdent = (TermIdent) arg;
@@ -1298,7 +1322,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
                     } else {
                         return false;
                     }
-                } else if (args.size() != 0) {
+                } else {
                     return false;
                 }
             }
@@ -1323,7 +1347,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
                 int valid = 0;
                 for (int i = 0; i < 2; i++) {
                     if (position[i] == null) {
-                        position[i] = CSSFactory.getTermFactory().createPercent(50.0f);
+                        position[i] = DEFAULT_POSITION;
                         valid++;
                     } else if (position[i] instanceof TermLengthOrPercent) {
                         assigned++;
