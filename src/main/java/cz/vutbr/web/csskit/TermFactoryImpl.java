@@ -33,6 +33,7 @@ import cz.vutbr.web.csskit.fn.MatrixImpl;
 import cz.vutbr.web.csskit.fn.PerspectiveImpl;
 import cz.vutbr.web.csskit.fn.RadialGradientImpl;
 import cz.vutbr.web.csskit.fn.RepeatingLinearGradientImpl;
+import cz.vutbr.web.csskit.fn.RepeatingRadialGradientImpl;
 import cz.vutbr.web.csskit.fn.Rotate3dImpl;
 import cz.vutbr.web.csskit.fn.RotateImpl;
 import cz.vutbr.web.csskit.fn.RotateXImpl;
@@ -464,6 +465,9 @@ public class TermFactoryImpl implements TermFactory {
                 break;
             case "radial-gradient":
                 fn = new RadialGradientImpl();
+                break;
+            case "repeating-radial-gradient":
+                fn = new RepeatingRadialGradientImpl();
                 break;
 	        default:
 	            fn = new TermFunctionImpl();
