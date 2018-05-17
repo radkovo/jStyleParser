@@ -8,7 +8,7 @@ public class ColorStopImpl implements TermFunction.Gradient.ColorStop {
     private TermColor color;
     private TermLengthOrPercent length;
     
-    protected ColorStopImpl(TermColor color, TermLengthOrPercent length) {
+    public ColorStopImpl(TermColor color, TermLengthOrPercent length) {
         this.color = color;
         this.length = length;
     }

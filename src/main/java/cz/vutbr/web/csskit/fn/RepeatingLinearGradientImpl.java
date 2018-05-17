@@ -6,11 +6,9 @@ import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermAngle;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermList;
-import cz.vutbr.web.csskit.TermFunctionImpl;
 
-public class RepeatingLinearGradientImpl extends TermFunctionImpl implements TermFunction.RepeatingLinearGradient {
+public class RepeatingLinearGradientImpl extends GenericGradient implements TermFunction.RepeatingLinearGradient {
     private TermAngle angle;
-    private List<TermFunction.Gradient.ColorStop> colorStops;
     
     public RepeatingLinearGradientImpl() {
         setValid(false);
@@ -21,11 +19,6 @@ public class RepeatingLinearGradientImpl extends TermFunctionImpl implements Ter
         return angle;
     }
 
-    @Override
-    public List<ColorStop> getColorStops() {
-        return colorStops;
-    }
-    
     @Override
     public TermList setValue(List<Term<?>> value) {
         super.setValue(value);
@@ -40,8 +33,8 @@ public class RepeatingLinearGradientImpl extends TermFunctionImpl implements Ter
                 firstStop = 1;
             }
             //check for stops
-            colorStops = loadColorStops(args, firstStop);
-            if (colorStops != null)
+            loadColorStops(args, firstStop);
+            if (getColorStops() != null)
                 setValid(true);
         }
         return this;

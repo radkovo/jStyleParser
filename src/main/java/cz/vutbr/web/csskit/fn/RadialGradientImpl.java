@@ -13,9 +13,8 @@ import cz.vutbr.web.css.TermLength;
 import cz.vutbr.web.css.TermLengthOrPercent;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermPercent;
-import cz.vutbr.web.csskit.TermFunctionImpl;
 
-public class RadialGradientImpl extends TermFunctionImpl implements TermFunction.RadialGradient {
+public class RadialGradientImpl extends GenericGradient implements TermFunction.RadialGradient {
     
     //default property values
     private static final TermPercent DEFAULT_POSITION = CSSFactory.getTermFactory().createPercent(50.0f);
@@ -27,7 +26,6 @@ public class RadialGradientImpl extends TermFunctionImpl implements TermFunction
     private TermLengthOrPercent[] size;
     private TermIdent sizeIdent;
     private TermLengthOrPercent[] position;
-    private List<TermFunction.Gradient.ColorStop> colorStops;
     
     public RadialGradientImpl() {
         setValid(false);
@@ -54,11 +52,6 @@ public class RadialGradientImpl extends TermFunctionImpl implements TermFunction
     }
 
     @Override
-    public List<ColorStop> getColorStops() {
-        return colorStops;
-    }
-    
-    @Override
     public TermList setValue(List<Term<?>> value) {
         super.setValue(value);
         List<List<Term<?>>> args = getSeparatedArgs(DEFAULT_ARG_SEP);
@@ -74,8 +67,8 @@ public class RadialGradientImpl extends TermFunctionImpl implements TermFunction
                 position[0] = position[1] = DEFAULT_POSITION;
             }
             //check for stops
-            colorStops = loadColorStops(args, firstStop);
-            if (colorStops != null)
+            loadColorStops(args, firstStop);
+            if (getColorStops() != null)
                 setValid(true);
         }
         return this;
