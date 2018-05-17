@@ -128,6 +128,10 @@ public class FunctionsTest {
         "p { background: radial-gradient(#e66465, #9198e5); }",
         "p { background: radial-gradient(closest-side, #3f87a6, #ebf8e1, #f69d3c); }",
         "p { background: radial-gradient(circle at 100%, #333, #333 50%, #eee 75%, #333 75%); }",
+        "p { background: radial-gradient(circle 10px at 100%, #333, #eee); }",
+        "p { background: radial-gradient(ellipse 10px 55% at 10px 20px, #333, #eee); }",
+        "p { background: radial-gradient(10px at center, #333, #eee); }",
+        "p { background: radial-gradient(10% 12% at center, #333, #eee); }",
         "p { background: radial-gradient(ellipse at top, #e66465, transparent), radial-gradient(ellipse at bottom, #4d9f0c, transparent); }",
     };
     
@@ -136,7 +140,12 @@ public class FunctionsTest {
         "p { float: left; background: linear-gradient(12pt, red); }",
         "p { float: left; background: linear-gradient(to top bottom, red, blue); }",
         "p { float: left; background: linear-gradient(top left, red, blue); }",
-        "p { float: left; background: linear-gradient(to nowhere, red, blue); }"
+        "p { float: left; background: linear-gradient(to nowhere, red, blue); }",
+        "p { float: left; background: radial-gradient(circle 10% at 100%, #333, #eee); }",
+        "p { float: left; background: radial-gradient(circle 10px 20px at 100%, #333, #eee); }",
+        "p { float: left; background: radial-gradient(ellipse 10px at 10px 20px, #333, #eee); }",
+        "p { float: left; background: radial-gradient(ellipse at 10px 20px 30px, #333, #eee); }",
+        "p { float: left; background: radial-gradient(ellipse unknown at top bottom, #333, #eee); }"
     };
     
 	@BeforeClass
@@ -384,11 +393,11 @@ public class FunctionsTest {
     @Test
     public void gradientValid() throws IOException, CSSException
     {
-        for (int i = 0; i < TEST_GRADIENT.length; i++)
+        for (int i = 10; i < TEST_GRADIENT.length; i++)
         {
             StyleSheet ss = CSSFactory.parseString(TEST_GRADIENT[i], null);
             //System.out.println(i + " ss: " + ss);
-            assertEquals("One rule is parset [" + i + "]", 1, ss.size());
+            assertEquals("One rule is parsed [" + i + "]", 1, ss.size());
             assertEquals("One property is set [" + i + "]", 1, ss.get(0).size());
             Declaration d = (Declaration) ss.get(0).get(0);
             TermFunction fn = (TermFunction) d.get(0);
@@ -483,7 +492,7 @@ public class FunctionsTest {
                     assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
                     assertNull("No size", ((TermFunctionImpl.RadialGradientImpl) fn).getSize());
                     assertEquals("Size ident", tf.createIdent("farthest-corner"), ((TermFunctionImpl.RadialGradientImpl) fn).getSizeIdent());
-                    assertNull("No shape", ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
+                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
                     assertEquals("Position is set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
                     assertEquals("Position 1 is correct", tf.createLength(30.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[0]);
                     assertEquals("Position 2 is correct", tf.createLength(40.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[1]);
@@ -492,8 +501,8 @@ public class FunctionsTest {
                 case 10:
                     assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
                     assertNull("No size", ((TermFunctionImpl.RadialGradientImpl) fn).getSize());
-                    assertNull("No size ident", ((TermFunctionImpl.RadialGradientImpl) fn).getSizeIdent());
-                    assertNull("No shape", ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
+                    assertEquals("Size ident", tf.createIdent("farthest-corner"), ((TermFunctionImpl.RadialGradientImpl) fn).getSizeIdent());
+                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
                     assertEquals("Default position", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
                     assertEquals("Two stops are set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
                     assertEquals("First stop color", tf.createColor("#e66465"), ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().get(0).getColor());
@@ -505,23 +514,67 @@ public class FunctionsTest {
                     assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
                     assertNull("No size", ((TermFunctionImpl.RadialGradientImpl) fn).getSize());
                     assertEquals("Size ident", tf.createIdent("closest-side"), ((TermFunctionImpl.RadialGradientImpl) fn).getSizeIdent());
-                    assertNull("No shape", ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
+                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
                     assertEquals("Position is set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
-                    assertEquals("Position 1 is correct", tf.createLength(50.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[0]);
-                    assertEquals("Position 2 is correct", tf.createLength(50.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[1]);
+                    assertEquals("Position 1 is correct", tf.createPercent(50.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[0]);
+                    assertEquals("Position 2 is correct", tf.createPercent(50.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[1]);
                     assertEquals("Three stops are set", 3, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
                     break;
                 case 12:
                     assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
                     assertNull("No size", ((TermFunctionImpl.RadialGradientImpl) fn).getSize());
-                    assertEquals("Size ident", tf.createIdent("closest-side"), ((TermFunctionImpl.RadialGradientImpl) fn).getSizeIdent());
                     assertEquals("Shape is circle", tf.createIdent("circle"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
                     assertEquals("Position is set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
-                    assertEquals("Position 1 is correct", tf.createLength(100.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[0]);
-                    assertEquals("Position 2 is correct", tf.createLength(50.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[1]);
-                    assertEquals("Three stops are set", 3, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
+                    assertEquals("Position 1 is correct", tf.createPercent(100.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[0]);
+                    assertEquals("Position 2 is correct", tf.createPercent(50.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[1]);
+                    assertEquals("Four stops are set", 4, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
                     break;
                 case 13:
+                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
+                    assertEquals("Single size", 1, ((TermFunctionImpl.RadialGradientImpl) fn).getSize().length);
+                    assertEquals("Correct size", tf.createLength(10.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getSize()[0]);
+                    assertEquals("Shape is circle", tf.createIdent("circle"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
+                    assertEquals("Position is set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
+                    assertEquals("Position 1 is correct", tf.createPercent(100.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[0]);
+                    assertEquals("Position 2 is correct", tf.createPercent(50.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[1]);
+                    assertEquals("Two stops are set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
+                    break;
+                case 14:
+                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
+                    assertEquals("Two sizes", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getSize().length);
+                    assertEquals("Correct size 1", tf.createLength(10.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getSize()[0]);
+                    assertEquals("Correct size 2", tf.createPercent(55.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getSize()[1]);
+                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
+                    assertEquals("Position is set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
+                    assertEquals("Position 1 is correct", tf.createLength(10.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[0]);
+                    assertEquals("Position 2 is correct", tf.createLength(20.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[1]);
+                    assertEquals("Two stops are set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
+                    break;
+                case 15:
+                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
+                    assertEquals("Single size", 1, ((TermFunctionImpl.RadialGradientImpl) fn).getSize().length);
+                    assertEquals("Correct size", tf.createLength(10.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getSize()[0]);
+                    assertEquals("Shape is circle", tf.createIdent("circle"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
+                    assertEquals("Position is set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
+                    assertEquals("Position 1 is correct", tf.createPercent(50.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[0]);
+                    assertEquals("Position 2 is correct", tf.createPercent(50.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[1]);
+                    assertEquals("Two stops are set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
+                    break;
+                case 16:
+                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
+                    assertEquals("Two sizes", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getSize().length);
+                    assertEquals("Correct size 1", tf.createPercent(10.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getSize()[0]);
+                    assertEquals("Correct size 2", tf.createPercent(12.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getSize()[1]);
+                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
+                    assertEquals("Position is set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
+                    assertEquals("Position 1 is correct", tf.createPercent(50.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[0]);
+                    assertEquals("Position 2 is correct", tf.createPercent(50.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[1]);
+                    assertEquals("Two stops are set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
+                    break;
+                case 17:
+                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
+                    TermFunction fn2 = (TermFunction) d.get(1);
+                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn2.getClass());
                     break;
             }
         }
