@@ -25,7 +25,30 @@ import cz.vutbr.web.css.TermLengthOrPercent;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.css.TermRect;
 import cz.vutbr.web.csskit.CalcArgs;
-import cz.vutbr.web.csskit.TermFunctionImpl;
+import cz.vutbr.web.csskit.fn.LinearGradientImpl;
+import cz.vutbr.web.csskit.fn.Matrix3dImpl;
+import cz.vutbr.web.csskit.fn.MatrixImpl;
+import cz.vutbr.web.csskit.fn.PerspectiveImpl;
+import cz.vutbr.web.csskit.fn.RadialGradientImpl;
+import cz.vutbr.web.csskit.fn.RepeatingLinearGradientImpl;
+import cz.vutbr.web.csskit.fn.Rotate3dImpl;
+import cz.vutbr.web.csskit.fn.RotateImpl;
+import cz.vutbr.web.csskit.fn.RotateXImpl;
+import cz.vutbr.web.csskit.fn.RotateYImpl;
+import cz.vutbr.web.csskit.fn.RotateZImpl;
+import cz.vutbr.web.csskit.fn.Scale3dImpl;
+import cz.vutbr.web.csskit.fn.ScaleImpl;
+import cz.vutbr.web.csskit.fn.ScaleXImpl;
+import cz.vutbr.web.csskit.fn.ScaleYImpl;
+import cz.vutbr.web.csskit.fn.ScaleZImpl;
+import cz.vutbr.web.csskit.fn.SkewImpl;
+import cz.vutbr.web.csskit.fn.SkewXImpl;
+import cz.vutbr.web.csskit.fn.SkewYImpl;
+import cz.vutbr.web.csskit.fn.Translate3dImpl;
+import cz.vutbr.web.csskit.fn.TranslateImpl;
+import cz.vutbr.web.csskit.fn.TranslateXImpl;
+import cz.vutbr.web.csskit.fn.TranslateYImpl;
+import cz.vutbr.web.csskit.fn.TranslateZImpl;
 
 public class FunctionsTest {
 	private static final Logger log = LoggerFactory.getLogger(FunctionsTest.class);
@@ -262,118 +285,118 @@ public class FunctionsTest {
             switch (i)
             {
                 case 0:
-                    assertEquals(TermFunctionImpl.MatrixImpl.class, fn.getClass());
+                    assertEquals(MatrixImpl.class, fn.getClass());
                     break;
                 case 1:
-                    assertEquals(TermFunctionImpl.Matrix3dImpl.class, fn.getClass());
+                    assertEquals(Matrix3dImpl.class, fn.getClass());
                     break;
                 case 2:
-                    assertEquals(TermFunctionImpl.PerspectiveImpl.class, fn.getClass());
+                    assertEquals(PerspectiveImpl.class, fn.getClass());
                     break;
                 case 3:
-                    assertEquals(TermFunctionImpl.PerspectiveImpl.class, fn.getClass());
+                    assertEquals(PerspectiveImpl.class, fn.getClass());
                     break;
                 case 4:
-                    assertEquals(TermFunctionImpl.RotateImpl.class, fn.getClass());
-                    assertEquals("Angle is correct", tf.createAngle("45", Unit.deg, 1), ((TermFunctionImpl.RotateImpl) fn).getAngle());
+                    assertEquals(RotateImpl.class, fn.getClass());
+                    assertEquals("Angle is correct", tf.createAngle("45", Unit.deg, 1), ((RotateImpl) fn).getAngle());
                     break;
                 case 5:
-                    assertEquals(TermFunctionImpl.RotateImpl.class, fn.getClass());
-                    assertEquals("Angle is correct", tf.createAngle(0.0f), ((TermFunctionImpl.RotateImpl) fn).getAngle());
+                    assertEquals(RotateImpl.class, fn.getClass());
+                    assertEquals("Angle is correct", tf.createAngle(0.0f), ((RotateImpl) fn).getAngle());
                     break;
                 case 6:
-                    assertEquals(TermFunctionImpl.Rotate3dImpl.class, fn.getClass());
+                    assertEquals(Rotate3dImpl.class, fn.getClass());
                     break;
                 case 7:
-                    assertEquals(TermFunctionImpl.Rotate3dImpl.class, fn.getClass());
+                    assertEquals(Rotate3dImpl.class, fn.getClass());
                     break;
                 case 8:
-                    assertEquals(TermFunctionImpl.RotateXImpl.class, fn.getClass());
+                    assertEquals(RotateXImpl.class, fn.getClass());
                     break;
                 case 9:
-                    assertEquals(TermFunctionImpl.RotateXImpl.class, fn.getClass());
+                    assertEquals(RotateXImpl.class, fn.getClass());
                     break;
                 case 10:
-                    assertEquals(TermFunctionImpl.RotateYImpl.class, fn.getClass());
+                    assertEquals(RotateYImpl.class, fn.getClass());
                     break;
                 case 11:
-                    assertEquals(TermFunctionImpl.RotateYImpl.class, fn.getClass());
+                    assertEquals(RotateYImpl.class, fn.getClass());
                     break;
                 case 12:
-                    assertEquals(TermFunctionImpl.RotateZImpl.class, fn.getClass());
+                    assertEquals(RotateZImpl.class, fn.getClass());
                     break;
                 case 13:
-                    assertEquals(TermFunctionImpl.RotateZImpl.class, fn.getClass());
+                    assertEquals(RotateZImpl.class, fn.getClass());
                     break;
                 case 14:
-                    assertEquals(TermFunctionImpl.ScaleImpl.class, fn.getClass());
-                    assertEquals("ScaleX is correct", 1.5f, ((TermFunctionImpl.ScaleImpl) fn).getScaleX(), 0.001f);
-                    assertEquals("ScaleY is correct", 1.2f, ((TermFunctionImpl.ScaleImpl) fn).getScaleY(), 0.001f);
+                    assertEquals(ScaleImpl.class, fn.getClass());
+                    assertEquals("ScaleX is correct", 1.5f, ((ScaleImpl) fn).getScaleX(), 0.001f);
+                    assertEquals("ScaleY is correct", 1.2f, ((ScaleImpl) fn).getScaleY(), 0.001f);
                     break;
                 case 15:
-                    assertEquals(TermFunctionImpl.ScaleImpl.class, fn.getClass());
-                    assertEquals("ScaleX is correct", 1.3f, ((TermFunctionImpl.ScaleImpl) fn).getScaleX(), 0.001f);
-                    assertEquals("ScaleY is correct", 1.3f, ((TermFunctionImpl.ScaleImpl) fn).getScaleY(), 0.001f);
+                    assertEquals(ScaleImpl.class, fn.getClass());
+                    assertEquals("ScaleX is correct", 1.3f, ((ScaleImpl) fn).getScaleX(), 0.001f);
+                    assertEquals("ScaleY is correct", 1.3f, ((ScaleImpl) fn).getScaleY(), 0.001f);
                     break;
                 case 16:
-                    assertEquals(TermFunctionImpl.Scale3dImpl.class, fn.getClass());
-                    assertEquals("ScaleX is correct", -0.5f, ((TermFunctionImpl.Scale3dImpl) fn).getScaleX(), 0.001f);
-                    assertEquals("ScaleY is correct", 1f, ((TermFunctionImpl.Scale3dImpl) fn).getScaleY(), 0.001f);
-                    assertEquals("ScaleZ is correct", 1.7f, ((TermFunctionImpl.Scale3dImpl) fn).getScaleZ(), 0.001f);
+                    assertEquals(Scale3dImpl.class, fn.getClass());
+                    assertEquals("ScaleX is correct", -0.5f, ((Scale3dImpl) fn).getScaleX(), 0.001f);
+                    assertEquals("ScaleY is correct", 1f, ((Scale3dImpl) fn).getScaleY(), 0.001f);
+                    assertEquals("ScaleZ is correct", 1.7f, ((Scale3dImpl) fn).getScaleZ(), 0.001f);
                     break;
                 case 17:
-                    assertEquals(TermFunctionImpl.ScaleXImpl.class, fn.getClass());
-                    assertEquals("Scale is correct", 1.5f, ((TermFunctionImpl.ScaleXImpl) fn).getScale(), 0.001f);
+                    assertEquals(ScaleXImpl.class, fn.getClass());
+                    assertEquals("Scale is correct", 1.5f, ((ScaleXImpl) fn).getScale(), 0.001f);
                     break;
                 case 18:
-                    assertEquals(TermFunctionImpl.ScaleYImpl.class, fn.getClass());
-                    assertEquals("Scale is correct", -1.5f, ((TermFunctionImpl.ScaleYImpl) fn).getScale(), 0.001f);
+                    assertEquals(ScaleYImpl.class, fn.getClass());
+                    assertEquals("Scale is correct", -1.5f, ((ScaleYImpl) fn).getScale(), 0.001f);
                     break;
                 case 19:
-                    assertEquals(TermFunctionImpl.ScaleZImpl.class, fn.getClass());
-                    assertEquals("Scale is correct", 1f, ((TermFunctionImpl.ScaleZImpl) fn).getScale(), 0.001f);
+                    assertEquals(ScaleZImpl.class, fn.getClass());
+                    assertEquals("Scale is correct", 1f, ((ScaleZImpl) fn).getScale(), 0.001f);
                     break;
                 case 20:
-                    assertEquals(TermFunctionImpl.SkewImpl.class, fn.getClass());
+                    assertEquals(SkewImpl.class, fn.getClass());
                     break;
                 case 21:
-                    assertEquals(TermFunctionImpl.SkewImpl.class, fn.getClass());
+                    assertEquals(SkewImpl.class, fn.getClass());
                     break;
                 case 22:
-                    assertEquals(TermFunctionImpl.SkewImpl.class, fn.getClass());
+                    assertEquals(SkewImpl.class, fn.getClass());
                     break;
                 case 23:
-                    assertEquals(TermFunctionImpl.SkewXImpl.class, fn.getClass());
+                    assertEquals(SkewXImpl.class, fn.getClass());
                     break;
                 case 24:
-                    assertEquals(TermFunctionImpl.SkewYImpl.class, fn.getClass());
+                    assertEquals(SkewYImpl.class, fn.getClass());
                     break;
                 case 25:
-                    assertEquals(TermFunctionImpl.TranslateImpl.class, fn.getClass());
-                    assertEquals("Length X is correct", tf.createLength("10", Unit.px, 1), ((TermFunctionImpl.TranslateImpl) fn).getTranslateX());
-                    assertEquals("Length Y is correct", tf.createLength(0.0f), ((TermFunctionImpl.TranslateImpl) fn).getTranslateY());
+                    assertEquals(TranslateImpl.class, fn.getClass());
+                    assertEquals("Length X is correct", tf.createLength("10", Unit.px, 1), ((TranslateImpl) fn).getTranslateX());
+                    assertEquals("Length Y is correct", tf.createLength(0.0f), ((TranslateImpl) fn).getTranslateY());
                     break;
                 case 26:
-                    assertEquals(TermFunctionImpl.TranslateImpl.class, fn.getClass());
-                    assertEquals("Length X is correct", tf.createLength("10", Unit.px, 1), ((TermFunctionImpl.TranslateImpl) fn).getTranslateX());
-                    assertEquals("Length Y is correct", tf.createPercent(25.0f), ((TermFunctionImpl.TranslateImpl) fn).getTranslateY());
+                    assertEquals(TranslateImpl.class, fn.getClass());
+                    assertEquals("Length X is correct", tf.createLength("10", Unit.px, 1), ((TranslateImpl) fn).getTranslateX());
+                    assertEquals("Length Y is correct", tf.createPercent(25.0f), ((TranslateImpl) fn).getTranslateY());
                     break;
                 case 27:
-                    assertEquals(TermFunctionImpl.TranslateImpl.class, fn.getClass());
-                    assertEquals("Length X is correct", tf.createInteger(0), ((TermFunctionImpl.TranslateImpl) fn).getTranslateX());
-                    assertEquals("Length Y is correct", tf.createLength("12", Unit.pt, 1), ((TermFunctionImpl.TranslateImpl) fn).getTranslateY());
+                    assertEquals(TranslateImpl.class, fn.getClass());
+                    assertEquals("Length X is correct", tf.createInteger(0), ((TranslateImpl) fn).getTranslateX());
+                    assertEquals("Length Y is correct", tf.createLength("12", Unit.pt, 1), ((TranslateImpl) fn).getTranslateY());
                     break;
                 case 28:
-                    assertEquals(TermFunctionImpl.Translate3dImpl.class, fn.getClass());
+                    assertEquals(Translate3dImpl.class, fn.getClass());
                     break;
                 case 29:
-                    assertEquals(TermFunctionImpl.TranslateXImpl.class, fn.getClass());
+                    assertEquals(TranslateXImpl.class, fn.getClass());
                     break;
                 case 30:
-                    assertEquals(TermFunctionImpl.TranslateYImpl.class, fn.getClass());
+                    assertEquals(TranslateYImpl.class, fn.getClass());
                     break;
                 case 31:
-                    assertEquals(TermFunctionImpl.TranslateZImpl.class, fn.getClass());
+                    assertEquals(TranslateZImpl.class, fn.getClass());
                     break;
             }
         }
@@ -405,176 +428,176 @@ public class FunctionsTest {
             switch (i)
             {
                 case 0:
-                    assertEquals(TermFunctionImpl.LinearGradientImpl.class, fn.getClass());
-                    assertNull("Angle is not set", ((TermFunctionImpl.LinearGradientImpl) fn).getAngle());
-                    assertEquals("Two stops are set", 2, ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().size());
-                    assertEquals("First stop color", tf.createColor("#e66465"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getColor());
-                    assertNull("First stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getLength());
-                    assertEquals("Second stop color", tf.createColor("#9198e5"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(1).getColor());
-                    assertNull("Second stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(1).getLength());
+                    assertEquals(LinearGradientImpl.class, fn.getClass());
+                    assertNull("Angle is not set", ((LinearGradientImpl) fn).getAngle());
+                    assertEquals("Two stops are set", 2, ((LinearGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#e66465"), ((LinearGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((LinearGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Second stop color", tf.createColor("#9198e5"), ((LinearGradientImpl) fn).getColorStops().get(1).getColor());
+                    assertNull("Second stop length", ((LinearGradientImpl) fn).getColorStops().get(1).getLength());
                     break;
                 case 1:
-                    assertEquals(TermFunctionImpl.LinearGradientImpl.class, fn.getClass());
-                    assertEquals("Angle", tf.createAngle("0.25", Unit.turn, 1), ((TermFunctionImpl.LinearGradientImpl) fn).getAngle());
-                    assertEquals("Three stops are set", 3, ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().size());
-                    assertEquals("First stop color", tf.createColor("#ff0000"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getColor());
-                    assertNull("First stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getLength());
-                    assertEquals("Last stop color", tf.createColor("#f69d3c"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(2).getColor());
-                    assertNull("Last stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(2).getLength());
+                    assertEquals(LinearGradientImpl.class, fn.getClass());
+                    assertEquals("Angle", tf.createAngle("0.25", Unit.turn, 1), ((LinearGradientImpl) fn).getAngle());
+                    assertEquals("Three stops are set", 3, ((LinearGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#ff0000"), ((LinearGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((LinearGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Last stop color", tf.createColor("#f69d3c"), ((LinearGradientImpl) fn).getColorStops().get(2).getColor());
+                    assertNull("Last stop length", ((LinearGradientImpl) fn).getColorStops().get(2).getLength());
                     break;
                 case 2:
-                    assertEquals(TermFunctionImpl.LinearGradientImpl.class, fn.getClass());
-                    assertEquals("Angle", tf.createAngle("270", Unit.deg, 1), ((TermFunctionImpl.LinearGradientImpl) fn).getAngle());
-                    assertEquals("Four stops are set", 4, ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().size());
-                    assertEquals("First stop color", tf.createColor("#333333"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getColor());
-                    assertNull("First stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getLength());
-                    assertEquals("Last stop color", tf.createColor("#333333"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(3).getColor());
-                    assertEquals("Last stop length", tf.createPercent(75.0f), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(3).getLength());
+                    assertEquals(LinearGradientImpl.class, fn.getClass());
+                    assertEquals("Angle", tf.createAngle("270", Unit.deg, 1), ((LinearGradientImpl) fn).getAngle());
+                    assertEquals("Four stops are set", 4, ((LinearGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#333333"), ((LinearGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((LinearGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Last stop color", tf.createColor("#333333"), ((LinearGradientImpl) fn).getColorStops().get(3).getColor());
+                    assertEquals("Last stop length", tf.createPercent(75.0f), ((LinearGradientImpl) fn).getColorStops().get(3).getLength());
                     break;
                 case 3:
-                    assertEquals(TermFunctionImpl.LinearGradientImpl.class, fn.getClass());
-                    assertEquals("Angle", tf.createAngle("135", Unit.deg, 1), ((TermFunctionImpl.LinearGradientImpl) fn).getAngle());
-                    assertEquals("Three stops are set", 3, ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().size());
-                    assertEquals("First stop color", tf.createColor("#333333"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getColor());
-                    assertNull("First stop length", ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(0).getLength());
-                    assertEquals("Second stop color", tf.createColor("#333333"), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(1).getColor());
-                    assertEquals("Second stop length", tf.createPercent(50.0f), ((TermFunctionImpl.LinearGradientImpl) fn).getColorStops().get(1).getLength());
+                    assertEquals(LinearGradientImpl.class, fn.getClass());
+                    assertEquals("Angle", tf.createAngle("135", Unit.deg, 1), ((LinearGradientImpl) fn).getAngle());
+                    assertEquals("Three stops are set", 3, ((LinearGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#333333"), ((LinearGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((LinearGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Second stop color", tf.createColor("#333333"), ((LinearGradientImpl) fn).getColorStops().get(1).getColor());
+                    assertEquals("Second stop length", tf.createPercent(50.0f), ((LinearGradientImpl) fn).getColorStops().get(1).getLength());
                     break;
                 case 4:
-                    assertEquals(TermFunctionImpl.RepeatingLinearGradientImpl.class, fn.getClass());
-                    assertNull("Angle is not set", ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getAngle());
-                    assertEquals("Two stops are set", 2, ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().size());
-                    assertEquals("First stop color", tf.createColor("#e66465"), ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().get(0).getColor());
-                    assertNull("First stop length", ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().get(0).getLength());
-                    assertEquals("Second stop color", tf.createColor("#9198e5"), ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().get(1).getColor());
-                    assertNull("Second stop length", ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().get(1).getLength());
+                    assertEquals(RepeatingLinearGradientImpl.class, fn.getClass());
+                    assertNull("Angle is not set", ((RepeatingLinearGradientImpl) fn).getAngle());
+                    assertEquals("Two stops are set", 2, ((RepeatingLinearGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#e66465"), ((RepeatingLinearGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((RepeatingLinearGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Second stop color", tf.createColor("#9198e5"), ((RepeatingLinearGradientImpl) fn).getColorStops().get(1).getColor());
+                    assertNull("Second stop length", ((RepeatingLinearGradientImpl) fn).getColorStops().get(1).getLength());
                     break;
                 case 5:
-                    assertEquals(TermFunctionImpl.RepeatingLinearGradientImpl.class, fn.getClass());
-                    assertEquals("Angle", tf.createAngle("0.25", Unit.turn, 1), ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getAngle());
-                    assertEquals("Three stops are set", 3, ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().size());
-                    assertEquals("First stop color", tf.createColor("#ff0000"), ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().get(0).getColor());
-                    assertNull("First stop length", ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().get(0).getLength());
-                    assertEquals("Last stop color", tf.createColor("#f69d3c"), ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().get(2).getColor());
-                    assertNull("Last stop length", ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().get(2).getLength());
+                    assertEquals(RepeatingLinearGradientImpl.class, fn.getClass());
+                    assertEquals("Angle", tf.createAngle("0.25", Unit.turn, 1), ((RepeatingLinearGradientImpl) fn).getAngle());
+                    assertEquals("Three stops are set", 3, ((RepeatingLinearGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#ff0000"), ((RepeatingLinearGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((RepeatingLinearGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Last stop color", tf.createColor("#f69d3c"), ((RepeatingLinearGradientImpl) fn).getColorStops().get(2).getColor());
+                    assertNull("Last stop length", ((RepeatingLinearGradientImpl) fn).getColorStops().get(2).getLength());
                     break;
                 case 6:
-                    assertEquals(TermFunctionImpl.RepeatingLinearGradientImpl.class, fn.getClass());
-                    assertEquals("Angle", tf.createAngle("270", Unit.deg, 1), ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getAngle());
-                    assertEquals("Four stops are set", 4, ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().size());
-                    assertEquals("First stop color", tf.createColor("#333333"), ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().get(0).getColor());
-                    assertNull("First stop length", ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().get(0).getLength());
-                    assertEquals("Last stop color", tf.createColor("#333333"), ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().get(3).getColor());
-                    assertEquals("Last stop length", tf.createPercent(75.0f), ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().get(3).getLength());
+                    assertEquals(RepeatingLinearGradientImpl.class, fn.getClass());
+                    assertEquals("Angle", tf.createAngle("270", Unit.deg, 1), ((RepeatingLinearGradientImpl) fn).getAngle());
+                    assertEquals("Four stops are set", 4, ((RepeatingLinearGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#333333"), ((RepeatingLinearGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((RepeatingLinearGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Last stop color", tf.createColor("#333333"), ((RepeatingLinearGradientImpl) fn).getColorStops().get(3).getColor());
+                    assertEquals("Last stop length", tf.createPercent(75.0f), ((RepeatingLinearGradientImpl) fn).getColorStops().get(3).getLength());
                     break;
                 case 7:
-                    assertEquals(TermFunctionImpl.RepeatingLinearGradientImpl.class, fn.getClass());
-                    assertEquals("Angle", tf.createAngle("135", Unit.deg, 1), ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getAngle());
-                    assertEquals("Three stops are set", 3, ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().size());
-                    assertEquals("First stop color", tf.createColor("#333333"), ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().get(0).getColor());
-                    assertNull("First stop length", ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().get(0).getLength());
-                    assertEquals("Second stop color", tf.createColor("#333333"), ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().get(1).getColor());
-                    assertEquals("Second stop length", tf.createPercent(50.0f), ((TermFunctionImpl.RepeatingLinearGradientImpl) fn).getColorStops().get(1).getLength());
+                    assertEquals(RepeatingLinearGradientImpl.class, fn.getClass());
+                    assertEquals("Angle", tf.createAngle("135", Unit.deg, 1), ((RepeatingLinearGradientImpl) fn).getAngle());
+                    assertEquals("Three stops are set", 3, ((RepeatingLinearGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#333333"), ((RepeatingLinearGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((RepeatingLinearGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Second stop color", tf.createColor("#333333"), ((RepeatingLinearGradientImpl) fn).getColorStops().get(1).getColor());
+                    assertEquals("Second stop length", tf.createPercent(50.0f), ((RepeatingLinearGradientImpl) fn).getColorStops().get(1).getLength());
                     break;
                 case 8:
-                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
-                    assertNull("No size", ((TermFunctionImpl.RadialGradientImpl) fn).getSize());
-                    assertEquals("Size ident", tf.createIdent("farthest-corner"), ((TermFunctionImpl.RadialGradientImpl) fn).getSizeIdent());
-                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
-                    assertEquals("Default position", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
-                    assertEquals("Three stops are set", 3, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
-                    assertEquals("First stop color", tf.createColor("#00ffff"), ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().get(0).getColor());
-                    assertEquals("First stop length", tf.createPercent(0f), ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().get(0).getLength());
-                    assertEquals("Second stop color", tf.createColor(tf.createIdent("transparent")), ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().get(1).getColor());
-                    assertEquals("Second stop length", tf.createPercent(20.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().get(1).getLength());
+                    assertEquals(RadialGradientImpl.class, fn.getClass());
+                    assertNull("No size", ((RadialGradientImpl) fn).getSize());
+                    assertEquals("Size ident", tf.createIdent("farthest-corner"), ((RadialGradientImpl) fn).getSizeIdent());
+                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((RadialGradientImpl) fn).getShape());
+                    assertEquals("Default position", 2, ((RadialGradientImpl) fn).getPosition().length);
+                    assertEquals("Three stops are set", 3, ((RadialGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#00ffff"), ((RadialGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertEquals("First stop length", tf.createPercent(0f), ((RadialGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Second stop color", tf.createColor(tf.createIdent("transparent")), ((RadialGradientImpl) fn).getColorStops().get(1).getColor());
+                    assertEquals("Second stop length", tf.createPercent(20.0f), ((RadialGradientImpl) fn).getColorStops().get(1).getLength());
                     break;
                 case 9:
-                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
-                    assertNull("No size", ((TermFunctionImpl.RadialGradientImpl) fn).getSize());
-                    assertEquals("Size ident", tf.createIdent("farthest-corner"), ((TermFunctionImpl.RadialGradientImpl) fn).getSizeIdent());
-                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
-                    assertEquals("Position is set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
-                    assertEquals("Position 1 is correct", tf.createLength(30.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[0]);
-                    assertEquals("Position 2 is correct", tf.createLength(40.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[1]);
-                    assertEquals("Two stops are set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
+                    assertEquals(RadialGradientImpl.class, fn.getClass());
+                    assertNull("No size", ((RadialGradientImpl) fn).getSize());
+                    assertEquals("Size ident", tf.createIdent("farthest-corner"), ((RadialGradientImpl) fn).getSizeIdent());
+                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((RadialGradientImpl) fn).getShape());
+                    assertEquals("Position is set", 2, ((RadialGradientImpl) fn).getPosition().length);
+                    assertEquals("Position 1 is correct", tf.createLength(30.0f, Unit.px), ((RadialGradientImpl) fn).getPosition()[0]);
+                    assertEquals("Position 2 is correct", tf.createLength(40.0f, Unit.px), ((RadialGradientImpl) fn).getPosition()[1]);
+                    assertEquals("Two stops are set", 2, ((RadialGradientImpl) fn).getColorStops().size());
                     break;
                 case 10:
-                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
-                    assertNull("No size", ((TermFunctionImpl.RadialGradientImpl) fn).getSize());
-                    assertEquals("Size ident", tf.createIdent("farthest-corner"), ((TermFunctionImpl.RadialGradientImpl) fn).getSizeIdent());
-                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
-                    assertEquals("Default position", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
-                    assertEquals("Two stops are set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
-                    assertEquals("First stop color", tf.createColor("#e66465"), ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().get(0).getColor());
-                    assertNull("First stop length", ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().get(0).getLength());
-                    assertEquals("Second stop color", tf.createColor("#9198e5"), ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().get(1).getColor());
-                    assertNull("Second stop length", ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().get(1).getLength());
+                    assertEquals(RadialGradientImpl.class, fn.getClass());
+                    assertNull("No size", ((RadialGradientImpl) fn).getSize());
+                    assertEquals("Size ident", tf.createIdent("farthest-corner"), ((RadialGradientImpl) fn).getSizeIdent());
+                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((RadialGradientImpl) fn).getShape());
+                    assertEquals("Default position", 2, ((RadialGradientImpl) fn).getPosition().length);
+                    assertEquals("Two stops are set", 2, ((RadialGradientImpl) fn).getColorStops().size());
+                    assertEquals("First stop color", tf.createColor("#e66465"), ((RadialGradientImpl) fn).getColorStops().get(0).getColor());
+                    assertNull("First stop length", ((RadialGradientImpl) fn).getColorStops().get(0).getLength());
+                    assertEquals("Second stop color", tf.createColor("#9198e5"), ((RadialGradientImpl) fn).getColorStops().get(1).getColor());
+                    assertNull("Second stop length", ((RadialGradientImpl) fn).getColorStops().get(1).getLength());
                     break;
                 case 11:
-                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
-                    assertNull("No size", ((TermFunctionImpl.RadialGradientImpl) fn).getSize());
-                    assertEquals("Size ident", tf.createIdent("closest-side"), ((TermFunctionImpl.RadialGradientImpl) fn).getSizeIdent());
-                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
-                    assertEquals("Position is set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
-                    assertEquals("Position 1 is correct", tf.createPercent(50.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[0]);
-                    assertEquals("Position 2 is correct", tf.createPercent(50.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[1]);
-                    assertEquals("Three stops are set", 3, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
+                    assertEquals(RadialGradientImpl.class, fn.getClass());
+                    assertNull("No size", ((RadialGradientImpl) fn).getSize());
+                    assertEquals("Size ident", tf.createIdent("closest-side"), ((RadialGradientImpl) fn).getSizeIdent());
+                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((RadialGradientImpl) fn).getShape());
+                    assertEquals("Position is set", 2, ((RadialGradientImpl) fn).getPosition().length);
+                    assertEquals("Position 1 is correct", tf.createPercent(50.0f), ((RadialGradientImpl) fn).getPosition()[0]);
+                    assertEquals("Position 2 is correct", tf.createPercent(50.0f), ((RadialGradientImpl) fn).getPosition()[1]);
+                    assertEquals("Three stops are set", 3, ((RadialGradientImpl) fn).getColorStops().size());
                     break;
                 case 12:
-                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
-                    assertNull("No size", ((TermFunctionImpl.RadialGradientImpl) fn).getSize());
-                    assertEquals("Shape is circle", tf.createIdent("circle"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
-                    assertEquals("Position is set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
-                    assertEquals("Position 1 is correct", tf.createPercent(100.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[0]);
-                    assertEquals("Position 2 is correct", tf.createPercent(50.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[1]);
-                    assertEquals("Four stops are set", 4, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
+                    assertEquals(RadialGradientImpl.class, fn.getClass());
+                    assertNull("No size", ((RadialGradientImpl) fn).getSize());
+                    assertEquals("Shape is circle", tf.createIdent("circle"), ((RadialGradientImpl) fn).getShape());
+                    assertEquals("Position is set", 2, ((RadialGradientImpl) fn).getPosition().length);
+                    assertEquals("Position 1 is correct", tf.createPercent(100.0f), ((RadialGradientImpl) fn).getPosition()[0]);
+                    assertEquals("Position 2 is correct", tf.createPercent(50.0f), ((RadialGradientImpl) fn).getPosition()[1]);
+                    assertEquals("Four stops are set", 4, ((RadialGradientImpl) fn).getColorStops().size());
                     break;
                 case 13:
-                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
-                    assertEquals("Single size", 1, ((TermFunctionImpl.RadialGradientImpl) fn).getSize().length);
-                    assertEquals("Correct size", tf.createLength(10.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getSize()[0]);
-                    assertEquals("Shape is circle", tf.createIdent("circle"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
-                    assertEquals("Position is set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
-                    assertEquals("Position 1 is correct", tf.createPercent(100.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[0]);
-                    assertEquals("Position 2 is correct", tf.createPercent(50.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[1]);
-                    assertEquals("Two stops are set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
+                    assertEquals(RadialGradientImpl.class, fn.getClass());
+                    assertEquals("Single size", 1, ((RadialGradientImpl) fn).getSize().length);
+                    assertEquals("Correct size", tf.createLength(10.0f, Unit.px), ((RadialGradientImpl) fn).getSize()[0]);
+                    assertEquals("Shape is circle", tf.createIdent("circle"), ((RadialGradientImpl) fn).getShape());
+                    assertEquals("Position is set", 2, ((RadialGradientImpl) fn).getPosition().length);
+                    assertEquals("Position 1 is correct", tf.createPercent(100.0f), ((RadialGradientImpl) fn).getPosition()[0]);
+                    assertEquals("Position 2 is correct", tf.createPercent(50.0f), ((RadialGradientImpl) fn).getPosition()[1]);
+                    assertEquals("Two stops are set", 2, ((RadialGradientImpl) fn).getColorStops().size());
                     break;
                 case 14:
-                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
-                    assertEquals("Two sizes", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getSize().length);
-                    assertEquals("Correct size 1", tf.createLength(10.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getSize()[0]);
-                    assertEquals("Correct size 2", tf.createPercent(55.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getSize()[1]);
-                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
-                    assertEquals("Position is set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
-                    assertEquals("Position 1 is correct", tf.createLength(10.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[0]);
-                    assertEquals("Position 2 is correct", tf.createLength(20.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[1]);
-                    assertEquals("Two stops are set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
+                    assertEquals(RadialGradientImpl.class, fn.getClass());
+                    assertEquals("Two sizes", 2, ((RadialGradientImpl) fn).getSize().length);
+                    assertEquals("Correct size 1", tf.createLength(10.0f, Unit.px), ((RadialGradientImpl) fn).getSize()[0]);
+                    assertEquals("Correct size 2", tf.createPercent(55.0f), ((RadialGradientImpl) fn).getSize()[1]);
+                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((RadialGradientImpl) fn).getShape());
+                    assertEquals("Position is set", 2, ((RadialGradientImpl) fn).getPosition().length);
+                    assertEquals("Position 1 is correct", tf.createLength(10.0f, Unit.px), ((RadialGradientImpl) fn).getPosition()[0]);
+                    assertEquals("Position 2 is correct", tf.createLength(20.0f, Unit.px), ((RadialGradientImpl) fn).getPosition()[1]);
+                    assertEquals("Two stops are set", 2, ((RadialGradientImpl) fn).getColorStops().size());
                     break;
                 case 15:
-                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
-                    assertEquals("Single size", 1, ((TermFunctionImpl.RadialGradientImpl) fn).getSize().length);
-                    assertEquals("Correct size", tf.createLength(10.0f, Unit.px), ((TermFunctionImpl.RadialGradientImpl) fn).getSize()[0]);
-                    assertEquals("Shape is circle", tf.createIdent("circle"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
-                    assertEquals("Position is set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
-                    assertEquals("Position 1 is correct", tf.createPercent(50.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[0]);
-                    assertEquals("Position 2 is correct", tf.createPercent(50.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[1]);
-                    assertEquals("Two stops are set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
+                    assertEquals(RadialGradientImpl.class, fn.getClass());
+                    assertEquals("Single size", 1, ((RadialGradientImpl) fn).getSize().length);
+                    assertEquals("Correct size", tf.createLength(10.0f, Unit.px), ((RadialGradientImpl) fn).getSize()[0]);
+                    assertEquals("Shape is circle", tf.createIdent("circle"), ((RadialGradientImpl) fn).getShape());
+                    assertEquals("Position is set", 2, ((RadialGradientImpl) fn).getPosition().length);
+                    assertEquals("Position 1 is correct", tf.createPercent(50.0f), ((RadialGradientImpl) fn).getPosition()[0]);
+                    assertEquals("Position 2 is correct", tf.createPercent(50.0f), ((RadialGradientImpl) fn).getPosition()[1]);
+                    assertEquals("Two stops are set", 2, ((RadialGradientImpl) fn).getColorStops().size());
                     break;
                 case 16:
-                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
-                    assertEquals("Two sizes", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getSize().length);
-                    assertEquals("Correct size 1", tf.createPercent(10.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getSize()[0]);
-                    assertEquals("Correct size 2", tf.createPercent(12.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getSize()[1]);
-                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
-                    assertEquals("Position is set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
-                    assertEquals("Position 1 is correct", tf.createPercent(50.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[0]);
-                    assertEquals("Position 2 is correct", tf.createPercent(50.0f), ((TermFunctionImpl.RadialGradientImpl) fn).getPosition()[1]);
-                    assertEquals("Two stops are set", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
+                    assertEquals(RadialGradientImpl.class, fn.getClass());
+                    assertEquals("Two sizes", 2, ((RadialGradientImpl) fn).getSize().length);
+                    assertEquals("Correct size 1", tf.createPercent(10.0f), ((RadialGradientImpl) fn).getSize()[0]);
+                    assertEquals("Correct size 2", tf.createPercent(12.0f), ((RadialGradientImpl) fn).getSize()[1]);
+                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((RadialGradientImpl) fn).getShape());
+                    assertEquals("Position is set", 2, ((RadialGradientImpl) fn).getPosition().length);
+                    assertEquals("Position 1 is correct", tf.createPercent(50.0f), ((RadialGradientImpl) fn).getPosition()[0]);
+                    assertEquals("Position 2 is correct", tf.createPercent(50.0f), ((RadialGradientImpl) fn).getPosition()[1]);
+                    assertEquals("Two stops are set", 2, ((RadialGradientImpl) fn).getColorStops().size());
                     break;
                 case 17:
-                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
+                    assertEquals(RadialGradientImpl.class, fn.getClass());
                     TermFunction fn2 = (TermFunction) d.get(1);
-                    assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn2.getClass());
+                    assertEquals(RadialGradientImpl.class, fn2.getClass());
                     break;
             }
         }

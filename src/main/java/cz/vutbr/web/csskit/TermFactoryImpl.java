@@ -27,6 +27,30 @@ import cz.vutbr.web.css.TermTime;
 import cz.vutbr.web.css.TermURI;
 import cz.vutbr.web.css.TermUnicodeRange;
 import cz.vutbr.web.css.TermNumeric.Unit;
+import cz.vutbr.web.csskit.fn.LinearGradientImpl;
+import cz.vutbr.web.csskit.fn.Matrix3dImpl;
+import cz.vutbr.web.csskit.fn.MatrixImpl;
+import cz.vutbr.web.csskit.fn.PerspectiveImpl;
+import cz.vutbr.web.csskit.fn.RadialGradientImpl;
+import cz.vutbr.web.csskit.fn.RepeatingLinearGradientImpl;
+import cz.vutbr.web.csskit.fn.Rotate3dImpl;
+import cz.vutbr.web.csskit.fn.RotateImpl;
+import cz.vutbr.web.csskit.fn.RotateXImpl;
+import cz.vutbr.web.csskit.fn.RotateYImpl;
+import cz.vutbr.web.csskit.fn.RotateZImpl;
+import cz.vutbr.web.csskit.fn.Scale3dImpl;
+import cz.vutbr.web.csskit.fn.ScaleImpl;
+import cz.vutbr.web.csskit.fn.ScaleXImpl;
+import cz.vutbr.web.csskit.fn.ScaleYImpl;
+import cz.vutbr.web.csskit.fn.ScaleZImpl;
+import cz.vutbr.web.csskit.fn.SkewImpl;
+import cz.vutbr.web.csskit.fn.SkewXImpl;
+import cz.vutbr.web.csskit.fn.SkewYImpl;
+import cz.vutbr.web.csskit.fn.Translate3dImpl;
+import cz.vutbr.web.csskit.fn.TranslateImpl;
+import cz.vutbr.web.csskit.fn.TranslateXImpl;
+import cz.vutbr.web.csskit.fn.TranslateYImpl;
+import cz.vutbr.web.csskit.fn.TranslateZImpl;
 import cz.vutbr.web.css.TermOperator;
 
 public class TermFactoryImpl implements TermFactory {
@@ -370,76 +394,76 @@ public class TermFactoryImpl implements TermFactory {
 	    TermFunction fn = null;
 	    switch (name) {
 	        case "matrix":
-	            fn = new TermFunctionImpl.MatrixImpl();
+	            fn = new MatrixImpl();
 	            break;
 	        case "matrix3d":
-	            fn = new TermFunctionImpl.Matrix3dImpl();
+	            fn = new Matrix3dImpl();
 	            break;
 	        case "perspective":
-	            fn = new TermFunctionImpl.PerspectiveImpl();
+	            fn = new PerspectiveImpl();
 	            break;
 	        case "rotate":
-	            fn = new TermFunctionImpl.RotateImpl();
+	            fn = new RotateImpl();
 	            break;
 	        case "rotate3d":
-	            fn = new TermFunctionImpl.Rotate3dImpl();
+	            fn = new Rotate3dImpl();
 	            break;
 	        case "rotatex":
-	            fn = new TermFunctionImpl.RotateXImpl();
+	            fn = new RotateXImpl();
 	            break;
 	        case "rotatey":
-	            fn = new TermFunctionImpl.RotateYImpl();
+	            fn = new RotateYImpl();
 	            break;
 	        case "rotatez":
-	            fn = new TermFunctionImpl.RotateZImpl();
+	            fn = new RotateZImpl();
 	            break;
 	        case "scale":
-	            fn = new TermFunctionImpl.ScaleImpl();
+	            fn = new ScaleImpl();
 	            break;
 	        case "scale3d":
-	            fn = new TermFunctionImpl.Scale3dImpl();
+	            fn = new Scale3dImpl();
 	            break;
 	        case "scalex":
-	            fn = new TermFunctionImpl.ScaleXImpl();
+	            fn = new ScaleXImpl();
 	            break;
 	        case "scaley":
-	            fn = new TermFunctionImpl.ScaleYImpl();
+	            fn = new ScaleYImpl();
 	            break;
 	        case "scalez":
-	            fn = new TermFunctionImpl.ScaleZImpl();
+	            fn = new ScaleZImpl();
 	            break;
 	        case "skew":
-	            fn = new TermFunctionImpl.SkewImpl();
+	            fn = new SkewImpl();
 	            break;
 	        case "skewx":
-	            fn = new TermFunctionImpl.SkewXImpl();
+	            fn = new SkewXImpl();
 	            break;
 	        case "skewy":
-	            fn = new TermFunctionImpl.SkewYImpl();
+	            fn = new SkewYImpl();
 	            break;
 	        case "translate":
-	            fn = new TermFunctionImpl.TranslateImpl();
+	            fn = new TranslateImpl();
 	            break;
 	        case "translate3d":
-	            fn = new TermFunctionImpl.Translate3dImpl();
+	            fn = new Translate3dImpl();
 	            break;
 	        case "translatex":
-	            fn = new TermFunctionImpl.TranslateXImpl();
+	            fn = new TranslateXImpl();
 	            break;
 	        case "translatey":
-	            fn = new TermFunctionImpl.TranslateYImpl();
+	            fn = new TranslateYImpl();
 	            break;
 	        case "translatez":
-	            fn = new TermFunctionImpl.TranslateZImpl();
+	            fn = new TranslateZImpl();
 	            break;
 	        case "linear-gradient":
-	            fn = new TermFunctionImpl.LinearGradientImpl();
+	            fn = new LinearGradientImpl();
 	            break;
             case "repeating-linear-gradient":
-                fn = new TermFunctionImpl.RepeatingLinearGradientImpl();
+                fn = new RepeatingLinearGradientImpl();
                 break;
             case "radial-gradient":
-                fn = new TermFunctionImpl.RadialGradientImpl();
+                fn = new RadialGradientImpl();
                 break;
 	        default:
 	            fn = new TermFunctionImpl();
