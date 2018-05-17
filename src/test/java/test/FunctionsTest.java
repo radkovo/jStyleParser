@@ -393,7 +393,7 @@ public class FunctionsTest {
     @Test
     public void gradientValid() throws IOException, CSSException
     {
-        for (int i = 10; i < TEST_GRADIENT.length; i++)
+        for (int i = 0; i < TEST_GRADIENT.length; i++)
         {
             StyleSheet ss = CSSFactory.parseString(TEST_GRADIENT[i], null);
             //System.out.println(i + " ss: " + ss);
@@ -479,8 +479,8 @@ public class FunctionsTest {
                 case 8:
                     assertEquals(TermFunctionImpl.RadialGradientImpl.class, fn.getClass());
                     assertNull("No size", ((TermFunctionImpl.RadialGradientImpl) fn).getSize());
-                    assertNull("No size ident", ((TermFunctionImpl.RadialGradientImpl) fn).getSizeIdent());
-                    assertNull("No shape", ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
+                    assertEquals("Size ident", tf.createIdent("farthest-corner"), ((TermFunctionImpl.RadialGradientImpl) fn).getSizeIdent());
+                    assertEquals("Shape is ellipse", tf.createIdent("ellipse"), ((TermFunctionImpl.RadialGradientImpl) fn).getShape());
                     assertEquals("Default position", 2, ((TermFunctionImpl.RadialGradientImpl) fn).getPosition().length);
                     assertEquals("Three stops are set", 3, ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().size());
                     assertEquals("First stop color", tf.createColor("#00ffff"), ((TermFunctionImpl.RadialGradientImpl) fn).getColorStops().get(0).getColor());
