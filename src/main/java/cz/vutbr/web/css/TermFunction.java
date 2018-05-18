@@ -179,4 +179,17 @@ public interface TermFunction extends TermList {
         public List<Gradient.ColorStop> getColorStops();
     }
     
+    public interface RepeatingRadialGradient extends Gradient {
+        /** Obtains the shape (ELLIPSE or CIRCLE) */
+        public TermIdent getShape();
+        /** Obtains the circle/ellipse sizes (one value for circle, two for ellipse) */
+        public TermLengthOrPercent[] getSize();
+        /** Obtains the circle/ellipse size specified by an identifier (e.g. closest-side) */
+        public TermIdent getSizeIdent();
+        /** Obtains the 'at' position (always two values) */
+        public TermLengthOrPercent[] getPosition();
+        /** Obtains the color stops */
+        public List<Gradient.ColorStop> getColorStops();
+    }
+    
 }
