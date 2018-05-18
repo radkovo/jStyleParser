@@ -25,9 +25,17 @@ import cz.vutbr.web.css.TermLengthOrPercent;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.css.TermRect;
 import cz.vutbr.web.csskit.CalcArgs;
+import cz.vutbr.web.csskit.fn.BlurImpl;
+import cz.vutbr.web.csskit.fn.BrightnessImpl;
+import cz.vutbr.web.csskit.fn.ContrastImpl;
+import cz.vutbr.web.csskit.fn.DropShadowImpl;
+import cz.vutbr.web.csskit.fn.GrayscaleImpl;
+import cz.vutbr.web.csskit.fn.HueRotateImpl;
+import cz.vutbr.web.csskit.fn.InvertImpl;
 import cz.vutbr.web.csskit.fn.LinearGradientImpl;
 import cz.vutbr.web.csskit.fn.Matrix3dImpl;
 import cz.vutbr.web.csskit.fn.MatrixImpl;
+import cz.vutbr.web.csskit.fn.OpacityImpl;
 import cz.vutbr.web.csskit.fn.PerspectiveImpl;
 import cz.vutbr.web.csskit.fn.RadialGradientImpl;
 import cz.vutbr.web.csskit.fn.RepeatingLinearGradientImpl;
@@ -36,11 +44,13 @@ import cz.vutbr.web.csskit.fn.RotateImpl;
 import cz.vutbr.web.csskit.fn.RotateXImpl;
 import cz.vutbr.web.csskit.fn.RotateYImpl;
 import cz.vutbr.web.csskit.fn.RotateZImpl;
+import cz.vutbr.web.csskit.fn.SaturateImpl;
 import cz.vutbr.web.csskit.fn.Scale3dImpl;
 import cz.vutbr.web.csskit.fn.ScaleImpl;
 import cz.vutbr.web.csskit.fn.ScaleXImpl;
 import cz.vutbr.web.csskit.fn.ScaleYImpl;
 import cz.vutbr.web.csskit.fn.ScaleZImpl;
+import cz.vutbr.web.csskit.fn.SepiaImpl;
 import cz.vutbr.web.csskit.fn.SkewImpl;
 import cz.vutbr.web.csskit.fn.SkewXImpl;
 import cz.vutbr.web.csskit.fn.SkewYImpl;
@@ -169,6 +179,21 @@ public class FunctionsTest {
         "p { float: left; background: radial-gradient(ellipse 10px at 10px 20px, #333, #eee); }",
         "p { float: left; background: radial-gradient(ellipse at 10px 20px 30px, #333, #eee); }",
         "p { float: left; background: radial-gradient(ellipse unknown at top bottom, #333, #eee); }"
+    };
+    
+    /* valid filter functions */
+    public static final String TEST_FILTER[] = new String[] {
+        "p { filter: blur(1.2em); }",
+        "p { filter: brightness(1.75); }",
+        "p { filter: contrast(200%); }",
+        "p { filter: drop-shadow(30px 10px 4px #4444dd); }",
+        "p { filter: drop-shadow(-30px -10px red); }",
+        "p { filter: grayscale(1); }",
+        "p { filter: hue-rotate(-3.142rad); }",
+        "p { filter: invert(0.30); }",
+        "p { filter: opacity(0); }",
+        "p { filter: saturate(50%); }",
+        "p { filter: sepia(1); }",
     };
     
 	@BeforeClass
@@ -612,6 +637,74 @@ public class FunctionsTest {
             assertEquals("One rule is parset [" + i + "]", 1, ss.size());
             assertEquals("One property is set [" + i + "]", 1, ss.get(0).size());
         }        
+    }
+    
+    @Test
+    public void filterValid() throws IOException, CSSException
+    {
+        for (int i = 0; i < TEST_FILTER.length; i++)
+        {
+            StyleSheet ss = CSSFactory.parseString(TEST_FILTER[i], null);
+            //System.out.println(i + " ss: " + ss);
+            assertEquals("One rule is parset [" + i + "]", 1, ss.size());
+            assertEquals("One property is set [" + i + "]", 1, ss.get(0).size());
+            Declaration d = (Declaration) ss.get(0).get(0);
+            TermFunction fn = (TermFunction) d.get(0);
+            //System.out.println(i + ": " + d);
+            switch (i)
+            {
+                case 0:
+                    assertEquals(BlurImpl.class, fn.getClass());
+                    assertEquals("Radius is correct", tf.createLength("1.2", Unit.em, 1), ((BlurImpl) fn).getRadius());
+                    break;
+                case 1:
+                    assertEquals(BrightnessImpl.class, fn.getClass());
+                    assertEquals("Amount is correct", 1.75f, ((BrightnessImpl) fn).getAmount(), 0.001f);
+                    break;
+                case 2:
+                    assertEquals(ContrastImpl.class, fn.getClass());
+                    assertEquals("Amount is correct", 2.0f, ((ContrastImpl) fn).getAmount(), 0.001f);
+                    break;
+                case 3:
+                    assertEquals(DropShadowImpl.class, fn.getClass());
+                    assertEquals("Offset X is correct", tf.createLength("30", Unit.px, 1), ((DropShadowImpl) fn).getOffsetX());
+                    assertEquals("Offset Y is correct", tf.createLength("10", Unit.px, 1), ((DropShadowImpl) fn).getOffsetY());
+                    assertEquals("Blur radius is correct", tf.createLength("4", Unit.px, 1), ((DropShadowImpl) fn).getBlurRadius());
+                    assertEquals("Color is correct", tf.createColor("#4444dd"), ((DropShadowImpl) fn).getColor());
+                    break;
+                case 4:
+                    assertEquals(DropShadowImpl.class, fn.getClass());
+                    assertEquals("Offset X is correct", tf.createLength("30", Unit.px, -1), ((DropShadowImpl) fn).getOffsetX());
+                    assertEquals("Offset Y is correct", tf.createLength("10", Unit.px, -1), ((DropShadowImpl) fn).getOffsetY());
+                    assertNull("Blur radius is enpty", ((DropShadowImpl) fn).getBlurRadius());
+                    assertEquals("Color is correct", tf.createColor("#ff0000"), ((DropShadowImpl) fn).getColor());
+                    break;
+                case 5:
+                    assertEquals(GrayscaleImpl.class, fn.getClass());
+                    assertEquals("Amount is correct", 1.0f, ((GrayscaleImpl) fn).getAmount(), 0.001f);
+                    break;
+                case 6:
+                    assertEquals(HueRotateImpl.class, fn.getClass());
+                    assertEquals("Angle is correct", tf.createAngle("3.142", Unit.rad, -1), ((HueRotateImpl) fn).getAngle());
+                    break;
+                case 7:
+                    assertEquals(InvertImpl.class, fn.getClass());
+                    assertEquals("Amount is correct", 0.3f, ((InvertImpl) fn).getAmount(), 0.001f);
+                    break;
+                case 8:
+                    assertEquals(OpacityImpl.class, fn.getClass());
+                    assertEquals("Amount is correct", 0.0f, ((OpacityImpl) fn).getAmount(), 0.001f);
+                    break;
+                case 9:
+                    assertEquals(SaturateImpl.class, fn.getClass());
+                    assertEquals("Amount is correct", 0.5f, ((SaturateImpl) fn).getAmount(), 0.001f);
+                    break;
+                case 10:
+                    assertEquals(SepiaImpl.class, fn.getClass());
+                    assertEquals("Amount is correct", 1.0f, ((SepiaImpl) fn).getAmount(), 0.001f);
+                    break;
+            }
+        }
     }
     
 	//==========================================================================================
