@@ -27,9 +27,17 @@ import cz.vutbr.web.css.TermTime;
 import cz.vutbr.web.css.TermURI;
 import cz.vutbr.web.css.TermUnicodeRange;
 import cz.vutbr.web.css.TermNumeric.Unit;
+import cz.vutbr.web.csskit.fn.BlurImpl;
+import cz.vutbr.web.csskit.fn.BrightnessImpl;
+import cz.vutbr.web.csskit.fn.ContrastImpl;
+import cz.vutbr.web.csskit.fn.DropShadowImpl;
+import cz.vutbr.web.csskit.fn.GrayscaleImpl;
+import cz.vutbr.web.csskit.fn.HueRotateImpl;
+import cz.vutbr.web.csskit.fn.InvertImpl;
 import cz.vutbr.web.csskit.fn.LinearGradientImpl;
 import cz.vutbr.web.csskit.fn.Matrix3dImpl;
 import cz.vutbr.web.csskit.fn.MatrixImpl;
+import cz.vutbr.web.csskit.fn.OpacityImpl;
 import cz.vutbr.web.csskit.fn.PerspectiveImpl;
 import cz.vutbr.web.csskit.fn.RadialGradientImpl;
 import cz.vutbr.web.csskit.fn.RepeatingLinearGradientImpl;
@@ -39,11 +47,13 @@ import cz.vutbr.web.csskit.fn.RotateImpl;
 import cz.vutbr.web.csskit.fn.RotateXImpl;
 import cz.vutbr.web.csskit.fn.RotateYImpl;
 import cz.vutbr.web.csskit.fn.RotateZImpl;
+import cz.vutbr.web.csskit.fn.SaturateImpl;
 import cz.vutbr.web.csskit.fn.Scale3dImpl;
 import cz.vutbr.web.csskit.fn.ScaleImpl;
 import cz.vutbr.web.csskit.fn.ScaleXImpl;
 import cz.vutbr.web.csskit.fn.ScaleYImpl;
 import cz.vutbr.web.csskit.fn.ScaleZImpl;
+import cz.vutbr.web.csskit.fn.SepiaImpl;
 import cz.vutbr.web.csskit.fn.SkewImpl;
 import cz.vutbr.web.csskit.fn.SkewXImpl;
 import cz.vutbr.web.csskit.fn.SkewYImpl;
@@ -468,6 +478,36 @@ public class TermFactoryImpl implements TermFactory {
                 break;
             case "repeating-radial-gradient":
                 fn = new RepeatingRadialGradientImpl();
+                break;
+            case "blur":
+                fn = new BlurImpl();
+                break;
+            case "brightness":
+                fn = new BrightnessImpl();
+                break;
+            case "contrast":
+                fn = new ContrastImpl();
+                break;
+            case "drop-shadow":
+                fn = new DropShadowImpl();
+                break;
+            case "grayscale":
+                fn = new GrayscaleImpl();
+                break;
+            case "hue-rotate":
+                fn = new HueRotateImpl();
+                break;
+            case "invert":
+                fn = new InvertImpl();
+                break;
+            case "opacity":
+                fn = new OpacityImpl();
+                break;
+            case "saturate":
+                fn = new SaturateImpl();
+                break;
+            case "sepia":
+                fn = new SepiaImpl();
                 break;
 	        default:
 	            fn = new TermFunctionImpl();

@@ -222,13 +222,17 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
                 ret.add(curVal);
                 curVal = null;
                 curOp = null;
-            } else if (t instanceof TermIdent) {
-                if (curOp == null)
+            } else if (t instanceof TermIdent) { //identifiers if allowed
+                if (allowKeywords && curOp == null)
                     ret.add(t);
                 else
                     return null; //operator combined with ident
-            } else
-                return null; //invalid term
+            } else {
+                if (curOp == null)
+                    ret.add(t);
+                else
+                    return null; //operator combined with non-numeric term
+            }
         }
         
         if (curOp != null)

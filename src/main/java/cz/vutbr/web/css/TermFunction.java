@@ -176,4 +176,52 @@ public interface TermFunction extends TermList {
         public List<Gradient.ColorStop> getColorStops();
     }
     
+    //========================================================================
+    
+    public interface FilterFunction extends TermFunction {
+    }
+    
+    public interface Blur extends FilterFunction {
+        public TermLength getRadius();
+    }
+    
+    public interface Brightness extends FilterFunction {
+        public float getAmount();
+    }
+    
+    public interface Contrast extends FilterFunction {
+        public float getAmount();
+    }
+    
+    public interface DropShadow extends FilterFunction {
+        public TermLength getOffsetX();
+        public TermLength getOffsetY();
+        public TermLength getBlurRadius();
+        public TermColor getColor();
+    }
+    
+    public interface Grayscale extends FilterFunction {
+        public float getAmount();
+    }
+    
+    public interface HueRotate extends FilterFunction {
+        public TermAngle getAngle();
+    }
+
+    public interface Invert extends FilterFunction {
+        public float getAmount();
+    }
+    
+    public interface Opacity extends FilterFunction {
+        public float getAmount();
+    }
+    
+    public interface Saturate extends FilterFunction {
+        public float getAmount();
+    }
+    
+    public interface Sepia extends FilterFunction {
+        public float getAmount();
+    }
+    
 }
