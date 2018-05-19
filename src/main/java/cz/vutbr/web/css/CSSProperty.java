@@ -3446,6 +3446,70 @@ public interface CSSProperty {
 			return text;
 		}
 	}
+	
+    public enum Filter implements CSSProperty {
+        list_values(""), NONE("none"), INHERIT("inherit"),
+            INITIAL("initial"), UNSET("unset");
+    
+        private String text;
+    
+        private Filter(String text) {
+            this.text = text;
+        }
+    
+        public boolean inherited() {
+            return false;
+        }
+    
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+    
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+    
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+    
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
+    public enum BackdropFilter implements CSSProperty {
+       list_values(""), NONE("none"), INHERIT("inherit"),
+           INITIAL("initial"), UNSET("unset");
+    
+       private String text;
+    
+       private BackdropFilter(String text) {
+           this.text = text;
+       }
+    
+       public boolean inherited() {
+           return false;
+       }
+    
+       public boolean equalsInherit() {
+           return this == INHERIT;
+       }
+    
+       public boolean equalsInitial() {
+           return this == INITIAL;
+       }
+    
+       public boolean equalsUnset() {
+           return this == UNSET;
+       }
+    
+       @Override
+       public String toString() {
+           return text;
+       }
+   }
 
     /**
      * A generic property used for all the properties not supported by another implementation.

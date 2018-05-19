@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
+import cz.vutbr.web.css.CSSProperty.BackdropFilter;
 import cz.vutbr.web.css.CSSProperty.BackgroundAttachment;
 import cz.vutbr.web.css.CSSProperty.BackgroundColor;
 import cz.vutbr.web.css.CSSProperty.BackgroundImage;
@@ -42,6 +43,7 @@ import cz.vutbr.web.css.CSSProperty.Cursor;
 import cz.vutbr.web.css.CSSProperty.Direction;
 import cz.vutbr.web.css.CSSProperty.Display;
 import cz.vutbr.web.css.CSSProperty.EmptyCells;
+import cz.vutbr.web.css.CSSProperty.Filter;
 import cz.vutbr.web.css.CSSProperty.FlexBasis;
 import cz.vutbr.web.css.CSSProperty.FlexDirection;
 import cz.vutbr.web.css.CSSProperty.FlexGrow;
@@ -2007,7 +2009,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 
 			// valid term function names
 			final Set<String> validFuncNames = new HashSet<String>(Arrays
-					.asList("counter", "counters", "attr"));
+					.asList("counter", "counters", "attr")); //TODO replace with a common interface?
 
 			TermList list = tf.createList();
 
@@ -2038,6 +2040,64 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 		}
 	}
 
+    @SuppressWarnings("unused")
+    private boolean processFilter(Declaration d,
+            Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+
+        // single ident: none, or global ones
+        if (d.size() == 1 && genericOneIdent(Filter.class, d, properties)) {
+            return true;
+        } else {
+            //list of uri() or <filter-function> expected
+            TermList list = tf.createList();
+
+            for (Term<?> t : d.asList()) {
+                if (t instanceof TermFunction.FilterFunction)
+                    list.add(t);
+                else if (t instanceof TermURI)
+                    list.add(t);
+                else
+                    return false;
+            }
+            // there is nothing in list after parsing
+            if (list.isEmpty())
+                return false;
+
+            properties.put("filter", Filter.list_values);
+            values.put("filter", list);
+            return true;
+        }
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processBackdropFilter(Declaration d,
+            Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+
+        // single ident: none, or global ones
+        if (d.size() == 1 && genericOneIdent(BackdropFilter.class, d, properties)) {
+            return true;
+        } else {
+            //list of uri() or <filter-function> expected
+            TermList list = tf.createList();
+
+            for (Term<?> t : d.asList()) {
+                if (t instanceof TermFunction.FilterFunction)
+                    list.add(t);
+                else if (t instanceof TermURI)
+                    list.add(t);
+                else
+                    return false;
+            }
+            // there is nothing in list after parsing
+            if (list.isEmpty())
+                return false;
+
+            properties.put("backdrop-filter", BackdropFilter.list_values);
+            values.put("backdrop-filter", list);
+            return true;
+        }
+    }
+    
 	/**
 	 * Variator for list style. Grammar:
 	 * 

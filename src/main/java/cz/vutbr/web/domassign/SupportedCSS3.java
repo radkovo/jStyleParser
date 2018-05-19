@@ -321,8 +321,11 @@ public class SupportedCSS3 implements SupportedCSS {
 		props.put("counter-increment", CounterIncrement.NONE);
 		props.put("counter-reset", CounterReset.NONE);
 
+		// filter
+		props.put("filter", Filter.NONE);
+        props.put("backdrop-filter", BackdropFilter.NONE);
+		
 		// miscellaneous
-
 		props.put("cursor", Cursor.AUTO);
 		props.put("outline", Outline.component_values);
 		props.put("outline-width", OutlineWidth.MEDIUM);
