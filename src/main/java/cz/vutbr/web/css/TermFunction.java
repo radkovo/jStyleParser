@@ -224,4 +224,24 @@ public interface TermFunction extends TermList {
         public float getAmount();
     }
     
+    //========================================================================
+    
+    public interface CounterFunction extends TermFunction {
+    }
+    
+    public interface Counter extends CounterFunction {
+        public TermIdent getName();
+        public TermIdent getStyle();
+    }
+    
+    public interface Counters extends CounterFunction {
+        public TermIdent getName();
+        public TermIdent getStyle();
+        public String getSeparator();
+    }
+    
+    public interface Attr extends TermFunction {
+        public TermIdent getName();
+    }
+    
 }

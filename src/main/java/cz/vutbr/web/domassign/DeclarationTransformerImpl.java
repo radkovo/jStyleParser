@@ -2007,10 +2007,6 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 					.asList("open-quote", "close-quote", "no-open-quote",
 							"no-close-quote"));
 
-			// valid term function names
-			final Set<String> validFuncNames = new HashSet<String>(Arrays
-					.asList("counter", "counters", "attr")); //TODO replace with a common interface?
-
 			TermList list = tf.createList();
 
 			for (Term<?> t : d.asList()) {
@@ -2023,9 +2019,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 					list.add(t);
 				else if (t instanceof TermURI)
 					list.add(t);
-				else if (t instanceof TermFunction
-						&& validFuncNames.contains(((TermFunction) t)
-								.getFunctionName().toLowerCase()))
+				else if (t instanceof TermFunction.CounterFunction || t instanceof TermFunction.Attr)
 					list.add(t);
 				else
 					return false;

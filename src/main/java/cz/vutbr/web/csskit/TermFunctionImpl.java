@@ -19,6 +19,7 @@ import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.css.TermOperator;
+import cz.vutbr.web.css.TermString;
 
 /**
  * TermFunction, holds function
@@ -160,7 +161,7 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
                     curOp = (TermOperator) t;
                 else
                     return null;
-            } else if (t instanceof TermFloatValue) {
+            } else if (t instanceof TermFloatValue || t instanceof TermString) {
                 if (curVal == null)
                     curVal = t;
                 else

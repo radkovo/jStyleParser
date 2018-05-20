@@ -27,9 +27,12 @@ import cz.vutbr.web.css.TermTime;
 import cz.vutbr.web.css.TermURI;
 import cz.vutbr.web.css.TermUnicodeRange;
 import cz.vutbr.web.css.TermNumeric.Unit;
+import cz.vutbr.web.csskit.fn.AttrImpl;
 import cz.vutbr.web.csskit.fn.BlurImpl;
 import cz.vutbr.web.csskit.fn.BrightnessImpl;
 import cz.vutbr.web.csskit.fn.ContrastImpl;
+import cz.vutbr.web.csskit.fn.CounterImpl;
+import cz.vutbr.web.csskit.fn.CountersImpl;
 import cz.vutbr.web.csskit.fn.DropShadowImpl;
 import cz.vutbr.web.csskit.fn.GrayscaleImpl;
 import cz.vutbr.web.csskit.fn.HueRotateImpl;
@@ -508,6 +511,15 @@ public class TermFactoryImpl implements TermFactory {
                 break;
             case "sepia":
                 fn = new SepiaImpl();
+                break;
+            case "counter":
+                fn = new CounterImpl();
+                break;
+            case "counters":
+                fn = new CountersImpl();
+                break;
+            case "attr":
+                fn = new AttrImpl();
                 break;
 	        default:
 	            fn = new TermFunctionImpl();
