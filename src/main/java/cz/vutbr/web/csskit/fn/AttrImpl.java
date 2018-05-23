@@ -17,14 +17,14 @@ import cz.vutbr.web.csskit.TermFunctionImpl;
  */
 public class AttrImpl extends TermFunctionImpl implements TermFunction.Attr {
     
-    private TermIdent name;
+    private String name;
     
     public AttrImpl() {
         setValid(false);
     }
 
     @Override
-    public TermIdent getName() {
+    public String getName() {
         return name;
     }
     
@@ -34,7 +34,7 @@ public class AttrImpl extends TermFunctionImpl implements TermFunction.Attr {
         List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, true);
         if (args != null && args.size() == 1) {
             if (args.get(0) instanceof TermIdent) {
-                name = (TermIdent) args.get(0);
+                name = ((TermIdent) args.get(0)).getValue();
                 setValid(true);
             }
         }

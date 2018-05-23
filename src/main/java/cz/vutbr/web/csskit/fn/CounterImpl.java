@@ -3,8 +3,9 @@
  */
 package cz.vutbr.web.csskit.fn;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cz.vutbr.web.css.CSSProperty.ListStyleType;
 import cz.vutbr.web.css.Term;
@@ -19,31 +20,31 @@ import cz.vutbr.web.csskit.TermFunctionImpl;
  */
 public class CounterImpl extends TermFunctionImpl implements TermFunction.Counter {
 
-    public static List<String> allowedStyles;
+    public static Map<String, ListStyleType> allowedStyles;
     static {
-        allowedStyles = new ArrayList<>(ListStyleType.values().length - 4);
+        allowedStyles = new HashMap<>(ListStyleType.values().length - 4);
         for (ListStyleType item : ListStyleType.values()) {
             if (item != ListStyleType.INHERIT && item != ListStyleType.INITIAL
                     && item != ListStyleType.UNSET && item != ListStyleType.NONE) {
-                allowedStyles.add(item.toString());
+                allowedStyles.put(item.toString(), item);
             }
         }
     }
     
-    private TermIdent name;
-    private TermIdent style;
+    private String name;
+    private ListStyleType style;
     
     public CounterImpl() {
         setValid(false);
     }
 
     @Override
-    public TermIdent getName() {
+    public String getName() {
         return name;
     }
 
     @Override
-    public TermIdent getStyle() {
+    public ListStyleType getStyle() {
         return style;
     }
     
@@ -54,14 +55,15 @@ public class CounterImpl extends TermFunctionImpl implements TermFunction.Counte
         if (args != null && (args.size() == 1 || args.size() == 2)) {
             //check for name
             if (args.get(0) instanceof TermIdent) {
-                name = (TermIdent) args.get(0);
+                name = ((TermIdent) args.get(0)).getValue();
                 setValid(true);
             }
             //an optional style
             if (args.size() == 2) {
                 if (args.get(1) instanceof TermIdent) {
-                    style = (TermIdent) args.get(1);
-                    if (!allowedStyles.contains(style.getValue().toLowerCase())) {
+                    final String styleString = ((TermIdent) args.get(1)).getValue();
+                    style = allowedStyles.get(styleString.toLowerCase());
+                    if (style == null) {
                         setValid(false); //unknown style
                     }
                 } else {

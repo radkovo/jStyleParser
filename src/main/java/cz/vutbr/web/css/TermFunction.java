@@ -230,18 +230,18 @@ public interface TermFunction extends TermList {
     }
     
     public interface Counter extends CounterFunction {
-        public TermIdent getName();
-        public TermIdent getStyle();
+        public String getName();
+        public CSSProperty.ListStyleType getStyle();
     }
     
     public interface Counters extends CounterFunction {
-        public TermIdent getName();
-        public TermIdent getStyle();
+        public String getName();
+        public CSSProperty.ListStyleType getStyle();
         public String getSeparator();
     }
     
     public interface Attr extends TermFunction {
-        public TermIdent getName();
+        public String getName();
     }
     
 }
