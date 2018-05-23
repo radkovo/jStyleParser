@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
@@ -25,9 +26,12 @@ import cz.vutbr.web.css.TermLengthOrPercent;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.css.TermRect;
 import cz.vutbr.web.csskit.CalcArgs;
+import cz.vutbr.web.csskit.fn.AttrImpl;
 import cz.vutbr.web.csskit.fn.BlurImpl;
 import cz.vutbr.web.csskit.fn.BrightnessImpl;
 import cz.vutbr.web.csskit.fn.ContrastImpl;
+import cz.vutbr.web.csskit.fn.CounterImpl;
+import cz.vutbr.web.csskit.fn.CountersImpl;
 import cz.vutbr.web.csskit.fn.DropShadowImpl;
 import cz.vutbr.web.csskit.fn.GrayscaleImpl;
 import cz.vutbr.web.csskit.fn.HueRotateImpl;
@@ -194,6 +198,23 @@ public class FunctionsTest {
         "p { filter: opacity(0); }",
         "p { filter: saturate(50%); }",
         "p { filter: sepia(1); }",
+    };
+    
+    /* valid content functions */
+    public static final String TEST_CONTENT[] = new String[] {
+        "p:before { content: attr(title); }",
+        "p:before { content: counter(chapter_counter); }",
+        "p:before { content: counter(chapter_counter, lower-alpha); }",
+        "p:before { content: counters(chapter_counter, '..'); }",
+        "p:before { content: counters(chapter_counter, '::', lower-roman); }",
+    };
+    
+    /* invalid content functions */
+    public static final String TEST_CONTENT_INVALID[] = new String[] {
+        "p:before { font-weight: bold; content: counter(chapter_counter, '.'); }",
+        "p:before { font-weight: bold; content: counter(chapter_counter, weird); }",
+        "p:before { font-weight: bold; content: counters(chapter_counter); }",
+        "p:before { font-weight: bold; content: counters(chapter_counter, '::', unknown); }",
     };
     
 	@BeforeClass
@@ -705,6 +726,61 @@ public class FunctionsTest {
                     break;
             }
         }
+    }
+    
+    @Test
+    public void contentValid() throws IOException, CSSException
+    {
+        for (int i = 0; i < TEST_CONTENT.length; i++)
+        {
+            StyleSheet ss = CSSFactory.parseString(TEST_CONTENT[i], null);
+            //System.out.println(i + " ss: " + ss);
+            assertEquals("One rule is parset [" + i + "]", 1, ss.size());
+            assertEquals("One property is set [" + i + "]", 1, ss.get(0).size());
+            Declaration d = (Declaration) ss.get(0).get(0);
+            TermFunction fn = (TermFunction) d.get(0);
+            //System.out.println(i + ": " + d);
+            switch (i)
+            {
+                case 0:
+                    assertEquals(AttrImpl.class, fn.getClass());
+                    assertEquals("Name is correct", "title", ((AttrImpl) fn).getName());
+                    break;
+                case 1:
+                    assertEquals(CounterImpl.class, fn.getClass());
+                    assertEquals("Name is correct", "chapter_counter", ((CounterImpl) fn).getName());
+                    assertNull("Style is not set", ((CounterImpl) fn).getStyle());
+                    break;
+                case 2:
+                    assertEquals(CounterImpl.class, fn.getClass());
+                    assertEquals("Name is correct", "chapter_counter", ((CounterImpl) fn).getName());
+                    assertEquals("Style is correct", CSSProperty.ListStyleType.LOWER_ALPHA, ((CounterImpl) fn).getStyle()); 
+                    break;
+                case 3:
+                    assertEquals(CountersImpl.class, fn.getClass());
+                    assertEquals("Name is correct", "chapter_counter", ((CountersImpl) fn).getName());
+                    assertEquals("Separator is correct", "..", ((CountersImpl) fn).getSeparator());
+                    assertNull("Style is not set", ((CountersImpl) fn).getStyle());
+                    break;
+                case 4:
+                    assertEquals(CountersImpl.class, fn.getClass());
+                    assertEquals("Name is correct", "chapter_counter", ((CountersImpl) fn).getName());
+                    assertEquals("Separator is correct", "::", ((CountersImpl) fn).getSeparator());
+                    assertEquals("Style is correct", CSSProperty.ListStyleType.LOWER_ROMAN, ((CountersImpl) fn).getStyle()); 
+                    break;
+            }
+        }
+    }
+    
+    @Test
+    public void contentInvalid() throws IOException, CSSException
+    {
+        for (int i = 0; i < TEST_CONTENT_INVALID.length; i++)
+        {
+            StyleSheet ss = CSSFactory.parseString(TEST_CONTENT_INVALID[i], null);
+            assertEquals("One rule is parset [" + i + "]", 1, ss.size());
+            assertEquals("One property is set [" + i + "]", 1, ss.get(0).size());
+        }        
     }
     
 	//==========================================================================================
