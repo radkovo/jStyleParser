@@ -25,7 +25,7 @@ public class CounterImpl extends TermFunctionImpl implements TermFunction.Counte
         allowedStyles = new HashMap<>(ListStyleType.values().length - 4);
         for (ListStyleType item : ListStyleType.values()) {
             if (item != ListStyleType.INHERIT && item != ListStyleType.INITIAL
-                    && item != ListStyleType.UNSET && item != ListStyleType.NONE) {
+                    && item != ListStyleType.UNSET) {
                 allowedStyles.put(item.toString(), item);
             }
         }

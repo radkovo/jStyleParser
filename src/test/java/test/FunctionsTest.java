@@ -25,6 +25,7 @@ import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermLengthOrPercent;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.css.TermRect;
+import cz.vutbr.web.css.TermString;
 import cz.vutbr.web.csskit.CalcArgs;
 import cz.vutbr.web.csskit.fn.AttrImpl;
 import cz.vutbr.web.csskit.fn.BlurImpl;
@@ -207,6 +208,7 @@ public class FunctionsTest {
         "p:before { content: counter(chapter_counter, lower-alpha); }",
         "p:before { content: counters(chapter_counter, '..'); }",
         "p:before { content: counters(chapter_counter, '::', lower-roman); }",
+        "p:before { content: counter(c, none) \"z\"; }"
     };
     
     /* invalid content functions */
@@ -767,6 +769,13 @@ public class FunctionsTest {
                     assertEquals("Name is correct", "chapter_counter", ((CountersImpl) fn).getName());
                     assertEquals("Separator is correct", "::", ((CountersImpl) fn).getSeparator());
                     assertEquals("Style is correct", CSSProperty.ListStyleType.LOWER_ROMAN, ((CountersImpl) fn).getStyle()); 
+                    break;
+                case 5:
+                    assertEquals(CounterImpl.class, fn.getClass());
+                    assertEquals("Name is correct", "c", ((CounterImpl) fn).getName());
+                    assertEquals("Style is correct", CSSProperty.ListStyleType.NONE, ((CounterImpl) fn).getStyle());
+                    TermString str = (TermString) d.get(1);
+                    assertEquals("String is parsed", "z", str.getValue());
                     break;
             }
         }
