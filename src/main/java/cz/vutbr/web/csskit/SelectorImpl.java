@@ -446,6 +446,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
                     case NOT:
                         if (nestedSelector == null && functionValue != null) {
                             nestedSelector = new SelectorImpl();
+                            nestedSelector.unlock();
                             nestedSelector.add(new ElementNameImpl(functionValue));
                         }
                         break;
