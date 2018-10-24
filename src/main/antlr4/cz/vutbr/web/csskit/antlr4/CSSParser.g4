@@ -185,7 +185,7 @@ media_rule
     }
 
 unknown_atrule
-    : ATKEYWORD S* any* LCURLY S* any* RCURLY //invalid atstatement
+    : ATKEYWORD S* any* unknown_atrule_body 
     | ATKEYWORD S* any* SEMICOLON
     ;
     catch [RecognitionException re] {
@@ -193,6 +193,21 @@ unknown_atrule
         IntervalSet intervalSet = new IntervalSet(RCURLY, SEMICOLON);
         getCSSErrorHandler().consumeUntilGreedy(this, intervalSet, CSSLexerState.RecoveryMode.BALANCED);
         _localctx.addErrorNode(this.getTokenFactory().create(INVALID_ATSTATEMENT, "INVALID_ATSTATEMENT"));
+    }
+
+unknown_atrule_body
+    @init {
+      //the body is defined as empty so any content leads to recognition exception
+      //in that case, the whole body is consumed and the rule is closed
+      CSSLexerState begin = getCurrentLexerState(_localctx.getStart());
+    }
+	: LCURLY S* RCURLY
+	;
+    catch [RecognitionException re] {
+        log.error("PARSING unknown_atrule_body has some content | consume until RCURLY");
+        IntervalSet follow = new IntervalSet(RCURLY); //recover on the rule end
+        this.getCSSErrorHandler().consumeUntilGreedy(this, follow, CSSLexerState.RecoveryMode.DECL, begin);
+        _localctx.addErrorNode(this.getTokenFactory().create(RPAREN, "}")); //formally close the body
     }
 
 ruleset

@@ -674,6 +674,12 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     }
 
     @Override
+    public Object visitUnknown_atrule_body(CSSParser.Unknown_atrule_bodyContext ctx) {
+        //not used - the unknown atrules are skipped
+        return null;
+    }
+    
+    @Override
     /**
      * The most common block in CSS file,
      * set of declarations with selector
@@ -1482,4 +1488,5 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         log.error("visitErrorNode");
         return null;
     }
+
 }

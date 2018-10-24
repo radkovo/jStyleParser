@@ -36,6 +36,11 @@ public class GrammarRecovery1Test {
 			+ "    elevation: 190deg;\n" + "	  }\n" + "  h2 { color: green }\n"
 			+ "	}";
 
+    public static final String TEST_INVALID_ATKEYWORD_PARAM = "@media screen { "
+            + "p { color: red; } "
+            + "@ifsupports (text-decoration:underline dotted) { p { color:blue; } } "
+            + "p { color: green; } }";
+
 	public static final String TEST_NOT_CLOSED_STRING = "@charset \"UTF-8\n"
 			+ "BODY { color: blue;}\n" + "p {color: white; quotes: '^' '^\n"
 			+ "color: red;" + "color: green}";
@@ -173,8 +178,14 @@ public class GrammarRecovery1Test {
 	public void invalidAtKeyword() throws IOException, CSSException {
 		StyleSheet ss = CSSFactory.parseString(TEST_INVALID_ATKEYWORD, null);
 		assertTrue("Ruleset is empty", ss.isEmpty());
-
 	}
+
+    @Test
+    public void invalidAtKeywordParam() throws IOException, CSSException {
+        StyleSheet ss = CSSFactory.parseString(TEST_INVALID_ATKEYWORD_PARAM, null);
+        assertEquals("Contains one media rule", 1, ss.size());
+        assertEquals("The media rule contains 2 rules", 2, ss.get(0).size());
+    }
 
 	@Test
 	public void decl1() throws IOException, CSSException {

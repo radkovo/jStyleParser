@@ -87,6 +87,15 @@ public class CSSErrorStrategy extends DefaultErrorStrategy {
         }
         while (!(t.getLexerState().isBalanced(mode, null, t) && set.contains(t.getType())));
     }
+    
+    /**
+     * Consumes token until lexer state is function-balanced and
+     * token from follow is matched. Matched token is also consumed.
+     */
+    public void consumeUntilGreedy(Parser recognizer, IntervalSet follow, CSSLexerState.RecoveryMode mode, CSSLexerState ls) {
+        consumeUntil(recognizer, follow, mode, ls);
+        recognizer.getInputStream().consume();
+    }
 
     /**
      * Consumes token until lexer state is function-balanced and
