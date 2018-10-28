@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <title>CSS Box Shadow</title>
+        <style type="text/css">
+            #none		{box-shadow: none;}
+            #inherit	{box-shadow: inherit;}
+            #initial	{box-shadow: initial;}
+            #unset		{box-shadow: unset;}
+
+            #minimal	{box-shadow: 5px 5px;}
+            #blur       {box-shadow: 5px 5px 5px;}
+            #spread     {box-shadow: 5px 5px 5px 5px;}
+
+            #color          {box-shadow: 5px 5px red;}
+            #blur_color     {box-shadow: 5px 5px 5px red;}
+            #spread_color   {box-shadow: 5px 5px 5px 5px red;}
+
+            #inset          {box-shadow: inset 5px 5px;}
+            #inset_blur     {box-shadow: inset 5px 5px 5px;}
+            #inset_spread   {box-shadow: inset 5px 5px 5px 5px;}
+
+            #inset_color        {box-shadow: inset 5px 5px red;}
+            #inset_blur_color   {box-shadow: inset 5px 5px 5px red;}
+            #inset_spread_color {box-shadow: inset 5px 5px 5px 5px red;}
+
+            #invalid_0 {box-shadow: 5px;}
+            #invalid_1 {box-shadow: 5px 5px 5px 5px 5px;}
+            #invalid_2 {box-shadow: 5px 5px inset;}
+            #invalid_3 {box-shadow: red 5px 5px;}
+        </style>
+    </head>
+    <body>
+        <div id="content">
+            <ul id="test">
+                <li id="none">none</li>
+                <li id="inherit">inherit</li>
+                <li id="initial">initial</li>
+                <li id="unset">unset</li>
+
+                <li id="minimal">minimal</li>
+                <li id="blur">blur</li>
+                <li id="spread">spread</li>
+
+                <li id="color">color</li>
+                <li id="blur_color">blur_color</li>
+                <li id="spread_color">spread_color</li>
+
+                <li id="inset">inset</li>
+                <li id="inset_blur">inset_blur</li>
+                <li id="inset_spread">inset_spread</li>
+
+                <li id="inset_color">inset_color</li>
+                <li id="inset_blur_color">inset_blur_color</li>
+                <li id="inset_spread_color">inset_spread_color</li>
+
+                <li id="invalid_0">invalid_0</li>
+                <li id="invalid_1">invalid_1</li>
+                <li id="invalid_2">invalid_2</li>
+                <li id="invalid_3">invalid_3</li>
+            </ul>
+        </div>
+    </body>
+</html>
