@@ -31,6 +31,7 @@ import cz.vutbr.web.css.CSSProperty.BorderSpacing;
 import cz.vutbr.web.css.CSSProperty.BorderStyle;
 import cz.vutbr.web.css.CSSProperty.BorderWidth;
 import cz.vutbr.web.css.CSSProperty.Bottom;
+import cz.vutbr.web.css.CSSProperty.BoxShadow;
 import cz.vutbr.web.css.CSSProperty.BoxSizing;
 import cz.vutbr.web.css.CSSProperty.BoxShadow;
 import cz.vutbr.web.css.CSSProperty.CaptionSide;
@@ -1102,6 +1103,40 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	 * width - ignorace celé deklarace rollbackTransaction(trans); return false;
 	 * } return true; }
 	 */
+	
+	@SuppressWarnings("unused")
+	private boolean processBoxShadow(Declaration d,
+			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+ 		if (d.size() == 1 && genericOneIdent(BoxShadow.class, d, properties)) {
+			return true;
+		}
+ 		// inset | offset-x | offset-y | blur-radius | spread-radius | color
+		// TermIdent? TermLenght TermLenght TermLength? TermLength? TermColor?
+		TermList list = tf.createList();
+		Term<?>[] terms = d.toArray(new Term<?>[0]);
+ 		int lengthCount = 0;
+		for (int i = 0; i < terms.length; i++) {
+			Term t = terms[i];
+			if (i == 0 && t instanceof TermIdent
+					&& ((TermIdent) t).getValue().toLowerCase().equals("inset")) {
+				list.add(t);
+			} else if (t instanceof TermLength) {
+				list.add(t);
+				lengthCount++;
+			} else if (i == terms.length - 1 && t instanceof TermColor) {
+				list.add(t);
+			} else {
+				return false;
+			}
+		}
+		
+		if (list.isEmpty() || lengthCount < 2 || lengthCount > 4) {
+			return false;
+		}
+ 		properties.put("box-shadow", BoxShadow.component_values);
+		values.put("box-shadow", list);
+		return true;
+	}
 
     @SuppressWarnings("unused")
     private boolean processBoxSizing(Declaration d,

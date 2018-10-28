@@ -683,6 +683,38 @@ public interface CSSProperty {
 		}
 	}
 	
+	public enum BoxShadow implements CSSProperty {
+		component_values(""),
+		NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+ 		private String text;
+ 		private BoxShadow(String text) {
+			this.text = text;
+		}
+		
+		@Override
+		public boolean inherited() {
+			return true;
+		}
+ 		@Override
+		public boolean equalsInherit() {
+			return this == INHERIT;
+		}
+ 		@Override
+		public boolean equalsInitial() {
+			return this == INITIAL;
+		}
+ 		@Override
+		public boolean equalsUnset() {
+			return this == UNSET;
+		}
+		
+		@Override
+        public String toString() {
+            return text;
+        }
+	}
+	
+	
     public enum BoxSizing implements CSSProperty {
         CONTENT_BOX("content-box"), BORDER_BOX("border-box"),
         INHERIT("inherit"), INITIAL("initial"), UNSET("unset");

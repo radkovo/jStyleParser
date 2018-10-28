@@ -301,6 +301,9 @@ public class SupportedCSS3 implements SupportedCSS {
 		props.put("background-size", BackgroundSize.list_values);
         values.put("background-size", DEFAULT_UA_BACKGROUND_SIZE);
 		props.put("background-repeat", BackgroundRepeat.REPEAT);
+		
+		// box shadow
+		props.put("box-shadow", BoxShadow.NONE);
 
 		// elements
 		props.put("list-style", ListStyle.component_values);
