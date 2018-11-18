@@ -33,7 +33,6 @@ import cz.vutbr.web.css.CSSProperty.BorderWidth;
 import cz.vutbr.web.css.CSSProperty.Bottom;
 import cz.vutbr.web.css.CSSProperty.BoxShadow;
 import cz.vutbr.web.css.CSSProperty.BoxSizing;
-import cz.vutbr.web.css.CSSProperty.BoxShadow;
 import cz.vutbr.web.css.CSSProperty.CaptionSide;
 import cz.vutbr.web.css.CSSProperty.Clear;
 import cz.vutbr.web.css.CSSProperty.Clip;
@@ -58,6 +57,13 @@ import cz.vutbr.web.css.CSSProperty.FontStyle;
 import cz.vutbr.web.css.CSSProperty.FontVariant;
 import cz.vutbr.web.css.CSSProperty.FontWeight;
 import cz.vutbr.web.css.CSSProperty.GenericCSSPropertyProxy;
+import cz.vutbr.web.css.CSSProperty.Grid;
+import cz.vutbr.web.css.CSSProperty.GridAutoFlow;
+import cz.vutbr.web.css.CSSProperty.GridAutoRowsColumns;
+import cz.vutbr.web.css.CSSProperty.GridGap;
+import cz.vutbr.web.css.CSSProperty.GridStartEnd;
+import cz.vutbr.web.css.CSSProperty.GridTemplateAreas;
+import cz.vutbr.web.css.CSSProperty.GridTemplateRowsColumns;
 import cz.vutbr.web.css.CSSProperty.Height;
 import cz.vutbr.web.css.CSSProperty.JustifyContent;
 import cz.vutbr.web.css.CSSProperty.Left;
@@ -103,6 +109,7 @@ import cz.vutbr.web.css.CSSProperty.Width;
 import cz.vutbr.web.css.CSSProperty.WordSpacing;
 import cz.vutbr.web.css.CSSProperty.ZIndex;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.Term.Operator;
@@ -144,7 +151,9 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	    /** Treat negative values as invalid */
 	    DISALLOW_NEGATIVE,
 	    /** Truncate negative values to zero */
-	    TRUNCATE_NEGATIVE
+	    TRUNCATE_NEGATIVE,
+		/** Treat zero as invalid */
+		DISALLOW_ZERO
 	}
 	
 	/**
@@ -163,6 +172,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	 */
 	private static final DeclarationTransformerImpl instance;
 
+	private static final RuleFactory rf = CSSFactory.getRuleFactory();
 	private static final TermFactory tf = CSSFactory.getTermFactory();
 	private static final SupportedCSS css = CSSFactory.getSupportedCSS();
 
@@ -468,26 +478,36 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 			if (range != ValueRange.ALLOW_ALL) {
 				// check for integer
 				if (term.getValue() instanceof Integer) {
-					final Integer zero = new Integer(0);
-					if (zero.compareTo((Integer) term.getValue()) > 0) {
+					final Integer zero = 0;
+					int result = zero.compareTo((Integer) term.getValue());
+					if (result > 0) {
 						// return false is also possibility
 						// but we will change to zero
 					    if (range == ValueRange.TRUNCATE_NEGATIVE)
 					        ((TermInteger) term).setZero();
 					    else
 					        return false;
+					} else if(result == 0) {
+						if(range == ValueRange.DISALLOW_ZERO) {
+							return false;
+						}
 					}
 				}
 				// check for float
 				else if (term.getValue() instanceof Float) {
-					final Float zero = new Float(0.0f);
-					if (zero.compareTo((Float) term.getValue()) > 0) {
+					final Float zero = 0f;
+					int result = zero.compareTo((Float) term.getValue());
+					if (result > 0) {
 						// return false is also possibility
 						// but we will change to zero
 					    if (range == ValueRange.TRUNCATE_NEGATIVE)
 					        ((TermFloatValue) term).setZero();
 					    else
 					        return false;
+					} else if(result == 0) {
+						if(range == ValueRange.DISALLOW_ZERO) {
+							return false;
+						}
 					}
 				}
 			}
@@ -1133,8 +1153,8 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 		if (list.isEmpty() || lengthCount < 2 || lengthCount > 4) {
 			return false;
 		}
- 		properties.put("box-shadow", BoxShadow.component_values);
-		values.put("box-shadow", list);
+ 		properties.put(d.getProperty(), BoxShadow.component_values);
+		values.put(d.getProperty(), list);
 		return true;
 	}
 
@@ -2127,55 +2147,482 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
             return true;
         }
     }
-
-    @SuppressWarnings("unused")
-    private boolean processBoxShadow(Declaration d,
-            Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-
-        // single boxshadow: none, or global ones
-        if (d.size() == 1 && genericOneIdent(BoxShadow.class, d, properties)) {
-            return true;
-        } else {
-            TermList list = tf.createList();
-
-            int lengthCount = 0;
-            boolean encounteredColor = false;
-            boolean encounteredInset = false;
-            for (Term<?> t : d.asList()) {
-				Operator operator = t.getOperator();
-				if (operator == Operator.COMMA) {
-            		if (lengthCount < 2) {
-            			return false;
+    
+	@SuppressWarnings("unused")
+	private boolean processGrid(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		if(d.isEmpty()) {
+			return false;
+		}
+		if (genericOneIdent(Grid.class, d, properties)) {
+			return Grid.NONE.equals(properties.get(d.getProperty()));
+		}
+		
+		// <'grid-template'> 
+		// | <'grid-template-rows'> / [ auto-flow && dense? ] <'grid-auto-columns'>?
+		// | [ auto-flow && dense? ] <'grid-auto-rows'>? / <'grid-template-columns'>
+		Declaration templateDecl = rf.createDeclaration(d);
+		templateDecl.setProperty("grid-template");
+		if(processGridTemplate(templateDecl, properties, values)) {
+			return true;
+		}
+		
+		boolean beforeSlash = true;
+		boolean autoFlowBeforeSlash = false;
+		Declaration autoFlowDecl = (Declaration) rf.createDeclaration().unlock();
+		autoFlowDecl.setProperty("grid-auto-flow");
+		Declaration templateRowsDecl = (Declaration) rf.createDeclaration().unlock();
+		templateRowsDecl.setProperty("grid-template-rows");
+		Declaration autoRowsDecl = (Declaration) rf.createDeclaration().unlock();
+		autoRowsDecl.setProperty("grid-auto-rows");
+		Declaration templateColumnsDecl = (Declaration) rf.createDeclaration().unlock();
+		templateColumnsDecl.setProperty("grid-template-columns");
+		Declaration autoColumnsDecl = (Declaration) rf.createDeclaration().unlock();
+		autoColumnsDecl.setProperty("grid-auto-columns");
+		
+		for (int i = 0; i < d.size(); i++) {
+			Term t = d.get(i);
+			if(t.getOperator() == Term.Operator.SLASH) {
+				t.setOperator(Term.Operator.SPACE);
+				beforeSlash = false;
+			}
+			
+			if(t instanceof TermIdent) {
+				CSSProperty property = genericPropertyRaw(Grid.class, null, (TermIdent) t);
+				if (Grid.AUTO_FLOW.equals(property)) {
+					if(beforeSlash) {
+						autoFlowDecl.add(tf.createIdent("row"));
+					} else {
+						autoFlowDecl.add(tf.createIdent("column"));
 					}
-            		lengthCount = 0;
-            		encounteredColor = false;
-            		encounteredInset = false;
-				} else if (operator != null && operator != Operator.SPACE) {
-            		return false;
+					autoFlowBeforeSlash = beforeSlash;
+					continue;
+				} else {
+					property = genericPropertyRaw(GridAutoFlow.class, null, (TermIdent) t);
+					if (GridAutoFlow.DENSE.equals(property)) {
+						autoFlowDecl.add(t);
+						continue;
+					}
+				}
+			}
+
+			if(autoFlowDecl.isEmpty()) {
+				if (beforeSlash) {
+					templateRowsDecl.add(t);
+				}
+			} else {
+				if(beforeSlash) {
+					autoRowsDecl.add(t);
+				} else if(autoFlowBeforeSlash) {
+					templateColumnsDecl.add(t);
+				} else {
+					autoColumnsDecl.add(t);
+				}
+			}
+		}
+		processGridAutoRows(autoRowsDecl, properties, values);
+		processGridAutoColumns(autoColumnsDecl, properties, values);
+		
+		return processGridAutoFlow(autoFlowDecl, properties, values)
+				&& (processGridTemplateRows(templateRowsDecl, properties, values)
+					|| processGridTemplateColumns(templateColumnsDecl, properties, values)
+				);
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean processGridGap(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		Term rowGapTerm, columnGapTerm;
+		switch (d.size()) {
+			case 1:
+				rowGapTerm = columnGapTerm = d.get(0);
+				break;
+			case 2:
+				rowGapTerm = d.get(0);
+				columnGapTerm = d.get(1);
+				break;
+			default:
+				return false;
+		}
+		return genericTermIdent(GridGap.class, rowGapTerm, ALLOW_INH, "grid-row-gap", properties)
+			|| genericTermLength(rowGapTerm, "grid-row-gap", GridGap.length, ValueRange.DISALLOW_NEGATIVE, properties, values)
+			|| genericTerm(TermPercent.class, rowGapTerm, "grid-row-gap", GridGap.length, ValueRange.DISALLOW_NEGATIVE, properties, values)
+			|| genericTermIdent(GridGap.class, columnGapTerm, ALLOW_INH, "grid-column-gap", properties)
+			|| genericTermLength(columnGapTerm, "grid-column-gap", GridGap.length, ValueRange.DISALLOW_NEGATIVE, properties, values)
+			|| genericTerm(TermPercent.class, columnGapTerm, "grid-column-gap", GridGap.length, ValueRange.DISALLOW_NEGATIVE, properties, values);
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean processGridRowGap(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return genericOneIdentOrLengthOrPercent(GridGap.class, GridGap.length, GridGap.length, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean processGridColumnGap(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return genericOneIdentOrLengthOrPercent(GridGap.class, GridGap.length, GridGap.length, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
+	}
+
+	@SuppressWarnings("unused")
+	private boolean processGridArea(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		return processNStartEnds(4, new String[]{"grid-row-start", "grid-column-start", "grid-row-end", "grid-column-end"}, d, properties, values);
+	}
+
+	@SuppressWarnings("unused")
+	private boolean processGridRow(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		return processNStartEnds(2, new String[]{"grid-row-start", "grid-row-end"}, d, properties, values);
+	}
+
+	@SuppressWarnings("unused")
+	private boolean processGridColumn(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		return processNStartEnds(2, new String[]{"grid-column-start", "grid-column-end"}, d, properties, values);
+	}
+
+	private boolean processNStartEnds(int n, String[] propertyNames,
+			Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		if (n != propertyNames.length) {
+			return false;
+		}
+		TermList[] lists = new TermList[n];
+		for(int i = 0; i < n; i++){
+			lists[i] = tf.createList();
+		}
+		int listIndex = 0;
+		int spanIndex = -1;
+		int valueIndex = -1;
+		int identIndex = -1;
+		boolean enumSet = false;
+		
+		for (int i = 0; i < d.size(); i++) {
+			Term t = d.get(i);
+			if (t.getOperator() == Term.Operator.SLASH) {
+					listIndex++;
+					spanIndex = -1;
+					valueIndex = -1;
+					identIndex = -1;
+				if (listIndex >= n) {
+					return false;
+				}
+			}
+			if (t instanceof TermIdent) {
+				CSSProperty property = genericPropertyRaw(GridStartEnd.class, null, (TermIdent) t);
+				if ((GridStartEnd.NONE.equals(property) || GridStartEnd.AUTO.equals(property)) && lists[listIndex].isEmpty()) {
+					enumSet = true;
+				} else if (GridStartEnd.SPAN.equals(property) && spanIndex < 0) {
+					spanIndex = i;
+				} else if (property == null && !enumSet && identIndex < 0 && (spanIndex < 0 || valueIndex < 0 || spanIndex < valueIndex)) {
+					identIndex = i;
+				} else {
+					return false;
+				}
+			} else if (t instanceof TermInteger && ((TermInteger) t).getIntValue() != 0
+					&& valueIndex < 0 && (identIndex < 0 || identIndex > spanIndex)) {
+				valueIndex = i;
+			} else {
+				return false;
+			}
+			lists[listIndex].add(t);
+		}
+		
+		for(int i = 1; i < n; i++){
+			setStartEndProperties(propertyNames[i], lists[i], properties, values);
+		}
+		return setStartEndProperties(propertyNames[0], lists[0], properties, values);
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean processGridRowStart(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return processGridStartEnd(d, properties, values);
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean processGridRowEnd(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return processGridStartEnd(d, properties, values);
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean processGridColumnStart(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return processGridStartEnd(d, properties, values);
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean processGridColumnEnd(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		return processGridStartEnd(d, properties, values);
+	}
+
+	private boolean processGridStartEnd(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		if(d.isEmpty()) {
+			return false;
+		}
+		if (genericOneIdentOrInteger(GridStartEnd.class, GridStartEnd.number, ValueRange.DISALLOW_ZERO, d, properties, values)) {
+			return !GridStartEnd.SPAN.equals(properties.get(d.getProperty()));
+		}
+		// auto | <custom-ident> | [ <integer> && <custom-ident>? ] | [ span && [ <integer> || <custom-ident> ] ]
+		int spanIndex = -1;
+		int valueIndex = -1;
+		int identIndex = -1;
+		TermList list = tf.createList();
+		for (int i = 0; i < d.size(); i++) {
+			Term t = d.get(i);
+			if (t instanceof TermIdent) {
+				CSSProperty property = genericPropertyRaw(GridStartEnd.class, null, (TermIdent) t);
+				if (GridStartEnd.SPAN.equals(property) && spanIndex < 0) {
+					spanIndex = i;
+				} else if (property == null && identIndex < 0 && (spanIndex < 0 || valueIndex < 0 || spanIndex < valueIndex)) {
+					identIndex = i;
+				} else {
+					return false;
+				}
+			} else if (t instanceof TermInteger && ((TermInteger) t).getIntValue() != 0
+				&& valueIndex < 0 && (identIndex < 0 || identIndex > spanIndex)) {
+				valueIndex = i;
+			} else {
+				return false;
+			}
+			list.add(t);
+		}
+		return setStartEndProperties(d.getProperty(), list, properties, values);
+	}
+
+	private boolean setStartEndProperties(String propertyName, TermList list, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		switch (list.size()) {
+			case 0:
+				return false;
+			case 1:
+				Term single = list.get(0);
+				CSSProperty property;
+				if (single instanceof TermIdent) {
+					CSSProperty identProperty = genericPropertyRaw(GridStartEnd.class, null, (TermIdent) single);
+					if (GridStartEnd.SPAN.equals(identProperty)) {
+						return false;
+					}
+					property = GridStartEnd.identificator;
+				} else if (single instanceof TermInteger) {
+					property = GridStartEnd.number;
+				} else {
+					return false;
+				}
+				properties.put(propertyName, property);
+				values.put(propertyName, single);
+				break;
+			default:
+				properties.put(propertyName, GridStartEnd.component_values);
+				values.put(propertyName, list);
+		}
+		return true;
+	}
+
+	@SuppressWarnings("unused")
+	private boolean processGridTemplate(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		if(d.isEmpty()) {
+			return false;
+		}
+		d.setProperty("grid-template-areas");
+		if (genericOneIdent(GridTemplateAreas.class, d, properties)) {
+			return true;
+		}
+		// @TODO add [rowname] and [columnName] support - blocked by parser
+		// none | (<areaString> <rowLenght>?)+ (/ <colLenght>+)?
+		TermList areasTerms = tf.createList();
+		TermList rowsTerms = tf.createList();
+		TermList columnsTerms = tf.createList();
+		boolean rowLengthSet = false;
+		boolean columnLenghtSet = false;
+		int areasInRow = 0;
+		List<String[]> map = new ArrayList<>();
+		for (int i = 0; i < d.size(); i++) {
+			Term t = d.get(i);
+			if (t instanceof TermIdent) {
+				CSSProperty property = genericPropertyRaw(GridTemplateRowsColumns.class, null, (TermIdent) t);
+				if (GridTemplateRowsColumns.NONE.equals(property)) {
+					return false;
+				}
+				if(columnLenghtSet) {
+					columnsTerms.add(t);
+				} else {
+					rowsTerms.add(t);
+				}
+				
+			} else if (t instanceof TermString) {
+				String[] rowAreas = ValidationUtils.getAreas(((TermString) t).getValue());
+				if (rowAreas.length == 0 || (!map.isEmpty() && rowAreas.length != areasInRow) || columnLenghtSet) {
+					return false;
+				}
+				areasInRow = rowAreas.length;
+				map.add(rowAreas);
+				rowLengthSet = false;
+				areasTerms.add(t);
+
+			} else if (t instanceof TermLength || t instanceof TermPercent) {
+				if (t.getOperator() == Term.Operator.SLASH) {
+					if (columnLenghtSet) {
+						return false;
+					}
+					columnLenghtSet = true;
+					columnsTerms.add(t);
+				} else {
+					if (columnLenghtSet) {
+						columnsTerms.add(t);
+						continue;
+					} else if (rowLengthSet || map.isEmpty()) {
+						return false;
+					}
+					rowLengthSet = true;
+					rowsTerms.add(t);
 				}
 
-                if (t instanceof TermLength && lengthCount < 4) {
-					lengthCount++;
-				} else if (t instanceof TermColor && !encounteredColor) {
-					encounteredColor = true;
-				} else if (t instanceof TermIdent && !encounteredInset && "inset".equalsIgnoreCase(((TermIdent)t).getValue())) {
-					encounteredInset = true;
+			} else {
+				return false;
+			}
+		}
+		if(!ValidationUtils.containsRectangles(map.toArray(new String[0][]))) {
+			return false;
+		}
+		properties.put("grid-template-areas", GridTemplateAreas.list_values);
+		values.put("grid-template-areas", areasTerms);
+		if (!rowsTerms.isEmpty()) {
+			properties.put("grid-template-rows", GridTemplateRowsColumns.list_values);
+			values.put("grid-template-rows", rowsTerms);
+		}
+		if (!columnsTerms.isEmpty()) {
+			properties.put("grid-template-columns", GridTemplateRowsColumns.list_values);
+			values.put("grid-template-columns", columnsTerms);
+		}
+		return true;
+	}
+
+	@SuppressWarnings("unused")
+	private boolean processGridTemplateAreas(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		if(d.isEmpty()) {
+			return false;
+		}
+		if (genericOneIdent(GridTemplateAreas.class, d, properties)) {
+			return true;
+		}
+		TermList list = tf.createList();
+		int areasInRow = 0;
+		String[][] map = new String[d.size()][];
+		for (int i = 0; i < d.size(); i++) {
+			Term t = d.get(i);
+			if (t instanceof TermString) {
+				map[i] = ValidationUtils.getAreas(((TermString) t).getValue());
+				if(map[i].length == 0 || (i > 0 && map[i].length != areasInRow)) {
+					return false;
+				}
+				areasInRow = map[i].length;
+			} else {
+				return false;
+			}
+			list.add(t);
+		}
+		if(!ValidationUtils.containsRectangles(map)) {
+			return false;
+		}
+		properties.put(d.getProperty(), GridTemplateAreas.list_values);
+		values.put(d.getProperty(), list);
+        return true;
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean processGridTemplateRows(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return processGridTemplateRowsColumns(d, properties, values);
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean processGridTemplateColumns(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+       return processGridTemplateRowsColumns(d, properties, values);
+	}
+
+	private boolean processGridTemplateRowsColumns(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		if(d.isEmpty()) {
+			return false;
+		}
+		if (genericOneIdent(GridTemplateRowsColumns.class, d, properties)) {
+			return true;
+		}
+		TermList list = tf.createList();
+		for (int i = 0; i < d.size(); i++) {
+			Term t = d.get(i);
+			if (t instanceof TermIdent) {
+				CSSProperty property = genericPropertyRaw(GridTemplateRowsColumns.class, null, (TermIdent) t);
+				if (GridTemplateRowsColumns.NONE.equals(property)) {
+					return false;
+				}
+			} else if (!(t instanceof TermLength) && !(t instanceof TermPercent)) {
+				return false;
+			}
+			list.add(t);
+		}
+		properties.put(d.getProperty(), GridTemplateRowsColumns.list_values);
+		values.put(d.getProperty(), list);
+        return true;
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean processGridAutoFlow(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		if(d.isEmpty()) {
+			return false;
+		}
+		if (genericOneIdent(GridAutoFlow.class, d, properties)) {
+			return true;
+		}
+		boolean autoFlowSet = false;
+		boolean denseSet = false;
+		TermList list = tf.createList();
+		for (int i = 0; i < d.size(); i++) {
+			Term t = d.get(i);
+			if (t instanceof TermIdent) {
+				CSSProperty property = genericPropertyRaw(GridAutoFlow.class, null, (TermIdent) t);
+				if((GridAutoFlow.ROW.equals(property) || GridAutoFlow.COLUMN.equals(property)) && !autoFlowSet) {
+					autoFlowSet = true;
+				} else if (GridAutoFlow.DENSE.equals(property) && !denseSet) {
+					denseSet = true;
 				} else {
 					return false;
 				}
 				list.add(t);
-            }
-
-            if (lengthCount < 2) {
+			} else {
 				return false;
 			}
-
-            properties.put("box-shadow", BoxShadow.list_values);
-            values.put("box-shadow", list);
-            return true;
-        }
-    }
-
+		}
+		properties.put(d.getProperty(), GridAutoFlow.component_values);
+		values.put(d.getProperty(), list);
+        return true;
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean processGridAutoRows(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		return processGridAutoRowsOrColumns(d, properties, values);
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean processGridAutoColumns(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		return processGridAutoRowsOrColumns(d, properties, values);
+	}
+	
+	private boolean processGridAutoRowsOrColumns(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+		if(d.isEmpty()) {
+			return false;
+		}
+		if(genericOneIdentOrLengthOrPercent(GridAutoRowsColumns.class, GridAutoRowsColumns.length, GridAutoRowsColumns.length, 
+				ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
+			return true;
+		}
+		TermList list = tf.createList();
+		for (int i = 0; i < d.size(); i++) {
+			Term t = d.get(i);
+			if(t instanceof TermIdent) {
+				CSSProperty property = genericPropertyRaw(GridAutoRowsColumns.class, null, (TermIdent) t);
+				if(property == null) {
+					return false;
+				}
+			} else if (!(t instanceof TermLength) && !(t instanceof TermPercent)) {
+				return false;
+			}
+			list.add(t);
+		}
+		properties.put(d.getProperty(), GridAutoRowsColumns.list_values);
+		values.put(d.getProperty(), list);
+        return true;
+	}
+	
 	/**
 	 * Variator for list style. Grammar:
 	 * 
@@ -2680,12 +3127,9 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 			case IMAGE:
 				return genericTermIdent(types.get(IMAGE), terms.get(i),
 						AVOID_INH, names.get(IMAGE), properties)
-						|| genericTerm(TermURI.class, terms.get(i), names.get(IMAGE),
-						        BackgroundImage.uri, ValueRange.ALLOW_ALL,
-								properties, values)
-                        || genericTerm(TermFunction.Gradient.class, terms.get(i), names.get(IMAGE),
-                                BackgroundImage.gradient, ValueRange.ALLOW_ALL,
-                                properties, values);
+						|| genericTerm(TermURI.class, terms.get(i), names
+								.get(IMAGE), BackgroundImage.uri, ValueRange.ALLOW_ALL,
+								properties, values);
 			case REPEAT:
 				return genericTermIdent(types.get(REPEAT), terms.get(i),
 						AVOID_INH, names.get(REPEAT), properties);

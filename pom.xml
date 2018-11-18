@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<!-- 
-		Deploy: mvn clean deploy (includes javadoc)
-		Package: mvn clean package assembly:single
-	    Release: mvn release:clean
-	             mvn release:prepare
-	             mvn release:perform
-	 -->
+	   Deploy: mvn clean deploy (includes javadoc)
+	   Package: mvn clean package assembly:single
+	   Release: mvn release:clean
+				mvn release:prepare
+				mvn release:perform
+	-->
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -46,11 +46,11 @@
 		</developer>
 	</developers>
 	<contributors>
-    		<contributor>
-      			<name>Contributors at GitHub</name>
-      			<url>https://github.com/radkovo/jStyleParser/graphs/contributors</url>
-    		</contributor>
-  	</contributors>
+		<contributor>
+			<name>Contributors at GitHub</name>
+			<url>https://github.com/radkovo/jStyleParser/graphs/contributors</url>
+		</contributor>
+	</contributors>
 
 	<scm>
 		<url>https://github.com/radkovo/jStyleParser</url>
@@ -59,10 +59,10 @@
 		<tag>HEAD</tag>
 	</scm>
 	
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<antlr4.visitor>true</antlr4.visitor>
-    </properties>
+	</properties>
 
 	<build>
 		<resources>
@@ -89,7 +89,7 @@
 			</plugin>
 
 			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.7.0</version>
 				<configuration>
@@ -168,7 +168,7 @@
 				</executions>
 			</plugin>
 			
-<!--			<plugin>
+			<!--			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.10.4</version>
@@ -243,30 +243,35 @@
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
 			<version>1.9.22</version>
-		    <scope>test</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
 			<version>2.11.0</version>
-		    <scope>test</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
 			<version>1.4.01</version>
-		    <scope>test</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
-		      <groupId>junit</groupId>
-		      <artifactId>junit</artifactId>
-		      <version>4.12</version>
-		      <scope>test</scope>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.25</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.6.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.unbescape</groupId>

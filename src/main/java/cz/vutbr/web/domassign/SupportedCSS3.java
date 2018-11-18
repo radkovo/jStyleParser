@@ -389,6 +389,26 @@ public class SupportedCSS3 implements SupportedCSS {
 		props.put("align-content", AlignContent.Stretch);
 		props.put("align-items", AlignItems.Stretch);
 		props.put("align-self", AlignSelf.Auto);
+		
+		// Grid layout
+		props.put("grid", Grid.component_values);
+		props.put("grid-gap", GridGap.component_values);
+		props.put("grid-row-gap", GridGap.NORMAL);
+		props.put("grid-column-gap", GridGap.NORMAL);
+		props.put("grid-area", Grid.component_values);
+		props.put("grid-row", Grid.component_values);
+		props.put("grid-column", Grid.component_values);
+		props.put("grid-row-start", GridStartEnd.AUTO);
+		props.put("grid-column-start", GridStartEnd.AUTO);
+		props.put("grid-row-end", GridStartEnd.AUTO);
+		props.put("grid-column-end", GridStartEnd.AUTO);
+		props.put("grid-template", Grid.component_values);
+		props.put("grid-template-areas", GridTemplateAreas.NONE);
+		props.put("grid-template-rows", GridTemplateRowsColumns.NONE);
+		props.put("grid-template-columns", GridTemplateRowsColumns.NONE);
+		props.put("grid-auto-flow", GridAutoFlow.ROW);
+		props.put("grid-auto-rows", GridAutoRowsColumns.AUTO);
+		props.put("grid-auto-columns", GridAutoRowsColumns.AUTO);
 
 		this.defaultCSSproperties = props;
 		this.defaultCSSvalues = values;

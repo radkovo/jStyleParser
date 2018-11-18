@@ -276,7 +276,7 @@ public class TermFactoryImpl implements TermFactory {
         else
             return null; //value or unit missing
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public <K, V> TermPair<K, V> createPair(K key, V value) {
 		return (TermPair<K, V>) (new TermPairImpl<K, V>()).setKey(key)

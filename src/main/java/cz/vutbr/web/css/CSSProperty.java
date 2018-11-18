@@ -337,7 +337,7 @@ public interface CSSProperty {
 	}
 
 	public enum BackgroundImage implements CSSProperty {
-		uri(""), gradient(""), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+		uri(""), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -1301,14 +1301,14 @@ public interface CSSProperty {
 	}
 
 	public enum Display implements CSSProperty {
-		INLINE("inline"), BLOCK("block"), LIST_ITEM("list-item"), RUN_IN(
-				"run-in"), INLINE_BLOCK("inline-block"), TABLE("table"), INLINE_TABLE(
-				"inline-table"), TABLE_ROW_GROUP("table-row-group"), TABLE_HEADER_GROUP(
-				"table-header-group"), TABLE_FOOTER_GROUP("table-footer-group"), TABLE_ROW(
-				"table-row"), TABLE_COLUMN_GROUP("table-column-group"), TABLE_COLUMN(
-				"table-column"), TABLE_CELL("table-cell"), TABLE_CAPTION(
-				"table-caption"), FLEX("flex"), INLINE_FLEX("inline-flex"), NONE("none"), INHERIT("inherit"),
-		        INITIAL("initial"), UNSET("unset");
+		INLINE("inline"), BLOCK("block"), LIST_ITEM("list-item"), RUN_IN("run-in"), 
+		INLINE_BLOCK("inline-block"), TABLE("table"), INLINE_TABLE("inline-table"), 
+		TABLE_ROW_GROUP("table-row-group"), TABLE_HEADER_GROUP("table-header-group"), 
+		TABLE_FOOTER_GROUP("table-footer-group"), TABLE_ROW("table-row"), 
+		TABLE_COLUMN_GROUP("table-column-group"), TABLE_COLUMN("table-column"), 
+		TABLE_CELL("table-cell"), TABLE_CAPTION("table-caption"), FLEX("flex"), 
+		INLINE_FLEX("inline-flex"), GRID("grid"), INLINE_GRID("inline-grid"),
+		NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -3543,13 +3543,14 @@ public interface CSSProperty {
        }
    }
 
-	public enum BoxShadow implements CSSProperty {
-		list_values(""), NONE("none"), INHERIT("inherit"),
-		INITIAL("initial"), UNSET("unset");
+	public enum Grid implements CSSProperty {
+		component_values(""),
+		AUTO_FLOW("auto-flow"),
+		NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
-		private BoxShadow(String text) {
+		private Grid(String text) {
 			this.text = text;
 		}
 
@@ -3575,6 +3576,204 @@ public interface CSSProperty {
 		}
 	}
 
+	public enum GridStartEnd implements CSSProperty {
+		component_values(""), number(""), identificator(""),
+		AUTO("auto"), SPAN("span"), NONE("none"),
+		INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+		private String text;
+
+		private GridStartEnd(String text) {
+			this.text = text;
+		}
+
+		public boolean inherited() {
+			return false;
+		}
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+    
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+    
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+    
+        @Override
+        public String toString() {
+            return text;
+        }
+	}
+	
+	public enum GridGap implements CSSProperty {
+		component_values(""), length(""), NORMAL("normal"),
+		INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+    
+        private String text;
+    
+        private GridGap(String text) {
+            this.text = text;
+        }
+    
+        public boolean inherited() {
+            return false;
+        }
+    
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+    
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+    
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+    
+        @Override
+        public String toString() {
+            return text;
+        }
+	}
+	
+	public enum GridTemplateAreas implements CSSProperty {
+		list_values(""), 
+		NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+    
+        private String text;
+    
+        private GridTemplateAreas(String text) {
+            this.text = text;
+        }
+    
+        public boolean inherited() {
+            return false;
+        }
+    
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+    
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+    
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+    
+        @Override
+        public String toString() {
+            return text;
+        }
+	}
+	
+	public enum GridTemplateRowsColumns implements CSSProperty {
+		list_values(""),
+		AUTO("auto"), MAX_CONTENT("max-content"), MIN_CONTENT("min-content"),
+		NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+		private String text;
+
+		private GridTemplateRowsColumns(String text) {
+			this.text = text;
+		}
+
+        public boolean inherited() {
+            return false;
+        }
+    
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+    
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+    
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+    
+        @Override
+        public String toString() {
+            return text;
+        }
+	}
+
+	public enum GridAutoFlow implements CSSProperty {
+		component_values(""),
+		ROW("row"), COLUMN("column"), DENSE("dense"), 
+		INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+    
+        private String text;
+    
+        private GridAutoFlow(String text) {
+            this.text = text;
+        }
+    
+        public boolean inherited() {
+            return false;
+        }
+    
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+    
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+    
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+    
+        @Override
+        public String toString() {
+            return text;
+        }
+	}
+	
+	public enum GridAutoRowsColumns implements CSSProperty {
+		length(""), list_values(""),
+		AUTO("auto"), MIN_CONTENT("min-content"), MAX_CONTENT("max-content"),
+		INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+    
+        private String text;
+    
+        private GridAutoRowsColumns(String text) {
+            this.text = text;
+        }
+    
+        public boolean inherited() {
+            return false;
+        }
+    
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+    
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+    
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+    
+        @Override
+        public String toString() {
+            return text;
+        }
+	}
+	
+	
+	
     /**
      * A generic property used for all the properties not supported by another implementation.
      */
