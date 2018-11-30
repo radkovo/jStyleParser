@@ -6,7 +6,8 @@ public class CSSLexerState {
         BALANCED,
         FUNCTION,
         RULE,
-        DECL
+        DECL,
+        NOBALANCE
     }
 
     public short curlyNest;
@@ -49,7 +50,7 @@ public class CSSLexerState {
      * curly braces) are balanced
      */
     public boolean isBalanced() {
-        return !aposOpen && !quotOpen && curlyNest == 0 && parenNest == 0 && this.sqNest == 0;
+        return !aposOpen && !quotOpen && curlyNest == 0 && parenNest == 0 /*&& this.sqNest == 0*/; //TODO sqNest is not balanced for now, makes problems with declaration recovery 
     }
 
     /**
@@ -78,7 +79,7 @@ public class CSSLexerState {
             else
                 return !aposOpen && !quotOpen && parenNest == 0 && sqNest == 0 && curlyNest == state.curlyNest;
         } else
-            return false;
+            return true;
     }
 
     @Override

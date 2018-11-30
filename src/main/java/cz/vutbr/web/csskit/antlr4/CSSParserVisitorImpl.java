@@ -3,6 +3,7 @@ package cz.vutbr.web.csskit.antlr4;
 import cz.vutbr.web.css.*;
 import cz.vutbr.web.css.Selector.PseudoElement;
 import cz.vutbr.web.csskit.RuleArrayList;
+import cz.vutbr.web.csskit.antlr4.CSSParser.Bracketed_identContext;
 
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -1015,6 +1016,11 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             } else {
                 declaration_stack.peek().invalid = true;
             }
+        } else if (ctx.bracketed_ident() != null) {
+            log.debug("VP - bracketed_ident");
+            terms_stack.peek().term = (TermBracketedIdent) visitBracketed_ident(ctx.bracketed_ident());
+            if (terms_stack.peek().term == null)
+                declaration_stack.peek().invalid = true; //invalid bracketed ident - invalidate the whole declaration
         } else {
             log.error("unhandled valueparts");
             terms_stack.peek().term = null;
@@ -1143,6 +1149,24 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         }
         //returns null
         return null;
+    }
+
+    @Override
+    public Object visitBracketed_ident(Bracketed_identContext ctx) {
+        boolean dash = false;
+        if (ctx.INVALID_STATEMENT() != null) {
+            log.debug("VP - ident invalid");
+            return null;
+        }
+        if (ctx.MINUS() != null) {
+            dash = true;
+        }
+        if (ctx.IDENT() != null) {
+            log.debug("VP - ident");
+            return tf.createBracketedIdent(extractTextUnescaped(ctx.IDENT().getText()), dash);
+        }
+        else
+            return null;
     }
 
     protected static class combined_selector_scope {

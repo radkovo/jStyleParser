@@ -6,6 +6,7 @@ import java.util.List;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermAngle;
+import cz.vutbr.web.css.TermBracketedIdent;
 import cz.vutbr.web.css.TermCalc;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermExpression;
@@ -169,7 +170,20 @@ public class TermFactoryImpl implements TermFactory {
             return (TermIdent) (new TermIdentImpl()).setValue("-" + value);
 	}
 
-	public TermInteger createInteger(Integer value) {
+	@Override
+    public TermBracketedIdent createBracketedIdent(String value) {
+	    return (TermBracketedIdent) (new TermBracketedIdentImpl()).setValue(value);
+    }
+
+    @Override
+    public TermBracketedIdent createBracketedIdent(String value, boolean dash) {
+        if (!dash)
+            return (TermBracketedIdent) (new TermBracketedIdentImpl()).setValue(value);
+        else
+            return (TermBracketedIdent) (new TermBracketedIdentImpl()).setValue("-" + value);
+    }
+
+    public TermInteger createInteger(Integer value) {
 		return (TermInteger) (new TermIntegerImpl()).setValue(value);
 	}
 

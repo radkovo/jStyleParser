@@ -326,6 +326,7 @@ valuepart
         | (PLUS | MINUS)? funct
         | COMMA
         | SLASH
+        | bracketed_ident
         | CLASSKEYWORD //invalid
         | UNIRANGE //invalid
         | INCLUDES //invalid
@@ -338,13 +339,12 @@ valuepart
 	    | ASTERISK //invalid
         | DASHMATCH //invalid
         | LPAREN valuepart* RPAREN //invalid
-        | LBRACKET valuepart* RBRACKET //invalid
     ) S*
     ;
 	catch [RecognitionException re] {
 		log.error("Recognition exception | valuepart");
 		IntervalSet intervalSet = new IntervalSet(RCURLY, SEMICOLON);
-		getCSSErrorHandler().consumeUntil(this, intervalSet, CSSLexerState.RecoveryMode.BALANCED, null);
+		getCSSErrorHandler().consumeUntil(this, intervalSet, CSSLexerState.RecoveryMode.NOBALANCE, null);
 		_localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,""));
 	}
 
@@ -458,6 +458,14 @@ string
         log.error("PARSING string ERROR | should be empty");
     }
 
+bracketed_ident
+	: LBRACKET S* MINUS? IDENT S* RBRACKET
+	| INVALID_STATEMENT
+	;
+	catch [RecognitionException re] {
+		log.error("Recognition exception | bracketed_ident | empty");
+		_localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,""));
+	}
 
 any
 	: ( IDENT
