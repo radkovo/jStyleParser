@@ -1,7 +1,7 @@
 /*
  * CSS.g
  * Copyright (c) 2008 Karel Piwko
- * Copyright (c) 2008-2014 Radek Burget
+ * Copyright (c) 2008-2018 Radek Burget
  *
  * jStyleParser is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -338,7 +338,7 @@ valuepart
 	    | ASTERISK //invalid
         | DASHMATCH //invalid
         | LPAREN valuepart* RPAREN //invalid
-        | LBRACE valuepart* RBRACE //invalid
+        | LBRACKET valuepart* RBRACKET //invalid
     ) S*
     ;
 	catch [RecognitionException re] {
@@ -423,7 +423,7 @@ selector
 selpart
     : HASH
     | CLASSKEYWORD
-	| LBRACE S* attribute RBRACE
+	| LBRACKET S* attribute RBRACKET
     | pseudo
     | INVALID_SELPART // invalid selpart
     ;
@@ -486,7 +486,7 @@ any
       | FUNCTION S* any* RPAREN
       | DASHMATCH
       | LPAREN any* RPAREN
-      | LBRACE any* RBRACE
+      | LBRACKET any* RBRACKET
     ) S*
     ;
     catch [RecognitionException re] {

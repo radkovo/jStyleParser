@@ -1,7 +1,7 @@
 /*
  * CSS.g 
  * Copyright (c) 2008 Karel Piwko
- * Copyright (c) 2008-2014 Radek Burget
+ * Copyright (c) 2008-2018 Radek Burget
  *
  * jStyleParser is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,7 +29,7 @@ tokens {
 	ATBLOCK,
 	CURLYBLOCK,
 	PARENBLOCK,
-	BRACEBLOCK,
+	BRACKETBLOCK,
 	RULE,
 	SELECTOR,
 	ELEMENT,
@@ -392,11 +392,11 @@ RPAREN
 	: ')'  { if(ls.parenNest>0) ls.parenNest--; }
 	;		
 
-LBRACE
+LBRACKET
 	: '['  { ls.sqNest++; }
 	;
 
-RBRACE
+RBRACKET
 	: ']'  { if(ls.sqNest>0) ls.sqNest--; }
 	;
 	

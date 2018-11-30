@@ -1251,7 +1251,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
      * selpart
      * : HASH
      * | CLASSKEYWORD
-     * | LBRACE S* attribute RBRACE
+     * | LBRACKET S* attribute RBRACKET
      * | pseudo
      * | INVALID_SELPART // invalid selpart
      */
