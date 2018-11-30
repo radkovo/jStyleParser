@@ -333,7 +333,7 @@ CDC
 	;	
 
 SEMICOLON
-	: ';'
+	: ';' { ls.sqNest = 0; } /* reset brackets after each declaration */
 	;
 
 COLON
@@ -373,7 +373,7 @@ LCURLY
 	;
 
 RCURLY	
-	: '}'  { if(ls.curlyNest>0) ls.curlyNest--;}
+	: '}'  { if(ls.curlyNest>0) ls.curlyNest--; ls.sqNest = 0; } /* reset brackets after each rule */
 	;
 
 APOS

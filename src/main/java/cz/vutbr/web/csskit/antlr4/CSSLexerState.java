@@ -50,7 +50,7 @@ public class CSSLexerState {
      * curly braces) are balanced
      */
     public boolean isBalanced() {
-        return !aposOpen && !quotOpen && curlyNest == 0 && parenNest == 0 /*&& this.sqNest == 0*/; //TODO sqNest is not balanced for now, makes problems with declaration recovery 
+        return !aposOpen && !quotOpen && curlyNest == 0 && parenNest == 0 && this.sqNest == 0; 
     }
 
     /**

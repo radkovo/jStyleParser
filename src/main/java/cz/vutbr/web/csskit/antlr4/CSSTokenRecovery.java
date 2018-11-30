@@ -28,6 +28,7 @@ public class CSSTokenRecovery {
     public static final int CHARSET = 6;
     public static final int STRING = 7;
     public static final int INVALID_STRING = 8;
+    public static final int RBRACKET = 9;
 
     private final CSSToken.TypeMapper typeMapper;
     private final CSSToken.TypeMapper lexerTypeMapper;
@@ -46,7 +47,7 @@ public class CSSTokenRecovery {
         lexerTypeMapper = CSSToken.createDefaultTypeMapper(lexer.getClass());
         typeMapper = new CSSToken.TypeMapper(CSSTokenRecovery.class, lexer.getClass(),
                 "APOS", "QUOT", "RPAREN", "RCURLY", "IMPORT",
-                "CHARSET", "STRING", "INVALID_STRING");
+                "CHARSET", "STRING", "INVALID_STRING", "RBRACKET");
     }
 
     public boolean isAtEof() {
@@ -207,6 +208,10 @@ public class CSSTokenRecovery {
             ls.curlyNest--;
             t = new CSSToken(typeMapper.get(RCURLY), ls, lexerTypeMapper);
             t.setText("}");
+        } else if (ls.sqNest != 0) {
+            ls.sqNest--;
+            t = new CSSToken(typeMapper.get(RBRACKET), ls, lexerTypeMapper);
+            t.setText("]");
         }
 
         log.debug("Recovering from EOF by {}", t.getText());
