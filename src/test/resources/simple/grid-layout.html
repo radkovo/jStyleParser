@@ -3,16 +3,36 @@
     <head>
         <title>CSS Box Shadow</title>
         <style type="text/css">
+        	/*#test {grid-template: [a] 100px / [columnname1] 30% [columnname2] 70%;}*/
+
         	#grid0 {grid: none;}
         	#grid1 {grid: auto-flow / 1fr;}
         	#grid2 {grid: auto-flow dense / 1fr;}
         	#grid3 {grid: 1px 1px / auto-flow;}
         	#grid4 {grid: 1px 1px / dense auto-flow;}
-        	
-/*            #grid3 {grid: 
-            "a a a" 40px
-            "b c c" 40px
-            "b c c" 40px / 1px 1px 1px;}*/
+            #grid5 {grid:	"a a a" 1px
+							"b c c" 1px
+							"b c c" 1px / 2px 2px 2px;}
+			#grid6 {grid: [name]"a a a" 1px
+							"b c c" 1px [name]
+							"b c c" 1px / 2px [name] 2px 2px [name];}
+			#grid7 {grid:	"a a a" 1px
+							"b d c" 1px
+							"b c c" 1px / 2px 2px 2px;}
+			#grid8 {grid: [name]"a a a"[name] 1px
+							"b c c" 1px
+							"b c c" 1px / 2px 2px 2px;}	
+
+			#grid-area0 {grid-area: auto;}			
+			#grid-area1 {grid-area: auto / 1;}			
+			#grid-area2 {grid-area: auto / 1 / 2;}			
+			#grid-area3 {grid-area: auto / 1 / 2 / 3;}			
+			
+			#grid-gap0 {grid-gap: normal;}
+			#grid-gap1 {grid-gap: 1px;}
+			#grid-gap2 {grid-gap: 1px 1px;}
+			#grid-gap3 {grid-gap: 1px 2px;}
+			#grid-gap3 {grid-gap: 1px 2px 3px;}
         </style>
     </head>
     <body>
@@ -24,11 +44,22 @@
                 <li id="grid3"></li>
                 <li id="grid4"></li>
                 <li id="grid5"></li>
+                <li id="grid6"></li>
+                <li id="grid7"></li>
+                <li id="grid8"></li>
 
-                <li id="none">none</li>
-                <li id="inherit">inherit</li>
-                <li id="initial">initial</li>
-                <li id="unset">unset</li>
+				<li id="grid-area0"></li>
+				<li id="grid-area1"></li>
+				<li id="grid-area2"></li>
+				<li id="grid-area3"></li>
+				
+                <li id="grid-gap0"></li>
+                <li id="grid-gap1"></li>
+                <li id="grid-gap2"></li>
+                <li id="grid-gap3"></li>
+                <li id="grid-gap4"></li>
+
+				<li id="test"></li>
             </ul>
         </div>
     </body>

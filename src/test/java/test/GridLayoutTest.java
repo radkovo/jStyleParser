@@ -4,15 +4,19 @@ import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.CSSProperty.Grid;
 import cz.vutbr.web.css.CSSProperty.GridAutoFlow;
+import cz.vutbr.web.css.CSSProperty.GridGap;
+import cz.vutbr.web.css.CSSProperty.GridStartEnd;
+import cz.vutbr.web.css.CSSProperty.GridTemplateAreas;
 import cz.vutbr.web.css.CSSProperty.GridTemplateRowsColumns;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.Term.Operator;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.domassign.StyleMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,39 +29,123 @@ import org.w3c.dom.Document;
 public class GridLayoutTest {
 
 	private static final TermFactory tf = CSSFactory.getTermFactory();
-	private final Map<String, ResultInfo> _tests = new LinkedHashMap<>();
+	private final List<TestData> _tests = new ArrayList<>();
 
 	@Before
 	public void prepare() {
 		NameGenerator ng = new NameGenerator("grid");
 		TermList list = tf.createList();
 
-		_tests.put(ng.next(), new ResultInfo("grid", Grid.NONE));
+		// grid
+		_tests.add(new TestData(ng.next(), "grid", Grid.NONE));
 
-		list.add(tf.createLength(1f, Unit.fr));
-		_tests.put(ng.next(), new ResultInfo("grid-template-columns", GridTemplateRowsColumns.list_values, list));
-		_tests.put(ng.curr(), new ResultInfo("grid-auto-flow", GridAutoFlow.ROW));
-		
-		_tests.put(ng.next(), new ResultInfo("grid-template-columns", GridTemplateRowsColumns.list_values, list));
-		list.clear();
+		list.add(tf.createLength(1f, Unit.fr).setOperator(Operator.SLASH));
+		_tests.add(new TestData(ng.next(), "grid-template-columns", GridTemplateRowsColumns.list_values, list));
+		_tests.add(new TestData(ng.curr(), "grid-auto-flow", GridAutoFlow.ROW));
+
+		_tests.add(new TestData(ng.next(), "grid-template-columns", GridTemplateRowsColumns.list_values, list));
+		list = tf.createList();
 		list.add(tf.createIdent("row"));
-		list.add(tf.createIdent("dense"));
-		_tests.put(ng.curr(), new ResultInfo("grid-auto-flow", GridAutoFlow.component_values));
+		list.add(tf.createIdent("dense").setOperator(Operator.SLASH));
+		_tests.add(new TestData(ng.curr(), "grid-auto-flow", GridAutoFlow.component_values));
+
+		list = tf.createList();
+		list.add(tf.createLength(1f, Unit.px));
+		list.add(tf.createLength(1f, Unit.px).setOperator(Operator.SPACE));
+		_tests.add(new TestData(ng.next(), "grid-template-rows", GridTemplateRowsColumns.list_values, list));
+		_tests.add(new TestData(ng.curr(), "grid-auto-flow", GridAutoFlow.COLUMN));
+
+		list = tf.createList();
+		list.add(tf.createLength(1f, Unit.px));
+		list.add(tf.createLength(1f, Unit.px).setOperator(Operator.SPACE));
+		_tests.add(new TestData(ng.next(), "grid-template-rows", GridTemplateRowsColumns.list_values, list));
+		list = tf.createList();
+		list.add(tf.createIdent("column").setOperator(Operator.SPACE));
+		list.add(tf.createIdent("dense").setOperator(Operator.SPACE));
+		_tests.add(new TestData(ng.curr(), "grid-auto-flow", GridAutoFlow.component_values));
+
+		list = tf.createList();
+		list.add(tf.createString("a a a"));
+		list.add(tf.createString("b c c").setOperator(Operator.SPACE));
+		list.add(tf.createString("b c c").setOperator(Operator.SPACE));
+		_tests.add(new TestData(ng.next(), "grid-template-areas", GridTemplateAreas.list_values, list));
+		list = tf.createList();
+		list.add(tf.createLength(1f, Unit.px).setOperator(Operator.SPACE));
+		list.add(tf.createLength(1f, Unit.px).setOperator(Operator.SPACE));
+		list.add(tf.createLength(1f, Unit.px).setOperator(Operator.SPACE));
+		_tests.add(new TestData(ng.curr(), "grid-template-rows", GridTemplateRowsColumns.list_values, list));
+		list = tf.createList();
+		list.add(tf.createLength(2f, Unit.px).setOperator(Operator.SLASH));
+		list.add(tf.createLength(2f, Unit.px).setOperator(Operator.SPACE));
+		list.add(tf.createLength(2f, Unit.px).setOperator(Operator.SPACE));
+		_tests.add(new TestData(ng.curr(), "grid-template-columns", GridTemplateRowsColumns.list_values, list));
 		
-		list.clear();
-		list.add(tf.createLength(1f, Unit.px));
-		list.add(tf.createLength(1f, Unit.px));
-		_tests.put(ng.next(), new ResultInfo("grid-template-columns", GridTemplateRowsColumns.list_values, list));
-		_tests.put(ng.curr(), new ResultInfo("grid-auto-flow", GridAutoFlow.COLUMN));
+		list = tf.createList();
+		list.add(tf.createString("a a a").setOperator(Operator.SPACE));
+		list.add(tf.createString("b c c").setOperator(Operator.SPACE));
+		list.add(tf.createString("b c c").setOperator(Operator.SPACE));
+		_tests.add(new TestData(ng.next(), "grid-template-areas", GridTemplateAreas.list_values, list));
+		list = tf.createList();
+		list.add(tf.createBracketedIdent("name"));
+		list.add(tf.createLength(1f, Unit.px).setOperator(Operator.SPACE));
+		list.add(tf.createLength(1f, Unit.px).setOperator(Operator.SPACE));
+		list.add(tf.createBracketedIdent("name").setOperator(Operator.SPACE));
+		list.add(tf.createLength(1f, Unit.px).setOperator(Operator.SPACE));
+		_tests.add(new TestData(ng.curr(), "grid-template-rows", GridTemplateRowsColumns.list_values, list));
+		list = tf.createList();
+		list.add(tf.createLength(2f, Unit.px).setOperator(Operator.SLASH));
+		list.add(tf.createBracketedIdent("name").setOperator(Operator.SPACE));
+		list.add(tf.createLength(2f, Unit.px).setOperator(Operator.SPACE));
+		list.add(tf.createLength(2f, Unit.px).setOperator(Operator.SPACE));
+		list.add(tf.createBracketedIdent("name").setOperator(Operator.SPACE));
+		_tests.add(new TestData(ng.curr(), "grid-template-columns", GridTemplateRowsColumns.list_values, list));
 		
-		list.clear();
-		list.add(tf.createLength(1f, Unit.px));
-		list.add(tf.createLength(1f, Unit.px));
-		_tests.put(ng.next(), new ResultInfo("grid-template-columns", GridTemplateRowsColumns.list_values, list));
-		list.clear();
-		list.add(tf.createIdent("column"));
-		list.add(tf.createIdent("dense"));
-		_tests.put(ng.curr(), new ResultInfo("grid-auto-flow", GridAutoFlow.component_values));
+		_tests.add(new TestData(ng.next(), "grid-template-areas", null));
+		_tests.add(new TestData(ng.curr(), "grid-template-rows", null));
+		_tests.add(new TestData(ng.curr(), "grid-template-columns", null));
+		
+		_tests.add(new TestData(ng.next(), "grid-template-areas", null));
+		_tests.add(new TestData(ng.curr(), "grid-template-rows", null));
+		_tests.add(new TestData(ng.curr(), "grid-template-columns", null));
+		
+		// grid-area
+		ng.setName("grid-area");
+		_tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.AUTO));
+		_tests.add(new TestData(ng.curr(), "grid-column-start", null));
+		_tests.add(new TestData(ng.curr(), "grid-row-end", null));
+		_tests.add(new TestData(ng.curr(), "grid-column-end", null));
+		
+		_tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.AUTO));
+		_tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.number, tf.createInteger(1)));
+		_tests.add(new TestData(ng.curr(), "grid-row-end", null));
+		_tests.add(new TestData(ng.curr(), "grid-column-end", null));
+		
+		_tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.AUTO));
+		_tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.number, tf.createInteger(1)));
+		_tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.number, tf.createInteger(2)));
+		_tests.add(new TestData(ng.curr(), "grid-column-end", null));
+		
+		_tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.AUTO));
+		_tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.number, tf.createInteger(1)));
+		_tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.number, tf.createInteger(2)));
+		_tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.number, tf.createInteger(3)));
+		
+		// grid-gap
+		ng.setName("grid-gap");
+		_tests.add(new TestData(ng.next(), "grid-row-gap", GridGap.NORMAL));
+		_tests.add(new TestData(ng.curr(), "grid-column-gap", GridGap.NORMAL));
+		
+		_tests.add(new TestData(ng.next(), "grid-row-gap", GridGap.length, tf.createLength(1f, Unit.px)));
+		_tests.add(new TestData(ng.curr(), "grid-column-gap", GridGap.length, tf.createLength(1f, Unit.px)));
+		
+		_tests.add(new TestData(ng.next(), "grid-row-gap", GridGap.length, tf.createLength(1f, Unit.px)));
+		_tests.add(new TestData(ng.curr(), "grid-column-gap", GridGap.length, tf.createLength(1f, Unit.px)));
+		
+		_tests.add(new TestData(ng.next(), "grid-row-gap", GridGap.length, tf.createLength(1f, Unit.px)));
+		_tests.add(new TestData(ng.curr(), "grid-column-gap", GridGap.length, tf.createLength(2f, Unit.px)));
+		
+		_tests.add(new TestData(ng.next(), "grid-row-gap", null));
+		_tests.add(new TestData(ng.curr(), "grid-column-gap", null));
 	}
 
 	@Test
@@ -72,13 +160,30 @@ public class GridLayoutTest {
 			CSSProperty prop;
 			Term<?> term;
 
-			for (Map.Entry<String, ResultInfo> entry : _tests.entrySet()) {
-				System.out.println("Testing " + entry.getKey());
-				String name = entry.getKey();
-				ResultInfo ri = entry.getValue();
-				data = sm.get(elements.getElementById(name));
-				prop = data.getProperty(ri._propertyName);
-				if (!ri._expextedProperty.equals(prop)) {
+//			data = sm.get(elements.getElementById("test"));
+//			checkProperty("grid", data);
+//
+//			checkProperty("grid-row-start", data);
+//			checkProperty("grid-row-end", data);
+//			checkProperty("grid-columns-start", data);
+//			checkProperty("grid-column-end", data);
+//
+//			checkProperty("grid-template-areas", data);
+//			checkProperty("grid-template-rows", data);
+//			checkProperty("grid-template-columns", data);
+//			checkProperty("grid-auto-flow", data);
+//			checkProperty("grid-auto-rows", data);
+//			checkProperty("grid-auto-columns", data);
+
+			for (TestData test : _tests) {
+				System.out.println("Testing " + test._id);
+				String id = test._id;
+				data = sm.get(elements.getElementById(id));
+				prop = data.getProperty(test._propertyName);
+				if (test._expextedProperty != prop) {
+					System.out.println("expected = " + test._expextedProperty);
+					System.out.println("actual = " + prop);
+
 					checkProperty("grid", data);
 
 					checkProperty("grid-row-start", data);
@@ -93,10 +198,28 @@ public class GridLayoutTest {
 					checkProperty("grid-auto-rows", data);
 					checkProperty("grid-auto-columns", data);
 				}
-				Assert.assertEquals(ri._expextedProperty, prop);
-				if (ri._expectedValue != null) {
-					term = data.getValue(name, true);
-					Assert.assertEquals(ri._expectedValue, term);
+				Assert.assertEquals(test._expextedProperty, prop);
+				if (test._expectedValue != null) {
+					term = data.getValue(test._propertyName, true);
+					if (!test._expectedValue.equals(term)) {
+						System.out.println("expected = " + test._expectedValue);
+						System.out.println("actual = " + term);
+
+						checkProperty("grid", data);
+
+						checkProperty("grid-row-start", data);
+						checkProperty("grid-row-end", data);
+						checkProperty("grid-columns-start", data);
+						checkProperty("grid-column-end", data);
+
+						checkProperty("grid-template-areas", data);
+						checkProperty("grid-template-rows", data);
+						checkProperty("grid-template-columns", data);
+						checkProperty("grid-auto-flow", data);
+						checkProperty("grid-auto-rows", data);
+						checkProperty("grid-auto-columns", data);
+					}
+					Assert.assertEquals(test._expectedValue, term);
 				}
 			}
 
@@ -122,17 +245,19 @@ public class GridLayoutTest {
 		System.out.println();
 	}
 
-	private static class ResultInfo {
+	private static class TestData {
 
+		private final String _id;
 		private final String _propertyName;
 		private final CSSProperty _expextedProperty;
 		private final Object _expectedValue;
 
-		private ResultInfo(String propertyName, CSSProperty expextedProperty) {
-			this(propertyName, expextedProperty, null);
+		private TestData(String id, String propertyName, CSSProperty expextedProperty) {
+			this(id, propertyName, expextedProperty, null);
 		}
 
-		private ResultInfo(String propertyName, CSSProperty expextedProperty, Object expectedValue) {
+		private TestData(String id, String propertyName, CSSProperty expextedProperty, Object expectedValue) {
+			_id = id;
 			_propertyName = propertyName;
 			_expextedProperty = expextedProperty;
 			_expectedValue = expectedValue;
