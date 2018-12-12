@@ -337,7 +337,7 @@ public interface CSSProperty {
 	}
 
 	public enum BackgroundImage implements CSSProperty {
-		uri(""), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+		uri(""), gradient(""), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 

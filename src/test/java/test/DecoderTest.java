@@ -14,13 +14,16 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.CSSProperty.BackgroundSize;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermLength;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumeric.Unit;
+import cz.vutbr.web.csskit.fn.LinearGradientImpl;
 import cz.vutbr.web.css.TermPercent;
 import cz.vutbr.web.domassign.StyleMap;
 
@@ -76,6 +79,20 @@ public class DecoderTest
         assertEquals(stripOperator((TermLength) data.getValue(TermList.class, "background-size").get(0)), tf.createLength(20.0f, Unit.px));
         assertEquals(data.getValue(TermList.class, "background-size").get(1), tf.createIdent("auto"));
         assertEquals(data.getValue(TermColor.class, "background-color"), tf.createColor(0, 128, 0));
+        
+        data = decl.get(elements.getElementById("bg4"));
+        assertNotNull("Data for #bg4 exist", data);
+        assertEquals("background-image is a gradient", CSSProperty.BackgroundImage.gradient, data.getProperty("background-image"));
+        TermFunction.Gradient fn = data.getValue(TermFunction.Gradient.class, "background-image");
+        assertEquals(LinearGradientImpl.class, fn.getClass());
+        assertEquals("Angle", tf.createAngle("0.25", Unit.turn, 1), ((LinearGradientImpl) fn).getAngle());
+        
+        data = decl.get(elements.getElementById("bg5"));
+        assertNotNull("Data for #bg5 exist", data);
+        assertEquals("background-image is a gradient", CSSProperty.BackgroundImage.gradient, data.getProperty("background-image"));
+        fn = data.getValue(TermFunction.Gradient.class, "background-image");
+        assertEquals(LinearGradientImpl.class, fn.getClass());
+        assertEquals("Angle", tf.createAngle("0.25", Unit.turn, 1), ((LinearGradientImpl) fn).getAngle());
     }
     
     private TermLength stripOperator(TermLength src) {

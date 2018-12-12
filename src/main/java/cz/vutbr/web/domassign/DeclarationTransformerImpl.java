@@ -2596,9 +2596,12 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 			case IMAGE:
 				return genericTermIdent(types.get(IMAGE), terms.get(i),
 						AVOID_INH, names.get(IMAGE), properties)
-						|| genericTerm(TermURI.class, terms.get(i), names
-								.get(IMAGE), BackgroundImage.uri, ValueRange.ALLOW_ALL,
-								properties, values);
+						|| genericTerm(TermURI.class, terms.get(i), names.get(IMAGE),
+						        BackgroundImage.uri, ValueRange.ALLOW_ALL,
+								properties, values)
+                        || genericTerm(TermFunction.Gradient.class, terms.get(i), names.get(IMAGE),
+                                BackgroundImage.gradient, ValueRange.ALLOW_ALL,
+                                properties, values);
 			case REPEAT:
 				return genericTermIdent(types.get(REPEAT), terms.get(i),
 						AVOID_INH, names.get(REPEAT), properties);
