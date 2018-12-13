@@ -273,6 +273,7 @@ public class SupportedCSS3 implements SupportedCSS {
         props.put("overflow-y", Overflow.VISIBLE);
 		props.put("clip", Clip.AUTO);
 		props.put("box-sizing", BoxSizing.CONTENT_BOX);
+		props.put("box-shadow", BoxShadow.NONE);
 
 		// positioning
 		props.put("display", Display.INLINE);

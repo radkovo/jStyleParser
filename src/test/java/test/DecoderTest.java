@@ -5,6 +5,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -94,6 +97,35 @@ public class DecoderTest
         assertEquals(LinearGradientImpl.class, fn.getClass());
         assertEquals("Angle", tf.createAngle("0.25", Unit.turn, 1), ((LinearGradientImpl) fn).getAngle());
     }
+
+    @Test
+    public void boxShadow() throws SAXException, IOException {
+
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/advanced/boxshadow.html"));
+        Document doc = ds.parse();
+        ElementMap elements = new ElementMap(doc);
+
+        StyleMap decl = CSSFactory.assignDOM(doc, null, getClass().getResource("/advanced/boxshadow.html"), "screen", true);
+
+        Map<String, Integer> elementsToCheck = new LinkedHashMap<>();
+        elementsToCheck.put("shadow1", 4);
+        elementsToCheck.put("shadow2", 4);
+        elementsToCheck.put("shadow3", 5);
+        elementsToCheck.put("shadow4", 6);
+        elementsToCheck.put("shadow5", 2);
+        elementsToCheck.put("shadow_multi1", 8);
+        elementsToCheck.put("shadow_multi2", 7);
+        elementsToCheck.put("shadow_multi3", 12);
+
+        for (Map.Entry<String, Integer> entry : elementsToCheck.entrySet()) {
+            NodeData data = decl.get(elements.getElementById(entry.getKey()));
+            assertNotNull("Data for #" + entry.getKey() + " exists", data);
+            TermList value = data.getValue(TermList.class, "box-shadow");
+            assertNotNull("TermList for #" + entry.getKey() + " exists", value);
+            assertEquals("parsed all components of shadow for #" + entry.getKey(), (int)entry.getValue(), value.size());
+        }
+    }
+
     
     private TermLength stripOperator(TermLength src) {
         src.setOperator(null);

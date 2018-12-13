@@ -32,6 +32,7 @@ import cz.vutbr.web.css.CSSProperty.BorderStyle;
 import cz.vutbr.web.css.CSSProperty.BorderWidth;
 import cz.vutbr.web.css.CSSProperty.Bottom;
 import cz.vutbr.web.css.CSSProperty.BoxSizing;
+import cz.vutbr.web.css.CSSProperty.BoxShadow;
 import cz.vutbr.web.css.CSSProperty.CaptionSide;
 import cz.vutbr.web.css.CSSProperty.Clear;
 import cz.vutbr.web.css.CSSProperty.Clip;
@@ -2091,7 +2092,55 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
             return true;
         }
     }
-    
+
+    @SuppressWarnings("unused")
+    private boolean processBoxShadow(Declaration d,
+            Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+
+        // single boxshadow: none, or global ones
+        if (d.size() == 1 && genericOneIdent(BoxShadow.class, d, properties)) {
+            return true;
+        } else {
+            TermList list = tf.createList();
+
+            int lengthCount = 0;
+            boolean encounteredColor = false;
+            boolean encounteredInset = false;
+            for (Term<?> t : d.asList()) {
+				Operator operator = t.getOperator();
+				if (operator == Operator.COMMA) {
+            		if (lengthCount < 2) {
+            			return false;
+					}
+            		lengthCount = 0;
+            		encounteredColor = false;
+            		encounteredInset = false;
+				} else if (operator != null && operator != Operator.SPACE) {
+            		return false;
+				}
+
+                if (t instanceof TermLength && lengthCount < 4) {
+					lengthCount++;
+				} else if (t instanceof TermColor && !encounteredColor) {
+					encounteredColor = true;
+				} else if (t instanceof TermIdent && !encounteredInset && "inset".equalsIgnoreCase(((TermIdent)t).getValue())) {
+					encounteredInset = true;
+				} else {
+					return false;
+				}
+				list.add(t);
+            }
+
+            if (lengthCount < 2) {
+				return false;
+			}
+
+            properties.put("box-shadow", BoxShadow.list_values);
+            values.put("box-shadow", list);
+            return true;
+        }
+    }
+
 	/**
 	 * Variator for list style. Grammar:
 	 * 

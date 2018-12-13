@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Box shadow test</title>
+<style type="text/css">
+    div {
+      min-height: 50px;
+      margin-bottom: 50px;
+      background-color: #eee;
+    }
+	#shadow1 {
+		box-shadow: 10px 5px 5px red;
+	}
+
+	#shadow2 {
+		box-shadow: inset 5em 1em rgba(0, 0, 255, .2);
+	}
+
+	#shadow3 {
+		box-shadow: rgba(0, 0, 255, .2) 5em 1em 10px 5px;
+	}
+
+	#shadow4 {
+		box-shadow: rgba(0, 0, 255, .2) inset 5em 1em 10px 5px;
+	}
+
+	#shadow5 {
+		box-shadow: 0 1px;
+	}
+
+	#shadow_multi1 {
+		box-shadow: 3px 3px #eee, inset -1em 0 .4em olive;
+	}
+
+	#shadow_multi2 {
+		box-shadow: 3px 3px #eee, 10px 0 .4em olive;
+	}
+
+	#shadow_multi3 {
+		box-shadow: 3px 3px rgb(3,3,3) , 10px 0 .4em olive, green -5em 5em 5em 5em;
+	}
+</style>
+</head>
+<body>
+  <div id="shadow1">Red shadow</div>
+  <div id="shadow2">Inset shadow</div>
+  <div id="shadow3">Shadow with spread distance</div>
+  <div id="shadow4">Shadow with all components</div>
+  <div id="shadow5">Shadow with only 2 components</div>
+  <div id="shadow_multi1">Multiple shadows</div>
+  <div id="shadow_multi2">Multiple shadows</div>
+  <div id="shadow_multi3">Multiple shadows</div>
+</body>
+</html>
