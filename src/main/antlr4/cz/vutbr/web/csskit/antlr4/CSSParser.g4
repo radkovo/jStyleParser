@@ -326,7 +326,7 @@ valuepart
         | (PLUS | MINUS)? funct
         | COMMA
         | SLASH
-        | bracketed_ident
+        | bracketed_idents
         | CLASSKEYWORD //invalid
         | UNIRANGE //invalid
         | INCLUDES //invalid
@@ -458,12 +458,21 @@ string
         log.error("PARSING string ERROR | should be empty");
     }
 
-bracketed_ident
-	: LBRACKET S* MINUS? IDENT S* RBRACKET
+bracketed_idents
+	: LBRACKET S* ident_list_item* RBRACKET
 	| INVALID_STATEMENT
 	;
 	catch [RecognitionException re] {
-		log.error("Recognition exception | bracketed_ident | empty");
+		log.error("Recognition exception | bracketed_idents | empty");
+		_localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,""));
+	}
+
+ident_list_item
+	: MINUS? IDENT S*
+	| INVALID_STATEMENT
+	;
+	catch [RecognitionException re] {
+		log.error("Recognition exception | ident_list_item | empty");
 		_localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT,""));
 	}
 

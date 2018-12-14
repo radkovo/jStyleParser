@@ -3,7 +3,8 @@ package cz.vutbr.web.csskit.antlr4;
 import cz.vutbr.web.css.*;
 import cz.vutbr.web.css.Selector.PseudoElement;
 import cz.vutbr.web.csskit.RuleArrayList;
-import cz.vutbr.web.csskit.antlr4.CSSParser.Bracketed_identContext;
+import cz.vutbr.web.csskit.antlr4.CSSParser.Bracketed_identsContext;
+import cz.vutbr.web.csskit.antlr4.CSSParser.Ident_list_itemContext;
 
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -1016,9 +1017,9 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             } else {
                 declaration_stack.peek().invalid = true;
             }
-        } else if (ctx.bracketed_ident() != null) {
-            log.debug("VP - bracketed_ident");
-            terms_stack.peek().term = (TermBracketedIdent) visitBracketed_ident(ctx.bracketed_ident());
+        } else if (ctx.bracketed_idents() != null) {
+            log.debug("VP - bracketed_idents");
+            terms_stack.peek().term = (TermBracketedIdents) visitBracketed_idents(ctx.bracketed_idents());
             if (terms_stack.peek().term == null)
                 declaration_stack.peek().invalid = true; //invalid bracketed ident - invalidate the whole declaration
         } else {
@@ -1152,7 +1153,26 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     }
 
     @Override
-    public Object visitBracketed_ident(Bracketed_identContext ctx) {
+    public Object visitBracketed_idents(Bracketed_identsContext ctx) {
+        if (ctx.INVALID_STATEMENT() != null) {
+            log.debug("VP - ident invalid");
+            return null;
+        }
+        TermBracketedIdents ret = tf.createBracketedIdents();
+        if (ctx.ident_list_item() != null) {
+            for (Ident_list_itemContext ictx : ctx.ident_list_item()) {
+                TermIdent t = (TermIdent) visitIdent_list_item(ictx);
+                if (t != null)
+                    ret.add(t);
+                else
+                    return null;
+            }
+        }
+        return ret;
+    }
+
+    @Override
+    public Object visitIdent_list_item(Ident_list_itemContext ctx) {
         boolean dash = false;
         if (ctx.INVALID_STATEMENT() != null) {
             log.debug("VP - ident invalid");
@@ -1162,8 +1182,8 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             dash = true;
         }
         if (ctx.IDENT() != null) {
-            log.debug("VP - ident");
-            return tf.createBracketedIdent(extractTextUnescaped(ctx.IDENT().getText()), dash);
+            log.debug("VP - ident item");
+            return tf.createIdent(extractTextUnescaped(ctx.IDENT().getText()), dash);
         }
         else
             return null;

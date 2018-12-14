@@ -28,8 +28,8 @@ public interface TermFactory {
 	
 	TermIdent createIdent(String value);
     TermIdent createIdent(String value, boolean dash);
-    TermBracketedIdent createBracketedIdent(String value);
-    TermBracketedIdent createBracketedIdent(String value, boolean dash);
+    TermBracketedIdents createBracketedIdents();
+    TermBracketedIdents createBracketedIdents(int initialSize);
 	
 	TermInteger createInteger(Integer value);
 	TermInteger createInteger(String value, int unary);

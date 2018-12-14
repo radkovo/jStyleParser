@@ -20,7 +20,7 @@ import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.Term;
-import cz.vutbr.web.css.TermBracketedIdent;
+import cz.vutbr.web.css.TermBracketedIdents;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermInteger;
@@ -102,6 +102,7 @@ public class SimpleTest {
 	public static final String TEST_URI1 = "BODY { background-image: url(image.jpg); } ";
 	
 	public static final String TEST_BRACKETED_IDENT = "p { grid: [ -linename1 ]  \"a\" 100px [linename2]; }";
+    public static final String TEST_BRACKETED_IDENTS = "p { grid: [ -linename1 linename2 ]  \"a\" 100px [linename2]; }";
 
 	// Test case for issue #55
 	public static final String TEST_POSITIVE_NUMBER1 = "p { text-indent: +10px; }";
@@ -360,10 +361,28 @@ public class SimpleTest {
         assertEquals("There is one declaration", 1, ss.get(0).size());
         assertEquals("Four terms", 4, dec.size());
         
-        assertTrue("Term[0] type is BracketedIdent", dec.get(0) instanceof TermBracketedIdent);
-        assertEquals("Term[0] value is correct", "-linename1", dec.get(0).getValue());
-        assertTrue("Term[3] type is BracketedIdent", dec.get(3) instanceof TermBracketedIdent);
-        assertEquals("Term[3] value is correct", "linename2", dec.get(3).getValue());
+        assertTrue("Term[0] type is BracketedIdents", dec.get(0) instanceof TermBracketedIdents);
+        assertEquals("Term[0] : There is one ident", 1, ((TermBracketedIdents) dec.get(0)).size());
+        assertEquals("Term[0] : Identifier value is correct", "-linename1", ((TermBracketedIdents) dec.get(0)).get(0).getValue());
+        assertTrue("Term[3] type is BracketedIdents", dec.get(3) instanceof TermBracketedIdents);
+        assertEquals("Term[3] : There is one ident", 1, ((TermBracketedIdents) dec.get(3)).size());
+        assertEquals("Term[3] : Identifier value is correct", "linename2", ((TermBracketedIdents) dec.get(3)).get(0).getValue());
+    }   
+
+    @Test
+    public void testBracketedIdents() throws IOException, CSSException   {
+        
+        StyleSheet ss = CSSFactory.parseString(TEST_BRACKETED_IDENTS, null);
+        assertEquals("There is one rule", 1, ss.size());
+        
+        Declaration dec = (Declaration) ss.get(0).get(0);
+        assertEquals("There is one declaration", 1, ss.get(0).size());
+        assertEquals("Four terms", 4, dec.size());
+        
+        assertTrue("Term[0] type is BracketedIdents", dec.get(0) instanceof TermBracketedIdents);
+        assertEquals("Term[0] : There are two idents", 2, ((TermBracketedIdents) dec.get(0)).size());
+        assertEquals("Term[0] : Identifier1 value is correct", "-linename1", ((TermBracketedIdents) dec.get(0)).get(0).getValue());
+        assertEquals("Term[0] : Identifier2 value is correct", "linename2", ((TermBracketedIdents) dec.get(0)).get(1).getValue());
     }   
 
 	// Test for issue #55
