@@ -1,5 +1,3 @@
-/*
- */
 
 package cz.vutbr.web.domassign;
 
@@ -13,7 +11,7 @@ import java.util.regex.Pattern;
 
 /**
  *
- * @author Petr Mikulík <dexterdd77@gmail.com>
+ * @author Petr Mikulík
  */
 public class ValidationUtils {
 	

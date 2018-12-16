@@ -1,3 +1,4 @@
+
 package test;
 
 import cz.vutbr.web.css.CSSFactory;
@@ -24,7 +25,7 @@ import org.w3c.dom.Document;
 
 /**
  *
- * @author Petr Mikulík <dexterdd77@gmail.com>
+ * @author Petr Mikulík
  */
 public class GridLayoutTest {
 
@@ -181,6 +182,7 @@ public class GridLayoutTest {
 				data = sm.get(elements.getElementById(id));
 				prop = data.getProperty(test._propertyName);
 				if (test._expextedProperty != prop) {
+					// @TODO erase after debug
 					System.out.println("expected = " + test._expextedProperty);
 					System.out.println("actual = " + prop);
 
@@ -202,6 +204,7 @@ public class GridLayoutTest {
 				if (test._expectedValue != null) {
 					term = data.getValue(test._propertyName, true);
 					if (!test._expectedValue.equals(term)) {
+						// @TODO erase after debug
 						System.out.println("expected = " + test._expectedValue);
 						System.out.println("actual = " + term);
 
