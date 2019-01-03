@@ -12,7 +12,7 @@ import org.w3c.dom.Document;
 
 /**
  *
- * @author Petr Mikulík <dexterdd77@gmail.com>
+ * @author Petr Mikulík
  */
 public class BoxShadowTest {
 
@@ -37,7 +37,9 @@ public class BoxShadowTest {
 		"inset_spread",
 		"inset_color",
 		"inset_blur_color",
-		"inset_spread_color"
+		"inset_spread_color",
+		"multiple_0",
+		"multiple_1"
 	};
 
 	private static final String[] INVALID = new String[]{

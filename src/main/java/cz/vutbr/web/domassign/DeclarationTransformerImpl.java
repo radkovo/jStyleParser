@@ -1126,44 +1126,60 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	 * width - ignorace celé deklarace rollbackTransaction(trans); return false;
 	 * } return true; }
 	 */
-	
-	@SuppressWarnings("unused")
+		@SuppressWarnings("unused")
 	private boolean processBoxShadow(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
- 		if (d.size() == 1 && genericOneIdent(BoxShadow.class, d, properties)) {
+		if (d.size() == 1 && genericOneIdent(BoxShadow.class, d, properties)) {
 			return true;
 		}
- 		// inset | offset-x | offset-y | blur-radius | spread-radius | color
+		// inset | offset-x | offset-y | blur-radius | spread-radius | color
 		// TermIdent? TermLenght TermLenght TermLength? TermLength? TermColor?
 		TermList list = tf.createList();
-		Term<?>[] terms = d.toArray(new Term<?>[0]);
- 		int lengthCount = 0;
-		for (int i = 0; i < terms.length; i++) {
-			Term t = terms[i];
-			if (i == 0 && t instanceof TermIdent
-					&& ((TermIdent) t).getValue().toLowerCase().equals("inset")) {
-				list.add(t);
-			} else if (t instanceof TermLength) {
-				list.add(t);
-				lengthCount++;
-			} else if (i == terms.length - 1 && t instanceof TermColor) {
-				list.add(t);
-			} else {
+
+		int lengthCount = 0;
+		boolean colorBefore = false;
+		int oneShadowTermCount = 0;
+
+		for (Term t : d.asList()) {
+			if (t.getOperator() == Operator.COMMA) {
+				if (lengthCount < 2) {
+					return false;
+				}
+				lengthCount = 0;
+			} else if (colorBefore) {
 				return false;
 			}
+
+			if (t instanceof TermColor) {
+				colorBefore = true;
+			} else {
+				colorBefore = false;
+				if (t instanceof TermLength) {
+					if (lengthCount >= 4) {
+						return false;
+					}
+					lengthCount++;
+				} else if (oneShadowTermCount == 0 && t instanceof TermIdent
+						&& ((TermIdent) t).getValue().equalsIgnoreCase("inset")) {
+				} else {
+					return false;
+				}
+			}
+			oneShadowTermCount++;
+			list.add(t);
 		}
-		
-		if (list.isEmpty() || lengthCount < 2 || lengthCount > 4) {
+
+		if (lengthCount < 2) {
 			return false;
 		}
- 		properties.put(d.getProperty(), BoxShadow.component_values);
+		properties.put(d.getProperty(), BoxShadow.component_values);
 		values.put(d.getProperty(), list);
 		return true;
 	}
 
-    @SuppressWarnings("unused")
-    private boolean processBoxSizing(Declaration d,
-            Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+	@SuppressWarnings("unused")
+	private boolean processBoxSizing(Declaration d,
+			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
         return genericOneIdent(BoxSizing.class, d, properties);
     }
     
