@@ -37,7 +37,6 @@ public class GridLayoutTest {
 		NameGenerator ng = new NameGenerator("grid");
 		TermList list = tf.createList();
 
-		// grid
 		_tests.add(new TestData(ng.next(), "grid", Grid.NONE));
 
 		list.add(tf.createLength(1f, Unit.fr).setOperator(Operator.SLASH));
@@ -109,7 +108,6 @@ public class GridLayoutTest {
 		_tests.add(new TestData(ng.curr(), "grid-template-rows", null));
 		_tests.add(new TestData(ng.curr(), "grid-template-columns", null));
 		
-		// grid-area
 		ng.setName("grid-area");
 		_tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.AUTO));
 		_tests.add(new TestData(ng.curr(), "grid-column-start", null));
@@ -117,21 +115,75 @@ public class GridLayoutTest {
 		_tests.add(new TestData(ng.curr(), "grid-column-end", null));
 		
 		_tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.AUTO));
+		_tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.AUTO));
+		_tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.AUTO));
+		_tests.add(new TestData(ng.curr(), "grid-column-end", null));
+		
+		_tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.AUTO));
 		_tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.number, tf.createInteger(1)));
+		_tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.identificator, tf.createIdent("IDENT")));
+		list = tf.createList();
+		list.add(tf.createIdent("span").setOperator(Operator.SLASH));
+		list.add(tf.createInteger(3).setOperator(Operator.SPACE));
+		_tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.component_values, list));
+		
+		_tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.AUTO));
+		_tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.number, tf.createInteger(1)));
+		list = tf.createList();
+		list.add(tf.createIdent("span").setOperator(Operator.SLASH));
+		list.add(tf.createIdent("IDENT").setOperator(Operator.SPACE));
+		list.add(tf.createInteger(3).setOperator(Operator.SPACE));
+		_tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.component_values, list));
+		list = tf.createList();
+		list.add(tf.createIdent("span").setOperator(Operator.SLASH));
+		list.add(tf.createInteger(3).setOperator(Operator.SPACE));
+		list.add(tf.createIdent("IDENT").setOperator(Operator.SPACE));
+		_tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.component_values, list));
+		
+		_tests.add(new TestData(ng.next(), "grid-row-start", null));
+		_tests.add(new TestData(ng.curr(), "grid-column-start", null));
 		_tests.add(new TestData(ng.curr(), "grid-row-end", null));
 		_tests.add(new TestData(ng.curr(), "grid-column-end", null));
 		
+		ng.setName("grid-row");
 		_tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.AUTO));
-		_tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.number, tf.createInteger(1)));
-		_tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.number, tf.createInteger(2)));
+		_tests.add(new TestData(ng.curr(), "grid-row-end", null));
+		
+		list = tf.createList();
+		list.add(tf.createIdent("span"));
+		list.add(tf.createIdent("IDENT").setOperator(Operator.SPACE));
+		list.add(tf.createInteger(2).setOperator(Operator.SPACE));
+		_tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.component_values, list));
+		_tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.number, tf.createInteger(3)));
+		
+		_tests.add(new TestData(ng.next(), "grid-row-start", null));
+		_tests.add(new TestData(ng.curr(), "grid-row-end", null));
+		
+		ng.setName("grid-column");
+		_tests.add(new TestData(ng.next(), "grid-column-start", GridStartEnd.AUTO));
 		_tests.add(new TestData(ng.curr(), "grid-column-end", null));
 		
-		_tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.AUTO));
-		_tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.number, tf.createInteger(1)));
-		_tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.number, tf.createInteger(2)));
+		list = tf.createList();
+		list.add(tf.createIdent("span"));
+		list.add(tf.createInteger(2).setOperator(Operator.SPACE));
+		list.add(tf.createIdent("IDENT").setOperator(Operator.SPACE));
+		_tests.add(new TestData(ng.next(), "grid-column-start", GridStartEnd.component_values, list));
 		_tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.number, tf.createInteger(3)));
 		
-		// grid-gap
+		_tests.add(new TestData(ng.next(), "grid-column-start", null));
+		_tests.add(new TestData(ng.curr(), "grid-column-end", null));
+		
+		_tests.add(new TestData("grid-row-start", "grid-row-start", GridStartEnd.NONE));
+		
+		_tests.add(new TestData("grid-row-end", "grid-row-end", GridStartEnd.AUTO));
+		
+		_tests.add(new TestData("grid-column-start", "grid-column-start", GridStartEnd.number, tf.createInteger(1)));
+		
+		list = tf.createList();
+		list.add(tf.createIdent("span"));
+		list.add(tf.createInteger(2).setOperator(Operator.SPACE));
+		_tests.add(new TestData("grid-column-end", "grid-column-end", GridStartEnd.component_values, list));
+		
 		ng.setName("grid-gap");
 		_tests.add(new TestData(ng.next(), "grid-row-gap", GridGap.NORMAL));
 		_tests.add(new TestData(ng.curr(), "grid-column-gap", GridGap.NORMAL));
@@ -147,6 +199,31 @@ public class GridLayoutTest {
 		
 		_tests.add(new TestData(ng.next(), "grid-row-gap", null));
 		_tests.add(new TestData(ng.curr(), "grid-column-gap", null));
+		
+		ng.setName("grid-row-gap");
+		_tests.add(new TestData(ng.next(), "grid-row-gap", GridGap.NORMAL));
+		
+		_tests.add(new TestData(ng.next(), "grid-row-gap", GridGap.length, tf.createLength(1f, Unit.px)));
+		
+		_tests.add(new TestData(ng.next(), "grid-row-gap", null));
+		
+		ng.setName("grid-column-gap");
+		_tests.add(new TestData(ng.next(), "grid-column-gap", GridGap.NORMAL));
+		
+		_tests.add(new TestData(ng.next(), "grid-column-gap", GridGap.length, tf.createLength(1f, Unit.px)));
+		
+		_tests.add(new TestData(ng.next(), "grid-column-gap", null));
+		
+		
+		ng.setName("grid-template");
+		ng.setName("grid-template-areas");
+		ng.setName("grid-template-rows");
+		ng.setName("grid-template-columns");
+		
+		ng.setName("grid-auto-flow");
+		ng.setName("grid-auto-rows");
+		ng.setName("grid-auto-columns");
+		
 	}
 
 	@Test
@@ -160,21 +237,6 @@ public class GridLayoutTest {
 			NodeData data;
 			CSSProperty prop;
 			Term<?> term;
-
-//			data = sm.get(elements.getElementById("test"));
-//			checkProperty("grid", data);
-//
-//			checkProperty("grid-row-start", data);
-//			checkProperty("grid-row-end", data);
-//			checkProperty("grid-columns-start", data);
-//			checkProperty("grid-column-end", data);
-//
-//			checkProperty("grid-template-areas", data);
-//			checkProperty("grid-template-rows", data);
-//			checkProperty("grid-template-columns", data);
-//			checkProperty("grid-auto-flow", data);
-//			checkProperty("grid-auto-rows", data);
-//			checkProperty("grid-auto-columns", data);
 
 			for (TestData test : _tests) {
 				System.out.println("Testing " + test._id);

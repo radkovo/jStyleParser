@@ -2303,18 +2303,16 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 			lists[i] = tf.createList();
 		}
 		int listIndex = 0;
-		int spanIndex = -1;
-		int valueIndex = -1;
-		int identIndex = -1;
+		boolean valueSet = false;
+		boolean identSet = false;
 		boolean enumSet = false;
 		
-		for (int i = 0; i < d.size(); i++) {
-			Term t = d.get(i);
+		for (Term t : d.asList()) {
 			if (t.getOperator() == Term.Operator.SLASH) {
-					listIndex++;
-					spanIndex = -1;
-					valueIndex = -1;
-					identIndex = -1;
+				listIndex++;
+				valueSet = false;
+				identSet = false;
+				enumSet = false;
 				if (listIndex >= n) {
 					return false;
 				}
@@ -2323,16 +2321,15 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 				CSSProperty property = genericPropertyRaw(GridStartEnd.class, null, (TermIdent) t);
 				if ((GridStartEnd.NONE.equals(property) || GridStartEnd.AUTO.equals(property)) && lists[listIndex].isEmpty()) {
 					enumSet = true;
-				} else if (GridStartEnd.SPAN.equals(property) && spanIndex < 0) {
-					spanIndex = i;
-				} else if (property == null && !enumSet && identIndex < 0 && (spanIndex < 0 || valueIndex < 0 || spanIndex < valueIndex)) {
-					identIndex = i;
+				} else if (GridStartEnd.SPAN.equals(property) && lists[listIndex].isEmpty()) {
+					// spanSet
+				} else if (property == null && !enumSet && !identSet) {
+					identSet = true;
 				} else {
 					return false;
 				}
-			} else if (t instanceof TermInteger && ((TermInteger) t).getIntValue() != 0
-					&& valueIndex < 0 && (identIndex < 0 || identIndex > spanIndex)) {
-				valueIndex = i;
+			} else if (t instanceof TermInteger && ((TermInteger) t).getIntValue() != 0 && !valueSet && !enumSet) {
+				valueSet = true;
 			} else {
 				return false;
 			}
