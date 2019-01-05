@@ -21,17 +21,17 @@
 							"b c c" 1px
 							"b c c" 1px / 2px 2px 2px;}	
 
-			#grid-area0 {grid-area: auto;}
-			#grid-area1 {grid-area: auto / auto / auto;}
+			#grid-area0 {grid-area: none;}
+			#grid-area1 {grid-area: none / none / none;}
 			#grid-area2 {grid-area: auto / 1 / IDENT / span 3;}
 			#grid-area3 {grid-area: auto / 1 / span IDENT 3 / span 3 IDENT;}
 			#grid-area4 {grid-area: 0 / 1 / 2 / 3;}
 			
-			#grid-row0 {grid-row: auto;}
+			#grid-row0 {grid-row: none;}
 			#grid-row1 {grid-row: span IDENT 2 / 3;}
 			#grid-row2 {grid-row: IDENT span;}
 			
-			#grid-column0 {grid-column: auto;}
+			#grid-column0 {grid-column: none;}
 			#grid-column1 {grid-column: span 2 IDENT / 3;}
 			#grid-column2 {grid-column: 1 span;}
 			
@@ -54,6 +54,50 @@
 			#grid-column-gap1 {grid-column-gap: 1px;}
 			#grid-column-gap2 {grid-columngap: -1px;}
 			
+			#grid-template0 {grid-template: none;}
+			#grid-template1 {grid-template: "a a a" 1px
+											"b c c" 1px
+											"b c c" 1px / 2px 2px 2px;}
+			#grid-template2 {grid-template: [name]"a a a" 1px
+											"b c c" 1px [name]
+											"b c c" 1px / 2px [name] 2px 2px [name];}
+			#grid-template3 {grid-template: "a a a" 1px
+											"b c c" 1px 1px
+											"b c c" 1px / 2px 2px 2px;}
+			
+			#grid-template-areas0 {grid-template-areas: none;}
+			#grid-template-areas1 {grid-template-areas: "a a a"
+														"b c c"
+														"b c c";}
+			#grid-template-areas2 {grid-template-areas: "a a a"
+														"b . c"
+														"b c c";}
+			
+			#grid-template-rows0 {grid-template-rows: auto;}
+			#grid-template-rows1 {grid-template-rows: 1px;}
+			#grid-template-rows2 {grid-template-rows: [name] 1fr 2fr;}
+			#grid-template-rows3 {grid-template-rows: 1fr, 2fr;}
+			
+			#grid-template-columns0 {grid-template-columns: auto;}
+			#grid-template-columns1 {grid-template-columns: 1px;}
+			#grid-template-columns2 {grid-template-columns: [name] 1fr 2fr;}
+			#grid-template-columns3 {grid-template-columns: 1fr, 2fr;}
+			
+			#grid-auto-flow0 {grid-auto-flow: column;}
+			#grid-auto-flow1 {grid-auto-flow: column dense;}
+			#grid-auto-flow2 {grid-auto-flow: dense row;}
+			#grid-auto-flow3 {grid-auto-flow: column row;}
+			#grid-auto-flow4 {grid-auto-flow: dense row dense;}
+			
+			#grid-auto-rows0 {grid-auto-rows: min-content;}
+			#grid-auto-rows1 {grid-auto-rows: 10% max-content 1fr;}
+			#grid-auto-rows2 {grid-auto-rows: -1px;}
+			#grid-auto-rows3 {grid-auto-rows: 10% max-content -1fr;}
+			
+			#grid-auto-columns0 {grid-auto-columns: max-content;}
+			#grid-auto-columns1 {grid-auto-columns: 20% min-content 2fr;}
+			#grid-auto-columns2 {grid-auto-columns: -1px;}
+			#grid-auto-columns3 {grid-auto-columns: -10% min-content 1f;}
 			
         </style>
     </head>
@@ -103,6 +147,40 @@
                 <li id="grid-column-gap1"></li>
                 <li id="grid-column-gap2"></li>
 				
+                <li id="grid-template0"></li>
+                <li id="grid-template1"></li>
+                <li id="grid-template2"></li>
+                <li id="grid-template3"></li>
+				
+                <li id="grid-template-areas0"></li>
+                <li id="grid-template-areas1"></li>
+                <li id="grid-template-areas2"></li>
+				
+                <li id="grid-template-rows0"></li>
+                <li id="grid-template-rows1"></li>
+                <li id="grid-template-rows2"></li>
+                <li id="grid-template-rows3"></li>
+				
+                <li id="grid-template-columns0"></li>
+                <li id="grid-template-columns1"></li>
+                <li id="grid-template-columns2"></li>
+                <li id="grid-template-columns3"></li>
+				
+                <li id="grid-auto-flow0"></li>
+                <li id="grid-auto-flow1"></li>
+                <li id="grid-auto-flow2"></li>
+                <li id="grid-auto-flow3"></li>
+                <li id="grid-auto-flow4"></li>
+				
+                <li id="grid-auto-rows0"></li>
+                <li id="grid-auto-rows1"></li>
+                <li id="grid-auto-rows2"></li>
+                <li id="grid-auto-rows3"></li>
+				
+                <li id="grid-auto-columns0"></li>
+                <li id="grid-auto-columns1"></li>
+                <li id="grid-auto-columns2"></li>
+                <li id="grid-auto-columns3"></li>
             </ul>
         </div>
     </body>

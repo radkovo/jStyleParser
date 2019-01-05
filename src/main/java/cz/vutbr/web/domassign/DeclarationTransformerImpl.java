@@ -2172,9 +2172,6 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 		if(d.isEmpty()) {
 			return false;
 		}
-		if (genericOneIdent(Grid.class, d, properties)) {
-			return Grid.NONE.equals(properties.get(d.getProperty()));
-		}
 		
 		// <'grid-template'> 
 		// | <'grid-template-rows'> / [ auto-flow && dense? ] <'grid-auto-columns'>?
@@ -2676,7 +2673,15 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 				if(property == null) {
 					return false;
 				}
-			} else if (!(t instanceof TermLength) && !(t instanceof TermPercent)) {
+			} else if (t instanceof TermLength) {
+				if(((TermLength) t).getValue() < 0) {
+					return false;
+				}
+			} else if (t instanceof TermPercent) {
+				if(((TermPercent) t).getValue() < 0) {
+					return false;
+				}
+			} else {
 				return false;
 			}
 			list.add(t);
