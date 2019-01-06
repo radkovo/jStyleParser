@@ -1126,46 +1126,50 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	 * width - ignorace celé deklarace rollbackTransaction(trans); return false;
 	 * } return true; }
 	 */
-		@SuppressWarnings("unused")
+	@SuppressWarnings("unused")
 	private boolean processBoxShadow(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		if (d.size() == 1 && genericOneIdent(BoxShadow.class, d, properties)) {
 			return true;
 		}
-		// inset | offset-x | offset-y | blur-radius | spread-radius | color
-		// TermIdent? TermLenght TermLenght TermLength? TermLength? TermColor?
+		// inset? && <length>{2,4} && <color>?
 		TermList list = tf.createList();
 
 		int lengthCount = 0;
-		boolean colorBefore = false;
-		int oneShadowTermCount = 0;
+		int lastLengthIndex = -1;
+		int insetIndex = -1;
+		int colorIndex = -1;
 
-		for (Term t : d.asList()) {
+		for (int i = 0; i < d.size(); i++) {
+			Term t = d.get(i);
+
 			if (t.getOperator() == Operator.COMMA) {
 				if (lengthCount < 2) {
 					return false;
 				}
 				lengthCount = 0;
-			} else if (colorBefore) {
-				return false;
+				lastLengthIndex = -1;
+				insetIndex = -1;
+				colorIndex = -1;
 			}
 
-			if (t instanceof TermColor) {
-				colorBefore = true;
-			} else {
-				colorBefore = false;
-				if (t instanceof TermLength) {
-					if (lengthCount >= 4) {
-						return false;
-					}
-					lengthCount++;
-				} else if (oneShadowTermCount == 0 && t instanceof TermIdent
-						&& ((TermIdent) t).getValue().equalsIgnoreCase("inset")) {
-				} else {
+			if (t instanceof TermColor && colorIndex < 0) {
+				colorIndex = i;
+			} else if (t instanceof TermIdent
+					&& ((TermIdent) t).getValue().equalsIgnoreCase("inset")
+					&& insetIndex < 0) {
+				insetIndex = i;
+			} else if (t instanceof TermLength
+					&& lastLengthIndex < 0
+					|| (lastLengthIndex > insetIndex && lastLengthIndex > colorIndex)) {
+				if (lengthCount >= 4) {
 					return false;
 				}
+				lastLengthIndex = i;
+				lengthCount++;
+			} else {
+				return false;
 			}
-			oneShadowTermCount++;
 			list.add(t);
 		}
 

@@ -39,7 +39,8 @@ public class BoxShadowTest {
 		"inset_blur_color",
 		"inset_spread_color",
 		"multiple_0",
-		"multiple_1"
+		"multiple_1",
+		"multiple_2"
 	};
 
 	private static final String[] INVALID = new String[]{

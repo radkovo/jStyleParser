@@ -17,53 +17,55 @@
             #spread_color   {box-shadow: 5px 5px 5px 5px red;}
 
             #inset          {box-shadow: inset 5px 5px;}
-            #inset_blur     {box-shadow: inset 5px 5px 5px;}
+            #inset_blur     {box-shadow: 5px 5px 5px inset;}
             #inset_spread   {box-shadow: inset 5px 5px 5px 5px;}
 
             #inset_color        {box-shadow: inset 5px 5px red;}
-            #inset_blur_color   {box-shadow: inset 5px 5px 5px red;}
+            #inset_blur_color   {box-shadow: red 5px 5px 5px inset;}
             #inset_spread_color {box-shadow: inset 5px 5px 5px 5px red;}
 			
 			#multiple_0	{box-shadow: 5px 5px, 5px 5px red;}
 			#multiple_1	{box-shadow: inset 5px 5px, 5px 5px red, 5px 5px 5px 5px;}
+			#multiple_2	{box-shadow: red inset 5px 5px, 5px 5px, 5px 5px 5px 5px inset blue;}
 
             #invalid_0 {box-shadow: 5px;}
             #invalid_1 {box-shadow: 5px 5px 5px 5px 5px;}
-            #invalid_2 {box-shadow: 5px 5px inset;}
-            #invalid_3 {box-shadow: red 5px 5px;}
+            #invalid_2 {box-shadow: red 5px inset 5px, 5px 5px 5px 5px inset blue;}
+            #invalid_3 {box-shadow: red 5px inset;}
         </style>
     </head>
     <body>
         <div id="content">
             <ul id="test">
-                <li id="none">none</li>
-                <li id="inherit">inherit</li>
-                <li id="initial">initial</li>
-                <li id="unset">unset</li>
+                <li id="none"></li>
+                <li id="inherit"></li>
+                <li id="initial"></li>
+                <li id="unset"></li>
 
-                <li id="minimal">minimal</li>
-                <li id="blur">blur</li>
-                <li id="spread">spread</li>
+                <li id="minimal"></li>
+                <li id="blur"></li>
+                <li id="spread"></li>
 
-                <li id="color">color</li>
-                <li id="blur_color">blur_color</li>
-                <li id="spread_color">spread_color</li>
+                <li id="color"></li>
+                <li id="blur_color"></li>
+                <li id="spread_color"></li>
 
-                <li id="inset">inset</li>
-                <li id="inset_blur">inset_blur</li>
-                <li id="inset_spread">inset_spread</li>
+                <li id="inset"></li>
+                <li id="inset_blur"></li>
+                <li id="inset_spread"></li>
 
-                <li id="inset_color">inset_color</li>
-                <li id="inset_blur_color">inset_blur_color</li>
-                <li id="inset_spread_color">inset_spread_color</li>
+                <li id="inset_color"></li>
+                <li id="inset_blur_color"></li>
+                <li id="inset_spread_color"></li>
 
-                <li id="multiple_0">multiple_0</li>
-                <li id="multiple_1">multiple_1</li>
+                <li id="multiple_0"></li>
+                <li id="multiple_1"></li>
+                <li id="multiple_2"></li>
 				
-                <li id="invalid_0">invalid_0</li>
-                <li id="invalid_1">invalid_1</li>
-                <li id="invalid_2">invalid_2</li>
-                <li id="invalid_3">invalid_3</li>
+                <li id="invalid_0"></li>
+                <li id="invalid_1"></li>
+                <li id="invalid_2"></li>
+                <li id="invalid_3"></li>
             </ul>
         </div>
     </body>
