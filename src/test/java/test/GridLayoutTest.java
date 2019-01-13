@@ -12,7 +12,9 @@ import cz.vutbr.web.css.CSSProperty.GridTemplateRowsColumns;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.Term.Operator;
+import cz.vutbr.web.css.TermBracketedIdents;
 import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.domassign.StyleMap;
@@ -36,6 +38,7 @@ public class GridLayoutTest {
 	public void prepare() {
 		NameGenerator ng = new NameGenerator("grid");
 		TermList list = tf.createList();
+		TermBracketedIdents bi;
 
 		_tests.add(new TestData(ng.next(), "grid-template-areas", GridTemplateAreas.NONE));
 		_tests.add(new TestData(ng.curr(), "grid-template-rows", GridTemplateRowsColumns.NONE));
@@ -94,18 +97,26 @@ public class GridLayoutTest {
 		list.add(tf.createString("b c c").setOperator(Operator.SPACE));
 		_tests.add(new TestData(ng.next(), "grid-template-areas", GridTemplateAreas.list_values, list));
 		list = tf.createList();
-		list.add(tf.createBracketedIdent("name"));
+		bi = tf.createBracketedIdents();
+		bi.add(tf.createIdent("name"));
+		list.add(bi);
 		list.add(tf.createLength(1f, Unit.px).setOperator(Operator.SPACE));
 		list.add(tf.createLength(1f, Unit.px).setOperator(Operator.SPACE));
-		list.add(tf.createBracketedIdent("name").setOperator(Operator.SPACE));
+		bi = tf.createBracketedIdents();
+		bi.add(tf.createIdent("name"));
+		list.add(bi.setOperator(Operator.SPACE));
 		list.add(tf.createLength(1f, Unit.px).setOperator(Operator.SPACE));
 		_tests.add(new TestData(ng.curr(), "grid-template-rows", GridTemplateRowsColumns.list_values, list));
 		list = tf.createList();
 		list.add(tf.createLength(2f, Unit.px).setOperator(Operator.SLASH));
-		list.add(tf.createBracketedIdent("name").setOperator(Operator.SPACE));
+		bi = tf.createBracketedIdents();
+		bi.add(tf.createIdent("name"));
+		list.add(bi.setOperator(Operator.SPACE));
 		list.add(tf.createLength(2f, Unit.px).setOperator(Operator.SPACE));
 		list.add(tf.createLength(2f, Unit.px).setOperator(Operator.SPACE));
-		list.add(tf.createBracketedIdent("name").setOperator(Operator.SPACE));
+		bi = tf.createBracketedIdents();
+		bi.add(tf.createIdent("name"));
+		list.add(bi.setOperator(Operator.SPACE));
 		_tests.add(new TestData(ng.curr(), "grid-template-columns", GridTemplateRowsColumns.list_values, list));
 		_tests.add(new TestData(ng.curr(), "grid", Grid.component_values));
 
@@ -252,18 +263,26 @@ public class GridLayoutTest {
 		list.add(tf.createString("b c c").setOperator(Operator.SPACE));
 		_tests.add(new TestData(ng.next(), "grid-template-areas", GridTemplateAreas.list_values, list));
 		list = tf.createList();
-		list.add(tf.createBracketedIdent("name"));
+		bi = tf.createBracketedIdents();
+		bi.add(tf.createIdent("name"));
+		list.add(bi);
 		list.add(tf.createLength(1f, Unit.px).setOperator(Operator.SPACE));
 		list.add(tf.createLength(1f, Unit.px).setOperator(Operator.SPACE));
-		list.add(tf.createBracketedIdent("name").setOperator(Operator.SPACE));
+		bi = tf.createBracketedIdents();
+		bi.add(tf.createIdent("name"));
+		list.add(bi.setOperator(Operator.SPACE));
 		list.add(tf.createLength(1f, Unit.px).setOperator(Operator.SPACE));
 		_tests.add(new TestData(ng.curr(), "grid-template-rows", GridTemplateRowsColumns.list_values, list));
 		list = tf.createList();
 		list.add(tf.createLength(2f, Unit.px).setOperator(Operator.SLASH));
-		list.add(tf.createBracketedIdent("name").setOperator(Operator.SPACE));
+		bi = tf.createBracketedIdents();
+		bi.add(tf.createIdent("name"));
+		list.add(bi.setOperator(Operator.SPACE));
 		list.add(tf.createLength(2f, Unit.px).setOperator(Operator.SPACE));
 		list.add(tf.createLength(2f, Unit.px).setOperator(Operator.SPACE));
-		list.add(tf.createBracketedIdent("name").setOperator(Operator.SPACE));
+		bi = tf.createBracketedIdents();
+		bi.add(tf.createIdent("name"));
+		list.add(bi.setOperator(Operator.SPACE));
 		_tests.add(new TestData(ng.curr(), "grid-template-columns", GridTemplateRowsColumns.list_values, list));
 
 		_tests.add(new TestData(ng.next(), "grid-template-areas", GridTemplateAreas.NONE));
@@ -289,7 +308,9 @@ public class GridLayoutTest {
 		_tests.add(new TestData(ng.next(), "grid-template-rows", GridTemplateRowsColumns.list_values));
 
 		list = tf.createList();
-		list.add(tf.createBracketedIdent("name"));
+		bi = tf.createBracketedIdents();
+		bi.add(tf.createIdent("name"));
+		list.add(bi);
 		list.add(tf.createLength(1f, Unit.fr).setOperator(Operator.SPACE));
 		list.add(tf.createLength(2f, Unit.fr).setOperator(Operator.SPACE));
 		_tests.add(new TestData(ng.next(), "grid-template-rows", GridTemplateRowsColumns.list_values));
@@ -302,7 +323,9 @@ public class GridLayoutTest {
 		_tests.add(new TestData(ng.next(), "grid-template-columns", GridTemplateRowsColumns.list_values));
 
 		list = tf.createList();
-		list.add(tf.createBracketedIdent("name"));
+		bi = tf.createBracketedIdents();
+		bi.add(tf.createIdent("name"));
+		list.add(bi);
 		list.add(tf.createLength(1f, Unit.fr).setOperator(Operator.SPACE));
 		list.add(tf.createLength(2f, Unit.fr).setOperator(Operator.SPACE));
 		_tests.add(new TestData(ng.next(), "grid-template-columns", GridTemplateRowsColumns.list_values));
@@ -349,7 +372,6 @@ public class GridLayoutTest {
 		_tests.add(new TestData(ng.next(), "grid-auto-columns", GridAutoRowsColumns.AUTO));
 
 		_tests.add(new TestData(ng.next(), "grid-auto-columns", GridAutoRowsColumns.AUTO));
-
 	}
 
 	@Test
@@ -369,15 +391,35 @@ public class GridLayoutTest {
 				String id = test._id;
 				data = sm.get(elements.getElementById(id));
 				prop = data.getSpecifiedProperty(test._propertyName);
+				if (!test._expextedProperty.equals(prop)) {
+					System.out.println("");
+				}
 				Assert.assertEquals(test._expextedProperty, prop);
 				if (test._expectedValue != null) {
 					term = data.getSpecifiedValue(test._propertyName);
+					if (!test._expectedValue.equals(term)) {
+						if (test._expectedValue instanceof TermList && term instanceof TermList) {
+							compareLists((TermList) test._expectedValue, (TermList) term);
+						}
+					}
 					Assert.assertEquals(test._expectedValue, term);
 				}
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private static void compareLists(List a, List b) {
+		if (a.size() != b.size()) {
+			System.err.println("Length");
+		}
+		for (int i = 0; i < a.size(); i++) {
+			if (!a.get(i).equals(b.get(i))) {
+				System.err.println(i + ". item doesnt match");
+				break;
+			}
 		}
 	}
 

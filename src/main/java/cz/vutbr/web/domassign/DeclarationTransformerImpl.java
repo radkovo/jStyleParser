@@ -113,7 +113,7 @@ import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.Term.Operator;
-import cz.vutbr.web.css.TermBracketedIdent;
+import cz.vutbr.web.css.TermBracketedIdents;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermFloatValue;
@@ -2484,7 +2484,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 				map.add(rowAreas);
 				rowLengthSet = false;
 				areasTerms.add(t);
-			} else if (t instanceof TermBracketedIdent) {
+			} else if (t instanceof TermBracketedIdents) {
 				if(bracketedIdentUsed) {
 					return false;
 				} else {
@@ -2600,7 +2600,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 				if (property == null || property == GridTemplateRowsColumns.NONE) {
 					return false;
 				}
-			} else if (t instanceof TermBracketedIdent) {
+			} else if (t instanceof TermBracketedIdents) {
 				if(bracketedIdentUsed) {
 					return false;
 				} else {
@@ -3199,9 +3199,12 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 			case IMAGE:
 				return genericTermIdent(types.get(IMAGE), terms.get(i),
 						AVOID_INH, names.get(IMAGE), properties)
-						|| genericTerm(TermURI.class, terms.get(i), names
-								.get(IMAGE), BackgroundImage.uri, ValueRange.ALLOW_ALL,
-								properties, values);
+						|| genericTerm(TermURI.class, terms.get(i), names.get(IMAGE),
+						        BackgroundImage.uri, ValueRange.ALLOW_ALL,
+								properties, values)
+                        || genericTerm(TermFunction.Gradient.class, terms.get(i), names.get(IMAGE),
+                                BackgroundImage.gradient, ValueRange.ALLOW_ALL,
+                                properties, values);
 			case REPEAT:
 				return genericTermIdent(types.get(REPEAT), terms.get(i),
 						AVOID_INH, names.get(REPEAT), properties);
