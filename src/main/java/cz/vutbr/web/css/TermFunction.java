@@ -246,155 +246,162 @@ public interface TermFunction extends TermList {
 	
 	//========================================================================
 	
-	public interface GridFunction extends TermFunction {
-	}
-	
-	public interface FitContent extends GridFunction {
-		public TermLengthOrPercent getMaximum();
-	}
-	
-	public interface MinMax extends GridFunction {
-		public static class Unit {
-			private TermLengthOrPercent _lenght;
-			private boolean _isMinContent;
-			private boolean _isMaxContent;
-			private boolean _isAuto;
-			
-			public static Unit createWithLenght(TermLengthOrPercent lenght) {
-				return new Unit(lenght, false, false, false);
-			}
-			
-			public static Unit createWithMinContent() {
-				return new Unit(null, true, false, false);
-			}
-			
-			public static Unit createWithMaxContent() {
-				return new Unit(null, false, true, false);
-			}
-			
-			public static Unit createWithAuto() {
-				return new Unit(null, false, false, true);
-			}
-			
-			private Unit(TermLengthOrPercent lenght, boolean isMinContent, boolean isMaxContent, boolean isAuto) {
-				_lenght = lenght;
-				_isMinContent = isMinContent;
-				_isMaxContent = isMaxContent;
-				_isAuto = isAuto;
-			}
+	   public interface GridFunction extends TermFunction {
+    }
 
-			public TermLengthOrPercent getLenght() {
-				return _lenght;
-			}
+    public interface FitContent extends GridFunction {
 
-			public void setLenght(TermLengthOrPercent lenght) {
-				_lenght = lenght;
-				_isMinContent = false;
-				_isMaxContent = false;
-				_isAuto = false;
-			}
+        public TermLengthOrPercent getMaximum();
+    }
 
-			public boolean isIsMinContent() {
-				return _isMinContent;
-			}
+    public interface MinMax extends GridFunction {
 
-			public void setIsMinContent(boolean isMinContent) {
-				_lenght = null;
-				_isMinContent = isMinContent;
-				_isMaxContent = false;
-				_isAuto = false;
-			}
+        public static class Unit {
 
-			public boolean isIsMaxContent() {
-				return _isMaxContent;
-			}
+            private TermLengthOrPercent _lenght;
+            private boolean _isMinContent;
+            private boolean _isMaxContent;
+            private boolean _isAuto;
 
-			public void setIsMaxContent(boolean isMaxContent) {
-				_lenght = null;
-				_isMinContent = false;
-				_isMaxContent = isMaxContent;
-				_isAuto = false;
-			}
+            public static Unit createWithLenght(TermLengthOrPercent lenght) {
+                return new Unit(lenght, false, false, false);
+            }
 
-			public boolean isIsAuto() {
-				return _isAuto;
-			}
+            public static Unit createWithMinContent() {
+                return new Unit(null, true, false, false);
+            }
 
-			public void setIsAuto(boolean isAuto) {
-				_lenght = null;
-				_isMinContent = false;
-				_isMaxContent = false;
-				_isAuto = isAuto;
-			}
-		}
-		
-		public Unit getMin();
-		public Unit getMax();
-	}
-	
-	public interface Repeat extends GridFunction {
-		public static class Unit {
-			private int _numberOfRepetition;
-			private boolean _isAutoFit;
-			private boolean _isAutoFill;
-			
-			public static Unit createWithNRepetitions(int n) {
-				return new Unit(n, false, false);
-			}
-			
-			public static Unit createWithAutoFit() {
-				return new Unit(-1, true, false);
-			}
-			
-			public static Unit createWithAutoFill() {
-				return new Unit(-1, false, true);
-			}
-			
-			private Unit(int numberOfRepetitions, boolean isAutoFit, boolean isAutoFill) {
-				_numberOfRepetition = numberOfRepetitions;
-				_isAutoFit = isAutoFit;
-				_isAutoFill = isAutoFill;
-			}
-			
-			public Unit setNumberOfRepetition(int n) {
-				if(n <= 0) {
-					throw new IllegalArgumentException("Number of repetitions must be positive.");
-				}
-				_isAutoFit = false;
-				_isAutoFill = false;
-				_numberOfRepetition = n;
-				return this;
-			}
-			
-			public Unit setAutoFit() {
-				_isAutoFit = true;
-				_isAutoFill = false;
-				_numberOfRepetition = -1;
-				return this;
-			}
-			
-			public Unit setAutoFill() {
-				_isAutoFit = false;
-				_isAutoFill = true;
-				_numberOfRepetition = -1;
-				return this;
-			}
-			
-			public int getNumberOfRepetitions() {
-				return _numberOfRepetition;
-			}
-			
-			public boolean isAutoFit() {
-				return _isAutoFit;
-			}
-			
-			public boolean isAutoFill() {
-				return _isAutoFill;
-			}
-		}
-		
-		public Unit getNumberOfRepetitions();
-		public List<Term<?>> getRepeatedTerms();
-	}
+            public static Unit createWithMaxContent() {
+                return new Unit(null, false, true, false);
+            }
+
+            public static Unit createWithAuto() {
+                return new Unit(null, false, false, true);
+            }
+
+            private Unit(TermLengthOrPercent lenght, boolean isMinContent, boolean isMaxContent, boolean isAuto) {
+                _lenght = lenght;
+                _isMinContent = isMinContent;
+                _isMaxContent = isMaxContent;
+                _isAuto = isAuto;
+            }
+
+            public TermLengthOrPercent getLenght() {
+                return _lenght;
+            }
+
+            public void setLenght(TermLengthOrPercent lenght) {
+                _lenght = lenght;
+                _isMinContent = false;
+                _isMaxContent = false;
+                _isAuto = false;
+            }
+
+            public boolean isIsMinContent() {
+                return _isMinContent;
+            }
+
+            public void setIsMinContent(boolean isMinContent) {
+                _lenght = null;
+                _isMinContent = isMinContent;
+                _isMaxContent = false;
+                _isAuto = false;
+            }
+
+            public boolean isIsMaxContent() {
+                return _isMaxContent;
+            }
+
+            public void setIsMaxContent(boolean isMaxContent) {
+                _lenght = null;
+                _isMinContent = false;
+                _isMaxContent = isMaxContent;
+                _isAuto = false;
+            }
+
+            public boolean isIsAuto() {
+                return _isAuto;
+            }
+
+            public void setIsAuto(boolean isAuto) {
+                _lenght = null;
+                _isMinContent = false;
+                _isMaxContent = false;
+                _isAuto = isAuto;
+            }
+        }
+
+        public Unit getMin();
+
+        public Unit getMax();
+    }
+
+    public interface Repeat extends GridFunction {
+
+        public static class Unit {
+
+            private int _numberOfRepetition;
+            private boolean _isAutoFit;
+            private boolean _isAutoFill;
+
+            public static Unit createWithNRepetitions(int n) {
+                return new Unit(n, false, false);
+            }
+
+            public static Unit createWithAutoFit() {
+                return new Unit(-1, true, false);
+            }
+
+            public static Unit createWithAutoFill() {
+                return new Unit(-1, false, true);
+            }
+
+            private Unit(int numberOfRepetitions, boolean isAutoFit, boolean isAutoFill) {
+                _numberOfRepetition = numberOfRepetitions;
+                _isAutoFit = isAutoFit;
+                _isAutoFill = isAutoFill;
+            }
+
+            public Unit setNumberOfRepetition(int n) {
+                if (n <= 0) {
+                    throw new IllegalArgumentException("Number of repetitions must be positive.");
+                }
+                _isAutoFit = false;
+                _isAutoFill = false;
+                _numberOfRepetition = n;
+                return this;
+            }
+
+            public Unit setAutoFit() {
+                _isAutoFit = true;
+                _isAutoFill = false;
+                _numberOfRepetition = -1;
+                return this;
+            }
+
+            public Unit setAutoFill() {
+                _isAutoFit = false;
+                _isAutoFill = true;
+                _numberOfRepetition = -1;
+                return this;
+            }
+
+            public int getNumberOfRepetitions() {
+                return _numberOfRepetition;
+            }
+
+            public boolean isAutoFit() {
+                return _isAutoFit;
+            }
+
+            public boolean isAutoFill() {
+                return _isAutoFill;
+            }
+        }
+
+        public Unit getNumberOfRepetitions();
+
+        public List<Term<?>> getRepeatedTerms();
+    }
     
 }

@@ -535,18 +535,18 @@ public class TermFactoryImpl implements TermFactory {
             case "attr":
                 fn = new AttrImpl();
                 break;
-			case "fit-content":
-				fn = new FitContentImpl();
-				break;
-			case "minmax":
-				fn = new MinMaxImpl();
-				break;
-			case "repeat":
-				fn = new RepeatImpl();
-				break;
-	        default:
-	            fn = new TermFunctionImpl();
-	            break;
+            case "fit-content":
+                fn = new FitContentImpl();
+                break;
+            case "minmax":
+                fn = new MinMaxImpl();
+                break;
+            case "repeat":
+                fn = new RepeatImpl();
+                break;
+            default:
+                fn = new TermFunctionImpl();
+                break;
 	    }
 	    if (fn != null) {
 	        fn.setFunctionName(name);

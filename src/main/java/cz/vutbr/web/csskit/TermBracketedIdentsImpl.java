@@ -138,7 +138,7 @@ public class TermBracketedIdentsImpl extends AbstractList<TermIdent> implements 
         } else if (!value.equals(other.value))
             return false;
         return true;
-    }   
+    }
 
     public TermBracketedIdents shallowClone() {
         try {

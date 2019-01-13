@@ -16,90 +16,90 @@ import org.w3c.dom.Document;
  */
 public class BoxShadowTest {
 
-	private static final String PROPERTY_NAME = "box-shadow";
+    private static final String PROPERTY_NAME = "box-shadow";
 
-	private static final String[] NON_VALUE = new String[]{
-		"none",
-		"inherit",
-		"initial",
-		"unset"
-	};
-	
-	private static final String[] VALID = new String[]{
-		"minimal",
-		"blur",
-		"spread",
-		"color",
-		"blur_color",
-		"spread_color",
-		"inset",
-		"inset_blur",
-		"inset_spread",
-		"inset_color",
-		"inset_blur_color",
-		"inset_spread_color",
-		"multiple_0",
-		"multiple_1",
-		"multiple_2"
-	};
+    private static final String[] NON_VALUE = new String[]{
+        "none",
+        "inherit",
+        "initial",
+        "unset"
+    };
 
-	private static final String[] INVALID = new String[]{
-		"invalid_0",
-		"invalid_1",
-		"invalid_2",
-		"invalid_3"
-	};
+    private static final String[] VALID = new String[]{
+        "minimal",
+        "blur",
+        "spread",
+        "color",
+        "blur_color",
+        "spread_color",
+        "inset",
+        "inset_blur",
+        "inset_spread",
+        "inset_color",
+        "inset_blur_color",
+        "inset_spread_color",
+        "multiple_0",
+        "multiple_1",
+        "multiple_2"
+    };
 
-	@Test
-	public void boxShadowTest() {
+    private static final String[] INVALID = new String[]{
+        "invalid_0",
+        "invalid_1",
+        "invalid_2",
+        "invalid_3"
+    };
 
-		try {
-			DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/box-shadow.html"));
-			Document doc = ds.parse();
-			StyleMap sm = CSSFactory.assignDOM(doc, null, getClass().getResource("/simple/box-shadow.html"), "screen", true);
+    @Test
+    public void boxShadowTest() {
 
-			ElementMap elements = new ElementMap(doc);
-			NodeData data;
-			CSSProperty prop;
-			Term<?> term;
+        try {
+            DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/box-shadow.html"));
+            Document doc = ds.parse();
+            StyleMap sm = CSSFactory.assignDOM(doc, null, getClass().getResource("/simple/box-shadow.html"), "screen", true);
 
-			for (String nonValue : NON_VALUE) {
-				data = sm.get(elements.getElementById(nonValue));
-				assertNotNull("Data for #" + nonValue + " should exist", data);
+            ElementMap elements = new ElementMap(doc);
+            NodeData data;
+            CSSProperty prop;
+            Term<?> term;
 
-				prop = data.getProperty(PROPERTY_NAME, true);
-				assertNotNull("Property for #" + nonValue + " should exist", prop);
-				System.out.println("prop class = " + prop.getClass().getSimpleName());
-			}
-			
-			for (String valid : VALID) {
-				data = sm.get(elements.getElementById(valid));
-				assertNotNull("Data for #" + valid + " should exist", data);
+            for (String nonValue : NON_VALUE) {
+                data = sm.get(elements.getElementById(nonValue));
+                assertNotNull("Data for #" + nonValue + " should exist", data);
 
-				prop = data.getProperty(PROPERTY_NAME, true);
-				assertNotNull("Property for #" + valid + " should exist", prop);
-				System.out.println("prop class = " + prop.getClass().getSimpleName());
+                prop = data.getProperty(PROPERTY_NAME, true);
+                assertNotNull("Property for #" + nonValue + " should exist", prop);
+                System.out.println("prop class = " + prop.getClass().getSimpleName());
+            }
 
-				term = data.getValue(PROPERTY_NAME, true);
-				assertNotNull("Term for #" + valid + " should exist", term);
-				System.out.println("term to string = " + term);
-			}
-			
-			for (String valid : INVALID) {
-				data = sm.get(elements.getElementById(valid));
-				assertNotNull("Data for #" + valid + " should exist", data);
+            for (String valid : VALID) {
+                data = sm.get(elements.getElementById(valid));
+                assertNotNull("Data for #" + valid + " should exist", data);
 
-				prop = data.getProperty(PROPERTY_NAME, true);
-				assertNull("Property for #" + valid + " should not exist", prop);
+                prop = data.getProperty(PROPERTY_NAME, true);
+                assertNotNull("Property for #" + valid + " should exist", prop);
+                System.out.println("prop class = " + prop.getClass().getSimpleName());
 
-				term = data.getValue(PROPERTY_NAME, true);
-				assertNull("Term for #" + valid + " should not exist", term);
-			}
+                term = data.getValue(PROPERTY_NAME, true);
+                assertNotNull("Term for #" + valid + " should exist", term);
+                System.out.println("term to string = " + term);
+            }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            for (String valid : INVALID) {
+                data = sm.get(elements.getElementById(valid));
+                assertNotNull("Data for #" + valid + " should exist", data);
 
-	}
+                prop = data.getProperty(PROPERTY_NAME, true);
+                assertNull("Property for #" + valid + " should not exist", prop);
+
+                term = data.getValue(PROPERTY_NAME, true);
+                assertNull("Term for #" + valid + " should not exist", term);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }
