@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Petr Mikulík
  */
-public class Repeat extends TermFunctionImpl implements TermFunction.Repeat {
+public class RepeatImpl extends TermFunctionImpl implements TermFunction.Repeat {
 
 	private static final String AUTO_FIT = "auto-fit";
 	private static final String AUTO_FILL = "auto-fill";

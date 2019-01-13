@@ -124,8 +124,6 @@ import cz.vutbr.web.css.TermLength;
 import cz.vutbr.web.css.TermLengthOrPercent;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumber;
-import cz.vutbr.web.css.TermNumeric;
-import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.css.TermPercent;
 import cz.vutbr.web.css.TermRect;
 import cz.vutbr.web.css.TermString;

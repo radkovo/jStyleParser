@@ -14,7 +14,6 @@ import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.Term.Operator;
 import cz.vutbr.web.css.TermBracketedIdents;
 import cz.vutbr.web.css.TermFactory;
-import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumeric.Unit;
 import cz.vutbr.web.domassign.StyleMap;
@@ -37,7 +36,8 @@ public class GridLayoutTest {
 	@Before
 	public void prepare() {
 		NameGenerator ng = new NameGenerator("grid");
-		TermList list = tf.createList();
+		TermList list;
+		TermList fnList;
 		TermBracketedIdents bi;
 
 		_tests.add(new TestData(ng.next(), "grid-template-areas", GridTemplateAreas.NONE));
@@ -45,16 +45,19 @@ public class GridLayoutTest {
 		_tests.add(new TestData(ng.curr(), "grid-template-columns", GridTemplateRowsColumns.NONE));
 		_tests.add(new TestData(ng.curr(), "grid", Grid.component_values));
 
+		list = tf.createList();
 		list.add(tf.createLength(1f, Unit.fr).setOperator(Operator.SLASH));
 		_tests.add(new TestData(ng.next(), "grid-template-columns", GridTemplateRowsColumns.list_values, list));
 		_tests.add(new TestData(ng.curr(), "grid-auto-flow", GridAutoFlow.ROW));
 		_tests.add(new TestData(ng.curr(), "grid", Grid.component_values));
 
+		list = tf.createList();
+		list.add(tf.createLength(1f, Unit.fr).setOperator(Operator.SLASH));
 		_tests.add(new TestData(ng.next(), "grid-template-columns", GridTemplateRowsColumns.list_values, list));
 		list = tf.createList();
 		list.add(tf.createIdent("row"));
-		list.add(tf.createIdent("dense").setOperator(Operator.SLASH));
-		_tests.add(new TestData(ng.curr(), "grid-auto-flow", GridAutoFlow.component_values));
+		list.add(tf.createIdent("dense").setOperator(Operator.SPACE));
+		_tests.add(new TestData(ng.curr(), "grid-auto-flow", GridAutoFlow.component_values, list));
 		_tests.add(new TestData(ng.curr(), "grid", Grid.component_values));
 
 		list = tf.createList();
@@ -69,9 +72,9 @@ public class GridLayoutTest {
 		list.add(tf.createLength(1f, Unit.px).setOperator(Operator.SPACE));
 		_tests.add(new TestData(ng.next(), "grid-template-rows", GridTemplateRowsColumns.list_values, list));
 		list = tf.createList();
-		list.add(tf.createIdent("column").setOperator(Operator.SPACE));
-		list.add(tf.createIdent("dense").setOperator(Operator.SPACE));
-		_tests.add(new TestData(ng.curr(), "grid-auto-flow", GridAutoFlow.component_values));
+		list.add(tf.createIdent("dense").setOperator(Operator.SLASH));
+		list.add(tf.createIdent("column"));
+		_tests.add(new TestData(ng.curr(), "grid-auto-flow", GridAutoFlow.component_values, list));
 		_tests.add(new TestData(ng.curr(), "grid", Grid.component_values));
 
 		list = tf.createList();
@@ -304,8 +307,12 @@ public class GridLayoutTest {
 		_tests.add(new TestData(ng.next(), "grid-template-rows", GridTemplateRowsColumns.AUTO));
 
 		list = tf.createList();
-		list.add(tf.createLength(1f, Unit.px));
-		_tests.add(new TestData(ng.next(), "grid-template-rows", GridTemplateRowsColumns.list_values));
+		fnList = tf.createList();
+		fnList.add(tf.createLength(1f, Unit.px));
+		fnList.add(tf.createOperator(','));
+		fnList.add(tf.createIdent("max-content"));
+		list.add(tf.createFunction("minmax", fnList));
+		_tests.add(new TestData(ng.next(), "grid-template-rows", GridTemplateRowsColumns.list_values, list));
 
 		list = tf.createList();
 		bi = tf.createBracketedIdents();
@@ -313,14 +320,30 @@ public class GridLayoutTest {
 		list.add(bi);
 		list.add(tf.createLength(1f, Unit.fr).setOperator(Operator.SPACE));
 		list.add(tf.createLength(2f, Unit.fr).setOperator(Operator.SPACE));
-		_tests.add(new TestData(ng.next(), "grid-template-rows", GridTemplateRowsColumns.list_values));
+		_tests.add(new TestData(ng.next(), "grid-template-rows", GridTemplateRowsColumns.list_values, list));
+
+		list = tf.createList();
+		fnList = tf.createList();
+		fnList.add(tf.createLength(100f, Unit.px));
+		fnList.add(tf.createOperator(','));
+		fnList.add(tf.createIdent("min-content"));
+		list.add(tf.createFunction("minmax", fnList));
+		fnList = tf.createList();
+		fnList.add(tf.createIdent("auto-fill"));
+		fnList.add(tf.createOperator(','));
+		fnList.add(tf.createLength(200f, Unit.px));
+		list.add(tf.createFunction("repeat", fnList).setOperator(Operator.SPACE));
+		list.add(tf.createPercent(20f).setOperator(Operator.SPACE));
+		_tests.add(new TestData(ng.next(), "grid-template-rows", GridTemplateRowsColumns.list_values, list));
 
 		ng.setName("grid-template-columns");
 		_tests.add(new TestData(ng.next(), "grid-template-columns", GridTemplateRowsColumns.AUTO));
 
 		list = tf.createList();
-		list.add(tf.createLength(1f, Unit.px));
-		_tests.add(new TestData(ng.next(), "grid-template-columns", GridTemplateRowsColumns.list_values));
+		fnList = tf.createList();
+		fnList.add(tf.createLength(1f, Unit.px));
+		list.add(tf.createFunction("fit-content", fnList));
+		_tests.add(new TestData(ng.next(), "grid-template-columns", GridTemplateRowsColumns.list_values, list));
 
 		list = tf.createList();
 		bi = tf.createBracketedIdents();
@@ -328,7 +351,7 @@ public class GridLayoutTest {
 		list.add(bi);
 		list.add(tf.createLength(1f, Unit.fr).setOperator(Operator.SPACE));
 		list.add(tf.createLength(2f, Unit.fr).setOperator(Operator.SPACE));
-		_tests.add(new TestData(ng.next(), "grid-template-columns", GridTemplateRowsColumns.list_values));
+		_tests.add(new TestData(ng.next(), "grid-template-columns", GridTemplateRowsColumns.list_values, list));
 
 		ng.setName("grid-auto-flow");
 		_tests.add(new TestData(ng.next(), "grid-auto-flow", GridAutoFlow.COLUMN));
@@ -336,12 +359,12 @@ public class GridLayoutTest {
 		list = tf.createList();
 		list.add(tf.createIdent("column"));
 		list.add(tf.createIdent("dense").setOperator(Operator.SPACE));
-		_tests.add(new TestData(ng.next(), "grid-auto-flow", GridAutoFlow.component_values));
+		_tests.add(new TestData(ng.next(), "grid-auto-flow", GridAutoFlow.component_values, list));
 
 		list = tf.createList();
 		list.add(tf.createIdent("dense"));
 		list.add(tf.createIdent("row").setOperator(Operator.SPACE));
-		_tests.add(new TestData(ng.next(), "grid-auto-flow", GridAutoFlow.component_values));
+		_tests.add(new TestData(ng.next(), "grid-auto-flow", GridAutoFlow.component_values, list));
 
 		_tests.add(new TestData(ng.next(), "grid-auto-flow", GridAutoFlow.ROW));
 
@@ -354,7 +377,7 @@ public class GridLayoutTest {
 		list.add(tf.createPercent(10f));
 		list.add(tf.createIdent("max-content").setOperator(Operator.SPACE));
 		list.add(tf.createLength(1f, Unit.fr).setOperator(Operator.SPACE));
-		_tests.add(new TestData(ng.next(), "grid-auto-rows", GridAutoRowsColumns.list_values));
+		_tests.add(new TestData(ng.next(), "grid-auto-rows", GridAutoRowsColumns.list_values, list));
 
 		_tests.add(new TestData(ng.next(), "grid-auto-rows", GridAutoRowsColumns.AUTO));
 
@@ -367,7 +390,7 @@ public class GridLayoutTest {
 		list.add(tf.createPercent(20f));
 		list.add(tf.createIdent("min-content").setOperator(Operator.SPACE));
 		list.add(tf.createLength(2f, Unit.fr).setOperator(Operator.SPACE));
-		_tests.add(new TestData(ng.next(), "grid-auto-columns", GridAutoRowsColumns.list_values));
+		_tests.add(new TestData(ng.next(), "grid-auto-columns", GridAutoRowsColumns.list_values, list));
 
 		_tests.add(new TestData(ng.next(), "grid-auto-columns", GridAutoRowsColumns.AUTO));
 

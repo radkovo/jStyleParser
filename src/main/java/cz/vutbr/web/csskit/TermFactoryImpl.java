@@ -67,6 +67,9 @@ import cz.vutbr.web.csskit.fn.TranslateXImpl;
 import cz.vutbr.web.csskit.fn.TranslateYImpl;
 import cz.vutbr.web.csskit.fn.TranslateZImpl;
 import cz.vutbr.web.css.TermOperator;
+import cz.vutbr.web.csskit.fn.FitContentImpl;
+import cz.vutbr.web.csskit.fn.MinMaxImpl;
+import cz.vutbr.web.csskit.fn.RepeatImpl;
 
 public class TermFactoryImpl implements TermFactory {
 
@@ -532,6 +535,15 @@ public class TermFactoryImpl implements TermFactory {
             case "attr":
                 fn = new AttrImpl();
                 break;
+			case "fit-content":
+				fn = new FitContentImpl();
+				break;
+			case "minmax":
+				fn = new MinMaxImpl();
+				break;
+			case "repeat":
+				fn = new RepeatImpl();
+				break;
 	        default:
 	            fn = new TermFunctionImpl();
 	            break;

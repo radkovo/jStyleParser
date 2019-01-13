@@ -74,14 +74,13 @@
 														"b c c";}
 			
 			#grid-template-rows0 {grid-template-rows: auto;}
-			#grid-template-rows1 {grid-template-rows: 1px;}
+			#grid-template-rows1 {grid-template-rows: minmax(1px, max-content);}
 			#grid-template-rows2 {grid-template-rows: [name] 1fr 2fr;}
-			#grid-template-rows3 {grid-template-rows: 1fr, 2fr;}
+			#grid-template-rows3 {grid-template-rows: minmax(100px, min-content) repeat(auto-fill, 200px) 20%;}
 			
 			#grid-template-columns0 {grid-template-columns: auto;}
-			#grid-template-columns1 {grid-template-columns: 1px;}
+			#grid-template-columns1 {grid-template-columns: fit-content(1px);}
 			#grid-template-columns2 {grid-template-columns: [name] 1fr 2fr;}
-			#grid-template-columns3 {grid-template-columns: 1fr, 2fr;}
 			
 			#grid-auto-flow0 {grid-auto-flow: column;}
 			#grid-auto-flow1 {grid-auto-flow: column dense;}
@@ -164,7 +163,6 @@
                 <li id="grid-template-columns0"></li>
                 <li id="grid-template-columns1"></li>
                 <li id="grid-template-columns2"></li>
-                <li id="grid-template-columns3"></li>
 				
                 <li id="grid-auto-flow0"></li>
                 <li id="grid-auto-flow1"></li>
