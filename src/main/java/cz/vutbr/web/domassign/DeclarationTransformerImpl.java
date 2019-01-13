@@ -2593,6 +2593,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 		}
 		TermList list = tf.createList();
 		boolean bracketedIdentUsed = false;
+		boolean repeatUsed = false;
 		for (int i = 0; i < d.size(); i++) {
 			Term t = d.get(i);
 			if (t instanceof TermIdent) {
@@ -2608,7 +2609,13 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 					list.add(t);
 					continue;
 				}
-			} else if (!(t instanceof TermLength) && !(t instanceof TermPercent)) {
+			} else if (t instanceof TermFunction.Repeat && !repeatUsed) {
+				repeatUsed = true;
+			} else if (!(t instanceof TermLength) 
+					&& !(t instanceof TermPercent) 
+					&& !(t instanceof TermFunction.MinMax)
+					&& !(t instanceof TermFunction.FitContent)
+					) {
 				return false;
 			}
 			list.add(t);
@@ -2662,27 +2669,40 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	}
 	
 	private boolean processGridAutoRowsOrColumns(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		if(d.isEmpty()) {
+		if (d.isEmpty()) {
 			return false;
 		}
-		if(genericOneIdentOrLengthOrPercent(GridAutoRowsColumns.class, GridAutoRowsColumns.length, GridAutoRowsColumns.length, 
+		if (genericOneIdentOrLengthOrPercent(GridAutoRowsColumns.class, GridAutoRowsColumns.length, GridAutoRowsColumns.length,
 				ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
 			return true;
 		}
 		TermList list = tf.createList();
 		for (int i = 0; i < d.size(); i++) {
 			Term t = d.get(i);
-			if(t instanceof TermIdent) {
+			if (t instanceof TermIdent) {
 				CSSProperty property = genericPropertyRaw(GridAutoRowsColumns.class, null, (TermIdent) t);
-				if(property == null) {
+				if (property == null) {
 					return false;
 				}
-			} else if (t instanceof TermLength) {
-				if(((TermLength) t).getValue() < 0) {
+			} else if (t instanceof TermLength || t instanceof TermPercent) {
+				if (!isPositive(t)) {
 					return false;
 				}
-			} else if (t instanceof TermPercent) {
-				if(((TermPercent) t).getValue() < 0) {
+			} else if (t instanceof TermFunction.MinMax) {
+				TermFunction.MinMax f = (TermFunction.MinMax) t;
+				if (f.getMin().getLenght() != null) {
+					if (!isPositive(f.getMin().getLenght())) {
+						return false;
+					}
+				}
+				if (f.getMax().getLenght() != null) {
+					if (!isPositive(f.getMax().getLenght())) {
+						return false;
+					}
+				}
+			} else if (t instanceof TermFunction.FitContent) {
+				TermFunction.FitContent f = (TermFunction.FitContent) t;
+				if (!isPositive(f.getMaximum())) {
 					return false;
 				}
 			} else {
@@ -2693,6 +2713,21 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 		properties.put(d.getProperty(), GridAutoRowsColumns.list_values);
 		values.put(d.getProperty(), list);
         return true;
+	}
+
+	private static boolean isPositive(Term t) {
+		if (t instanceof TermLength) {
+			if (((TermLength) t).getValue() < 0) {
+				return false;
+			}
+		} else if (t instanceof TermPercent) {
+			if (((TermPercent) t).getValue() < 0) {
+				return false;
+			}
+		} else {
+			return false;
+		}
+		return true;
 	}
 	
 	/**
