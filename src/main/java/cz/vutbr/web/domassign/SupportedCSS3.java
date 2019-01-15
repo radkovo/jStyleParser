@@ -273,7 +273,7 @@ public class SupportedCSS3 implements SupportedCSS {
         props.put("overflow-y", Overflow.VISIBLE);
 		props.put("clip", Clip.AUTO);
 		props.put("box-sizing", BoxSizing.CONTENT_BOX);
-		props.put("box-shadow", BoxShadow.NONE);
+        props.put("box-shadow", BoxShadow.NONE);
 
 		// positioning
 		props.put("display", Display.INLINE);
@@ -301,6 +301,9 @@ public class SupportedCSS3 implements SupportedCSS {
 		props.put("background-size", BackgroundSize.list_values);
         values.put("background-size", DEFAULT_UA_BACKGROUND_SIZE);
 		props.put("background-repeat", BackgroundRepeat.REPEAT);
+		
+		// box shadow
+		props.put("box-shadow", BoxShadow.NONE);
 
 		// elements
 		props.put("list-style", ListStyle.component_values);
@@ -386,6 +389,26 @@ public class SupportedCSS3 implements SupportedCSS {
 		props.put("align-content", AlignContent.Stretch);
 		props.put("align-items", AlignItems.Stretch);
 		props.put("align-self", AlignSelf.Auto);
+
+        // Grid layout
+        props.put("grid", Grid.component_values);
+        props.put("grid-gap", GridGap.component_values);
+        props.put("grid-row-gap", GridGap.NORMAL);
+        props.put("grid-column-gap", GridGap.NORMAL);
+        props.put("grid-area", Grid.component_values);
+        props.put("grid-row", Grid.component_values);
+        props.put("grid-column", Grid.component_values);
+        props.put("grid-row-start", GridStartEnd.AUTO);
+        props.put("grid-column-start", GridStartEnd.AUTO);
+        props.put("grid-row-end", GridStartEnd.AUTO);
+        props.put("grid-column-end", GridStartEnd.AUTO);
+        props.put("grid-template", Grid.component_values);
+        props.put("grid-template-areas", GridTemplateAreas.NONE);
+        props.put("grid-template-rows", GridTemplateRowsColumns.NONE);
+        props.put("grid-template-columns", GridTemplateRowsColumns.NONE);
+        props.put("grid-auto-flow", GridAutoFlow.ROW);
+        props.put("grid-auto-rows", GridAutoRowsColumns.AUTO);
+        props.put("grid-auto-columns", GridAutoRowsColumns.AUTO);
 
 		this.defaultCSSproperties = props;
 		this.defaultCSSvalues = values;

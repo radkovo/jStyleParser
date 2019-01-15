@@ -35,6 +35,7 @@ public interface TermNumeric<T extends Number> extends Term<T> {
     	pt("pt", Type.length),
     	pc("pc", Type.length),
         px("px", Type.length),
+        fr("fr", Type.length),
     	deg("deg", Type.angle),
     	rad("rad", Type.angle),
     	grad("grad", Type.angle),

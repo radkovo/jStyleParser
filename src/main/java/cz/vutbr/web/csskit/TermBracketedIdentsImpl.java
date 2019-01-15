@@ -124,9 +124,9 @@ public class TermBracketedIdentsImpl extends AbstractList<TermIdent> implements 
             return true;
         if (obj == null)
             return false;
-        if (!(obj instanceof TermListImpl))
+        if (!(obj instanceof TermBracketedIdentsImpl))
             return false;
-        TermListImpl other = (TermListImpl) obj;
+        TermBracketedIdentsImpl other = (TermBracketedIdentsImpl) obj;
         if (operator == null) {
             if (other.operator != null)
                 return false;
@@ -138,7 +138,7 @@ public class TermBracketedIdentsImpl extends AbstractList<TermIdent> implements 
         } else if (!value.equals(other.value))
             return false;
         return true;
-    }   
+    }
 
     public TermBracketedIdents shallowClone() {
         try {
