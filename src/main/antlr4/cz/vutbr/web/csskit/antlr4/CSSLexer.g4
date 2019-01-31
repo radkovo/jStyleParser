@@ -1,7 +1,7 @@
 /*
  * CSS.g 
  * Copyright (c) 2008 Karel Piwko
- * Copyright (c) 2008-2018 Radek Burget
+ * Copyright (c) 2008-2019 Radek Burget
  *
  * jStyleParser is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -210,6 +210,10 @@ CHARSET
 
 IMPORT
 	: '@import' 
+	;
+
+KEYFRAMES
+	: '@keyframes'
 	;
 
 MEDIA

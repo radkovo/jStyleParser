@@ -1,7 +1,7 @@
 /*
  * CSS.g
  * Copyright (c) 2008 Karel Piwko
- * Copyright (c) 2008-2018 Radek Burget
+ * Copyright (c) 2008-2019 Radek Burget
  *
  * jStyleParser is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -40,7 +40,9 @@ options {
     private int functLevel = 0;
 
     /**
-     * Obtains the current lexer state from current token
+     * Obtains the current
+     
+      lexer state from current token
      */
     private cz.vutbr.web.csskit.antlr4.CSSLexerState getCurrentLexerState(Token t){
         if (t instanceof cz.vutbr.web.csskit.antlr4.CSSToken){
@@ -91,6 +93,7 @@ atstatement
     | VIEWPORT S* LCURLY S* declarations RCURLY
 	| FONTFACE S* LCURLY S* declarations RCURLY
 	| MEDIA S* media? LCURLY S* (media_rule S*)* RCURLY
+	| KEYFRAMES S* keyframes_name S* LCURLY S* (keyframe_block S*)* RCURLY
 	| unknown_atrule
 	;
     catch [RecognitionException re] {
@@ -183,6 +186,30 @@ media_rule
     catch [RecognitionException re] {
         log.error("Recognition exception | media_rule | should be empty");
     }
+
+keyframes_name
+	: IDENT
+	| string
+	;
+
+keyframe_block
+	: (keyframe_selector (COMMA S* keyframe_selector)*)?
+	  LCURLY S*
+	  	declarations
+	  RCURLY
+	;
+    catch [RecognitionException re] {
+	    log.debug("PARSING keyframe_selector ERROR | consume until RCURLY and add INVALID_STATEMENT");
+        IntervalSet intervalSet = new IntervalSet(RCURLY);
+        //we don't require {} to be balanced here because of possible parent 'media' sections that may remain open => RecoveryMode.RULE
+        getCSSErrorHandler().consumeUntilGreedy(this, intervalSet/*, CSSLexerState.RecoveryMode.RULE*/);
+        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_STATEMENT, "INVALID_STATEMENT"));
+	}
+
+keyframe_selector
+	: IDENT
+	| PERCENTAGE
+	;
 
 unknown_atrule
     : ATKEYWORD S* any* unknown_atrule_body 

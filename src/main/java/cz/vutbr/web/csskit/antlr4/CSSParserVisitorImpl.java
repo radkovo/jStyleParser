@@ -5,6 +5,9 @@ import cz.vutbr.web.css.Selector.PseudoElement;
 import cz.vutbr.web.csskit.RuleArrayList;
 import cz.vutbr.web.csskit.antlr4.CSSParser.Bracketed_identsContext;
 import cz.vutbr.web.csskit.antlr4.CSSParser.Ident_list_itemContext;
+import cz.vutbr.web.csskit.antlr4.CSSParser.Keyframe_blockContext;
+import cz.vutbr.web.csskit.antlr4.CSSParser.Keyframe_selectorContext;
+import cz.vutbr.web.csskit.antlr4.CSSParser.Keyframes_nameContext;
 
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -405,6 +408,10 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             if (atstmt != null)
                 this.preventImports = true;
         }
+        //keyframes
+        else if (ctx.KEYFRAMES() != null) {
+        
+        }
         //unknown
         else {
             log.debug("Skipping invalid at statement");
@@ -667,6 +674,28 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         logLeave("media_rule");
         //could be null
         return rules;
+    }
+
+    @Override
+    public String visitKeyframes_name(Keyframes_nameContext ctx) {
+        if (ctx.IDENT() != null)
+            return extractTextUnescaped(ctx.IDENT().getText());
+        else if (ctx.string() != null)
+            return visitString(ctx.string());
+        else
+            return null;
+    }
+
+    @Override
+    public Object visitKeyframe_block(Keyframe_blockContext ctx) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Object visitKeyframe_selector(Keyframe_selectorContext ctx) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
