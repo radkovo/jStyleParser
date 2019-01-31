@@ -193,7 +193,7 @@ keyframes_name
 	;
 
 keyframe_block
-	: (keyframe_selector (COMMA S* keyframe_selector)*)?
+	: keyframe_selector (COMMA S* keyframe_selector)*
 	  LCURLY S*
 	  	declarations
 	  RCURLY
@@ -207,9 +207,12 @@ keyframe_block
 	}
 
 keyframe_selector
-	: IDENT
-	| PERCENTAGE
+	: IDENT S*
+	| PERCENTAGE S*
 	;
+    catch [RecognitionException re] {
+        log.error("Recognition exception | keyframes_selector | should be empty");
+    }
 
 unknown_atrule
     : ATKEYWORD S* any* unknown_atrule_body 

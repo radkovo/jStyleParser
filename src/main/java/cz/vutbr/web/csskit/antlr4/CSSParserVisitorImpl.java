@@ -410,7 +410,23 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         }
         //keyframes
         else if (ctx.KEYFRAMES() != null) {
-        
+            String name = null;
+            List<cz.vutbr.web.css.KeyframeBlock> keyframes = null;
+            if (ctx.keyframes_name() != null) {
+                name = visitKeyframes_name(ctx.keyframes_name());
+            }
+            if (ctx.keyframe_block() != null) {
+                keyframes = new ArrayList<>();
+                for (CSSParser.Keyframe_blockContext kfctx : ctx.keyframe_block()) {
+                    KeyframeBlock block = visitKeyframe_block(kfctx);
+                    if (block != null) {
+                        keyframes.add(block);
+                    }
+                }
+            }
+            atstmt = preparator.prepareRuleKeyframes(keyframes, name);
+            if (atstmt != null)
+                this.preventImports = true;
         }
         //unknown
         else {
@@ -687,15 +703,54 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     }
 
     @Override
-    public Object visitKeyframe_block(Keyframe_blockContext ctx) {
-        // TODO Auto-generated method stub
-        return null;
+    public KeyframeBlock visitKeyframe_block(Keyframe_blockContext ctx) {
+        List<TermPercent> selectors = null;
+        if (ctx.keyframe_selector() != null) {
+            selectors = new ArrayList<>();
+            for (Keyframe_selectorContext selctx : ctx.keyframe_selector()) {
+                TermPercent perc = visitKeyframe_selector(selctx);
+                if (perc != null)
+                    selectors.add(perc);
+            }
+        }
+
+        List<Declaration> declarations = null;
+        if (ctx.declarations() != null) {
+            statement_stack.push(new statement_scope());
+            declarations = visitDeclarations(ctx.declarations());
+            statement_stack.pop();
+        }
+        
+        if (declarations != null && selectors != null && !selectors.isEmpty()) {
+            KeyframeBlock block = rf.createKeyframeBlock();
+            block.setPercentages(selectors);
+            block.replaceAll(declarations);
+            return block;
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public Object visitKeyframe_selector(Keyframe_selectorContext ctx) {
-        // TODO Auto-generated method stub
-        return null;
+    public TermPercent visitKeyframe_selector(Keyframe_selectorContext ctx) {
+        if (ctx.IDENT() != null) {
+            final String idtext = ctx.IDENT().getText();
+            if (idtext != null) {
+                if (idtext.equalsIgnoreCase("from")) {
+                    return tf.createPercent(0.0f);
+                } else if (idtext.equalsIgnoreCase("to")) {
+                    return tf.createPercent(100.0f);
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        } else if (ctx.PERCENTAGE() != null) {
+            return tf.createPercent(ctx.PERCENTAGE().getText(), 1);
+        } else {
+            return null;
+        }
     }
 
     @Override

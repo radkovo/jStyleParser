@@ -27,6 +27,7 @@ public class OutputUtil {
 	public static final String LINE_CLOSING = ";\n";
 	public static final String NEW_LINE = "\n";
 	public static final String MEDIA_KEYWORD = "@media ";
+    public static final String KEYFRAMES_KEYWORD = "@keyframes ";
 	public static final String RULE_DELIM = "\n";
 	public static final String CHARSET_KEYWORD = "@charset ";
 	public static final String CHARSET_OPENING = "\"";

@@ -63,6 +63,18 @@ public interface RuleFactory {
 	MediaExpression createMediaExpression();
 	
 	/**
+	 * Creates a new keyframes rule
+	 * @return The new keyframes rule
+	 */
+	RuleKeyframes createKeyframes();
+	
+	/**
+	 * Creates a new keyframe block
+	 * @return The new keyframe block
+	 */
+	KeyframeBlock createKeyframeBlock();
+	
+	/**
 	 * Creates CSS named page
 	 * @return New CSS page
 	 */

@@ -10,17 +10,18 @@ import org.w3c.dom.Element;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.KeyframeBlock;
 import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleFontFace;
+import cz.vutbr.web.css.RuleKeyframes;
 import cz.vutbr.web.css.RuleMargin;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.RuleViewport;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.Selector.PseudoPage;
 
 public class SimplePreparator implements Preparator {
 	protected static final Logger log = LoggerFactory
@@ -181,5 +182,26 @@ public class SimplePreparator implements Preparator {
 		
 		return (RuleBlock<?>) rs;
 	}
+
+    @Override
+    public RuleBlock<?> prepareRuleKeyframes(List<KeyframeBlock> rules, String name) {
+        if (rules == null || rules.isEmpty()) {
+            log.debug("Empty RuleKeyframes was ommited");
+            return null;
+        }
+        if (name == null || name.isEmpty()) {
+            log.debug("RuleKeyframes with no name was ommited");
+            return null;
+        }
+
+        // create media at position of mark
+        RuleKeyframes rk = rf.createKeyframes();
+        rk.replaceAll(rules);
+        rk.setName(name);
+
+        log.info("Create @keyframes as with:\n{}", rk);
+
+        return (RuleBlock<?>) rk;
+    }
 
 }

@@ -8,7 +8,7 @@ package cz.vutbr.web.css;
  * 
  * @author burgetr
  */
-public interface RuleKeyframes extends RuleBlock<Rule<?>>, PrettyOutput {
+public interface RuleKeyframes extends RuleBlock<KeyframeBlock>, PrettyOutput {
     
     /**
      * Gets name of the keyframe list
@@ -21,6 +21,6 @@ public interface RuleKeyframes extends RuleBlock<Rule<?>>, PrettyOutput {
      * @param name New name of the keyframe list
      * @return Modified instance
      */
-    public RulePage setName(String name);
+    public RuleKeyframes setName(String name);
 
 }

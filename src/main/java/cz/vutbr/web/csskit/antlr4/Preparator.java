@@ -4,6 +4,7 @@ import java.util.List;
 
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.KeyframeBlock;
 import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleMargin;
@@ -82,5 +83,13 @@ public interface Preparator {
      * @return RuleFontFace
      */
     public RuleBlock<?> prepareRuleFontFace(List<Declaration> decl);
+    
+    /**
+     * Creates RuleKeyframes, block of key frames with assigned name.
+     * @param rules Rules encapsulated by this RuleKeyframes
+     * @param name Keyframes name
+     * @return RuleKeyframes
+     */
+    public RuleBlock<?> prepareRuleKeyframes(List<KeyframeBlock> rules, String name);
     
 }

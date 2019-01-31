@@ -7,11 +7,13 @@ import org.w3c.dom.Element;
 
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.KeyframeBlock;
 import cz.vutbr.web.css.MediaExpression;
 import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleFontFace;
 import cz.vutbr.web.css.RuleImport;
+import cz.vutbr.web.css.RuleKeyframes;
 import cz.vutbr.web.css.RuleMargin;
 import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RulePage;
@@ -25,7 +27,6 @@ import cz.vutbr.web.css.Selector.ElementDOM;
 import cz.vutbr.web.css.Selector.ElementID;
 import cz.vutbr.web.css.Selector.ElementName;
 import cz.vutbr.web.css.Selector.Operator;
-import cz.vutbr.web.css.Selector.PseudoPage;
 
 /**
  * @author kapy
@@ -84,7 +85,17 @@ public class RuleFactoryImpl implements RuleFactory {
         return new MediaExpressionImpl();
     }
     
-	/* (non-Javadoc)
+	@Override
+    public RuleKeyframes createKeyframes() {
+        return new RuleKeyframesImpl();
+    }
+
+    @Override
+    public KeyframeBlock createKeyframeBlock() {
+        return new KeyframeBlockImpl();
+    }
+
+    /* (non-Javadoc)
 	 * @see cz.vutbr.web.css.RuleFactory#createPage()
 	 */
 	public RulePage createPage() {
