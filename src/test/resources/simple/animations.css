@@ -1,0 +1,11 @@
+@keyframes test_anim {
+  from { top: 0; }
+  50% { top: 30px; left: 20px; }
+  50% { top: 10px; }
+  60%, 72% { top: 5px; }
+  to { top: 0; }
+}
+
+p {
+    animation: 4s linear 0s infinite alternate test_anim;
+}
