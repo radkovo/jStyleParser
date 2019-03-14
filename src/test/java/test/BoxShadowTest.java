@@ -1,19 +1,17 @@
 package test;
 
 import cz.vutbr.web.css.CSSFactory;
-import cz.vutbr.web.css.CSSProperty;
-import cz.vutbr.web.css.NodeData;
-import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.CSSProperty.BoxShadow;
+import cz.vutbr.web.css.Term.Operator;
 import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermList;
-import cz.vutbr.web.domassign.StyleMap;
+import cz.vutbr.web.css.TermNumeric.Unit;
 import java.util.ArrayList;
 import java.util.List;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
+import test.TestUtils.NameGenerator;
 import test.TestUtils.TestData;
 
 /**
@@ -58,65 +56,150 @@ public class BoxShadowTest {
 
     private static final TermFactory tf = CSSFactory.getTermFactory();
     private final List<TestData> _tests = new ArrayList<>();
-    
+
     @Before
     public void prepare() {
+        NameGenerator ng;
         TermList list;
-        TermList fnList;
-    
-        
+        TermIdent redTerm = tf.createIdent("red");
+        TermIdent blueTerm = tf.createIdent("blue");
+
+        _tests.add(new TestData("none", PROPERTY_NAME, BoxShadow.NONE));
+        _tests.add(new TestData("inherit", PROPERTY_NAME, BoxShadow.NONE));
+        _tests.add(new TestData("initial", PROPERTY_NAME, BoxShadow.NONE));
+        _tests.add(new TestData("unset", PROPERTY_NAME, BoxShadow.NONE));
+
+        list = tf.createList();
+        list.add(tf.createLength(5f, Unit.px));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        _tests.add(new TestData("minimal", PROPERTY_NAME, BoxShadow.component_values, list));
+
+        list = tf.createList();
+        list.add(tf.createLength(5f, Unit.px));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        _tests.add(new TestData("blur", PROPERTY_NAME, BoxShadow.component_values, list));
+
+        list = tf.createList();
+        list.add(tf.createLength(5f, Unit.px));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        _tests.add(new TestData("spread", PROPERTY_NAME, BoxShadow.component_values, list));
+
+        list = tf.createList();
+        list.add(tf.createLength(5f, Unit.px));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createColor(redTerm).setOperator(Operator.SPACE));
+        _tests.add(new TestData("color", PROPERTY_NAME, BoxShadow.component_values, list));
+
+        list = tf.createList();
+        list.add(tf.createLength(5f, Unit.px));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createColor(redTerm).setOperator(Operator.SPACE));
+        _tests.add(new TestData("blur_color", PROPERTY_NAME, BoxShadow.component_values, list));
+
+        list = tf.createList();
+        list.add(tf.createLength(5f, Unit.px));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createColor(redTerm).setOperator(Operator.SPACE));
+        _tests.add(new TestData("spread_color", PROPERTY_NAME, BoxShadow.component_values, list));
+
+        list = tf.createList();
+        list.add(tf.createIdent("inset"));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        _tests.add(new TestData("inset", PROPERTY_NAME, BoxShadow.component_values, list));
+
+        list = tf.createList();
+        list.add(tf.createLength(5f, Unit.px));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createIdent("inset").setOperator(Operator.SPACE));
+        _tests.add(new TestData("inset_blur", PROPERTY_NAME, BoxShadow.component_values, list));
+
+        list = tf.createList();
+        list.add(tf.createIdent("inset"));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        _tests.add(new TestData("inset_spread", PROPERTY_NAME, BoxShadow.component_values, list));
+
+        list = tf.createList();
+        list.add(tf.createIdent("inset"));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createColor(redTerm).setOperator(Operator.SPACE));
+        _tests.add(new TestData("inset_color", PROPERTY_NAME, BoxShadow.component_values, list));
+
+        list = tf.createList();
+        list.add(tf.createColor(redTerm));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createIdent("inset").setOperator(Operator.SPACE));
+        _tests.add(new TestData("inset_blur_color", PROPERTY_NAME, BoxShadow.component_values, list));
+
+        list = tf.createList();
+        list.add(tf.createIdent("inset"));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createColor(redTerm).setOperator(Operator.SPACE));
+        _tests.add(new TestData("inset_spread_color", PROPERTY_NAME, BoxShadow.component_values, list));
+
+        ng = new NameGenerator("multiple_");
+        list = tf.createList();
+        list.add(tf.createLength(5f, Unit.px));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.COMMA));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createColor(redTerm).setOperator(Operator.SPACE));
+        _tests.add(new TestData(ng.next(), PROPERTY_NAME, BoxShadow.component_values, list));
+
+        list = tf.createList();
+        list.add(tf.createIdent("inset"));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.COMMA));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createColor(redTerm).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.COMMA));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        _tests.add(new TestData(ng.next(), PROPERTY_NAME, BoxShadow.component_values, list));
+
+        list = tf.createList();
+        list.add(tf.createColor(redTerm));
+        list.add(tf.createIdent("inset").setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.COMMA));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.COMMA));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createLength(5f, Unit.px).setOperator(Operator.SPACE));
+        list.add(tf.createIdent("inset").setOperator(Operator.SPACE));
+        list.add(tf.createColor(blueTerm).setOperator(Operator.SPACE));
+        _tests.add(new TestData(ng.next(), PROPERTY_NAME, BoxShadow.component_values, list));
+
+        ng.setName("invalid_");
+        _tests.add(new TestData(ng.next(), PROPERTY_NAME, BoxShadow.NONE));
+        _tests.add(new TestData(ng.next(), PROPERTY_NAME, BoxShadow.NONE));
+        _tests.add(new TestData(ng.next(), PROPERTY_NAME, BoxShadow.NONE));
+        _tests.add(new TestData(ng.next(), PROPERTY_NAME, BoxShadow.NONE));
     }
-    
+
     @Test
     public void test() {
-
-        try {
-            DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/box-shadow.html"));
-            Document doc = ds.parse();
-            StyleMap sm = CSSFactory.assignDOM(doc, null, getClass().getResource("/simple/box-shadow.html"), "screen", true);
-
-            ElementMap elements = new ElementMap(doc);
-            NodeData data;
-            CSSProperty prop;
-            Term<?> term;
-
-            for (String nonValue : NON_VALUE) {
-                data = sm.get(elements.getElementById(nonValue));
-                assertNotNull("Data for #" + nonValue + " should exist", data);
-
-                prop = data.getProperty(PROPERTY_NAME, true);
-                assertNotNull("Property for #" + nonValue + " should exist", prop);
-                System.out.println("prop class = " + prop.getClass().getSimpleName());
-            }
-
-            for (String valid : VALID) {
-                data = sm.get(elements.getElementById(valid));
-                assertNotNull("Data for #" + valid + " should exist", data);
-
-                prop = data.getProperty(PROPERTY_NAME, true);
-                assertNotNull("Property for #" + valid + " should exist", prop);
-                System.out.println("prop class = " + prop.getClass().getSimpleName());
-
-                term = data.getValue(PROPERTY_NAME, true);
-                assertNotNull("Term for #" + valid + " should exist", term);
-                System.out.println("term to string = " + term);
-            }
-
-            for (String valid : INVALID) {
-                data = sm.get(elements.getElementById(valid));
-                assertNotNull("Data for #" + valid + " should exist", data);
-
-                prop = data.getProperty(PROPERTY_NAME, true);
-                assertNull("Property for #" + valid + " should not exist", prop);
-
-                term = data.getValue(PROPERTY_NAME, true);
-                assertNull("Term for #" + valid + " should not exist", term);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        TestUtils.runTests(_tests, getClass().getResource("/simple/box-shadow.html"));
     }
 
 }

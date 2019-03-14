@@ -35,12 +35,6 @@ public class TestUtils {
                 data = sm.get(elements.getElementById(id));
                 prop = data.getSpecifiedProperty(test._propertyName);
                 
-                // debug
-                if (!test._expextedProperty.equals(prop)) {
-                    System.out.println("");
-                }
-                // debug
-                
                 Assert.assertEquals(test._expextedProperty, prop);
                 if (test._expectedValue != null) {
                     System.out.print(test._expectedValue);
