@@ -246,7 +246,7 @@ public interface TermFunction extends TermList {
 	
 	//========================================================================
 	
-	   public interface GridFunction extends TermFunction {
+	public interface GridFunction extends TermFunction {
     }
 
     public interface FitContent extends GridFunction {
@@ -402,6 +402,44 @@ public interface TermFunction extends TermList {
         public Unit getNumberOfRepetitions();
 
         public List<Term<?>> getRepeatedTerms();
+    }
+    
+    //========================================================================
+    
+    public interface TimingFunction extends TermFunction {
+    }
+    
+    public interface Steps extends TimingFunction {
+        
+        public static enum Direction {
+            JUMP_START("jump-start"), JUMP_END("jump-end"), JUMP_BOTH("jump-both"), 
+            JUMP_NONE("jump-none"), START("start"), END("end");
+            
+            private final String text;
+
+            private Direction(String text) {
+                this.text = text;
+            }
+            
+            @Override
+            public String toString() {
+                return text;
+            }
+        } 
+        
+        public int getNumberOfSteps();
+        public Direction getDirection();
+    }
+    
+    public interface Frames extends TimingFunction {
+        public int getFrames();
+    }
+    
+    public interface CubicBezier extends TimingFunction {
+        public float getX1();
+        public float getY1();
+        public float getX2();
+        public float getY2();
     }
     
 }

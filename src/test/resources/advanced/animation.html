@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <title>CSS Animation</title>
+        <style type="text/css">
+            #animation0 {animation: none;}
+            #animation1 {animation: 3s;}
+            #animation2 {animation: ease-in-out;}
+            #animation3 {animation: 3s 1s;}
+            #animation4 {animation: 5;}
+            #animation5 {animation: alternate-reverse;}
+            #animation6 {animation: backwards;}
+            #animation7 {animation: paused;}
+            #animation8 {animation: someName;}
+            #animation9 {animation: 3s linear 1s someName;}
+            #animation10 {animation: 3s ease-in 1s 5 reverse both paused someName;}
+            #animation11 {animation: someName paused both reverse 5 ease-in 3s 1s;}
+            
+            #animation-delay0 {animation-delay: 1s;}
+            #animation-delay1 {animation-delay: -1s;}
+            #animation-delay2 {animation-delay: 1s, 2s, 3s;}
+            #animation-delay3 {animation-delay: 1s, 2s, 3;}
+
+            #animation-direction0 {animation-direction: reverse;}
+            #animation-direction1 {animation-direction: alternate, alternate-reverse, normal;}
+            #animation-direction2 {animation-direction: alternate-normal;}
+            #animation-direction3 {animation-direction: normal reverse;}
+            
+            #animation-duration0 {animation-duration: 1s;}
+            #animation-duration1 {animation-duration: -1s;}
+            #animation-duration2 {animation-duration: 1s, 2s, 3s;}
+            #animation-duration3 {animation-duration: 1s, 2s, 3;}
+            
+            #animation-fill-mode0 {animation-fill-mode: forwards;}
+            #animation-fill-mode1 {animation-fill-mode: backwards, none, both;}
+            #animation-fill-mode2 {animation-fill-mode: illegal;}
+            #animation-fill-mode3 {animation-fill-mode: backwards none both;}
+
+            #animation-iteration-count0 {animation-iteration-count: infinite;}
+            #animation-iteration-count1 {animation-iteration-count: 0, 1.5, 3;}
+            #animation-iteration-count2 {animation-iteration-count: -1;}
+            #animation-iteration-count4 {animation-iteration-count: 0, 1.5, -3;}
+            
+            #animation-name0 {animation-name: someName;}
+            #animation-name1 {animation-name: number_42, -dash, _underscore;}
+            #animation-name2 {animation-name: 42_number;}
+            #animation-name3 {animation-name: none;}
+            
+            #animation-play-state0 {animation-play-state: paused;}
+            #animation-play-state1 {animation-play-state: running, paused, paused;}
+            #animation-play-state2 {animation-play-state: illegal;}
+            #animation-play-state3 {animation-play-state: running paused paused;}
+            
+            #animation-timing-function0 {animation-timing-function: linear;}
+            #animation-timing-function1 {animation-timing-function: ease, ease-in, ease-in-out;}
+            #animation-timing-function2 {animation-timing-function: illegal;}
+            #animation-timing-function3 {animation-timing-function: ease ease-in ease-in-out;}
+            #animation-timing-function4 {animation-timing-function: cubic-bezier(0.1, 0.7, 1.0, 0.1);}
+            #animation-timing-function5 {animation-timing-function: cubic-bezier(-0.1, 0.7, 1.0, 0.1);}
+            #animation-timing-function6 {animation-timing-function: cubic-bezier(0.1, 0.7, 1.1, 0.1);}
+            #animation-timing-function7 {animation-timing-function: steps(5, jump-both);}
+            #animation-timing-function8 {animation-timing-function: steps(0, jump-both);}
+            #animation-timing-function9 {animation-timing-function: frames(10);}
+            #animation-timing-function10{animation-timing-function: frames();}
+        </style>
+    </head>
+    <body>
+        <div id="content">
+            <ul>
+                <li id="animation0"></li>
+                <li id="animation1"></li>
+                <li id="animation2"></li>
+                <li id="animation3"></li>
+                <li id="animation4"></li>
+                <li id="animation5"></li>
+                <li id="animation6"></li>
+                <li id="animation7"></li>
+                <li id="animation8"></li>
+                <li id="animation9"></li>
+                <li id="animation10"></li>
+                <li id="animation11"></li>
+                
+                <li id="animation-delay0"></li>
+                <li id="animation-delay1"></li>
+                <li id="animation-delay2"></li>
+                <li id="animation-delay3"></li>
+                
+                <li id="animation-direction0"></li>
+                <li id="animation-direction1"></li>
+                <li id="animation-direction2"></li>
+                <li id="animation-direction3"></li>
+                
+                <li id="animation-duration0"></li>
+                <li id="animation-duration1"></li>
+                <li id="animation-duration2"></li>
+                <li id="animation-duration3"></li>
+                
+                <li id="animation-fill-mode0"></li>
+                <li id="animation-fill-mode1"></li>
+                <li id="animation-fill-mode2"></li>
+                <li id="animation-fill-mode3"></li>
+                
+                <li id="animation-iteration-count0"></li>
+                <li id="animation-iteration-count1"></li>
+                <li id="animation-iteration-count2"></li>
+                <li id="animation-iteration-count3"></li>
+                
+                <li id="animation-name0"></li>
+                <li id="animation-name1"></li>
+                <li id="animation-name2"></li>
+                <li id="animation-name3"></li>
+                
+                <li id="animation-play-state0"></li>
+                <li id="animation-play-state1"></li>
+                <li id="animation-play-state2"></li>
+                <li id="animation-play-state3"></li>
+                
+                <li id="animation-timing-function0"></li>
+                <li id="animation-timing-function1"></li>
+                <li id="animation-timing-function2"></li>
+                <li id="animation-timing-function3"></li>
+                <li id="animation-timing-function4"></li>
+                <li id="animation-timing-function5"></li>
+                <li id="animation-timing-function6"></li>
+                <li id="animation-timing-function7"></li>
+                <li id="animation-timing-function8"></li>
+                <li id="animation-timing-function9"></li>
+                <li id="animation-timing-function10"></li>
+            </ul>
+        </div>
+    </body>
+</html>

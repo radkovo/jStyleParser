@@ -4,11 +4,17 @@ import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.domassign.StyleMap;
+import java.util.ArrayList;
+import java.util.List;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
+import test.TestUtils.TestData;
 
 /**
  *
@@ -50,8 +56,19 @@ public class BoxShadowTest {
         "invalid_3"
     };
 
+    private static final TermFactory tf = CSSFactory.getTermFactory();
+    private final List<TestData> _tests = new ArrayList<>();
+    
+    @Before
+    public void prepare() {
+        TermList list;
+        TermList fnList;
+    
+        
+    }
+    
     @Test
-    public void boxShadowTest() {
+    public void test() {
 
         try {
             DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/box-shadow.html"));

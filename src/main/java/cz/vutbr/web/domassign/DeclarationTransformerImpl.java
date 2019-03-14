@@ -17,97 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
-import cz.vutbr.web.css.CSSProperty.BackdropFilter;
-import cz.vutbr.web.css.CSSProperty.BackgroundAttachment;
-import cz.vutbr.web.css.CSSProperty.BackgroundColor;
-import cz.vutbr.web.css.CSSProperty.BackgroundImage;
-import cz.vutbr.web.css.CSSProperty.BackgroundPosition;
-import cz.vutbr.web.css.CSSProperty.BackgroundRepeat;
-import cz.vutbr.web.css.CSSProperty.BackgroundSize;
-import cz.vutbr.web.css.CSSProperty.BorderCollapse;
-import cz.vutbr.web.css.CSSProperty.BorderColor;
-import cz.vutbr.web.css.CSSProperty.BorderRadius;
-import cz.vutbr.web.css.CSSProperty.BorderSpacing;
-import cz.vutbr.web.css.CSSProperty.BorderStyle;
-import cz.vutbr.web.css.CSSProperty.BorderWidth;
-import cz.vutbr.web.css.CSSProperty.Bottom;
-import cz.vutbr.web.css.CSSProperty.BoxShadow;
-import cz.vutbr.web.css.CSSProperty.BoxSizing;
-import cz.vutbr.web.css.CSSProperty.CaptionSide;
-import cz.vutbr.web.css.CSSProperty.Clear;
-import cz.vutbr.web.css.CSSProperty.Clip;
-import cz.vutbr.web.css.CSSProperty.Color;
-import cz.vutbr.web.css.CSSProperty.Content;
-import cz.vutbr.web.css.CSSProperty.CounterIncrement;
-import cz.vutbr.web.css.CSSProperty.CounterReset;
-import cz.vutbr.web.css.CSSProperty.Cursor;
-import cz.vutbr.web.css.CSSProperty.Direction;
-import cz.vutbr.web.css.CSSProperty.Display;
-import cz.vutbr.web.css.CSSProperty.EmptyCells;
-import cz.vutbr.web.css.CSSProperty.Filter;
-import cz.vutbr.web.css.CSSProperty.FlexBasis;
-import cz.vutbr.web.css.CSSProperty.FlexDirection;
-import cz.vutbr.web.css.CSSProperty.FlexGrow;
-import cz.vutbr.web.css.CSSProperty.FlexShrink;
-import cz.vutbr.web.css.CSSProperty.FlexWrap;
-import cz.vutbr.web.css.CSSProperty.Font;
-import cz.vutbr.web.css.CSSProperty.FontFamily;
-import cz.vutbr.web.css.CSSProperty.FontSize;
-import cz.vutbr.web.css.CSSProperty.FontStyle;
-import cz.vutbr.web.css.CSSProperty.FontVariant;
-import cz.vutbr.web.css.CSSProperty.FontWeight;
-import cz.vutbr.web.css.CSSProperty.GenericCSSPropertyProxy;
-import cz.vutbr.web.css.CSSProperty.Grid;
-import cz.vutbr.web.css.CSSProperty.GridAutoFlow;
-import cz.vutbr.web.css.CSSProperty.GridAutoRowsColumns;
-import cz.vutbr.web.css.CSSProperty.GridGap;
-import cz.vutbr.web.css.CSSProperty.GridStartEnd;
-import cz.vutbr.web.css.CSSProperty.GridTemplateAreas;
-import cz.vutbr.web.css.CSSProperty.GridTemplateRowsColumns;
-import cz.vutbr.web.css.CSSProperty.Height;
-import cz.vutbr.web.css.CSSProperty.JustifyContent;
-import cz.vutbr.web.css.CSSProperty.Left;
-import cz.vutbr.web.css.CSSProperty.LetterSpacing;
-import cz.vutbr.web.css.CSSProperty.LineHeight;
-import cz.vutbr.web.css.CSSProperty.ListStyleImage;
-import cz.vutbr.web.css.CSSProperty.ListStylePosition;
-import cz.vutbr.web.css.CSSProperty.ListStyleType;
-import cz.vutbr.web.css.CSSProperty.Margin;
-import cz.vutbr.web.css.CSSProperty.MaxHeight;
-import cz.vutbr.web.css.CSSProperty.MaxWidth;
-import cz.vutbr.web.css.CSSProperty.MinHeight;
-import cz.vutbr.web.css.CSSProperty.MinWidth;
-import cz.vutbr.web.css.CSSProperty.Opacity;
-import cz.vutbr.web.css.CSSProperty.Order;
-import cz.vutbr.web.css.CSSProperty.Orphans;
-import cz.vutbr.web.css.CSSProperty.OutlineColor;
-import cz.vutbr.web.css.CSSProperty.OutlineStyle;
-import cz.vutbr.web.css.CSSProperty.OutlineWidth;
-import cz.vutbr.web.css.CSSProperty.Overflow;
-import cz.vutbr.web.css.CSSProperty.Padding;
-import cz.vutbr.web.css.CSSProperty.PageBreak;
-import cz.vutbr.web.css.CSSProperty.PageBreakInside;
-import cz.vutbr.web.css.CSSProperty.Position;
-import cz.vutbr.web.css.CSSProperty.Quotes;
-import cz.vutbr.web.css.CSSProperty.Right;
-import cz.vutbr.web.css.CSSProperty.TabSize;
-import cz.vutbr.web.css.CSSProperty.TableLayout;
-import cz.vutbr.web.css.CSSProperty.TextAlign;
-import cz.vutbr.web.css.CSSProperty.TextDecoration;
-import cz.vutbr.web.css.CSSProperty.TextIndent;
-import cz.vutbr.web.css.CSSProperty.TextTransform;
-import cz.vutbr.web.css.CSSProperty.Top;
-import cz.vutbr.web.css.CSSProperty.Transform;
-import cz.vutbr.web.css.CSSProperty.TransformOrigin;
-import cz.vutbr.web.css.CSSProperty.UnicodeBidi;
-import cz.vutbr.web.css.CSSProperty.UnicodeRange;
-import cz.vutbr.web.css.CSSProperty.VerticalAlign;
-import cz.vutbr.web.css.CSSProperty.Visibility;
-import cz.vutbr.web.css.CSSProperty.WhiteSpace;
-import cz.vutbr.web.css.CSSProperty.Widows;
-import cz.vutbr.web.css.CSSProperty.Width;
-import cz.vutbr.web.css.CSSProperty.WordSpacing;
-import cz.vutbr.web.css.CSSProperty.ZIndex;
+import cz.vutbr.web.css.CSSProperty.*;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.SupportedCSS;
@@ -127,6 +37,7 @@ import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermPercent;
 import cz.vutbr.web.css.TermRect;
 import cz.vutbr.web.css.TermString;
+import cz.vutbr.web.css.TermTime;
 import cz.vutbr.web.css.TermURI;
 import cz.vutbr.web.css.TermUnicodeRange;
 import cz.vutbr.web.csskit.DeclarationTransformer;
@@ -238,8 +149,8 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 
 		final String propertyName = d.getProperty();
 
-		// no such declaration is supported
-		if (!css.isSupportedCSSProperty(propertyName))
+		// no such declaration is supported or declaration is empty
+		if (!css.isSupportedCSSProperty(propertyName) || d.isEmpty())
 			return false;
 
 		try {
@@ -305,12 +216,12 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	 * @param <T>
 	 *            Subclass of CSSProperty to be returned
 	 * @param type
-	 *            Class of property to be used to retrive value
+	 *            Class of property to be used to retrieve value
 	 * @param intersection
 	 *            Intersection set or <code>null</code> if no intersection is
 	 *            used
 	 * @param term
-	 *            TermIdent to be transfered to property
+	 *            TermIdent to be transferred to property
 	 * @return CSSProperty of type &lt;T&gt; or <code>null</code>
 	 */
 	public <T extends CSSProperty> T genericPropertyRaw(Class<T> type,
@@ -495,9 +406,9 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 					}
 				}
 				// check for float
-				else if (term.getValue() instanceof Float) {
-					final Float zero = 0f;
-					int result = zero.compareTo((Float) term.getValue());
+				else if (term.getValue() instanceof java.lang.Float) {
+					final java.lang.Float zero = 0f;
+					int result = zero.compareTo((java.lang.Float) term.getValue());
 					if (result > 0) {
 						// return false is also possibility
 						// but we will change to zero
@@ -622,7 +533,28 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 				|| genericTermLength(d.get(0), d.getProperty(),
 						lengthIdentification, range, properties, values);
 	}
-
+    
+    protected <T extends CSSProperty> boolean genericTime(
+            Class<T> type, T integerIdentification, ValueRange range,
+            Declaration d, Map<String, CSSProperty> properties,
+            Map<String, Term<?>> values) {
+        if (d.size() != 1)
+            return false;
+        
+        Term<?> term = d.get(0);
+        if (term instanceof TermIdent) {
+            T property = genericPropertyRaw(type, null, (TermIdent) term);
+            if (!property.equalsInherit())
+                return false;
+            else
+            {
+                properties.put(d.getProperty(), property);
+                return true;
+            }
+        }
+        return genericTerm(TermTime.class, term, d.getProperty(), integerIdentification, range, properties, values);
+    }
+    
     protected <T extends CSSProperty> boolean genericInteger(
             Class<T> type, T integerIdentification, ValueRange range,
             Declaration d, Map<String, CSSProperty> properties,
@@ -2171,10 +2103,6 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processGrid(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if (d.isEmpty()) {
-            return false;
-        }
-
         // <'grid-template'> 
         // | <'grid-template-rows'> / [ auto-flow && dense? ] <'grid-auto-columns'>?
         // | [ auto-flow && dense? ] <'grid-auto-rows'>? / <'grid-template-columns'>
@@ -2427,9 +2355,6 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 
     @SuppressWarnings("unused")
     private boolean processGridTemplate(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if (d.isEmpty()) {
-            return false;
-        }
         d.setProperty("grid-template-areas");
         if (genericOneIdent(GridTemplateAreas.class, d, properties)) {
             return true;
@@ -2529,7 +2454,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
      * max-content | auto
      */
     private boolean isTermTrackBreadth(Term t) {
-        if (t instanceof TermLength || t instanceof TermPercent) {
+        if (t instanceof TermLengthOrPercent) {
             return true;
         } else if (t instanceof TermIdent) {
             CSSProperty property = genericPropertyRaw(GridTemplateRowsColumns.class, null, (TermIdent) t);
@@ -2542,9 +2467,6 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 
     @SuppressWarnings("unused")
     private boolean processGridTemplateAreas(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if (d.isEmpty()) {
-            return false;
-        }
         if (genericOneIdent(GridTemplateAreas.class, d, properties)) {
             return true;
         }
@@ -2609,8 +2531,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
                 }
             } else if (t instanceof TermFunction.Repeat && !repeatUsed) {
                 repeatUsed = true;
-            } else if (!(t instanceof TermLength)
-                    && !(t instanceof TermPercent)
+            } else if (!(t instanceof TermLengthOrPercent)
                     && !(t instanceof TermFunction.MinMax)
                     && !(t instanceof TermFunction.FitContent)) {
                 return false;
@@ -2625,9 +2546,6 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 
     @SuppressWarnings("unused")
     private boolean processGridAutoFlow(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if (d.isEmpty()) {
-            return false;
-        }
         if (genericOneIdent(GridAutoFlow.class, d, properties)) {
             return true;
         }
@@ -2681,7 +2599,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
                 if (property == null) {
                     return false;
                 }
-            } else if (t instanceof TermLength || t instanceof TermPercent) {
+            } else if (t instanceof TermLengthOrPercent) {
                 if (!isPositive(t)) {
                     return false;
                 }
@@ -2713,12 +2631,16 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     }
 
     private static boolean isPositive(Term t) {
-        if (t instanceof TermLength) {
-            if (((TermLength) t).getValue() < 0) {
+        if (t instanceof TermLengthOrPercent) {
+            if (((TermLengthOrPercent) t).getValue() < 0) {
                 return false;
             }
-        } else if (t instanceof TermPercent) {
-            if (((TermPercent) t).getValue() < 0) {
+        } else if (t instanceof TermFloatValue) {
+            if (((TermFloatValue) t).getValue() < 0) {
+                return false;
+            }
+        } else if (t instanceof TermTime) {
+            if (((TermTime) t).getValue() < 0) {
                 return false;
             }
         } else {
@@ -2726,6 +2648,258 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         }
         return true;
     }
+    
+    private static final String[] ANIMATION_PROPERTIES = {
+        "animation-duration",
+        "animation-timing-function",
+        "animation-delay",
+        "animation-iteration-count",
+        "animation-direction",
+        "animation-fill-mode",
+        "animation-play-state",
+        "animation-name"
+    };
+
+    @SuppressWarnings("unused")
+    private boolean processAnimation(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        Declaration subDeclaration = (Declaration) rf.createDeclaration().unlock();
+        TermList[] termLists = new TermList[ANIMATION_PROPERTIES.length];
+        for (int i = 0; i < termLists.length; i++) termLists[i] = tf.createList();
+        boolean[] propertySet = new boolean[ANIMATION_PROPERTIES.length];
+        Arrays.fill(propertySet, false);
+
+        for (int i = 0; i < d.size(); i++) {
+            Term t = d.get(i);
+            subDeclaration.add(t);
+            if (t.getOperator() == Operator.COMMA) {
+                Arrays.fill(propertySet, false);
+            }
+            for (int propertyIndex = 0; propertyIndex <= ANIMATION_PROPERTIES.length; propertyIndex++) {
+                if (propertyIndex == ANIMATION_PROPERTIES.length) {
+                    return false;
+                }
+                if (propertySet[propertyIndex]) {
+                    continue;
+                }
+                subDeclaration.setProperty(ANIMATION_PROPERTIES[propertyIndex]);
+                if (parseDeclaration(subDeclaration, properties, values)) {
+                    propertySet[propertyIndex] = true;
+                    termLists[propertyIndex].add(t);
+                    break;
+                }
+            }
+            subDeclaration.clear();
+        }
+
+        for (int propertyIndex = 0; propertyIndex < ANIMATION_PROPERTIES.length; propertyIndex++) {
+            subDeclaration.setProperty(ANIMATION_PROPERTIES[propertyIndex]);
+            subDeclaration.addAll(termLists[propertyIndex]);
+            if (!subDeclaration.isEmpty() && !parseDeclaration(subDeclaration, properties, values)) {
+                return false;
+            }
+            subDeclaration.clear();
+        }
+        return true;
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processAnimationDelay(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if (genericTime(AnimationDelay.class, AnimationDelay.time, ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
+            return true;
+        }
+        TermList list = tf.createList();
+        for (int i = 0; i < d.size(); i++) {
+            Term t = d.get(i);
+            if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermTime) {
+                if (!isPositive(t)) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+            list.add(t);
+        }
+        properties.put(d.getProperty(), AnimationDelay.list_values);
+        values.put(d.getProperty(), list);
+        return true;
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processAnimationDirection(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if(genericOneIdent(AnimationDirection.class, d, properties)) {
+            return true;
+        }
+        TermList list = tf.createList();
+        for (int i = 0; i < d.size(); i++) {
+            Term t = d.get(i);
+            if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermIdent) {
+                CSSProperty property = genericPropertyRaw(AnimationDirection.class, null, (TermIdent) t);
+                if (property == null) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+            list.add(t);
+        }
+        properties.put(d.getProperty(), AnimationDirection.list_values);
+        values.put(d.getProperty(), list);
+        return true;
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processAnimationDuration(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if (genericTime(AnimationDuration.class, AnimationDuration.time, ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
+            return true;
+        }
+        TermList list = tf.createList();
+        for (int i = 0; i < d.size(); i++) {
+            Term t = d.get(i);
+            if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermTime) {
+                if(!isPositive(t)) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+            list.add(t);
+        }
+        properties.put(d.getProperty(), AnimationDuration.list_values);
+        values.put(d.getProperty(), list);
+        return true;
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processAnimationFillMode(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if(genericOneIdent(AnimationFillMode.class, d, properties)) {
+            return true;
+        }
+        TermList list = tf.createList();
+        for (int i = 0; i < d.size(); i++) {
+            Term t = d.get(i);
+            if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermIdent) {
+                CSSProperty property = genericPropertyRaw(AnimationFillMode.class, null, (TermIdent) t);
+                if (property == null) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+            list.add(t);
+        }
+        properties.put(d.getProperty(), AnimationFillMode.list_values);
+        values.put(d.getProperty(), list);
+        return true;
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processAnimationIterationCount(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if(genericOneIdentOrInteger(AnimationIterationCount.class, AnimationIterationCount.number, ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
+            return true;
+        }
+        TermList list = tf.createList();
+        for (int i = 0; i < d.size(); i++) {
+            Term t = d.get(i);
+            if(i > 0 && t.getOperator() != Operator.COMMA) {
+                return false;
+            }
+            if (t instanceof TermIdent) {
+                CSSProperty property = genericPropertyRaw(AnimationIterationCount.class, null, (TermIdent) t);
+                if (property == null) {
+                    return false;
+                }
+            } else if(t instanceof TermFloatValue) {
+                if(!isPositive(t)) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+            list.add(t);
+        }
+        properties.put(d.getProperty(), AnimationIterationCount.list_values);
+        values.put(d.getProperty(), list);
+        return true;
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processAnimationName(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if(genericOneIdent(AnimationName.class, d, properties)) {
+            return true;
+        }
+        TermList list = tf.createList();
+        for (int i = 0; i < d.size(); i++) {
+            Term t = d.get(i);
+            if (i > 0 && t.getOperator() != Operator.COMMA || !(t instanceof TermIdent)) {
+                return false;
+            }
+            list.add(t);
+        }
+        if(list.size() == 1) {
+            properties.put(d.getProperty(), AnimationName.custom_ident);
+            values.put(d.getProperty(), list.get(0));
+        } else {
+            properties.put(d.getProperty(), AnimationName.list_values);
+            values.put(d.getProperty(), list);
+        }
+        return true;
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processAnimationPlayState(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if(genericOneIdent(AnimationPlayState.class, d, properties)) {
+            return true;
+        }
+        TermList list = tf.createList();
+        for (int i = 0; i < d.size(); i++) {
+            Term t = d.get(i);
+            if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermIdent) {
+                CSSProperty property = genericPropertyRaw(AnimationPlayState.class, null, (TermIdent) t);
+                if (property == null) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+            list.add(t);
+        }
+        properties.put(d.getProperty(), AnimationPlayState.list_values);
+        values.put(d.getProperty(), list);
+        return true;
+    }
+
+    @SuppressWarnings("unused")
+    private boolean processAnimationTimingFunction(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if(genericOneIdent(AnimationTimingFunction.class, d, properties)) {
+            return true;
+        }
+        TermList list = tf.createList();
+        for (int i = 0; i < d.size(); i++) {
+            Term t = d.get(i);
+            if(i > 0 && t.getOperator() != Operator.COMMA) {
+                return false;
+            }
+            if (t instanceof TermIdent) {
+                CSSProperty property = genericPropertyRaw(AnimationTimingFunction.class, null, (TermIdent) t);
+                if (property == null) {
+                    return false;
+                }
+            } else if (!(t instanceof TermFunction.TimingFunction)) {
+                return false;
+            }
+            list.add(t);
+        }
+        if(list.size() == 1) {
+            properties.put(d.getProperty(), AnimationTimingFunction.timing_function);
+            values.put(d.getProperty(), list.get(0));
+        } else {
+            properties.put(d.getProperty(), AnimationTimingFunction.list_values);
+            values.put(d.getProperty(), list);
+        }
+        return true;
+    }
+    
+    
 	
 	/**
 	 * Variator for list style. Grammar:
@@ -3716,9 +3890,9 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
             if (src.getOperator() == Operator.SLASH)
             {
                 if (src instanceof TermLength)
-                    return tf.createLength((Float) src.getValue(), ((TermLength) src).getUnit());
+                    return tf.createLength((java.lang.Float) src.getValue(), ((TermLength) src).getUnit());
                 else if (src instanceof TermPercent)
-                    return tf.createPercent((Float) src.getValue());
+                    return tf.createPercent((java.lang.Float) src.getValue());
                 else
                     return src;
             }

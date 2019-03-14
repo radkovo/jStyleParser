@@ -67,6 +67,7 @@ public interface TermFactory {
 	<V> Term<V> createTerm(V value);
 	
 	TermTime createTime(Float value);
+    TermTime createTime(Float value, Unit unit);
 	TermTime createTime(String value, Unit unit, int unary);
 	
     TermUnicodeRange createUnicodeRange(String value);
