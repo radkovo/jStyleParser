@@ -3774,8 +3774,8 @@ public interface CSSProperty {
             return text;
         }
     }
-	
-	public enum Animation implements CSSProperty {
+
+    public enum Animation implements CSSProperty {
         component_values(""),
         INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
@@ -3806,7 +3806,7 @@ public interface CSSProperty {
             return text;
         }
     }
-    
+
     public enum AnimationDelay implements CSSProperty {
         time(""), list_values(""),
         INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
@@ -3838,7 +3838,7 @@ public interface CSSProperty {
             return text;
         }
     }
-    
+
     public enum AnimationDirection implements CSSProperty {
         list_values(""),
         NORMAL("normal"), REVERSE("reverse"), ALTERNATE("alternate"), ALTERNATE_REVERSE("alternate-reverse"),
@@ -3871,7 +3871,7 @@ public interface CSSProperty {
             return text;
         }
     }
-    
+
     public enum AnimationDuration implements CSSProperty {
         time(""), list_values(""),
         INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
@@ -3903,7 +3903,7 @@ public interface CSSProperty {
             return text;
         }
     }
-    
+
     public enum AnimationFillMode implements CSSProperty {
         list_values(""),
         NONE("none"), FORWARDS("forwards"), BACKWARDS("backwards"), BOTH("both"),
@@ -3936,7 +3936,7 @@ public interface CSSProperty {
             return text;
         }
     }
-    
+
     public enum AnimationIterationCount implements CSSProperty {
         number(""), list_values(""),
         INFINITE("infinite"),
@@ -3969,9 +3969,9 @@ public interface CSSProperty {
             return text;
         }
     }
-    
+
     public enum AnimationName implements CSSProperty {
-        custom_ident(""), /*string(""), */list_values(""),
+        custom_ident(""), /*string(""), */ list_values(""),
         NONE("none"),
         INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
@@ -4002,7 +4002,7 @@ public interface CSSProperty {
             return text;
         }
     }
-    
+
     public enum AnimationPlayState implements CSSProperty {
         list_values(""),
         RUNNING("running"), PAUSED("paused"),
@@ -4035,7 +4035,7 @@ public interface CSSProperty {
             return text;
         }
     }
-    
+
     public enum AnimationTimingFunction implements CSSProperty {
         timing_function(""), list_values(""),
         LINEAR("linear"), EASE("ease"), EASE_IN("ease-in"), EASE_OUT("ease-out"), EASE_IN_OUT("ease-in-out"),
@@ -4069,9 +4069,172 @@ public interface CSSProperty {
             return text;
         }
     }
+
+    public enum Transition implements CSSProperty {
+        component_values(""),
+        INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+        private String text;
+
+        private Transition(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
+    public enum TransitionDelay implements CSSProperty {
+        time(""), list_values(""),
+        INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+        private String text;
+
+        private TransitionDelay(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
+    public enum TransitionDuration implements CSSProperty {
+        time(""), list_values(""),
+        INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+        private String text;
+
+        private TransitionDuration(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
+    public enum TransitionProperty implements CSSProperty {
+        custom_ident(""), list_values(""),
+        ALL("all"), NONE("none"),
+        INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+        private String text;
+
+        private TransitionProperty(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
+    public enum TransitionTimingFunction implements CSSProperty {
+        timing_function(""), list_values(""),
+        LINEAR("linear"), EASE("ease"), EASE_IN("ease-in"), EASE_OUT("ease-out"), EASE_IN_OUT("ease-in-out"),
+        STEP_START("step-start"), STEP_END("step-end"),
+        INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+        private String text;
+
+        private TransitionTimingFunction(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
     
     
-	
+    
     /**
      * A generic property used for all the properties not supported by another implementation.
      */

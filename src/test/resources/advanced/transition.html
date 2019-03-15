@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <title>CSS Transition</title>
+        <style type="text/css">
+            #transition0 {transition: none;}
+            #transition1 {transition: 3s;}
+            #transition2 {transition: 3s 1s;}
+            #transition3 {transition: ease-in-out;}
+            #transition4 {transition: propertyName;}
+            #transition5 {transition: 3s 1s propertyName;}
+            #transition6 {transition: 3s ease-in 1s propertyName;}
+            #transition7 {transition: propertyName ease-in 3s 1s;}
+            
+            #transition-delay0 {transition-delay: 1s;}
+            #transition-delay1 {transition-delay: -1s;}
+            #transition-delay2 {transition-delay: 1s, 2s, 3s;}
+            #transition-delay3 {transition-delay: 1s, 2s, 3;}
+            
+            #transition-duration0 {transition-duration: 1s;}
+            #transition-duration1 {transition-duration: -1s;}
+            #transition-duration2 {transition-duration: 1s, 2s, 3s;}
+            #transition-duration3 {transition-duration: 1s, 2s, 3;}
+            
+            #transition-property0 {transition-property: margin-top;}
+            #transition-property1 {transition-property: margin, padding, box-shadow;}
+            #transition-property2 {transition-property: margin, padding, none;}
+            #transition-property3 {transition-property: margin padding box-shadow;}
+            
+            #transition-timing-function0 {transition-timing-function: linear;}
+            #transition-timing-function1 {transition-timing-function: ease, ease-in, ease-in-out;}
+            #transition-timing-function2 {transition-timing-function: illegal;}
+            #transition-timing-function3 {transition-timing-function: ease ease-in ease-in-out;}
+            #transition-timing-function4 {transition-timing-function: cubic-bezier(0.1, 0.7, 1.0, 0.1);}
+            #transition-timing-function5 {transition-timing-function: cubic-bezier(-0.1, 0.7, 1.0, 0.1);}
+            #transition-timing-function6 {transition-timing-function: cubic-bezier(0.1, 0.7, 1.1, 0.1);}
+            #transition-timing-function7 {transition-timing-function: steps(5, jump-both);}
+            #transition-timing-function8 {transition-timing-function: steps(0, jump-both);}
+            #transition-timing-function9 {transition-timing-function: frames(10);}
+            #transition-timing-function10{transition-timing-function: frames();}
+        </style>
+    </head>
+    <body>
+        <div id="content">
+            <ul>
+                <li id="transition0"></li>
+                <li id="transition1"></li>
+                <li id="transition2"></li>
+                <li id="transition3"></li>
+                <li id="transition4"></li>
+                <li id="transition5"></li>
+                <li id="transition6"></li>
+                <li id="transition7"></li>
+                
+                <li id="transition-delay0"></li>
+                <li id="transition-delay1"></li>
+                <li id="transition-delay2"></li>
+                <li id="transition-delay3"></li>
+
+                <li id="transition-duration0"></li>
+                <li id="transition-duration1"></li>
+                <li id="transition-duration2"></li>
+                <li id="transition-duration3"></li>
+ 
+                <li id="transition-property0"></li>
+                <li id="transition-property1"></li>
+                <li id="transition-property2"></li>
+                <li id="transition-property3"></li>
+                
+                <li id="transition-timing-function0"></li>
+                <li id="transition-timing-function1"></li>
+                <li id="transition-timing-function2"></li>
+                <li id="transition-timing-function3"></li>
+                <li id="transition-timing-function4"></li>
+                <li id="transition-timing-function5"></li>
+                <li id="transition-timing-function6"></li>
+                <li id="transition-timing-function7"></li>
+                <li id="transition-timing-function8"></li>
+                <li id="transition-timing-function9"></li>
+                <li id="transition-timing-function10"></li>
+            </ul>
+        </div>
+    </body>
+</html>

@@ -2648,58 +2648,19 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         }
         return true;
     }
-    
-    private static final String[] ANIMATION_PROPERTIES = {
-        "animation-duration",
-        "animation-timing-function",
-        "animation-delay",
-        "animation-iteration-count",
-        "animation-direction",
-        "animation-fill-mode",
-        "animation-play-state",
-        "animation-name"
-    };
 
     @SuppressWarnings("unused")
     private boolean processAnimation(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        Declaration subDeclaration = (Declaration) rf.createDeclaration().unlock();
-        TermList[] termLists = new TermList[ANIMATION_PROPERTIES.length];
-        for (int i = 0; i < termLists.length; i++) termLists[i] = tf.createList();
-        boolean[] propertySet = new boolean[ANIMATION_PROPERTIES.length];
-        Arrays.fill(propertySet, false);
-
-        for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
-            subDeclaration.add(t);
-            if (t.getOperator() == Operator.COMMA) {
-                Arrays.fill(propertySet, false);
-            }
-            for (int propertyIndex = 0; propertyIndex <= ANIMATION_PROPERTIES.length; propertyIndex++) {
-                if (propertyIndex == ANIMATION_PROPERTIES.length) {
-                    return false;
-                }
-                if (propertySet[propertyIndex]) {
-                    continue;
-                }
-                subDeclaration.setProperty(ANIMATION_PROPERTIES[propertyIndex]);
-                if (parseDeclaration(subDeclaration, properties, values)) {
-                    propertySet[propertyIndex] = true;
-                    termLists[propertyIndex].add(t);
-                    break;
-                }
-            }
-            subDeclaration.clear();
-        }
-
-        for (int propertyIndex = 0; propertyIndex < ANIMATION_PROPERTIES.length; propertyIndex++) {
-            subDeclaration.setProperty(ANIMATION_PROPERTIES[propertyIndex]);
-            subDeclaration.addAll(termLists[propertyIndex]);
-            if (!subDeclaration.isEmpty() && !parseDeclaration(subDeclaration, properties, values)) {
-                return false;
-            }
-            subDeclaration.clear();
-        }
-        return true;
+        return processPropertiesInList(new String[]{
+            "animation-duration",
+            "animation-timing-function",
+            "animation-delay",
+            "animation-iteration-count",
+            "animation-direction",
+            "animation-fill-mode",
+            "animation-play-state",
+            "animation-name"
+        }, d, properties, values);
     }
     
     @SuppressWarnings("unused")
@@ -2894,6 +2855,160 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
             values.put(d.getProperty(), list.get(0));
         } else {
             properties.put(d.getProperty(), AnimationTimingFunction.list_values);
+            values.put(d.getProperty(), list);
+        }
+        return true;
+    }
+    
+    private boolean processPropertiesInList(String[] propertyList, Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        Declaration subDeclaration = (Declaration) rf.createDeclaration().unlock();
+        TermList[] termLists = new TermList[propertyList.length];
+        for (int i = 0; i < termLists.length; i++) termLists[i] = tf.createList();
+        boolean[] propertySet = new boolean[propertyList.length];
+        Arrays.fill(propertySet, false);
+
+        for (int i = 0; i < d.size(); i++) {
+            Term t = d.get(i);
+            subDeclaration.add(t);
+            if (t.getOperator() == Operator.COMMA) {
+                Arrays.fill(propertySet, false);
+            }
+            for (int propertyIndex = 0; propertyIndex <= propertyList.length; propertyIndex++) {
+                if (propertyIndex == propertyList.length) {
+                    return false;
+                }
+                if (propertySet[propertyIndex]) {
+                    continue;
+                }
+                subDeclaration.setProperty(propertyList[propertyIndex]);
+                if (parseDeclaration(subDeclaration, properties, values)) {
+                    propertySet[propertyIndex] = true;
+                    termLists[propertyIndex].add(t);
+                    break;
+                }
+            }
+            subDeclaration.clear();
+        }
+
+        for (int propertyIndex = 0; propertyIndex < propertyList.length; propertyIndex++) {
+            subDeclaration.setProperty(propertyList[propertyIndex]);
+            subDeclaration.addAll(termLists[propertyIndex]);
+            if (!subDeclaration.isEmpty() && !parseDeclaration(subDeclaration, properties, values)) {
+                return false;
+            }
+            subDeclaration.clear();
+        }
+        return true;
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processTransition(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return processPropertiesInList(new String[]{
+            "transition-duration",
+            "transition-delay",
+            "transition-timing-function",
+            "transition-property"
+        }, d, properties, values);
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processTransitionDelay(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if (genericTime(TransitionDelay.class, TransitionDelay.time, ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
+            return true;
+        }
+        TermList list = tf.createList();
+        for (int i = 0; i < d.size(); i++) {
+            Term t = d.get(i);
+            if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermTime) {
+                if (!isPositive(t)) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+            list.add(t);
+        }
+        properties.put(d.getProperty(), TransitionDelay.list_values);
+        values.put(d.getProperty(), list);
+        return true;
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processTransitionDuration(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if (genericTime(TransitionDuration.class, TransitionDuration.time, ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
+            return true;
+        }
+        TermList list = tf.createList();
+        for (int i = 0; i < d.size(); i++) {
+            Term t = d.get(i);
+            if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermTime) {
+                if(!isPositive(t)) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+            list.add(t);
+        }
+        properties.put(d.getProperty(), TransitionDuration.list_values);
+        values.put(d.getProperty(), list);
+        return true;
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processTransitionProperty(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if(genericOneIdent(TransitionProperty.class, d, properties)) {
+            return true;
+        }
+        TermList list = tf.createList();
+        for (int i = 0; i < d.size(); i++) {
+            Term t = d.get(i);
+            if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermIdent) {
+                CSSProperty property = genericPropertyRaw(TransitionProperty.class, null, (TermIdent) t);
+                if (property == TransitionProperty.NONE) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+            list.add(t);
+        }
+        if(list.size() == 1) {
+            properties.put(d.getProperty(), TransitionProperty.custom_ident);
+            values.put(d.getProperty(), list.get(0));
+        } else {
+            properties.put(d.getProperty(), TransitionProperty.list_values);
+            values.put(d.getProperty(), list);
+        }
+        return true;
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean processTransitionTimingFunction(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if(genericOneIdent(TransitionTimingFunction.class, d, properties)) {
+            return true;
+        }
+        TermList list = tf.createList();
+        for (int i = 0; i < d.size(); i++) {
+            Term t = d.get(i);
+            if(i > 0 && t.getOperator() != Operator.COMMA) {
+                return false;
+            }
+            if (t instanceof TermIdent) {
+                CSSProperty property = genericPropertyRaw(TransitionTimingFunction.class, null, (TermIdent) t);
+                if (property == null) {
+                    return false;
+                }
+            } else if (!(t instanceof TermFunction.TimingFunction)) {
+                return false;
+            }
+            list.add(t);
+        }
+        if(list.size() == 1) {
+            properties.put(d.getProperty(), TransitionTimingFunction.timing_function);
+            values.put(d.getProperty(), list.get(0));
+        } else {
+            properties.put(d.getProperty(), TransitionTimingFunction.list_values);
             values.put(d.getProperty(), list);
         }
         return true;

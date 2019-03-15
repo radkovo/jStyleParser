@@ -425,6 +425,15 @@ public class SupportedCSS3 implements SupportedCSS {
         props.put("animation-name", AnimationName.NONE);
         props.put("animation-play-state", AnimationPlayState.RUNNING);
         props.put("animation-timing-function", AnimationTimingFunction.EASE);
+        
+        // transition
+        props.put("transition", Transition.component_values);
+        props.put("transition-delay", TransitionDelay.time);
+        values.put("transition-delay", DEFAULT_TIME);
+        props.put("transition-duration", TransitionDuration.time);
+        values.put("transition-duration", DEFAULT_TIME);
+        props.put("transition-property", TransitionProperty.ALL);
+        props.put("transition-timing-function", TransitionTimingFunction.EASE);
 
 		this.defaultCSSproperties = props;
 		this.defaultCSSvalues = values;
