@@ -27,7 +27,7 @@ import cz.vutbr.web.css.CSSProperty.*;
 public class SupportedCSS3 implements SupportedCSS {
 	private static final Logger log = LoggerFactory.getLogger(SupportedCSS3.class);
 
-	private static final int TOTAL_SUPPORTED_DECLARATIONS = 169;
+	private static final int TOTAL_SUPPORTED_DECLARATIONS = 175;
 
 	private static final TermFactory tf = CSSFactory.getTermFactory();
 
