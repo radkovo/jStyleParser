@@ -27,7 +27,7 @@ import cz.vutbr.web.css.CSSProperty.*;
 public class SupportedCSS3 implements SupportedCSS {
 	private static final Logger log = LoggerFactory.getLogger(SupportedCSS3.class);
 
-	private static final int TOTAL_SUPPORTED_DECLARATIONS = 122;
+	private static final int TOTAL_SUPPORTED_DECLARATIONS = 175;
 
 	private static final TermFactory tf = CSSFactory.getTermFactory();
 
@@ -48,6 +48,8 @@ public class SupportedCSS3 implements SupportedCSS {
     private static final Term<?> DEFAULT_FLEX_SHRINK = tf.createNumber(1.0f);
     private static final Term<?> DEFAULT_FLEX_GROW = tf.createNumber(0.0f);
     private static final Term<?> DEFAULT_ORDER = tf.createInteger(0);
+    private static final Term<?> DEFAULT_TIME = tf.createTime(0f);
+    private static final Term<?> DEFAULT_ITERATION_COUNT = tf.createInteger(1);
 
 	static {
 		DEFAULT_UA_BACKGROUND_POSITION.add(tf.createPercent(0.0f));
@@ -390,7 +392,7 @@ public class SupportedCSS3 implements SupportedCSS {
 		props.put("align-items", AlignItems.Stretch);
 		props.put("align-self", AlignSelf.Auto);
 
-        // Grid layout
+        // grid layout
         props.put("grid", Grid.component_values);
         props.put("grid-gap", GridGap.component_values);
         props.put("grid-row-gap", GridGap.NORMAL);
@@ -409,6 +411,29 @@ public class SupportedCSS3 implements SupportedCSS {
         props.put("grid-auto-flow", GridAutoFlow.ROW);
         props.put("grid-auto-rows", GridAutoRowsColumns.AUTO);
         props.put("grid-auto-columns", GridAutoRowsColumns.AUTO);
+        
+        // animation
+        props.put("animation", Animation.component_values);
+        props.put("animation-delay", AnimationDelay.time);
+        values.put("animation-delay", DEFAULT_TIME);
+        props.put("animation-direction", AnimationDirection.NORMAL);
+        props.put("animation-duration", AnimationDuration.time);
+        values.put("animation-duration", DEFAULT_TIME);
+        props.put("animation-fill-mode", AnimationFillMode.NONE);
+        props.put("animation-iteration-count", AnimationIterationCount.number);
+        values.put("animation-iteration-count", DEFAULT_ITERATION_COUNT);
+        props.put("animation-name", AnimationName.NONE);
+        props.put("animation-play-state", AnimationPlayState.RUNNING);
+        props.put("animation-timing-function", AnimationTimingFunction.EASE);
+        
+        // transition
+        props.put("transition", Transition.component_values);
+        props.put("transition-delay", TransitionDelay.time);
+        values.put("transition-delay", DEFAULT_TIME);
+        props.put("transition-duration", TransitionDuration.time);
+        values.put("transition-duration", DEFAULT_TIME);
+        props.put("transition-property", TransitionProperty.ALL);
+        props.put("transition-timing-function", TransitionTimingFunction.EASE);
 
 		this.defaultCSSproperties = props;
 		this.defaultCSSvalues = values;

@@ -1,7 +1,6 @@
 package test;
 
 import cz.vutbr.web.css.CSSFactory;
-import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.CSSProperty.Grid;
 import cz.vutbr.web.css.CSSProperty.GridAutoFlow;
 import cz.vutbr.web.css.CSSProperty.GridAutoRowsColumns;
@@ -9,20 +8,17 @@ import cz.vutbr.web.css.CSSProperty.GridGap;
 import cz.vutbr.web.css.CSSProperty.GridStartEnd;
 import cz.vutbr.web.css.CSSProperty.GridTemplateAreas;
 import cz.vutbr.web.css.CSSProperty.GridTemplateRowsColumns;
-import cz.vutbr.web.css.NodeData;
-import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.Term.Operator;
 import cz.vutbr.web.css.TermBracketedIdents;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.css.TermNumeric.Unit;
-import cz.vutbr.web.domassign.StyleMap;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
+import test.TestUtils.NameGenerator;
+import test.TestUtils.TestData;
 
 /**
  *
@@ -399,95 +395,7 @@ public class GridLayoutTest {
 
     @Test
     public void test() {
-        try {
-            DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/grid-layout.html"));
-            Document doc = ds.parse();
-            StyleMap sm = CSSFactory.assignDOM(doc, null, getClass().getResource("/simple/grid-layout.html"), "screen", true);
-
-            ElementMap elements = new ElementMap(doc);
-            NodeData data;
-            CSSProperty prop;
-            Term<?> term;
-
-            for (TestData test : _tests) {
-                System.out.println("Testing " + test._id);
-                String id = test._id;
-                data = sm.get(elements.getElementById(id));
-                prop = data.getSpecifiedProperty(test._propertyName);
-                if (!test._expextedProperty.equals(prop)) {
-                    System.out.println("");
-                }
-                Assert.assertEquals(test._expextedProperty, prop);
-                if (test._expectedValue != null) {
-                    term = data.getSpecifiedValue(test._propertyName);
-                    if (!test._expectedValue.equals(term)) {
-                        if (test._expectedValue instanceof TermList && term instanceof TermList) {
-                            compareLists((TermList) test._expectedValue, (TermList) term);
-                        }
-                    }
-                    Assert.assertEquals(test._expectedValue, term);
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void compareLists(List a, List b) {
-        if (a.size() != b.size()) {
-            System.err.println("Length");
-        }
-        for (int i = 0; i < a.size(); i++) {
-            if (!a.get(i).equals(b.get(i))) {
-                System.err.println(i + ". item doesnt match");
-                break;
-            }
-        }
-    }
-
-    private static class TestData {
-
-        private final String _id;
-        private final String _propertyName;
-        private final CSSProperty _expextedProperty;
-        private final Object _expectedValue;
-
-        private TestData(String id, String propertyName, CSSProperty expextedProperty) {
-            this(id, propertyName, expextedProperty, null);
-        }
-
-        private TestData(String id, String propertyName, CSSProperty expextedProperty, Object expectedValue) {
-            _id = id;
-            _propertyName = propertyName;
-            _expextedProperty = expextedProperty;
-            _expectedValue = expectedValue;
-        }
-
-    }
-
-    private static class NameGenerator {
-
-        private String _className;
-        private int _iteration = -1;
-
-        private NameGenerator(String className) {
-            _className = className;
-        }
-
-        private void setName(String className) {
-            _className = className;
-            _iteration = -1;
-        }
-
-        private String curr() {
-            return _className + Integer.toString(_iteration);
-        }
-
-        private String next() {
-            _iteration++;
-            return curr();
-        }
+        TestUtils.runTests(_tests, getClass().getResource("/simple/grid-layout.html"));
     }
 
 }

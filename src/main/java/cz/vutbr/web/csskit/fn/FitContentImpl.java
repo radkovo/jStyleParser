@@ -14,6 +14,10 @@ import java.util.List;
 public class FitContentImpl extends TermFunctionImpl implements TermFunction.FitContent {
 
     private TermLengthOrPercent _max;
+    
+    public FitContentImpl() {
+        setValid(false);
+    }
 
     @Override
     public TermList setValue(List<Term<?>> value) {

@@ -19,6 +19,10 @@ public class RepeatImpl extends TermFunctionImpl implements TermFunction.Repeat 
 
     private Unit _numberOfRepetitions;
     private List<Term<?>> _repeatedTerms;
+    
+    public RepeatImpl() {
+        setValid(false);
+    }
 
     @Override
     public TermList setValue(List<Term<?>> value) {

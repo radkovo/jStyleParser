@@ -67,9 +67,12 @@ import cz.vutbr.web.csskit.fn.TranslateXImpl;
 import cz.vutbr.web.csskit.fn.TranslateYImpl;
 import cz.vutbr.web.csskit.fn.TranslateZImpl;
 import cz.vutbr.web.css.TermOperator;
+import cz.vutbr.web.csskit.fn.CubicBezierImpl;
 import cz.vutbr.web.csskit.fn.FitContentImpl;
+import cz.vutbr.web.csskit.fn.FramesImpl;
 import cz.vutbr.web.csskit.fn.MinMaxImpl;
 import cz.vutbr.web.csskit.fn.RepeatImpl;
+import cz.vutbr.web.csskit.fn.StepsImpl;
 
 public class TermFactoryImpl implements TermFactory {
 
@@ -338,7 +341,11 @@ public class TermFactoryImpl implements TermFactory {
 	}
 
 	public TermTime createTime(Float value) {
-		return (TermTime) (new TermTimeImpl()).setValue(value);
+		return (TermTime) (new TermTimeImpl()).setUnit(Unit.s).setValue(value);
+	}
+    
+    public TermTime createTime(Float value, Unit unit) {
+		return (TermTime) (new TermTimeImpl()).setUnit(unit).setValue(value);
 	}
 
 	public TermTime createTime(String value, Unit unit, int unary) {
@@ -419,7 +426,7 @@ public class TermFactoryImpl implements TermFactory {
 	
 	protected TermFunction createFunctionByName(String name, List<Term<?>> args)
 	{
-	    TermFunction fn = null;
+	    TermFunction fn;
 	    switch (name) {
 	        case "matrix":
 	            fn = new MatrixImpl();
@@ -543,6 +550,15 @@ public class TermFactoryImpl implements TermFactory {
                 break;
             case "repeat":
                 fn = new RepeatImpl();
+                break;
+            case "cubic-bezier":
+                fn = new CubicBezierImpl();
+                break;
+            case "steps":
+                fn = new StepsImpl();
+                break;
+            case "frames":
+                fn = new FramesImpl();
                 break;
             default:
                 fn = new TermFunctionImpl();
