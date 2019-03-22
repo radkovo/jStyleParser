@@ -3264,6 +3264,68 @@ public interface CSSProperty {
 		}
 	}
 
+    public enum Flex implements CSSProperty {
+        component_values(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+        private String text;
+
+        private Flex(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
+    public enum FlexFlow implements CSSProperty {
+        component_values(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+        private String text;
+
+        private FlexFlow(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
 	public enum FlexBasis implements CSSProperty {
 		CONTENT("content"), length(""), percentage(""), AUTO("auto"), INHERIT("inherit"), INITIAL("initial"), UNSET( "unset");
 

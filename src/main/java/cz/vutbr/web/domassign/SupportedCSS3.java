@@ -27,7 +27,7 @@ import cz.vutbr.web.css.CSSProperty.*;
 public class SupportedCSS3 implements SupportedCSS {
 	private static final Logger log = LoggerFactory.getLogger(SupportedCSS3.class);
 
-	private static final int TOTAL_SUPPORTED_DECLARATIONS = 175;
+	private static final int TOTAL_SUPPORTED_DECLARATIONS = 177;
 
 	private static final TermFactory tf = CSSFactory.getTermFactory();
 
@@ -378,6 +378,8 @@ public class SupportedCSS3 implements SupportedCSS {
 		props.put("volume", Volume.MEDIUM);
 
 		// Flexbox
+        props.put("flex", Flex.component_values);
+        props.put("flex-flow", FlexFlow.component_values);
 		props.put("flex-direction", FlexDirection.ROW);
 		props.put("flex-wrap", FlexWrap.NOWRAP);
 		props.put("flex-basis", FlexBasis.AUTO);
