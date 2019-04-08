@@ -202,6 +202,9 @@ public class GridLayoutTest {
 
         _tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.AUTO));
         _tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.AUTO));
+        
+        _tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.AUTO));
+        _tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.AUTO));
 
         ng.setName("grid-column");
         _tests.add(new TestData(ng.next(), "grid-column-start", GridStartEnd.identificator, tf.createIdent("IDENT")));
@@ -214,6 +217,9 @@ public class GridLayoutTest {
         _tests.add(new TestData(ng.next(), "grid-column-start", GridStartEnd.component_values, list));
         _tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.number, tf.createInteger(3)));
 
+        _tests.add(new TestData(ng.next(), "grid-column-start", GridStartEnd.AUTO));
+        _tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.AUTO));
+        
         _tests.add(new TestData(ng.next(), "grid-column-start", GridStartEnd.AUTO));
         _tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.AUTO));
 

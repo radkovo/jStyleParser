@@ -2247,8 +2247,9 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         Map<String, TermList> identOnly = new HashMap<>();
         int listIndex = 0;
         // auto | <custom-ident> | [ <integer> && <custom-ident>? ] | [ span && [ <integer> || <custom-ident> ] ]
-        int spanIndex = -1;
+        int valueValue = 0;
         int valueIndex = -1;
+        int spanIndex = -1;
         int identIndex = -1;
         boolean autoSet = false;
         
@@ -2259,8 +2260,8 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
                     identOnly.put(propertyNames[listIndex], lists[listIndex]);
                 }
                 listIndex++;
-                spanIndex = -1;
                 valueIndex = -1;
+                spanIndex = -1;
                 identIndex = -1;
                 autoSet = false;
                 if (listIndex >= n) {
@@ -2271,7 +2272,8 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
                 CSSProperty property = genericPropertyRaw(GridStartEnd.class, null, (TermIdent) t);
                 if (GridStartEnd.AUTO.equals(property) && lists[listIndex].isEmpty()) {
                     autoSet = true;
-                } else if (GridStartEnd.SPAN.equals(property) && spanIndex < 0 && !autoSet) {
+                } else if (GridStartEnd.SPAN.equals(property) && spanIndex < 0 && !autoSet
+                         &&(valueIndex < 0 || valueValue > 0)) {
                     spanIndex = i;
                 } else if (property == null && identIndex < 0 
                         && (spanIndex < 0 || valueIndex < 0 || spanIndex < valueIndex) && !autoSet) {
@@ -2280,7 +2282,9 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
                     return false;
                 }
             } else if (t instanceof TermInteger && ((TermInteger) t).getIntValue() != 0
+                    && (spanIndex < 0 || ((TermInteger) t).getIntValue() > 0)
                     && valueIndex < 0 && (identIndex < 0 || identIndex > spanIndex) && !autoSet) {
+                valueValue = ((TermInteger) t).getIntValue();
                 valueIndex = i;
             } else {
                 return false;
@@ -2347,23 +2351,27 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
             return !GridStartEnd.SPAN.equals(properties.get(d.getProperty()));
         }
         // auto | <custom-ident> | [ <integer> && <custom-ident>? ] | [ span && [ <integer> || <custom-ident> ] ]
-        int spanIndex = -1;
+        int valueValue = 0;
         int valueIndex = -1;
+        int spanIndex = -1;
         int identIndex = -1;
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
             Term t = d.get(i);
             if (t instanceof TermIdent) {
                 CSSProperty property = genericPropertyRaw(GridStartEnd.class, null, (TermIdent) t);
-                if (GridStartEnd.SPAN.equals(property) && spanIndex < 0) {
+                if (GridStartEnd.SPAN.equals(property) && spanIndex < 0 && (valueIndex < 0 || valueValue > 0)) {
                     spanIndex = i;
-                } else if (property == null && identIndex < 0 && (spanIndex < 0 || valueIndex < 0 || spanIndex < valueIndex)) {
+                } else if (property == null && identIndex < 0 
+                        && (spanIndex < 0 || valueIndex < 0 || spanIndex < valueIndex)) {
                     identIndex = i;
                 } else {
                     return false;
                 }
             } else if (t instanceof TermInteger && ((TermInteger) t).getIntValue() != 0
+                    && (spanIndex < 0 || ((TermInteger) t).getIntValue() > 0)
                     && valueIndex < 0 && (identIndex < 0 || identIndex > spanIndex)) {
+                valueValue = ((TermInteger) t).getIntValue();
                 valueIndex = i;
             } else {
                 return false;
