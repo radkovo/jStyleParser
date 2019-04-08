@@ -130,23 +130,46 @@ public class GridLayoutTest {
         _tests.add(new TestData(ng.curr(), "grid", Grid.component_values));
 
         ng.setName("grid-area");
-        _tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.NONE));
+        _tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.identificator, tf.createIdent("a")));
+        _tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.identificator, tf.createIdent("a")));
+        _tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.identificator, tf.createIdent("a")));
+        _tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.identificator, tf.createIdent("a")));
+        
+        _tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.identificator, tf.createIdent("a")));
+        _tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.identificator, tf.createIdent("b")));
+        _tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.identificator, tf.createIdent("a")));
+        _tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.identificator, tf.createIdent("b")));
+        
+        _tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.identificator, tf.createIdent("a")));
+        _tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.identificator, tf.createIdent("b")));
+        _tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.identificator, tf.createIdent("c")));
+        _tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.identificator, tf.createIdent("b")));
+
+        _tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.identificator, tf.createIdent("a")));
+        _tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.identificator, tf.createIdent("b")));
+        _tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.identificator, tf.createIdent("c")));
+        _tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.identificator, tf.createIdent("d")));
+        
+        _tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.number, tf.createInteger(1)));
         _tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.AUTO));
         _tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.AUTO));
         _tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.AUTO));
-
-        _tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.NONE));
-        _tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.NONE));
-        _tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.NONE));
-        _tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.AUTO));
-
-        _tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.AUTO));
-        _tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.number, tf.createInteger(1)));
-        _tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.identificator, tf.createIdent("IDENT")));
+        
+        _tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.number, tf.createInteger(1)));
         list = tf.createList();
         list.add(tf.createIdent("span").setOperator(Operator.SLASH));
         list.add(tf.createInteger(3).setOperator(Operator.SPACE));
-        _tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.component_values, list));
+        _tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.component_values, list));
+        _tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.AUTO));
+        _tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.AUTO));
+        
+        _tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.number, tf.createInteger(1)));
+        _tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.AUTO));
+        list = tf.createList();
+        list.add(tf.createIdent("span").setOperator(Operator.SLASH));
+        list.add(tf.createInteger(3).setOperator(Operator.SPACE));
+        _tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.component_values, list));
+        _tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.AUTO));
 
         _tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.AUTO));
         _tests.add(new TestData(ng.curr(), "grid-column-start", GridStartEnd.number, tf.createInteger(1)));
@@ -167,8 +190,8 @@ public class GridLayoutTest {
         _tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.AUTO));
 
         ng.setName("grid-row");
-        _tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.NONE));
-        _tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.AUTO));
+        _tests.add(new TestData(ng.next(), "grid-row-start", GridStartEnd.identificator, tf.createIdent("IDENT")));
+        _tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.identificator, tf.createIdent("IDENT")));
 
         list = tf.createList();
         list.add(tf.createIdent("span"));
@@ -181,8 +204,8 @@ public class GridLayoutTest {
         _tests.add(new TestData(ng.curr(), "grid-row-end", GridStartEnd.AUTO));
 
         ng.setName("grid-column");
-        _tests.add(new TestData(ng.next(), "grid-column-start", GridStartEnd.NONE));
-        _tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.AUTO));
+        _tests.add(new TestData(ng.next(), "grid-column-start", GridStartEnd.identificator, tf.createIdent("IDENT")));
+        _tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.identificator, tf.createIdent("IDENT")));
 
         list = tf.createList();
         list.add(tf.createIdent("span"));
@@ -194,7 +217,7 @@ public class GridLayoutTest {
         _tests.add(new TestData(ng.next(), "grid-column-start", GridStartEnd.AUTO));
         _tests.add(new TestData(ng.curr(), "grid-column-end", GridStartEnd.AUTO));
 
-        _tests.add(new TestData("grid-row-start", "grid-row-start", GridStartEnd.NONE));
+        _tests.add(new TestData("grid-row-start", "grid-row-start", GridStartEnd.identificator, tf.createIdent("IDENT")));
 
         _tests.add(new TestData("grid-row-end", "grid-row-end", GridStartEnd.AUTO));
 

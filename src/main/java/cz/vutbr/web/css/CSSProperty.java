@@ -3643,7 +3643,7 @@ public interface CSSProperty {
 
     public enum GridStartEnd implements CSSProperty {
         component_values(""), number(""), identificator(""),
-        AUTO("auto"), SPAN("span"), NONE("none"),
+        AUTO("auto"), SPAN("span"),
         INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
         private String text;
