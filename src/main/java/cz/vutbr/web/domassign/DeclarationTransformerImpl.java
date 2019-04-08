@@ -2606,7 +2606,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     @SuppressWarnings("unused")
     private boolean processGridAutoFlow(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
         if (genericOneIdent(GridAutoFlow.class, d, properties)) {
-            return true;
+            return !GridAutoFlow.DENSE.equals(properties.get(d.getProperty()));
         }
         boolean autoFlowSet = false;
         boolean denseSet = false;
