@@ -3169,8 +3169,9 @@ public interface CSSProperty {
 	}
 
 	public enum AlignContent implements CSSProperty {
-		FlexStart("flex-start"), FlexEnd("flex-end"), Center("center"), SpaceBetween("space-between"), SpaceAround(
-				"space-around"), Stretch("stretch"), INITIAL("initial"), UNSET("unset");
+		FLEX_START("flex-start"), FLEX_END("flex-end"), CENTER("center"), SPACE_BETWEEN("space-between"),
+		SPACE_AROUND("space-around"), STRETCH("stretch"), INHERIT("inherit"), INITIAL("initial"),
+		UNSET("unset");
 
 		private String text;
 
@@ -3183,7 +3184,7 @@ public interface CSSProperty {
 		}
 
 		public boolean equalsInherit() {
-			return false;
+			return this == INHERIT;
 		}
 
 		public boolean equalsInitial() {
@@ -3201,8 +3202,8 @@ public interface CSSProperty {
 	}
 
 	public enum AlignItems implements CSSProperty {
-		FlexStart("flex-start"), FlexEnd("flex-end"), Center("center"), Baseline("baseline"), Stretch(
-				"stretch"), INITIAL("initial"), UNSET("unset");
+		FLEX_START("flex-start"), FLEX_END("flex-end"), CENTER("center"), BASELINE("baseline"), 
+		STRETCH("stretch"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -3215,7 +3216,7 @@ public interface CSSProperty {
 		}
 
 		public boolean equalsInherit() {
-			return false;
+			return this == INHERIT;
 		}
 
 		public boolean equalsInitial() {
@@ -3233,8 +3234,8 @@ public interface CSSProperty {
 	}
 
 	public enum AlignSelf implements CSSProperty {
-		Auto("auto"), FlexStart("flex-start"), FlexEnd("flex-end"), Center("center"), Baseline("baseline"), Stretch(
-				"stretch"), INITIAL("initial"), UNSET("unset");
+		AUTO("auto"), FLEX_START("flex-start"), FLEX_END("flex-end"), CENTER("center"), BASELINE("baseline"),
+		STRETCH("stretch"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -3243,7 +3244,7 @@ public interface CSSProperty {
 		}
 
 		public boolean inherited() {
-			return false;
+			return this == INHERIT;
 		}
 
 		public boolean equalsInherit() {
@@ -3340,7 +3341,7 @@ public interface CSSProperty {
 		}
 
 		public boolean equalsInherit() {
-			return false;
+			return this == INHERIT;
 		}
 
 		public boolean equalsInitial() {
@@ -3358,7 +3359,8 @@ public interface CSSProperty {
 	}
 
 	public enum FlexDirection implements CSSProperty {
-		ROW("row"), ROW_REVERSE("row-reverse"), COLUMN("column"), COLUMN_REVERSE("column-reverse"), INITIAL("initial"), UNSET("unset");
+		ROW("row"), ROW_REVERSE("row-reverse"), COLUMN("column"), COLUMN_REVERSE("column-reverse"),
+		INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -3371,7 +3373,7 @@ public interface CSSProperty {
 		}
 
 		public boolean equalsInherit() {
-			return false;
+			return this == INHERIT;
 		}
 
 		public boolean equalsInitial() {
@@ -3389,7 +3391,7 @@ public interface CSSProperty {
 	}
 
 	public enum FlexGrow implements CSSProperty {
-		number(""), INITIAL("initial"), UNSET("unset");
+		number(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -3402,7 +3404,7 @@ public interface CSSProperty {
 		}
 
 		public boolean equalsInherit() {
-			return false;
+			return this == INHERIT;
 		}
 
 		public boolean equalsInitial() {
@@ -3420,7 +3422,7 @@ public interface CSSProperty {
 	}
 
 	public enum FlexShrink implements CSSProperty {
-		number(""), INITIAL("initial"), UNSET("unset");
+		number(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -3433,7 +3435,7 @@ public interface CSSProperty {
 		}
 
 		public boolean equalsInherit() {
-			return false;
+			return this == INHERIT;
 		}
 
 		public boolean equalsInitial() {
@@ -3451,7 +3453,8 @@ public interface CSSProperty {
 	}
 
 	public enum FlexWrap implements CSSProperty {
-		NOWRAP("nowrap"), WRAP("wrap"), WRAP_REVERSE("wrap-reverse"), INITIAL("initial"), UNSET("unset");
+		NOWRAP("nowrap"), WRAP("wrap"), WRAP_REVERSE("wrap-reverse"),
+		INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -3464,7 +3467,7 @@ public interface CSSProperty {
 		}
 
 		public boolean equalsInherit() {
-			return false;
+			return this == INHERIT;
 		}
 
 		public boolean equalsInitial() {
@@ -3482,8 +3485,8 @@ public interface CSSProperty {
 	}
 
 	public enum JustifyContent implements CSSProperty {
-		FlexStart("flex-start"), FlexEnd("flex-end"), Center("center"), SpaceBetween("space-between"), SpaceAround(
-				"space-around"), INITIAL("initial"), UNSET("unset");
+		FLEX_START("flex-start"), FLEX_END("flex-end"), CENTER("center"), SPACE_BETWEEN("space-between"),
+		SPACE_AROUND("space-around"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -3496,7 +3499,7 @@ public interface CSSProperty {
 		}
 
 		public boolean equalsInherit() {
-			return false;
+			return this == INHERIT;
 		}
 
 		public boolean equalsInitial() {
@@ -3514,7 +3517,7 @@ public interface CSSProperty {
 	}
 
 	public enum Order implements CSSProperty {
-		integer(""), INITIAL("initial"), UNSET("unset");
+		integer(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -3527,7 +3530,7 @@ public interface CSSProperty {
 		}
 
 		public boolean equalsInherit() {
-			return false;
+			return this == INHERIT;
 		}
 
 		public boolean equalsInitial() {

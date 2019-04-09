@@ -389,10 +389,10 @@ public class SupportedCSS3 implements SupportedCSS {
 		values.put("flex-shrink", DEFAULT_FLEX_SHRINK);
 		props.put("order", Order.integer);
 		values.put("order", DEFAULT_ORDER);
-		props.put("justify-content", JustifyContent.FlexStart);
-		props.put("align-content", AlignContent.Stretch);
-		props.put("align-items", AlignItems.Stretch);
-		props.put("align-self", AlignSelf.Auto);
+		props.put("justify-content", JustifyContent.FLEX_START);
+		props.put("align-content", AlignContent.STRETCH);
+		props.put("align-items", AlignItems.STRETCH);
+		props.put("align-self", AlignSelf.AUTO);
 
         // grid layout
         props.put("grid", Grid.component_values);
