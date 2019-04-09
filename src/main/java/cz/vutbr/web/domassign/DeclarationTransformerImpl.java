@@ -2013,6 +2013,21 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 		return genericOneIdent(JustifyContent.class, d, properties);
 	}
 
+    @SuppressWarnings("unused")
+    private boolean processAlignContent(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return genericOneIdent(AlignContent.class, d, properties);
+    }
+
+    @SuppressWarnings("unused")
+    private boolean processAlignItems(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return genericOneIdent(AlignItems.class, d, properties);
+    }
+
+    @SuppressWarnings("unused")
+    private boolean processAlignSelf(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return genericOneIdent(AlignSelf.class, d, properties);
+    }
+
 	@SuppressWarnings("unused")
 	private boolean processOrder(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
         return genericInteger(Order.class, Order.integer, ValueRange.DISALLOW_NEGATIVE, d, properties, values);

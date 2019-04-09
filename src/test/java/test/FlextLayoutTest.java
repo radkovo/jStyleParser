@@ -1,6 +1,9 @@
 package test;
 
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.CSSProperty.AlignContent;
+import cz.vutbr.web.css.CSSProperty.AlignItems;
+import cz.vutbr.web.css.CSSProperty.AlignSelf;
 import cz.vutbr.web.css.CSSProperty.FlexBasis;
 import cz.vutbr.web.css.CSSProperty.FlexDirection;
 import cz.vutbr.web.css.CSSProperty.FlexGrow;
@@ -83,6 +86,11 @@ public class FlextLayoutTest {
         _tests.add(new TestData(ng.next(), "flex-direction", FlexDirection.ROW));
         _tests.add(new TestData(ng.curr(), "flex-wrap", FlexWrap.WRAP_REVERSE));
 
+        ng = new NameGenerator("align");
+        _tests.add(new TestData(ng.next(), "align-content", AlignContent.CENTER));
+        _tests.add(new TestData(ng.next(), "align-items", AlignItems.STRETCH));
+        _tests.add(new TestData(ng.next(), "align-self", AlignSelf.BASELINE));
+        
     }
 
     @Test
