@@ -135,6 +135,39 @@ public class AnimationTest {
         _tests.add(new TestData(ng.curr(), "animation-play-state", AnimationPlayState.PAUSED));
         _tests.add(new TestData(ng.curr(), "animation-name", AnimationName.custom_ident, tf.createIdent("someName")));
         
+        list = tf.createList();
+        list.add(tf.createTime(1f));
+        list.add(tf.createTime(3f).setOperator(Operator.COMMA));
+        _tests.add(new TestData(ng.next(), "animation-duration", AnimationDuration.list_values, list));
+        list = tf.createList();
+        list.add(tf.createIdent("ease"));
+        list.add(tf.createIdent("ease-in").setOperator(Operator.COMMA));
+        _tests.add(new TestData(ng.curr(), "animation-timing-function", AnimationTimingFunction.list_values, list));
+        list = tf.createList();
+        list.add(tf.createTime(2f));
+        list.add(tf.createTime(4f).setOperator(Operator.COMMA));
+        _tests.add(new TestData(ng.curr(), "animation-delay", AnimationDelay.list_values, list));
+        list = tf.createList();
+        list.add(tf.createIdent("infinite"));
+        list.add(tf.createInteger(5).setOperator(Operator.COMMA));
+        _tests.add(new TestData(ng.curr(), "animation-iteration-count", AnimationIterationCount.list_values, list));
+        list = tf.createList();
+        list.add(tf.createIdent("alternate"));
+        list.add(tf.createIdent("reverse").setOperator(Operator.COMMA));
+        _tests.add(new TestData(ng.curr(), "animation-direction", AnimationDirection.list_values, list));
+        list = tf.createList();
+        list.add(tf.createIdent("both"));
+        list.add(tf.createIdent("backwards").setOperator(Operator.COMMA));
+        _tests.add(new TestData(ng.curr(), "animation-fill-mode", AnimationFillMode.list_values, list));
+        list = tf.createList();
+        list.add(tf.createIdent("running"));
+        list.add(tf.createIdent("paused").setOperator(Operator.COMMA));
+        _tests.add(new TestData(ng.curr(), "animation-play-state", AnimationPlayState.list_values, list));
+        list = tf.createList();
+        list.add(tf.createIdent("name1"));
+        list.add(tf.createIdent("name2").setOperator(Operator.COMMA));
+        _tests.add(new TestData(ng.curr(), "animation-name", AnimationName.list_values, list));
+        
         ng.setName("animation-delay");
         _tests.add(new TestData(ng.next(), "animation-delay", AnimationDelay.time, tf.createTime(1f)));
 

@@ -2942,6 +2942,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
                 subDeclaration.setProperty(propertyList[propertyIndex]);
                 if (parseDeclaration(subDeclaration, properties, values)) {
                     propertySet[propertyIndex] = true;
+                    t.setOperator(termLists[propertyIndex].isEmpty() ? null : Operator.COMMA);
                     termLists[propertyIndex].add(t);
                     break;
                 }
