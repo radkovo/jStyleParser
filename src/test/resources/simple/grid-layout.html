@@ -21,21 +21,27 @@
                                 "b c c" 1px
                                 "b c c" 1px / 2px 2px 2px;}	
 
-            #grid-area0 {grid-area: none;}
-            #grid-area1 {grid-area: none / none / none;}
-            #grid-area2 {grid-area: auto / 1 / IDENT / span 3;}
-            #grid-area3 {grid-area: auto / 1 / span IDENT 3 / span 3 IDENT;}
-            #grid-area4 {grid-area: 0 / 1 / 2 / 3;}
+            #grid-area0 {grid-area: a;}
+            #grid-area1 {grid-area: a / b;}
+            #grid-area2 {grid-area: a / b / c;}
+            #grid-area3 {grid-area: a / b / c / d;}
+            #grid-area4 {grid-area: 1;}
+            #grid-area5 {grid-area: 1 / span 3;}
+            #grid-area6 {grid-area: 1 / auto / span 3;}
+            #grid-area7 {grid-area: auto / 1 / span IDENT 3 / span 3 IDENT;}
+            #grid-area8 {grid-area: 0 / 1 / 2 / 3;}
 
-            #grid-row0 {grid-row: none;}
+            #grid-row0 {grid-row: IDENT;}
             #grid-row1 {grid-row: span IDENT 2 / 3;}
-            #grid-row2 {grid-row: IDENT span;}
+            #grid-row2 {grid-row: 1 span IDENT;}
+            #grid-row3 {grid-row: span -2;}
 
-            #grid-column0 {grid-column: none;}
+            #grid-column0 {grid-column: IDENT;}
             #grid-column1 {grid-column: span 2 IDENT / 3;}
-            #grid-column2 {grid-column: 1 span;}
+            #grid-column2 {grid-column: multiple IDENT;}
+            #grid-column3 {grid-column: -2 span;}
 
-            #grid-row-start {grid-row-start: none;}
+            #grid-row-start {grid-row-start: IDENT;}
             #grid-row-end {grid-row-end: auto;}
             #grid-column-start {grid-column-start: 1;}
             #grid-column-end {grid-column-end: span 2;}
@@ -118,14 +124,20 @@
                 <li id="grid-area2"></li>
                 <li id="grid-area3"></li>
                 <li id="grid-area4"></li>
+                <li id="grid-area5"></li>
+                <li id="grid-area6"></li>
+                <li id="grid-area7"></li>
+                <li id="grid-area8"></li>
 
                 <li id="grid-row0"></li>
                 <li id="grid-row1"></li>
                 <li id="grid-row2"></li>
+                <li id="grid-row3"></li>
 
                 <li id="grid-column0"></li>
                 <li id="grid-column1"></li>
                 <li id="grid-column2"></li>
+                <li id="grid-column3"></li>
 
                 <li id="grid-row-start"></li>
                 <li id="grid-row-end"></li>

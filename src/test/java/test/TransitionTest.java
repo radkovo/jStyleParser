@@ -67,6 +67,27 @@ public class TransitionTest {
         _tests.add(new TestData(ng.curr(), "transition-timing-function", TransitionTimingFunction.EASE_IN));
         _tests.add(new TestData(ng.curr(), "transition-property", TransitionProperty.custom_ident, tf.createIdent("propertyName")));
 
+        list = tf.createList();
+        list.add(tf.createTime(3f));
+        list.add(tf.createTime(6f).setOperator(Operator.COMMA));
+        list.add(tf.createTime(1f).setOperator(Operator.COMMA));
+        _tests.add(new TestData(ng.next(), "transition-duration", TransitionDuration.list_values, list));
+        list = tf.createList();
+        list.add(tf.createTime(1f));
+        list.add(tf.createTime(2f).setOperator(Operator.COMMA));
+        list.add(tf.createTime(3f).setOperator(Operator.COMMA));
+        _tests.add(new TestData(ng.curr(), "transition-delay", TransitionDelay.list_values, list));
+        list = tf.createList();
+        list.add(tf.createIdent("ease"));
+        list.add(tf.createIdent("ease-in").setOperator(Operator.COMMA));
+        list.add(tf.createIdent("ease-in-out").setOperator(Operator.COMMA));
+        _tests.add(new TestData(ng.curr(), "transition-timing-function", TransitionTimingFunction.list_values, list));
+        list = tf.createList();
+        list.add(tf.createIdent("prop1"));
+        list.add(tf.createIdent("prop2").setOperator(Operator.COMMA));
+        list.add(tf.createIdent("prop3").setOperator(Operator.COMMA));
+        _tests.add(new TestData(ng.curr(), "transition-property", TransitionProperty.list_values, list));
+        
         ng.setName("transition-delay");
         _tests.add(new TestData(ng.next(), "transition-delay", TransitionDelay.time, tf.createTime(1f)));
 

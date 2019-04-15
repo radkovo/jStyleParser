@@ -2259,46 +2259,85 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         for (int i = 0; i < n; i++) {
             lists[i] = tf.createList();
         }
+        Map<String, TermList> identOnly = new HashMap<>();
         int listIndex = 0;
-        boolean valueSet = false;
-        boolean identSet = false;
-        boolean enumSet = false;
-
-        for (Term t : d.asList()) {
+        // auto | <custom-ident> | [ <integer> && <custom-ident>? ] | [ span && [ <integer> || <custom-ident> ] ]
+        int valueValue = 0;
+        int valueIndex = -1;
+        int spanIndex = -1;
+        int identIndex = -1;
+        boolean autoSet = false;
+        
+        for (int i = 0; i < d.size(); i++) {
+            Term t = d.get(i);
             if (t.getOperator() == Term.Operator.SLASH) {
+                if(!autoSet && spanIndex < 0 && valueIndex < 0) {
+                    identOnly.put(propertyNames[listIndex], lists[listIndex]);
+                }
                 listIndex++;
-                valueSet = false;
-                identSet = false;
-                enumSet = false;
+                valueIndex = -1;
+                spanIndex = -1;
+                identIndex = -1;
+                autoSet = false;
                 if (listIndex >= n) {
                     return false;
                 }
             }
             if (t instanceof TermIdent) {
                 CSSProperty property = genericPropertyRaw(GridStartEnd.class, null, (TermIdent) t);
-                if ((GridStartEnd.NONE.equals(property) || GridStartEnd.AUTO.equals(property)) && lists[listIndex].isEmpty()) {
-                    enumSet = true;
-                } else if (GridStartEnd.SPAN.equals(property) && lists[listIndex].isEmpty()) {
-                    // spanSet
-                } else if (property == null && !enumSet && !identSet) {
-                    identSet = true;
+                if (GridStartEnd.AUTO.equals(property) && lists[listIndex].isEmpty()) {
+                    autoSet = true;
+                } else if (GridStartEnd.SPAN.equals(property) && spanIndex < 0 && !autoSet
+                         &&(valueIndex < 0 || valueValue > 0)) {
+                    spanIndex = i;
+                } else if (property == null && identIndex < 0 
+                        && (spanIndex < 0 || valueIndex < 0 || spanIndex < valueIndex) && !autoSet) {
+                    identIndex = i;
                 } else {
                     return false;
                 }
-            } else if (t instanceof TermInteger && ((TermInteger) t).getIntValue() != 0 && !valueSet && !enumSet) {
-                valueSet = true;
+            } else if (t instanceof TermInteger && ((TermInteger) t).getIntValue() != 0
+                    && (spanIndex < 0 || ((TermInteger) t).getIntValue() > 0)
+                    && valueIndex < 0 && (identIndex < 0 || identIndex > spanIndex) && !autoSet) {
+                valueValue = ((TermInteger) t).getIntValue();
+                valueIndex = i;
             } else {
                 return false;
             }
             lists[listIndex].add(t);
         }
-
+        if(!autoSet && spanIndex < 0 && valueIndex < 0) {
+            identOnly.put(propertyNames[listIndex], lists[listIndex]);
+        }
+        
         for (int i = 1; i < n; i++) {
-            setStartEndProperties(propertyNames[i], lists[i], properties, values);
+            if(i <= listIndex) { // Property set explicitly
+                setStartEndProperties(propertyNames[i], lists[i], properties, values);
+            } else {
+                switch(propertyNames[i]) { // Inherit indentifier from other property from declaration
+                    case "grid-column-start":
+                        if(identOnly.containsKey("grid-row-start")) {
+                            setStartEndProperties(propertyNames[i], identOnly.get("grid-row-start"), properties, values);
+                        }
+                        break;
+                    case "grid-row-end":
+                        if(identOnly.containsKey("grid-row-start")) {
+                            setStartEndProperties(propertyNames[i], identOnly.get("grid-row-start"), properties, values);
+                        }
+                        break;
+                    case "grid-column-end":
+                        if(identOnly.containsKey("grid-column-start")) {
+                            setStartEndProperties(propertyNames[i], identOnly.get("grid-column-start"), properties, values);
+                        } else if(identOnly.containsKey("grid-row-start")) {
+                            setStartEndProperties(propertyNames[i], identOnly.get("grid-row-start"), properties, values);
+                        }
+                        break;
+                }
+            }
         }
         return setStartEndProperties(propertyNames[0], lists[0], properties, values);
     }
-
+    
     @SuppressWarnings("unused")
     private boolean processGridRowStart(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
         return processGridStartEnd(d, properties, values);
@@ -2327,23 +2366,27 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
             return !GridStartEnd.SPAN.equals(properties.get(d.getProperty()));
         }
         // auto | <custom-ident> | [ <integer> && <custom-ident>? ] | [ span && [ <integer> || <custom-ident> ] ]
-        int spanIndex = -1;
+        int valueValue = 0;
         int valueIndex = -1;
+        int spanIndex = -1;
         int identIndex = -1;
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
             Term t = d.get(i);
             if (t instanceof TermIdent) {
                 CSSProperty property = genericPropertyRaw(GridStartEnd.class, null, (TermIdent) t);
-                if (GridStartEnd.SPAN.equals(property) && spanIndex < 0) {
+                if (GridStartEnd.SPAN.equals(property) && spanIndex < 0 && (valueIndex < 0 || valueValue > 0)) {
                     spanIndex = i;
-                } else if (property == null && identIndex < 0 && (spanIndex < 0 || valueIndex < 0 || spanIndex < valueIndex)) {
+                } else if (property == null && identIndex < 0 
+                        && (spanIndex < 0 || valueIndex < 0 || spanIndex < valueIndex)) {
                     identIndex = i;
                 } else {
                     return false;
                 }
             } else if (t instanceof TermInteger && ((TermInteger) t).getIntValue() != 0
+                    && (spanIndex < 0 || ((TermInteger) t).getIntValue() > 0)
                     && valueIndex < 0 && (identIndex < 0 || identIndex > spanIndex)) {
+                valueValue = ((TermInteger) t).getIntValue();
                 valueIndex = i;
             } else {
                 return false;
@@ -2364,7 +2407,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
                     CSSProperty identProperty = genericPropertyRaw(GridStartEnd.class, null, (TermIdent) single);
                     if (GridStartEnd.SPAN.equals(identProperty)) {
                         return false;
-                    } else if (identProperty == GridStartEnd.AUTO || identProperty == GridStartEnd.NONE) {
+                    } else if (identProperty == GridStartEnd.AUTO) {
                         property = identProperty;
                     } else {
                         property = GridStartEnd.identificator;
@@ -2578,7 +2621,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     @SuppressWarnings("unused")
     private boolean processGridAutoFlow(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
         if (genericOneIdent(GridAutoFlow.class, d, properties)) {
-            return true;
+            return !GridAutoFlow.DENSE.equals(properties.get(d.getProperty()));
         }
         boolean autoFlowSet = false;
         boolean denseSet = false;
@@ -2914,6 +2957,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
                 subDeclaration.setProperty(propertyList[propertyIndex]);
                 if (parseDeclaration(subDeclaration, properties, values)) {
                     propertySet[propertyIndex] = true;
+                    t.setOperator(termLists[propertyIndex].isEmpty() ? null : Operator.COMMA);
                     termLists[propertyIndex].add(t);
                     break;
                 }
