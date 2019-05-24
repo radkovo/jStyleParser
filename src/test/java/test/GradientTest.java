@@ -9,8 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
@@ -23,7 +21,6 @@ import cz.vutbr.web.css.TermNumeric;
 
 public class GradientTest {
 
-    private static final Logger log = LoggerFactory.getLogger(SimpleTest.class);
     public static final TermFactory tf = CSSFactory.getTermFactory();
 
     // Just colors

@@ -43,7 +43,7 @@ public class FramesImpl extends TermFunctionImpl implements TermFunction.Frames 
 
     private boolean setFrames(List<Term<?>> argTerms) {
         if (argTerms.size() == 1) {
-            Term t = argTerms.get(0);
+            Term<?> t = argTerms.get(0);
             if (t instanceof TermInteger) {
                 int value = ((TermInteger) t).getIntValue();
                 if (value > 0) {

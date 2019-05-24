@@ -456,6 +456,8 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
                     case NTH_LAST_OF_TYPE:
                         elementIndex = decodeIndex(functionValue);
                         break;
+                    default:
+                        break;
                 }
             }
         }
@@ -809,6 +811,8 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
                             nestedSelector = new SelectorImpl();
                             nestedSelector.add(new ElementNameImpl(functionValue));
                         }
+                        break;
+                    default:
                         break;
                 }
             }

@@ -48,7 +48,7 @@ public class RepeatImpl extends TermFunctionImpl implements TermFunction.Repeat 
 
     private boolean setNumberOfRepetitions(List<Term<?>> argTerms) {
         if (argTerms.size() == 1) {
-            Term t = argTerms.get(0);
+            Term<?> t = argTerms.get(0);
             if (t instanceof TermInteger) {
                 int value = ((TermInteger) t).getIntValue();
                 if (value > 0) {

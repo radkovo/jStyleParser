@@ -25,7 +25,6 @@ import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.Selector.PseudoClassType;
-import cz.vutbr.web.css.Selector.PseudoElement;
 import cz.vutbr.web.css.Selector.PseudoElementType;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.domassign.Analyzer.Holder;

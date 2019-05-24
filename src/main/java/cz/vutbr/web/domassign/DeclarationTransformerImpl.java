@@ -1071,7 +1071,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 		int colorIndex = -1;
 
 		for (int i = 0; i < d.size(); i++) {
-			Term t = d.get(i);
+			Term<?> t = d.get(i);
 
 			if (t.getOperator() == Operator.COMMA) {
 				if (lengthCount < 2) {
@@ -2157,7 +2157,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         autoColumnsDecl.setProperty("grid-auto-columns");
 
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if (t.getOperator() == Term.Operator.SLASH) {
                 beforeSlash = false;
             }
@@ -2205,7 +2205,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 
     @SuppressWarnings("unused")
     private boolean processGridGap(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        Term rowGapTerm, columnGapTerm;
+        Term<?> rowGapTerm, columnGapTerm;
         switch (d.size()) {
             case 1:
                 rowGapTerm = columnGapTerm = d.get(0);
@@ -2269,7 +2269,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         boolean autoSet = false;
         
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if (t.getOperator() == Term.Operator.SLASH) {
                 if(!autoSet && spanIndex < 0 && valueIndex < 0) {
                     identOnly.put(propertyNames[listIndex], lists[listIndex]);
@@ -2372,7 +2372,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         int identIndex = -1;
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if (t instanceof TermIdent) {
                 CSSProperty property = genericPropertyRaw(GridStartEnd.class, null, (TermIdent) t);
                 if (GridStartEnd.SPAN.equals(property) && spanIndex < 0 && (valueIndex < 0 || valueValue > 0)) {
@@ -2401,7 +2401,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
             case 0:
                 return false;
             case 1:
-                Term single = list.get(0);
+                Term<?> single = list.get(0);
                 CSSProperty property;
                 if (single instanceof TermIdent) {
                     CSSProperty identProperty = genericPropertyRaw(GridStartEnd.class, null, (TermIdent) single);
@@ -2442,7 +2442,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         columnsDecl.setProperty("grid-template-columns");
         boolean beforeSlash = true;
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if (t.getOperator() == Term.Operator.SLASH) {
                 beforeSlash = false;
             }
@@ -2466,7 +2466,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         int areasInRow = 0;
         List<String[]> map = new ArrayList<>();
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if (t.getOperator() == Term.Operator.SLASH) {
                 bracketedIdentUsed = false;
                 beforeSlash = false;
@@ -2527,7 +2527,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
      * <track-breadth> = <length> | <percentage> | <flex> | min-content |
      * max-content | auto
      */
-    private boolean isTermTrackBreadth(Term t) {
+    private boolean isTermTrackBreadth(Term<?> t) {
         if (t instanceof TermLengthOrPercent) {
             return true;
         } else if (t instanceof TermIdent) {
@@ -2548,7 +2548,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         int areasInRow = 0;
         String[][] map = new String[d.size()][];
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if (t instanceof TermString) {
                 map[i] = ValidationUtils.getAreas(((TermString) t).getValue());
                 if (map[i].length == 0 || (i > 0 && map[i].length != areasInRow)) {
@@ -2589,7 +2589,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         boolean bracketedIdentUsed = false;
         boolean repeatUsed = false;
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if (t instanceof TermIdent) {
                 CSSProperty property = genericPropertyRaw(GridTemplateRowsColumns.class, null, (TermIdent) t);
                 if (property == null || property == GridTemplateRowsColumns.NONE) {
@@ -2627,7 +2627,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         boolean denseSet = false;
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if (t instanceof TermIdent) {
                 CSSProperty property = genericPropertyRaw(GridAutoFlow.class, null, (TermIdent) t);
                 if ((GridAutoFlow.ROW.equals(property) || GridAutoFlow.COLUMN.equals(property)) && !autoFlowSet) {
@@ -2667,7 +2667,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if (t instanceof TermIdent) {
                 CSSProperty property = genericPropertyRaw(GridAutoRowsColumns.class, null, (TermIdent) t);
                 if (property == null) {
@@ -2704,7 +2704,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         return true;
     }
 
-    private static boolean isPositive(Term t) {
+    private static boolean isPositive(Term<?> t) {
         if (t instanceof TermLengthOrPercent) {
             if (((TermLengthOrPercent) t).getValue() < 0) {
                 return false;
@@ -2744,7 +2744,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermTime) {
                 if (!isPositive(t)) {
                     return false;
@@ -2766,7 +2766,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermIdent) {
                 CSSProperty property = genericPropertyRaw(AnimationDirection.class, null, (TermIdent) t);
                 if (property == null) {
@@ -2789,7 +2789,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermTime) {
                 if(!isPositive(t)) {
                     return false;
@@ -2811,7 +2811,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermIdent) {
                 CSSProperty property = genericPropertyRaw(AnimationFillMode.class, null, (TermIdent) t);
                 if (property == null) {
@@ -2834,7 +2834,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if(i > 0 && t.getOperator() != Operator.COMMA) {
                 return false;
             }
@@ -2864,7 +2864,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if (i > 0 && t.getOperator() != Operator.COMMA || !(t instanceof TermIdent)) {
                 return false;
             }
@@ -2887,7 +2887,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermIdent) {
                 CSSProperty property = genericPropertyRaw(AnimationPlayState.class, null, (TermIdent) t);
                 if (property == null) {
@@ -2910,7 +2910,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if(i > 0 && t.getOperator() != Operator.COMMA) {
                 return false;
             }
@@ -2942,7 +2942,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         Arrays.fill(propertySet, false);
 
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             subDeclaration.add(t);
             if (t.getOperator() == Operator.COMMA) {
                 Arrays.fill(propertySet, false);
@@ -2993,7 +2993,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermTime) {
                 if (!isPositive(t)) {
                     return false;
@@ -3015,7 +3015,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermTime) {
                 if(!isPositive(t)) {
                     return false;
@@ -3037,7 +3037,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermIdent) {
                 CSSProperty property = genericPropertyRaw(TransitionProperty.class, null, (TermIdent) t);
                 if (property == TransitionProperty.NONE) {
@@ -3065,7 +3065,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
-            Term t = d.get(i);
+            Term<?> t = d.get(i);
             if(i > 0 && t.getOperator() != Operator.COMMA) {
                 return false;
             }

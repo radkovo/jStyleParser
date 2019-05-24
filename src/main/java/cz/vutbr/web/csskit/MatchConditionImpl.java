@@ -10,7 +10,6 @@ import org.w3c.dom.Element;
 import cz.vutbr.web.css.MatchCondition;
 import cz.vutbr.web.css.Selector.PseudoClass;
 import cz.vutbr.web.css.Selector.PseudoClassType;
-import cz.vutbr.web.css.Selector.PseudoPage;
 import cz.vutbr.web.css.Selector.SelectorPart;
 
 /**

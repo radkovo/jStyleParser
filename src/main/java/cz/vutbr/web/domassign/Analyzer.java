@@ -25,7 +25,6 @@ import cz.vutbr.web.css.MediaSpec;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
-import cz.vutbr.web.css.Selector.PseudoElement;
 import cz.vutbr.web.css.Selector.PseudoElementType;
 import cz.vutbr.web.css.StyleSheet;
 

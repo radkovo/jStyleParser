@@ -54,7 +54,7 @@ public class StepsImpl extends TermFunctionImpl implements TermFunction.Steps {
 
     private boolean setNumberOfSteps(List<Term<?>> argTerms) {
         if (argTerms.size() == 1) {
-            Term t = argTerms.get(0);
+            Term<?> t = argTerms.get(0);
             if (t instanceof TermInteger) {
                 int value = ((TermInteger) t).getIntValue();
                 if (value > 0) {
@@ -68,7 +68,7 @@ public class StepsImpl extends TermFunctionImpl implements TermFunction.Steps {
 
     private boolean setDirection(List<Term<?>> argTerms) {
         if (argTerms.size() == 1) {
-            Term t = argTerms.get(0);
+            Term<?> t = argTerms.get(0);
             if (t instanceof TermIdent) {
                 String value = ((TermIdent) t).getValue();
                 for (Direction d : Direction.values()) {

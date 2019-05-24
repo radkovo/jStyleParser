@@ -22,38 +22,6 @@ public class BoxShadowTest {
 
     private static final String PROPERTY_NAME = "box-shadow";
 
-    private static final String[] NON_VALUE = new String[]{
-        "none",
-        "inherit",
-        "initial",
-        "unset"
-    };
-
-    private static final String[] VALID = new String[]{
-        "minimal",
-        "blur",
-        "spread",
-        "color",
-        "blur_color",
-        "spread_color",
-        "inset",
-        "inset_blur",
-        "inset_spread",
-        "inset_color",
-        "inset_blur_color",
-        "inset_spread_color",
-        "multiple_0",
-        "multiple_1",
-        "multiple_2"
-    };
-
-    private static final String[] INVALID = new String[]{
-        "invalid_0",
-        "invalid_1",
-        "invalid_2",
-        "invalid_3"
-    };
-
     private static final TermFactory tf = CSSFactory.getTermFactory();
     private final List<TestData> _tests = new ArrayList<>();
 

@@ -56,7 +56,7 @@ public class TestUtils {
         }
     }
 
-    public static void compareLists(List a, List b) {
+    public static void compareLists(List<?> a, List<?> b) {
         if (a.size() != b.size()) {
             System.err.println("Length");
         }

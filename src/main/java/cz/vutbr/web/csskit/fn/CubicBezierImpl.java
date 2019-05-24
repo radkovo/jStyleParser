@@ -66,7 +66,7 @@ public class CubicBezierImpl extends TermFunctionImpl implements TermFunction.Cu
 
     private boolean setValueAt(int index, List<Term<?>> argTerms) {
         if (argTerms.size() == 1) {
-            Term t = argTerms.get(0);
+            Term<?> t = argTerms.get(0);
             if (t instanceof TermNumber) {
                 float value = ((TermNumber) t).getValue();
                 if (index == 1
