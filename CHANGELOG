@@ -1,4 +1,11 @@
-Version 3.2 - Jan 29, 2017
+Version 3.3 - May 24, 2019
+- New typed representation of CSS functions
+- Added missing grid and flexbox properties and functions
+- Keyframes support added
+- Animations and transitions support
+- Many parser fixes (at-rules, vendor prefixes, bracketed identifiers, ...)
+
+Version 3.2 - Jan 29, 2018
 - Improved font-face rule support
 - Unknown pseudo classes are correctly skipped
 
