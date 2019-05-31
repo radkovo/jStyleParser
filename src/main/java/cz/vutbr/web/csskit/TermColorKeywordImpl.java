@@ -12,7 +12,7 @@ import cz.vutbr.web.css.TermColor;
  * @author Radek Burget
  */
 public class TermColorKeywordImpl extends TermImpl<Color> implements TermColor {
-    
+
     private Keyword keyword;
 
     protected TermColorKeywordImpl(Keyword keyword, int r, int g, int b, int a) {
@@ -24,7 +24,7 @@ public class TermColorKeywordImpl extends TermImpl<Color> implements TermColor {
     public Keyword getKeyword() {
         return keyword;
     }
-    
+
     @Override
     public boolean isTransparent() {
         return (keyword == Keyword.TRANSPARENT) || (value.getAlpha() == 0);
@@ -32,10 +32,15 @@ public class TermColorKeywordImpl extends TermImpl<Color> implements TermColor {
 
     @Override
     public String toString() {
-        if (operator != null)
-            return operator.value() + keyword.toString();
-        else
-            return keyword.toString();
+        String operatorValue = operator == null
+            ? ""
+            : operator.value();
+
+        String keywordStr = keyword == null
+            ? ""
+            : keyword.toString();
+
+        return operatorValue + keywordStr;
     }
 
 }
