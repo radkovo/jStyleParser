@@ -214,7 +214,9 @@ public class CSSTokenRecovery {
             t.setText("]");
         }
 
-        log.debug("Recovering from EOF by {}", t.getText());
+        if (log.isDebugEnabled()) {
+            log.debug("Recovering from EOF by {}", t.getText());
+        }
         return t;
     }
 
@@ -224,8 +226,10 @@ public class CSSTokenRecovery {
      */
     private void consumeUntilBalanced(IntervalSet follow) {
 
-        log.debug("Lexer entered consumeUntilBalanced with {} and follow {}",
+        if (log.isDebugEnabled()) {
+            log.debug("Lexer entered consumeUntilBalanced with {} and follow {}",
                 ls, follow);
+        }
 
         int c;
         do {

@@ -43,8 +43,10 @@ public class SimplePreparator implements Preparator {
 		// check emptiness
 		if ((cslist == null || cslist.isEmpty())
 				|| (dlist == null || dlist.isEmpty())) {
-			log.debug("Empty RuleSet was ommited");
-			return null;
+                        if (log.isDebugEnabled()) {
+                            log.debug("Empty RuleSet was ommited");
+                        }                    
+                        return null;
 		}
 
 		// create rule set
@@ -57,7 +59,9 @@ public class SimplePreparator implements Preparator {
 		if (wrap) {
 			// swap numbers, so RuleMedia is created before RuleSet
 			RuleMedia rm = rf.createMedia();
-			log.debug("Wrapping RuleSet {} into RuleMedia: {}", rs, media);
+                        if (log.isDebugEnabled()) {
+                            log.debug("Wrapping RuleSet {} into RuleMedia: {}", rs, media);
+                        }
 
 			rm.unlock();
 			rm.add(rs);
@@ -74,8 +78,10 @@ public class SimplePreparator implements Preparator {
 	public RuleBlock<?> prepareRuleMedia(List<RuleSet> rules, List<MediaQuery> media) {
 
 		if (rules == null || rules.isEmpty()) {
-			log.debug("Empty RuleMedia was ommited");
-			return null;
+                        if (log.isDebugEnabled()) {
+                            log.debug("Empty RuleMedia was ommited");
+                        }
+                        return null;
 		}
 
 		// create media at position of mark
@@ -94,8 +100,10 @@ public class SimplePreparator implements Preparator {
 
 	    if ((declarations == null || declarations.isEmpty()) &&
 	         (marginRules == null || marginRules.isEmpty())) {
-			log.debug("Empty RulePage was ommited");
-			return null;
+                        if (log.isDebugEnabled()) {
+                            log.debug("Empty RulePage was ommited");
+                        }
+                        return null;
 		}
 
 		RulePage rp = rf.createPage();
@@ -117,7 +125,9 @@ public class SimplePreparator implements Preparator {
 
         if ((decl == null || decl.isEmpty()))
         {
-            log.debug("Empty RuleMargin was ommited");
+            if (log.isDebugEnabled()) {
+                log.debug("Empty RuleMargin was ommited");
+            }
             return null;
         }
 
@@ -132,7 +142,9 @@ public class SimplePreparator implements Preparator {
     public RuleBlock<?> prepareRuleViewport(List<Declaration> decl) {
 
         if (decl == null || decl.isEmpty()) {
-            log.debug("Empty Viewport was ommited");
+            if (log.isDebugEnabled()) {
+                log.debug("Empty Viewport was ommited");
+            }
             return null;
         }
 
@@ -146,7 +158,9 @@ public class SimplePreparator implements Preparator {
     public RuleBlock<?> prepareRuleFontFace(List<Declaration> decl) {
 
         if (decl == null || decl.isEmpty()) {
-            log.debug("Empty RuleFontFace was ommited");
+            if (log.isDebugEnabled()) {
+                log.debug("Empty RuleFontFace was ommited");
+            }
             return null;
         }
 
@@ -162,8 +176,10 @@ public class SimplePreparator implements Preparator {
 			List<Selector.SelectorPart> pseudos) {
 
 		if(dlist==null || dlist.isEmpty()) {
-			log.debug("Empty RuleSet (inline) was ommited");
-			return null;
+                        if (log.isDebugEnabled()) {
+                            log.debug("Empty RuleSet (inline) was ommited");
+                        }
+                        return null;
 		}
 		
 		// create selector with element
@@ -186,11 +202,15 @@ public class SimplePreparator implements Preparator {
     @Override
     public RuleBlock<?> prepareRuleKeyframes(List<KeyframeBlock> rules, String name) {
         if (rules == null || rules.isEmpty()) {
-            log.debug("Empty RuleKeyframes was ommited");
+            if (log.isDebugEnabled()) {
+                log.debug("Empty RuleKeyframes was ommited");
+            }
             return null;
         }
         if (name == null || name.isEmpty()) {
-            log.debug("RuleKeyframes with no name was ommited");
+            if (log.isDebugEnabled()) {
+                log.debug("RuleKeyframes with no name was ommited");
+            }
             return null;
         }
 
