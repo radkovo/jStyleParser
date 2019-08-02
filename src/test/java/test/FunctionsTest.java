@@ -19,7 +19,6 @@ import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.css.TermAngle;
 import cz.vutbr.web.css.TermCalc;
-import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermFloatValue;
 import cz.vutbr.web.css.TermFunction;
@@ -489,10 +488,6 @@ public class FunctionsTest {
                     assertEquals(LinearGradientImpl.class, fn.getClass());
                     assertEquals("Angle", tf.createAngle("0.25", Unit.turn, 1), ((LinearGradientImpl) fn).getAngle());
                     assertEquals("Three stops are set", 3, ((LinearGradientImpl) fn).getColorStops().size());
-                    TermColor c1 = ((LinearGradientImpl) fn).getColorStops().get(0).getColor();
-                    System.out.println("CHECK: c1 v=>" + c1.getValue() + "< op=>" + c1.getOperator() + "<");
-                    TermColor c2 = tf.createColor("#ff0000");
-                    System.out.println("CHECK: c2 v=>" + c2.getValue() + "< op=>" + c2.getOperator() + "<");
                     assertEquals("First stop color", tf.createColor("#ff0000"), ((LinearGradientImpl) fn).getColorStops().get(0).getColor());
                     assertNull("First stop length", ((LinearGradientImpl) fn).getColorStops().get(0).getLength());
                     assertEquals("Last stop color", tf.createColor("#f69d3c"), ((LinearGradientImpl) fn).getColorStops().get(2).getColor());
