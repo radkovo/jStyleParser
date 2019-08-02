@@ -20,6 +20,11 @@ public class TermColorKeywordImpl extends TermImpl<Color> implements TermColor {
         this.value = new Color(r, g, b, a);
     }
 
+    protected TermColorKeywordImpl(Keyword keyword, Color value) {
+        this.keyword = keyword;
+        this.value = value;
+    }
+
     @Override
     public Keyword getKeyword() {
         return keyword;

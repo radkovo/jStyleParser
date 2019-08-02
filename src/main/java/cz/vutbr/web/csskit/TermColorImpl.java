@@ -39,6 +39,10 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
         value = new Color(r, g, b, a);
     }
     
+    protected TermColorImpl(Color value) {
+        this.value = value;
+    }
+
     @Override
     public Keyword getKeyword() {
         return Keyword.none;
@@ -85,7 +89,15 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
      * @return <code>TermColor</code> if color matches, <code>null</code> elsewhere
      */
     public static TermColor getColorByIdent(TermIdent ident) {
-    	return ColorCard.getTermColor(ident.getValue());
+    	final TermColor c = ColorCard.getTermColor(ident.getValue());
+    	// copy the color card value because it may be modified later (e.g. operators added)
+    	if (c == null) {
+    	    return null;
+    	} else if (c instanceof TermColorKeywordImpl) {
+    	    return new TermColorKeywordImpl(c.getKeyword(), c.getValue());
+    	} else {
+            return new TermColorImpl(c.getValue());
+    	}
     }
     
     /**
