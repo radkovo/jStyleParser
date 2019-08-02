@@ -1,7 +1,9 @@
 jStyleParser
 ============
 
-[![Build Status](https://travis-ci.org/radkovo/jStyleParser.png)](https://travis-ci.org/radkovo/jStyleParser)
+[![Build Status](https://travis-ci.org/radkovo/jStyleParser.svg?branch=master)](https://travis-ci.org/radkovo/jStyleParser)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sf.cssbox/jstyleparser/badge.png)](https://maven-badges.herokuapp.com/maven-central/net.sf.cssbox/jstyleparser)
+
 
 jStyleParser is a Java library for parsing CSS style sheets and assigning styles to the HTML or XML document elements according to the CSS 3 specifications.
 It allows parsing the individual CSS files as well as computing the efficient style of the DOM elements.
