@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1409,7 +1408,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 		// counter with increments
 		else {
 			// counters are stored there
-			Set<Term<?>> termList = new LinkedHashSet<Term<?>>();
+			List<Term<?>> termList = new ArrayList<Term<?>>();
 			String counterName = null;
 			for (Term<?> term : d.asList()) {
 				// counter name
@@ -1448,7 +1447,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 		// counter with resets
 		else {
 			// counters are stored there
-			Set<Term<?>> termList = new LinkedHashSet<Term<?>>();
+			List<Term<?>> termList = new ArrayList<Term<?>>();
 			String counterName = null;
 			for (Term<?> term : d.asList()) {
 				// counter name
