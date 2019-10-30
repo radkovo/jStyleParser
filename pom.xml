@@ -2,8 +2,13 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <!-- Deploy: mvn clean deploy (includes javadoc) Package: mvn clean package 
-        assembly:single Release: mvn release:clean mvn release:prepare mvn release:perform -->
+    <!--
+        Deploy: mvn clean deploy (includes javadoc) 
+        Package: mvn clean package assembly:single
+        Release: mvn release:clean
+                 mvn release:prepare
+                 mvn release:perform 
+    -->
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -69,8 +74,6 @@
                     <exclude>**/*.java</exclude>
                 </excludes>
             </resource>
-            <!-- <resource> <directory>src/main/antlr3</directory> <excludes> 
-                <exclude>**/*.java</exclude> </excludes> </resource> -->
         </resources>
 
         <plugins>
