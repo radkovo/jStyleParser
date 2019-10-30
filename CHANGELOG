@@ -1,3 +1,7 @@
+Version 3.4 - Oct 30, 2019
+- More efficient logging
+- Fixed named color value creation
+
 Version 3.3 - May 24, 2019
 - New typed representation of CSS functions
 - Added missing grid and flexbox properties and functions
