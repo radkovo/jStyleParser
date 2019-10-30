@@ -1454,7 +1454,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 				// counter name
 				if (term instanceof TermIdent) {
 					counterName = ((TermIdent) term).getValue();
-					termList.add(tf.createPair(counterName, new Integer(1)));
+					termList.add(tf.createPair(counterName, new Integer(0)));
 				}
 				// counter reset value follows counter name
 				else if (term instanceof TermInteger && counterName != null) {
