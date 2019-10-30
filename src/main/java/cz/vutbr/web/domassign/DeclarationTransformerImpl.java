@@ -1407,29 +1407,11 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 		}
 		// counter with increments
 		else {
-			// counters are stored there
-			List<Term<?>> termList = new ArrayList<Term<?>>();
-			String counterName = null;
-			for (Term<?> term : d.asList()) {
-				// counter name
-				if (term instanceof TermIdent) {
-					counterName = ((TermIdent) term).getValue();
-					termList.add(tf.createPair(counterName, new Integer(1)));
-				}
-				// counter reset value follows counter name
-				else if (term instanceof TermInteger && counterName != null) {
-					termList.add(tf.createPair(counterName,
-							((TermInteger) term).getValue()));
-					counterName = null;
-				} else {
-					return false;
-				}
-			}
-			if (!termList.isEmpty()) {
+			List<Term<?>> termList = decodeCounterList(d.asList(), 1);
+			if (termList != null && !termList.isEmpty()) {
 				TermList list = tf.createList(termList.size());
 				list.addAll(termList);
-				properties.put("counter-increment",
-						CounterIncrement.list_values);
+				properties.put("counter-increment",	CounterIncrement.list_values);
 				values.put("counter-increment", list);
 				return true;
 			}
@@ -1447,24 +1429,8 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 		// counter with resets
 		else {
 			// counters are stored there
-			List<Term<?>> termList = new ArrayList<Term<?>>();
-			String counterName = null;
-			for (Term<?> term : d.asList()) {
-				// counter name
-				if (term instanceof TermIdent) {
-					counterName = ((TermIdent) term).getValue();
-					termList.add(tf.createPair(counterName, new Integer(0)));
-				}
-				// counter reset value follows counter name
-				else if (term instanceof TermInteger && counterName != null) {
-					termList.add(tf.createPair(counterName,
-							((TermInteger) term).getValue()));
-					counterName = null;
-				} else {
-					return false;
-				}
-			}
-			if (!termList.isEmpty()) {
+			List<Term<?>> termList = decodeCounterList(d.asList(), 0);
+			if (termList != null && !termList.isEmpty()) {
 				TermList list = tf.createList(termList.size());
 				list.addAll(termList);
 				properties.put("counter-reset", CounterReset.list_values);
@@ -1473,8 +1439,35 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 			}
 			return false;
 		}
-
 	}
+
+    private List<Term<?>> decodeCounterList(List<Term<?>> terms, int defaultValue)
+    {
+        List<Term<?>> ret = new ArrayList<>();
+        int i = 0;
+        while (i < terms.size()) {
+            final Term<?> term = terms.get(i);
+            if (term instanceof TermIdent) {
+                final String counterName = ((TermIdent) term).getValue();
+                if (i + 1 < terms.size() && terms.get(i + 1) instanceof TermInteger)
+                {
+                    //integer value specified after the counter name
+                    int counterValue = ((TermInteger) terms.get(i + 1)).getIntValue();
+                    ret.add(tf.createPair(counterName, counterValue));
+                    i += 2;
+                }
+                else
+                {
+                    //only the counter name, use the default value
+                    ret.add(tf.createPair(counterName, defaultValue));
+                    i++;
+                }
+            } else {
+                return null;
+            }
+        }
+        return ret;
+    }
 
 	@SuppressWarnings("unused")
 	private boolean processCursor(Declaration d,
