@@ -270,5 +270,53 @@ public class CalcArgs extends ArrayList<Term<?>> {
         
     }
 
+    /**
+     * An abstract pre-defined evaluator that produces a float value from the expression.
+     * Implementations must provide the {@code resolveValue()} method that evaluates an atomic value.
+     *  
+     * @author burgetr
+     */
+    public static abstract class FloatEvaluator implements Evaluator<Float> {
+        
+        @Override
+        public Float evaluateArgument(TermFloatValue val) {
+            if (val instanceof TermNumber || val instanceof TermInteger)
+                return Float.valueOf(val.getValue());
+            else
+                return resolveValue(val);
+        }
+
+        @Override
+        public Float evaluateOperator(Float val1, Float val2, TermOperator op) {
+            switch (op.getValue()) {
+                case '+': return val1 + val2;
+                case '-': return val1 - val2;
+                case '*': return val1 * val2;
+                case '/': return val1 / val2;
+                default:
+                    log.error("Unknown operator {} in expression", op);
+                    return 0.0f;
+            }
+        }
+        
+        @Override
+        public Float evaluateOperator(Float val, TermOperator op)
+        {
+            if (op.getValue() == '~') {
+                return -val;
+            } else {
+                log.error("Unknown unary operator {} in expression", op);
+                return val;
+            }
+        }
+
+        /**
+         * Evaluates an atomic value.
+         * @param val the input value specification
+         * @return the evaluated value
+         */
+        public abstract float resolveValue(TermFloatValue val);
+        
+    }
     
 }
