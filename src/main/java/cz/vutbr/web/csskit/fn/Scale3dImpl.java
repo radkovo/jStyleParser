@@ -37,7 +37,7 @@ public class Scale3dImpl extends TermFunctionImpl implements TermFunction.Scale3
     {
         super.setValue(value);
         List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-        if (args.size() == 3 
+        if (args != null && args.size() == 3 
                 && isNumberArg(args.get(0)) && isNumberArg(args.get(1)) && isNumberArg(args.get(2))) {
             scaleX = getNumberArg(args.get(0));
             scaleY = getNumberArg(args.get(1));

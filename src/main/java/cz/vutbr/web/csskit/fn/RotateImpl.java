@@ -26,7 +26,7 @@ public class RotateImpl extends TermFunctionImpl implements TermFunction.Rotate 
     {
         super.setValue(value);
         List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-        if (args.size() == 1 && (angle = getAngleArg(args.get(0))) != null) {
+        if (args != null && args.size() == 1 && (angle = getAngleArg(args.get(0))) != null) {
             setValid(true);
         }
         return this;

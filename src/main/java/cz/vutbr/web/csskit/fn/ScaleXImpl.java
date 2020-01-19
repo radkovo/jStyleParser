@@ -25,7 +25,7 @@ public class ScaleXImpl extends TermFunctionImpl implements TermFunction.ScaleX 
     {
         super.setValue(value);
         List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-        if (args.size() == 1 && isNumberArg(args.get(0))) {
+        if (args != null && args.size() == 1 && isNumberArg(args.get(0))) {
             scale = getNumberArg(args.get(0));
             setValid(true);
         }

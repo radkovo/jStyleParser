@@ -25,7 +25,7 @@ public class Matrix3dImpl extends TermFunctionImpl implements TermFunction.Matri
     {
         super.setValue(value);
         List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-        if (args.size() == 16) {
+        if (args != null && args.size() == 16) {
             values = new float[16];
             setValid(true);
             for (int i = 0; i < 16; i++) {

@@ -33,7 +33,7 @@ public class GenericFilterFunction extends TermFunctionImpl {
     {
         super.setValue(value);
         List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-        if (args.size() == 1)
+        if (args != null && args.size() == 1)
         {
             final Term<?> arg = args.get(0);
             if (isNumberArg(arg)) {

@@ -33,13 +33,16 @@ public class TranslateImpl extends TermFunctionImpl implements TermFunction.Tran
     {
         super.setValue(value);
         List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-        if (args.size() == 2 
-                && (translateX = getLengthOrPercentArg(args.get(0))) != null
-                && (translateY = getLengthOrPercentArg(args.get(1))) != null) {
-            setValid(true);
-        } else if (size() == 1 && (translateX = getLengthOrPercentArg(args.get(0))) != null) {
-            translateY = CSSFactory.getTermFactory().createLength(0.0f);
-            setValid(true);
+        if (args != null)
+        {
+            if (args.size() == 2 
+                    && (translateX = getLengthOrPercentArg(args.get(0))) != null
+                    && (translateY = getLengthOrPercentArg(args.get(1))) != null) {
+                setValid(true);
+            } else if (size() == 1 && (translateX = getLengthOrPercentArg(args.get(0))) != null) {
+                translateY = CSSFactory.getTermFactory().createLength(0.0f);
+                setValid(true);
+            }
         }
         return this;
     }

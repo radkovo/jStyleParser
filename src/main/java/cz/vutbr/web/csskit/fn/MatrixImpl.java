@@ -25,7 +25,7 @@ public class MatrixImpl extends TermFunctionImpl implements TermFunction.Matrix 
     {
         super.setValue(value);
         List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-        if (args.size() == 6) {
+        if (args != null && args.size() == 6) {
             values = new float[6];
             setValid(true);
             for (int i = 0; i < 6; i++) {

@@ -45,7 +45,7 @@ public class Rotate3dImpl extends TermFunctionImpl implements TermFunction.Rotat
     {
         super.setValue(value);
         List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-        if (args.size() == 4 
+        if (args != null && args.size() == 4 
                 && isNumberArg(args.get(0)) && isNumberArg(args.get(1)) && isNumberArg(args.get(2))
                 && (angle = getAngleArg(args.get(3))) != null) {
             x = getNumberArg(args.get(0));

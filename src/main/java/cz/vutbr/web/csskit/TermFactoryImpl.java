@@ -304,7 +304,7 @@ public class TermFactoryImpl implements TermFactory {
             List<Term<?>> args = function.getValues(true); //try the rect(0 0 0 0) syntax
             if (args == null || args.size() != 4)
                 args = function.getSeparatedValues(CSSFactory.getTermFactory().createOperator(','), true); //try the rect(0, 0, 0, 0) syntax
-            if (args.size() == 4) { //check the argument count and types
+            if (args != null && args.size() == 4) { //check the argument count and types
                 for (int i = 0; i < 4; i++) {
                     Term<?> val = args.get(i);
                     if (val instanceof TermIdent) {

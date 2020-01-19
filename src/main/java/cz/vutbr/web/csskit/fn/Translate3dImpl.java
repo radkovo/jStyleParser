@@ -38,7 +38,7 @@ public class Translate3dImpl extends TermFunctionImpl implements TermFunction.Tr
     {
         super.setValue(value);
         List<Term<?>> args = getSeparatedValues(DEFAULT_ARG_SEP, false);
-        if (args.size() == 3 
+        if (args != null && args.size() == 3 
                 && (translateX = getLengthOrPercentArg(args.get(0))) != null
                 && (translateY = getLengthOrPercentArg(args.get(1))) != null
                 && (translateZ = getLengthOrPercentArg(args.get(2))) != null) {
