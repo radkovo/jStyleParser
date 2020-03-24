@@ -18,7 +18,7 @@ With Maven, use the following dependency:
 <dependency>
     <groupId>net.sf.cssbox</groupId>
     <artifactId>jstyleparser</artifactId>
-    <version>3.3</version>
+    <version>3.5</version>
 </dependency>
 ```
 
