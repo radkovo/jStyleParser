@@ -744,6 +744,14 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
                 properties, values, d.toArray(new Term<?>[0]));
     }
 
+    @SuppressWarnings("unused")
+    private boolean processBackgroundOrigin(Declaration d,
+            Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        final Variator background = new BackgroundVariator();
+        return background.tryOneTermVariant(BackgroundVariator.ORIGIN, d,
+                properties, values);
+    }
+
 	@SuppressWarnings("unused")
 	private boolean processBorder(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
@@ -3553,9 +3561,10 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 		public static final int ATTACHMENT = 3;
 		public static final int POSITION = 4;
 		public static final int SIZE = 5;
+        public static final int ORIGIN = 6;
 
 		public BackgroundVariator() {
-			super(6);
+			super(7);
 			names.add("background-color");
 			types.add(BackgroundColor.class);
 			names.add("background-image");
@@ -3568,6 +3577,8 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 			types.add(BackgroundPosition.class);
 			names.add("background-size");
 			types.add(BackgroundSize.class);
+            names.add("background-origin");
+            types.add(BackgroundOrigin.class);
 		}
 
 		@Override
@@ -3596,6 +3607,9 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 			case REPEAT:
 				return genericTermIdent(types.get(REPEAT), terms.get(i),
 						AVOID_INH, names.get(REPEAT), properties);
+            case ORIGIN:
+                return genericTermIdent(types.get(ORIGIN), terms.get(i),
+                        AVOID_INH, names.get(ORIGIN), properties);
 			case ATTACHMENT:
 				return genericTermIdent(types.get(ATTACHMENT), terms.get(i),
 						AVOID_INH, names.get(ATTACHMENT), properties);

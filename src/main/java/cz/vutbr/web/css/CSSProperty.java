@@ -462,6 +462,38 @@ public interface CSSProperty {
         }
     }
     
+    public enum BackgroundOrigin implements CSSProperty {
+        BORDER_BOX("border-box"), PADDING_BOX("badding-box"), CONTENT_BOX("content-box"),
+            INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+        private String text;
+
+        private BackgroundOrigin(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+        
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
 	public enum Border implements CSSProperty {
 		component_values(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
