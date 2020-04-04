@@ -1,4 +1,4 @@
-package cz.vutbr.web.domassign;
+package cz.vutbr.web.domassign.decode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +20,7 @@ import cz.vutbr.web.css.TermIdent;
  * @author kapy
  * 
  */
-public abstract class Variator {
+public abstract class Variator extends Decoder {
 
 	/**
 	 * All variants flag

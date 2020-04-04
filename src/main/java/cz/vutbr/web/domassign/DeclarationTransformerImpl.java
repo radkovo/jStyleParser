@@ -32,7 +32,6 @@ import cz.vutbr.web.css.TermInteger;
 import cz.vutbr.web.css.TermLength;
 import cz.vutbr.web.css.TermLengthOrPercent;
 import cz.vutbr.web.css.TermList;
-import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermPercent;
 import cz.vutbr.web.css.TermRect;
 import cz.vutbr.web.css.TermString;
@@ -40,6 +39,8 @@ import cz.vutbr.web.css.TermTime;
 import cz.vutbr.web.css.TermURI;
 import cz.vutbr.web.css.TermUnicodeRange;
 import cz.vutbr.web.csskit.DeclarationTransformer;
+import cz.vutbr.web.domassign.decode.*;
+import cz.vutbr.web.domassign.decode.Decoder.ValueRange;
 
 /**
  * Contains methods to transform declaration into values applicable to NodeData.
@@ -52,26 +53,6 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(DeclarationTransformerImpl.class);
-
-	/**
-	 * A hint about the allowed value range when processing numeric values. 
-	 */
-	private enum ValueRange {
-	    /** Allow all values */
-	    ALLOW_ALL,
-	    /** Treat negative values as invalid */
-	    DISALLOW_NEGATIVE,
-	    /** Truncate negative values to zero */
-	    TRUNCATE_NEGATIVE,
-		/** Treat zero as invalid */
-		DISALLOW_ZERO
-	}
-	
-	/**
-	 * Inherit acceptance flags
-	 */
-	private static final boolean AVOID_INH = true;
-	private static final boolean ALLOW_INH = false;
 
 	/**
 	 * Cache of parsing methods
@@ -204,486 +185,13 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 		return map;
 	}
 
-	/****************************************************************
-	 * GENERIC METHODS *
-	 ****************************************************************/
-
-	/**
-	 * Converts TermIdent into CSSProperty using intersection set.
-	 * CSSProperty.Translator is used.
-	 * 
-	 * @param <T>
-	 *            Subclass of CSSProperty to be returned
-	 * @param type
-	 *            Class of property to be used to retrieve value
-	 * @param intersection
-	 *            Intersection set or <code>null</code> if no intersection is
-	 *            used
-	 * @param term
-	 *            TermIdent to be transferred to property
-	 * @return CSSProperty of type &lt;T&gt; or <code>null</code>
-	 */
-	public <T extends CSSProperty> T genericPropertyRaw(Class<T> type,
-			Set<T> intersection, TermIdent term) {
-
-		try {
-			String name = term.getValue().replace("-", "_").toUpperCase();
-			T property = CSSProperty.Translator.valueOf(type, name);
-			if (intersection != null && intersection.contains(property))
-				return property;
-			return property;
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	/**
-	 * Converts TermIdent into value of enum of given class and stores it into
-	 * properties map under key property
-	 * 
-	 * @param <T>
-	 *            Enum &amp; CSSProperty limitation
-	 * @param type
-	 *            Type of enum which instance is retrieved
-	 * @param term
-	 *            Term with value to be converted
-	 * @param avoidInherit
-	 *            If <code>true</code> inherit value is not considered valid
-	 * @param properties
-	 *            Properties map where to store value
-	 * @param propertyName
-	 *            Name under which property is stored in map
-	 * @return <code>true</code> in case of success, <code>false</code>
-	 *         otherwise
-	 */
-	protected <T extends CSSProperty> boolean genericProperty(Class<T> type,
-			TermIdent term, boolean avoidInherit,
-			Map<String, CSSProperty> properties, String propertyName) {
-
-		T property = genericPropertyRaw(type, null, term);
-		if (property == null || (avoidInherit && property.equalsInherit()))
-			return false;
-
-		properties.put(propertyName, property);
-		return true;
-	}
-
-	/**
-	 * Converts TermIdent into value of CSSProperty for given class
-	 * 
-	 */
-	protected <T extends CSSProperty> boolean genericTermIdent(Class<T> type,
-			Term<?> term, boolean avoidInherit, String propertyName,
-			Map<String, CSSProperty> properties) {
-
-		if (term instanceof TermIdent) {
-			return genericProperty(type, (TermIdent) term, avoidInherit,
-					properties, propertyName);
-		}
-		return false;
-	}
-
-	/**
-	 * Converts term into Color and stored values and types in maps
-	 * 
-	 * @param <T>
-	 *            CSSProperty
-	 * @param term
-	 *            Term to be parsed
-	 * @param propertyName
-	 *            How to store colorIdentificiton
-	 * @param colorIdentification
-	 *            What to store under propertyName
-	 * @param properties
-	 *            Map to store property types
-	 * @param values
-	 *            Map to store property values
-	 * @return <code>true</code> in case of success, <code>false</code>
-	 *         otherwise
-	 */
-	protected <T extends CSSProperty> boolean genericTermColor(Term<?> term,
-			String propertyName, T colorIdentification,
-			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-
-		if (term instanceof TermColor) {
-			properties.put(propertyName, colorIdentification);
-			values.put(propertyName, term);
-			return true;
-		}
-
-		return false;
-
-	}
-
-	/**
-	 * Converts term into TermLength and stores values and types in maps
-	 * 
-	 * @param <T>
-	 *            CSSProperty
-	 * @param term
-	 *            Term to be parsed
-	 * @param propertyName
-	 *            How to store colorIdentificiton
-	 * @param lengthIdentification
-	 *            What to store under propertyName
-	 * @param properties
-	 *            Map to store property types
-	 * @param values
-	 *            Map to store property values
-	 * @return <code>true</code> in case of success, <code>false</code>
-	 *         otherwise
-	 */
-	protected <T extends CSSProperty> boolean genericTermLength(Term<?> term,
-			String propertyName, T lengthIdentification, ValueRange range,
-			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-
-        if (term instanceof TermInteger  && ((TermInteger) term).getUnit().equals(TermNumber.Unit.none)) {
-            if (CSSFactory.getImplyPixelLength() || ((TermInteger) term).getValue() == 0) { //0 is always allowed with no units
-                // convert to length with units of px
-                TermLength tl = tf.createLength(((TermInteger) term).getValue(), TermNumber.Unit.px);
-                return genericTerm(TermLength.class, tl, propertyName, lengthIdentification, range, properties, values);
-            } else {
-                return false;
-            }
-        }
-        else if (term instanceof TermLength) { 
-            return genericTerm(TermLength.class, term, propertyName, lengthIdentification, range, properties, values); 
-        }
-
-        return false;
-
-	}
-
-	/**
-	 * Check whether given declaration contains one term of given type. It is
-	 * able to check even whether is above zero for numeric values
-	 * 
-	 * @param <T>
-	 *            Class of CSSProperty to be used for result
-	 * @param termType
-	 *            Supposed type of term
-	 * @param term
-	 *            Term of which is supposed to be of type <code>termType</code>,
-	 *            that is input data
-	 * @param propertyName
-	 *            Name under which property's value and type is stored in maps
-	 * @param typeIdentification
-	 *            How this type of term is described in type T
-	 * @param sanify
-	 *            Check if value is positive
-	 * @param properties
-	 *            Where to store property type
-	 * @param values
-	 *            Where to store property value
-	 * @return <code>true</code> if succeeded in recognition, <code>false</code>
-	 *         otherwise
-	 */
-	protected <T extends CSSProperty> boolean genericTerm(
-			Class<? extends Term<?>> termType, Term<?> term,
-			String propertyName, T typeIdentification, ValueRange range,
-			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-
-		// check type
-		if (termType.isInstance(term)) {
-			// sanity check
-			if (range != ValueRange.ALLOW_ALL) {
-				// check for integer
-				if (term.getValue() instanceof Integer) {
-					final Integer zero = 0;
-					int result = zero.compareTo((Integer) term.getValue());
-					if (result > 0) {
-						// return false is also possibility
-						// but we will change to zero
-					    if (range == ValueRange.TRUNCATE_NEGATIVE)
-					        ((TermInteger) term).setZero();
-					    else
-					        return false;
-					} else if(result == 0) {
-						if(range == ValueRange.DISALLOW_ZERO) {
-							return false;
-						}
-					}
-				}
-				// check for float
-				else if (term.getValue() instanceof java.lang.Float) {
-					final java.lang.Float zero = 0f;
-					int result = zero.compareTo((java.lang.Float) term.getValue());
-					if (result > 0) {
-						// return false is also possibility
-						// but we will change to zero
-					    if (range == ValueRange.TRUNCATE_NEGATIVE)
-					        ((TermFloatValue) term).setZero();
-					    else
-					        return false;
-					} else if(result == 0) {
-						if(range == ValueRange.DISALLOW_ZERO) {
-							return false;
-						}
-					}
-				}
-			}
-			// passed both type check and range check,
-			// store
-			properties.put(propertyName, typeIdentification);
-			values.put(propertyName, term);
-			return true;
-
-		}
-		return false;
-
-	}
-
-	/**
-	 * Processes declaration which is supposed to contain one identification
-	 * term
-	 * 
-	 * @param <T>
-	 *            Type of CSSProperty
-	 * @param type
-	 *            Class of CSSProperty to be stored
-	 * @param d
-	 *            Declaration to be parsed
-	 * @param properties
-	 *            Properties map where to store enum
-	 * @return <code>true</code> in case of success, <code>false</code>
-	 *         elsewhere
-	 */
-	protected <T extends CSSProperty> boolean genericOneIdent(Class<T> type,
-			Declaration d, Map<String, CSSProperty> properties) {
-
-		if (d.size() != 1)
-			return false;
-
-		return genericTermIdent(type, d.get(0), ALLOW_INH, d.getProperty(),
-				properties);
-	}
-
-	/**
-	 * Processes declaration which is supposed to contain one identification
-	 * term or one TermColor
-	 * 
-	 * @param <T>
-	 *            Type of CSSProperty
-	 * @param type
-	 *            Class of enum to be stored
-	 * @param colorIdentification
-	 *            Instance of CSSProperty stored into properties to indicate
-	 *            that additional value of type TermColor is stored in values
-	 * @param d
-	 *            Declaration to be parsed
-	 * @param properties
-	 *            Properties map where to store enum
-	 * @param values
-	 * @return <code>true</code> in case of success, <code>false</code>
-	 *         elsewhere
-	 */
-	protected <T extends CSSProperty> boolean genericOneIdentOrColor(
-			Class<T> type, T colorIdentification, Declaration d,
-			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-
-		if (d.size() != 1)
-			return false;
-
-		return genericTermIdent(type, d.get(0), ALLOW_INH, d.getProperty(),
-				properties)
-				|| genericTermColor(d.get(0), d.getProperty(),
-						colorIdentification, properties, values);
-	}
-
-	protected <T extends CSSProperty> boolean genericOneIdentOrInteger(
-			Class<T> type, T integerIdentification, ValueRange range,
-			Declaration d, Map<String, CSSProperty> properties,
-			Map<String, Term<?>> values) {
-
-		if (d.size() != 1)
-			return false;
-
-		return genericTermIdent(type, d.get(0), ALLOW_INH, d.getProperty(),
-				properties)
-				|| genericTerm(TermInteger.class, d.get(0), d.getProperty(),
-						integerIdentification, range, properties, values);
-	}
-
-    protected <T extends CSSProperty> boolean genericOneIdentOrIntegerOrNumber(
-            Class<T> type, T integerIdentification, T numberIdentification, ValueRange range,
-            Declaration d, Map<String, CSSProperty> properties,
-            Map<String, Term<?>> values) {
-
-        if (d.size() != 1)
-            return false;
-
-        return genericTermIdent(type, d.get(0), ALLOW_INH, d.getProperty(), properties)
-                || genericTerm(TermInteger.class, d.get(0), d.getProperty(),
-                        integerIdentification, range, properties, values)
-                || genericTerm(TermNumber.class, d.get(0), d.getProperty(),
-                        numberIdentification, range, properties, values);
-    }
-    
-	protected <T extends CSSProperty> boolean genericOneIdentOrLength(
-			Class<T> type, T lengthIdentification, ValueRange range,
-			Declaration d, Map<String, CSSProperty> properties,
-			Map<String, Term<?>> values) {
-
-		if (d.size() != 1)
-			return false;
-
-		return genericTermIdent(type, d.get(0), ALLOW_INH, d.getProperty(),
-				properties)
-				|| genericTermLength(d.get(0), d.getProperty(),
-						lengthIdentification, range, properties, values);
-	}
-    
-    protected <T extends CSSProperty> boolean genericTime(
-            Class<T> type, T integerIdentification, ValueRange range,
-            Declaration d, Map<String, CSSProperty> properties,
-            Map<String, Term<?>> values) {
-        if (d.size() != 1)
-            return false;
-        
-        Term<?> term = d.get(0);
-        if (term instanceof TermIdent) {
-            T property = genericPropertyRaw(type, null, (TermIdent) term);
-            if (!property.equalsInherit())
-                return false;
-            else
-            {
-                properties.put(d.getProperty(), property);
-                return true;
-            }
-        }
-        return genericTerm(TermTime.class, term, d.getProperty(), integerIdentification, range, properties, values);
-    }
-    
-    protected <T extends CSSProperty> boolean genericInteger(
-            Class<T> type, T integerIdentification, ValueRange range,
-            Declaration d, Map<String, CSSProperty> properties,
-            Map<String, Term<?>> values) {
-
-        if (d.size() != 1)
-            return false;
-        
-        Term<?> term = d.get(0);
-        if (term instanceof TermIdent)
-        {
-            T property = genericPropertyRaw(type, null, (TermIdent) term);
-            if (!property.equalsInherit())
-                return false;
-            else
-            {
-                properties.put(d.getProperty(), property);
-                return true;
-            }
-        }
-        else
-        {
-            return genericTerm(TermInteger.class, term, d.getProperty(), integerIdentification, range, properties, values);
-        }
-    }
-    
-    protected <T extends CSSProperty> boolean genericIntegerOrLength(
-            Class<T> type, T integerIdentification, T lengthIdentification, ValueRange range,
-            Declaration d, Map<String, CSSProperty> properties,
-            Map<String, Term<?>> values) {
-
-        if (d.size() != 1)
-            return false;
-        
-        Term<?> term = d.get(0);
-        if (term instanceof TermIdent)
-        {
-            T property = genericPropertyRaw(type, null, (TermIdent) term);
-            if (!property.equalsInherit())
-                return false;
-            else
-            {
-                properties.put(d.getProperty(), property);
-                return true;
-            }
-        }
-        else
-        {
-            return genericTerm(TermInteger.class, term, d.getProperty(),
-                            integerIdentification, range, properties, values)
-                    || genericTermLength(term, d.getProperty(), lengthIdentification, range, properties, values);
-        }
-    }
-    
-	protected <T extends Enum<T> & CSSProperty> boolean genericOneIdentOrLengthOrPercent(
-			Class<T> type, T lengthIdentification, T percentIdentification,
-			ValueRange range, Declaration d, Map<String, CSSProperty> properties,
-			Map<String, Term<?>> values) {
-
-		if (d.size() != 1)
-			return false;
-
-		return genericTermIdent(type, d.get(0), ALLOW_INH, d.getProperty(),
-				properties)
-				|| genericTermLength(d.get(0), d.getProperty(),
-						lengthIdentification, range, properties, values)
-				|| genericTerm(TermPercent.class, d.get(0), d.getProperty(),
-						percentIdentification, range, properties, values);
-	}
-
-    protected <T extends Enum<T> & CSSProperty> boolean genericTwoIdentsOrLengthsOrPercents(
-            Class<T> type, T listIdentification,
-            ValueRange range, Declaration d, Map<String, CSSProperty> properties,
-            Map<String, Term<?>> values) {
-
-        if (d.size() == 1) {
-            Term<?> term = d.get(0);
-            String propertyName = d.getProperty();
-            // is it identifier or length ?
-            if (genericTermIdent(type, term, ALLOW_INH, propertyName, properties)
-                || genericTermLength(term, propertyName,
-                        listIdentification, range, properties, values)
-                || genericTerm(TermPercent.class, term, propertyName,
-                        listIdentification, range, properties, values)) {
-                // one term with length was inserted, double it
-                if (properties.get(propertyName) == listIdentification) {
-                    TermList terms = tf.createList(2);
-                    terms.add(term);
-                    terms.add(term);
-                    values.put(propertyName, terms);
-                }
-                return true;
-            }
-            else
-                return false;
-        }
-        // two numerical values
-        else if (d.size() == 2) {
-            Term<?> term1 = d.get(0);
-            Term<?> term2 = d.get(1);
-            String propertyName = d.getProperty();
-            // two lengths ?
-            if ((genericTermLength(term1, propertyName,
-                            listIdentification, range, properties, values)
-                    || genericTerm(TermPercent.class, term1, propertyName,
-                            listIdentification, range, properties, values))
-                 && (genericTermLength(term2, propertyName,
-                            listIdentification, range, properties, values)
-                    || genericTerm(TermPercent.class, term2, propertyName,
-                            listIdentification, range, properties, values))) {
-                TermList terms = tf.createList(2);
-                terms.add(term1);
-                terms.add(term2);
-                values.put(propertyName, terms);
-                return true;
-            }
-            else
-                return false;
-        }
-        else
-            return false;
-    }
-
 	// =============================================================
 	// processing methods
 
 	@SuppressWarnings("unused")
 	private boolean processColor(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrColor(Color.class, Color.color, d, properties,
+		return Decoder.genericOneIdentOrColor(Color.class, Color.color, d, properties,
 				values);
 	}
 
@@ -764,7 +272,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processBorderCollapse(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(BorderCollapse.class, d, properties);
+		return Decoder.genericOneIdent(BorderCollapse.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
@@ -839,9 +347,9 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 			Term<?> term = d.get(0);
 			String propertyName = d.getProperty();
 			// is it identifier or length ?
-			if (genericTermIdent(BorderSpacing.class, term, ALLOW_INH,
+			if (Decoder.genericTermIdent(BorderSpacing.class, term, Decoder.ALLOW_INH,
 					propertyName, properties)
-					|| genericTermLength(term, propertyName,
+					|| Decoder.genericTermLength(term, propertyName,
 							BorderSpacing.list_values, ValueRange.DISALLOW_NEGATIVE, properties, values)) {
 				// one term with length was inserted, double it
 				if (properties.get(propertyName) == BorderSpacing.list_values) {
@@ -859,9 +367,9 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 			Term<?> term2 = d.get(1);
 			String propertyName = d.getProperty();
 			// two lengths ?
-			if (genericTermLength(term1, propertyName,
+			if (Decoder.genericTermLength(term1, propertyName,
 					BorderSpacing.list_values, ValueRange.DISALLOW_NEGATIVE, properties, values)
-					&& genericTermLength(term2, propertyName,
+					&& Decoder.genericTermLength(term2, propertyName,
 							BorderSpacing.list_values, ValueRange.DISALLOW_NEGATIVE, properties, values)) {
 				TermList terms = tf.createList(2);
 				terms.add(term1);
@@ -966,28 +474,28 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     @SuppressWarnings("unused")
     private boolean processBorderTopLeftRadius(Declaration d,
             Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericTwoIdentsOrLengthsOrPercents(BorderRadius.class,
+        return Decoder.genericTwoIdentsOrLengthsOrPercents(BorderRadius.class,
                 BorderRadius.list_values, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
     }
 	
     @SuppressWarnings("unused")
     private boolean processBorderTopRightRadius(Declaration d,
             Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericTwoIdentsOrLengthsOrPercents(BorderRadius.class,
+        return Decoder.genericTwoIdentsOrLengthsOrPercents(BorderRadius.class,
                 BorderRadius.list_values, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderBottomRightRadius(Declaration d,
             Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericTwoIdentsOrLengthsOrPercents(BorderRadius.class,
+        return Decoder.genericTwoIdentsOrLengthsOrPercents(BorderRadius.class,
                 BorderRadius.list_values, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
     }
     
     @SuppressWarnings("unused")
     private boolean processBorderBottomLeftRadius(Declaration d,
             Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericTwoIdentsOrLengthsOrPercents(BorderRadius.class,
+        return Decoder.genericTwoIdentsOrLengthsOrPercents(BorderRadius.class,
                 BorderRadius.list_values, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
     }
     
@@ -998,75 +506,10 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         return radius.repeatOverMultiTermDeclaration(d, properties, values);
     }
 	
-	/*
-	 * 
-	 * private Boolean processBorder(Declaration d) { NodeData trans =
-	 * beginTransaction(); //Nastavení na výchozí hodnoty borderColorTopType =
-	 * null; borderColorRightType = null; borderColorBottomType = null;
-	 * borderColorLeftType = null; borderColorTopValue = null;
-	 * borderColorRightValue = null; borderColorBottomValue = null;
-	 * borderColorLeftValue = null; borderStyleTopType = null;
-	 * borderStyleRightType = null; borderStyleBottomType = null;
-	 * borderStyleLeftType = null; borderWidthTopType = null;
-	 * borderWidthRightType = null; borderWidthBottomType = null;
-	 * borderWidthLeftType = null; borderWidthTopValue = null;
-	 * borderWidthRightValue = null; borderWidthBottomValue = null;
-	 * borderWidthLeftValue = null;
-	 * 
-	 * //Každou z částí lze nastavit pouze jednou. Není přípustné aby se v jedné
-	 * deklaraci //objevila například 2x barva. K určení slouží následující
-	 * proměnné boolean processedColor = false; boolean processedStyle = false;
-	 * boolean processedWidth = false;
-	 * 
-	 * for(Term t : d.getTerms()) { //Pokud je první (a jediný) identifikátor
-	 * inherit, pak se nastaví všecm hodnotám inherit //Pokud by se inherit
-	 * objevilo až například jako třetí term, dojde k ignorování celé deklarace
-	 * if((t instanceof TermIdent) &&
-	 * ((TermIdent)t).getValue().equalsIgnoreCase("inherit")) {
-	 * if(d.getTerms().size() == 1) { borderColorTopType =
-	 * EnumColorTransparent.inherit; borderColorRightType =
-	 * EnumColorTransparent.inherit; borderColorBottomType =
-	 * EnumColorTransparent.inherit; borderColorLeftType =
-	 * EnumColorTransparent.inherit; borderColorTopValue = null;
-	 * borderColorRightValue = null; borderColorBottomValue = null;
-	 * borderColorLeftValue = null; borderStyleTopType =
-	 * EnumBorderStyle.inherit; borderStyleRightType = EnumBorderStyle.inherit;
-	 * borderStyleBottomType = EnumBorderStyle.inherit; borderStyleLeftType =
-	 * EnumBorderStyle.inherit; borderWidthTopType = EnumBorderWidth.inherit;
-	 * borderWidthRightType = EnumBorderWidth.inherit; borderWidthBottomType =
-	 * EnumBorderWidth.inherit; borderWidthLeftType = EnumBorderWidth.inherit;
-	 * borderWidthTopValue = null; borderWidthRightValue = null;
-	 * borderWidthBottomValue = null; borderWidthLeftValue = null; return true;
-	 * } else { rollbackTransaction(trans); return false; } }
-	 * 
-	 * //Vytvořím pomocnou deklaraci, která obsahuje jeden jediný term (ten
-	 * aktuální) //a v jednotlivých blocích se pokouším tuto deklaraci
-	 * zpracovat. Declaration tmpDeclaration = new DataDeclaration("border");
-	 * tmpDeclaration.getTerms().add(t);
-	 * 
-	 * //Vyzkouším, jestli se jedná o barvu
-	 * tmpDeclaration.setProperty("border-color");
-	 * if(processBorderColor(tmpDeclaration)) { //Jedná se o barvu. Zjistím,
-	 * jestli barva už nebyla jednou zadána if(processedColor) { //Barva už byla
-	 * jednou zadáno, deklarace je chybná, rollback a konec
-	 * rollbackTransaction(trans); return false; } else { //Barva ještě nebyla
-	 * zadána, pokračujeme dalším termem processedColor = true; continue; } }
-	 * tmpDeclaration.setProperty("border-style");
-	 * if(processBorderStyle(tmpDeclaration)) { if(processedStyle) {
-	 * rollbackTransaction(trans); return false; } else { processedStyle = true;
-	 * continue; } } tmpDeclaration.setProperty("border-width");
-	 * if(processBorderWidth(tmpDeclaration)) { if(processedWidth) {
-	 * rollbackTransaction(trans); return false; } else { processedWidth = true;
-	 * continue; } }
-	 * 
-	 * //Pokud program dojde sem, znamená to že term není ani color, style nebo
-	 * width - ignorace celé deklarace rollbackTransaction(trans); return false;
-	 * } return true; }
-	 */
 	@SuppressWarnings("unused")
 	private boolean processBoxShadow(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		if (d.size() == 1 && genericOneIdent(BoxShadow.class, d, properties)) {
+		if (d.size() == 1 && Decoder.genericOneIdent(BoxShadow.class, d, properties)) {
 			return true;
 		}
 		// inset? && <length>{2,4} && <color>?
@@ -1121,7 +564,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processBoxSizing(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericOneIdent(BoxSizing.class, d, properties);
+        return Decoder.genericOneIdent(BoxSizing.class, d, properties);
     }
     
 	@SuppressWarnings("unused")
@@ -1184,35 +627,35 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     @SuppressWarnings("unused")
     private boolean processTabSize(Declaration d,
             Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericIntegerOrLength(TabSize.class, TabSize.integer,
+        return Decoder.genericIntegerOrLength(TabSize.class, TabSize.integer,
                 TabSize.length, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
     }
 
 	@SuppressWarnings("unused")
 	private boolean processTop(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Top.class, Top.length,
+		return Decoder.genericOneIdentOrLengthOrPercent(Top.class, Top.length,
 				Top.percentage, ValueRange.ALLOW_ALL, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processRight(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Right.class, Right.length,
+		return Decoder.genericOneIdentOrLengthOrPercent(Right.class, Right.length,
 				Right.percentage, ValueRange.ALLOW_ALL, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBottom(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Bottom.class, Bottom.length,
+		return Decoder.genericOneIdentOrLengthOrPercent(Bottom.class, Bottom.length,
 				Bottom.percentage, ValueRange.ALLOW_ALL, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processLeft(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Left.class, Left.length,
+		return Decoder.genericOneIdentOrLengthOrPercent(Left.class, Left.length,
 				Left.percentage, ValueRange.ALLOW_ALL, d, properties, values);
 	}
 
@@ -1221,7 +664,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
             Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
         // just a simple value (e.g. "none")
-        if (d.size() == 1 && genericOneIdent(Transform.class, d, properties)) {
+        if (d.size() == 1 && Decoder.genericOneIdent(Transform.class, d, properties)) {
             return true;
         } else {
 
@@ -1248,7 +691,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
             Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
         
         if (d.size() == 1
-            && genericTermIdent(BorderSpacing.class, d.get(0), ALLOW_INH, d.getProperty(), properties))
+            && Decoder.genericTermIdent(BorderSpacing.class, d.get(0), Decoder.ALLOW_INH, d.getProperty(), properties))
         {
             return true; //must be 'inherit'
         }
@@ -1360,27 +803,27 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processWidth(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Width.class, Width.length,
+		return Decoder.genericOneIdentOrLengthOrPercent(Width.class, Width.length,
 				Width.percentage, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processHeight(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Height.class, Height.length,
+		return Decoder.genericOneIdentOrLengthOrPercent(Height.class, Height.length,
 				Height.percentage, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processCaptionSide(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(CaptionSide.class, d, properties);
+		return Decoder.genericOneIdent(CaptionSide.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processClear(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(Clear.class, d, properties);
+		return Decoder.genericOneIdent(Clear.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
@@ -1393,14 +836,14 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 		Term<?> term = d.get(0);
 		if (term instanceof TermIdent) {
 			final Set<Clip> allowedClips = EnumSet.allOf(Clip.class);
-			Clip clip = genericPropertyRaw(Clip.class, allowedClips, (TermIdent) term);
+			Clip clip = Decoder.genericPropertyRaw(Clip.class, allowedClips, (TermIdent) term);
 			if (clip != null) {
 				properties.put("clip", clip);
 				return true;
 			}
 			return false;
 		} else if (term instanceof TermRect) {
-		    return genericTerm(TermRect.class, term, "clip", Clip.shape, ValueRange.ALLOW_ALL, properties, values);
+		    return Decoder.genericTerm(TermRect.class, term, "clip", Clip.shape, ValueRange.ALLOW_ALL, properties, values);
 		}
 		return false;
 	}
@@ -1410,7 +853,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
 		if (d.size() == 1
-				&& genericOneIdent(CounterIncrement.class, d, properties)) {
+				&& Decoder.genericOneIdent(CounterIncrement.class, d, properties)) {
 			return true;
 		}
 		// counter with increments
@@ -1431,7 +874,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	private boolean processCounterReset(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
-		if (d.size() == 1 && genericOneIdent(CounterReset.class, d, properties)) {
+		if (d.size() == 1 && Decoder.genericOneIdent(CounterReset.class, d, properties)) {
 			return true;
 		}
 		// counter with resets
@@ -1481,7 +924,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	private boolean processCursor(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
-		if (d.size() == 1 && genericOneIdent(Cursor.class, d, properties)) {
+		if (d.size() == 1 && Decoder.genericOneIdent(Cursor.class, d, properties)) {
 			return true;
 		} else {
 
@@ -1494,10 +937,10 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 				if (term instanceof TermURI) {
 					list.add(term);
 				} else if (term instanceof TermIdent
-						&& (cur = genericPropertyRaw(Cursor.class,
+						&& (cur = Decoder.genericPropertyRaw(Cursor.class,
 								allowedCursors, (TermIdent) term)) != null) {
 					// this have to be the last cursor in sequence
-					// and only one generic cursor is allowed
+					// and only one Decoder.generic cursor is allowed
 					if (d.indexOf(term) != d.size() - 1)
 						return false;
 
@@ -1516,25 +959,25 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processDirection(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(Direction.class, d, properties);
+		return Decoder.genericOneIdent(Direction.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processDisplay(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(Display.class, d, properties);
+		return Decoder.genericOneIdent(Display.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processEmptyCells(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(EmptyCells.class, d, properties);
+		return Decoder.genericOneIdent(EmptyCells.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processFloat(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(CSSProperty.Float.class, d, properties);
+		return Decoder.genericOneIdent(CSSProperty.Float.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
@@ -1573,28 +1016,28 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processMarginTop(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Margin.class, Margin.length,
+		return Decoder.genericOneIdentOrLengthOrPercent(Margin.class, Margin.length,
 				Margin.percentage, ValueRange.ALLOW_ALL, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processMarginRight(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Margin.class, Margin.length,
+		return Decoder.genericOneIdentOrLengthOrPercent(Margin.class, Margin.length,
 				Margin.percentage, ValueRange.ALLOW_ALL, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processMarginBottom(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Margin.class, Margin.length,
+		return Decoder.genericOneIdentOrLengthOrPercent(Margin.class, Margin.length,
 				Margin.percentage, ValueRange.ALLOW_ALL, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processMarginLeft(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Margin.class, Margin.length,
+		return Decoder.genericOneIdentOrLengthOrPercent(Margin.class, Margin.length,
 				Margin.percentage, ValueRange.ALLOW_ALL, d, properties, values);
 	}
 
@@ -1608,7 +1051,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processMaxHeight(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(MaxHeight.class,
+		return Decoder.genericOneIdentOrLengthOrPercent(MaxHeight.class,
 				MaxHeight.length, MaxHeight.percentage, ValueRange.DISALLOW_NEGATIVE, d, properties,
 				values);
 	}
@@ -1616,7 +1059,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processMaxWidth(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(MaxWidth.class,
+		return Decoder.genericOneIdentOrLengthOrPercent(MaxWidth.class,
 				MaxWidth.length, MaxWidth.percentage, ValueRange.DISALLOW_NEGATIVE, d, properties,
 				values);
 	}
@@ -1624,7 +1067,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processMinHeight(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(MinHeight.class,
+		return Decoder.genericOneIdentOrLengthOrPercent(MinHeight.class,
 				MinHeight.length, MinHeight.percentage, ValueRange.DISALLOW_NEGATIVE, d, properties,
 				values);
 	}
@@ -1632,7 +1075,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processMinWidth(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(MinWidth.class,
+		return Decoder.genericOneIdentOrLengthOrPercent(MinWidth.class,
 				MinWidth.length, MinWidth.percentage, ValueRange.DISALLOW_NEGATIVE, d, properties,
 				values);
 	}
@@ -1640,14 +1083,14 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     @SuppressWarnings("unused")
     private boolean processOpacity(Declaration d,
             Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericOneIdentOrIntegerOrNumber(Opacity.class, Opacity.number, Opacity.number, ValueRange.TRUNCATE_NEGATIVE, d,
+        return Decoder.genericOneIdentOrIntegerOrNumber(Opacity.class, Opacity.number, Opacity.number, ValueRange.TRUNCATE_NEGATIVE, d,
                 properties, values);
     }
 
 	@SuppressWarnings("unused")
 	private boolean processOrphans(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrInteger(Orphans.class, Orphans.integer, ValueRange.DISALLOW_NEGATIVE,
+		return Decoder.genericOneIdentOrInteger(Orphans.class, Orphans.integer, ValueRange.DISALLOW_NEGATIVE,
 				d, properties, values);
 	}
 
@@ -1691,8 +1134,8 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	    if (d.size() == 1) {
 	        Term<?> term = d.get(0);
 	        if (term instanceof TermIdent) {
-	            return genericProperty(Overflow.class, (TermIdent) term, ALLOW_INH, properties, "overflow-x")
-	                    && genericProperty(Overflow.class, (TermIdent) term, ALLOW_INH, properties, "overflow-y");
+	            return Decoder.genericProperty(Overflow.class, (TermIdent) term, Decoder.ALLOW_INH, properties, "overflow-x")
+	                    && Decoder.genericProperty(Overflow.class, (TermIdent) term, Decoder.ALLOW_INH, properties, "overflow-y");
 	        }
 	        else
 	            return false;
@@ -1704,40 +1147,40 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     @SuppressWarnings("unused")
     private boolean processOverflowX(Declaration d,
             Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericOneIdent(Overflow.class, d, properties);
+        return Decoder.genericOneIdent(Overflow.class, d, properties);
     }
 
     @SuppressWarnings("unused")
     private boolean processOverflowY(Declaration d,
             Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericOneIdent(Overflow.class, d, properties);
+        return Decoder.genericOneIdent(Overflow.class, d, properties);
     }
 
 	@SuppressWarnings("unused")
 	private boolean processPaddingTop(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Padding.class, Padding.length,
+		return Decoder.genericOneIdentOrLengthOrPercent(Padding.class, Padding.length,
 				Padding.percentage, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processPaddingRight(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Padding.class, Padding.length,
+		return Decoder.genericOneIdentOrLengthOrPercent(Padding.class, Padding.length,
 				Padding.percentage, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processPaddingBottom(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Padding.class, Padding.length,
+		return Decoder.genericOneIdentOrLengthOrPercent(Padding.class, Padding.length,
 				Padding.percentage, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processPaddingLeft(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(Padding.class, Padding.length,
+		return Decoder.genericOneIdentOrLengthOrPercent(Padding.class, Padding.length,
 				Padding.percentage, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
 	}
 
@@ -1751,25 +1194,25 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processPageBreakAfter(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(PageBreak.class, d, properties);
+		return Decoder.genericOneIdent(PageBreak.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processPageBreakBefore(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(PageBreak.class, d, properties);
+		return Decoder.genericOneIdent(PageBreak.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processPageBreakInside(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(PageBreakInside.class, d, properties);
+		return Decoder.genericOneIdent(PageBreakInside.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processPosition(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(Position.class, d, properties);
+		return Decoder.genericOneIdent(Position.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
@@ -1777,7 +1220,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
 		if (d.size() == 1
-				&& genericTermIdent(Quotes.class, d.get(0), ALLOW_INH,
+				&& Decoder.genericTermIdent(Quotes.class, d.get(0), Decoder.ALLOW_INH,
 						"quotes", properties)) {
 			return true;
 		} else {
@@ -1802,13 +1245,13 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processTableLayout(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(TableLayout.class, d, properties);
+		return Decoder.genericOneIdent(TableLayout.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processTextAlign(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(TextAlign.class, d, properties);
+		return Decoder.genericOneIdent(TextAlign.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
@@ -1821,7 +1264,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 
 		// it one term
 		if (d.size() == 1) {
-			return genericOneIdent(TextDecoration.class, d, properties);
+			return Decoder.genericOneIdent(TextDecoration.class, d, properties);
 		}
 		// there are more terms, we have to construct list
 		else {
@@ -1829,7 +1272,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 			TextDecoration dec = null;
 			for (Term<?> term : d.asList()) {
 				if (term instanceof TermIdent
-						&& (dec = genericPropertyRaw(TextDecoration.class,
+						&& (dec = Decoder.genericPropertyRaw(TextDecoration.class,
 								availableDecorations, (TermIdent) term)) != null) {
 					// construct term with value of parsed decoration
 					list.add(tf.createTerm(dec));
@@ -1848,7 +1291,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processTextIndent(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(TextIndent.class,
+		return Decoder.genericOneIdentOrLengthOrPercent(TextIndent.class,
 				TextIndent.length, TextIndent.percentage, ValueRange.ALLOW_ALL, d, properties,
 				values);
 	}
@@ -1856,13 +1299,13 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processTextTransform(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(TextTransform.class, d, properties);
+		return Decoder.genericOneIdent(TextTransform.class, d, properties);
 	}
 
     @SuppressWarnings("unused")
     private boolean processUnicodeBidi(Declaration d,
             Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericOneIdent(UnicodeBidi.class, d, properties);
+        return Decoder.genericOneIdent(UnicodeBidi.class, d, properties);
     }
     
 	@SuppressWarnings("unused")
@@ -1891,7 +1334,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processVerticalAlign(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(VerticalAlign.class,
+		return Decoder.genericOneIdentOrLengthOrPercent(VerticalAlign.class,
 				VerticalAlign.length, VerticalAlign.percentage, ValueRange.ALLOW_ALL, d,
 				properties, values);
 	}
@@ -1899,40 +1342,40 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	@SuppressWarnings("unused")
 	private boolean processVisibility(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(Visibility.class, d, properties);
+		return Decoder.genericOneIdent(Visibility.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processWhiteSpace(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(WhiteSpace.class, d, properties);
+		return Decoder.genericOneIdent(WhiteSpace.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processWidows(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrInteger(Widows.class, Widows.integer, ValueRange.DISALLOW_NEGATIVE, d,
+		return Decoder.genericOneIdentOrInteger(Widows.class, Widows.integer, ValueRange.DISALLOW_NEGATIVE, d,
 				properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processWordSpacing(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLength(WordSpacing.class, WordSpacing.length,
+		return Decoder.genericOneIdentOrLength(WordSpacing.class, WordSpacing.length,
 				ValueRange.ALLOW_ALL, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processLetterSpacing(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLength(LetterSpacing.class,
+		return Decoder.genericOneIdentOrLength(LetterSpacing.class,
 				LetterSpacing.length, ValueRange.ALLOW_ALL, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processZIndex(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrInteger(ZIndex.class, ZIndex.integer, ValueRange.ALLOW_ALL, d,
+		return Decoder.genericOneIdentOrInteger(ZIndex.class, ZIndex.integer, ValueRange.ALLOW_ALL, d,
 				properties, values);
 	}
 
@@ -1953,12 +1396,12 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	        Term<?> term = d.get(0);
 	
 	        if (term instanceof TermIdent)
-	            return genericProperty(GenericCSSPropertyProxy.class, (TermIdent) term, true, properties, d.getProperty());
+	            return Decoder.genericProperty(GenericCSSPropertyProxy.class, (TermIdent) term, true, properties, d.getProperty());
 	        else
-	            return genericTerm(TermLength.class, term, d.getProperty(), null, ValueRange.ALLOW_ALL, properties, values)
-	                || genericTerm(TermPercent.class, term, d.getProperty(), null, ValueRange.ALLOW_ALL, properties, values)
-	                || genericTerm(TermInteger.class, term, d.getProperty(), null, ValueRange.ALLOW_ALL, properties, values)
-	                || genericTermColor(term, d.getProperty(), null, properties, values);
+	            return Decoder.genericTerm(TermLength.class, term, d.getProperty(), null, ValueRange.ALLOW_ALL, properties, values)
+	                || Decoder.genericTerm(TermPercent.class, term, d.getProperty(), null, ValueRange.ALLOW_ALL, properties, values)
+	                || Decoder.genericTerm(TermInteger.class, term, d.getProperty(), null, ValueRange.ALLOW_ALL, properties, values)
+	                || Decoder.genericTermColor(term, d.getProperty(), null, properties, values);
     	}
     	else
     	{
@@ -1985,52 +1428,52 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     
 	@SuppressWarnings("unused")
 	private boolean processFlexBasis(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdentOrLengthOrPercent(FlexBasis.class, FlexBasis.length, FlexBasis.percentage, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
+		return Decoder.genericOneIdentOrLengthOrPercent(FlexBasis.class, FlexBasis.length, FlexBasis.percentage, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processFlexDirection(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(FlexDirection.class, d, properties);
+		return Decoder.genericOneIdent(FlexDirection.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processFlexWrap(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(FlexWrap.class, d, properties);
+		return Decoder.genericOneIdent(FlexWrap.class, d, properties);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processFlexGrow(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericOneIdentOrIntegerOrNumber(FlexGrow.class, FlexGrow.number, FlexGrow.number, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
+        return Decoder.genericOneIdentOrIntegerOrNumber(FlexGrow.class, FlexGrow.number, FlexGrow.number, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
 	}
 	
 	@SuppressWarnings("unused")
 	private boolean processFlexShrink(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericOneIdentOrIntegerOrNumber(FlexShrink.class, FlexShrink.number, FlexShrink.number, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
+        return Decoder.genericOneIdentOrIntegerOrNumber(FlexShrink.class, FlexShrink.number, FlexShrink.number, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
 	}
 	
 	@SuppressWarnings("unused")
 	private boolean processJustifyContent(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-		return genericOneIdent(JustifyContent.class, d, properties);
+		return Decoder.genericOneIdent(JustifyContent.class, d, properties);
 	}
 
     @SuppressWarnings("unused")
     private boolean processAlignContent(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericOneIdent(AlignContent.class, d, properties);
+        return Decoder.genericOneIdent(AlignContent.class, d, properties);
     }
 
     @SuppressWarnings("unused")
     private boolean processAlignItems(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericOneIdent(AlignItems.class, d, properties);
+        return Decoder.genericOneIdent(AlignItems.class, d, properties);
     }
 
     @SuppressWarnings("unused")
     private boolean processAlignSelf(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericOneIdent(AlignSelf.class, d, properties);
+        return Decoder.genericOneIdent(AlignSelf.class, d, properties);
     }
 
 	@SuppressWarnings("unused")
 	private boolean processOrder(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericInteger(Order.class, Order.integer, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
+        return Decoder.genericInteger(Order.class, Order.integer, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
@@ -2038,7 +1481,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
 		// content contains no explicit values
-		if (d.size() == 1 && genericOneIdent(Content.class, d, properties)) {
+		if (d.size() == 1 && Decoder.genericOneIdent(Content.class, d, properties)) {
 			return true;
 		} else {
 
@@ -2079,7 +1522,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
             Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
         // single ident: none, or global ones
-        if (d.size() == 1 && genericOneIdent(Filter.class, d, properties)) {
+        if (d.size() == 1 && Decoder.genericOneIdent(Filter.class, d, properties)) {
             return true;
         } else {
             //list of uri() or <filter-function> expected
@@ -2108,7 +1551,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
             Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
         // single ident: none, or global ones
-        if (d.size() == 1 && genericOneIdent(BackdropFilter.class, d, properties)) {
+        if (d.size() == 1 && Decoder.genericOneIdent(BackdropFilter.class, d, properties)) {
             return true;
         } else {
             //list of uri() or <filter-function> expected
@@ -2163,7 +1606,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
             }
 
             if (t instanceof TermIdent) {
-                CSSProperty property = genericPropertyRaw(Grid.class, null, (TermIdent) t);
+                CSSProperty property = Decoder.genericPropertyRaw(Grid.class, null, (TermIdent) t);
                 if (Grid.AUTO_FLOW.equals(property)) {
                     if (beforeSlash) {
                         autoFlowDecl.add(tf.createIdent("row"));
@@ -2173,7 +1616,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
                     autoFlowBeforeSlash = beforeSlash;
                     continue;
                 } else {
-                    property = genericPropertyRaw(GridAutoFlow.class, null, (TermIdent) t);
+                    property = Decoder.genericPropertyRaw(GridAutoFlow.class, null, (TermIdent) t);
                     if (GridAutoFlow.DENSE.equals(property)) {
                         autoFlowDecl.add(t);
                         continue;
@@ -2217,22 +1660,22 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
             default:
                 return false;
         }
-        return (genericTermIdent(GridGap.class, rowGapTerm, ALLOW_INH, "grid-row-gap", properties)
-                || genericTermLength(rowGapTerm, "grid-row-gap", GridGap.length, ValueRange.DISALLOW_NEGATIVE, properties, values)
-                || genericTerm(TermPercent.class, rowGapTerm, "grid-row-gap", GridGap.length, ValueRange.DISALLOW_NEGATIVE, properties, values))
-                && (genericTermIdent(GridGap.class, columnGapTerm, ALLOW_INH, "grid-column-gap", properties)
-                || genericTermLength(columnGapTerm, "grid-column-gap", GridGap.length, ValueRange.DISALLOW_NEGATIVE, properties, values)
-                || genericTerm(TermPercent.class, columnGapTerm, "grid-column-gap", GridGap.length, ValueRange.DISALLOW_NEGATIVE, properties, values));
+        return (Decoder.genericTermIdent(GridGap.class, rowGapTerm, Decoder.ALLOW_INH, "grid-row-gap", properties)
+                || Decoder.genericTermLength(rowGapTerm, "grid-row-gap", GridGap.length, ValueRange.DISALLOW_NEGATIVE, properties, values)
+                || Decoder.genericTerm(TermPercent.class, rowGapTerm, "grid-row-gap", GridGap.length, ValueRange.DISALLOW_NEGATIVE, properties, values))
+                && (Decoder.genericTermIdent(GridGap.class, columnGapTerm, Decoder.ALLOW_INH, "grid-column-gap", properties)
+                || Decoder.genericTermLength(columnGapTerm, "grid-column-gap", GridGap.length, ValueRange.DISALLOW_NEGATIVE, properties, values)
+                || Decoder.genericTerm(TermPercent.class, columnGapTerm, "grid-column-gap", GridGap.length, ValueRange.DISALLOW_NEGATIVE, properties, values));
     }
 
     @SuppressWarnings("unused")
     private boolean processGridRowGap(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericOneIdentOrLengthOrPercent(GridGap.class, GridGap.length, GridGap.length, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
+        return Decoder.genericOneIdentOrLengthOrPercent(GridGap.class, GridGap.length, GridGap.length, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
     }
 
     @SuppressWarnings("unused")
     private boolean processGridColumnGap(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        return genericOneIdentOrLengthOrPercent(GridGap.class, GridGap.length, GridGap.length, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
+        return Decoder.genericOneIdentOrLengthOrPercent(GridGap.class, GridGap.length, GridGap.length, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
     }
 
     @SuppressWarnings("unused")
@@ -2284,7 +1727,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
                 }
             }
             if (t instanceof TermIdent) {
-                CSSProperty property = genericPropertyRaw(GridStartEnd.class, null, (TermIdent) t);
+                CSSProperty property = Decoder.genericPropertyRaw(GridStartEnd.class, null, (TermIdent) t);
                 if (GridStartEnd.AUTO.equals(property) && lists[listIndex].isEmpty()) {
                     autoSet = true;
                 } else if (GridStartEnd.SPAN.equals(property) && spanIndex < 0 && !autoSet
@@ -2362,7 +1805,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         if (d.isEmpty()) {
             return false;
         }
-        if (genericOneIdentOrInteger(GridStartEnd.class, GridStartEnd.number, ValueRange.DISALLOW_ZERO, d, properties, values)) {
+        if (Decoder.genericOneIdentOrInteger(GridStartEnd.class, GridStartEnd.number, ValueRange.DISALLOW_ZERO, d, properties, values)) {
             return !GridStartEnd.SPAN.equals(properties.get(d.getProperty()));
         }
         // auto | <custom-ident> | [ <integer> && <custom-ident>? ] | [ span && [ <integer> || <custom-ident> ] ]
@@ -2374,7 +1817,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         for (int i = 0; i < d.size(); i++) {
             Term<?> t = d.get(i);
             if (t instanceof TermIdent) {
-                CSSProperty property = genericPropertyRaw(GridStartEnd.class, null, (TermIdent) t);
+                CSSProperty property = Decoder.genericPropertyRaw(GridStartEnd.class, null, (TermIdent) t);
                 if (GridStartEnd.SPAN.equals(property) && spanIndex < 0 && (valueIndex < 0 || valueValue > 0)) {
                     spanIndex = i;
                 } else if (property == null && identIndex < 0 
@@ -2404,7 +1847,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
                 Term<?> single = list.get(0);
                 CSSProperty property;
                 if (single instanceof TermIdent) {
-                    CSSProperty identProperty = genericPropertyRaw(GridStartEnd.class, null, (TermIdent) single);
+                    CSSProperty identProperty = Decoder.genericPropertyRaw(GridStartEnd.class, null, (TermIdent) single);
                     if (GridStartEnd.SPAN.equals(identProperty)) {
                         return false;
                     } else if (identProperty == GridStartEnd.AUTO) {
@@ -2427,10 +1870,9 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         return true;
     }
 
-    @SuppressWarnings("unused")
     private boolean processGridTemplate(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
         d.setProperty("grid-template-areas");
-        if (genericOneIdent(GridTemplateAreas.class, d, properties)) {
+        if (Decoder.genericOneIdent(GridTemplateAreas.class, d, properties)) {
             return true;
         }
         // none 
@@ -2531,7 +1973,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         if (t instanceof TermLengthOrPercent) {
             return true;
         } else if (t instanceof TermIdent) {
-            CSSProperty property = genericPropertyRaw(GridTemplateRowsColumns.class, null, (TermIdent) t);
+            CSSProperty property = Decoder.genericPropertyRaw(GridTemplateRowsColumns.class, null, (TermIdent) t);
             return property == GridTemplateRowsColumns.AUTO
                     || property == GridTemplateRowsColumns.MIN_CONTENT
                     || property == GridTemplateRowsColumns.MAX_CONTENT;
@@ -2541,7 +1983,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 
     @SuppressWarnings("unused")
     private boolean processGridTemplateAreas(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if (genericOneIdent(GridTemplateAreas.class, d, properties)) {
+        if (Decoder.genericOneIdent(GridTemplateAreas.class, d, properties)) {
             return true;
         }
         TermList list = tf.createList();
@@ -2568,12 +2010,10 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         return true;
     }
 
-    @SuppressWarnings("unused")
     private boolean processGridTemplateRows(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
         return processGridTemplateRowsColumns(d, properties, values);
     }
 
-    @SuppressWarnings("unused")
     private boolean processGridTemplateColumns(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
         return processGridTemplateRowsColumns(d, properties, values);
     }
@@ -2582,7 +2022,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         if (d.isEmpty()) {
             return false;
         }
-        if (genericOneIdent(GridTemplateRowsColumns.class, d, properties)) {
+        if (Decoder.genericOneIdent(GridTemplateRowsColumns.class, d, properties)) {
             return true;
         }
         TermList list = tf.createList();
@@ -2591,7 +2031,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         for (int i = 0; i < d.size(); i++) {
             Term<?> t = d.get(i);
             if (t instanceof TermIdent) {
-                CSSProperty property = genericPropertyRaw(GridTemplateRowsColumns.class, null, (TermIdent) t);
+                CSSProperty property = Decoder.genericPropertyRaw(GridTemplateRowsColumns.class, null, (TermIdent) t);
                 if (property == null || property == GridTemplateRowsColumns.NONE) {
                     return false;
                 }
@@ -2618,9 +2058,8 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         return true;
     }
 
-    @SuppressWarnings("unused")
     private boolean processGridAutoFlow(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if (genericOneIdent(GridAutoFlow.class, d, properties)) {
+        if (Decoder.genericOneIdent(GridAutoFlow.class, d, properties)) {
             return !GridAutoFlow.DENSE.equals(properties.get(d.getProperty()));
         }
         boolean autoFlowSet = false;
@@ -2629,7 +2068,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         for (int i = 0; i < d.size(); i++) {
             Term<?> t = d.get(i);
             if (t instanceof TermIdent) {
-                CSSProperty property = genericPropertyRaw(GridAutoFlow.class, null, (TermIdent) t);
+                CSSProperty property = Decoder.genericPropertyRaw(GridAutoFlow.class, null, (TermIdent) t);
                 if ((GridAutoFlow.ROW.equals(property) || GridAutoFlow.COLUMN.equals(property)) && !autoFlowSet) {
                     autoFlowSet = true;
                 } else if (GridAutoFlow.DENSE.equals(property) && !denseSet) {
@@ -2647,12 +2086,10 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         return true;
     }
 
-    @SuppressWarnings("unused")
     private boolean processGridAutoRows(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
         return processGridAutoRowsOrColumns(d, properties, values);
     }
 
-    @SuppressWarnings("unused")
     private boolean processGridAutoColumns(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
         return processGridAutoRowsOrColumns(d, properties, values);
     }
@@ -2661,7 +2098,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         if (d.isEmpty()) {
             return false;
         }
-        if (genericOneIdentOrLengthOrPercent(GridAutoRowsColumns.class, GridAutoRowsColumns.length, GridAutoRowsColumns.length,
+        if (Decoder.genericOneIdentOrLengthOrPercent(GridAutoRowsColumns.class, GridAutoRowsColumns.length, GridAutoRowsColumns.length,
                 ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
             return true;
         }
@@ -2669,7 +2106,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         for (int i = 0; i < d.size(); i++) {
             Term<?> t = d.get(i);
             if (t instanceof TermIdent) {
-                CSSProperty property = genericPropertyRaw(GridAutoRowsColumns.class, null, (TermIdent) t);
+                CSSProperty property = Decoder.genericPropertyRaw(GridAutoRowsColumns.class, null, (TermIdent) t);
                 if (property == null) {
                     return false;
                 }
@@ -2739,7 +2176,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processAnimationDelay(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if (genericTime(AnimationDelay.class, AnimationDelay.time, ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
+        if (Decoder.genericTime(AnimationDelay.class, AnimationDelay.time, ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
             return true;
         }
         TermList list = tf.createList();
@@ -2761,14 +2198,14 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processAnimationDirection(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if(genericOneIdent(AnimationDirection.class, d, properties)) {
+        if(Decoder.genericOneIdent(AnimationDirection.class, d, properties)) {
             return true;
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
             Term<?> t = d.get(i);
             if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermIdent) {
-                CSSProperty property = genericPropertyRaw(AnimationDirection.class, null, (TermIdent) t);
+                CSSProperty property = Decoder.genericPropertyRaw(AnimationDirection.class, null, (TermIdent) t);
                 if (property == null) {
                     return false;
                 }
@@ -2784,7 +2221,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processAnimationDuration(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if (genericTime(AnimationDuration.class, AnimationDuration.time, ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
+        if (Decoder.genericTime(AnimationDuration.class, AnimationDuration.time, ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
             return true;
         }
         TermList list = tf.createList();
@@ -2806,14 +2243,14 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processAnimationFillMode(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if(genericOneIdent(AnimationFillMode.class, d, properties)) {
+        if(Decoder.genericOneIdent(AnimationFillMode.class, d, properties)) {
             return true;
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
             Term<?> t = d.get(i);
             if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermIdent) {
-                CSSProperty property = genericPropertyRaw(AnimationFillMode.class, null, (TermIdent) t);
+                CSSProperty property = Decoder.genericPropertyRaw(AnimationFillMode.class, null, (TermIdent) t);
                 if (property == null) {
                     return false;
                 }
@@ -2829,7 +2266,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processAnimationIterationCount(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if(genericOneIdentOrInteger(AnimationIterationCount.class, AnimationIterationCount.number, ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
+        if(Decoder.genericOneIdentOrInteger(AnimationIterationCount.class, AnimationIterationCount.number, ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
             return true;
         }
         TermList list = tf.createList();
@@ -2839,7 +2276,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
                 return false;
             }
             if (t instanceof TermIdent) {
-                CSSProperty property = genericPropertyRaw(AnimationIterationCount.class, null, (TermIdent) t);
+                CSSProperty property = Decoder.genericPropertyRaw(AnimationIterationCount.class, null, (TermIdent) t);
                 if (property == null) {
                     return false;
                 }
@@ -2859,7 +2296,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processAnimationName(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if(genericOneIdent(AnimationName.class, d, properties)) {
+        if(Decoder.genericOneIdent(AnimationName.class, d, properties)) {
             return true;
         }
         TermList list = tf.createList();
@@ -2882,14 +2319,14 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processAnimationPlayState(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if(genericOneIdent(AnimationPlayState.class, d, properties)) {
+        if(Decoder.genericOneIdent(AnimationPlayState.class, d, properties)) {
             return true;
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
             Term<?> t = d.get(i);
             if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermIdent) {
-                CSSProperty property = genericPropertyRaw(AnimationPlayState.class, null, (TermIdent) t);
+                CSSProperty property = Decoder.genericPropertyRaw(AnimationPlayState.class, null, (TermIdent) t);
                 if (property == null) {
                     return false;
                 }
@@ -2905,7 +2342,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 
     @SuppressWarnings("unused")
     private boolean processAnimationTimingFunction(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if(genericOneIdent(AnimationTimingFunction.class, d, properties)) {
+        if(Decoder.genericOneIdent(AnimationTimingFunction.class, d, properties)) {
             return true;
         }
         TermList list = tf.createList();
@@ -2915,7 +2352,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
                 return false;
             }
             if (t instanceof TermIdent) {
-                CSSProperty property = genericPropertyRaw(AnimationTimingFunction.class, null, (TermIdent) t);
+                CSSProperty property = Decoder.genericPropertyRaw(AnimationTimingFunction.class, null, (TermIdent) t);
                 if (property == null) {
                     return false;
                 }
@@ -2988,7 +2425,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processTransitionDelay(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if (genericTime(TransitionDelay.class, TransitionDelay.time, ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
+        if (Decoder.genericTime(TransitionDelay.class, TransitionDelay.time, ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
             return true;
         }
         TermList list = tf.createList();
@@ -3010,7 +2447,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processTransitionDuration(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if (genericTime(TransitionDuration.class, TransitionDuration.time, ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
+        if (Decoder.genericTime(TransitionDuration.class, TransitionDuration.time, ValueRange.DISALLOW_NEGATIVE, d, properties, values)) {
             return true;
         }
         TermList list = tf.createList();
@@ -3032,14 +2469,14 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processTransitionProperty(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if(genericOneIdent(TransitionProperty.class, d, properties)) {
+        if(Decoder.genericOneIdent(TransitionProperty.class, d, properties)) {
             return true;
         }
         TermList list = tf.createList();
         for (int i = 0; i < d.size(); i++) {
             Term<?> t = d.get(i);
             if ((i == 0 || t.getOperator() == Operator.COMMA) && t instanceof TermIdent) {
-                CSSProperty property = genericPropertyRaw(TransitionProperty.class, null, (TermIdent) t);
+                CSSProperty property = Decoder.genericPropertyRaw(TransitionProperty.class, null, (TermIdent) t);
                 if (property == TransitionProperty.NONE) {
                     return false;
                 }
@@ -3060,7 +2497,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     
     @SuppressWarnings("unused")
     private boolean processTransitionTimingFunction(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        if(genericOneIdent(TransitionTimingFunction.class, d, properties)) {
+        if(Decoder.genericOneIdent(TransitionTimingFunction.class, d, properties)) {
             return true;
         }
         TermList list = tf.createList();
@@ -3070,7 +2507,7 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
                 return false;
             }
             if (t instanceof TermIdent) {
-                CSSProperty property = genericPropertyRaw(TransitionTimingFunction.class, null, (TermIdent) t);
+                CSSProperty property = Decoder.genericPropertyRaw(TransitionTimingFunction.class, null, (TermIdent) t);
                 if (property == null) {
                     return false;
                 }
@@ -3088,1222 +2525,5 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
         }
         return true;
     }
-    
-    
-	
-	/**
-	 * Variator for list style. Grammar:
-	 * 
-	 * <pre>
-	 * [ 'list-style-type' || 'list-style-position' || 'list-style-image' ]
-	 * | inherit
-	 * 
-	 * @author kapy
-	 */
-	private final class ListStyleVariator extends Variator {
-
-		public static final int TYPE = 0;
-		public static final int POSITION = 1;
-        public static final int IMAGE = 2;
-
-		/*
-		 * protected String[] names = { "list-style-image", "list-style-type",
-		 * "list-style-position" };
-		 */
-		public ListStyleVariator() {
-			super(3);
-			names.add("list-style-type");
-			types.add(ListStyleType.class);
-			names.add("list-style-position");
-			types.add(ListStylePosition.class);
-			names.add("list-style-image");
-			types.add(ListStyleImage.class);
-		}
-
-		@Override
-		protected boolean variant(int v, IntegerRef iteration,
-				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-
-			// we won't use multivalue functionallity
-			int i = iteration.get();
-
-			switch (v) {
-			case TYPE:
-				// list style type
-				return genericTermIdent(ListStyleType.class, terms.get(i),
-						AVOID_INH, names.get(TYPE), properties);
-			case POSITION:
-				// list style position
-				return genericTermIdent(ListStylePosition.class, terms.get(i),
-						AVOID_INH, names.get(POSITION), properties);
-            case IMAGE:
-                // list style image
-                return genericTermIdent(types.get(IMAGE), terms.get(i),
-                        AVOID_INH, names.get(IMAGE), properties)
-                        || genericTerm(TermURI.class, terms.get(i), names
-                                .get(IMAGE), ListStyleImage.uri, ValueRange.ALLOW_ALL,
-                                properties, values);
-			default:
-				return false;
-			}
-		}
-	}
-
-/**
-	 * Variator for border side.
-	 * Grammar:
-	 * <pre>
-	 * [ <border-width> || <border-style> || <'border-top-color'> ] 
-	 * | inherit
-	 * </pre>
-	 * 
-	 * @author kapy
-	 * 
-	 */
-	private final class BorderSideVariator extends Variator {
-
-		public static final int COLOR = 0;
-		public static final int STYLE = 1;
-		public static final int WIDTH = 2;
-
-		public BorderSideVariator(String side) {
-			super(3);
-			names.add("border-" + side + "-color");
-			types.add(BorderColor.class);
-			names.add("border-" + side + "-style");
-			types.add(BorderStyle.class);
-			names.add("border-" + side + "-width");
-			types.add(BorderWidth.class);
-		}
-
-		@Override
-		protected boolean variant(int v, IntegerRef iteration,
-				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-
-			// we won't use multivalue functionallity
-			int i = iteration.get();
-
-			switch (v) {
-			case COLOR:
-				// process color
-				return genericTermIdent(types.get(COLOR), terms.get(i),
-						AVOID_INH, names.get(COLOR), properties)
-						|| genericTermColor(terms.get(i), names.get(COLOR),
-								BorderColor.color, properties, values);
-			case STYLE:
-				// process style
-				return genericTermIdent(types.get(STYLE), terms.get(i),
-						AVOID_INH, names.get(STYLE), properties);
-			case WIDTH:
-				// process width
-				return genericTermIdent(types.get(WIDTH), terms.get(i),
-						AVOID_INH, names.get(WIDTH), properties)
-						|| genericTermLength(terms.get(i), names.get(WIDTH),
-						        BorderWidth.length, ValueRange.DISALLOW_NEGATIVE,
-								properties, values);
-			default:
-				return false;
-			}
-
-		}
-	}
-
-	/**
-	 * Outline variator Grammar:
-	 * 
-	 * <pre>
-	 * [ 'outline-color' || 'outline-style' || 'outline-width' ] 
-	 * | inherit
-	 * </pre>
-	 * 
-	 * @author kapy
-	 * 
-	 */
-	private final class OutlineVariator extends Variator {
-
-		public static final int COLOR = 0;
-		public static final int STYLE = 1;
-		public static final int WIDTH = 2;
-
-		public OutlineVariator() {
-			super(3);
-			names.add("outline-color");
-			types.add(OutlineColor.class);
-			names.add("outline-style");
-			types.add(OutlineStyle.class);
-			names.add("outline-width");
-			types.add(OutlineWidth.class);
-		}
-
-		@Override
-		protected boolean variant(int v, IntegerRef iteration,
-				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-
-			// we won't use multivalue functionallity
-			int i = iteration.get();
-
-			switch (v) {
-			case COLOR:
-				// process color
-				return genericTermIdent(types.get(COLOR), terms.get(i),
-						AVOID_INH, names.get(COLOR), properties)
-						|| genericTermColor(terms.get(i), names.get(COLOR),
-								OutlineColor.color, properties, values);
-			case STYLE:
-				// process style
-				return genericTermIdent(types.get(STYLE), terms.get(i),
-						AVOID_INH, names.get(STYLE), properties);
-			case WIDTH:
-				// process width
-				return genericTermIdent(types.get(WIDTH), terms.get(i),
-						AVOID_INH, names.get(WIDTH), properties)
-						|| genericTermLength(terms.get(i), names.get(WIDTH),
-						        OutlineWidth.length, ValueRange.DISALLOW_NEGATIVE,
-								properties, values);
-			default:
-				return false;
-			}
-		}
-	}
-
-/**
-	 * Font variator:
-	 * Grammar:
-	 * <pre>
-	 * 	[ 
-	 * 		[ <'font-style'> || <'font-variant'> || <'font-weight'> ]? 
-	 * 		<'font-size'> 
-	 * 		[ / <'line-height'> ]? 
-	 * 		<'font-family'> 
-	 * 	] 
-	 * 	| caption | icon | menu | message-box 
-	 * 	| small-caption | status-bar | inherit
-	 * </pre>
-	 * 
-	 * @author kapy
-	 *
-	 */
-	private final class FontVariator extends Variator {
-
-		public static final int STYLE = 0;
-		public static final int VARIANT = 1;
-		public static final int WEIGHT = 2;
-		public static final int SIZE = 3;
-		public static final int LINE_HEIGHT = 4;
-		public static final int FAMILY = 5;
-
-		public FontVariator() {
-			super(6);
-			names.add("font-style");
-			types.add(FontStyle.class);
-			names.add("font-variant");
-			types.add(FontVariant.class);
-			names.add("font-weight");
-			types.add(FontWeight.class);
-			names.add("font-size");
-			types.add(FontSize.class);
-			names.add("line-height");
-			types.add(LineHeight.class);
-			names.add("font-family");
-			types.add(FontFamily.class);
-		}
-
-		@Override
-		protected boolean variant(int v, IntegerRef iteration,
-				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-
-			// we will use multi value functionality in
-			// FAMILY branch
-			int i = iteration.get();
-
-			switch (v) {
-			case STYLE:
-				// process font style
-				return genericTermIdent(types.get(STYLE), terms.get(i),
-						AVOID_INH, names.get(STYLE), properties);
-			case VARIANT:
-				// process font variant
-				return genericTermIdent(types.get(VARIANT), terms.get(i),
-						AVOID_INH, names.get(VARIANT), properties);
-			case WEIGHT:
-				// process font weight
-				// test against numeric values
-				final Integer[] fontWeight = new Integer[] { 100, 200, 300,
-						400, 500, 600, 700, 800, 900 };
-
-				Term<?> term = terms.get(i);
-
-				if (term instanceof TermIdent) {
-					return genericProperty(types.get(WEIGHT), (TermIdent) term,
-							AVOID_INH, properties, names.get(WEIGHT));
-				} else if (term instanceof TermInteger) {
-
-					Integer value = ((TermInteger) term).getIntValue();
-					for (Integer test : fontWeight) {
-						int result = value.compareTo(test);
-						// not found if value is smaller than currently compared
-						if (result < 0)
-							break;
-
-						// match
-						// construct according CSSProperty name
-						if (result == 0) {
-							CSSProperty property = CSSProperty.Translator
-									.valueOf(types.get(WEIGHT), "numeric_"
-											+ value.intValue());
-							if (property == null) {
-								log
-										.warn("Not found numeric values for FontWeight: "
-												+ "numeric_ "
-												+ value.intValue());
-								return false;
-							}
-							properties.put(names.get(WEIGHT), property);
-							return true;
-						}
-					}
-				}
-				return false;
-			case SIZE:
-				return genericTermIdent(types.get(SIZE), terms.get(i),
-						AVOID_INH, names.get(SIZE), properties)
-						|| genericTermLength(terms.get(i), names.get(SIZE),
-						        FontSize.length, ValueRange.DISALLOW_NEGATIVE,
-								properties,	values)
-						|| genericTerm(TermPercent.class, terms.get(i), names.get(SIZE),
-						        FontSize.percentage, ValueRange.DISALLOW_NEGATIVE,
-								properties, values);
-			case LINE_HEIGHT:
-				return genericTermIdent(types.get(LINE_HEIGHT), terms.get(i),
-						AVOID_INH, names.get(LINE_HEIGHT), properties)
-						|| genericTerm(TermNumber.class, terms.get(i), names.get(LINE_HEIGHT),
-						        LineHeight.number, ValueRange.DISALLOW_NEGATIVE,
-								properties, values)
-                        || genericTerm(TermInteger.class, terms.get(i), names.get(LINE_HEIGHT),
-                                LineHeight.number, ValueRange.DISALLOW_NEGATIVE,
-                                properties, values)
-						|| genericTerm(TermPercent.class, terms.get(i), names.get(LINE_HEIGHT),
-						        LineHeight.percentage, ValueRange.DISALLOW_NEGATIVE,
-								properties, values)
-						|| genericTerm(TermLength.class, terms.get(i), names.get(LINE_HEIGHT),
-						        LineHeight.length, ValueRange.DISALLOW_NEGATIVE,
-								properties, values);
-			case FAMILY:
-				// all values parsed
-				TermList list = tf.createList();
-				// current font name
-				StringBuffer sb = new StringBuffer();
-				// font name was composed from multiple parts
-				boolean composed = false;
-				for (Term<?> t : terms.subList(i, terms.size())) {
-					// first item
-					if (t instanceof TermIdent && sb.length() == 0) {
-						sb.append(t.getValue());
-						composed = false;
-					}
-					// next item
-					else if (t instanceof TermIdent && sb.length() != 0
-							&& t.getOperator() != Operator.COMMA
-							&& t.getOperator() != Operator.SLASH) {
-						sb.append(" ").append(t.getValue());
-						composed = true;
-					}
-					// store current state
-					else if (t instanceof TermString
-							|| (t instanceof TermIdent && t.getOperator() == Operator.COMMA)) {
-						storeFamilyName(list, sb.toString(), composed);
-						sb = new StringBuffer();
-						composed = false;
-						// store next
-						if (t instanceof TermString) {
-							storeFamilyName(list, (String) t.getValue(), true);
-						} else {
-							sb.append(t.getValue());
-						}
-					}
-					// invalid term
-					else
-						return false;
-				}
-				// add last item
-				storeFamilyName(list, sb.toString(), composed);
-
-				if (list.isEmpty())
-					return false;
-
-				// when only generic family is stored, there is no need to have
-				// list with one value
-				if (list.size() == 1
-						&& (list.toArray(new Term<?>[0])[0] instanceof TermString) == false) {
-					properties.put(names.get(FAMILY), (FontFamily) (list
-							.toArray(new Term<?>[0])[0]).getValue());
-					return true;
-				}
-
-				properties.put(names.get(FAMILY), FontFamily.list_values);
-				values.put(names.get(FAMILY), list);
-				// modify reference to the last element
-				iteration.set(terms.size());
-				return true;
-			default:
-				return false;
-			}
-		}
-
-		@Override
-		protected boolean variantCondition(int variant, IntegerRef iteration) {
-
-			switch (variant) {
-			case STYLE:
-			case VARIANT:
-			case WEIGHT:
-				// must be within 3 first terms
-				return iteration.get() < 3;
-			case SIZE:
-				// no condition
-				return true;
-			case LINE_HEIGHT:
-				if (!variantPassed[SIZE])
-					return false;
-				return terms.get(iteration.get()).getOperator() == Operator.SLASH;
-			case FAMILY:
-				// requires passed size
-				return variantPassed[SIZE];
-			default:
-				return false;
-			}
-		}
-
-		@Override
-		public boolean vary(Map<String, CSSProperty> properties,
-				Map<String, Term<?>> values) {
-
-			// special check for user interface values
-			// such as "caption", "icon" or "menu"
-			// this will break inheritance division into distint categories,
-			// so it must be reconstructed later
-			if (terms.size() == 1 && terms.get(0) instanceof TermIdent) {
-
-				if (checkInherit(ALL_VARIANTS, terms.get(0), properties))
-					return true;
-
-				return genericTermIdent(Font.class, terms.get(0), AVOID_INH,
-						"font", properties);
-			}
-			// follow basic control flow
-			return super.vary(properties, values);
-		}
-
-		private void storeFamilyName(TermList storage, String name,
-				boolean composed) {
-
-			final Set<FontFamily> allowedFamilies = EnumSet
-					.complementOf(EnumSet.of(FontFamily.INHERIT,
-							FontFamily.list_values));
-
-			if (name == null || "".equals(name) || name.length() == 0)
-				return;
-
-			// trim spaces
-			name = name.trim();
-
-			// if composed, store directly as family name
-			if (composed) {
-				Term<?> term = tf.createString(name);
-				if (!storage.isEmpty())
-					term.setOperator(Operator.COMMA);
-				storage.add(term);
-			}
-			// try to find generic name
-			else {
-				FontFamily generic = genericPropertyRaw(FontFamily.class,
-						allowedFamilies, tf.createIdent(name));
-				// generic name found,
-				// store in term which value is generic font name FontFamily
-				// we have to append even operator
-				if (generic != null) {
-					Term<?> term = tf.createTerm(generic);
-					if (!storage.isEmpty())
-						term.setOperator(Operator.COMMA);
-					storage.add(term);
-				}
-				// generic name not found, store as family name
-				// we have to append even operator
-				else {
-					Term<?> term = tf.createString(name);
-					if (!storage.isEmpty())
-						term.setOperator(Operator.COMMA);
-					storage.add(term);
-				}
-			}
-		}
-
-	}
-
-/**
-	 * Background variator.
-	 * Grammar:
-	 * <pre>
-	 * [ <'background-color'> || <'background-image'> 
-	 * 		|| <'background-repeat'> || <'background-attachment'> 
-	 * 		|| <'background-position'> [ / <background-size> ]?
-	 * ] 
-	 * | inherit
-	 * </pre>
-	 * 
-	 * @author kapy
-	 */
-	private final class BackgroundVariator extends Variator {
-
-		public static final int COLOR = 0;
-		public static final int IMAGE = 1;
-		public static final int REPEAT = 2;
-		public static final int ATTACHMENT = 3;
-		public static final int POSITION = 4;
-		public static final int SIZE = 5;
-        public static final int ORIGIN = 6;
-
-		public BackgroundVariator() {
-			super(7);
-			names.add("background-color");
-			types.add(BackgroundColor.class);
-			names.add("background-image");
-			types.add(BackgroundImage.class);
-			names.add("background-repeat");
-			types.add(BackgroundRepeat.class);
-			names.add("background-attachment");
-			types.add(BackgroundAttachment.class);
-			names.add("background-position");
-			types.add(BackgroundPosition.class);
-			names.add("background-size");
-			types.add(BackgroundSize.class);
-            names.add("background-origin");
-            types.add(BackgroundOrigin.class);
-		}
-
-		@Override
-		protected boolean variant(int v, IntegerRef iteration,
-				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-
-			// we will use multi value functionality in
-			// POSITION branch
-			int i = iteration.get();
-
-			switch (v) {
-			case COLOR:
-				return genericTermIdent(types.get(COLOR), terms.get(i),
-						AVOID_INH, names.get(COLOR), properties)
-						|| genericTermColor(terms.get(i), names.get(COLOR),
-								BackgroundColor.color, properties, values);
-			case IMAGE:
-				return genericTermIdent(types.get(IMAGE), terms.get(i),
-						AVOID_INH, names.get(IMAGE), properties)
-						|| genericTerm(TermURI.class, terms.get(i), names.get(IMAGE),
-						        BackgroundImage.uri, ValueRange.ALLOW_ALL,
-								properties, values)
-                        || genericTerm(TermFunction.Gradient.class, terms.get(i), names.get(IMAGE),
-                                BackgroundImage.gradient, ValueRange.ALLOW_ALL,
-                                properties, values);
-			case REPEAT:
-				return genericTermIdent(types.get(REPEAT), terms.get(i),
-						AVOID_INH, names.get(REPEAT), properties);
-            case ORIGIN:
-                return genericTermIdent(types.get(ORIGIN), terms.get(i),
-                        AVOID_INH, names.get(ORIGIN), properties);
-			case ATTACHMENT:
-				return genericTermIdent(types.get(ATTACHMENT), terms.get(i),
-						AVOID_INH, names.get(ATTACHMENT), properties);
-			case POSITION:
-
-				final EnumSet<BackgroundPosition> allowedBackground = EnumSet
-						.complementOf(EnumSet.of(
-								BackgroundPosition.list_values,
-								BackgroundPosition.INHERIT));
-
-				// try this and next term, but consider terms size
-				BackgroundPosition bp = null;
-				Term<?>[] vv = {null, null}; //horizontal and vertical position
-				for (; i < terms.size(); i++) {
-					Term<?> term = terms.get(i);
-					if (term.getOperator() != Operator.SLASH)
-					{
-    					if (term instanceof TermIdent) {
-    						bp = genericPropertyRaw(BackgroundPosition.class,
-    								allowedBackground, (TermIdent) term);
-    						if (bp != null)
-    							storeBackgroundPosition(vv, bp, term);
-    					} else if (term instanceof TermPercent) {
-    						storeBackgroundPosition(vv, null, term);
-    					} else if (term instanceof TermLength) {
-    						storeBackgroundPosition(vv, null, term);
-    					}
-    					else //not recognized value
-    					    break;
-					}
-					else //slash found - this value belongs to size rather than position
-					    break;
-				}
-
-				//create term list from the values, replace unspecified values by center
-                int assigned = 0;
-				TermList list = tf.createList(2);
-                for (int j = 0; j < 2; j++)
-                {
-                    if (vv[j] == null)
-                        list.add(tf.createPercent(50.0f));
-                    else
-                    {
-                        list.add(vv[j]);
-                        assigned++;
-                    }
-                }
-                
-                // no values could be used
-				if (assigned == 0)
-					return false;
-				// if used two elements, inform master
-				else if (assigned == 2)
-				    iteration.inc();
-
-				// store list
-				properties.put(names.get(POSITION),
-						BackgroundPosition.list_values);
-				values.put(names.get(POSITION), list);
-				return true;
-
-            case SIZE:
-
-                final EnumSet<BackgroundSize> allowedSize = EnumSet
-                        .complementOf(EnumSet.of(
-                                BackgroundSize.list_values,
-                                BackgroundSize.INHERIT));
-
-                // try this and next term, but consider terms size
-                BackgroundSize bs = null;
-                Term<?>[] sz = {null, null}; //horizontal and vertical size
-                int vi = 0; //current value index
-                for (; i < terms.size() && vi < 2; i++) {
-                    Term<?> term = terms.get(i);
-                    if (term instanceof TermIdent) {
-                        bs = genericPropertyRaw(BackgroundSize.class,
-                                allowedSize, (TermIdent) term);
-                        if (bs != null) {
-                            //contain and cover have only one occurence
-                            properties.put(names.get(SIZE), bs);
-                            values.remove(names.get(SIZE)); //only keyword, no value
-                            return true;
-                        } else if (term.getValue().equals("auto")) {
-                            sz[vi++] = term;
-                        }
-                    } else if (term instanceof TermPercent || term instanceof TermLength) {
-                        //TODO this allows integers with no unit as lengths
-                        sz[vi++] = term;
-                    }
-                    else
-                        break; //something that cannot be assigned
-                }
-
-                //check the number of values
-                if (sz[0] == null)
-                    return false; //no values set
-                else if (sz[1] == null)
-                    sz[1] = tf.createIdent("auto");
-                else //if used two elements, inform master
-                    iteration.inc();
-                
-                //create term list from the values, replace unspecified values by center
-                TermList szlist = tf.createList(2);
-                szlist.add(sz[0]);
-                szlist.add(sz[1]);
-
-                // store list
-                properties.put(names.get(SIZE), BackgroundSize.list_values);
-                values.put(names.get(SIZE), szlist);
-                return true;
-                
-			default:
-				return false;
-			}
-		}
-
-		private void storeBackgroundPosition(Term<?>[] storage, BackgroundPosition bp, Term<?> term) 
-		{
-			if (bp == BackgroundPosition.LEFT)
-				setPositionValue(storage, 0, tf.createPercent(0.0f));
-            else if (bp == BackgroundPosition.RIGHT)
-                setPositionValue(storage, 0, tf.createPercent(100.0f));
-            else if (bp == BackgroundPosition.TOP)
-                setPositionValue(storage, 1, tf.createPercent(0.0f));
-            else if (bp == BackgroundPosition.BOTTOM)
-                setPositionValue(storage, 1, tf.createPercent(100.0f));
-			else if (bp == BackgroundPosition.CENTER)
-                setPositionValue(storage, -1, tf.createPercent(50.0f));
-			else
-			    setPositionValue(storage, -1, term);
-		}
-		
-		private void setPositionValue(Term<?>[] s, int index, Term<?> term)
-		{
-		    switch (index) {
-		        case -1: if (s[0] == null) //any position - use the free position
-		                     s[0] = term;
-		                 else
-		                     s[1] = term;
-		                 break;
-                case 0: if (s[0] != null) //if the position is occupied, move the old value
-                            s[1] = s[0];
-                        s[0] = term;
-                        break;
-		        case 1: if (s[1] != null)
-		                    s[0] = s[1];
-		                s[1] = term;
-		                break;
-		    }
-		}
-
-        @Override
-        protected boolean variantCondition(int variant, IntegerRef iteration)
-        {
-            switch (variant)
-            {
-                case POSITION:
-                    if (variantPassed[SIZE])
-                        return false;
-                    return terms.get(iteration.get()).getOperator() != Operator.SLASH;
-                case SIZE:
-                    if (!variantPassed[POSITION])
-                        return false;
-                    return terms.get(iteration.get()).getOperator() == Operator.SLASH;
-                default:
-                    return true;
-            }
-        }		
-		
-	}
-
-    /**
-     * Variator for flex. Grammar:
-     * 
-     * <pre>
-     * [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]
-     * | none
-     * | inherit
-     * 
-     * @author burgetr
-     */
-    private final class FlexVariator extends Variator {
-
-        public static final int GROW = 0;
-        public static final int SHRINK = 1;
-        public static final int BASIS = 2;
-
-        public FlexVariator() {
-            super(3);
-            names.add("flex-grow");
-            types.add(FlexGrow.class);
-            names.add("flex-shrink");
-            types.add(FlexShrink.class);
-            names.add("flex-basis");
-            types.add(FlexBasis.class);
-        }
-
-        @Override
-        protected boolean variant(int v, IntegerRef iteration,
-                Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-
-            int i = iteration.get();
-
-            switch (v) {
-            case GROW:
-                return genericTerm(TermNumber.class, terms.get(i), names.get(GROW),
-                                FlexGrow.number, ValueRange.DISALLOW_NEGATIVE,
-                                properties, values)
-                        || genericTerm(TermInteger.class, terms.get(i), names.get(GROW),
-                                FlexGrow.number, ValueRange.DISALLOW_NEGATIVE,
-                                properties, values);
-            case SHRINK:
-                return genericTerm(TermNumber.class, terms.get(i), names.get(SHRINK),
-                                FlexShrink.number, ValueRange.DISALLOW_NEGATIVE,
-                                properties, values)
-                        || genericTerm(TermInteger.class, terms.get(i), names.get(SHRINK),
-                                FlexShrink.number, ValueRange.DISALLOW_NEGATIVE,
-                                properties, values);
-            case BASIS:
-                return genericTermIdent(types.get(BASIS), terms.get(i),
-                        AVOID_INH, names.get(BASIS), properties)
-                        || genericTerm(TermPercent.class, terms.get(i), names.get(BASIS),
-                                FlexBasis.percentage, ValueRange.DISALLOW_NEGATIVE,
-                                properties, values)
-                        || genericTerm(TermLength.class, terms.get(i), names.get(BASIS),
-                                FlexBasis.length, ValueRange.DISALLOW_NEGATIVE,
-                                properties, values);
-            default:
-                return false;
-            }
-        }
-        
-        @Override
-        protected boolean variantCondition(int variant, IntegerRef iteration)
-        {
-            switch (variant)
-            {
-                case SHRINK:
-                    return variantPassed[GROW];
-                default:
-                    return true;
-            }
-        }       
-        
-        @Override
-        public boolean vary(Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-
-            if (terms.size() == 1 && terms.get(0) instanceof TermIdent) {
-                //check for flex: none
-                if (checkInherit(ALL_VARIANTS, terms.get(0), properties))
-                    return true;
-                if (terms.get(0).equals(tf.createIdent("none"))) {
-                    // none should compute to: 0 0 auto
-                    values.put(names.get(SHRINK), tf.createNumber(0.0f)); //override the default for shrink to 0
-                    return true;
-                }
-            }
-            boolean ret = super.vary(properties, values);
-            
-            //change the default value for flex-shrink to 1 when flex: <basis> is used
-            if (variantPassed[BASIS] && !variantPassed[GROW] && properties.get(names.get(BASIS)) == FlexBasis.AUTO) {
-                values.put(names.get(GROW), tf.createNumber(1.0f));
-            }
-            //change the default value for flex-basis to 0 when flex: <positive_number> is used
-            if (variantPassed[GROW] && !variantPassed[BASIS]) {
-                properties.put(names.get(BASIS), FlexBasis.length);
-                values.put(names.get(BASIS), tf.createLength(0.0f));
-            }
-            
-            return ret;
-        }
-    }
-    
-    /**
-     * Variator for flex-flow. Grammar:
-     * 
-     * <pre>
-     * <'flex-direction'> || <'flex-wrap'>
-     * | inherit
-     * 
-     * @author burgetr
-     */
-    private final class FlexFlowVariator extends Variator {
-
-        public static final int DIRECTION = 0;
-        public static final int WRAP = 1;
-
-        public FlexFlowVariator() {
-            super(2);
-            names.add("flex-direction");
-            types.add(FlexDirection.class);
-            names.add("flex-wrap");
-            types.add(FlexWrap.class);
-        }
-
-        @Override
-        protected boolean variant(int v, IntegerRef iteration,
-                Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-
-            int i = iteration.get();
-
-            switch (v) {
-            case DIRECTION:
-                return genericTermIdent(FlexDirection.class, terms.get(i),
-                        AVOID_INH, names.get(DIRECTION), properties);
-            case WRAP:
-                return genericTermIdent(FlexWrap.class, terms.get(i),
-                        AVOID_INH, names.get(WRAP), properties);
-            default:
-                return false;
-            }
-        }
-    }
-    
-	/**
-	 * Border variator. Grammar: [ <border-width> || <border-style> ||
-	 * <border-top-color> ] | inherit
-	 * 
-	 * @author kapy
-	 * 
-	 */
-	private final class BorderVariator extends Variator {
-
-		public static final int WIDTH = 0;
-		public static final int STYLE = 1;
-		public static final int COLOR = 2;
-
-		private List<Repeater> repeaters;
-
-		public BorderVariator() {
-			super(3);
-			types.add(BorderWidth.class);
-			types.add(BorderStyle.class);
-			types.add(BorderColor.class);
-			repeaters = new ArrayList<Repeater>(variants);
-			repeaters.add(new BorderWidthRepeater());
-			repeaters.add(new BorderStyleRepeater());
-			repeaters.add(new BorderColorRepeater());
-		}
-
-		@Override
-		protected boolean variant(int variant, IntegerRef iteration,
-				Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-
-			// iteration is not modified in this function
-			int i = iteration.get();
-			Term<?> term = terms.get(i);
-			Repeater r;
-
-			switch (variant) {
-			case WIDTH:
-				r = repeaters.get(WIDTH);
-				r.assignTerms(term, term, term, term);
-				return r.repeat(properties, values);
-			case STYLE:
-				r = repeaters.get(STYLE);
-				r.assignTerms(term, term, term, term);
-				return r.repeat(properties, values);
-			case COLOR:
-				r = repeaters.get(COLOR);
-				r.assignTerms(term, term, term, term);
-				return r.repeat(properties, values);
-			default:
-				return false;
-			}
-		}
-
-		/**
-		 * This method is overriden to use repeaters
-		 */
-		@Override
-		protected boolean checkInherit(int variant, Term<?> term,
-				Map<String, CSSProperty> properties) {
-
-			// check whether term equals inherit
-			if (!(term instanceof TermIdent)
-					|| !CSSProperty.INHERIT_KEYWORD
-							.equalsIgnoreCase(((TermIdent) term).getValue())) {
-				return false;
-			}
-
-			if (variant == ALL_VARIANTS) {
-				for (int i = 0; i < variants; i++) {
-					Repeater r = repeaters.get(i);
-					r.assignTerms(term, term, term, term);
-					r.repeat(properties, null);
-				}
-				return true;
-			}
-
-			Repeater r = repeaters.get(variant);
-			r.assignTerms(term, term, term, term);
-			r.repeat(properties, null);
-			return true;
-		}
-
-        @Override
-        public void assignDefaults(Map<String, CSSProperty> properties, Map<String, Term<?>> values)
-        {
-            for (Repeater r : repeaters)
-                r.assignDefaults(properties, values);
-        }
-		
-
-	}
-
-	/**
-	 * Border style repeater
-	 * 
-	 * @author kapy
-	 * 
-	 */
-	private final class BorderStyleRepeater extends Repeater {
-
-		public BorderStyleRepeater() {
-			super(4);
-			this.type = BorderStyle.class;
-			names.add("border-top-style");
-			names.add("border-right-style");
-			names.add("border-bottom-style");
-			names.add("border-left-style");
-		}
-
-		@Override
-		protected boolean operation(int i, Map<String, CSSProperty> properties,
-				Map<String, Term<?>> values) {
-
-			return genericTermIdent(BorderStyle.class, terms.get(i), ALLOW_INH,	names.get(i), properties);
-		}
-	}
-
-	/**
-	 * Border color repeater
-	 * 
-	 * @author kapy
-	 * 
-	 */
-	private final class BorderColorRepeater extends Repeater {
-
-		public BorderColorRepeater() {
-			super(4);
-			this.type = BorderColor.class;
-			names.add("border-top-color");
-			names.add("border-right-color");
-			names.add("border-bottom-color");
-			names.add("border-left-color");
-		}
-
-		@Override
-		protected boolean operation(int i, Map<String, CSSProperty> properties,
-				Map<String, Term<?>> values) {
-
-			return genericTermIdent(type, terms.get(i), ALLOW_INH, names.get(i), properties)
-					|| genericTerm(TermColor.class, terms.get(i), names.get(i),	BorderColor.color, ValueRange.ALLOW_ALL, properties, values);
-		}
-	}
-
-	/**
-	 * Border width repeater
-	 * 
-	 * @author kapy
-	 * 
-	 */
-	private final class BorderWidthRepeater extends Repeater {
-
-		public BorderWidthRepeater() {
-			super(4);
-			this.type = BorderWidth.class;
-			names.add("border-top-width");
-			names.add("border-right-width");
-			names.add("border-bottom-width");
-			names.add("border-left-width");
-		}
-
-		@Override
-		protected boolean operation(int i, Map<String, CSSProperty> properties,
-				Map<String, Term<?>> values) {
-
-			return genericTermIdent(type, terms.get(i), ALLOW_INH, names.get(i), properties)
-					|| genericTermLength(terms.get(i), names.get(i), BorderWidth.length, ValueRange.DISALLOW_NEGATIVE, properties, values);
-		}
-	}
-
-    /**
-     * Border radius repeater
-     * 
-     * @author burgetr
-     * 
-     */
-    private final class BorderRadiusRepeater extends Repeater {
-
-        public BorderRadiusRepeater() {
-            super(4);
-            this.type = BorderRadius.class;
-            names.add("border-top-left-radius");
-            names.add("border-top-right-radius");
-            names.add("border-bottom-right-radius");
-            names.add("border-bottom-left-radius");
-        }
-
-        @Override
-        protected boolean operation(int i, Map<String, CSSProperty> properties,
-                Map<String, Term<?>> values) {
-
-            Term<?> term = terms.get(i);
-            String name = names.get(i);
-            
-            if (genericTermIdent(type, terms.get(i), AVOID_INH, names.get(i), properties))
-            {
-                return true;
-            }       
-            else if (term instanceof TermList)
-            {
-                properties.put(name, BorderRadius.list_values);
-                values.put(name, term);
-                return true;
-            }
-            else
-                return false;
-        }
-        
-        /** Decodes the complicated border-radius declaration into four term pairs */
-        public boolean repeatOverMultiTermDeclaration(Declaration d,
-                Map<String, CSSProperty> properties, Map<String, Term<?>> values)
-                throws IllegalArgumentException {
-
-            if (d.size() == 1) //one value - check for inherit
-            {
-                Term<?> term = d.get(0);
-                if(term instanceof TermIdent && CSSProperty.INHERIT_KEYWORD.equalsIgnoreCase(((TermIdent) term).getValue())) {
-                    CSSProperty property = CSSProperty.Translator.createInherit(type);
-                    for(int i = 0; i < times; i++) {
-                        properties.put(names.get(i), property);
-                    }
-                    return true;
-                }
-            }
-            
-            //find the slash (if any)
-            int slash = -1;
-            for (int i = 0; i < d.size(); i++)
-            {
-                Term<?> term = d.get(i);
-                if (term.getOperator() == Operator.SLASH)
-                {
-                    slash = i;
-                    break;
-                }
-            }
-            if (slash == -1)
-            {
-                Term<?>[] sterms = createFourTerms(d, 0, d.size());
-                for (int i = 0; i < 4; i++)
-                {
-                    TermList list = tf.createList(2);
-                    list.add(sterms[i]);
-                    list.add(sterms[i]);
-                    terms.add(list);
-                }
-            }
-            else
-            {
-                Term<?>[] sterms1 = createFourTerms(d, 0, slash);
-                Term<?>[] sterms2 = createFourTerms(d, slash, d.size());
-                for (int i = 0; i < 4; i++)
-                {
-                    TermList list = tf.createList(2);
-                    list.add(sterms1[i]);
-                    list.add(sterms2[i]);
-                    terms.add(list);
-                }
-            }
-            return repeat(properties, values);
-        }
-        
-        private Term<?>[] createFourTerms(Declaration d, int fromIndex, int toIndex)
-                throws IllegalArgumentException
-        {
-            int size = toIndex - fromIndex;
-            Term<?>[] ret = new Term<?>[4];
-            switch (size) {
-            case 1:
-                // one term for all value
-                ret[0] = ret[1] = ret[2] = ret[3] = d.get(fromIndex); 
-                break;
-            case 2:
-                ret[0] = ret[2] = d.get(fromIndex);
-                ret[1] = ret[3] = d.get(fromIndex + 1);
-                break;
-            case 3:
-                ret[0] = d.get(fromIndex);
-                ret[1] = ret[3] = d.get(fromIndex+1);
-                ret[2] = d.get(fromIndex+2);
-                break;
-            case 4:
-                for (int i = 0; i < 4; i++)
-                    ret[i] = d.get(fromIndex + i);
-                break;
-            default:
-                throw new IllegalArgumentException(
-                        "Invalid length of terms in Repeater.");
-            }
-            
-            //when started by a slash, remove the slash from the terms
-            if (fromIndex != 0)
-            {
-                for (int i = 0; i < 4; i++)
-                    if (ret[i].getOperator() == Operator.SLASH)
-                        ret[i] = stripSlash(ret[i]);
-            }
-            
-            return ret;
-        }
-        
-        private Term<?> stripSlash(Term<?> src)
-        {
-            if (src.getOperator() == Operator.SLASH)
-            {
-                if (src instanceof TermLength)
-                    return tf.createLength((java.lang.Float) src.getValue(), ((TermLength) src).getUnit());
-                else if (src instanceof TermPercent)
-                    return tf.createPercent((java.lang.Float) src.getValue());
-                else
-                    return src;
-            }
-            else
-                return src;
-        }
-        
-    }
-    
-	/**
-	 * Margin repeater
-	 * 
-	 * @author kapy
-	 * 
-	 */
-	private final class MarginRepeater extends Repeater {
-
-		public MarginRepeater() {
-			super(4);
-			this.type = Margin.class;
-			names.add("margin-top");
-			names.add("margin-right");
-			names.add("margin-bottom");
-			names.add("margin-left");
-
-		}
-
-		@Override
-		protected boolean operation(int i, Map<String, CSSProperty> properties,
-				Map<String, Term<?>> values) {
-
-			return genericTermIdent(type, terms.get(i), AVOID_INH,
-					names.get(i), properties)
-					|| genericTermLength(terms.get(i),
-							names.get(i), Margin.length, ValueRange.ALLOW_ALL, properties,
-							values)
-					|| genericTerm(TermPercent.class, terms.get(i), names
-							.get(i), Margin.percentage, ValueRange.ALLOW_ALL, properties,
-							values);
-		}
-	}
-
-	/**
-	 * Padding repeater
-	 * 
-	 * @author kapy
-	 * 
-	 */
-	private final class PaddingRepeater extends Repeater {
-
-		public PaddingRepeater() {
-			super(4);
-			names.add("padding-top");
-			names.add("padding-right");
-			names.add("padding-bottom");
-			names.add("padding-left");
-			this.type = Padding.class;
-		}
-
-		@Override
-		protected boolean operation(int i, Map<String, CSSProperty> properties,
-				Map<String, Term<?>> values) {
-
-			return genericTermIdent(type, terms.get(i), AVOID_INH,
-					names.get(i), properties)
-					|| genericTermLength(terms.get(i),
-							names.get(i), Padding.length, ValueRange.DISALLOW_NEGATIVE, properties,
-							values)
-					|| genericTerm(TermPercent.class, terms.get(i), names
-							.get(i), Padding.percentage, ValueRange.DISALLOW_NEGATIVE, properties,
-							values);
-		}
-	}
 
 }
