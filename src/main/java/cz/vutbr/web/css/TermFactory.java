@@ -53,6 +53,8 @@ public interface TermFactory {
 	TermPercent createPercent(Float value);
 	TermPercent createPercent(String value, int unary);
 	
+	TermPropertyValue createPropertyValue(CSSProperty property, Term<?> value);
+	
 	TermRect createRect(TermFunction function);
 	/**
 	 * Creates a rectangle from four lengths. Use {@code null} for {@code auto} values.

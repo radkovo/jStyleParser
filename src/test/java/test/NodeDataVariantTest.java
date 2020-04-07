@@ -311,15 +311,43 @@ public class NodeDataVariantTest {
         }
 
         @Override
-        public Declaration getSourceDeclaration(String name)
-        {
+        public Declaration getSourceDeclaration(String name) {
             return null;
         }		
 
         @Override
-        public Declaration getSourceDeclaration(String name, boolean includeInherited)
-        {
+        public Declaration getSourceDeclaration(String name, boolean includeInherited) {
             return null;
+        }
+
+        @Override
+        public <T extends CSSProperty> T getProperty(String name, int index) {
+            return null;
+        }
+
+        @Override
+        public <T extends CSSProperty> T getProperty(String name, int index, boolean includeInherited) {
+            return null;
+        }
+
+        @Override
+        public Term<?> getValue(String name, int index, boolean includeInherited) {
+            return null;
+        }
+
+        @Override
+        public <T extends Term<?>> T getValue(Class<T> clazz, String name, int index) {
+            return null;
+        }
+
+        @Override
+        public <T extends Term<?>> T getValue(Class<T> clazz, String name, int index, boolean includeInherited) {
+            return null;
+        }
+
+        @Override
+        public int getListSize(String name, boolean includeInherited) {
+            return 0;
         }       
 
 	}

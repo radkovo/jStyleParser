@@ -2,6 +2,8 @@ package cz.vutbr.web.css;
 
 import java.util.Collection;
 
+import cz.vutbr.web.css.CSSProperty.ValueType;
+
 /**
  * Wrap of CSS properties defined for element. Enumeration values follows this
  * syntax:
@@ -45,6 +47,40 @@ public interface NodeData {
 	 */
 	public <T extends CSSProperty> T getProperty(String name, boolean includeInherited);
 	
+    /**
+     * Returns n-th property of given name and supposed type. Inherited properties
+     * are included. This is used for properties of the {@link ValueType#LIST} type
+     * which can have multiple values.
+     * 
+     * @param <T>
+     *            Type of property returned. Let compiler infer returning type 
+     *            from left part of statement, otherwise return just CSSProperty
+     * @param name
+     *            Name of property
+     * @param index
+     *            Property value index
+     * @return Value of property of type T or <code>null</code>
+     */
+    public <T extends CSSProperty> T getProperty(String name, int index);
+
+    /**
+     * Returns n-th property of given name and supposed type. Inherited properties
+     * are included. This is used for properties of the {@link ValueType#LIST} type
+     * which can have multiple values.
+     * 
+     * @param <T>
+     *            Type of property returned. Let compiler infer returning type 
+     *            from left part of statement, otherwise return just CSSProperty
+     * @param name
+     *            Name of property
+     * @param index
+     *            Property value index
+     * @param includeInherited
+     *            Whether to include inherited properties or not
+     * @return Value of property of type T or <code>null</code>
+     */
+    public <T extends CSSProperty> T getProperty(String name, int index, boolean includeInherited);
+    
 	/**
 	 * Returns the property of the given name after applying the defaulting processes.
 	 * 
@@ -98,6 +134,55 @@ public interface NodeData {
 	public <T extends Term<?>> T getValue(Class<T> clazz, String name,
 			boolean includeInherited);
 
+    /**
+     * Returns the <em>cascaded value</em> of a list property of given name.
+     * Inherited values can be avoided.
+     * 
+     * @param name
+     *            Name of property
+     * @param index
+     *            Property value index
+     * @param includeInherited
+     *            Whether to include inherited properties or not
+     * @return Value of property or <code>null</code>
+     */
+    public Term<?> getValue(String name, int index, boolean includeInherited);
+    
+    /**
+     * Returns the <em>cascaded value</em> of a list property of given name and supposed type.
+     * Inherited values can be avoided.
+     * 
+     * @param <T>
+     *            Type of value returned
+     * @param clazz
+     *            Class of type
+     * @param name
+     *            Name of property
+     * @param index
+     *            Property value index
+     * @return Value of property of type T or <code>null</code>
+     */
+    public <T extends Term<?>> T getValue(Class<T> clazz, String name, int index);
+
+    /**
+     * Returns the <em>cascaded value</em> of a list property of given name and supposed type.
+     * Inherited values can be avoided.
+     * 
+     * @param <T>
+     *            Type of value returned 
+     * @param clazz
+     *            Class of type
+     * @param name
+     *            Name of property
+     * @param index
+     *            Property value index
+     * @param includeInherited
+     *            Whether to include inherited properties or not
+     * @return Value of property of type T or <code>null</code>
+     */
+    public <T extends Term<?>> T getValue(Class<T> clazz, String name, int index,
+            boolean includeInherited);
+
 	/**
 	 * Returns the <em>specified value</em> of a property which corresponds to the
 	 * cascaded value (obtained by {@link NodeData#getValue(String, boolean)}) with
@@ -132,6 +217,15 @@ public interface NodeData {
 	 */
 	public String getAsString(String name, boolean includeInherited);
 	
+    /**
+     * For list properties, obtains the number of property values in the nested list.
+     * 
+     * @param name property name
+     * @param includeInherited Whether to include inherited properties or not
+     * @return the number of property values defined in the list
+     */
+    public int getListSize(String name, boolean includeInherited);
+    
 	/**
 	 * Accepts values from parent as its own. <code>null</code> parent is
 	 * allowed, than instance is returned unchanged.

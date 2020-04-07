@@ -12,6 +12,8 @@ import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermColor.Keyword;
 import cz.vutbr.web.css.TermFactory;
+import cz.vutbr.web.css.TermList;
+import cz.vutbr.web.css.TermPropertyValue;
 import cz.vutbr.web.csskit.DeclarationTransformer;
 
 /**
@@ -62,4 +64,56 @@ public abstract class BaseNodeDataImpl implements NodeData {
         return clazz.cast(getSpecifiedValue(name));
     }
 
+    @Override
+    public <T extends CSSProperty> T getProperty(String name, int index) {
+        return getProperty(name, index, true);
+    }
+
+    @Override
+    public <T extends CSSProperty> T getProperty(String name, int index, boolean includeInherited) {
+        final TermList list = getValue(TermList.class, name, includeInherited);
+        if (index < list.size()) {
+            final TermPropertyValue pair = (TermPropertyValue) list.get(index);
+            @SuppressWarnings("unchecked")
+            T ret = (T) pair.getKey();
+            return ret;
+        } else {
+            return null;
+        }
+    }
+    
+    @Override
+    public Term<?> getValue(String name, int index, boolean includeInherited) {
+        final TermList list = getValue(TermList.class, name, includeInherited);
+        if (index < list.size()) {
+            final TermPropertyValue pair = (TermPropertyValue) list.get(index);
+            return pair.getValue();
+        } else {
+            return null;
+        }
+    }
+    
+    @Override
+    public <T extends Term<?>> T getValue(Class<T> clazz, String name, int index) {
+        return getValue(clazz, name, index, true);
+    }
+
+    @Override
+    public <T extends Term<?>> T getValue(Class<T> clazz, String name, int index,
+            boolean includeInherited) {
+        final TermList list = getValue(TermList.class, name, includeInherited);
+        if (index < list.size()) {
+            final TermPropertyValue pair = (TermPropertyValue) list.get(index);
+            return clazz.cast(pair.getValue());
+        } else {
+            return null;
+        }
+    }
+    
+    @Override
+    public int getListSize(String name, boolean includeInherited) {
+        final TermList list = getValue(TermList.class, name, includeInherited);
+        return list.size();
+    }
+    
 }

@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.List;
 
 import cz.vutbr.web.css.CSSFactory;
+import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermAngle;
 import cz.vutbr.web.css.TermBracketedIdents;
@@ -21,6 +22,7 @@ import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermNumeric;
 import cz.vutbr.web.css.TermPair;
 import cz.vutbr.web.css.TermPercent;
+import cz.vutbr.web.css.TermPropertyValue;
 import cz.vutbr.web.css.TermRect;
 import cz.vutbr.web.css.TermResolution;
 import cz.vutbr.web.css.TermString;
@@ -297,6 +299,11 @@ public class TermFactoryImpl implements TermFactory {
 		return (TermPercent) (new TermPercentImpl()).setValue(convertFloat(
 				value, OutputUtil.PERCENT_SIGN, unary));
 	}
+	
+    @Override
+    public TermPropertyValue createPropertyValue(CSSProperty property, Term<?> value) {
+        return (TermPropertyValue) (new TermPropertyValueImpl()).setKey(property).setValue(value);
+    }
 
 	@Override
     public TermRect createRect(TermFunction function) {
@@ -572,5 +579,5 @@ public class TermFactoryImpl implements TermFactory {
 	    }
 	    return fn;
 	}
-	
+
 }

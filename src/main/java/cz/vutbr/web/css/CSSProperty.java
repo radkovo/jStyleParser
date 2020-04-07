@@ -39,6 +39,13 @@ public interface CSSProperty {
 	public static final String INHERIT_KEYWORD = "INHERIT";
 	public static final String INITIAL_KEYWORD = "INITIAL";
 	public static final String UNSET_KEYWORD = "UNSET";
+	
+	/**
+	 * The CSS property value identifier used for denoting that the values should be
+	 * represented by a nested list of TermValuePair terms. This is used for the
+	 * {@link ValueType#LIST} type properties.
+	 */
+	public static final String NESTED_LIST = "nested_list";
 
     public static final String FONT_SERIF = java.awt.Font.SERIF;
     public static final String FONT_SANS_SERIF = java.awt.Font.SANS_SERIF;
@@ -46,6 +53,16 @@ public interface CSSProperty {
     public static final String FONT_CURSIVE = "Zapf-Chancery";
     public static final String FONT_FANTASY = "Western";
     
+    
+    /** Property value type. */
+    enum ValueType {
+        /** The property has a single value or a space-separated list of values
+         * with different semantics. */
+        SIMPLE,
+        /** The values may be repeated multiple times (usually a space-separated list such
+         * as background-* properties. */
+        LIST
+    }
     
 	/**
 	 * Allows declarations of properties to inherit or to be inherited
@@ -79,6 +96,12 @@ public interface CSSProperty {
      */
     public boolean equalsUnset();
 
+    /**
+     * Gets the value type.
+     * @return The value type.
+     */
+    public ValueType getValueType();
+    
 	/**
 	 * Textual representation of CSS property
 	 * 
@@ -139,6 +162,17 @@ public interface CSSProperty {
 		public static final <T extends CSSProperty> T createInherit(Class<T> type) {
 			return valueOf(type, INHERIT_KEYWORD);
 		}
+		
+        /**
+         * Creates the "nested_list" instance for a given property.
+         * @param <T>
+         * @param type The property type
+         * @return The corresponding property instance or {@code null} when the corresponding
+         * value is not defined for the given property.
+         */
+		public static final <T extends CSSProperty> T createNestedListValue(Class<T> type) {
+            return valueOf(type, NESTED_LIST);
+        }
 	}
 
 	/************************************************************************
@@ -174,6 +208,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -206,6 +245,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -237,6 +281,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -244,7 +293,7 @@ public interface CSSProperty {
 	}
 
 	public enum Background implements CSSProperty {
-		component_values(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+	    nested_list(""), component_values(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -268,6 +317,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.LIST;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -275,7 +329,7 @@ public interface CSSProperty {
 	}
 
 	public enum BackgroundAttachment implements CSSProperty {
-		SCROLL("scroll"), FIXED("fixed"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+	    nested_list(""), SCROLL("scroll"), FIXED("fixed"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -299,6 +353,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.LIST;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -306,7 +365,7 @@ public interface CSSProperty {
 	}
 
 	public enum BackgroundColor implements CSSProperty {
-		color(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+	    nested_list(""), color(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -330,6 +389,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.LIST;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -337,7 +401,7 @@ public interface CSSProperty {
 	}
 
 	public enum BackgroundImage implements CSSProperty {
-		uri(""), gradient(""), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+	    nested_list(""), uri(""), gradient(""), NONE("none"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -361,6 +425,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.LIST;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -368,8 +437,8 @@ public interface CSSProperty {
 	}
 
 	public enum BackgroundPosition implements CSSProperty {
-		list_values(""), LEFT("left"), CENTER("center"), RIGHT("right"), TOP("top"), BOTTOM("bottom"), INHERIT(
-				"inherit"), INITIAL("initial"), UNSET("unset");
+		nested_list(""), list_values(""), LEFT("left"), CENTER("center"), RIGHT("right"), TOP("top"), BOTTOM("bottom"),
+		    INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -393,6 +462,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.LIST;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -400,7 +474,7 @@ public interface CSSProperty {
 	}
 
 	public enum BackgroundRepeat implements CSSProperty {
-		REPEAT("repeat"), REPEAT_X("repeat-x"), REPEAT_Y("repeat-y"), NO_REPEAT(
+	    nested_list(""), REPEAT("repeat"), REPEAT_X("repeat-x"), REPEAT_Y("repeat-y"), NO_REPEAT(
 				"no-repeat"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
@@ -425,6 +499,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 		
+        @Override
+        public ValueType getValueType() {
+            return ValueType.LIST;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -432,7 +511,8 @@ public interface CSSProperty {
 	}
 
     public enum BackgroundSize implements CSSProperty {
-        list_values(""), CONTAIN("contain"), COVER("cover"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+        nested_list(""), list_values(""), CONTAIN("contain"), COVER("cover"),
+            INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
         private String text;
 
@@ -457,13 +537,18 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.LIST;
+        }
+        
+        @Override
         public String toString() {
             return text;
         }
     }
     
     public enum BackgroundOrigin implements CSSProperty {
-        BORDER_BOX("border-box"), PADDING_BOX("badding-box"), CONTENT_BOX("content-box"),
+        nested_list(""), BORDER_BOX("border-box"), PADDING_BOX("padding-box"), CONTENT_BOX("content-box"),
             INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
         private String text;
@@ -486,6 +571,11 @@ public interface CSSProperty {
 
         public boolean equalsUnset() {
             return this == UNSET;
+        }
+        
+        @Override
+        public ValueType getValueType() {
+            return ValueType.LIST;
         }
         
         @Override
@@ -519,6 +609,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -550,6 +645,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -581,6 +681,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -613,6 +718,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
+        @Override
         public String toString() {
             return text;
         }
@@ -643,6 +753,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -677,6 +792,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -709,6 +829,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -745,6 +870,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
+        @Override
         public String toString() {
             return text;
         }
@@ -777,6 +907,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
+        @Override
         public String toString() {
             return text;
         }
@@ -808,6 +943,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 	
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -841,6 +981,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -876,6 +1021,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -914,6 +1064,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -946,6 +1101,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -977,6 +1137,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1012,6 +1177,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1044,6 +1214,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1076,6 +1251,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
+        @Override
         public String toString() {
             return text;
         }
@@ -1106,6 +1286,11 @@ public interface CSSProperty {
         public boolean equalsUnset() {
             return this == UNSET;
         }
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1137,6 +1322,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 	
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1168,6 +1358,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1199,6 +1394,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1231,6 +1431,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1262,6 +1467,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1298,6 +1508,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1329,6 +1544,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1368,6 +1588,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
+        @Override
         public String toString() {
             return text;
         }
@@ -1398,6 +1623,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1429,6 +1659,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1460,6 +1695,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 		
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1491,6 +1731,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 		
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1522,6 +1767,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1553,6 +1803,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1584,6 +1839,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1615,6 +1875,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1646,6 +1911,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1677,6 +1947,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1708,6 +1983,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1744,6 +2024,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1776,6 +2061,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1808,6 +2098,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
+        @Override
         public String toString() {
             return text;
         }
@@ -1838,6 +2133,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1869,6 +2169,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1901,6 +2206,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1934,6 +2244,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -1966,6 +2281,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
+        @Override
 		public String toString() {
 			return text;
 		}
@@ -1997,6 +2317,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2029,6 +2354,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2061,6 +2391,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2092,6 +2427,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2123,6 +2463,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2154,6 +2499,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2186,6 +2536,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2218,6 +2573,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2250,6 +2610,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 		
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2281,6 +2646,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2312,6 +2682,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2343,6 +2718,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2374,6 +2754,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 		
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2406,6 +2791,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 		
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2439,6 +2829,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2470,6 +2865,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2501,6 +2901,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2532,6 +2937,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2563,6 +2973,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2594,6 +3009,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2625,6 +3045,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2656,6 +3081,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2688,6 +3118,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2721,6 +3156,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2752,6 +3192,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2784,6 +3229,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2816,6 +3266,11 @@ public interface CSSProperty {
         }
     
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
+        @Override
         public String toString() {
             return text;
         }
@@ -2846,6 +3301,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
         @Override
         public String toString() {
             return text;
@@ -2878,6 +3338,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2907,6 +3372,11 @@ public interface CSSProperty {
             return false;
         }
 	    
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
         @Override
         public String toString() {
             return "";
@@ -2941,6 +3411,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -2973,6 +3448,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3005,6 +3485,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3038,6 +3523,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3070,6 +3560,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3101,6 +3596,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3132,6 +3632,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3163,6 +3668,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3194,6 +3704,11 @@ public interface CSSProperty {
             return this == UNSET;
         }
 		
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3227,6 +3742,11 @@ public interface CSSProperty {
 			return this == UNSET;
 		}
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3259,6 +3779,11 @@ public interface CSSProperty {
 			return this == UNSET;
 		}
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3291,6 +3816,11 @@ public interface CSSProperty {
 			return this == UNSET;
 		}
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3323,6 +3853,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
+        @Override
         public String toString() {
             return text;
         }
@@ -3354,6 +3889,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
+        @Override
         public String toString() {
             return text;
         }
@@ -3384,6 +3924,11 @@ public interface CSSProperty {
 			return this == UNSET;
 		}
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3416,6 +3961,11 @@ public interface CSSProperty {
 			return this == UNSET;
 		}
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3447,6 +3997,11 @@ public interface CSSProperty {
 			return this == UNSET;
 		}
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3478,6 +4033,11 @@ public interface CSSProperty {
 			return this == UNSET;
 		}
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3510,6 +4070,11 @@ public interface CSSProperty {
 			return this == UNSET;
 		}
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3542,6 +4107,11 @@ public interface CSSProperty {
 			return this == UNSET;
 		}
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3573,6 +4143,11 @@ public interface CSSProperty {
 			return this == UNSET;
 		}
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+        
 		@Override
 		public String toString() {
 			return text;
@@ -3606,6 +4181,11 @@ public interface CSSProperty {
         }
     
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
         public String toString() {
             return text;
         }
@@ -3638,6 +4218,11 @@ public interface CSSProperty {
        }
     
        @Override
+       public ValueType getValueType() {
+           return ValueType.SIMPLE;
+       }
+
+       @Override
        public String toString() {
            return text;
        }
@@ -3668,6 +4253,11 @@ public interface CSSProperty {
 
         public boolean equalsUnset() {
             return this == UNSET;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
         }
 
         @Override
@@ -3704,6 +4294,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
         public String toString() {
             return text;
         }
@@ -3736,6 +4331,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
         public String toString() {
             return text;
         }
@@ -3765,6 +4365,11 @@ public interface CSSProperty {
 
         public boolean equalsUnset() {
             return this == UNSET;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
         }
 
         @Override
@@ -3801,6 +4406,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
         public String toString() {
             return text;
         }
@@ -3831,6 +4441,11 @@ public interface CSSProperty {
 
         public boolean equalsUnset() {
             return this == UNSET;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
         }
 
         @Override
@@ -3867,6 +4482,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
         public String toString() {
             return text;
         }
@@ -3899,6 +4519,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
         public String toString() {
             return text;
         }
@@ -3928,6 +4553,11 @@ public interface CSSProperty {
 
         public boolean equalsUnset() {
             return this == UNSET;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
         }
 
         @Override
@@ -3964,6 +4594,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
         public String toString() {
             return text;
         }
@@ -3993,6 +4628,11 @@ public interface CSSProperty {
 
         public boolean equalsUnset() {
             return this == UNSET;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
         }
 
         @Override
@@ -4029,6 +4669,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
         public String toString() {
             return text;
         }
@@ -4059,6 +4704,11 @@ public interface CSSProperty {
 
         public boolean equalsUnset() {
             return this == UNSET;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
         }
 
         @Override
@@ -4095,6 +4745,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
         public String toString() {
             return text;
         }
@@ -4125,6 +4780,11 @@ public interface CSSProperty {
 
         public boolean equalsUnset() {
             return this == UNSET;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
         }
 
         @Override
@@ -4162,6 +4822,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
         public String toString() {
             return text;
         }
@@ -4191,6 +4856,11 @@ public interface CSSProperty {
 
         public boolean equalsUnset() {
             return this == UNSET;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
         }
 
         @Override
@@ -4226,6 +4896,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
         public String toString() {
             return text;
         }
@@ -4255,6 +4930,11 @@ public interface CSSProperty {
 
         public boolean equalsUnset() {
             return this == UNSET;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
         }
 
         @Override
@@ -4291,6 +4971,11 @@ public interface CSSProperty {
         }
 
         @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
         public String toString() {
             return text;
         }
@@ -4322,6 +5007,11 @@ public interface CSSProperty {
 
         public boolean equalsUnset() {
             return this == UNSET;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
         }
 
         @Override
@@ -4366,6 +5056,11 @@ public interface CSSProperty {
         public boolean equalsUnset() 
         {
             return false;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
         }
 
         @Override
