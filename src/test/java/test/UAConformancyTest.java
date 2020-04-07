@@ -104,7 +104,7 @@ public class UAConformancyTest {
 
 		Assert.assertEquals("Background-color is white", tf
 				.createColor("#ffffff"), nd.getValue(TermColor.class,
-				"background-color"));
+				"background-color", 0));
 	}
 
 }

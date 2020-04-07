@@ -199,65 +199,63 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	private boolean processBackground(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		Variator background = new BackgroundVariator();
-		background.assignTermsFromDeclaration(d);
-		background.assignDefaults(properties, values);
-		return background.vary(properties, values);
+		return background.varyList(d, properties, values);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBackgroundAttachment(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator background = new BackgroundVariator();
-		return background.tryOneTermVariant(BackgroundVariator.ATTACHMENT, d,
-				properties, values);
+		return background.tryListOfOneTermVariant(BackgroundVariator.ATTACHMENT, d,
+				properties, values, BackgroundAttachment.nested_list);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBackgroundColor(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator background = new BackgroundVariator();
-		return background.tryOneTermVariant(BackgroundVariator.COLOR, d,
-				properties, values);
+		return background.tryListOfOneTermVariant(BackgroundVariator.COLOR, d,
+				properties, values, BackgroundColor.nested_list);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBackgroundImage(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator background = new BackgroundVariator();
-		return background.tryOneTermVariant(BackgroundVariator.IMAGE, d,
-				properties, values);
+		return background.tryListOfOneTermVariant(BackgroundVariator.IMAGE, d,
+				properties, values, BackgroundImage.nested_list);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBackgroundRepeat(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator background = new BackgroundVariator();
-		return background.tryOneTermVariant(BackgroundVariator.REPEAT, d,
-				properties, values);
+		return background.tryListOfOneTermVariant(BackgroundVariator.REPEAT, d,
+				properties, values, BackgroundRepeat.nested_list);
 	}
 
 	@SuppressWarnings("unused")
 	private boolean processBackgroundPosition(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator background = new BackgroundVariator();
-		return background.tryMultiTermVariant(BackgroundVariator.POSITION,
-				properties, values, d.toArray(new Term<?>[0]));
+		return background.tryListOfMultiTermVariant(BackgroundVariator.POSITION, d,
+				properties, values, BackgroundPosition.nested_list);
 	}
 
     @SuppressWarnings("unused")
     private boolean processBackgroundSize(Declaration d,
             Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
         final Variator background = new BackgroundVariator();
-        return background.tryMultiTermVariant(BackgroundVariator.SIZE,
-                properties, values, d.toArray(new Term<?>[0]));
+        return background.tryListOfMultiTermVariant(BackgroundVariator.SIZE, d,
+                properties, values, BackgroundSize.nested_list);
     }
 
     @SuppressWarnings("unused")
     private boolean processBackgroundOrigin(Declaration d,
             Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
         final Variator background = new BackgroundVariator();
-        return background.tryOneTermVariant(BackgroundVariator.ORIGIN, d,
-                properties, values);
+        return background.tryListOfOneTermVariant(BackgroundVariator.ORIGIN, d,
+                properties, values, BackgroundOrigin.nested_list);
     }
 
 	@SuppressWarnings("unused")

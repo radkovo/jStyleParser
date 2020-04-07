@@ -2,6 +2,7 @@ package cz.vutbr.web.domassign.decode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,9 @@ import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
 import cz.vutbr.web.css.TermIdent;
+import cz.vutbr.web.css.TermList;
+import cz.vutbr.web.css.TermPropertyValue;
+import cz.vutbr.web.css.Term.Operator;
 
 /**
  * Selects appropriate variant when parsing content of CSS declaration. Allows
@@ -60,10 +64,17 @@ public abstract class Variator extends Decoder {
 	public Variator(int variants) {
 		this.variants = variants;
 		this.variantPassed = new boolean[variants];
-		for (int i = 0; i < variants; i++)
-			variantPassed[i] = false;
 		this.names = new ArrayList<String>(variants);
 		this.types = new ArrayList<Class<? extends CSSProperty>>(variants);
+		reset();
+	}
+	
+	/**
+	 * Resets the variator to its initial state.
+	 */
+	public void reset() {
+        for (int i = 0; i < variants; i++)
+            variantPassed[i] = false;
 	}
 
 	/**
@@ -356,6 +367,206 @@ public abstract class Variator extends Decoder {
 	            values.put(name, dv);
 	    }
 	}
+
+	
+    //=========================================================================
+    // Nested list creation
+	
+    /**
+     * Tries a single variant that may consist of a term or a list of comma-separated terms.
+     * 
+     * @param variant the variant to be tried
+     * @param d the declaration to be processed
+     * @param properties target property map
+     * @param values target value map
+     * @param listValue the list_values value to be used for the property value
+     * @return {@code true} when parsed successfully
+     */
+    public boolean tryListOfOneTermVariant(int variant, Declaration d,
+            Map<String, CSSProperty> properties, Map<String, Term<?>> values,
+            CSSProperty listValue) {
+
+        // try inherit variant
+        if (d.size() == 1 && checkInherit(variant, d.get(0), properties))
+            return true;
+        //scan the list
+        TermList list = tf.createList();
+        final Map<String, CSSProperty> p = new HashMap<>();
+        final Map<String, Term<?>> v = new HashMap<>();
+        boolean first = true;
+        for (Term<?> t : d.asList()) {
+            //terms must be separated by commas
+            if ((first && t.getOperator() != null)
+                    || (!first && t.getOperator() != Operator.COMMA))
+                return false; 
+            //process the variant for a single term
+            p.clear();
+            v.clear();
+            this.terms = new ArrayList<Term<?>>();
+            this.terms.add(t);
+            if (!variant(variant, new IntegerRef(0), p, v))
+                return false;
+            //collect the resulting term
+            final CSSProperty prop = p.values().iterator().next();
+            final Term<?> val = (v.values().isEmpty()) ? null : v.values().iterator().next();
+            final TermPropertyValue pval = tf.createPropertyValue(prop, val);
+            if (!first)
+                pval.setOperator(Operator.COMMA);
+            list.add(pval);
+            first = false;
+        }
+        //store the result
+        properties.put(names.get(variant), listValue);
+        values.put(names.get(variant), list);
+        return true;
+    }
+    
+    /**
+     * Tries a single variant that may consist of space-separated terms or a comma-separated list
+     * of space-separated lists.
+     * 
+     * @param variant the variant to be tried
+     * @param d the declaration to be processed
+     * @param properties target property map
+     * @param values target value map
+     * @param listValue the list_values value to be used for the property value
+     * @return {@code true} when parsed successfully
+     */
+    public boolean tryListOfMultiTermVariant(int variant, Declaration d,
+            Map<String, CSSProperty> properties, Map<String, Term<?>> values,
+            CSSProperty listValue) {
+        
+        // try inherit variant
+        if (d.size() == 1 && checkInherit(variant, d.get(0), properties))
+            return true;
+        // for all sub-declarations
+        TermList list = tf.createList();
+        final Map<String, CSSProperty> p = new HashMap<>();
+        final Map<String, Term<?>> v = new HashMap<>();
+        boolean first = true;
+        List<Declaration> subs = splitDeclarations(d, Operator.COMMA);
+        for (Declaration sub : subs) {
+            p.clear();
+            v.clear();
+            assignTermsFromDeclaration(sub);
+            if (!variant(variant, new IntegerRef(0), p, v))
+                return false;
+            final CSSProperty prop = p.values().iterator().next();
+            final Term<?> val = (v.values().isEmpty()) ? null : v.values().iterator().next();
+            final TermPropertyValue pval = tf.createPropertyValue(prop, val);
+            if (!first)
+                pval.setOperator(Operator.COMMA);
+            list.add(pval);
+            first = false;
+        }
+        //store the result
+        properties.put(names.get(variant), listValue);
+        values.put(names.get(variant), list);
+        return true;
+    }
+    
+    /**
+     * Varies over a comma-separated list of layers where each layer defines all the variants.
+     * 
+     * @param d
+     * @param properties
+     * @param values
+     * @return
+     */
+    public boolean varyList(Declaration d, Map<String, CSSProperty> properties,
+            Map<String, Term<?>> values) {
+
+        // try inherit variant
+        if (d.size() == 1
+                && checkInherit(ALL_VARIANTS, d.get(0), properties))
+            return true;
+
+        // for all sub-declarations
+        boolean first = true;
+        List<Declaration> subs = splitDeclarations(d, Operator.COMMA);
+        for (Declaration sub : subs) {
+            reset();
+            final Map<String, CSSProperty> props = new HashMap<>();
+            final Map<String, Term<?>> vals = new HashMap<>();
+            assignDefaults(props, vals);
+            assignTermsFromDeclaration(sub);
+            // for all terms
+            for (IntegerRef i = new IntegerRef(0); i.get() < terms.size(); i.inc()) {
+    
+                boolean passed = false;
+    
+                // check all variants
+                for (int v = 0; v < variants; v++) {
+                    // check and if variant was already found
+                    // signalize error by discarding complete declaration
+                    // have to check variant condition firstly to avoid false
+                    // positive
+                    // variantPassed
+                    if (!variantCondition(v, i))
+                        continue;
+                    //if this variant already passed, do not try again
+                    //TODO: check if we shouldn't try better combination of terms
+                    if (variantPassed[v])
+                        continue;
+                    //check if this term corresponds to this variant
+                    passed = variant(v, i, props, vals);
+                    if (passed) {
+                        // mark occurrence of variant
+                        variantPassed[v] = true;
+                        // we have found, skip evaluation
+                        break;
+                    }
+                }
+                // no variant could be assigned
+                if (!passed)
+                    return false;
+            }
+            // all terms passed
+            for (String key : props.keySet()) {
+                CSSProperty p = props.get(key);
+                Term<?> v = vals.get(key);
+                addToMap(values, key, p, v, first);
+                properties.put(key, CSSProperty.Translator.createNestedListValue(p.getClass()));
+            }
+            first = false;
+        }
+        
+        return true;
+    }
+
+    /**
+     * Adds a property-value pair to a nested list in the destination value map. Creates a new
+     * list when the corresponding value is not set or it is not a list.
+     * @param dest the destination value map
+     * @param key the key to use (property name)
+     * @param property the property value to set
+     * @param value an optional Term value to set
+     * @param first {@code true} for the first value in the list (for generating separators properly)
+     */
+    private void addToMap(Map<String, Term<?>> dest, String key, CSSProperty property, Term<?> value, boolean first)
+    {
+        final Term<?> cur = dest.get(key);
+        
+        TermList list;
+        if (cur instanceof TermList)
+            list = (TermList) cur;
+        else {
+            list = tf.createList();
+            dest.put(key, list);
+        }
+        
+        //make a copy and remove the original operator from the value
+        Term<?> vvalue = (value == null) ? null : value.shallowClone();
+        if (vvalue != null)
+            vvalue.setOperator(null);
+        //add the pair
+        final TermPropertyValue pval = tf.createPropertyValue(property, vvalue);
+        if (!first)
+            pval.setOperator(Operator.COMMA);
+        list.add(pval);
+    }
+	
+    //=========================================================================
 	
 	/**
 	 * Reference to integer

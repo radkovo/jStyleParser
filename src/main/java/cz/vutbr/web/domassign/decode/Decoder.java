@@ -3,13 +3,17 @@
  */
 package cz.vutbr.web.domassign.decode;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.Term;
+import cz.vutbr.web.css.Term.Operator;
 import cz.vutbr.web.css.TermColor;
 import cz.vutbr.web.css.TermFactory;
 import cz.vutbr.web.css.TermFloatValue;
@@ -49,6 +53,7 @@ public class Decoder
     public static final boolean AVOID_INH = true;
     public static final boolean ALLOW_INH = false;
     
+    public static final RuleFactory rf = CSSFactory.getRuleFactory();
     public static final TermFactory tf = CSSFactory.getTermFactory();
 
     
@@ -519,6 +524,29 @@ public class Decoder
         }
         else
             return false;
+    }
+    
+    /**
+     * Splits a declaration to multiple declarations by a separating term.
+     * @param src the source declarations
+     * @param separator separating operator
+     * @return a list of declarations where each of them contains a sub-list of terms of the source declaration
+     */
+    public static List<Declaration> splitDeclarations(Declaration src, Operator sepOperator)
+    {
+        final List<Declaration> ret = new ArrayList<>();
+        Declaration current = rf.createDeclaration();
+        current.unlock();
+        for (Term<?> t : src.asList()) {
+            if (t.getOperator() == sepOperator) {
+                ret.add(current);
+                current = rf.createDeclaration();
+                current.unlock();
+            }
+            current.add(t);
+        }
+        ret.add(current);
+        return ret;
     }
 
     
