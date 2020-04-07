@@ -95,6 +95,18 @@ public class DecoderTest
         fn = data.getValue(TermFunction.Gradient.class, "background-image", 0);
         assertEquals(LinearGradientImpl.class, fn.getClass());
         assertEquals("Angle", tf.createAngle("0.25", Unit.turn, 1), ((LinearGradientImpl) fn).getAngle());
+        
+        data = decl.get(elements.getElementById("bgmulti1"));
+        assertNotNull("Data for #bgmulti1 exist", data);
+        assertEquals(data.getListSize("background-color", true), 3);
+        assertEquals(data.getValue(TermColor.class, "background-color", 0), tf.createColor(255, 0, 0));
+        assertEquals(data.getValue(TermColor.class, "background-color", 1), tf.createColor(tf.createIdent("transparent")));
+        assertEquals(stripOperator((TermPercent) data.getValue(TermList.class, "background-position", 0).get(0)), tf.createPercent(100.0f));
+        assertEquals(stripOperator((TermPercent) data.getValue(TermList.class, "background-position", 0).get(1)), tf.createPercent(100.0f));
+        assertEquals(stripOperator((TermPercent) data.getValue(TermList.class, "background-position", 1).get(0)), tf.createPercent(50.0f));
+        assertEquals(stripOperator((TermPercent) data.getValue(TermList.class, "background-position", 1).get(1)), tf.createPercent(50.0f));
+        assertEquals(stripOperator((TermLength) data.getValue(TermList.class, "background-position", 2).get(0)), tf.createLength(10.0f, Unit.pt));
+        assertEquals(stripOperator((TermPercent) data.getValue(TermList.class, "background-position", 2).get(1)), tf.createPercent(50.0f));
     }
 
     @Test
