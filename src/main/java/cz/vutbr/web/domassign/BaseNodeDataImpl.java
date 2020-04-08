@@ -72,7 +72,7 @@ public abstract class BaseNodeDataImpl implements NodeData {
     @Override
     public <T extends CSSProperty> T getProperty(String name, int index, boolean includeInherited) {
         final TermList list = getValue(TermList.class, name, includeInherited);
-        if (index < list.size()) {
+        if (list != null && index < list.size()) {
             final TermPropertyValue pair = (TermPropertyValue) list.get(index);
             @SuppressWarnings("unchecked")
             T ret = (T) pair.getKey();
@@ -85,7 +85,7 @@ public abstract class BaseNodeDataImpl implements NodeData {
     @Override
     public Term<?> getValue(String name, int index, boolean includeInherited) {
         final TermList list = getValue(TermList.class, name, includeInherited);
-        if (index < list.size()) {
+        if (list != null && index < list.size()) {
             final TermPropertyValue pair = (TermPropertyValue) list.get(index);
             return pair.getValue();
         } else {
@@ -102,7 +102,7 @@ public abstract class BaseNodeDataImpl implements NodeData {
     public <T extends Term<?>> T getValue(Class<T> clazz, String name, int index,
             boolean includeInherited) {
         final TermList list = getValue(TermList.class, name, includeInherited);
-        if (index < list.size()) {
+        if (list != null && index < list.size()) {
             final TermPropertyValue pair = (TermPropertyValue) list.get(index);
             return clazz.cast(pair.getValue());
         } else {
@@ -113,7 +113,10 @@ public abstract class BaseNodeDataImpl implements NodeData {
     @Override
     public int getListSize(String name, boolean includeInherited) {
         final TermList list = getValue(TermList.class, name, includeInherited);
-        return list.size();
+        if (list != null)
+            return list.size();
+        else
+            return 0;
     }
     
 }
