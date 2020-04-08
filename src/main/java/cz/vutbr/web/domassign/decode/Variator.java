@@ -8,6 +8,7 @@ import java.util.Map;
 
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CSSProperty;
+import cz.vutbr.web.css.CSSProperty.ValueType;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.css.Term;
@@ -481,8 +482,12 @@ public abstract class Variator extends Decoder {
                 && checkInherit(ALL_VARIANTS, d.get(0), properties))
             return true;
 
+        // temporary result of the whole list which will be used after final validation
+        final Map<String, CSSProperty> destProps = new HashMap<>();
+        final Map<String, Term<?>> destVals = new HashMap<>();
+        
         // for all sub-declarations
-        boolean first = true;
+        int listIndex = 0;
         List<Declaration> subs = splitDeclarations(d, Operator.COMMA);
         for (Declaration sub : subs) {
             reset();
@@ -521,16 +526,28 @@ public abstract class Variator extends Decoder {
                 if (!passed)
                     return false;
             }
+            if (!validateListItem(listIndex, subs.size(), props, vals))
+                return false; //validation failed
             // all terms passed
             for (String key : props.keySet()) {
-                CSSProperty p = props.get(key);
-                Term<?> v = vals.get(key);
-                addToMap(values, key, p, v, first);
-                properties.put(key, CSSProperty.Translator.createNestedListValue(p.getClass()));
+                final CSSProperty p = props.get(key);
+                final Term<?> v = vals.get(key);
+                if (p.getValueType() == ValueType.LIST) {
+                    addToMap(destVals, key, p, v, (listIndex == 0));
+                    destProps.put(key, CSSProperty.Translator.createNestedListValue(p.getClass()));
+                } else {
+                    destProps.put(key, p);
+                    destVals.put(key, v);
+                }
             }
-            first = false;
+            listIndex++;
         }
         
+        //validate and store the whole list
+        if (!validateList(subs.size(), destProps, destVals))
+            return false;
+        properties.putAll(destProps);
+        values.putAll(destVals);
         return true;
     }
 
@@ -566,6 +583,16 @@ public abstract class Variator extends Decoder {
         list.add(pval);
     }
 	
+    protected boolean validateListItem(int listIndex, int listSize,
+            Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return true; //no validation is performed by default, this may be overriden in subclasses
+    }
+    
+    protected boolean validateList(int listSize, Map<String, CSSProperty> properties,
+            Map<String, Term<?>> values) {
+        return true; //no validation is performed by default, this may be overriden in subclasses
+    }
+    
     //=========================================================================
 	
 	/**
