@@ -95,13 +95,13 @@ public class DOMAssignDirectTest {
 
         assertThat(i1.getValue(TermColor.class, "color"), is(tf.createColor(255,0,0)));
         assertNull(i2.getValue(TermColor.class, "color"));
-        assertThat(i5.getValue(TermColor.class, "background-color", 0), is(tf.createColor(255,0,0)));
-        assertThat(i6.getValue(TermColor.class, "background-color", 0), is(tf.createColor(0,128,0)));
+        assertThat(i5.getValue(TermColor.class, "background-color"), is(tf.createColor(255,0,0)));
+        assertThat(i6.getValue(TermColor.class, "background-color"), is(tf.createColor(0,128,0)));
         assertThat(i8.getValue(TermColor.class, "border-top-color"), is(tf.createColor(0,0,255)));
         assertThat(only.getValue(TermColor.class, "border-top-color"), is(tf.createColor(0,0,255)));
-        assertThat(only.getValue(TermColor.class, "background-color", 0), is(tf.createColor(0,255,255)));
+        assertThat(only.getValue(TermColor.class, "background-color"), is(tf.createColor(0,255,255)));
         assertThat(empty.getValue(TermColor.class, "border-top-color"), is(tf.createColor(255,0,0)));
-        assertThat(html.getValue(TermColor.class, "background-color", 0), is(tf.createColor(238,238,238)));
+        assertThat(html.getValue(TermColor.class, "background-color"), is(tf.createColor(238,238,238)));
 
     }
 
@@ -139,9 +139,9 @@ public class DOMAssignDirectTest {
 
         assertThat(i8.getValue(TermColor.class, "color"), is(tf.createColor(255,0,0)));
 
-        assertThat(i3.getValue(TermColor.class, "background-color", 0), is(tf.createColor(238,238,238)));
-        assertThat(i9.getValue(TermColor.class, "background-color", 0), is(tf.createColor(238,238,238)));
-        assertThat(i5.getValue(TermColor.class, "background-color", 0), is(tf.createColor(170,170,255)));
+        assertThat(i3.getValue(TermColor.class, "background-color"), is(tf.createColor(238,238,238)));
+        assertThat(i9.getValue(TermColor.class, "background-color"), is(tf.createColor(238,238,238)));
+        assertThat(i5.getValue(TermColor.class, "background-color"), is(tf.createColor(170,170,255)));
 
     }
 
@@ -286,7 +286,7 @@ public class DOMAssignDirectTest {
 
         final DirectAnalyzer da = new DirectAnalyzer(style);
         final NodeData nodeData = da.getElementStyle(elements.getElementById("p1"), null, "screen");
-        assertThat("Background color", nodeData.getValue(TermColor.class, "background-color", 0), is(tf.createColor(0,128,0)));
+        assertThat("Background color", nodeData.getValue(TermColor.class, "background-color"), is(tf.createColor(0,128,0)));
         assertThat("Color", nodeData.getValue(TermColor.class, "color"), is(tf.createColor(255,255,255)));
     }
 
@@ -314,7 +314,7 @@ public class DOMAssignDirectTest {
 
         final DirectAnalyzer da = new DirectAnalyzer(style);
         final NodeData nodeData = da.getElementStyle(elements.getElementById("d1"), null, "screen");
-        assertThat("Background color", nodeData.getValue(TermColor.class, "background-color", 0), is(tf.createColor(0,128,0)));
+        assertThat("Background color", nodeData.getValue(TermColor.class, "background-color"), is(tf.createColor(0,128,0)));
     }
 
     // Test for issue #11 on GitHub. Respect the specified order of rule-blocks even if the selectors don't match in the same order.

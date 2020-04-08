@@ -36,10 +36,16 @@
 		background: transparent linear-gradient(0.25turn, #3f87a6, #ebf8e1, #f69d3c);
 	}
 	#bgmulti1 {
-		background: red url('bgimg.png') top right no-repeat, url('bgimg.png') center repeat, repeat;
+		background: url('bgimg.png') top right no-repeat, url('bgimg.png') center repeat, red repeat;
 		background-attachment: scroll, fixed, fixed; 
 		background-position: bottom right, center, 10pt 50%;
 		background-size: auto, auto, auto;
+	}
+	#bgmulti2 {
+		background-color: green;
+		background-repeat: repeat;
+		/* invalid color in the first layer - the whole declaration should be ignored */
+		background: red url('bgimg.png') top right no-repeat, url('bgimg.png') center repeat, repeat;
 	}
 </style>
 </head>
@@ -62,6 +68,9 @@
   Hello World
 </div>
 <div class="example" id="bgmulti1">
+  Hello World
+</div>
+<div class="example" id="bgmulti2">
   Hello World
 </div>
 </div>

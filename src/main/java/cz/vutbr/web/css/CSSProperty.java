@@ -365,7 +365,7 @@ public interface CSSProperty {
 	}
 
 	public enum BackgroundColor implements CSSProperty {
-	    nested_list(""), color(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+	    color(""), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -391,7 +391,7 @@ public interface CSSProperty {
 
         @Override
         public ValueType getValueType() {
-            return ValueType.LIST;
+            return ValueType.SIMPLE;
         }
         
 		@Override

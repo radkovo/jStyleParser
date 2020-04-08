@@ -214,8 +214,8 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	private boolean processBackgroundColor(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 		final Variator background = new BackgroundVariator();
-		return background.tryListOfOneTermVariant(BackgroundVariator.COLOR, d,
-				properties, values, BackgroundColor.nested_list);
+		return background.tryOneTermVariant(BackgroundVariator.COLOR, d,
+				properties, values);
 	}
 
 	@SuppressWarnings("unused")

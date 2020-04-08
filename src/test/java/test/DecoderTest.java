@@ -62,7 +62,7 @@ public class DecoderTest
         assertEquals(data.getValue(TermList.class, "background-size", 0).size(), 2);
         assertEquals(stripOperator((TermLength) data.getValue(TermList.class, "background-size", 0).get(0)), tf.createLength(1.0f, Unit.px));
         assertEquals(stripOperator((TermPercent) data.getValue(TermList.class, "background-size", 0).get(1)), tf.createPercent(10.0f));
-        assertEquals(data.getValue(TermColor.class, "background-color", 0), tf.createColor(0, 0, 255));
+        assertEquals(data.getValue(TermColor.class, "background-color"), tf.createColor(0, 0, 255));
         
         data = decl.get(elements.getElementById("bg2"));
         assertNotNull("Data for #bg2 exist", data);
@@ -70,7 +70,7 @@ public class DecoderTest
         assertEquals(stripOperator((TermPercent) data.getValue(TermList.class, "background-position", 0).get(0)), tf.createPercent(100.0f));
         assertEquals(stripOperator((TermPercent) data.getValue(TermList.class, "background-position", 0).get(1)), tf.createPercent(100.0f));
         assertEquals(data.getProperty("background-size", 0), BackgroundSize.COVER); 
-        assertEquals(data.getValue(TermColor.class, "background-color", 0), tf.createColor(255, 255, 0));
+        assertEquals(data.getValue(TermColor.class, "background-color"), tf.createColor(255, 255, 0));
         
         data = decl.get(elements.getElementById("bg3"));
         assertNotNull("Data for #bg3 exist", data);
@@ -80,7 +80,7 @@ public class DecoderTest
         assertEquals(data.getValue(TermList.class, "background-size", 0).size(), 2);
         assertEquals(stripOperator((TermLength) data.getValue(TermList.class, "background-size", 0).get(0)), tf.createLength(20.0f, Unit.px));
         assertEquals(data.getValue(TermList.class, "background-size", 0).get(1), tf.createIdent("auto"));
-        assertEquals(data.getValue(TermColor.class, "background-color", 0), tf.createColor(0, 128, 0));
+        assertEquals(data.getValue(TermColor.class, "background-color"), tf.createColor(0, 128, 0));
         
         data = decl.get(elements.getElementById("bg4"));
         assertNotNull("Data for #bg4 exist", data);
@@ -98,15 +98,20 @@ public class DecoderTest
         
         data = decl.get(elements.getElementById("bgmulti1"));
         assertNotNull("Data for #bgmulti1 exist", data);
-        assertEquals(data.getListSize("background-color", true), 3);
-        assertEquals(data.getValue(TermColor.class, "background-color", 0), tf.createColor(255, 0, 0));
-        assertEquals(data.getValue(TermColor.class, "background-color", 1), tf.createColor(tf.createIdent("transparent")));
+        assertEquals(data.getListSize("background-repeat", true), 3);
+        assertEquals(data.getValue(TermColor.class, "background-color"), tf.createColor(255, 0, 0));
         assertEquals(stripOperator((TermPercent) data.getValue(TermList.class, "background-position", 0).get(0)), tf.createPercent(100.0f));
         assertEquals(stripOperator((TermPercent) data.getValue(TermList.class, "background-position", 0).get(1)), tf.createPercent(100.0f));
         assertEquals(stripOperator((TermPercent) data.getValue(TermList.class, "background-position", 1).get(0)), tf.createPercent(50.0f));
         assertEquals(stripOperator((TermPercent) data.getValue(TermList.class, "background-position", 1).get(1)), tf.createPercent(50.0f));
         assertEquals(stripOperator((TermLength) data.getValue(TermList.class, "background-position", 2).get(0)), tf.createLength(10.0f, Unit.pt));
         assertEquals(stripOperator((TermPercent) data.getValue(TermList.class, "background-position", 2).get(1)), tf.createPercent(50.0f));
+        
+        data = decl.get(elements.getElementById("bgmulti2"));
+        assertNotNull("Data for #bgmulti2 exist", data);
+        assertEquals(data.getListSize("background-repeat", true), 1);
+        assertEquals(tf.createColor(0, 128, 0), data.getValue(TermColor.class, "background-color"));
+        assertEquals(CSSProperty.BackgroundRepeat.REPEAT, data.getProperty("background-repeat", 0));
     }
 
     @Test

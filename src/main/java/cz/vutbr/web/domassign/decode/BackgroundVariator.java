@@ -260,6 +260,16 @@ public class BackgroundVariator extends Variator {
             default:
                 return true;
         }
+    }
+
+    @Override
+    protected boolean validateListItem(int listIndex, int listSize, Map<String, CSSProperty> properties,
+            Map<String, Term<?>> values) {
+        if (listIndex == listSize - 1) {
+            return true; //everything is allowed in the last layer
+        } else {
+            return !variantPassed[COLOR]; //color is only allowed in the last layer
+        }
     }       
     
 }
