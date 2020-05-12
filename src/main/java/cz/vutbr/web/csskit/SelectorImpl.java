@@ -747,7 +747,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			if(nestedSelector != null)
 			    sb.append(OutputUtil.FUNCTION_OPENING).append(nestedSelector.toString()).append(OutputUtil.FUNCTION_CLOSING);
 			else if(functionValue != null)
-			    sb.append(OutputUtil.FUNCTION_OPENING).append(CssEscape.escapeCssIdentifier(functionValue)).append(OutputUtil.FUNCTION_CLOSING);
+			    sb.append(OutputUtil.FUNCTION_OPENING).append(functionValue).append(OutputUtil.FUNCTION_CLOSING);
 			
 			return sb.toString();
 		}
@@ -875,7 +875,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			if(nestedSelector != null)
 			    sb.append(OutputUtil.FUNCTION_OPENING).append(nestedSelector.toString()).append(OutputUtil.FUNCTION_CLOSING);
 			else if(functionValue != null)
-			    sb.append(OutputUtil.FUNCTION_OPENING).append(CssEscape.escapeCssIdentifier(functionValue)).append(OutputUtil.FUNCTION_CLOSING);
+			    sb.append(OutputUtil.FUNCTION_OPENING).append(functionValue).append(OutputUtil.FUNCTION_CLOSING);
 			
 			return sb.toString();
 		}
