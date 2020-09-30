@@ -243,7 +243,11 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 		
 		@Override
 		public String toString() {
-			return CssEscape.escapeCssIdentifier(name);
+		    if (WILDCARD.equals(name)) {
+		        return name;
+		    } else {
+		        return CssEscape.escapeCssIdentifier(name);
+		    }
 		}
 
 		/* (non-Javadoc)
