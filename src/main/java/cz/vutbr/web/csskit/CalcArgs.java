@@ -91,11 +91,14 @@ public class CalcArgs extends ArrayList<Term<?>> {
                     stack.push(op);
                     unary = true;
                 } else if (op.getValue() == ')') {
-                    TermOperator top = stack.pop();
-                    while (top != null && top.getValue() != '(') {
-                        add(top);
-                        top = stack.pop();
+                    if (!stack.isEmpty()) {
+                        TermOperator top = stack.pop();
+                        while (top != null && top.getValue() != '(' && !stack.isEmpty()) {
+                            add(top);
+                            top = stack.pop();
+                        }
                     }
+
                     unary = false;
                 } else {
                     valid = false;
