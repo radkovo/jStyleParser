@@ -18,6 +18,8 @@ public class GrammarRecovery3Test {
     public static final TermFactory tf = CSSFactory.getTermFactory();
 
     public static final String TEST_EXPR1 = "p { top:20px;top:expression(body.scrollTop + 50 + \"px\"); position:absolute;}";
+    public static final String TEST_EXPR2 = "p { top:calc(10px+10px)); position:absolute;}";
+    public static final String TEST_EXPR3 = "p { top:calc(10px+10px))); position:absolute;}";
 
     @BeforeClass
     public static void init() {
@@ -30,6 +32,21 @@ public class GrammarRecovery3Test {
         assertEquals("There are only two declarations", 2, ss.get(0).size());
         assertEquals("First property is top", "top", ((Declaration) ss.get(0).get(0)).getProperty());
         assertEquals("Top value is 20px", tf.createLength((float) 20.0, TermNumeric.Unit.px), ((Declaration) ss.get(0).get(0)).get(0));
+        assertEquals("Second property is position", "position", ((Declaration) ss.get(0).get(1)).getProperty());
+        assertEquals("Position is absolute", "absolute", ((Declaration) ss.get(0).get(1)).get(0).getValue());
+    }
+
+    @Test
+    public void calcParenthesisRecovery() throws IOException, CSSException {
+        StyleSheet ss = CSSFactory.parseString(TEST_EXPR2, null);
+        assertEquals("There are only two declarations", 2, ss.get(0).size());
+        assertEquals("First property is top", "top", ((Declaration) ss.get(0).get(0)).getProperty());
+        assertEquals("Second property is position", "position", ((Declaration) ss.get(0).get(1)).getProperty());
+        assertEquals("Position is absolute", "absolute", ((Declaration) ss.get(0).get(1)).get(0).getValue());
+
+        ss = CSSFactory.parseString(TEST_EXPR3, null);
+        assertEquals("There are only two declarations", 2, ss.get(0).size());
+        assertEquals("First property is top", "top", ((Declaration) ss.get(0).get(0)).getProperty());
         assertEquals("Second property is position", "position", ((Declaration) ss.get(0).get(1)).getProperty());
         assertEquals("Position is absolute", "absolute", ((Declaration) ss.get(0).get(1)).get(0).getValue());
     }
