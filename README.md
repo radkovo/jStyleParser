@@ -18,7 +18,7 @@ With Maven, use the following dependency:
 <dependency>
     <groupId>net.sf.cssbox</groupId>
     <artifactId>jstyleparser</artifactId>
-    <version>3.5</version>
+    <version>4.0.0</version>
 </dependency>
 ```
 
@@ -71,13 +71,39 @@ NodeData style = map.get(div); //get the style map for the element
 CSSProperty.Margin mm = style.getProperty("margin-top");
 System.out.println("margin-top=" + mm);
 //if a length is specified, obtain the exact value
-if (mm == Margin.length)
-{
+if (mm == Margin.length) {
     TermLength mtop = style.getValue(TermLength.class, "margin-top");
     System.out.println("value=" + mtop);
 }
 
 ```
+
+Multi-value properties
+----------------------
+
+Some properties (e.g. `background`) allow multiple values. In that case, the `NodeData` interface
+includes the `getListSize()` method for getting the number of values specified and the `getProperty()`
+and `getValue()` functions with an index argument:
+
+```java
+//get the style of a single element
+Element div = doc.getElementById("searchelement"); //choose a DOM element
+NodeData style = map.get(div); //get the style map for the element
+
+//get the number of background images specified for the element
+int bgcnt = style.getListSize("background-image", true);
+
+//read all images
+for (int index = 0; index < bgcnt; index++>) {
+    CSSProperty.BackgroundImage image = style.getProperty("background-image", index);
+    if (image == CSSProperty.BackgroundImage.uri) { //if the image is specified by its url
+        TermURI urlstring = style.getValue(TermURI.class, "background-image", index);
+        //... do something with the image url
+    }
+}
+
+```
+
 See the details in the [documentation](http://cssbox.sourceforge.net/jstyleparser/manual.php#dom).
 
 
