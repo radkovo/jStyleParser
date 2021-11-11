@@ -166,7 +166,7 @@ CHARSET
 	    if (tokencnt <= 1) //we are at the beginning of the style sheet
 	    {
 			    try {
-			           log.warn("Changing charset to {}", enc);
+			           log.debug("Changing charset to {}", enc);
 			          ((cz.vutbr.web.csskit.antlr.CSSInputStream) input).setEncoding(java.nio.charset.Charset.forName(enc));
 			          //input = setCharStream(new ANTLFileStream(input.getSourceName(), enc));
 			        }

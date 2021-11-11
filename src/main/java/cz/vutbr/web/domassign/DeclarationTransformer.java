@@ -243,10 +243,10 @@ public class DeclarationTransformer {
 						Declaration.class, Map.class, Map.class);
 				map.put(key, m);
 			} catch (Exception e) {
-				log.warn("Unable to find method for property {}.", key);
+				log.debug("Unable to find method for property {}.", key);
 			}
 		}
-		log.info("Totally found {} parsing methods", map.size());
+		log.debug("Totally found {} parsing methods", map.size());
 		return map;
 	}
 

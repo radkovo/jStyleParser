@@ -300,12 +300,12 @@ scope {
 	  {
 	    if (prf == null) {
 	      if (defaultNamespace != null)
-	        warn(n, "Default namespace already declared");
+	        debug(n, "Default namespace already declared");
 	      debug(n, "Declaring default namespace: url({})", ns);
 	      defaultNamespace = ns;
 	    } else {
 	      if (namespaces.containsKey(prf))
-	        warn(n, "Namespace for prefix {} already declared", prf);
+	        debug(n, "Namespace for prefix {} already declared", prf);
 	      debug(n, "Declaring namespace: {} url({})", prf, ns);
 	      namespaces.put(prf, ns);
 	    }
