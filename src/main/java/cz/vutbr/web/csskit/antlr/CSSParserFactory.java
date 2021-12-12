@@ -3,15 +3,19 @@ package cz.vutbr.web.csskit.antlr;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
+
 import org.fit.net.DataURLHandler;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.MediaQuery;
@@ -313,7 +317,7 @@ public class CSSParserFactory {
 		CSSInputStream input = getInput(source, cssReader);
 		CommonTokenStream tokens = feedLexer(input);
 		CommonTree ast = feedParser(tokens, source.type);
-		return feedAST(tokens, ast, preparator, media);
+		return feedAST(tokens, ast, preparator, media, null);
 	}
 
 	// initializer lexer
@@ -349,7 +353,11 @@ public class CSSParserFactory {
 	}
 
 	// initializes tree parser
-	private static CSSTreeParser feedAST(CommonTokenStream source, CommonTree ast, Preparator preparator, List<MediaQuery> media) 
+	private static CSSTreeParser feedAST(CommonTokenStream source,
+	                                     CommonTree ast,
+	                                     Preparator preparator,
+	                                     List<MediaQuery> media,
+	                                     Map<String,String> namespaces)
 	{
 		if (log.isTraceEnabled()) {
 			log.trace("Feeding tree parser with AST:\n{}", TreeUtil.toStringTree(ast));
@@ -359,7 +367,7 @@ public class CSSParserFactory {
 		// AST nodes have payloads that point into token stream
 		nodes.setTokenStream(source);
 		CSSTreeParser parser = new CSSTreeParser(nodes);
-		parser.init(preparator, media);
+		parser.init(preparator, media, namespaces);
 		return parser;
 	}
 
@@ -387,7 +395,7 @@ public class CSSParserFactory {
             CSSParser.media_return retval = parser.media();
             CommonTree ast = (CommonTree) retval.getTree();
             //tree parser
-            CSSTreeParser tparser = feedAST(tokens, ast, null, null);
+            CSSTreeParser tparser = feedAST(tokens, ast, null, null, null);
             return tparser.media();
         } catch (IOException e) {
             log.error("I/O error during media query parsing: {}", e.getMessage());
@@ -401,4 +409,29 @@ public class CSSParserFactory {
         }
 	}
 	
+	/**
+	 * Parses a selector from a string.
+	 *
+	 * @param namespaces The namespace bindings needed to parse selectors with namespace prefixes.
+	 */
+	public List<CombinedSelector> parseSelector(String selector, Map<String,String> namespaces)
+	{
+		try {
+			CSSInputStream input = CSSInputStream.newInstance(selector, null);
+			CommonTokenStream tokens = feedLexer(input);
+			CSSParser parser = new CSSParser(tokens);
+			parser.init();
+			CommonTree ast = (CommonTree)parser.combined_selector_list().getTree();
+			CSSTreeParser tparser = feedAST(tokens, ast, null, null, namespaces);
+			return tparser.combined_selector_list(); }
+		catch (IOException e) {
+			log.error("I/O error during selector parsing: {}", e.getMessage());
+			return null; }
+		catch (CSSException e) {
+			log.warn("Malformed selector {}", selector);
+			return null; }
+		catch (RecognitionException e) {
+			log.warn("Malformed selector {}", selector);
+			return null; }
+	}
 }

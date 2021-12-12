@@ -213,11 +213,11 @@ unknown_atrule
  }
 	
 ruleset
-	: combined_selector (COMMA S* combined_selector)* 
+	: combined_selector_list
 	  LCURLY S* 
 	  	declarations
 	  RCURLY
-	  -> ^(RULE combined_selector+ declarations)
+	  -> ^(RULE combined_selector_list declarations)
 	| norule -> INVALID_STATEMENT
 	;
 	catch [RecognitionException re] {
@@ -320,6 +320,10 @@ valuepart
       | LBRACE valuepart* RBRACE -> ^(BRACEBLOCK valuepart*)
     ) !S*
   ;
+
+combined_selector_list
+    : combined_selector (COMMA S* combined_selector)* -> combined_selector+
+    ;
 
 combined_selector    
 	: selector ((combinator) selector)*
