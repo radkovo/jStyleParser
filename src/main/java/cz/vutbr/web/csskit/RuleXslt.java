@@ -1,6 +1,7 @@
 package cz.vutbr.web.csskit;
 
 import java.net.URL;
+import java.util.Map;
 
 import cz.vutbr.web.css.Declaration;
 
@@ -8,10 +9,12 @@ public class RuleXslt extends AbstractRuleBlock<Declaration> {
 
 	public final String uri;
 	public final URL base;
+	public final Map<String,String> namespaces;
 
-	public RuleXslt(String uri, URL base) {
+	public RuleXslt(String uri, URL base, Map<String,String> namespaces) {
 		this.uri = uri;
 		this.base = base;
+		this.namespaces = namespaces;
 	}
 
 	@Override

@@ -287,10 +287,14 @@ scope {
 	  }
 	| ^(XSLT
 	      ( (u=URI {
-	            $stmnt = new cz.vutbr.web.csskit.RuleXslt(extractText(u), extractBase(u));
+	            $stmnt = new cz.vutbr.web.csskit.RuleXslt(extractText(u),
+	                                                      extractBase(u),
+	                                                      new java.util.HashMap<String,String>(namespaces));
 	        })
 	      | (s=STRING {
-	            $stmnt = new cz.vutbr.web.csskit.RuleXslt(extractTextUnescaped(s), extractBase(s));
+	            $stmnt = new cz.vutbr.web.csskit.RuleXslt(extractTextUnescaped(s),
+	                                                      extractBase(s),
+	                                                      new java.util.HashMap<String,String>(namespaces));
 	        })
 	      )
 	      (decls=declarations {
