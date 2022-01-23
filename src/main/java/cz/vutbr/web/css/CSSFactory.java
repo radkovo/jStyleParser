@@ -826,9 +826,9 @@ public final class CSSFactory {
                         }
 				}
 			} catch (CSSException ce) {
-				log.error("THROWN:", ce);
+				log.error(ce.getMessage(), ce);
 			} catch (IOException ioe) {
-				log.error("THROWN:", ioe);
+				log.error(ioe.getMessage(), ioe);
 			}
 
 		}
