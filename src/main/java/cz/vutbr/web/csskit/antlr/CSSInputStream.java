@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+import cz.vutbr.web.css.SourceLocator;
+
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CharStream;
@@ -215,10 +217,10 @@ public class CSSInputStream implements CharStream {
 	}
 	
 	/**
-	 * Obtain the source location for resolving relative URLs.
+	 * Obtain the source location for resolving relative URLs and for use in messages
 	 */
 	public SourceLocator getSourceLocator() {
-		int line = getLine();
+		int line = getLine() - 1;
 		int column = getCharPositionInLine();
 		SourceLocator loc = null;
 		if (sourceMap != null)
@@ -227,20 +229,13 @@ public class CSSInputStream implements CharStream {
 			loc = new SourceLocator() {
 				public URL getURL() { return base; }
 				public int getLineNumber() { return line; }
-				public int getColumnNumber() { return column; }};
+				public int getColumnNumber() { return column; }
+				@Override
+				public String toString() {
+					return ((base == null) ? "<internal>" : base.toString()) + ":" + line + ":" + column;
+				}
+				};
 		return loc;
-	}
-	
-	/**
-	 * Obtain the base URL for resolving relative URLs.
-	 */
-	public URL getBase() {
-		if (sourceMap != null) {
-			SourceLocator loc = sourceMap.floor(getLine(), getCharPositionInLine());
-			if (loc != null)
-				return loc.getURL();
-		}
-		return base;
 	}
 	
 	/**

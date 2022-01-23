@@ -85,10 +85,9 @@ options {
       return ct.getBase();
   }
     	
-  private cz.vutbr.web.css.Declaration.Source extractSource(CommonTree token) {
+  private cz.vutbr.web.css.SourceLocator extractSource(CommonTree token) {
       cz.vutbr.web.csskit.antlr.CSSToken ct = (cz.vutbr.web.csskit.antlr.CSSToken) token.getToken();
-      cz.vutbr.web.css.Declaration.Source src = new cz.vutbr.web.css.Declaration.Source(ct.getBase(), ct.getLine(), ct.getCharPositionInLine());
-      return src;
+      return ct.getSourceLocator();
   }   
 		
     private void logEnter(String entry) {

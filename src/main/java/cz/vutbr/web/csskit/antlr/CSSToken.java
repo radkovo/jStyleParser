@@ -4,6 +4,8 @@ import java.net.URL;
 import java.util.Map;
 import java.util.TreeMap;
 
+import cz.vutbr.web.css.SourceLocator;
+
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.Lexer;
@@ -29,8 +31,8 @@ public class CSSToken extends CommonToken {
 	 */
 	protected CSSLexerState ls;
 	
-	/** Base URL for URIs */
-	protected URL base;
+	/** Source location */
+	private final SourceLocator source;
 	
 	// token types
 	public static final int FUNCTION = 1;
@@ -49,9 +51,10 @@ public class CSSToken extends CommonToken {
 	 * @param start Start position in stream
 	 * @param stop End position in stream
 	 */
-	public CSSToken(CharStream input, int type, int channel, int start, int stop, Class<? extends Lexer> lexerClass) {
+	public CSSToken(CharStream input, int type, int channel, int start, int stop, Class<? extends Lexer> lexerClass, SourceLocator source) {
 		super(input, type, channel, start, stop);
 		typeMapper = new TypeMapper(CSSToken.class, lexerClass, "FUNCTION", "URI", "STRING", "CLASSKEYWORD", "HASH");
+		this.source = source;
 	}
 	
 	/**
@@ -73,7 +76,7 @@ public class CSSToken extends CommonToken {
 	 * @param stop End position in stream
 	 */
 	public CSSToken(int type, CSSLexerState state, int start, int stop, Class<? extends Lexer> lexerClass) {
-		this(null, type, Token.DEFAULT_CHANNEL, start, stop, lexerClass);
+		this(null, type, Token.DEFAULT_CHANNEL, start, stop, lexerClass, null);
 		this.ls = new CSSLexerState(state);
 	}
 
@@ -96,24 +99,20 @@ public class CSSToken extends CommonToken {
 	}
 
 	/**
-	 * Obtains the base URL used for the relative URIs
-	 * @return the URL or null if not set
+	 * Obtains the source location for resolving relative URLs and for use in messages
 	 */
-	public URL getBase()
-    {
-        return base;
-    }
+	public SourceLocator getSourceLocator() {
+		return source;
+	}
 
 	/**
-	 * Sets the base URL used for the relative URIs
-	 * @param base the base URL to set
+	 * Obtains the base URL for resolving relative URLs
 	 */
-    public void setBase(URL base)
-    {
-        this.base = base;
-    }
+	public URL getBase() {
+		return source == null ? null : source.getURL();
+	}
 
-    /**
+	/**
 	 * Considers text as content of STRING token,
 	 * and models view at this text as an common string,
 	 * that is one character removed from the both beginning

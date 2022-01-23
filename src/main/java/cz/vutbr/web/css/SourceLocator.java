@@ -1,4 +1,4 @@
-package cz.vutbr.web.csskit.antlr;
+package cz.vutbr.web.css;
 
 import java.net.URL;
 

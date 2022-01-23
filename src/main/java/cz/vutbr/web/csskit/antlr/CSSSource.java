@@ -45,6 +45,16 @@ public class CSSSource {
 	public URL base;
 
 	/**
+	 * Line number of the first character.
+	 */
+	public int lineOffset = 0;
+
+	/**
+	 * Column number of the first character.
+	 */
+	public int columnOffset = 0;
+
+	/**
 	 * The media type as specified on the <code>style</code> or <code>link</code> element
 	 * ("text/css", "text/x-scss", ...), or <code>null</code> if not specified.
 	 */
@@ -57,11 +67,15 @@ public class CSSSource {
 		this.base = base;
 	}
 
-	public CSSSource(String source, String mediaType, URL base) {
+	public CSSSource(String source, String mediaType, URL base, int lineOffset, int columnOffset) {
 		this.type = SourceType.EMBEDDED;
 		this.source = source;
 		this.mediaType = mediaType;
 		this.base = base;
+		if (lineOffset > 0)
+			this.lineOffset = lineOffset;
+		if (columnOffset > 0)
+			this.columnOffset = columnOffset;
 	}
 
 	public CSSSource(URL source, Charset encoding, String mediaType) {

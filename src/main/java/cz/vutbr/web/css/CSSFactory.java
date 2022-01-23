@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.function.Function;
 
 import org.fit.net.DataURLHandler;
 import org.slf4j.Logger;
@@ -496,7 +497,7 @@ public final class CSSFactory {
             CSSException {
         if (base == null)
             base = new URL("file:///base/url/is/not/specified"); //prevent errors if there are still some relative URLs used
-        return getCSSParserFactory().parse(new CSSSource(css, (String)null, base), cssReader);
+        return getCSSParserFactory().parse(new CSSSource(css, (String)null, base, 0, 0), cssReader);
     }
     
     /**
@@ -524,10 +525,37 @@ public final class CSSFactory {
      */
     public static final StyleSheet getUsedStyles(Document doc, Charset encoding, URL base, MediaSpec media, CSSSourceReader cssReader, StyleSheet style)
     {
+        return getUsedStyles(
+            doc,
+            encoding,
+            node -> new SourceLocator() {
+                    public URL getURL() {
+                        return base;
+                    }
+                    public int getLineNumber() {
+                        return 0;
+                    }
+                    public int getColumnNumber() {
+                        return 0;
+                    }
+                },
+            media,
+            cssReader,
+            style);
+    }
+
+    /**
+     * @param nodeLocator
+     *            Function to get a node's location (base URL, line number and column number)
+     */
+    public static final StyleSheet getUsedStyles(Document doc, Charset encoding, Function<Node,SourceLocator> nodeLocator,
+                                                 MediaSpec media, CSSSourceReader cssReader, StyleSheet style)
+    {
+        URL base = nodeLocator.apply(doc).getURL();
         SourceData pair = new SourceData(base, cssReader, media);
 
         Traversal<StyleSheet> traversal = new CSSAssignTraversal(doc, encoding,
-                (Object) pair, NodeFilter.SHOW_ELEMENT);
+                (Object) pair, NodeFilter.SHOW_ELEMENT, nodeLocator);
 
         traversal.listTraversal(style);
         return style;
@@ -705,14 +733,9 @@ public final class CSSFactory {
     public static final StyleMap assignDOM(Document doc, Charset encoding, CSSSourceReader cssReader,
             URL base, MediaSpec media, boolean useInheritance, final MatchCondition matchCond) {
 
-        SourceData pair = new SourceData(base, cssReader, media);
-
-        Traversal<StyleSheet> traversal = new CSSAssignTraversal(doc, encoding,
-                (Object) pair, NodeFilter.SHOW_ELEMENT);
-
         StyleSheet style = (StyleSheet) getRuleFactory().createStyleSheet()
                 .unlock();
-        traversal.listTraversal(style);
+        style = getUsedStyles(doc, encoding, base, media, cssReader, style);
 
         Analyzer analyzer = new Analyzer(style);
         if (matchCond != null) {
@@ -764,10 +787,12 @@ public final class CSSFactory {
 
 		private CSSParserFactory pf = getCSSParserFactory();
 	    private Charset encoding;
+		private final Function<Node,SourceLocator> nodeLocator;
 	    
-		public CSSAssignTraversal(Document doc, Charset encoding, Object source, int whatToShow) {
+		public CSSAssignTraversal(Document doc, Charset encoding, Object source, int whatToShow, Function<Node,SourceLocator> nodeLocator) {
 			super(doc, source, whatToShow);
 			this.encoding = encoding;
+			this.nodeLocator = nodeLocator;
 		}
 
 		@Override
@@ -783,10 +808,11 @@ public final class CSSFactory {
 			try {
 				// embedded style-sheet
 				if (isEmbeddedStyleSheet(elem, media)) {
+					SourceLocator loc = nodeLocator.apply(elem);
 					String mediaType = getMediaType(elem);
 					if (cssReader.supportsMediaType(mediaType, null)) {
 						result = pf.append(
-							new CSSSource(extractElementText(elem), mediaType, base),
+							new CSSSource(extractElementText(elem), mediaType, base, loc.getLineNumber(), loc.getColumnNumber()),
 							cssReader,
 							result);
 						log.debug("Matched embedded CSS style");

@@ -1,5 +1,7 @@
 package cz.vutbr.web.csskit.antlr;
 
+import cz.vutbr.web.css.SourceLocator;
+
 /**
  * Associates locations within a {@link CSSInputStream} with locations within the sources from which
  * the {@link CSSInputStream} was read or compiled.
