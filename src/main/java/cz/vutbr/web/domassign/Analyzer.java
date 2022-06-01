@@ -29,6 +29,7 @@ import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.Selector.PseudoElement;
 import cz.vutbr.web.css.StyleSheet;
+import cz.vutbr.web.css.SupportedCSS;
 import cz.vutbr.web.csskit.ElementUtil;
 
 /**
@@ -44,6 +45,9 @@ import cz.vutbr.web.csskit.ElementUtil;
 public class Analyzer {
 
 	private static final Logger log = LoggerFactory.getLogger(Analyzer.class);
+
+	private final DeclarationTransformer transformer;
+	private final SupportedCSS css;
 
 	/** The style sheets to be processed. */
 	protected List<StyleSheet> sheets;
@@ -64,16 +68,26 @@ public class Analyzer {
 	 * @param sheet The stylesheet that will be used as the source of rules.
 	 */
 	public Analyzer(StyleSheet sheet) {
-	    sheets = new ArrayList<StyleSheet>(1);
-	    sheets.add(sheet);
+		this(sheet, CSSFactory.getDeclarationTransformer(), CSSFactory.getSupportedCSS());
 	}
 
+	public Analyzer(StyleSheet sheet, DeclarationTransformer transformer, SupportedCSS css) {
+		this(new ArrayList<StyleSheet>(1), transformer, css);
+		sheets.add(sheet);
+	}
+	
 	/**
 	 * Creates the analyzer for multiple style sheets.
 	 * @param sheets A list of stylesheets that will be used as the source of rules.
 	 */
 	public Analyzer(List<StyleSheet> sheets) {
-	    this.sheets = sheets;
+		this(sheets, CSSFactory.getDeclarationTransformer(), CSSFactory.getSupportedCSS());
+	}
+	
+	public Analyzer(List<StyleSheet> sheets, DeclarationTransformer transformer, SupportedCSS css) {
+		this.sheets = sheets;
+		this.transformer = transformer;
+		this.css = css;
 	}
 	
 	/**
@@ -115,7 +129,7 @@ public class Analyzer {
 	public StyleMap evaluateDOM(Document doc, MediaSpec media, final boolean inherit, final boolean inheritPseudo) {
 		DeclarationMap declarations = assingDeclarationsToDOM(doc, media, inherit);
 
-		StyleMap nodes = new StyleMap(declarations.size());
+		StyleMap nodes = new StyleMap(declarations.size(), transformer, css);
 
 		Traversal<StyleMap> traversal = new Traversal<StyleMap>(
 				doc, (Object) declarations, NodeFilter.SHOW_ELEMENT) {
@@ -123,7 +137,7 @@ public class Analyzer {
 			@Override
 			protected void processNode(StyleMap result, Node current, Object source) {
 
-			    NodeData main = CSSFactory.createNodeData();
+			    NodeData main = CSSFactory.createNodeData(transformer, css);
 			    
 				// for all declarations available in the main list (pseudo=null)
 				List<Declaration> declarations = ((DeclarationMap) source).get((Element) current, null);
@@ -141,7 +155,7 @@ public class Analyzer {
 				//repeat for the pseudo classes (if any)
 				for (PseudoElement pseudo : ((DeclarationMap) source).pseudoSet((Element) current))
 				{
-				    NodeData pdata = CSSFactory.createNodeData();
+				    NodeData pdata = CSSFactory.createNodeData(transformer, css);
 	                declarations = ((DeclarationMap) source).get((Element) current, pseudo);
 	                if (declarations != null) 
 	                {

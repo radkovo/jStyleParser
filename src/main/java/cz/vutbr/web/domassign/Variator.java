@@ -51,6 +51,8 @@ public abstract class Variator {
 	 */
 	protected List<Term<?>> terms;
 
+	private final SupportedCSS css;
+
 	/**
 	 * Creates variator which contains <code>variants</code> variants to be
 	 * tested
@@ -58,7 +60,12 @@ public abstract class Variator {
 	 * @param variants
 	 */
 	public Variator(int variants) {
+		this(variants, CSSFactory.getSupportedCSS());
+	}
+
+	public Variator(int variants, SupportedCSS css) {
 		this.variants = variants;
+		this.css = css;
 		this.variantPassed = new boolean[variants];
 		for (int i = 0; i < variants; i++)
 			variantPassed[i] = false;
@@ -346,7 +353,6 @@ public abstract class Variator {
 	 * @param values
 	 */
 	public void assignDefaults(Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-	    SupportedCSS css = CSSFactory.getSupportedCSS();
 	    for (String name : names) {
 	        CSSProperty dp = css.getDefaultProperty(name);
 	        if (dp != null)

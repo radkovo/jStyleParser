@@ -358,6 +358,10 @@ public final class CSSFactory {
 	 * @return Instance of NodeData
 	 */
 	public static final NodeData createNodeData() {
+		return createNodeData(getDeclarationTransformer(), getSupportedCSS());
+	}
+	
+	public static final NodeData createNodeData(DeclarationTransformer transformer, SupportedCSS css) {
 		if (ndImpl == null) {
 			try {
 				@SuppressWarnings("unchecked")
@@ -371,7 +375,8 @@ public final class CSSFactory {
 		}
 
 		try {
-			return ndImpl.newInstance();
+			return ndImpl.getDeclaredConstructor(DeclarationTransformer.class, SupportedCSS.class)
+			             .newInstance(transformer, css);
 		} catch (Exception e) {
 			throw new RuntimeException("No NodeData implementation registered");
 		}

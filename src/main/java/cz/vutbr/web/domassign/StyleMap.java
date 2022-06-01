@@ -10,6 +10,7 @@ import org.w3c.dom.Element;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.Selector.PseudoElement;
+import cz.vutbr.web.css.SupportedCSS;
 
 /**
  * This is a map that assigns a style to a particular elements and moreover, it
@@ -20,15 +21,23 @@ import cz.vutbr.web.css.Selector.PseudoElement;
 public class StyleMap extends MultiMap<Element, PseudoElement, NodeData>
 {
 
-	public StyleMap(int size)
-	{
+	private final DeclarationTransformer transformer;
+	private final SupportedCSS css;
+
+	public StyleMap(int size) {
+		this(size, CSSFactory.getDeclarationTransformer(), CSSFactory.getSupportedCSS());
+	}
+
+	public StyleMap(int size, DeclarationTransformer transformer, SupportedCSS css) {
 		super(size);
+		this.transformer = transformer;
+		this.css = css;
 	}
 
 	@Override
 	protected NodeData createDataInstance()
 	{
-		return CSSFactory.createNodeData();
+		return CSSFactory.createNodeData(transformer, css);
 	}
     
 }

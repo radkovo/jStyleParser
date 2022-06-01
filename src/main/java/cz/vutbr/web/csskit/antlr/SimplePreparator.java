@@ -26,14 +26,19 @@ public class SimplePreparator implements Preparator {
 	protected static final Logger log = LoggerFactory
 			.getLogger(SimplePreparator.class);
 
-	protected RuleFactory rf = CSSFactory.getRuleFactory();
+	private final RuleFactory rf;
 
 	public final Element elem;
 	private boolean inlinePriority;
 
 	public SimplePreparator(Element e, boolean inlinePriority) {
+		this(e, inlinePriority, CSSFactory.getRuleFactory());
+	}
+
+	public SimplePreparator(Element e, boolean inlinePriority, RuleFactory rf) {
 		this.elem = e;
 		this.inlinePriority = inlinePriority;
+		this.rf = rf;
 	}
 
 	public RuleBlock<?> prepareRuleSet(List<CombinedSelector> cslist,

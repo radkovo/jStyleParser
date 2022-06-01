@@ -30,8 +30,8 @@ public class QuadrupleMapNodeData implements NodeData {
 
 	private static final int COMMON_DECLARATION_SIZE = 7;
 	
-	protected static DeclarationTransformer transformer = CSSFactory.getDeclarationTransformer();
-	protected static SupportedCSS css = CSSFactory.getSupportedCSS();
+	private final DeclarationTransformer transformer;
+	private final SupportedCSS css;
 
 	private Map<String,CSSProperty> propertiesOwn;
 	private Map<String,CSSProperty> propertiesInh;
@@ -41,6 +41,12 @@ public class QuadrupleMapNodeData implements NodeData {
     private Map<String,Declaration> sourcesInh;
 	
 	public QuadrupleMapNodeData() {
+		this(CSSFactory.getDeclarationTransformer(), CSSFactory.getSupportedCSS());
+	}
+
+	public QuadrupleMapNodeData(DeclarationTransformer transformer, SupportedCSS css) {
+		this.transformer = transformer;
+		this.css = css;
 		this.propertiesOwn = new HashMap<String, CSSProperty>(css.getTotalProperties(), 1.0f);
 		this.propertiesInh = new HashMap<String, CSSProperty>(css.getTotalProperties(), 1.0f);
 		this.valuesOwn = new HashMap<String, Term<?>>(css.getTotalProperties(), 1.0f);

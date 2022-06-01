@@ -40,7 +40,9 @@ public abstract class Repeater {
 	 * Which property is used to repeat
 	 */
 	protected Class<? extends CSSProperty> type;
-	
+
+	private final SupportedCSS css;
+
 	/**
 	 * Constructor
 	 * 
@@ -48,7 +50,12 @@ public abstract class Repeater {
 	 *            Number of iterations
 	 */
 	public Repeater(int times) {
+		this(times, CSSFactory.getSupportedCSS());
+	}
+
+	public Repeater(int times, SupportedCSS css) {
 		this.times = times;
+		this.css = css;
 		this.terms = new ArrayList<Term<?>>(times);
 		this.names = new ArrayList<String>(times);
 	}
@@ -198,7 +205,6 @@ public abstract class Repeater {
      * @param values
      */
     public void assignDefaults(Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
-        SupportedCSS css = CSSFactory.getSupportedCSS();
         for (String name : names) {
             CSSProperty dp = css.getDefaultProperty(name);
             if (dp != null)

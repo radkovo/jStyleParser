@@ -26,12 +26,18 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 
 	private static final int COMMON_DECLARATION_SIZE = 7;
 	
-	protected DeclarationTransformer transformer = CSSFactory.getDeclarationTransformer();
-	protected SupportedCSS css = CSSFactory.getSupportedCSS();
+	private final DeclarationTransformer transformer;
+	private final SupportedCSS css;
 	
 	protected Map<String, Quadruple> map;
 	
 	public SingleMapNodeData() {
+		this(CSSFactory.getDeclarationTransformer(), CSSFactory.getSupportedCSS());
+	}
+
+	public SingleMapNodeData(DeclarationTransformer transformer, SupportedCSS css) {
+		this.transformer = transformer;
+		this.css = css;
 		this.map = new HashMap<String, Quadruple>(css.getTotalProperties(), 1.0f);
 	}
 	

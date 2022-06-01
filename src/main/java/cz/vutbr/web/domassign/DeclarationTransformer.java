@@ -132,7 +132,7 @@ public class DeclarationTransformer {
 	private static final DeclarationTransformer instance;
 
 	protected static final TermFactory tf = CSSFactory.getTermFactory();
-	protected final SupportedCSS css = CSSFactory.getSupportedCSS();
+	protected final SupportedCSS css;
 
 	static {
 		instance = new DeclarationTransformer();
@@ -224,10 +224,12 @@ public class DeclarationTransformer {
 		return false;
 	}
 
-	/**
-	 * Sole constructor
-	 */
-	protected DeclarationTransformer() {
+	public DeclarationTransformer() {
+		this(CSSFactory.getSupportedCSS());
+	}
+
+	public DeclarationTransformer(SupportedCSS css) {
+		this.css = css;
 		this.methods = parsingMethods();
 	}
 
@@ -1773,7 +1775,7 @@ public class DeclarationTransformer {
 		 * "list-style-position" };
 		 */
 		public ListStyleVariator() {
-			super(3);
+			super(3, css);
 			names.add("list-style-type");
 			types.add(ListStyleType.class);
 			names.add("list-style-position");
@@ -1829,7 +1831,7 @@ public class DeclarationTransformer {
 		public static final int WIDTH = 2;
 
 		public BorderSideVariator(String side) {
-			super(3);
+			super(3, css);
 			names.add("border-" + side + "-color");
 			types.add(BorderColor.class);
 			names.add("border-" + side + "-style");
@@ -1888,7 +1890,7 @@ public class DeclarationTransformer {
 		public static final int WIDTH = 2;
 
 		public OutlineVariator() {
-			super(3);
+			super(3, css);
 			names.add("outline-color");
 			types.add(OutlineColor.class);
 			names.add("outline-style");
@@ -1955,7 +1957,7 @@ public class DeclarationTransformer {
 		public static final int FAMILY = 5;
 
 		public FontVariator() {
-			super(6);
+			super(6, css);
 			names.add("font-style");
 			types.add(FontStyle.class);
 			names.add("font-variant");
@@ -2224,7 +2226,7 @@ public class DeclarationTransformer {
 		public static final int SIZE = 5;
 
 		public BackgroundVariator() {
-			super(6);
+			super(6, css);
 			names.add("background-color");
 			types.add(BackgroundColor.class);
 			names.add("background-image");
@@ -2449,7 +2451,7 @@ public class DeclarationTransformer {
 		private List<Repeater> repeaters;
 
 		public BorderVariator() {
-			super(3);
+			super(3, css);
 			types.add(BorderWidth.class);
 			types.add(BorderStyle.class);
 			types.add(BorderColor.class);
@@ -2534,7 +2536,7 @@ public class DeclarationTransformer {
 	private final class BorderStyleRepeater extends Repeater {
 
 		public BorderStyleRepeater() {
-			super(4);
+			super(4, css);
 			this.type = BorderStyle.class;
 			names.add("border-top-style");
 			names.add("border-right-style");
@@ -2559,7 +2561,7 @@ public class DeclarationTransformer {
 	private final class BorderColorRepeater extends Repeater {
 
 		public BorderColorRepeater() {
-			super(4);
+			super(4, css);
 			this.type = BorderColor.class;
 			names.add("border-top-color");
 			names.add("border-right-color");
@@ -2585,7 +2587,7 @@ public class DeclarationTransformer {
 	private final class BorderWidthRepeater extends Repeater {
 
 		public BorderWidthRepeater() {
-			super(4);
+			super(4, css);
 			this.type = BorderWidth.class;
 			names.add("border-top-width");
 			names.add("border-right-width");
@@ -2611,7 +2613,7 @@ public class DeclarationTransformer {
     private final class BorderRadiusRepeater extends Repeater {
 
         public BorderRadiusRepeater() {
-            super(4);
+            super(4, css);
             this.type = BorderRadius.class;
             names.add("border-top-left-radius");
             names.add("border-top-right-radius");
@@ -2759,7 +2761,7 @@ public class DeclarationTransformer {
 	private final class MarginRepeater extends Repeater {
 
 		public MarginRepeater() {
-			super(4);
+			super(4, css);
 			this.type = Margin.class;
 			names.add("margin-top");
 			names.add("margin-right");
@@ -2792,7 +2794,7 @@ public class DeclarationTransformer {
 	private final class PaddingRepeater extends Repeater {
 
 		public PaddingRepeater() {
-			super(4);
+			super(4, css);
 			names.add("padding-top");
 			names.add("padding-right");
 			names.add("padding-bottom");
