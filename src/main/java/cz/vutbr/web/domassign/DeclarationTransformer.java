@@ -1147,7 +1147,7 @@ public class DeclarationTransformer {
 	}
 
 	@SuppressWarnings("unused")
-	private boolean processCounterIncrement(Declaration d,
+	protected boolean processCounterIncrement(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
 		if (d.size() == 1
@@ -1187,7 +1187,7 @@ public class DeclarationTransformer {
 	}
 
 	@SuppressWarnings("unused")
-	private boolean processCounterReset(Declaration d,
+	protected boolean processCounterReset(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
 		if (d.size() == 1 && genericOneIdent(CounterReset.class, d, properties)) {
@@ -1226,7 +1226,7 @@ public class DeclarationTransformer {
 	}
 	
 	@SuppressWarnings("unused")
-	private boolean processCounterSet(Declaration d,
+	protected boolean processCounterSet(Declaration d,
 			Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
 
 		if (d.size() == 1 && genericOneIdent(CounterSet.class, d, properties)) {
@@ -1255,7 +1255,7 @@ public class DeclarationTransformer {
 			if (!termList.isEmpty()) {
 				TermList list = tf.createList(termList.size());
 				list.addAll(termList);
-				properties.put("counter-set", CounterReset.list_values);
+				properties.put("counter-set", CounterSet.list_values);
 				values.put("counter-set", list);
 				return true;
 			}
