@@ -52,39 +52,14 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 		
 		Quadruple q = map.get(name);
 		if(q==null) return null;
-		
-		CSSProperty tmp;
-		
-		if(includeInherited) {
-			if(q.curProp!=null) tmp = q.curProp;
-			else tmp = q.inhProp;
-		}
-		else {
-			tmp = q.curProp;
-		}
-		
-		// this will cast to inferred type
-		// if there is no inferred type, cast to CSSProperty is safe
-		// otherwise the possibility having wrong left side of assignment
-		// is roughly the same as use wrong dynamic class cast 
-		@SuppressWarnings("unchecked")
-		T retval = (T) tmp;
-		return retval;
-		
+		return q.getProperty(includeInherited);
 	}
 
     public Term<?> getValue(String name, boolean includeInherited) {
         
         Quadruple q = map.get(name);
-        if(q==null) return null;
-        
-        if(includeInherited) {
-            if(q.curValue!=null) return q.curValue;
-            if(q.curProp!=null) return null;
-            return q.inhValue;
-        }
-        
-        return q.curValue;
+        if (q==null) return null;
+        else return q.getValue(includeInherited);
     }
     
 	public <T extends Term<?>> T getValue(Class<T> clazz, String name) {
@@ -119,7 +94,7 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 		
 		for(String key: properties.keySet()) {
 			Quadruple q = map.get(key);
-			if(q==null) q = new Quadruple();
+			if(q==null) q = new Quadruple(css, key);
 			q.curProp = properties.get(key);
 			q.curValue = terms.get(key);
 			q.curSource = d;
@@ -136,20 +111,7 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 	public NodeData concretize() {
 		
 		for(String key: map.keySet()) {
-			Quadruple q = map.get(key);
-			
-			// replace current with inherited or defaults
-			if(q.curProp!=null && q.curProp.equalsInherit()) {
-				if(q.inhProp==null) q.curProp = css.getDefaultProperty(key);
-				else {
-				    q.curProp = q.inhProp;
-				    q.curSource = q.inhSource;
-				}
-				
-				if(q.inhValue==null) q.curValue = css.getDefaultValue(key);
-				else q.curValue = q.inhValue;
-			}
-			map.put(key, q);
+			map.get(key).concretize();
 		}
 		return this;
 	}
@@ -173,23 +135,10 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 			
 			// create new quadruple if this do not contain one
 			// for this property
-			if(q==null) q = new Quadruple();
+			if(q==null) q = new Quadruple(css, key);
 			
-			boolean forceInherit = (q.curProp != null && q.curProp.equalsInherit());
+			q.inheritFrom(qp);
 			
-			//try the inherited value of the parent
-			if(qp.inhProp!=null && (qp.inhProp.inherited() || forceInherit)) {
-				q.inhProp = qp.inhProp;
-				q.inhValue = qp.inhValue;
-				q.inhSource = qp.inhSource;
-			}
-			
-			//try the declared property of the parent
-			if(qp.curProp!=null && (qp.curProp.inherited() || forceInherit)) {
-				q.inhProp = qp.curProp;
-				q.inhValue = qp.curValue;
-                q.inhSource = qp.curSource;
-			}
 			// insert/replace only if contains inherited/original 
 			// value			
 			if(!q.isEmpty())
@@ -249,14 +198,7 @@ public class SingleMapNodeData implements NodeData, Cloneable {
         if (q == null)
             return null;
         else
-        {
-            if(includeInherited) {
-                if(q.curSource!=null) return q.curSource;
-                return q.inhSource;
-            }
-            else
-                return q.curSource;
-        }
+            return q.getSourceDeclaration(includeInherited);
     }
 
 	@Override
@@ -274,15 +216,89 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 		return clone;
 	}
 	
-	static class Quadruple implements Cloneable {
-		CSSProperty inhProp = null;
-		CSSProperty curProp = null;
-		Term<?> inhValue = null;
-		Term<?> curValue = null;
-		Declaration inhSource = null;
-        Declaration curSource = null;
+	public static class Quadruple implements Cloneable {
+		protected CSSProperty inhProp = null;
+		protected CSSProperty curProp = null;
+		protected Term<?> inhValue = null;
+		protected Term<?> curValue = null;
+		protected Declaration inhSource = null;
+        protected Declaration curSource = null;
+		private final SupportedCSS css;
+		private final String key;
 		
-		public Quadruple() {			
+		public Quadruple(SupportedCSS css, String key) {
+			this.css = css;
+			this.key = key;
+		}
+		
+		public <T extends CSSProperty> T getProperty(boolean includeInherited) {
+			CSSProperty prop; {
+				if (curProp != null)
+					prop = curProp;
+				else if (includeInherited)
+					prop = inhProp;
+				else
+					prop = null;
+			}
+			// this will cast to inferred type
+			// if there is no inferred type, cast to CSSProperty is safe
+			// otherwise the possibility having wrong left side of assignment
+			// is roughly the same as use wrong dynamic class cast
+			@SuppressWarnings("unchecked")
+			T retval = (T)prop;
+			return retval;
+		}
+		
+		public Term<?> getValue(boolean includeInherited) {
+			if (curValue != null)
+				return curValue;
+			else if (curProp != null)
+				return null;
+			else if (includeInherited)
+				return inhValue;
+			else
+				return null;
+		}
+		
+		public Declaration getSourceDeclaration(boolean includeInherited) {
+			if (curSource != null)
+				return curSource;
+			else if (includeInherited)
+				return inhSource;
+			else
+				return null;
+		}
+		
+		public void concretize() {
+			// replace current with inherited or defaults
+			if (curProp != null && curProp.equalsInherit()) {
+				if (inhProp != null) {
+					curProp = inhProp;
+					curSource = inhSource;
+				} else {
+					curProp = css.getDefaultProperty(key);
+				}
+				if (inhValue != null)
+					curValue = inhValue;
+				else
+					curValue = css.getDefaultValue(key);
+			}
+		}
+		
+		public void inheritFrom(Quadruple parent) {
+			boolean forceInherit = curProp != null && curProp.equalsInherit();
+			// try the inherited value of the parent
+			if (parent.inhProp != null && (parent.inhProp.inherited() || forceInherit)) {
+				inhProp = parent.inhProp;
+				inhValue = parent.inhValue;
+				inhSource = parent.inhSource;
+			}
+			// try the declared property of the parent
+			if (parent.curProp != null && (parent.curProp.inherited() || forceInherit)) {
+				inhProp = parent.curProp;
+				inhValue = parent.curValue;
+				inhSource = parent.curSource;
+			}
 		}
 		
 		public boolean isEmpty() {
