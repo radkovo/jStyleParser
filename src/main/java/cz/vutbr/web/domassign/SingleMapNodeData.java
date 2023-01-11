@@ -223,6 +223,7 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 		protected Term<?> curValue = null;
 		protected Declaration inhSource = null;
         protected Declaration curSource = null;
+		private Quadruple defaultValue = null;
 		private final SupportedCSS css;
 		private final String key;
 		
@@ -274,14 +275,16 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 			if (curProp != null && curProp.equalsInherit()) {
 				if (inhProp != null) {
 					curProp = inhProp;
+					curValue = inhValue;
 					curSource = inhSource;
+				} else if (defaultValue != null) {
+					curProp = defaultValue.curProp;
+					curValue = defaultValue.curValue;
 				} else {
 					curProp = css.getDefaultProperty(key);
-				}
-				if (inhValue != null)
-					curValue = inhValue;
-				else
 					curValue = css.getDefaultValue(key);
+					defaultValue = this;
+				}
 			}
 		}
 		
@@ -299,6 +302,17 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 				inhValue = parent.curValue;
 				inhSource = parent.curSource;
 			}
+		}
+		
+		public Quadruple getDefault() {
+			if (defaultValue == null) {
+				defaultValue = new Quadruple(css, key);
+				defaultValue.curProp = css.getDefaultProperty(key);
+				defaultValue.curValue = css.getDefaultValue(key);
+				defaultValue.curSource = null;
+				defaultValue.defaultValue = defaultValue;
+			}
+			return defaultValue;
 		}
 		
 		public boolean isEmpty() {
