@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 	public SingleMapNodeData(DeclarationTransformer transformer, SupportedCSS css) {
 		this.transformer = transformer;
 		this.css = css;
-		this.map = new HashMap<String, Quadruple>(css.getTotalProperties(), 1.0f);
+		this.map = new HashMap<String, Quadruple>(css != null ? css.getTotalProperties() : 16, 1.0f);
 	}
 	
 	public <T extends CSSProperty> T getProperty(String name) {
@@ -109,9 +110,13 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 	}
 	
 	public NodeData concretize() {
-		
-		for(String key: map.keySet()) {
-			map.get(key).concretize();
+		Iterator<Map.Entry<String,Quadruple>> entries = map.entrySet().iterator();
+		while (entries.hasNext()) {
+			Quadruple q = entries.next().getValue();
+			q.concretize();
+			if (q.isEmpty())
+				// default unknown
+				entries.remove();
 		}
 		return this;
 	}
@@ -135,7 +140,7 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 			
 			// create new quadruple if this do not contain one
 			// for this property
-			if(q==null) q = new Quadruple(css, key);
+			if(q==null) q = new Quadruple(qp.getDefault());
 			
 			q.inheritFrom(qp);
 			
@@ -210,7 +215,7 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 				throw new InternalError("coding error");
 			}
 		}
-		clone.map = new HashMap<String,Quadruple>(css.getTotalProperties(), 1.0f);
+		clone.map = new HashMap<String,Quadruple>(css != null ? css.getTotalProperties() : 16, 1.0f);
 		for (String key : map.keySet())
 			clone.map.put(key, (Quadruple)map.get(key).clone());
 		return clone;
@@ -227,9 +232,28 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 		private final SupportedCSS css;
 		private final String key;
 		
+		public Quadruple() {
+			this.css = null;
+			this.key = null;
+		}
+		
 		public Quadruple(SupportedCSS css, String key) {
+			if (css == null || key == null)
+				throw new IllegalArgumentException();
 			this.css = css;
 			this.key = key;
+		}
+		
+		/**
+		 * @param defaultValue assumed to be immutable
+		 */
+		public Quadruple(Quadruple defaultValue) {
+			if (defaultValue == null)
+				throw new IllegalArgumentException();
+			this.defaultValue = defaultValue;
+			// these variables will not be used
+			this.css = null;
+			this.key = null;
 		}
 		
 		public <T extends CSSProperty> T getProperty(boolean includeInherited) {
@@ -280,9 +304,13 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 				} else if (defaultValue != null) {
 					curProp = defaultValue.curProp;
 					curValue = defaultValue.curValue;
-				} else {
+				} else if (css != null) {
 					curProp = css.getDefaultProperty(key);
 					curValue = css.getDefaultValue(key);
+					defaultValue = this;
+				} else {
+					// default not known
+					curProp = null;
 					defaultValue = this;
 				}
 			}
@@ -306,9 +334,13 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 		
 		public Quadruple getDefault() {
 			if (defaultValue == null) {
-				defaultValue = new Quadruple(css, key);
-				defaultValue.curProp = css.getDefaultProperty(key);
-				defaultValue.curValue = css.getDefaultValue(key);
+				if (css != null) {
+					defaultValue = new Quadruple(css, key);
+					defaultValue.curProp = css.getDefaultProperty(key);
+					defaultValue.curValue = css.getDefaultValue(key);
+				} else {
+					defaultValue = new Quadruple();
+				}
 				defaultValue.curSource = null;
 				defaultValue.defaultValue = defaultValue;
 			}
