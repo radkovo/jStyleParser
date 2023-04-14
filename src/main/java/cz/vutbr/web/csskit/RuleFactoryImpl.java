@@ -9,6 +9,7 @@ import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.MediaExpression;
 import cz.vutbr.web.css.MediaQuery;
+import cz.vutbr.web.css.MediaQueryList;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleFontFace;
 import cz.vutbr.web.css.RuleImport;
@@ -75,6 +76,10 @@ public class RuleFactoryImpl implements RuleFactory {
 	 */
 	public RuleMedia createMedia() {
 		return new RuleMediaImpl();
+	}
+
+	public MediaQueryList createMediaQueryList() {
+	    return new MediaQueryListImpl();
 	}
 
 	public MediaQuery createMediaQuery() {

@@ -1,11 +1,13 @@
 package cz.vutbr.web.csskit;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import cz.vutbr.web.css.MediaQuery;
+import cz.vutbr.web.css.MediaQueryList;
+import cz.vutbr.web.css.PrettyOutput;
+import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleMedia;
-import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.StyleSheet;
 
 /**
@@ -15,26 +17,26 @@ import cz.vutbr.web.css.StyleSheet;
  * @author Jan Svercl, VUT Brno, 2008
  * 
  */
-public class RuleMediaImpl extends AbstractRuleBlock<RuleSet> implements RuleMedia {
+public class RuleMediaImpl extends AbstractRuleBlock<RuleBlock<?>> implements RuleMedia {
   
 	/** List of medias */
-	protected List<MediaQuery> media;
+	protected MediaQueryList media;
 	
 	/**
 	 * Creates an empty object to be filled by interface methods
 	 * @param priority Priority mark
 	 */
 	protected RuleMediaImpl() {
-		this.media = Collections.emptyList();
+		this.media = MediaQueryListImpl.EMPTY;
 	}    
     
 	@Override
-	public List<MediaQuery> getMediaQueries() {
+	public MediaQueryList getMediaQueries() {
 		return media;
 	}
 
 	@Override
-	public RuleMedia setMediaQueries(List<MediaQuery> medias) {
+	public RuleMedia setMediaQueries(MediaQueryList medias) {
 		this.media = medias;
 		return this;
 	}
@@ -44,8 +46,8 @@ public class RuleMediaImpl extends AbstractRuleBlock<RuleSet> implements RuleMed
     {
         super.setStyleSheet(stylesheet);
         //assign the style sheet recursively to the contained rule sets
-        for (RuleSet set : list)
-            set.setStyleSheet(stylesheet);
+        for (RuleBlock<?> rule : list)
+            rule.setStyleSheet(stylesheet);
     }
 
     @Override
@@ -60,12 +62,18 @@ public class RuleMediaImpl extends AbstractRuleBlock<RuleSet> implements RuleMed
     	// append medias
     	sb = OutputUtil.appendTimes(sb, OutputUtil.DEPTH_DELIM, depth);
     	sb.append(OutputUtil.MEDIA_KEYWORD);    	
-    	sb = OutputUtil.appendList(sb, media, OutputUtil.MEDIA_DELIM);
+    	sb.append(media);
     	
     	// append rules
     	sb = OutputUtil.appendTimes(sb, OutputUtil.DEPTH_DELIM, depth);
     	sb.append(OutputUtil.RULE_OPENING);
-    	sb = OutputUtil.appendList(sb, list, OutputUtil.RULE_DELIM, depth + 1);
+    	List<PrettyOutput> prettyPrintableList = new ArrayList<>();
+    	for (RuleBlock<?> r : list)
+    		if (r instanceof PrettyOutput)
+    			prettyPrintableList.add((PrettyOutput)r);
+    		else
+    			throw new IllegalStateException("Rule does not implement PrettyOutput: " + r);
+    	sb = OutputUtil.appendList(sb, prettyPrintableList, OutputUtil.RULE_DELIM, depth + 1);
     	sb.append(OutputUtil.RULE_CLOSING);
     	
     	return sb.toString();

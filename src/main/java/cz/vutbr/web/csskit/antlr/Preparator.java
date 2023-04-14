@@ -4,7 +4,7 @@ import java.util.List;
 
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
-import cz.vutbr.web.css.MediaQuery;
+import cz.vutbr.web.css.MediaQueryList;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleMargin;
 import cz.vutbr.web.css.RuleSet;
@@ -25,13 +25,10 @@ public interface Preparator {
 	 * RuleSet is wrapped by media into RuleMedia 
 	 * @param cslist List of CombinedSelector for this rule block
 	 * @param dlist List of Declaration for this rule block
-	 * @param wrap Wrap condition, it {@code true}, rule set is wrapped into rule media
-	 * @param media List of medias used to wrap 
 	 * @return Either RuleSet containing selectors and declarations, or RuleMedia, wrapped
 	 * version of RuleSet
 	 */
-	public RuleBlock<?> prepareRuleSet(List<CombinedSelector> cslist,
-			List<Declaration> dlist, boolean wrap, List<MediaQuery> media);
+	public RuleBlock<?> prepareRuleSet(List<CombinedSelector> cslist, List<Declaration> dlist);
 	
 	/**
 	 * Creates block of rules as result of parsing in-line declaration.
@@ -49,7 +46,7 @@ public interface Preparator {
 	 * @param media List of media assigned to rule
 	 * @return RuleMedia 
 	 */
-	public RuleBlock<?> prepareRuleMedia(List<RuleSet> rules, List<MediaQuery> media);
+	public RuleBlock<?> prepareRuleMedia(List<RuleBlock<?>> rules, MediaQueryList media);
 	
 	/**
 	 * Creates RulePage, block of rules associated with specific page 

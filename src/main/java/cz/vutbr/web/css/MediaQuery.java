@@ -37,4 +37,9 @@ public interface MediaQuery extends Rule<MediaExpression>
      */
     public String getType();
     
+    /**
+     * Returns a new media query that is the combination of this and the given media query.
+     */
+    public MediaQuery and(MediaQuery query);
+
 }

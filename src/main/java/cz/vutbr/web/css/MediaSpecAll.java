@@ -24,8 +24,9 @@ public class MediaSpecAll extends MediaSpec
     }
 
     @Override
-    public boolean matches(MediaQuery q)
-    {
+    public boolean matches(MediaQuery q) {
+        if ("all".equals(q.getType()) && q.isNegative())
+            return false; // "NOT all" doesn't match anything
         return true;
     }
 
@@ -33,12 +34,6 @@ public class MediaSpecAll extends MediaSpec
     public boolean matches(MediaExpression e)
     {
         return true;
-    }
-
-    @Override
-    public boolean matchesOneOf(List<MediaQuery> queries)
-    {
-        return !queries.isEmpty(); //we don't match an empty list (to be consistent)
     }
 
     @Override

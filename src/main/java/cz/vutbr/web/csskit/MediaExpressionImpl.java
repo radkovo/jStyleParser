@@ -17,6 +17,7 @@ import cz.vutbr.web.css.Term;
 public class MediaExpressionImpl extends AbstractRule<Term<?>> implements MediaExpression
 {
     protected String feature;
+    protected boolean negative;
 
     @Override
     public String getFeature()
@@ -31,6 +32,18 @@ public class MediaExpressionImpl extends AbstractRule<Term<?>> implements MediaE
     }
 
     @Override
+    public boolean isNegative()
+    {
+        return negative;
+    }
+
+    @Override
+    public void setNegative(boolean negative)
+    {
+        this.negative = negative;
+    }
+
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
@@ -39,6 +52,11 @@ public class MediaExpressionImpl extends AbstractRule<Term<?>> implements MediaE
         sb.append(getFeature()).append(OutputUtil.MEDIA_FEATURE_DELIM);
         sb = OutputUtil.appendList(sb, list, OutputUtil.SPACE_DELIM);
         sb.append(OutputUtil.MEDIA_EXPR_CLOSING);
+        
+        if (isNegative()) {
+            sb.insert(0, "(NOT ");
+            sb.append(")");
+        }
         
         return sb.toString();
     }

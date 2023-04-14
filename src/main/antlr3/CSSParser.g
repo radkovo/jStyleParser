@@ -200,7 +200,7 @@ media_expression
 
 media_rule
  : ruleset
- | atstatement -> INVALID_STATEMENT
+ | atstatement
  ;
 	
 unknown_atrule

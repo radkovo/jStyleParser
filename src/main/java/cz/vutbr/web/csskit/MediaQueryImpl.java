@@ -9,6 +9,7 @@ import java.util.Locale;
 
 import cz.vutbr.web.css.MediaExpression;
 import cz.vutbr.web.css.MediaQuery;
+import cz.vutbr.web.css.Term;
 
 /**
  * 
@@ -16,6 +17,17 @@ import cz.vutbr.web.css.MediaQuery;
  */
 public class MediaQueryImpl extends AbstractRule<MediaExpression> implements MediaQuery
 {
+
+    /**
+     * Media query that doesn't match any medium.
+     */
+    public static final MediaQuery NOT_ALL = new MediaQueryImpl("all", true) {
+            @Override
+            public MediaQuery and(MediaQuery query) {
+                return this;
+            }
+        };
+
     protected boolean negative;
     protected String type;
 
@@ -53,6 +65,51 @@ public class MediaQueryImpl extends AbstractRule<MediaExpression> implements Med
     public void setType(String type)
     {
         this.type = type;
+    }
+
+    @Override
+    public MediaQuery and(MediaQuery query) {
+        MediaQueryImpl combined;
+        if (type == null) {
+            combined = new MediaQueryImpl(query.getType(), negative);
+        } else if (query.getType() == null) {
+            combined = new MediaQueryImpl(type, negative);
+        } else if ("all".equals(type)) {
+            if (negative)
+                return NOT_ALL;
+            else
+                combined = new MediaQueryImpl(query.getType(), negative);
+        } else if ("all".equals(query.getType())) {
+            if (query.isNegative())
+                return NOT_ALL;
+            else
+                combined = new MediaQueryImpl(type, negative);
+        } else if (type.equals(query.getType())) {
+            if (negative == query.isNegative())
+                combined = new MediaQueryImpl(type, negative);
+            else
+                return NOT_ALL;
+        } else {
+            if (negative == query.isNegative())
+                return NOT_ALL;
+            else if (negative)
+                combined = new MediaQueryImpl(query.getType(), negative);
+            else
+                combined = new MediaQueryImpl(type, negative);
+        }
+        combined.addAll(this);
+        if (negative == query.isNegative())
+            combined.addAll(query);
+        else
+            for (MediaExpression feature : query) {
+                MediaExpression negatedFeature = new MediaExpressionImpl();
+                negatedFeature.unlock();
+                negatedFeature.setNegative(true);
+                for (Term<?> t : feature)
+                    negatedFeature.add(t);
+                combined.add(negatedFeature);
+            }
+        return combined;
     }
 
     @Override

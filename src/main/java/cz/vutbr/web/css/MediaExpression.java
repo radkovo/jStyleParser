@@ -24,4 +24,16 @@ public interface MediaExpression extends Rule<Term<?>>
      */
     public void setFeature(String feature);
     
+    /**
+     * Sets the negative flag
+     * @param negative
+     */
+    public void setNegative(boolean negative);
+
+    /**
+     * Checks whether the feature is negated
+     * @return true when the feature is negated
+     */
+    public boolean isNegative();
+
 }

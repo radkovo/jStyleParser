@@ -36,12 +36,6 @@ public class MediaSpecNone extends MediaSpec
     }
 
     @Override
-    public boolean matchesOneOf(List<MediaQuery> queries)
-    {
-        return false;
-    }
-
-    @Override
     public String toString()
     {
         return "(no media)";

@@ -20,11 +20,9 @@ import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.MatchCondition;
-import cz.vutbr.web.css.MediaQuery;
 import cz.vutbr.web.css.MediaSpec;
 import cz.vutbr.web.css.NodeData;
 import cz.vutbr.web.css.Rule;
-import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.Selector.PseudoElement;
@@ -425,42 +423,12 @@ public class Analyzer {
 			rules = new Holder();
 		}
 
-		for (Rule<?> rule : sheet) {
-			// this rule conforms to all media
+		for (Rule<?> rule : sheet.filter(mediaspec)) {
 			if (rule instanceof RuleSet) {
 				RuleSet ruleset = (RuleSet) rule;
 				for (CombinedSelector s : ruleset.getSelectors()) {
 					insertClassified(rules, classifySelector(s), ruleset);
 				}
-			}
-			// this rule conforms to different media
-			else if (rule instanceof RuleMedia) {
-				RuleMedia rulemedia = (RuleMedia) rule;
-
-				boolean mediaValid = false;
-                if(rulemedia.getMediaQueries()==null || rulemedia.getMediaQueries().isEmpty()) {
-                    //no media queries actually
-                    mediaValid = mediaspec.matchesEmpty();
-                } else {
-                    //find a matching query
-    				for (MediaQuery media : rulemedia.getMediaQueries()) {
-                        if (mediaspec.matches(media)) {
-                            mediaValid = true;
-                            break;
-                        }
-    				}
-                }
-				
-                if (mediaValid)
-                {
-    				// for all rules in media set
-    				for (RuleSet ruleset : rulemedia) {
-    					// for all selectors in there
-    					for (CombinedSelector s : ruleset.getSelectors()) {
-   							insertClassified(rules, classifySelector(s), ruleset);
-    					}
-    				}
-                }
 			}
 		}
 

@@ -482,12 +482,15 @@ public class MediaSpec
     }
     
     /**
-     * Checks whether this media specification matches to at least one of the given media queries.
+     * Checks whether this media specification matches at least one of the given media queries, or
+     * whether it matches an empty or missing media query and the argument is empty or {@code null}.
      * @param queries The list of media queries to be matched.
-     * @return {@code true} when at least one query matches, {@code false} when no query matches. 
+     * @return {@code true} when this media specification matches the query list, {@code false}
+     *         otherwise.
      */
-    public boolean matchesOneOf(List<MediaQuery> queries)
-    {
+    public final boolean matches(List<MediaQuery> queries) {
+        if (matchEmpty && (queries == null || queries.isEmpty()))
+            return true;
         for (MediaQuery q : queries)
         {
             if (matches(q))

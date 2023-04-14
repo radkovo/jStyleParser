@@ -563,6 +563,7 @@ public final class CSSFactory {
                 (Object) pair, NodeFilter.SHOW_ELEMENT, nodeLocator);
 
         traversal.listTraversal(style);
+        style = style.filter(media);
         return style;
     }
     
@@ -930,14 +931,7 @@ public final class CSSFactory {
 		        {
 		            List<MediaQuery> ql = pf.parseMediaQuery(attr);
 		            if (ql != null)
-		            {
-		                for (MediaQuery q : ql)
-		                {
-		                    if (media.matches(q))
-		                        return true; //found a matching media query
-		                }
-		                return false; //no matching media query
-		            }
+		                return media.matches(ql);
 		            else
 		                return false; //no usable media queries (malformed string?)
 		        }

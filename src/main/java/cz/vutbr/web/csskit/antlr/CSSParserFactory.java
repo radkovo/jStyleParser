@@ -19,8 +19,10 @@ import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.CSSException;
 import cz.vutbr.web.css.CSSFactory;
 import cz.vutbr.web.css.MediaQuery;
+import cz.vutbr.web.css.MediaQueryList;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleList;
+import cz.vutbr.web.css.RuleMedia;
 import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.csskit.antlr.CSSSource.SourceType;
 
@@ -268,22 +270,25 @@ public class CSSParserFactory {
 	/**
 	 * Parses the source using the given infrastructure and returns the resulting style sheet.
 	 * The imports are handled recursively.
+	 *
+	 * @param media The media queries for wrapping the created rules or null when no wrapping is
+	 *              required.
 	 */
 	protected StyleSheet parseAndImport(CSSSource source, CSSSourceReader cssReader,
-	        StyleSheet sheet, Preparator preparator, List<MediaQuery> media)
+	        StyleSheet sheet, Preparator preparator, MediaQueryList media)
 	        throws CSSException, IOException
 	{
-        CSSTreeParser parser = createTreeParser(source, cssReader, preparator, media);
+        CSSTreeParser parser = createTreeParser(source, cssReader, preparator);
         parse(parser, source.type);
         
         for (int i = 0; i < parser.getImportPaths().size(); i++)
         {
             String path = parser.getImportPaths().get(i);
-            List<MediaQuery> imedia = parser.getImportMedia().get(i);
+            MediaQueryList imedia = parser.getImportMedia().get(i);
+            if (media != null)
+                imedia = media.and(imedia);
             
-            if (((imedia == null || imedia.isEmpty()) && CSSFactory.getAutoImportMedia().matchesEmpty()) //no media query specified
-                 || CSSFactory.getAutoImportMedia().matchesOneOf(imedia)) //or some media query matches to the autoload media spec
-            {    
+            if (CSSFactory.getAutoImportMedia().matches(imedia)) { // if autoload media spec matches media query list
                 URL url = DataURLHandler.createURL(source.base, path);
                 try {
                     parseAndImport(new CSSSource(url, source.encoding, (String)null),
@@ -296,7 +301,15 @@ public class CSSParserFactory {
                 log.trace("Skipping import {} (media not matching)", path);
         }
 
-	    return addRulesToStyleSheet(parser.getRules(), sheet);
+        RuleList rules = parser.getRules();
+        if (media != null) {
+            RuleMedia rm = CSSFactory.getRuleFactory().createMedia();
+            rm.setMediaQueries(media);
+            log.debug("Wrapping rules {} into RuleMedia: {}", rules, rm);
+            rm.unlock();
+            rm.replaceAll(rules);
+        }
+	    return addRulesToStyleSheet(rules, sheet);
 	}
 	
 	protected static StyleSheet addRulesToStyleSheet(RuleList rules, StyleSheet sheet) {
@@ -312,12 +325,12 @@ public class CSSParserFactory {
 	
 	// creates the tree parser
 	private static CSSTreeParser createTreeParser(CSSSource source, CSSSourceReader cssReader,
-			Preparator preparator, List<MediaQuery> media) throws IOException, CSSException {
+			Preparator preparator) throws IOException, CSSException {
 
 		CSSInputStream input = getInput(source, cssReader);
 		CommonTokenStream tokens = feedLexer(input);
 		CommonTree ast = feedParser(tokens, source.type);
-		return feedAST(tokens, ast, preparator, media, null);
+		return feedAST(tokens, ast, preparator, null);
 	}
 
 	// initializer lexer
@@ -356,7 +369,6 @@ public class CSSParserFactory {
 	private static CSSTreeParser feedAST(CommonTokenStream source,
 	                                     CommonTree ast,
 	                                     Preparator preparator,
-	                                     List<MediaQuery> media,
 	                                     Map<String,String> namespaces)
 	{
 		if (log.isTraceEnabled()) {
@@ -367,7 +379,7 @@ public class CSSParserFactory {
 		// AST nodes have payloads that point into token stream
 		nodes.setTokenStream(source);
 		CSSTreeParser parser = new CSSTreeParser(nodes);
-		parser.init(preparator, media, namespaces);
+		parser.init(preparator, namespaces);
 		return parser;
 	}
 
@@ -378,7 +390,7 @@ public class CSSParserFactory {
 	 * @param query The query string
 	 * @return List of media queries found.
 	 */
-	public List<MediaQuery> parseMediaQuery(String query)
+	public MediaQueryList parseMediaQuery(String query)
 	{
 	    try
         {
@@ -395,7 +407,7 @@ public class CSSParserFactory {
             CSSParser.media_return retval = parser.media();
             CommonTree ast = (CommonTree) retval.getTree();
             //tree parser
-            CSSTreeParser tparser = feedAST(tokens, ast, null, null, null);
+            CSSTreeParser tparser = feedAST(tokens, ast, null, null);
             return tparser.media();
         } catch (IOException e) {
             log.error("I/O error during media query parsing: {}", e.getMessage());
@@ -422,7 +434,7 @@ public class CSSParserFactory {
 			CSSParser parser = new CSSParser(tokens);
 			parser.init();
 			CommonTree ast = (CommonTree)parser.combined_selector_list().getTree();
-			CSSTreeParser tparser = feedAST(tokens, ast, null, null, namespaces);
+			CSSTreeParser tparser = feedAST(tokens, ast, null, namespaces);
 			return tparser.combined_selector_list(); }
 		catch (IOException e) {
 			log.error("I/O error during selector parsing: {}", e.getMessage());

@@ -1,6 +1,5 @@
 package cz.vutbr.web.css;
 
-
 /**
  * Acts as collection of Rules. Remembers last priority used 
  * in style sheet to allow incremental parsing. The style sheet
@@ -23,6 +22,12 @@ public interface StyleSheet extends Rule<RuleBlock<?>>{
      */
     public Origin getOrigin();
     
+    /**
+     * Filters out rules in this style sheet that do not match the given medium. Guaranteed to not
+     * contain any instances of {@link RuleMedia}.
+     */
+    public StyleSheet filter(MediaSpec medium);
+
     /**
      * The origin of the style sheet (user agent, user, or author). 
      * @author radek

@@ -63,7 +63,7 @@ public class ParserDemo
                 {
                     RuleMedia media = (RuleMedia) rule;
                     System.out.println("Media: " + media.getMediaQueries());
-                    for (RuleSet set : media)
+                    for (RuleBlock<?> set : media)
                     {
                         //process similarly to the RuleSet processing above
                         System.out.println("  Rule: " + set);

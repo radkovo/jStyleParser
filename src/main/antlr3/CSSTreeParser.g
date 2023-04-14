@@ -20,9 +20,8 @@ options {
 
     // block preparator
 	protected cz.vutbr.web.csskit.antlr.Preparator preparator;
-	private List<cz.vutbr.web.css.MediaQuery> wrapMedia;
 	protected cz.vutbr.web.css.RuleList rules;
-	private List<List<cz.vutbr.web.css.MediaQuery>> importMedia;
+	private List<cz.vutbr.web.css.MediaQueryList> importMedia;
 	private List<String> importPaths;
 	private String defaultNamespace;
 	private java.util.Map<String,String> namespaces;
@@ -34,16 +33,12 @@ options {
   /**
    * Initializes the tree parser.
    * @param preparator The preparator to be used for creating the rules.
-   * @param wrapMedia The media queries to be used for wrapping the created rules (e.g. in case
-   *    of parsing and imported style sheet) or null when no wrapping is required.
    */
   public void init(cz.vutbr.web.csskit.antlr.Preparator preparator,
-                   List<cz.vutbr.web.css.MediaQuery> wrapMedia,
                    java.util.Map<String,String> namespaces) {
 		this.preparator = preparator;
-		this.wrapMedia = wrapMedia;
 		this.rules = null;
-		this.importMedia = new ArrayList<List<cz.vutbr.web.css.MediaQuery>>();
+		this.importMedia = new ArrayList<cz.vutbr.web.css.MediaQueryList>();
 		this.importPaths = new ArrayList<String>();
 		this.preventImports = false;
 		this.namespaces = (namespaces == null)
@@ -57,7 +52,7 @@ options {
     return rules;
   }
   
-  public List<List<cz.vutbr.web.css.MediaQuery>> getImportMedia()
+  public List<cz.vutbr.web.css.MediaQueryList> getImportMedia()
   {
     return importMedia;
   } 
@@ -231,11 +226,6 @@ stylesheet returns [cz.vutbr.web.css.RuleList rules]
 statement returns [cz.vutbr.web.css.RuleBlock<?> stm]
 scope {
     boolean invalid;
-	
-	// this flag allows us to encapsulate rulesets
-	// into media when media import is used
-	boolean insideAtstatement;	 
-	
 }
 @init {
 	logEnter("statement");
@@ -253,14 +243,9 @@ scope {
 	
 
 atstatement returns [cz.vutbr.web.css.RuleBlock<?> stmnt]
-scope {
-	cz.vutbr.web.css.RuleBlock<?> stm;
-}
 @init {
     logEnter("atstatement");
-	$statement::insideAtstatement=true;
-	$atstatement::stm = $stmnt = null;
-	List<cz.vutbr.web.css.RuleSet> rules = null;
+	List<cz.vutbr.web.css.RuleBlock<?>> rules = null;
 	List<cz.vutbr.web.css.RuleMargin> margins = null;
 	String name = null;
 	String pseudo = null;
@@ -343,16 +328,20 @@ scope {
     { $stmnt = preparator.prepareRuleFontFace(decl); this.preventImports = true; }
 	| ^(MEDIA (mediaList=media)? 
 			(  rs=ruleset {
-					   if(rules==null) rules = new ArrayList<cz.vutbr.web.css.RuleSet>();				
-					   if(rs!=null) {
-						   // this cast should be safe, because when inside of @statetement, oridinal ruleset
-						   // is returned
-					       rules.add((cz.vutbr.web.css.RuleSet)rs);
+					   if (rules == null) rules = new ArrayList<cz.vutbr.web.css.RuleBlock<?>>();
+					   if (rs != null) {
+					       rules.add(rs);
 						   debug("Inserted ruleset ({}) into @media", rules.size());
 					   }
 					}
+			  | at=atstatement {
+					   if (rules == null) rules = new ArrayList<cz.vutbr.web.css.RuleBlock<?>>();
+					   if (at != null) {
+					       rules.add(at);
+						   debug("Inserted at-rule ({}) into @media", rules.size());
+					   }
+					}
 			  | INVALID_STATEMENT { debug("Skiping invalid statement in media"); }
-			
 			)*
 	   )	
 	   {
@@ -393,10 +382,11 @@ margin returns [cz.vutbr.web.css.RuleMargin m]
 		{ $m = preparator.prepareRuleMargin(extractText(area).substring(1), decl); }
 	;
 
-media returns [List<cz.vutbr.web.css.MediaQuery> queries] 
+media returns [cz.vutbr.web.css.MediaQueryList queries]
 @init {
    logEnter("media");
-   $queries = new ArrayList<cz.vutbr.web.css.MediaQuery>();
+   $queries = rf.createMediaQueryList();
+   $queries.unlock();
 }
 @after {
    debug("Totally returned {} media queries.", $queries.size());							  
@@ -534,7 +524,7 @@ ruleset returns [cz.vutbr.web.css.RuleBlock<?> stmnt]
         debug("Ruleset not valid, so not created");
     }
     else {    
-		 $stmnt = preparator.prepareRuleSet(cslist, decl, (this.wrapMedia != null && !this.wrapMedia.isEmpty()), this.wrapMedia);
+		 $stmnt = preparator.prepareRuleSet(cslist, decl);
 		 this.preventImports = true; 
         }		
     logLeave("ruleset");

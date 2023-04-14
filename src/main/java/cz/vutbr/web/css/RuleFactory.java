@@ -55,6 +55,12 @@ public interface RuleFactory {
 	RuleMedia createMedia();
 
 	/**
+	 * Creates a CSS media query list
+	 * @return New CSS media query list
+	 */
+	MediaQueryList createMediaQueryList();
+
+	/**
 	 * Creates a CSS media query
 	 * @return New CSS media query
 	 */
