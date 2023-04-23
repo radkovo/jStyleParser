@@ -193,10 +193,6 @@ public class CSSInputStream implements CharStream {
 				public URL getURL() { return base; }
 				public int getLineNumber() { return line; }
 				public int getColumnNumber() { return column; }
-				@Override
-				public String toString() {
-					return ((base == null) ? "<internal>" : base.toString()) + ":" + line + ":" + column;
-				}
 				};
 		return loc;
 	}

@@ -66,7 +66,27 @@ options {
 	public void emitErrorMessage(String msg) {
 	    warn("ANTLR: {}", msg);
 	}
-		
+
+    @Override
+    public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
+        cz.vutbr.web.csskit.antlr.CSSToken location = null; {
+            if (e.token instanceof cz.vutbr.web.csskit.antlr.CSSToken)
+                location = (cz.vutbr.web.csskit.antlr.CSSToken)e.token;
+            else if (e.node instanceof CommonErrorNode) {
+                Token start = ((CommonErrorNode)e.node).start;
+                if (start instanceof cz.vutbr.web.csskit.antlr.CSSToken)
+                    location = (cz.vutbr.web.csskit.antlr.CSSToken)start;
+            } else if (e.node instanceof CommonTree) {
+                if (((CommonTree)e.node).getToken() instanceof cz.vutbr.web.csskit.antlr.CSSToken) {
+                    location = (cz.vutbr.web.csskit.antlr.CSSToken)((CommonTree)e.node).getToken();
+                }
+            }
+        }
+        emitErrorMessage(
+            (location != null ? ("at " + cz.vutbr.web.css.SourceLocator.toString(location.getSourceLocator()) + ": ") : "")
+             + getErrorMessage(e, tokenNames));
+    }
+
 	private String extractText(CommonTree token) {
         return token.getText();
     }
@@ -158,8 +178,7 @@ options {
     private void mdcPutPosition(CommonTree token) {
         if (token != null) {
             if (token.getToken() instanceof cz.vutbr.web.csskit.antlr.CSSToken) {
-                cz.vutbr.web.csskit.antlr.CSSToken t = (cz.vutbr.web.csskit.antlr.CSSToken)token.getToken();
-                mdcPutPosition(t.getBase(), t.getLine(), t.getCharPositionInLine());
+                mdcPutPosition((cz.vutbr.web.csskit.antlr.CSSToken)token.getToken());
             } else {
                 mdcRemovePosition();
             }
@@ -167,6 +186,14 @@ options {
             mdcRemovePosition();
         }
         curToken = token;
+    }
+    
+    private void mdcPutPosition(cz.vutbr.web.csskit.antlr.CSSToken token) {
+        mdcPutPosition(token.getSourceLocator());
+    }
+    
+    private void mdcPutPosition(cz.vutbr.web.css.SourceLocator loc) {
+        mdcPutPosition(loc.getURL(), loc.getLineNumber(), loc.getColumnNumber());
     }
     
     private void mdcPutPosition(java.net.URL url, int line, int position) {

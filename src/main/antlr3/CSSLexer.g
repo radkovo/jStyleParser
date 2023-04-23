@@ -124,7 +124,7 @@ tokens {
 
 	@Override
     public void emitErrorMessage(String msg) {
-    	log.info("ANTLR: {}", msg);
+    	log.warn("ANTLR: {}", msg);
     }
     
     /**

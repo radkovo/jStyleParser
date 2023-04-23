@@ -50,11 +50,27 @@ options {
         this.tnr = new cz.vutbr.web.csskit.antlr.CSSTreeNodeRecovery(this, input, state, adaptor, log);
     }
     
+    private boolean emitErrorAsDebugMessage = false;
+
     @Override
     public void emitErrorMessage(String msg) {
-    	log.info("ANTLR: {}", msg);
+    	if (emitErrorAsDebugMessage)
+    	    log.debug("ANTLR: {}", msg);
+    	else
+    	    log.warn("ANTLR: {}", msg);
 	}    
-    
+
+    @Override
+    public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
+        cz.vutbr.web.csskit.antlr.CSSToken location = null; {
+            if (e.token instanceof cz.vutbr.web.csskit.antlr.CSSToken)
+                location = (cz.vutbr.web.csskit.antlr.CSSToken)e.token;
+        }
+        emitErrorMessage(
+            (location != null ? ("at " + cz.vutbr.web.css.SourceLocator.toString(location.getSourceLocator()) + ": ") : "")
+            + getErrorMessage(e, tokenNames));
+    }
+
   /**
    * Obtains the current lexer state from current token
    */
@@ -118,9 +134,13 @@ atstatement
 	| unknown_atrule
 	;
 	catch [RecognitionException re] {
-      	final BitSet follow = BitSet.of(RCURLY, SEMICOLON);								
-	      retval.tree = tnr.invalidFallbackGreedy(INVALID_ATSTATEMENT, 
-	  		"INVALID_ATSTATEMENT", follow, re);							
+       final BitSet follow = BitSet.of(RCURLY, SEMICOLON);
+       try {
+           emitErrorAsDebugMessage = true;
+           retval.tree = tnr.invalidFallbackGreedy(INVALID_ATSTATEMENT, "INVALID_ATSTATEMENT", follow, re);
+       } finally {
+           emitErrorAsDebugMessage = false;
+       }
 	}
 
 import_uri
@@ -172,7 +192,12 @@ media
  ;
  catch [RecognitionException re] {
      final BitSet follow = BitSet.of(COMMA, LCURLY, SEMICOLON);               
-     retval.tree = tnr.invalidFallback(INVALID_STATEMENT, "INVALID_STATEMENT", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.BALANCED, null, re);
+     try {
+         emitErrorAsDebugMessage = true;
+         retval.tree = tnr.invalidFallback(INVALID_STATEMENT, "INVALID_STATEMENT", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.BALANCED, null, re);
+     } finally {
+         emitErrorAsDebugMessage = false;
+     }
  }
 
 media_query
@@ -185,7 +210,12 @@ media_term
  ;
  catch [RecognitionException re] {
      final BitSet follow = BitSet.of(COMMA, LCURLY, SEMICOLON);               
-     retval.tree = tnr.invalidFallback(INVALID_STATEMENT, "INVALID_STATEMENT", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.RULE, null, re);
+     try {
+         emitErrorAsDebugMessage = true;
+         retval.tree = tnr.invalidFallback(INVALID_STATEMENT, "INVALID_STATEMENT", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.RULE, null, re);
+     } finally {
+         emitErrorAsDebugMessage = false;
+     }
  }
 
 media_expression
@@ -194,8 +224,12 @@ media_expression
  ;
  catch [RecognitionException re] {
 		 final BitSet follow = BitSet.of(RPAREN, SEMICOLON);               
-		 retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT, 
-		   "INVALID_STATEMENT", follow, re);
+		 try {
+		     emitErrorAsDebugMessage = true;
+		     retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT, "INVALID_STATEMENT", follow, re);
+		 } finally {
+		     emitErrorAsDebugMessage = false;
+		 }
  }
 
 media_rule
@@ -208,8 +242,12 @@ unknown_atrule
  ;
  catch [RecognitionException re] {
      final BitSet follow = BitSet.of(RCURLY);               
-     retval.tree = tnr.invalidFallbackGreedy(INVALID_ATSTATEMENT,
-         "INVALID_ATSTATEMENT", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.BALANCED, null, re);
+     try {
+         emitErrorAsDebugMessage = true;
+         retval.tree = tnr.invalidFallbackGreedy(INVALID_ATSTATEMENT, "INVALID_ATSTATEMENT", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.BALANCED, null, re);
+     } finally {
+         emitErrorAsDebugMessage = false;
+     }
  }
 	
 ruleset
@@ -241,8 +279,13 @@ declaration
 	;
 	catch [RecognitionException re] {
       final BitSet follow = BitSet.of(SEMICOLON, RCURLY); //recover on the declaration end or rule end
-      //not greedy - the final ; or } must remain for properly finishing the declaration/rule
-      retval.tree = tnr.invalidFallback(INVALID_DECLARATION, "INVALID_DECLARATION", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.DECL, begin, re);             
+      try {
+          emitErrorAsDebugMessage = true;
+          //not greedy - the final ; or } must remain for properly finishing the declaration/rule
+          retval.tree = tnr.invalidFallback(INVALID_DECLARATION, "INVALID_DECLARATION", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.DECL, begin, re);
+      } finally {
+          emitErrorAsDebugMessage = false;
+      }
 	}
 
 important
@@ -250,7 +293,12 @@ important
   ;
   catch [RecognitionException re] {
       final BitSet follow = BitSet.of(RCURLY, SEMICOLON);               
-      retval.tree = tnr.invalidFallback(INVALID_DIRECTIVE, "INVALID_DIRECTIVE", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.RULE, null, re);
+      try {
+          emitErrorAsDebugMessage = true;
+          retval.tree = tnr.invalidFallback(INVALID_DIRECTIVE, "INVALID_DIRECTIVE", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.RULE, null, re);
+      } finally {
+          emitErrorAsDebugMessage = false;
+      }
   }
 
 property    
@@ -265,13 +313,22 @@ terms
 		if (functLevel == 0)
 		{
 	      final BitSet follow = BitSet.of(RCURLY, SEMICOLON);								
-		    retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT, 
-		  		"INVALID_STATEMENT", follow, re);
+	      try {
+	          emitErrorAsDebugMessage = true;
+	          retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT, "INVALID_STATEMENT", follow, re);
+	      } finally {
+	          emitErrorAsDebugMessage = false;
+	      }
 		}
 		else
 		{
         final BitSet follow = BitSet.of(RPAREN, RCURLY, SEMICOLON);               
-        retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT, "INVALID_STATEMENT", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.FUNCTION, null, re);
+        try {
+            emitErrorAsDebugMessage = true;
+            retval.tree = tnr.invalidFallbackGreedy(INVALID_STATEMENT, "INVALID_STATEMENT", follow, cz.vutbr.web.csskit.antlr.CSSLexerState.RecoveryMode.FUNCTION, null, re);
+        } finally {
+            emitErrorAsDebugMessage = false;
+        }
 		}
 	}
 	
@@ -329,8 +386,13 @@ combined_selector
 	: selector ((combinator) selector)*
 	;
 	catch [RecognitionException re] {
-	  log.warn("INVALID COMBINED SELECTOR");
-	  reportError(re);
+	  log.debug("INVALID COMBINED SELECTOR");
+	  try {
+	      emitErrorAsDebugMessage = true;
+	      reportError(re);
+	  } finally {
+	      emitErrorAsDebugMessage = false;
+	  }
       recover(input,re);
 	}
 
@@ -358,7 +420,12 @@ selector
         -> ^(SELECTOR selpart+)
     ;
     catch [RecognitionException re] {
-      retval.tree = tnr.invalidFallback(INVALID_SELECTOR, "INVALID_SELECTOR", re);
+      try {
+          emitErrorAsDebugMessage = true;
+          retval.tree = tnr.invalidFallback(INVALID_SELECTOR, "INVALID_SELECTOR", re);
+      } finally {
+          emitErrorAsDebugMessage = false;
+      }
 	  }
 
 selpart	
@@ -369,7 +436,12 @@ selpart
     | INVALID_SELPART
     ;
     catch [RecognitionException re] {
-      retval.tree = tnr.invalidFallback(INVALID_SELPART, "INVALID_SELPART", re);
+      try {
+          emitErrorAsDebugMessage = true;
+          retval.tree = tnr.invalidFallback(INVALID_SELPART, "INVALID_SELPART", re);
+      } finally {
+          emitErrorAsDebugMessage = false;
+      }
 	  }
 
 attribute
@@ -381,7 +453,12 @@ pseudo
 	: pseudocolon^ (IDENT | FUNCTION S!* (IDENT | MINUS? NUMBER | MINUS? INDEX) S!* RPAREN!)
 	;
   catch [RecognitionException re] {
-     retval.tree = tnr.invalidFallback(INVALID_SELPART, "INVALID_SELPART", re);
+     try {
+         emitErrorAsDebugMessage = true;
+         retval.tree = tnr.invalidFallback(INVALID_SELPART, "INVALID_SELPART", re);
+     } finally {
+         emitErrorAsDebugMessage = false;
+     }
   }
 
 pseudocolon
