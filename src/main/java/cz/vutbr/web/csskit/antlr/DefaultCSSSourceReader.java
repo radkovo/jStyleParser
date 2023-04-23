@@ -43,7 +43,7 @@ public class DefaultCSSSourceReader implements CSSSourceReader {
 			if (!supportsMediaType(source.mediaType, null))
 				throw new IllegalArgumentException();
 			SourceMap sourceMap = null;
-			if (source.lineOffset != 0 && source.columnOffset != 0)
+			if (source.lineOffset != 0 || source.columnOffset != 0)
 				sourceMap = new SourceMap() {
 						public SourceLocator get(int line, int column) {
 							return new SourceLocator() {
@@ -51,12 +51,21 @@ public class DefaultCSSSourceReader implements CSSSourceReader {
 									return source.base;
 								}
 								public int getLineNumber() {
+									if (line < 0)
+										return -1;
+									else if (source.lineOffset < 0)
+										return -1; // offset is unknown so resulting line number is also unknown
 									return line + source.lineOffset;
 								}
 								public int getColumnNumber() {
-									if (line == 0)
-										return column + source.columnOffset;
-									else
+									if (column < 0)
+										return -1;
+									else if (line == 0) { // line numbers are 0-based
+										if (source.columnOffset < 0)
+											return -1; // offset is unknown so resulting line number is also unknown
+										else
+											return column + source.columnOffset;
+									} else
 										return column;
 								}
 							};

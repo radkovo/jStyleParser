@@ -47,14 +47,14 @@ public class CSSSource {
 	public URL base;
 
 	/**
-	 * Line number of the first character.
+	 * Line number (0-based) of the first character, or {@code -1} if unknown.
 	 */
-	public int lineOffset = 0;
+	public int lineOffset = -1; // unknown
 
 	/**
-	 * Column number of the first character.
+	 * Column number (0-based) of the first character, or {@code -1} if unknown.
 	 */
-	public int columnOffset = 0;
+	public int columnOffset = -1; // unknown
 
 	/**
 	 * The media type as specified on the <code>style</code> or <code>link</code> element
@@ -66,8 +66,8 @@ public class CSSSource {
 		this(source,
 		     inlineElement,
 		     location != null ? location.getURL() : null,
-		     location != null ? location.getLineNumber() : 0,
-		     location != null ? location.getColumnNumber() : 0);
+		     location != null ? location.getLineNumber() : -1,
+		     location != null ? location.getColumnNumber() : -1);
 	}
 	
 	public CSSSource(String source, Element inlineElement, URL base, int lineOffset, int columnOffset) {
@@ -75,9 +75,9 @@ public class CSSSource {
 		this.source = source;
 		this.inlineElement = inlineElement;
 		this.base = base;
-		if (lineOffset > 0)
+		if (lineOffset >= 0)
 			this.lineOffset = lineOffset;
-		if (columnOffset > 0)
+		if (columnOffset >= 0)
 			this.columnOffset = columnOffset;
 	}
 
@@ -85,8 +85,8 @@ public class CSSSource {
 		this(source,
 		     mediaType,
 		     location != null ? location.getURL() : null,
-		     location != null ? location.getLineNumber() : 0,
-		     location != null ? location.getColumnNumber() : 0);
+		     location != null ? location.getLineNumber() : -1,
+		     location != null ? location.getColumnNumber() : -1);
 	}
 
 	public CSSSource(String source, String mediaType, URL base, int lineOffset, int columnOffset) {
@@ -94,9 +94,9 @@ public class CSSSource {
 		this.source = source;
 		this.mediaType = mediaType;
 		this.base = base;
-		if (lineOffset > 0)
+		if (lineOffset >= 0)
 			this.lineOffset = lineOffset;
-		if (columnOffset > 0)
+		if (columnOffset >= 0)
 			this.columnOffset = columnOffset;
 	}
 

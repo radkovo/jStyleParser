@@ -10,15 +10,15 @@ import java.net.URL;
  */
 public interface SourceLocator {
 	/**
-	 * The URL.
+	 * The URL or {@code null} if not available.
 	 */
 	public URL getURL();
 	/**
-	 * The line number.
+	 * The line number (0-based) or {@code -1} if not available.
 	 */
 	public int getLineNumber();
 	/**
-	 * The character position within the line.
+	 * The character position (0-based) within the line or {@code -1} if not available.
 	 */
 	public int getColumnNumber();
 }

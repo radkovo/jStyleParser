@@ -764,14 +764,17 @@ public final class CSSFactory {
 			try {
 				// embedded style-sheet
 				if (isEmbeddedStyleSheet(elem, media)) {
-					SourceLocator loc = nodeLocator.apply(elem);
-					String mediaType = getMediaType(elem);
-					if (cssReader.supportsMediaType(mediaType, null)) {
-						result = pf.append(
-							new CSSSource(extractElementText(elem), mediaType, base, loc.getLineNumber(), loc.getColumnNumber()),
-							cssReader,
-							result);
-						log.debug("Matched embedded CSS style");
+					Node firstChild = elem.getFirstChild();
+					if (firstChild != null) {
+						SourceLocator loc = nodeLocator.apply(firstChild);
+						String mediaType = getMediaType(elem);
+						if (cssReader.supportsMediaType(mediaType, null)) {
+							result = pf.append(
+								new CSSSource(extractElementText(elem), mediaType, base, loc.getLineNumber(), loc.getColumnNumber()),
+								cssReader,
+								result);
+							log.debug("Matched embedded CSS style");
+						}
 					}
 				}
 				// linked style-sheet
