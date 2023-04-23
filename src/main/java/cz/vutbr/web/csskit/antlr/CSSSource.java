@@ -3,6 +3,8 @@ package cz.vutbr.web.csskit.antlr;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+import cz.vutbr.web.css.SourceLocator;
+
 import org.w3c.dom.Element;
 
 /**
@@ -60,11 +62,31 @@ public class CSSSource {
 	 */
 	public String mediaType;
 
-	public CSSSource(String source, Element inlineElement, URL base) {
+	public CSSSource(String source, Element inlineElement, SourceLocator location) {
+		this(source,
+		     inlineElement,
+		     location != null ? location.getURL() : null,
+		     location != null ? location.getLineNumber() : 0,
+		     location != null ? location.getColumnNumber() : 0);
+	}
+	
+	public CSSSource(String source, Element inlineElement, URL base, int lineOffset, int columnOffset) {
 		this.type = SourceType.INLINE;
 		this.source = source;
 		this.inlineElement = inlineElement;
 		this.base = base;
+		if (lineOffset > 0)
+			this.lineOffset = lineOffset;
+		if (columnOffset > 0)
+			this.columnOffset = columnOffset;
+	}
+
+	public CSSSource(String source, String mediaType, SourceLocator location) {
+		this(source,
+		     mediaType,
+		     location != null ? location.getURL() : null,
+		     location != null ? location.getLineNumber() : 0,
+		     location != null ? location.getColumnNumber() : 0);
 	}
 
 	public CSSSource(String source, String mediaType, URL base, int lineOffset, int columnOffset) {
