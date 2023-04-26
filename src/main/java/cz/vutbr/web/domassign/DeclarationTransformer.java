@@ -436,16 +436,16 @@ public class DeclarationTransformer {
 			// sanity check
 			if (sanify) {
 				// check for integer
-				if (term.getValue() instanceof Integer) {
+				if (term instanceof TermInteger) {
 					final Integer zero = new Integer(0);
-					if (zero.compareTo((Integer) term.getValue()) > 0) {
+					if (zero.compareTo((Integer) ((TermInteger)term).getIntValue()) > 0) {
 						// return false is also possibility
 						// but we will change to zero
 						((TermInteger) term).setValue(zero);
 					}
 				}
 				// check for float
-				else if (term.getValue() instanceof Float) {
+				else if (term instanceof TermNumber) {
 					final Float zero = new Float(0.0f);
 					if (zero.compareTo((Float) term.getValue()) > 0) {
 						// return false is also possibility
