@@ -110,13 +110,19 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 	}
 	
 	public NodeData concretize() {
-		Iterator<Map.Entry<String,Quadruple>> entries = map.entrySet().iterator();
-		while (entries.hasNext()) {
-			Quadruple q = entries.next().getValue();
-			q.concretize();
-			if (q.isEmpty())
-				// default unknown
-				entries.remove();
+		return concretize(true, false);
+	}
+	
+	public NodeData concretize(boolean concretizeInherit, boolean concretizeInitial) {
+		if (concretizeInherit || concretizeInitial) {
+			Iterator<Map.Entry<String,Quadruple>> entries = map.entrySet().iterator();
+			while (entries.hasNext()) {
+				Quadruple q = entries.next().getValue();
+				q.concretize(concretizeInherit, concretizeInitial);
+				if (q.isEmpty())
+					// default unknown
+					entries.remove();
+			}
 		}
 		return this;
 	}
@@ -295,23 +301,40 @@ public class SingleMapNodeData implements NodeData, Cloneable {
 		}
 		
 		public void concretize() {
-			// replace current with inherited or defaults
-			if (curProp != null && curProp.equalsInherit()) {
-				if (inhProp != null) {
-					curProp = inhProp;
-					curValue = inhValue;
-					curSource = inhSource;
-				} else if (defaultValue != null) {
-					curProp = defaultValue.curProp;
-					curValue = defaultValue.curValue;
-				} else if (css != null) {
-					curProp = css.getDefaultProperty(key);
-					curValue = css.getDefaultValue(key);
-					defaultValue = this;
-				} else {
-					// default not known
-					curProp = null;
-					defaultValue = this;
+			concretize(true, false);
+		}
+		
+		public void concretize(boolean concretizeInherit, boolean concretizeInitial) {
+			if (curProp != null) {
+				if (concretizeInherit && curProp.equalsInherit()) {
+					// replace current with inherited or defaults
+					if (inhProp != null) {
+						curProp = inhProp;
+						curValue = inhValue;
+						curSource = inhSource;
+					} else if (defaultValue != null) {
+						curProp = defaultValue.curProp;
+						curValue = defaultValue.curValue;
+					} else if (css != null) {
+						curProp = css.getDefaultProperty(key);
+						curValue = css.getDefaultValue(key);
+						defaultValue = this;
+					} else {
+						// default not known
+						curProp = null;
+						defaultValue = this;
+					}
+				} else if (concretizeInitial && curProp.equalsInitial()) {
+					// replace current with defaults
+					if (css != null) {
+						curProp = css.getDefaultProperty(key);
+						curValue = css.getDefaultValue(key);
+						defaultValue = this;
+					} else {
+						// default not known
+						curProp = null;
+						defaultValue = this;
+					}
 				}
 			}
 		}
