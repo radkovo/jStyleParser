@@ -52,7 +52,7 @@ public class PseudoClassTest {
         cond.removeMatch(elements.getElementById("l3"), rf.createPseudoClass("HOVER"));
         CSSFactory.registerDefaultMatchCondition(cond);
         
-        StyleMap decl = CSSFactory.assignDOM(doc, null, createBaseFromFilename("data/simple/pseudo.html"),"screen", true);
+        StyleMap decl = CSSFactory.assignDOM(doc, createBaseFromFilename("data/simple/pseudo.html"),"screen", true);
         
         NodeData l1 = getStyleById(elements, decl, "l1");
         NodeData l2 = getStyleById(elements, decl, "l2");
@@ -75,7 +75,7 @@ public class PseudoClassTest {
         cond.addMatch(elements.getElementById("l3"), rf.createPseudoClass("VISITED"));
         CSSFactory.registerDefaultMatchCondition(cond);
         
-        StyleSheet style = CSSFactory.getUsedStyles(doc, null, createBaseFromFilename("data/simple/selectors.html"),"screen");
+        StyleSheet style = CSSFactory.getUsedStyles(doc, createBaseFromFilename("data/simple/selectors.html"),"screen");
         DirectAnalyzer da = new DirectAnalyzer(style);
 
         NodeData l1 = getStyleById(elements, da, "l1");
@@ -100,7 +100,7 @@ public class PseudoClassTest {
         cond.addMatch(elements.getElementById("l3"), rf.createPseudoClass("HOVER"));
         cond.removeMatch(elements.getElementById("l3"), rf.createPseudoClass("HOVER"));
 
-        StyleMap decl = CSSFactory.assignDOM(doc, null, createBaseFromFilename("data/simple/pseudo.html"),"screen", true, cond);
+        StyleMap decl = CSSFactory.assignDOM(doc, createBaseFromFilename("data/simple/pseudo.html"),"screen", true, cond);
 
         NodeData l1 = getStyleById(elements, decl, "l1");
         NodeData l2 = getStyleById(elements, decl, "l2");
@@ -122,7 +122,7 @@ public class PseudoClassTest {
         cond.addMatch(elements.getElementById("l2"), rf.createPseudoClass("HOVER"));
         cond.addMatch(elements.getElementById("l3"), rf.createPseudoClass("VISITED"));
 
-        StyleSheet style = CSSFactory.getUsedStyles(doc, null, createBaseFromFilename("data/simple/selectors.html"),"screen");
+        StyleSheet style = CSSFactory.getUsedStyles(doc, createBaseFromFilename("data/simple/selectors.html"),"screen");
         DirectAnalyzer da = new DirectAnalyzer(style);
         da.registerMatchCondition(cond);
 
@@ -143,7 +143,7 @@ public class PseudoClassTest {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
 
-        StyleSheet style = CSSFactory.getUsedStyles(doc, null, createBaseFromFilename("data/simple/selectors.html"),"screen");
+        StyleSheet style = CSSFactory.getUsedStyles(doc, createBaseFromFilename("data/simple/selectors.html"),"screen");
         DirectAnalyzer da = new DirectAnalyzer(style);
 
         NodeData nodeData = getStyleById(elements, da, "p1");

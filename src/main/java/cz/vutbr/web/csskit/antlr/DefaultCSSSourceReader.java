@@ -1,8 +1,11 @@
 package cz.vutbr.web.csskit.antlr;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import cz.vutbr.web.css.NetworkProcessor;
 import cz.vutbr.web.css.SourceLocator;
@@ -66,19 +69,39 @@ public class DefaultCSSSourceReader implements CSSSourceReader {
 						}
 					};
 			return new CSSInputStream(
-				new ByteArrayInputStream(((String)source.source).getBytes()),
-				source.encoding,
+				new StringReader((String)source.source),
 				source.base,
-				sourceMap);
+				sourceMap) {
+				@Override
+				public Reader reread(Charset encoding) throws IOException {
+					// ignore @charset rule (has no meaning in an embedded or inline style sheet)
+					// just read source again
+					Reader r = new StringReader((String)source.source);
+					stream.close();
+					return r;
+				}
+			};
 		case URL:
 			URL url = (URL)source.source;
 			if (!supportsMediaType(source.mediaType, url))
 				throw new IllegalArgumentException();
-			return new CSSInputStream(
-				network.fetch(url),
-				source.encoding,
-				url,
-				null);
+			if (source.encoding != null)
+				return new CSSInputStream(
+					network.fetch(url, source.encoding, true, false),
+					url,
+					null);
+			else
+				return new CSSInputStream(
+					network.fetch(url, StandardCharsets.UTF_8, false, false),
+					url,
+					null) {
+					@Override
+					public Reader reread(Charset encoding) throws IOException {
+						Reader r = network.fetch(url, encoding, false, true);
+						stream.close();
+						return r;
+					}
+				};
 		default:
 			throw new RuntimeException("coding error");
 		}

@@ -46,7 +46,7 @@ public class DOMAssignTest {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-		StyleMap decl = CSSFactory.assignDOM(doc, null, getClass().getResource("/advanced/domassign.html"), "screen", true);
+		StyleMap decl = CSSFactory.assignDOM(doc, getClass().getResource("/advanced/domassign.html"), "screen", true);
 		
 		NodeData data = decl.get(elements.getElementById("bp"));
 		assertNotNull("Data for #bp exist", data);
@@ -73,7 +73,7 @@ public class DOMAssignTest {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        StyleMap decl = CSSFactory.assignDOM(doc, null, getClass().getResource("/simple/selectors.html"),"screen", true);
+        StyleMap decl = CSSFactory.assignDOM(doc, getClass().getResource("/simple/selectors.html"),"screen", true);
         
         NodeData i1 = getStyleById(elements, decl, "i1");
         NodeData i2 = getStyleById(elements, decl, "i2");
@@ -105,7 +105,7 @@ public class DOMAssignTest {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        StyleMap decl = CSSFactory.assignDOM(doc, null, getClass().getResource("/simple/selectors2.html"),"screen", true);
+        StyleMap decl = CSSFactory.assignDOM(doc, getClass().getResource("/simple/selectors2.html"),"screen", true);
         
         NodeData i1 = getStyleById(elements, decl, "i1");
         NodeData i2 = getStyleById(elements, decl, "i2");
@@ -144,7 +144,7 @@ public class DOMAssignTest {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        StyleMap decl = CSSFactory.assignDOM(doc, null, getClass().getResource("/simple/selectors3.html"),"screen", true);
+        StyleMap decl = CSSFactory.assignDOM(doc, getClass().getResource("/simple/selectors3.html"),"screen", true);
         
         NodeData i1 = getStyleById(elements, decl, "i1");
         NodeData i2 = getStyleById(elements, decl, "i2");
@@ -163,8 +163,7 @@ public class DOMAssignTest {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        StyleMap decl = CSSFactory.assignDOM(doc, null,
-        		getClass().getResource("/advanced/inherit.html"),"screen", true);
+        StyleMap decl = CSSFactory.assignDOM(doc, getClass().getResource("/advanced/inherit.html"),"screen", true);
         
         NodeData data = decl.get(elements.getElementById("item1"));
         assertNotNull("Data for #item1 exist", data);
@@ -203,7 +202,7 @@ public class DOMAssignTest {
         final Document doc = ds.parse();
         final ElementMap elements = new ElementMap(doc);
         final StyleSheet style = CSSFactory.parseString(css, null);
-        StyleMap decl = CSSFactory.assignDOM(doc, null, null, "screen", true);
+        StyleMap decl = CSSFactory.assignDOM(doc, null, "screen", true);
 
         // Test p1
         {

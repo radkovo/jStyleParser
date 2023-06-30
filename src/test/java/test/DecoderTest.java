@@ -47,7 +47,7 @@ public class DecoderTest
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        StyleMap decl = CSSFactory.assignDOM(doc, null, getClass().getResource("/advanced/background.html"), "screen", true);
+        StyleMap decl = CSSFactory.assignDOM(doc, getClass().getResource("/advanced/background.html"), "screen", true);
         
         NodeData data = decl.get(elements.getElementById("bg1"));
         assertNotNull("Data for #bg1 exist", data);

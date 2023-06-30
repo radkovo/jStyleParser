@@ -47,7 +47,7 @@ public class DOMAssignDirectTest {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        StyleSheet style = CSSFactory.getUsedStyles(doc, null, getClass().getResource("/advanced/domassign.html"),"screen");
+        StyleSheet style = CSSFactory.getUsedStyles(doc, getClass().getResource("/advanced/domassign.html"),"screen");
         DirectAnalyzer da = new DirectAnalyzer(style);
         
 		NodeData data = da.getElementStyle(elements.getElementById("bp"), null, "screen");
@@ -75,7 +75,7 @@ public class DOMAssignDirectTest {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        StyleSheet style = CSSFactory.getUsedStyles(doc, null, getClass().getResource("/simple/selectors.html"),"screen");
+        StyleSheet style = CSSFactory.getUsedStyles(doc, getClass().getResource("/simple/selectors.html"),"screen");
         DirectAnalyzer da = new DirectAnalyzer(style);
         
         NodeData i1 = getStyleById(elements, da, "i1");
@@ -108,7 +108,7 @@ public class DOMAssignDirectTest {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        StyleSheet style = CSSFactory.getUsedStyles(doc, null, getClass().getResource("/simple/selectors2.html"),"screen");
+        StyleSheet style = CSSFactory.getUsedStyles(doc, getClass().getResource("/simple/selectors2.html"),"screen");
         DirectAnalyzer da = new DirectAnalyzer(style);
         
         NodeData i1 = getStyleById(elements, da, "i1");
@@ -148,7 +148,7 @@ public class DOMAssignDirectTest {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        StyleSheet style = CSSFactory.getUsedStyles(doc, null, getClass().getResource("/simple/selectors3.html"),"screen");
+        StyleSheet style = CSSFactory.getUsedStyles(doc, getClass().getResource("/simple/selectors3.html"),"screen");
         DirectAnalyzer da = new DirectAnalyzer(style);
         
         NodeData i1 = getStyleById(elements, da, "i1");
@@ -169,8 +169,7 @@ public class DOMAssignDirectTest {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        StyleMap decl = CSSFactory.assignDOM(doc, null,
-        		getClass().getResource("/advanced/inherit.html"),"screen", true);
+        StyleMap decl = CSSFactory.assignDOM(doc, getClass().getResource("/advanced/inherit.html"),"screen", true);
         
         NodeData data = decl.get(elements.getElementById("item1"));
         assertNotNull("Data for #item1 exist", data);
@@ -197,7 +196,7 @@ public class DOMAssignDirectTest {
         final DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/line-height.html"));
         final Document doc = ds.parse();
         final ElementMap elements = new ElementMap(doc);
-        final StyleSheet style = CSSFactory.getUsedStyles(doc, null, getClass().getResource("/simple/line-height.html"),"screen");
+        final StyleSheet style = CSSFactory.getUsedStyles(doc, getClass().getResource("/simple/line-height.html"),"screen");
 
         final DirectAnalyzer da = new DirectAnalyzer(style);
         final NodeData firstNodeData = da.getElementStyle(elements.getElementById("p1"), null, "screen");

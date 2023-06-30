@@ -88,7 +88,7 @@ public class DOMAssignMediaTest {
         Document doc = ds.parse();
         ElementMap elements = new ElementMap(doc);
         
-        StyleMap decl = CSSFactory.assignDOM(doc, null, getClass().getResource("/media/media1.html"), spec, true);
+        StyleMap decl = CSSFactory.assignDOM(doc, getClass().getResource("/media/media1.html"), spec, true);
         NodeData data = decl.get(elements.getElementById("test"));
         
         return data;

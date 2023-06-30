@@ -4,16 +4,14 @@
 package cz.vutbr.web.csskit.antlr;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.URL;
 import java.nio.charset.Charset;
 
 import cz.vutbr.web.css.SourceLocator;
 
-import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CharStream;
 
@@ -41,61 +39,26 @@ public class CSSInputStream implements CharStream {
 	private SourceMap sourceMap = null;
 	
 	/**
-	 * For resetting input stream to read with different encoding.
+	 * For reading stream again with different encoding.
 	 */
-	private InputStreamSupplier streamSupplier = null;
-	
-	interface InputStreamSupplier {
-		public CSSSourceReader.CSSInputStream get() throws IOException;
-	}
-	
-	/**
-	 * Input stream to be closed before new input stream is requested.
-	 */
-	private InputStream is = null;
-	
-	/**
-	 * Encoding of input stream. Null means that the encoding is unknown and the default encoding is
-	 * used.
-	 */
-	private Charset encoding;
+	private CSSSourceReader.CSSInputStream source = null;
 	
 	public static CSSInputStream newInstance(String input, URL base) throws IOException {
-		Charset enc = Charset.defaultCharset();
-		return newInstance(new ByteArrayInputStream(input.getBytes(enc)), enc, base, null);
+		return newInstance(new StringReader(input), base, null);
 	}
 	
 	public static CSSInputStream newInstance(CSSSourceReader.CSSInputStream input) throws IOException {
-		return newInstance(input.stream, input.encoding, input.base, input.sourceMap);
-	}
-	
-	public static CSSInputStream newInstance(InputStream input, Charset encoding, URL base, SourceMap sourceMap) throws IOException {
-		CSSInputStream stream = new CSSInputStream();
-		if (encoding == null)
-			encoding = Charset.defaultCharset();
-		stream.encoding = encoding;
-		BufferedReader br = new BufferedReader(new InputStreamReader(input, encoding));
-		stream.input = new ANTLRReaderStream(br);
-		stream.base = base;
-		stream.sourceMap = sourceMap;
+		CSSInputStream stream = newInstance(input.stream, input.base, input.sourceMap);
+		// store input stream so that we can reset the stream when @charset is encountered
+		stream.source = input;
 		return stream;
 	}
 	
-	public static CSSInputStream newInstance(InputStreamSupplier input) throws IOException {
+	public static CSSInputStream newInstance(Reader input, URL base, SourceMap sourceMap) throws IOException {
 		CSSInputStream stream = new CSSInputStream();
-		CSSSourceReader.CSSInputStream in = input.get();
-		InputStream is = in.stream;
-		stream.encoding = in.encoding;
-		if (stream.encoding == null) {
-			// store input stream supplier so that we can reset stream when @charset is encountered
-			stream.input = new ANTLRInputStream(is, Charset.defaultCharset().name());
-			stream.streamSupplier = input;
-			stream.is = is;
-		} else {
-			stream.input = new ANTLRInputStream(is, stream.encoding.name());
-		}
-		stream.base = in.base;
-		stream.sourceMap = in.sourceMap;
+		stream.input = new ANTLRReaderStream(new BufferedReader(input));
+		stream.base = base;
+		stream.sourceMap = sourceMap;
 		return stream;
 	}
 
@@ -239,25 +202,18 @@ public class CSSInputStream implements CharStream {
 	}
 	
 	/**
-	 * Obtains current character encoding used for processing the style sheets.
-	 * @return The charset.
-	 */
-	public Charset getEncoding() {
-	    return encoding;
-	}
-	
-	/**
 	 * Sets a new encoding for the input stream. <b>Warning:</b> this resets the stream
 	 * i.e. a new connection is opened and all the data is read again.
 	 * @param enc The new encoding name.
 	 * @throws IOException
 	 */
 	public void setEncoding(Charset encoding) throws IOException {
-		if (this.encoding == null) { //applicapble to URL streams only
-			this.encoding = encoding;
-			is.close();
-			is = streamSupplier.get().stream;
-			input = new ANTLRInputStream(is, encoding.name());
+		if (source != null) {
+			try {
+				input = new ANTLRReaderStream(new BufferedReader(source.reread(encoding)));
+			} finally {
+				source = null; // subsequent @charset rules are ignored
+			}
 		}
 	}
 }

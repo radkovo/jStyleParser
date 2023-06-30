@@ -48,9 +48,8 @@ public class CSSParserFactory {
 		switch (source.type) {
 		case INLINE:
 		case EMBEDDED:
-			return CSSInputStream.newInstance(cssReader.read(source));
 		case URL:
-			return CSSInputStream.newInstance(() -> cssReader.read(source));
+			return CSSInputStream.newInstance(cssReader.read(source));
 		default:
 			throw new RuntimeException("Coding error");
 		}
@@ -291,8 +290,7 @@ public class CSSParserFactory {
             if (CSSFactory.getAutoImportMedia().matches(imedia)) { // if autoload media spec matches media query list
                 URL url = DataURLHandler.createURL(source.base, path);
                 try {
-                    parseAndImport(new CSSSource(url, source.encoding, (String)null),
-                                   cssReader, sheet, preparator, imedia);
+                    parseAndImport(new CSSSource(url, null, null), cssReader, sheet, preparator, imedia);
                 } catch (IOException e) {
                     log.warn("Couldn't read imported style sheet: {}", e.getMessage());
                 }

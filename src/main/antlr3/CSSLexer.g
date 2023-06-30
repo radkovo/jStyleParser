@@ -175,7 +175,7 @@ CHARSET
 			        	throw new RuntimeException(new cz.vutbr.web.css.CSSException("Unsupported charset: " + enc));
 			        }
 			        catch (java.io.IOException e) {
-                log.warn("Could not change to unsupported charset!", e);
+                log.warn("Could not change charset", e);
 			        }
 			 }
 			 else

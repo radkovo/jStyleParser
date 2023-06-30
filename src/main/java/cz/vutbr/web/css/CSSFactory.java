@@ -388,16 +388,15 @@ public final class CSSFactory {
 	 * @param url
 	 *            URL of file to be parsed
 	 * @param encoding
-	 *            Encoding of file
+	 *            Character encoding of file, or {@code null} if not known.
 	 * @return Parsed StyleSheet
 	 * @throws CSSException
 	 *             When exception during parse occurs
 	 * @throws IOException
 	 *             When file not found
 	 */
-	public static final StyleSheet parse(URL url, Charset encoding)
-			throws CSSException, IOException {
-		return getCSSParserFactory().parse(new CSSSource(url, encoding, (String)null), new DefaultCSSSourceReader());
+	public static final StyleSheet parse(URL url, Charset encoding) throws CSSException, IOException {
+		return getCSSParserFactory().parse(new CSSSource(url, encoding, null), new DefaultCSSSourceReader());
 	}
 
     /**
@@ -407,7 +406,7 @@ public final class CSSFactory {
      *            URL of file to be parsed
      * @param cssReader
      * @param encoding
-     *            Encoding of file
+     *            Character encoding of file, or {@code null} if not known.
      * @return Parsed StyleSheet
      * @throws CSSException
      *             When exception during parse occurs
@@ -416,20 +415,18 @@ public final class CSSFactory {
      */
     public static final StyleSheet parse(URL url, CSSSourceReader cssReader, Charset encoding)
             throws CSSException, IOException {
-        return getCSSParserFactory().parse(new CSSSource(url, encoding, (String)null), cssReader);
+        return getCSSParserFactory().parse(new CSSSource(url, encoding, null), cssReader);
     }
 
 	/**
 	 * Parses file into StyleSheet. Internally transforms file to URL
 	 * @param fileName Name of file
-	 * @param encoding Encoding used to parse input
+	 * @param encoding Character encoding of file, or {@code null} if not known.
 	 * @return Parsed style sheet
 	 * @throws CSSException In case that parsing error occurs 
 	 * @throws IOException If file is not found or not readable
 	 */
-	public static final StyleSheet parse(String fileName, Charset encoding)
-			throws CSSException, IOException {
-
+	public static final StyleSheet parse(String fileName, Charset encoding) throws CSSException, IOException {
 		try {
 			File f = new File(fileName);
 			URL url = f.toURI().toURL();
@@ -518,8 +515,6 @@ public final class CSSFactory {
      * 
      * @param doc
      *            DOM tree
-     * @param encoding
-     *            The default encoding used for the referenced style sheets
      * @param base
      *            Base URL against which all files are searched
      * @param media
@@ -528,11 +523,9 @@ public final class CSSFactory {
      *            Style sheet to be modified
      * @return the rules of all the style sheets used in the document including the inline styles
      */
-    public static final StyleSheet getUsedStyles(Document doc, Charset encoding, URL base, MediaSpec media, CSSSourceReader cssReader, StyleSheet style)
-    {
+    public static final StyleSheet getUsedStyles(Document doc, URL base, MediaSpec media, CSSSourceReader cssReader, StyleSheet style) {
         return getUsedStyles(
             doc,
-            encoding,
             node -> new SourceLocator() {
                     public URL getURL() {
                         return base;
@@ -553,14 +546,12 @@ public final class CSSFactory {
      * @param nodeLocator
      *            Function to get a node's location (base URL, line number and column number)
      */
-    public static final StyleSheet getUsedStyles(Document doc, Charset encoding, Function<Node,SourceLocator> nodeLocator,
-                                                 MediaSpec media, CSSSourceReader cssReader, StyleSheet style)
-    {
+    public static final StyleSheet getUsedStyles(Document doc, Function<Node,SourceLocator> nodeLocator,
+                                                 MediaSpec media, CSSSourceReader cssReader, StyleSheet style) {
         URL base = nodeLocator.apply(doc).getURL();
         SourceData pair = new SourceData(base, cssReader, media);
 
-        Traversal<StyleSheet> traversal = new CSSAssignTraversal(doc, encoding,
-                (Object) pair, NodeFilter.SHOW_ELEMENT, nodeLocator);
+        Traversal<StyleSheet> traversal = new CSSAssignTraversal(doc, (Object) pair, NodeFilter.SHOW_ELEMENT, nodeLocator);
 
         traversal.listTraversal(style);
         style = style.filter(media);
@@ -573,8 +564,6 @@ public final class CSSFactory {
      * 
      * @param doc
      *            DOM tree
-     * @param encoding
-     *            The default encoding used for the referenced style sheets
      * @param base
      *            Base URL against which all files are searched
      * @param media
@@ -582,10 +571,9 @@ public final class CSSFactory {
      * @param cssReader
      * @return the rules of all the style sheets used in the document including the inline styles
      */
-	public static final StyleSheet getUsedStyles(Document doc, Charset encoding, URL base, MediaSpec media, CSSSourceReader cssReader)
-    {
+	public static final StyleSheet getUsedStyles(Document doc, URL base, MediaSpec media, CSSSourceReader cssReader) {
         StyleSheet style = (StyleSheet) getRuleFactory().createStyleSheet().unlock();
-        return getUsedStyles(doc, encoding, base, media, cssReader, style);
+        return getUsedStyles(doc, base, media, cssReader, style);
     }
     
     /**
@@ -594,17 +582,14 @@ public final class CSSFactory {
      * 
      * @param doc
      *            DOM tree
-     * @param encoding
-     *            The default encoding used for the referenced style sheets
      * @param base
      *            Base URL against which all files are searched
      * @param media
      *            Selected media for style sheet
      * @return the rules of all the style sheets used in the document including the inline styles
      */
-    public static final StyleSheet getUsedStyles(Document doc, Charset encoding, URL base, MediaSpec media)
-    {
-        return getUsedStyles(doc, encoding, base, media, new DefaultCSSSourceReader());
+    public static final StyleSheet getUsedStyles(Document doc, URL base, MediaSpec media) {
+        return getUsedStyles(doc, base, media, new DefaultCSSSourceReader());
     }
     
     /**
@@ -613,23 +598,14 @@ public final class CSSFactory {
      * 
      * @param doc
      *            DOM tree
-     * @param encoding
-     *            The default encoding used for the referenced style sheets
      * @param base
      *            Base URL against which all files are searched
      * @param media
      *            Selected media for style sheet
      * @return the rules of all the style sheets used in the document including the inline styles
      */
-    public static final StyleSheet getUsedStyles(Document doc, Charset encoding, URL base, String media)
-    {
-        return getUsedStyles(doc, encoding, base, new MediaSpec(media), new DefaultCSSSourceReader());
-    }
-    
-    @Deprecated
-    public static final StyleSheet getUsedStyles(Document doc, URL base, String media)
-    {
-        return getUsedStyles(doc, null, base, media);
+    public static final StyleSheet getUsedStyles(Document doc, URL base, String media) {
+        return getUsedStyles(doc, base, new MediaSpec(media), new DefaultCSSSourceReader());
     }
     
 	/**
@@ -645,8 +621,6 @@ public final class CSSFactory {
 	 * 
 	 * @param doc
 	 *            DOM tree
-     * @param encoding
-     *            The default encoding used for the referenced style sheets
 	 * @param base
 	 *            Base URL against which all files are searched
 	 * @param media
@@ -656,9 +630,8 @@ public final class CSSFactory {
 	 * @return Map between DOM element nodes and data structure containing CSS
 	 *         information
 	 */
-	public static final StyleMap assignDOM(Document doc, Charset encoding,
-			URL base, MediaSpec media, boolean useInheritance) {
-		return assignDOM(doc, encoding, base, media, useInheritance, null);
+	public static final StyleMap assignDOM(Document doc, URL base, MediaSpec media, boolean useInheritance) {
+		return assignDOM(doc, base, media, useInheritance, null);
 	}
 
     /**
@@ -667,8 +640,6 @@ public final class CSSFactory {
      *
      * @param doc
      *            DOM tree
-     * @param encoding
-     *            The default encoding used for the referenced style sheets
      * @param base
      *            Base URL against which all files are searched
      * @param media
@@ -678,9 +649,8 @@ public final class CSSFactory {
      * @return Map between DOM element nodes and data structure containing CSS
      *         information
      */
-    public static final StyleMap assignDOM(Document doc, Charset encoding,
-            URL base, String media, boolean useInheritance) {
-        return assignDOM(doc, encoding, base, new MediaSpec(media), useInheritance);
+    public static final StyleMap assignDOM(Document doc, URL base, String media, boolean useInheritance) {
+        return assignDOM(doc, base, new MediaSpec(media), useInheritance);
     }
 
     /**
@@ -696,8 +666,6 @@ public final class CSSFactory {
      *
      * @param doc
      *            DOM tree
-     * @param encoding
-     *            The default encoding used for the referenced style sheets
      * @param base
      *            Base URL against which all files are searched
      * @param media
@@ -709,11 +677,8 @@ public final class CSSFactory {
      * @return Map between DOM element nodes and data structure containing CSS
      *         information
      */
-	public static final StyleMap assignDOM(Document doc, Charset encoding,
-			URL base, MediaSpec media, boolean useInheritance, final MatchCondition matchCond) {
-	    
-	    return assignDOM(doc, encoding, new DefaultCSSSourceReader(),
-	            base, media, useInheritance, matchCond);
+	public static final StyleMap assignDOM(Document doc, URL base, MediaSpec media, boolean useInheritance, final MatchCondition matchCond) {
+	    return assignDOM(doc, new DefaultCSSSourceReader(), base, media, useInheritance, matchCond);
 	}
 
     /**
@@ -722,8 +687,6 @@ public final class CSSFactory {
      * 
      * @param doc
      *            DOM tree
-     * @param encoding
-     *            The default encoding used for the referenced style sheets
      * @param cssReader
      * @param base
      *            Base URL against which all files are searched
@@ -736,12 +699,11 @@ public final class CSSFactory {
      * @return Map between DOM element nodes and data structure containing CSS
      *         information
      */ 
-    public static final StyleMap assignDOM(Document doc, Charset encoding, CSSSourceReader cssReader,
-            URL base, MediaSpec media, boolean useInheritance, final MatchCondition matchCond) {
-
+    public static final StyleMap assignDOM(Document doc, CSSSourceReader cssReader, URL base, MediaSpec media,
+                                           boolean useInheritance, final MatchCondition matchCond) {
         StyleSheet style = (StyleSheet) getRuleFactory().createStyleSheet()
                 .unlock();
-        style = getUsedStyles(doc, encoding, base, media, cssReader, style);
+        style = getUsedStyles(doc, base, media, cssReader, style);
 
         Analyzer analyzer = new Analyzer(style);
         if (matchCond != null) {
@@ -756,8 +718,6 @@ public final class CSSFactory {
      * 
      * @param doc
      *            DOM tree
-     * @param encoding
-     *            The default encoding used for the referenced style sheets
      * @param base
      *            Base URL against which all files are searched
      * @param media
@@ -769,18 +729,10 @@ public final class CSSFactory {
      * @return Map between DOM element nodes and data structure containing CSS
      *         information
      */
-    public static final StyleMap assignDOM(Document doc, Charset encoding,
-            URL base, String media, boolean useInheritance, final MatchCondition matchCond) {
-        
-        return assignDOM(doc, encoding, base, new MediaSpec(media), useInheritance, matchCond);
+    public static final StyleMap assignDOM(Document doc, URL base, String media, boolean useInheritance, final MatchCondition matchCond) {
+        return assignDOM(doc, base, new MediaSpec(media), useInheritance, matchCond);
     }
 
-    @Deprecated
-    public static final StyleMap assignDOM(Document doc,
-            URL base, String media, boolean useInheritance) {
-        return assignDOM(doc, null, base, media, useInheritance);
-    }
-    
 	// ========================================================================
 
 	/**
@@ -792,12 +744,10 @@ public final class CSSFactory {
 	private static final class CSSAssignTraversal extends Traversal<StyleSheet> {
 
 		private CSSParserFactory pf = getCSSParserFactory();
-	    private Charset encoding;
 		private final Function<Node,SourceLocator> nodeLocator;
 	    
-		public CSSAssignTraversal(Document doc, Charset encoding, Object source, int whatToShow, Function<Node,SourceLocator> nodeLocator) {
+		public CSSAssignTraversal(Document doc, Object source, int whatToShow, Function<Node,SourceLocator> nodeLocator) {
 			super(doc, source, whatToShow);
-			this.encoding = encoding;
 			this.nodeLocator = nodeLocator;
 		}
 
@@ -830,7 +780,7 @@ public final class CSSFactory {
 					String mediaType = getMediaType(elem);
 					if (cssReader.supportsMediaType(mediaType, uri)) {
 						result = pf.append(
-							new CSSSource(uri, encoding, getMediaType(elem)),
+							new CSSSource(uri, null, getMediaType(elem)),
 							cssReader,
 							result);
 						log.debug("Matched linked CSS style");

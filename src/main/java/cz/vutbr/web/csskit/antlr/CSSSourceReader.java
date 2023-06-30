@@ -1,7 +1,7 @@
 package cz.vutbr.web.csskit.antlr;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
 
@@ -12,17 +12,12 @@ import java.nio.charset.Charset;
  */
 public interface CSSSourceReader {
 
-	public static final class CSSInputStream {
+	public static class CSSInputStream {
 
 		/**
-		 * The stream
+		 * The character stream
 		 */
-		public final InputStream stream;
-
-		/**
-		 * The encoding, or null if not known.
-		 */
-		public final Charset encoding;
+		public final Reader stream;
 
 		/**
 		 * Base URL for resolving relative URLs against if <code>sourceMap</code> is
@@ -37,11 +32,20 @@ public interface CSSSourceReader {
 		 */
 		public final SourceMap sourceMap;
 
-		public CSSInputStream(InputStream inputStream, Charset encoding, URL base, SourceMap sourceMap) {
-			this.stream = inputStream;
-			this.encoding = encoding;
+		public CSSInputStream(Reader stream, URL base, SourceMap sourceMap) {
+			this.stream = stream;
 			this.base = base;
 			this.sourceMap = sourceMap;
+		}
+
+		/**
+		 * Read the source again using a different character encoding. Closes {@code stream}.
+		 *
+		 * @throws IOException if the character encoding can not be changed or if the source can not
+		 *                     be read a second time.
+		 */
+		public Reader reread(Charset encoding) throws IOException {
+			throw new IOException();
 		}
 	}
 
