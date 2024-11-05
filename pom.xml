@@ -183,7 +183,7 @@
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
-                <version>4.5.3</version>
+                <version>4.13.2</version>
                 <executions>
                     <execution>
                         <goals>
@@ -256,7 +256,7 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>4.5.3</version>
+            <version>4.13.2</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.nekohtml</groupId>
