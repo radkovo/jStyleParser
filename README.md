@@ -1,7 +1,6 @@
 jStyleParser
 ============
 
-[![Build Status](https://travis-ci.org/radkovo/jStyleParser.svg?branch=master)](https://travis-ci.org/radkovo/jStyleParser)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sf.cssbox/jstyleparser/badge.png)](https://maven-badges.herokuapp.com/maven-central/net.sf.cssbox/jstyleparser)
 
 
