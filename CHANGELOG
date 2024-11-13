@@ -1,3 +1,7 @@
+Version 4.0.1 - Nov 13, 2024
+- Java 11 target
+- Dependency updates
+
 Version 4.0.0 - Jan 31, 2021
 - Java 8 target
 - Support for multi-value properties
