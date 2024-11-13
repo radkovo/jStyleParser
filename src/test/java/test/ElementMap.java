@@ -5,9 +5,10 @@ import java.util.Map;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.traversal.DocumentTraversal;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.TreeWalker;
+
+import cz.vutbr.web.domassign.GenericTreeWalker;
 
 public class ElementMap {
 
@@ -17,9 +18,7 @@ public class ElementMap {
 	public ElementMap(Document doc) {
 		elementIDs = new HashMap<String, Element>();
 		elementNames = new HashMap<String, Element>();
-        DocumentTraversal traversal = (DocumentTraversal) doc;
-        TreeWalker w = traversal.createTreeWalker(doc, NodeFilter.SHOW_ELEMENT, null, false);
-		//TreeWalker w = new TidyTreeWalker(doc, NodeFilter.SHOW_ELEMENT);
+		TreeWalker w = new GenericTreeWalker(doc, NodeFilter.SHOW_ELEMENT);
 		Element current;
 		while ((current = (Element) w.nextNode()) != null) {
 			elementNames.put(current.getNodeName().toLowerCase(), current);
@@ -28,7 +27,6 @@ public class ElementMap {
 				elementIDs.put(id, current);
 		}
 	}
-	
 	
 	public Element getElementById(String id) {
 		return elementIDs.get(id);

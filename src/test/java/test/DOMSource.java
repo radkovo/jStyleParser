@@ -23,8 +23,8 @@ package test;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.xerces.parsers.DOMParser;
-import org.cyberneko.html.HTMLConfiguration;
+import org.htmlunit.cyberneko.html.dom.HTMLDocumentImpl;
+import org.htmlunit.cyberneko.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -71,7 +71,7 @@ public class DOMSource
 
     public Document parse() throws SAXException, IOException
     {
-        DOMParser parser = new DOMParser(new HTMLConfiguration());
+        DOMParser parser = new DOMParser(HTMLDocumentImpl.class);
         parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
         parser.setProperty("http://cyberneko.org/html/properties/names/attrs", "lower");
         if (charset != null)

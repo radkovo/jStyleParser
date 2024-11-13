@@ -15,7 +15,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.traversal.DocumentTraversal;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.TreeWalker;
 import org.xml.sax.SAXException;
@@ -35,6 +34,7 @@ import cz.vutbr.web.css.CSSProperty.FontFamily;
 import cz.vutbr.web.css.CSSProperty.Margin;
 import cz.vutbr.web.csskit.Color;
 import cz.vutbr.web.domassign.Analyzer;
+import cz.vutbr.web.domassign.GenericTreeWalker;
 import cz.vutbr.web.domassign.StyleMap;
 import cz.vutbr.web.domassign.Traversal;
 
@@ -64,9 +64,7 @@ public class AnalyzerTest {
 		NodeList list = doc.getElementsByTagName("body");
 		assertEquals("There is one <body> element", 1, list.getLength());
 
-		//walker = new TidyTreeWalker(list.item(0), NodeFilter.SHOW_ELEMENT);
-		DocumentTraversal traversal = (DocumentTraversal) doc;
-		walker = traversal.createTreeWalker(list.item(0), NodeFilter.SHOW_ELEMENT, null, false);
+		walker = new GenericTreeWalker(list.item(0), NodeFilter.SHOW_ELEMENT);
 		elements = new ElementMap(doc);
 	}
 
