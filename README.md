@@ -1,6 +1,7 @@
 jStyleParser
 ============
 
+[![Build with Maven](https://github.com/radkovo/jStyleParser/actions/workflows/maven.yml/badge.svg)](https://github.com/radkovo/jStyleParser/actions/workflows/maven.yml)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sf.cssbox/jstyleparser/badge.png)](https://maven-badges.herokuapp.com/maven-central/net.sf.cssbox/jstyleparser)
 
 
