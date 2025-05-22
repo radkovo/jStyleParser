@@ -384,26 +384,23 @@ public class MediaSpec
      * @param q The media query
      * @return {@code true} when this media specification matches the given media query.
      */
-    public boolean matches(MediaQuery q)
-    {
-        //match the media type
+    public boolean matches(MediaQuery q) {
+        return matchesIgnoreNegation(q) != q.isNegative();
+    }
+
+    protected boolean matchesIgnoreNegation(MediaQuery q) {
         if (q.getType() != null)
         {
             if (q.getType().equals("all"))
-            {
-                if (q.isNegative())
-                    return false; //"NOT all" doesn't match to anything
-            }
-            else if (q.getType().equals(this.getType()) == q.isNegative()) //other than all
+                ;
+            else if (!q.getType().equals(this.getType()))
                 return false;
         }
-        //match the eventual expressions
         for (MediaExpression e : q)
         {
             if (!this.matches(e))
                 return false;
         }
-        //everything matched
         return true;
     }
     
@@ -412,8 +409,11 @@ public class MediaSpec
      * @param e The media query expression
      * @return {@code true} when this media specification matches the given expression.
      */
-    public boolean matches(MediaExpression e)
-    {
+    public boolean matches(MediaExpression e) {
+        return matchesIgnoreNegation(e) != e.isNegative();
+    }
+
+    protected boolean matchesIgnoreNegation(MediaExpression e) {
         String fs = e.getFeature();
         boolean isMin = false;
         boolean isMax = false; 
