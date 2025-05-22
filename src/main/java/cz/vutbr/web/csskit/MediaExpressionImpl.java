@@ -49,8 +49,11 @@ public class MediaExpressionImpl extends AbstractRule<Term<?>> implements MediaE
         StringBuilder sb = new StringBuilder();
         
         sb.append(OutputUtil.MEDIA_EXPR_OPENING);
-        sb.append(getFeature()).append(OutputUtil.MEDIA_FEATURE_DELIM);
-        sb = OutputUtil.appendList(sb, list, OutputUtil.SPACE_DELIM);
+        sb.append(getFeature());
+        if (size() > 0) {
+	        sb.append(OutputUtil.MEDIA_FEATURE_DELIM);
+            sb = OutputUtil.appendList(sb, list, OutputUtil.SPACE_DELIM);
+        }
         sb.append(OutputUtil.MEDIA_EXPR_CLOSING);
         
         if (isNegative()) {
