@@ -306,8 +306,10 @@ public class CSSParserFactory {
             log.debug("Wrapping rules {} into RuleMedia: {}", rules, rm);
             rm.unlock();
             rm.replaceAll(rules);
-        }
-	    return addRulesToStyleSheet(rules, sheet);
+            sheet.add(rm);
+            return sheet;
+        } else
+            return addRulesToStyleSheet(rules, sheet);
 	}
 	
 	protected static StyleSheet addRulesToStyleSheet(RuleList rules, StyleSheet sheet) {
