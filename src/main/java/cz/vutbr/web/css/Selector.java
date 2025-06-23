@@ -122,6 +122,7 @@ public interface Selector extends Rule<Selector.SelectorPart> {
         INDETERMINATE("indeterminate"),
         IN_RANGE("in-range"),
         INVALID("invalid"),
+        JAVAFX(null),
         LANG("lang"),
         LAST_CHILD("last-child"),
         LAST_OF_TYPE("last-of-type"),
@@ -171,10 +172,87 @@ public interface Selector extends Rule<Selector.SelectorPart> {
                     }
                 }
             }
+
+            PseudoClassType type = lookup.get(name.toLowerCase());
+            if (type == null) {
+                if (JFXPseudoClassType.forName(name) != null) {
+                    return JAVAFX;
+                }
+            }
+            return type;
+        }
+    }
+
+    /**
+     * JavaFX pseudo-class type
+     */
+    public enum JFXPseudoClassType {
+        ARMED("armed"),
+        BOTTOM("bottom"),
+        CANCEL("cancel"),
+        CELL_SELECTION("cell-selection"),
+        COLLAPSED("collapsed"),
+        DEFAULT("default"),
+        DETERMINATE("determinate"),
+        DISABLED("disabled"),
+        EDITABLE("editable"),
+        EMPTY("empty"),
+        EVEN("even"),
+        EXPANDED("expanded"),
+        FILLED("filled"),
+        FIRST_CHILD("first-child"),
+        FIT_TO_HEIGHT("fitToHeight"),
+        FIT_TO_WIDTH("fitToWidth"),
+        FOCUS_VISIBLE("focus-visible"),
+        FOCUS_WITHIN("focus-within"),
+        FOCUSED("focused"),
+        HORIZONTAL("horizontal"),
+        HOVER("hover"),
+        INDETERMINATE("indeterminate"),
+        LAST_CHILD("last-child"),
+        LAST_VISIBLE("last-visible"),
+        LEFT("left"),
+        NTH_CHILD_EVEN("nth-childeven"),
+        NTH_CHILD_ODD("nth-childodd"),
+        ODD("odd"),
+        ONLY_CHILD("only-child"),
+        OPEN_VERTICALLY("openvertically"),
+        PANNABLE("pannable"),
+        PRESSED("pressed"),
+        READONLY("readonly"),
+        RIGHT("right"),
+        ROOT("root"),
+        ROW_SELECTION("row-selection"),
+        SELECTED("selected"),
+        SHOW_MNEMONIC("show-mnemonic"),
+        SHOWING("showing"),
+        TOP("top"),
+        VERTICAL("vertical"),
+        VISITED("visited");
+
+        private static final Map<String, JFXPseudoClassType> lookup = new ConcurrentHashMap<>();
+        private final String name;
+
+        JFXPseudoClassType(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static JFXPseudoClassType forName(String name) {
+            if (lookup.isEmpty()) {
+                for (JFXPseudoClassType type : values()) {
+                    if (type.getName() != null) {
+                        lookup.put(type.getName(), type);
+                    }
+                }
+            }
             return lookup.get(name.toLowerCase());
         }
     }
-    
+
     /**
      * A pseudo-element
      */
@@ -359,6 +437,7 @@ public interface Selector extends Rule<Selector.SelectorPart> {
         public String getName();
         public String getFunctionValue();
         public PseudoClassType getType();
+        public JFXPseudoClassType getJfxType();
         public Selector getNestedSelector();
     }
     

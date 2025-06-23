@@ -435,12 +435,18 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
         private final String name;
         private final String functionValue;
         private final PseudoClassType type;
+        private final JFXPseudoClassType jfxType;
         private Selector nestedSelector; // for :not(sel)
     	private int[] elementIndex; // decoded element index for nth-XXXX properties -- values a and b in the an+b specification
         
         private PseudoClassImpl(String name, String functionValue, Selector nestedSelector) {
             this.name = name;
             type = PseudoClassType.forName(name);
+            if (type == PseudoClassType.JAVAFX) {
+                jfxType = JFXPseudoClassType.forName(name);
+            } else {
+                jfxType = null;
+            }
             this.functionValue = functionValue;
             this.nestedSelector = nestedSelector;
             
@@ -491,6 +497,11 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
         @Override
         public PseudoClassType getType() {
             return type;
+        }
+
+        @Override
+        public JFXPseudoClassType getJfxType() {
+            return jfxType;
         }
 
         @Override
