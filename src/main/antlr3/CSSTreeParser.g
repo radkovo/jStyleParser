@@ -440,9 +440,10 @@ scope {
 @after {
     if ($mediaquery::invalid)
     {
-        trace("Skipping invalid rule {}", $query);
-        $mediaquery::q.setType("all"); //change the malformed media queries to "not all"
-        $mediaquery::q.setNegative(true);
+        if ($query.size() > 0)
+            $query = rf.createMediaQuery();
+        $query.setType("all"); //change the malformed media queries to "not all"
+        $query.setNegative(true);
     }
     logLeave("mediaquery");
 }
@@ -492,7 +493,7 @@ mediaterm
 		            }
 		            else
 		            {
-		                trace("Invalidating media query for invalud expression");
+		                trace("Invalidating media query for invalid expression");
 		                $mediaquery::invalid = true;
 		            }
             }
