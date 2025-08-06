@@ -13,7 +13,7 @@
 
 	<groupId>org.daisy.libs</groupId>
 	<artifactId>jstyleparser</artifactId>
-	<version>1.20-p24-SNAPSHOT</version>
+	<version>1.20-p24</version>
 	<packaging>bundle</packaging>
 	<name>jStyleParser</name>
 	<description>jStyleParser is a CSS parser written in Java. It has its own application interface that is designed to allow an efficient CSS processing in Java and mapping the values to the Java data types. It parses CSS 2.1 style sheets into structures that can be efficiently assigned to DOM elements. It is intended be the primary CSS parser for the CSSBox library. While handling errors, it is user agent conforming according to the CSS specification.</description>
@@ -77,7 +77,7 @@
 		<url>https://github.com/radkovo/jStyleParser</url>
 		<connection>scm:git:git@github.com:radkovo/jStyleParser.git</connection>
 		<developerConnection>scm:git:git@github.com:radkovo/jStyleParser.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>jStyleParser-1.20-p24</tag>
   </scm>
 	
     <properties>
