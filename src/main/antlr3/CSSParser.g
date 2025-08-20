@@ -219,8 +219,8 @@ media_term
  }
 
 media_expression
- : LPAREN S* MINUS? IDENT S* (COLON S* terms)? RPAREN
-    -> ^(DECLARATION MINUS? IDENT terms?)
+ : LPAREN S* MINUS? IDENT S* media_expression_value
+    -> ^(DECLARATION MINUS? IDENT media_expression_value)
  ;
  catch [RecognitionException re] {
 		 final BitSet follow = BitSet.of(RPAREN, SEMICOLON);               
@@ -231,6 +231,14 @@ media_expression
 		     emitErrorAsDebugMessage = false;
 		 }
  }
+
+media_expression_value
+    : COLON S* terms RPAREN -> terms
+    | RPAREN -> MEDIA_QUERY_NO_VALUE
+    ;
+    catch [RecognitionException re] {
+        throw re;
+    }
 
 media_rule
  : ruleset

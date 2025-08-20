@@ -510,17 +510,17 @@ mediaterm
 
 mediaexpression returns [cz.vutbr.web.css.MediaExpression expr]
 @init {
-    logEnter("mediaquery");
+    logEnter("mediaexpression");
     $expr = rf.createMediaExpression();
 }
 @after {
-    logLeave("mediaquery");
+    logLeave("mediaexpression");
 }
-    : d=declaration { 
-          if (d != null) { //if the declaration is valid
-              $expr.setFeature(d.getProperty()); 
+    : d=declaration {
+          if (d != null) { // if the declaration is valid
+              $expr.setFeature(d.getProperty());
               $expr.replaceAll(d);
-          } 
+          }
       }
     ;
 
@@ -664,6 +664,7 @@ scope {
     logLeave("terms");
 }
     : ^(VALUE term+)
+    | MEDIA_QUERY_NO_VALUE // return empty list
     ;
     
 term
@@ -759,7 +760,7 @@ valuepart
     }
     | DASHMATCH {$declaration::invalid = true;}
     | ^(PARENBLOCK any*) {$declaration::invalid = true;}
-    | ^(BRACEBLOCK any*) {$declaration::invalid = true;}    
+    | ^(BRACEBLOCK any*) {$declaration::invalid = true;}
   ;
   
 combined_selector_list returns [List<cz.vutbr.web.css.CombinedSelector> list]
