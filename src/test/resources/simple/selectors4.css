@@ -1,0 +1,27 @@
+p {
+	color: blue;
+}
+
+p:not(.notTooRed,.notRed) {
+	color: red;
+}
+
+p:is(.verygreen,.green) {
+	color: green;
+}
+
+p:not(:is(.verygreen,.green)) {
+	background-color: #aaa;
+}
+
+p.specificityTest {
+    color:#000;
+}
+
+p:is(.specificityTest) {
+    color: red;
+}
+
+p:where(.specificityTest) {
+    color: blue;
+}

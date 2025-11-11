@@ -471,7 +471,7 @@ attribute
      }
 
 pseudo
-    : COLON COLON? (MINUS? IDENT | FUNCTION S* (MINUS? IDENT | MINUS? NUMBER | MINUS? INDEX | selector) S* RPAREN)
+    : COLON COLON? (MINUS? IDENT | FUNCTION S* (MINUS? IDENT | MINUS? NUMBER | MINUS? INDEX | (selector (COMMA S* selector)*)) S* RPAREN)
     ;
     catch [RecognitionException re] {
       log.error("PARSING pseudo ERROR | inserting INVALID_SELPART");

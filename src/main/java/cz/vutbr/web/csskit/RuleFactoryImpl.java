@@ -28,6 +28,8 @@ import cz.vutbr.web.css.Selector.ElementID;
 import cz.vutbr.web.css.Selector.ElementName;
 import cz.vutbr.web.css.Selector.Operator;
 
+import java.util.List;
+
 /**
  * @author kapy
  *
@@ -176,7 +178,7 @@ public class RuleFactoryImpl implements RuleFactory {
     }
     
     @Override
-    public Selector.PseudoElement createPseudoElement(String name, Selector nestedSelector) {
+    public Selector.PseudoElement createPseudoElement(String name, List<Selector> nestedSelector) {
         return new SelectorImpl.PseudoElementImpl(name, nestedSelector);
     }
     
@@ -191,7 +193,7 @@ public class RuleFactoryImpl implements RuleFactory {
     }
     
 	@Override
-    public Selector.PseudoClass createPseudoClass(String name, Selector nestedSelector) {
+    public Selector.PseudoClass createPseudoClass(String name, List<Selector> nestedSelector) {
         return new SelectorImpl.PseudoClassImpl(name, nestedSelector);
     }
     

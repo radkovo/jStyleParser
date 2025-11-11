@@ -1,5 +1,6 @@
 package cz.vutbr.web.css;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.w3c.dom.Element;
@@ -118,6 +119,8 @@ public interface Selector extends Rule<Selector.SelectorPart> {
         FOCUS("focus"),
         FOCUS_WITHIN("focus-within"),
         HAS("has"),
+        IS("is"),
+        WHERE("where"),
         HOVER("hover"),
         INDETERMINATE("indeterminate"),
         IN_RANGE("in-range"),
@@ -359,13 +362,13 @@ public interface Selector extends Rule<Selector.SelectorPart> {
         public String getName();
         public String getFunctionValue();
         public PseudoClassType getType();
-        public Selector getNestedSelector();
+        public List<Selector> getNestedSelectors();
     }
     
     public interface PseudoElement extends SelectorPart {
         public String getName();
         public String getFunctionValue();
         public PseudoElementType getType();
-        public Selector getNestedSelector();
+        public List<Selector> getNestedSelectors();
     }
 }

@@ -4,6 +4,8 @@ import org.w3c.dom.Element;
 
 import cz.vutbr.web.css.Selector.Operator;
 
+import java.util.List;
+
 /**
  * Creates rules, declarations and selectors,
  * that is the most of CSS grammar elements
@@ -179,7 +181,7 @@ public interface RuleFactory {
      * @param nestedSelector Selector in its function argument
 	 * @return New CSS pseudo-element
 	 */
-	Selector.PseudoElement createPseudoElement(String name, Selector nestedSelector);
+	Selector.PseudoElement createPseudoElement(String name, List<Selector> nestedSelector);
     
 	/**
 	 * Creates CSS selector part, pseudo-class
@@ -202,7 +204,7 @@ public interface RuleFactory {
      * @param nestedSelector Selector in its function argument
 	 * @return New CSS pseudo-class
 	 */
-	Selector.PseudoClass createPseudoClass(String name, Selector nestedSelector);
+	Selector.PseudoClass createPseudoClass(String name, List<Selector> nestedSelector);
 
 	/**
 	 * Creates CSS author style sheet
