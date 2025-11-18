@@ -1613,9 +1613,12 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
         if (ctx.FUNCTION() != null) {
             // function
             name = extractTextUnescaped(ctx.FUNCTION().getText());
-            if (ctx.selector() != null) {
-                Selector sel = visitSelector(ctx.selector());
-                pseudo = (isPseudoElem ? rf.createPseudoElement(name, sel) : rf.createPseudoClass(name, sel));
+            if (ctx.selector() != null && !ctx.selector().isEmpty()) {
+                List<Selector> selectors = new ArrayList<>(ctx.selector().size());
+                for (CSSParser.SelectorContext selectorContext : ctx.selector()) {
+                    selectors.add(visitSelector(selectorContext));
+                }
+                pseudo = (isPseudoElem ? rf.createPseudoElement(name, selectors) : rf.createPseudoClass(name, selectors));
             } else {
                 String value = (ctx.MINUS() == null ? "" : "-");
                 if (ctx.IDENT() != null) {

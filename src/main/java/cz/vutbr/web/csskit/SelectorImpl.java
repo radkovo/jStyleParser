@@ -2,7 +2,9 @@ package cz.vutbr.web.csskit;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import cz.vutbr.web.csskit.CombinedSelectorImpl.SpecificityImpl;
 import org.unbescape.css.CssEscape;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -435,23 +437,24 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
         private final String name;
         private final String functionValue;
         private final PseudoClassType type;
-        private Selector nestedSelector; // for :not(sel)
+        private List<Selector> nestedSelectors; // for :not(sel)
     	private int[] elementIndex; // decoded element index for nth-XXXX properties -- values a and b in the an+b specification
         
-        private PseudoClassImpl(String name, String functionValue, Selector nestedSelector) {
+        private PseudoClassImpl(String name, String functionValue, List<Selector> nestedSelectors) {
             this.name = name;
             type = PseudoClassType.forName(name);
             this.functionValue = functionValue;
-            this.nestedSelector = nestedSelector;
+            this.nestedSelectors = nestedSelectors;
             
             // Type-specific initialization
             if (type != null) {
                 switch (type) {
                     case NOT:
-                        if (nestedSelector == null && functionValue != null) {
-                            nestedSelector = new SelectorImpl();
+                        if (nestedSelectors == null && functionValue != null) {
+                            SelectorImpl nestedSelector = new SelectorImpl();
                             nestedSelector.unlock();
                             nestedSelector.add(new ElementNameImpl(functionValue));
+                            this.nestedSelectors = List.of(nestedSelector);
                         }
                         break;
                     case NTH_CHILD:
@@ -474,7 +477,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
             this(name, functionValue, null);
         }
         
-        protected PseudoClassImpl(String name, Selector nestedSelector) {
+        protected PseudoClassImpl(String name, List<Selector> nestedSelector) {
             this(name, null, nestedSelector);
         }
         
@@ -494,13 +497,35 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
         }
 
         @Override
-        public Selector getNestedSelector() {
-            return nestedSelector;
+        public List<Selector> getNestedSelectors() {
+            return nestedSelectors;
         }
 
         @Override
         public void computeSpecificity(Specificity spec) {
-            spec.add(Level.C);
+            switch (type) {
+                case WHERE:
+                    // where has 0 specificity
+                    break;
+                case IS:
+                case NOT:
+                    if (nestedSelectors != null && !nestedSelectors.isEmpty()) {
+                        Specificity highestSpecificity = null;
+                        Selector selectorWithHighestSpecificity = null;
+                        for (Selector nestedSelector : nestedSelectors) {
+                            Specificity specificity = new SpecificityImpl();
+                            nestedSelector.computeSpecificity(specificity);
+                            if (highestSpecificity == null || specificity.compareTo(highestSpecificity) > 0) {
+                                selectorWithHighestSpecificity = nestedSelector;
+                                highestSpecificity = specificity;
+                            }
+                        }
+                        selectorWithHighestSpecificity.computeSpecificity(spec);
+                    }
+                    break;
+                default:
+                    spec.add(Level.C);
+            }
         }
         
         @Override
@@ -601,7 +626,25 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
                     }
                     return true;
                 case NOT:
-                    return nestedSelector != null && !nestedSelector.matches(e, matcher, cond);
+                    if (nestedSelectors != null) {
+                        for (Selector nestedSelector : nestedSelectors) {
+                            if (nestedSelector.matches(e, matcher, cond)) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                    return false;
+                case IS:
+                case WHERE:
+                    if (nestedSelectors != null) {
+                        for (Selector nestedSelector : nestedSelectors) {
+                            if (nestedSelector.matches(e, matcher, cond)) {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
                 default:
                     // match all pseudo classes specified by an additional condition (usually used for using LINK pseudo class for links)
                     return cond.isSatisfied(e, this);
@@ -748,8 +791,8 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			if(name!=null) 
 				sb.append(name);
             
-			if(nestedSelector != null)
-			    sb.append(OutputUtil.FUNCTION_OPENING).append(nestedSelector.toString()).append(OutputUtil.FUNCTION_CLOSING);
+			if(nestedSelectors != null)
+			    sb.append(OutputUtil.FUNCTION_OPENING).append(nestedSelectors.stream().map(Object::toString).collect(Collectors.joining(", "))).append(OutputUtil.FUNCTION_CLOSING);
 			else if(functionValue != null)
 			    sb.append(OutputUtil.FUNCTION_OPENING).append(functionValue).append(OutputUtil.FUNCTION_CLOSING);
 			
@@ -762,7 +805,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
             hash = 43 * hash + Objects.hashCode(this.name);
             hash = 43 * hash + Objects.hashCode(this.functionValue);
             hash = 43 * hash + Objects.hashCode(this.type);
-            hash = 43 * hash + Objects.hashCode(this.nestedSelector);
+            hash = 43 * hash + Objects.hashCode(this.nestedSelectors);
             return hash;
         }
 
@@ -787,7 +830,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
             if (!Objects.equals(this.functionValue, other.functionValue)) {
                 return false;
             }
-            if (!Objects.equals(this.nestedSelector, other.nestedSelector)) {
+            if (!Objects.equals(this.nestedSelectors, other.nestedSelectors)) {
                 return false;
             }
             return true;
@@ -799,21 +842,22 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
         private final String name;
         private final String functionValue;
         private final PseudoElementType type;
-        private Selector nestedSelector; // for ::cue(sel)
+        private List<Selector> nestedSelectors; // for ::cue(sel)
         
-        private PseudoElementImpl(String name, String functionValue, Selector nestedSelector) {
+        private PseudoElementImpl(String name, String functionValue, List<Selector> nestedSelectors) {
             this.name = name;
             type = PseudoElementType.forName(name);
             this.functionValue = functionValue;
-            this.nestedSelector = nestedSelector;
+            this.nestedSelectors = nestedSelectors;
             
             // Type-specific initialization
             if (type != null) {
                 switch (type) {
                     case CUE:
-                        if (nestedSelector == null && functionValue != null) {
-                            nestedSelector = new SelectorImpl();
+                        if (nestedSelectors == null && functionValue != null) {
+                            SelectorImpl nestedSelector = new SelectorImpl();
                             nestedSelector.add(new ElementNameImpl(functionValue));
+                            this.nestedSelectors = List.of(nestedSelector);
                         }
                         break;
                     default:
@@ -830,7 +874,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
             this(name, functionValue, null);
         }
         
-        protected PseudoElementImpl(String name, Selector nestedSelector) {
+        protected PseudoElementImpl(String name, List<Selector> nestedSelector) {
             this(name, null, nestedSelector);
         }
         
@@ -850,8 +894,8 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
         }
 
         @Override
-        public Selector getNestedSelector() {
-            return nestedSelector;
+        public List<Selector> getNestedSelectors() {
+            return nestedSelectors;
         }
 
         @Override
@@ -875,9 +919,9 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
 			
 			if(name!=null) 
 				sb.append(name);
-            
-			if(nestedSelector != null)
-			    sb.append(OutputUtil.FUNCTION_OPENING).append(nestedSelector.toString()).append(OutputUtil.FUNCTION_CLOSING);
+
+            if(nestedSelectors != null)
+                sb.append(OutputUtil.FUNCTION_OPENING).append(nestedSelectors.stream().map(Object::toString).collect(Collectors.joining(", "))).append(OutputUtil.FUNCTION_CLOSING);
 			else if(functionValue != null)
 			    sb.append(OutputUtil.FUNCTION_OPENING).append(functionValue).append(OutputUtil.FUNCTION_CLOSING);
 			
@@ -890,7 +934,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
             hash = 53 * hash + Objects.hashCode(this.name);
             hash = 53 * hash + Objects.hashCode(this.functionValue);
             hash = 53 * hash + Objects.hashCode(this.type);
-            hash = 53 * hash + Objects.hashCode(this.nestedSelector);
+            hash = 53 * hash + Objects.hashCode(this.nestedSelectors);
             return hash;
         }
 
@@ -915,7 +959,7 @@ public class SelectorImpl extends AbstractRule<Selector.SelectorPart> implements
             if (!Objects.equals(this.functionValue, other.functionValue)) {
                 return false;
             }
-            if (!Objects.equals(this.nestedSelector, other.nestedSelector)) {
+            if (!Objects.equals(this.nestedSelectors, other.nestedSelectors)) {
                 return false;
             }
             return true;

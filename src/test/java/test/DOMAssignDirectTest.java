@@ -1,5 +1,6 @@
 package test;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
@@ -164,6 +165,29 @@ public class DOMAssignDirectTest {
         assertThat("Child combinator", i2.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
         assertThat("Adjacent sibling combinator", i3.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
         assertThat("Generic sibling combinator", i4.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
+    }
+
+    @Test
+    public void notIsWhere() throws SAXException, IOException {
+
+        DOMSource ds = new DOMSource(getClass().getResourceAsStream("/simple/selectors4.html"));
+        Document doc = ds.parse();
+        ElementMap elements = new ElementMap(doc);
+
+        StyleSheet style = CSSFactory.getUsedStyles(doc, null, getClass().getResource("/simple/selectors4.html"),"screen");
+        DirectAnalyzer da = new DirectAnalyzer(style);
+
+        NodeData i1 = getStyleById(elements, da, "i1");
+        NodeData i2 = getStyleById(elements, da, "i2");
+        NodeData i3 = getStyleById(elements, da, "i3");
+        NodeData i4 = getStyleById(elements, da, "i4");
+
+        assertThat("Not selector matches", i1.getValue(TermColor.class, "color"), is(tf.createColor(255,0,0)));
+        assertThat("Not selector does not match", i2.getValue(TermColor.class, "color"), is(tf.createColor(0,0,255)));
+        assertThat("is matches", i3.getValue(TermColor.class, "color"), is(tf.createColor(0,128,0)));
+        assertThat(":not(:is) matches", i1.getValue(TermColor.class, "background-color"), is(tf.createColor(170,170,170)));
+        assertThat(":not(:is) does not match", i3.getValue(TermColor.class, "background-color"), is(nullValue()));
+        assertThat("specificity", i4.getValue(TermColor.class, "color"), is(tf.createColor(255,0,0)));
     }
 
     @Test
