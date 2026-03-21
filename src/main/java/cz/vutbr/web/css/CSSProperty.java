@@ -3717,8 +3717,10 @@ public interface CSSProperty {
 
 	public enum AlignContent implements CSSProperty {
 		FLEX_START("flex-start"), FLEX_END("flex-end"), CENTER("center"), SPACE_BETWEEN("space-between"),
-		SPACE_AROUND("space-around"), STRETCH("stretch"), INHERIT("inherit"), INITIAL("initial"),
-		UNSET("unset");
+		SPACE_AROUND("space-around"), STRETCH("stretch"), START("start"), END("end"),
+		NORMAL("normal"), SPACE_EVENLY("space-evenly"),
+		FIRST_BASELINE("first baseline"), LAST_BASELINE("last baseline"),
+		INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -3754,8 +3756,10 @@ public interface CSSProperty {
 	}
 
 	public enum AlignItems implements CSSProperty {
-		FLEX_START("flex-start"), FLEX_END("flex-end"), CENTER("center"), BASELINE("baseline"), 
-		STRETCH("stretch"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+		FLEX_START("flex-start"), FLEX_END("flex-end"), CENTER("center"), BASELINE("baseline"),
+		STRETCH("stretch"), START("start"), END("end"), SELF_START("self-start"), SELF_END("self-end"),
+		NORMAL("normal"), FIRST_BASELINE("first baseline"), LAST_BASELINE("last baseline"),
+		INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -3792,7 +3796,9 @@ public interface CSSProperty {
 
 	public enum AlignSelf implements CSSProperty {
 		AUTO("auto"), FLEX_START("flex-start"), FLEX_END("flex-end"), CENTER("center"), BASELINE("baseline"),
-		STRETCH("stretch"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+		STRETCH("stretch"), START("start"), END("end"), SELF_START("self-start"), SELF_END("self-end"),
+		NORMAL("normal"), FIRST_BASELINE("first baseline"), LAST_BASELINE("last baseline"),
+		INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -4083,7 +4089,9 @@ public interface CSSProperty {
 
 	public enum JustifyContent implements CSSProperty {
 		FLEX_START("flex-start"), FLEX_END("flex-end"), CENTER("center"), SPACE_BETWEEN("space-between"),
-		SPACE_AROUND("space-around"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+		SPACE_AROUND("space-around"), START("start"), END("end"), LEFT("left"), RIGHT("right"),
+		NORMAL("normal"), STRETCH("stretch"), SPACE_EVENLY("space-evenly"),
+		INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
 
 		private String text;
 
@@ -4112,6 +4120,86 @@ public interface CSSProperty {
             return ValueType.SIMPLE;
         }
         
+		@Override
+		public String toString() {
+			return text;
+		}
+	}
+
+	public enum JustifyItems implements CSSProperty {
+		AUTO("auto"), NORMAL("normal"), STRETCH("stretch"),
+		CENTER("center"), START("start"), END("end"), SELF_START("self-start"), SELF_END("self-end"),
+		LEFT("left"), RIGHT("right"), FLEX_START("flex-start"), FLEX_END("flex-end"),
+		BASELINE("baseline"), FIRST_BASELINE("first baseline"), LAST_BASELINE("last baseline"),
+		LEGACY("legacy"), INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+		private String text;
+
+		private JustifyItems(String text) {
+			this.text = text;
+		}
+
+		public boolean inherited() {
+			return false;
+		}
+
+		public boolean equalsInherit() {
+			return this == INHERIT;
+		}
+
+		public boolean equalsInitial() {
+			return this == INITIAL;
+		}
+
+		public boolean equalsUnset() {
+			return this == UNSET;
+		}
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+		@Override
+		public String toString() {
+			return text;
+		}
+	}
+
+	public enum JustifySelf implements CSSProperty {
+		AUTO("auto"), NORMAL("normal"), STRETCH("stretch"),
+		CENTER("center"), START("start"), END("end"), SELF_START("self-start"), SELF_END("self-end"),
+		LEFT("left"), RIGHT("right"), FLEX_START("flex-start"), FLEX_END("flex-end"),
+		BASELINE("baseline"), FIRST_BASELINE("first baseline"), LAST_BASELINE("last baseline"),
+		INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+		private String text;
+
+		private JustifySelf(String text) {
+			this.text = text;
+		}
+
+		public boolean inherited() {
+			return false;
+		}
+
+		public boolean equalsInherit() {
+			return this == INHERIT;
+		}
+
+		public boolean equalsInitial() {
+			return this == INITIAL;
+		}
+
+		public boolean equalsUnset() {
+			return this == UNSET;
+		}
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
 		@Override
 		public String toString() {
 			return text;
@@ -4462,6 +4550,228 @@ public interface CSSProperty {
         private String text;
 
         private GridAutoRowsColumns(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
+    public enum RowGap implements CSSProperty {
+        length(""), NORMAL("normal"),
+        INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+        private String text;
+
+        private RowGap(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
+    public enum ColumnGap implements CSSProperty {
+        length(""), NORMAL("normal"),
+        INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+        private String text;
+
+        private ColumnGap(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
+    public enum Gap implements CSSProperty {
+        component_values(""), NORMAL("normal"),
+        INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+        private String text;
+
+        private Gap(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
+    public enum PlaceContent implements CSSProperty {
+        component_values(""),
+        INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+        private String text;
+
+        private PlaceContent(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
+    public enum PlaceItems implements CSSProperty {
+        component_values(""),
+        INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+        private String text;
+
+        private PlaceItems(String text) {
+            this.text = text;
+        }
+
+        public boolean inherited() {
+            return false;
+        }
+
+        public boolean equalsInherit() {
+            return this == INHERIT;
+        }
+
+        public boolean equalsInitial() {
+            return this == INITIAL;
+        }
+
+        public boolean equalsUnset() {
+            return this == UNSET;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SIMPLE;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
+    public enum PlaceSelf implements CSSProperty {
+        component_values(""),
+        INHERIT("inherit"), INITIAL("initial"), UNSET("unset");
+
+        private String text;
+
+        private PlaceSelf(String text) {
             this.text = text;
         }
 

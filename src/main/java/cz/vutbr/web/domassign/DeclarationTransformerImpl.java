@@ -1455,18 +1455,116 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
 	}
 
     @SuppressWarnings("unused")
+    private boolean processJustifyItems(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if (d.size() == 2 && isTwoKeywordBaseline(d, 0)) {
+            return setTwoKeywordBaseline(JustifyItems.FIRST_BASELINE, JustifyItems.LAST_BASELINE, d, properties);
+        }
+        return Decoder.genericOneIdent(JustifyItems.class, d, properties);
+    }
+
+    @SuppressWarnings("unused")
+    private boolean processJustifySelf(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if (d.size() == 2 && isTwoKeywordBaseline(d, 0)) {
+            return setTwoKeywordBaseline(JustifySelf.FIRST_BASELINE, JustifySelf.LAST_BASELINE, d, properties);
+        }
+        return Decoder.genericOneIdent(JustifySelf.class, d, properties);
+    }
+
+    @SuppressWarnings("unused")
     private boolean processAlignContent(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if (d.size() == 2 && isTwoKeywordBaseline(d, 0)) {
+            return setTwoKeywordBaseline(AlignContent.FIRST_BASELINE, AlignContent.LAST_BASELINE, d, properties);
+        }
         return Decoder.genericOneIdent(AlignContent.class, d, properties);
     }
 
     @SuppressWarnings("unused")
     private boolean processAlignItems(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if (d.size() == 2 && isTwoKeywordBaseline(d, 0)) {
+            return setTwoKeywordBaseline(AlignItems.FIRST_BASELINE, AlignItems.LAST_BASELINE, d, properties);
+        }
         return Decoder.genericOneIdent(AlignItems.class, d, properties);
     }
 
     @SuppressWarnings("unused")
     private boolean processAlignSelf(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        if (d.size() == 2 && isTwoKeywordBaseline(d, 0)) {
+            return setTwoKeywordBaseline(AlignSelf.FIRST_BASELINE, AlignSelf.LAST_BASELINE, d, properties);
+        }
         return Decoder.genericOneIdent(AlignSelf.class, d, properties);
+    }
+
+    @SuppressWarnings("unused")
+    private boolean processPlaceContent(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return processPlacePair("align-content", "justify-content", d, properties, values);
+    }
+
+    @SuppressWarnings("unused")
+    private boolean processPlaceItems(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return processPlacePair("align-items", "justify-items", d, properties, values);
+    }
+
+    @SuppressWarnings("unused")
+    private boolean processPlaceSelf(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return processPlacePair("align-self", "justify-self", d, properties, values);
+    }
+
+    /** Returns true if terms at {@code offset} and {@code offset+1} form a two-keyword baseline value
+     *  ("first baseline" or "last baseline"). */
+    private boolean isTwoKeywordBaseline(Declaration d, int offset) {
+        if (offset + 1 >= d.size()) return false;
+        if (!(d.get(offset) instanceof TermIdent) || !(d.get(offset + 1) instanceof TermIdent)) return false;
+        String first = ((TermIdent) d.get(offset)).getValue().toLowerCase();
+        String second = ((TermIdent) d.get(offset + 1)).getValue().toLowerCase();
+        return ("first".equals(first) || "last".equals(first)) && "baseline".equals(second);
+    }
+
+    /** Sets the FIRST_BASELINE or LAST_BASELINE enum value based on d.get(0) and stores it in properties. */
+    private <T extends CSSProperty> boolean setTwoKeywordBaseline(T firstBaseline, T lastBaseline,
+            Declaration d, Map<String, CSSProperty> properties) {
+        String keyword = ((TermIdent) d.get(0)).getValue().toLowerCase();
+        T value = "first".equals(keyword) ? firstBaseline : lastBaseline;
+        properties.put(d.getProperty(), value);
+        return true;
+    }
+
+    /** Processes a place-* shorthand by expanding into the two constituent properties. */
+    private boolean processPlacePair(String alignProp, String justifyProp,
+            Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        Declaration alignDecl = (Declaration) rf.createDeclaration().unlock();
+        Declaration justifyDecl = (Declaration) rf.createDeclaration().unlock();
+        alignDecl.setProperty(alignProp);
+        justifyDecl.setProperty(justifyProp);
+
+        int size = d.size();
+        if (size == 1) {
+            alignDecl.add(d.get(0));
+            justifyDecl.add(d.get(0));
+        } else if (size == 2 && isTwoKeywordBaseline(d, 0)) {
+            // "place-*: first baseline"  — both get the two-keyword baseline
+            alignDecl.add(d.get(0)); alignDecl.add(d.get(1));
+            justifyDecl.add(d.get(0)); justifyDecl.add(d.get(1));
+        } else if (size == 2) {
+            // "place-*: start end"
+            alignDecl.add(d.get(0));
+            justifyDecl.add(d.get(1));
+        } else if (size == 3 && isTwoKeywordBaseline(d, 0)) {
+            // "place-*: first baseline end"
+            alignDecl.add(d.get(0)); alignDecl.add(d.get(1));
+            justifyDecl.add(d.get(2));
+        } else if (size == 3 && isTwoKeywordBaseline(d, 1)) {
+            // "place-*: start first baseline"
+            alignDecl.add(d.get(0));
+            justifyDecl.add(d.get(1)); justifyDecl.add(d.get(2));
+        } else if (size == 4 && isTwoKeywordBaseline(d, 0) && isTwoKeywordBaseline(d, 2)) {
+            // "place-*: first baseline last baseline"
+            alignDecl.add(d.get(0)); alignDecl.add(d.get(1));
+            justifyDecl.add(d.get(2)); justifyDecl.add(d.get(3));
+        } else {
+            return false;
+        }
+        return parseDeclaration(alignDecl, properties, values)
+                && parseDeclaration(justifyDecl, properties, values);
     }
 
 	@SuppressWarnings("unused")
@@ -1674,6 +1772,38 @@ public class DeclarationTransformerImpl implements DeclarationTransformer {
     @SuppressWarnings("unused")
     private boolean processGridColumnGap(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
         return Decoder.genericOneIdentOrLengthOrPercent(GridGap.class, GridGap.length, GridGap.length, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
+    }
+
+    @SuppressWarnings("unused")
+    private boolean processGap(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        Term<?> rowGapTerm, columnGapTerm;
+        switch (d.size()) {
+            case 1:
+                rowGapTerm = columnGapTerm = d.get(0);
+                break;
+            case 2:
+                rowGapTerm = d.get(0);
+                columnGapTerm = d.get(1);
+                break;
+            default:
+                return false;
+        }
+        return (Decoder.genericTermIdent(RowGap.class, rowGapTerm, Decoder.ALLOW_INH, "row-gap", properties)
+                || Decoder.genericTermLength(rowGapTerm, "row-gap", RowGap.length, ValueRange.DISALLOW_NEGATIVE, properties, values)
+                || Decoder.genericTerm(TermPercent.class, rowGapTerm, "row-gap", RowGap.length, ValueRange.DISALLOW_NEGATIVE, properties, values))
+                && (Decoder.genericTermIdent(ColumnGap.class, columnGapTerm, Decoder.ALLOW_INH, "column-gap", properties)
+                || Decoder.genericTermLength(columnGapTerm, "column-gap", ColumnGap.length, ValueRange.DISALLOW_NEGATIVE, properties, values)
+                || Decoder.genericTerm(TermPercent.class, columnGapTerm, "column-gap", ColumnGap.length, ValueRange.DISALLOW_NEGATIVE, properties, values));
+    }
+
+    @SuppressWarnings("unused")
+    private boolean processRowGap(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return Decoder.genericOneIdentOrLengthOrPercent(RowGap.class, RowGap.length, RowGap.length, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
+    }
+
+    @SuppressWarnings("unused")
+    private boolean processColumnGap(Declaration d, Map<String, CSSProperty> properties, Map<String, Term<?>> values) {
+        return Decoder.genericOneIdentOrLengthOrPercent(ColumnGap.class, ColumnGap.length, ColumnGap.length, ValueRange.DISALLOW_NEGATIVE, d, properties, values);
     }
 
     @SuppressWarnings("unused")

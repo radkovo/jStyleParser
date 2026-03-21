@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <title>CSS Box Alignment</title>
+        <style type="text/css">
+            /* align-content: new values */
+            #ac0 { align-content: start; }
+            #ac1 { align-content: end; }
+            #ac2 { align-content: normal; }
+            #ac3 { align-content: space-evenly; }
+            #ac4 { align-content: first baseline; }
+            #ac5 { align-content: last baseline; }
+
+            /* align-items: new values */
+            #ai0 { align-items: start; }
+            #ai1 { align-items: end; }
+            #ai2 { align-items: self-start; }
+            #ai3 { align-items: self-end; }
+            #ai4 { align-items: normal; }
+            #ai5 { align-items: first baseline; }
+            #ai6 { align-items: last baseline; }
+
+            /* align-self: new values */
+            #as0 { align-self: start; }
+            #as1 { align-self: end; }
+            #as2 { align-self: self-start; }
+            #as3 { align-self: self-end; }
+            #as4 { align-self: normal; }
+            #as5 { align-self: first baseline; }
+            #as6 { align-self: last baseline; }
+
+            /* justify-content: new values */
+            #jc0 { justify-content: start; }
+            #jc1 { justify-content: end; }
+            #jc2 { justify-content: left; }
+            #jc3 { justify-content: right; }
+            #jc4 { justify-content: normal; }
+            #jc5 { justify-content: stretch; }
+            #jc6 { justify-content: space-evenly; }
+
+            /* justify-items: all values */
+            #ji0  { justify-items: center; }
+            #ji1  { justify-items: start; }
+            #ji2  { justify-items: end; }
+            #ji3  { justify-items: left; }
+            #ji4  { justify-items: right; }
+            #ji5  { justify-items: flex-start; }
+            #ji6  { justify-items: flex-end; }
+            #ji7  { justify-items: self-start; }
+            #ji8  { justify-items: self-end; }
+            #ji9  { justify-items: baseline; }
+            #ji10 { justify-items: first baseline; }
+            #ji11 { justify-items: last baseline; }
+            #ji12 { justify-items: stretch; }
+            #ji13 { justify-items: normal; }
+            #ji14 { justify-items: legacy; }
+
+            /* justify-self: all values */
+            #js0  { justify-self: auto; }
+            #js1  { justify-self: center; }
+            #js2  { justify-self: start; }
+            #js3  { justify-self: end; }
+            #js4  { justify-self: left; }
+            #js5  { justify-self: right; }
+            #js6  { justify-self: flex-start; }
+            #js7  { justify-self: flex-end; }
+            #js8  { justify-self: self-start; }
+            #js9  { justify-self: self-end; }
+            #js10 { justify-self: baseline; }
+            #js11 { justify-self: first baseline; }
+            #js12 { justify-self: last baseline; }
+            #js13 { justify-self: stretch; }
+            #js14 { justify-self: normal; }
+
+            /* gap shorthand */
+            #gap0 { gap: normal; }
+            #gap1 { gap: 10px; }
+            #gap2 { gap: 10px 20px; }
+
+            /* row-gap */
+            #rg0 { row-gap: normal; }
+            #rg1 { row-gap: 10px; }
+
+            /* column-gap */
+            #cg0 { column-gap: normal; }
+            #cg1 { column-gap: 10px; }
+
+            /* place-content shorthand */
+            #pc0 { place-content: center; }
+            #pc1 { place-content: start end; }
+            #pc2 { place-content: first baseline space-evenly; }
+
+            /* place-items shorthand */
+            #pi0 { place-items: stretch; }
+            #pi1 { place-items: start end; }
+
+            /* place-self shorthand */
+            #ps0 { place-self: auto; }
+            #ps1 { place-self: start end; }
+        </style>
+    </head>
+    <body>
+        <div id="content">
+            <ul>
+                <li id="ac0"></li>
+                <li id="ac1"></li>
+                <li id="ac2"></li>
+                <li id="ac3"></li>
+                <li id="ac4"></li>
+                <li id="ac5"></li>
+
+                <li id="ai0"></li>
+                <li id="ai1"></li>
+                <li id="ai2"></li>
+                <li id="ai3"></li>
+                <li id="ai4"></li>
+                <li id="ai5"></li>
+                <li id="ai6"></li>
+
+                <li id="as0"></li>
+                <li id="as1"></li>
+                <li id="as2"></li>
+                <li id="as3"></li>
+                <li id="as4"></li>
+                <li id="as5"></li>
+                <li id="as6"></li>
+
+                <li id="jc0"></li>
+                <li id="jc1"></li>
+                <li id="jc2"></li>
+                <li id="jc3"></li>
+                <li id="jc4"></li>
+                <li id="jc5"></li>
+                <li id="jc6"></li>
+
+                <li id="ji0"></li>
+                <li id="ji1"></li>
+                <li id="ji2"></li>
+                <li id="ji3"></li>
+                <li id="ji4"></li>
+                <li id="ji5"></li>
+                <li id="ji6"></li>
+                <li id="ji7"></li>
+                <li id="ji8"></li>
+                <li id="ji9"></li>
+                <li id="ji10"></li>
+                <li id="ji11"></li>
+                <li id="ji12"></li>
+                <li id="ji13"></li>
+                <li id="ji14"></li>
+
+                <li id="js0"></li>
+                <li id="js1"></li>
+                <li id="js2"></li>
+                <li id="js3"></li>
+                <li id="js4"></li>
+                <li id="js5"></li>
+                <li id="js6"></li>
+                <li id="js7"></li>
+                <li id="js8"></li>
+                <li id="js9"></li>
+                <li id="js10"></li>
+                <li id="js11"></li>
+                <li id="js12"></li>
+                <li id="js13"></li>
+                <li id="js14"></li>
+
+                <li id="gap0"></li>
+                <li id="gap1"></li>
+                <li id="gap2"></li>
+
+                <li id="rg0"></li>
+                <li id="rg1"></li>
+
+                <li id="cg0"></li>
+                <li id="cg1"></li>
+
+                <li id="pc0"></li>
+                <li id="pc1"></li>
+                <li id="pc2"></li>
+
+                <li id="pi0"></li>
+                <li id="pi1"></li>
+
+                <li id="ps0"></li>
+                <li id="ps1"></li>
+            </ul>
+        </div>
+    </body>
+</html>

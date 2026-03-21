@@ -27,7 +27,7 @@ import cz.vutbr.web.css.CSSProperty.*;
 public class SupportedCSS3 implements SupportedCSS {
 	private static final Logger log = LoggerFactory.getLogger(SupportedCSS3.class);
 
-	private static final int TOTAL_SUPPORTED_DECLARATIONS = 177;
+	private static final int TOTAL_SUPPORTED_DECLARATIONS = 185;
 
 	private static final TermFactory tf = CSSFactory.getTermFactory();
 
@@ -391,15 +391,23 @@ public class SupportedCSS3 implements SupportedCSS {
 		props.put("order", Order.integer);
 		values.put("order", DEFAULT_ORDER);
 		props.put("justify-content", JustifyContent.FLEX_START);
+		props.put("justify-items", JustifyItems.LEGACY);
+		props.put("justify-self", JustifySelf.AUTO);
 		props.put("align-content", AlignContent.STRETCH);
 		props.put("align-items", AlignItems.STRETCH);
 		props.put("align-self", AlignSelf.AUTO);
+		props.put("place-content", PlaceContent.component_values);
+		props.put("place-items", PlaceItems.component_values);
+		props.put("place-self", PlaceSelf.component_values);
 
         // grid layout
         props.put("grid", Grid.component_values);
         props.put("grid-gap", GridGap.component_values);
         props.put("grid-row-gap", GridGap.NORMAL);
         props.put("grid-column-gap", GridGap.NORMAL);
+        props.put("gap", Gap.component_values);
+        props.put("row-gap", RowGap.NORMAL);
+        props.put("column-gap", ColumnGap.NORMAL);
         props.put("grid-area", Grid.component_values);
         props.put("grid-row", Grid.component_values);
         props.put("grid-column", Grid.component_values);
