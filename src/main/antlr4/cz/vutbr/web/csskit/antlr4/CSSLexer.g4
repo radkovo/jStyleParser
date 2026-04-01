@@ -436,6 +436,10 @@ HAT
 	: '^'
 	;
 
+HAS
+	: 'has' S* LPAREN {ls.parenNest++; }
+	;
+
 /** White character */
 S
 	: W_CHAR+

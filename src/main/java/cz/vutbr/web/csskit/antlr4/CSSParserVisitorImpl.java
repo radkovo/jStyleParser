@@ -1423,6 +1423,35 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     }
 
     @Override
+    public CombinedSelector visitRelative_selector(CSSParser.Relative_selectorContext ctx) {
+        int selectorCount = ctx.selector().size();
+        int combinatorCount = ctx.combinator().size();
+
+        CombinedSelector combinedSelector = (CombinedSelector) rf.createCombinedSelector().unlock();
+        if (selectorCount == combinatorCount) {
+            // leading combinator: (combinator?) selector (e.g., "> p")
+            for (int i = 0; i < ctx.selector().size(); i++) {
+                Selector.Combinator c = visitCombinator(ctx.combinator(i ));
+                Selector s = visitSelector(ctx.selector(i));
+                s.setCombinator(c);
+                combinedSelector.add(s);
+            }
+        } else {
+            // No leading combinator (e.g., "div > p")
+            Selector s = visitSelector(ctx.selector(0));
+            s.setCombinator(Selector.Combinator.DESCENDANT);
+            combinedSelector.add(s);
+            for (int i = 1; i < ctx.selector().size(); i++) {
+                Selector.Combinator c = visitCombinator(ctx.combinator(i-1));
+                s = visitSelector(ctx.selector(i));
+                s.setCombinator(c);
+                combinedSelector.add(s);
+            }
+        }
+        return combinedSelector;
+    }
+
+    @Override
     /**
      combinator
      : GREATER S* //child combinator
@@ -1603,14 +1632,54 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
     @Override
     /**
      * pseudo
-     : COLON COLON? (MINUS? IDENT | FUNCTION S*  (IDENT | MINUS? NUMBER | MINUS? INDEX) S* RPAREN)
+     : COLON COLON? pseudo_body;
      */
     public Selector.SelectorPart visitPseudo(CSSParser.PseudoContext ctx) {
         logEnter("pseudo: ", ctx);
-        boolean isPseudoElem = ctx.COLON().size() > 1;
+        Selector.SelectorPart pseudo = null;
+
+        CSSParser.Pseudo_bodyContext pseudoBody = ctx.pseudo_body();
+
+        if (pseudoBody != null) {
+            pseudo = visitPseudo_body(pseudoBody);
+        }
+
+        logLeave("pseudo");
+        return pseudo;
+    }
+
+    @Override
+    public Selector.SelectorPart visitPseudo_body(CSSParser.Pseudo_bodyContext ctx) {
+        logEnter("pseudo_body: ", ctx);
+
+        ParserRuleContext parent = ctx.getParent();
+
+        CSSParser.PseudoContext pseudoContext = null;
+        if (parent instanceof CSSParser.PseudoContext) {
+            pseudoContext = (CSSParser.PseudoContext) parent;
+
+        }
+
+        if (pseudoContext == null) {
+            return null;
+        }
+
+        boolean isPseudoElem = pseudoContext.COLON().size() > 1;
         Selector.SelectorPart pseudo = null;
         String name;
-        if (ctx.FUNCTION() != null) {
+
+        if (ctx.HAS() != null) {
+            // has
+            name = extractTextUnescaped(ctx.HAS().getText());
+            if (ctx.relative_selector() != null && !ctx.relative_selector().isEmpty()) {
+                List<CombinedSelector> selectors = new ArrayList<>(ctx.relative_selector().size());
+                for (CSSParser.Relative_selectorContext selectorContext : ctx.relative_selector()) {
+                    selectors.add(visitRelative_selector(selectorContext));
+                }
+                pseudo = rf.createPseudoClass(name, selectors);
+            }
+
+        } else if (ctx.FUNCTION() != null) {
             // function
             name = extractTextUnescaped(ctx.FUNCTION().getText());
             if (ctx.selector() != null && !ctx.selector().isEmpty()) {
@@ -1644,7 +1713,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             }
             if (isPseudoElem) {
                 pseudo = rf.createPseudoElement(name);
-            } else if (ctx.parent instanceof CSSParser.PageContext) {
+            } else if (parent.getParent() instanceof CSSParser.PageContext) {
                 pseudo = rf.createPseudoPage(name);
             } else {
                 pseudo = rf.createPseudoClass(name);
@@ -1653,7 +1722,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             // invalid selpart
             name = "";
         }
-        
+
         if ((pseudo == null) ||
                 (pseudo instanceof Selector.PseudoPage && ((Selector.PseudoPage) pseudo).getType() == null) ||
                 (pseudo instanceof Selector.PseudoClass && ((Selector.PseudoClass) pseudo).getType() == null) ||
@@ -1661,7 +1730,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
             log.error("invalid pseudo declaration: " + name);
             pseudo = null; // invalid
         }
-        logLeave("pseudo");
+        logLeave("pseudo_body");
         return pseudo;
     }
 

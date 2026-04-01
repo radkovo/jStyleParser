@@ -204,7 +204,7 @@ public interface RuleFactory {
      * @param nestedSelector Selector in its function argument
 	 * @return New CSS pseudo-class
 	 */
-	Selector.PseudoClass createPseudoClass(String name, List<Selector> nestedSelector);
+	Selector.PseudoClass createPseudoClass(String name, List<?> nestedSelector);
 
 	/**
 	 * Creates CSS author style sheet

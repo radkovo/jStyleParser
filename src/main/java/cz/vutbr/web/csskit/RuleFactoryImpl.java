@@ -193,8 +193,17 @@ public class RuleFactoryImpl implements RuleFactory {
     }
     
 	@Override
-    public Selector.PseudoClass createPseudoClass(String name, List<Selector> nestedSelector) {
-        return new SelectorImpl.PseudoClassImpl(name, nestedSelector);
+    public Selector.PseudoClass createPseudoClass(String name, List<?> nestedSelector) {
+		if (nestedSelector.isEmpty()) return null;
+		Object first = nestedSelector.get(0);
+		if (first instanceof Selector) {
+			return new SelectorImpl.PseudoClassImpl(name, (List<Selector>) nestedSelector);
+		}
+		else if (first instanceof CombinedSelector) {
+			return new RelativeSelectorImpl.RelationalPseudoClassImpl(name, (List<CombinedSelector>) nestedSelector);
+		}
+
+		return null;
     }
     
 	public StyleSheet createStyleSheet() {

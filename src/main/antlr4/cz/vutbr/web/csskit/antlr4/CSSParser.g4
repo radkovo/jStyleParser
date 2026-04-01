@@ -429,6 +429,13 @@ combined_selector
 	  log.error("Recognition exception | combined_selector | should be empty");
 	}
 
+relative_selector
+	: ((combinator?) selector) ((combinator) selector)*
+	;
+	catch [RecognitionException re] {
+	  log.error("Recognition exception | relative_selector | should be empty");
+	}
+
 //combinator of selectors
 combinator
 	: GREATER S* //child combinator
@@ -471,13 +478,18 @@ attribute
      }
 
 pseudo
-    : COLON COLON? (MINUS? IDENT | FUNCTION S* (MINUS? IDENT | MINUS? NUMBER | MINUS? INDEX | (selector (COMMA S* selector)*)) S* RPAREN)
+    : COLON COLON? pseudo_body
     ;
     catch [RecognitionException re] {
       log.error("PARSING pseudo ERROR | inserting INVALID_SELPART");
        _localctx.addErrorNode(this.getTokenFactory().create(INVALID_SELPART, "INVALID_SELPART"));
     }
 
+ pseudo_body
+    : MINUS? IDENT
+    | HAS S* (relative_selector (COMMA S* relative_selector)*) S* RPAREN
+    | FUNCTION S* (MINUS? IDENT | MINUS? NUMBER | MINUS? INDEX | (selector (COMMA S* selector)*)) S* RPAREN
+    ;
 
 string
 	: STRING
