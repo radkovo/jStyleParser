@@ -75,6 +75,7 @@ import cz.vutbr.web.csskit.fn.FramesImpl;
 import cz.vutbr.web.csskit.fn.MinMaxImpl;
 import cz.vutbr.web.csskit.fn.RepeatImpl;
 import cz.vutbr.web.csskit.fn.StepsImpl;
+import cz.vutbr.web.csskit.fn.VarImpl;
 
 public class TermFactoryImpl implements TermFactory {
 
@@ -567,6 +568,9 @@ public class TermFactoryImpl implements TermFactory {
             case "frames":
                 fn = new FramesImpl();
                 break;
+			case "var":
+				fn = new VarImpl();
+				break;
             default:
                 fn = new TermFunctionImpl();
                 break;

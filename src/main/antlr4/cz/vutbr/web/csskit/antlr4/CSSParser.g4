@@ -296,7 +296,7 @@ important
     }
 
 property
-	: MINUS? IDENT S*
+	: MINUS? MINUS? IDENT S*
 	;
     catch [RecognitionException re]{
         log.error("PARSING property ERROR | should be empty");

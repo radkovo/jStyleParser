@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 
 public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParserExtractor {
@@ -942,7 +943,7 @@ public class CSSParserVisitorImpl implements CSSParserVisitor<Object>, CSSParser
 
         String property = extractTextUnescaped(ctx.IDENT().getText());
         if (ctx.MINUS() != null) {
-            property = ctx.MINUS().getText() + property;
+            property = ctx.MINUS().stream().map(ParseTree::getText).collect(Collectors.joining()) + property;
         }
         declaration_stack.peek().d.setProperty(property);
         Token token = ctx.IDENT().getSymbol();

@@ -72,17 +72,17 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         this.value = new ArrayList<>();
         
         // Treat '-' as modifying the next argument, instead of as an operator
-        boolean prevMinus = false;
+        int prevMinusCounter = 0;
         
         for (Term<?> term : value) {
             if (term instanceof TermOperator && ((TermOperator) term).getValue() == '-') {
-                prevMinus = true;
-            } else if (prevMinus) {
-                if (prependMinus(term)) {
+                prevMinusCounter ++;
+            } else if (prevMinusCounter > 0) {
+                while (prevMinusCounter > 0 && prependMinus(term)) {
                     this.value.remove(this.value.size() - 1); // Remove merged minus
+                    prevMinusCounter --;
                 }
-
-                prevMinus = false;
+                prevMinusCounter = 0;
             }
             
             this.value.add(term);
@@ -96,8 +96,10 @@ public class TermFunctionImpl extends TermListImpl implements TermFunction {
         
         if (term instanceof TermFloatValue) { // includes TermAngle, TermLength, etc.
             TermFloatValue floatT = (TermFloatValue) term;
-            floatT.setValue(-1 * floatT.getValue());
-            merged = true;
+            if (floatT.getValue() >= 0) {
+                floatT.setValue(-1 * floatT.getValue());
+                merged = true;
+            }
         } else if (term instanceof TermIdent) {
             TermIdent ident = (TermIdent) term;
             ident.setValue("-" + ident.getValue());
