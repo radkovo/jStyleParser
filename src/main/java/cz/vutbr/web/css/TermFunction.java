@@ -243,6 +243,12 @@ public interface TermFunction extends TermList {
     public interface Attr extends TermFunction {
         public String getName();
     }
+
+    public interface Var extends TermFunction {
+        public String getProperty();
+        public Term<?> getDefaultTerm();
+        public boolean hasEmptyValueFallback();
+    }
 	
 	//========================================================================
 	
