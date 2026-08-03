@@ -115,19 +115,35 @@ public class TermColorImpl extends TermImpl<Color> implements TermColor {
     	// lowercase and remove hash character, if any
     	hash = hash.toLowerCase().replaceAll("^#", "");
     	
-    	// color written in #ABC format
+    	// color written in #RGB format
         if(hash.matches("^[0-9a-f]{3}$")) {
             String r = hash.substring(0, 1);
             String g = hash.substring(1, 2);
             String b = hash.substring(2, 3);
             return new TermColorImpl(Integer.parseInt(r+r, 16), Integer.parseInt(g+g, 16), Integer.parseInt(b+b, 16));
         }
-        // color written in #AABBCC format
+        // color written in #RGBA format
+        else if(hash.matches("^[0-9a-f]{4}$")) {
+            String r = hash.substring(0, 1);
+            String g = hash.substring(1, 2);
+            String b = hash.substring(2, 3);
+            String a = hash.substring(3, 4);
+            return new TermColorImpl(Integer.parseInt(r+r, 16), Integer.parseInt(g+g, 16), Integer.parseInt(b+b, 16), Integer.parseInt(a+a, 16));
+        }
+        // color written in #RRGGBB format
         else if(hash.matches("^[0-9a-f]{6}$")) {
             String r = hash.substring(0, 2);
             String g = hash.substring(2, 4);
             String b = hash.substring(4, 6);
             return new TermColorImpl(Integer.parseInt(r, 16), Integer.parseInt(g, 16), Integer.parseInt(b, 16));
+        }
+        // color written in #RRGGBBAA format
+        else if(hash.matches("^[0-9a-f]{8}$")) {
+            String r = hash.substring(0, 2);
+            String g = hash.substring(2, 4);
+            String b = hash.substring(4, 6);
+            String a = hash.substring(6, 8);
+            return new TermColorImpl(Integer.parseInt(r, 16), Integer.parseInt(g, 16), Integer.parseInt(b, 16), Integer.parseInt(a, 16));
         }
         // invalid hash
         return null;

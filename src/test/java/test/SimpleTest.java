@@ -50,6 +50,12 @@ public class SimpleTest {
 	
 	public static final String TEST_HASH_COLOR2 =
 		"DIV, P { color: #CCC;}";
+
+	public static final String TEST_HASH_COLOR3 =
+			"BODY { color: #F0A1B213;}";
+
+	public static final String TEST_HASH_COLOR4 =
+			"BODY { color: #FAB1;}";
 	
 	public static final String TEST_RGBFUNCTION1 =
 		"BODY { color: rgb(192,64,32);}";
@@ -317,6 +323,42 @@ public class SimpleTest {
 		assertEquals("Rule contains one declaration {color: #CCC;}",
 				DeclarationsUtil.appendDeclaration(null, "color", 
 						tf.createColor(204,204,204)),
+				rule.asList());
+	}
+
+	@Test
+	public void testHashColor3() throws IOException, CSSException   {
+
+		StyleSheet ss = CSSFactory.parseString(TEST_HASH_COLOR3, null);
+		assertEquals("One rule is set", 1, ss.size());
+
+		final RuleSet rule = (RuleSet) ss.get(0);
+
+		assertArrayEquals("Rule contains one selector BODY ",
+				SelectorsUtil.createSelectors("BODY"),
+				rule.getSelectors());
+
+		assertEquals("Rule contains one declaration {color: #F0A1B213;}",
+				DeclarationsUtil.appendDeclaration(null, "color",
+						tf.createColor(0xF0, 0xA1, 0xB2, 0x13)),
+				rule.asList());
+	}
+
+	@Test
+	public void testHashColor4() throws IOException, CSSException   {
+
+		StyleSheet ss = CSSFactory.parseString(TEST_HASH_COLOR4, null);
+		assertEquals("One rule is set", 1, ss.size());
+
+		final RuleSet rule = (RuleSet) ss.get(0);
+
+		assertArrayEquals("Rule contains one selector BODY ",
+				SelectorsUtil.createSelectors("BODY"),
+				rule.getSelectors());
+
+		assertEquals("Rule contains one declaration {color: #FAB1;}",
+				DeclarationsUtil.appendDeclaration(null, "color",
+						tf.createColor(0xFF, 0xAA, 0xBB, 0x11)),
 				rule.asList());
 	}
 	
